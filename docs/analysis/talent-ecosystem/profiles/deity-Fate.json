@@ -1,0 +1,690 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Fate",
+ "correctionCount": 35,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Fate",
+  "oneLineIdentity": "A positional zone-engineering tree: it plants two kinds of persistent 5 ft tokens — ally-buff squares and single-use keen-damage/Restrain traps — then spends every remaining talent upgrading, relocating, linking, remotely triggering and mass-detonating them, handing most of its actual output to allies as free actions. Comparatively it is the least distinctive of the placed-token deity trees: its ally-facing half is a near-clone of deity/Civilization's Foundation half (and shares deity/Order's Covenant clauses a third time), its trap half is a slower, ally-dependent version of deity/Destruction's Charge half, and its one clean corpus ownership is Snare's untested Restrained.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 3,
+    "evidence": "THREE talents carry a roll formula and all three ride the Snare hazard; a fourth (Hexmark) adds a flat rider that fires off ANY damage source. Snare (depth 0, L1): (@tier)d(2 * @skills.green.rank + 2) + @attr.awa type=keen — 1d6+AWA at Tier 1 rank 2, 2d8+AWA at Tier 2 rank 3. Inevitable Snare (depth 1, L2): additional (@tier)d(...) keen. Foreknown Strike (depth 2, L3): additional (@tier)d(...) — its PROSE omits the damage type but the authored formula is type=keen. Hexmark (depth 1, L2): flat +[Tier] keen per damage instance, no formula. Thread of Inevitability (depth 3, L4) deals damage by detonating every unsprung Snare at once. Real and repeatable, but only ONE talent creates damage (census: 1 source / 3 amplify), every point is a rider on a trap firing, it is all keen (Deflect-reduced — no vital, no spirit anywhere), and there is no talent that simply attacks a target you choose. COMPARATIVE CHECK: 3 is the right band, not 4 — deity/Destruction carries SIX damage formulas including energy AoE that ignores deflect (Pinpoint Charge, The Unmooring), and deity/Knowledge deals Deflect-ignoring Vital; both are structurally parallel trap/mark trees and both out-damage Fate on the same actions."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Snare / Inevitable Snare / Foreknown Strike all scale on BOTH axes — (@tier) dice of size (2*@skills.green.rank+2), so L1-5 rank 2 = 1d6 and L6+ rank 3 = 2d8, a clean doubling-plus-die-upgrade at L6. Repeatable every round rather than once-per-rest. Two brakes: the tree can sustain only [Tier] unsprung Snares (ONE at levels 1-5, so one detonation per round is the ceiling), and it generates zero Investiture, so the Inevitable Snare upgrade is not affordable every round until Tier 2. Hexmark's flat [Tier] rider does not meaningfully scale. Note the same (@tier)d(2*rank+2) shape is used by Destruction, Civilization and Knowledge — the scaling curve is the deity-atlas house formula, not a Fate strength."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 on comparative grounds. The quality of Snare's Restrained is real: depth 0, L1, 1 Action + 1 Investiture, movement 0 plus disadvantage on everything but escape, for a full round, with NO test required — genuinely the best single condition application in the corpus per instance, and Fate owns the only untested Restrain (leyline/Green's Grasping Vines, the only other Restrained source, needs a Green test AND 1 Investiture per turn to maintain). But 4 means 'one of the better options in the game for this', and the delivery cannot carry that: only TWO condition-applying talents in 9, the [Tier] sustain cap allows exactly ONE Restrain per round through levels 1-5, and until Foreknown Strike (depth 2, L3) the enemy must voluntarily step into a 5 ft square you nominated — an enemy that stands still, flies, or shoots from cover eats zero control. Measured across the corpus by condition/denial talents per tree: leyline/Green 10, leyline/Black 8, deity/Death 4, leyline/Red 4, deity/Power 3 (Kneel's Compelled, Absolute Authority, Unstoppable Advance's Immobilized), deity/Order 3, deity/Civilization 3 — and leyline/Blue's Absolute Stillness applies 0 Speed AND no Reactions. Fate sits at 2 talents. That is a 3."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Hexmark — the Hexmarked target takes an additional [Tier] keen whenever it takes damage from ANY source while within 10 ft of your Ordained Ground or unsprung Snares; a genuine vulnerability mark, but +1 damage at Tier 1 and doubly conditional. Bulwark Ground — attacks against an ally on your square cannot benefit from advantage. CORRECTED: this is NOT corpus-unique. leyline/Green **Natural Order** ('enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception') is a second advantage-denial clause, scene-long and against every enemy in range. And in a tri-state advantage system (SYSTEM-PRIMER: None/Advantage/Disadvantage, net state not a count) IMPOSING disadvantage is a strict superset of denying advantage — leyline/White **Voice of Authority** ('When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage'), heroic/Leader **Valiant Intervention**, and heroic/Warrior **Defensive Position** (two disadvantages) all do it. Score held at 2."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Two talents, and the numbers are one ally's worth. Ordained Ground — an ally that begins its turn on the square gains +1 to ALL defenses; the sustain cap is [Tier] squares, so at levels 1-5 that is exactly ONE 5 ft square. Bulwark Ground — temporary HP equal to your tier, ONE temp HP per round through Tier 1, plus the advantage denial. Entirely ally-facing and positional: the Fate character personally gains no defence, no reaction-based mitigation, no interception, no resistance. COMPARATIVE: deity/Civilization delivers strictly more of the identical effect — Lay Foundation is a 10 ft square (four times the area) with the same Free Action, same 1 Investiture, same +1 to all defenses, same 'sustain up to your tier', plus Bonds of Community (temp HP equal to your White to every ally in any Foundation) and Magnum Opus (+2 to all defenses); deity/Order's Covenant grants the same +1 to two characters with no square at all."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Checked all nine talents and all nine wiring blocks: zero heal formulas (dossier header: 3 damage, 0 heal; every authored damage block is null or type=keen), and no text restores Health, Focus or Investiture. Bulwark Ground grants temporary HP, which is not healing. Notable given the tree gates on White, whose Draw Mana rider IS the party heal — but that comes from the attunement key, not from this tree."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Judged as 'what a character actually gains in one round', per the binary-advantage rule. The tree grants ZERO advantage and zero rerolls — the advantage-ledger's only Fate entry is Bulwark Ground, and it DENIES advantage. The buff content is Ordained Ground's +1 to all defenses (dual-coded with protection, not double-weighted) plus three talents routing the standard Aid action. Aid is a 1-focus Reaction every character already has, so the roll-bonus content is 'one Aid on one ally per round, cheaper or further'. COMPARATIVE: deity/Order's Covenant already grants Aid at full Attunement Range from an ENTRY node, and Concord already makes an ally's Aid a Free Action AND adds Presence damage — Fate's Aid routing is the weaker reissue of an existing deity design."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4. Four talents touch the axis, tying Fate for the corpus lead by COUNT — but the calibration rule says granting an action a character already had is worth much less than granting a NEW one, and only ONE of Fate's four qualifies. Foreknown Strike grants a genuinely NEW Free Action (trigger an unsprung Snare within 30 ft). The other three route STANDARD actions: Weave the Thread converts Aid to a Free Action (deity/Order's Concord already does this plus damage); Thread of Inevitability grants a free Strike or Aid, capped by the tree's own [Tier] limit to ONE ally at levels 1-5; Read the Threads' 'Free Action' moves a MARKER, not a character. Against the corpus this cannot be a 4: heroic/Envoy **Foresight** is a Passive granting an additional Reaction EVERY turn; heroic/Leader **Synchronized Assault** gives allies up to your Leadership ranks a whole ACTION; heroic/Scholar **Turning Point** gives you and your allies an Action; heroic/Warrior's Flamestance and Windstance gain an Action; deity/Knowledge **The Final Study** gives EVERY ally a free Strike with no tier cap. Also re-verified: granting an ally a Free Action is not near-unique (Order Concord, Civilization Trade Routes and Siege Form, Knowledge Hunter's Discipline and Death Mark, Destruction Set Charge), and Weave the Thread's 'free Reactive Strike' is not established to bypass the 1-Reaction cap."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "Looked for movement, teleport or repositioning of characters: nothing. Read the Threads moves an Ordained Ground square or unsprung Snare up to 10 ft — that repositions a placed token (authored handler edha-marker-command mode=move, maxFt 10, operating on markers), not a creature. The tree ANTI-synergises with mobility: its ally-facing half requires allies to stand still on 5 ft squares. Contrast the structurally identical deity/Civilization Trade Routes, which DOES teleport an ally between the two linked squares as a Free Action once per turn — Fate's link talent pointedly does not, and costs 2 Investiture where Trade Routes costs 1."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 5,
+    "evidence": "The defining pillar, held at 5 on saturation — but the exclusivity claims underneath it were wrong. All nine talents place, upgrade, move, link, trigger or key off a placed token. CORRECTED (a): Fate is NOT the only 100%-zone tree — **deity/Destruction is also 9 of 9** (Pyre and Set Charge place; Combustion Chain spreads dangerous terrain on a kill; Walking Ruin makes every space you move through dangerous terrain; Concussive Yield and Pinpoint Charge ride the placed Charge; Fault Line lays a 60 ft line of dangerous terrain; Cascading Failure merges zones; The Unmooring merges every zone in the scene), and Destruction's zones are strictly more active — they damage on their own, spread each turn, and merge — where every Fate token is inert until a creature interacts with it. CORRECTED (b): 'at least SIX talents place or designate a specific square' is a large undercount; the real figure is roughly TWENTY across six trees (Destruction 8, leyline/Green 4+, Fate 3, Civilization 2 incl. Bastion, Death's Bone Garden, heroic/Hunter's Deadly Trap). Fate's distinction is saturation of REFERENCE, not of placement, and it shares even that with Destruction."
+   },
+   {
+    "axis": "information",
+    "score": 2,
+    "evidence": "Read the Threads (depth 1, L2, 1 Action + 1 Inv) — complete declared foreknowledge of one character's turn, repeatable every round. Strong in isolation but the ONLY information talent in the tree. CORPUS CHECK, and Fate loses the comparison it was implicitly winning: deity/Order **Lawkeeper's Eye** is a **Passive** that delivers the same fact ('you learn the bound character's intended action on its next turn') as a free rider on placing an Edict, AND adds advantage on attack tests against that character for you and your allies — same information, no Action, no Investiture; leyline/Blue **Read Intent** costs 1 Investiture and a Blue test; leyline/Blue **Forewarned** is a depth-0 Passive predicting an action type every round for free. Fate pays the most and is the only one of the four paying a full Action. Held at 2 — not 1 (a whole talent, not a rider), not 3 (one talent, out-priced by three others)."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Read all nine texts: no persuasion, command, deception, intimidation, reputation, Compelled, or any out-of-combat leverage over people. Even Read the Threads reads intent without allowing you to alter it."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 1,
+    "evidence": "Everything is scene-scoped and combat-framed. Two incidental non-combat uses: Read the Threads works on any character in range, and a Snare is a literal trap that could be laid on a doorway. No travel, crafting, survival, downtime or environmental problem-solving. COMPARATIVE: heroic/Hunter's Deadly Trap is a CONCEALED trap laid at depth 0 with no Investiture cost, which is the out-of-scene trap use Fate's Snare only gestures at."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Ordained Ground squares and Snares are inert placed tokens with no statblock, no actions and no independent existence — the free Strikes in Weave the Thread and Thread of Inevitability are taken by real allies. (Contrast deity/Civilization, whose second token economy IS a statted Combat Construct with HP, deflect, Speed, defenses and an attack that acts on your initiative.)"
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "Zero generation, confirmed against every Cost field. No talent returns Investiture, Focus or Opportunity, and the tree never touches Opportunity or the Plot Die. SEVEN of nine talents spend Investiture (11 to deploy the full kit once). Matches the census line 'Fate 0 regen / 7 costers'. DEFLATION CHECK RUN AND PASSED — I looked specifically for economy hiding in riders and found none: the nearest thing is Weave the Thread converting an ally's Aid Reaction into a Free Action (action economy, not resource generation; Aid's 1 focus is not waived). By contrast deity/Sovereignty's Expose returns 1 Investiture on a failed test, and Chaos, Death, Life, Knowledge and Sovereignty each carry one regen talent. Fate is one of five deity trees at 0 regen and the only tree in the atlas whose nine talents never mention Opportunity, Focus or the Plot Die at all."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Snare",
+     "dice": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa keen — 1d6+AWA at Tier 1 rank 2; 2d8+AWA at Tier 2 rank 3",
+     "action": "1 Action to place (+1 Investiture); damage resolves later on trigger",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "THE tree's only damage SOURCE. CONDITIONAL/DELAYED: damage only happens when the first enemy ENTERS the square. Until Foreknown Strike (depth 2) the enemy must cooperate. Also applies Restrained until the start of your next turn, with no test. Consumed on trigger; only [Tier] unsprung Snares may be sustained (ONE at levels 1-5), and the authored handler evicts the oldest at cap. COMPARATIVE: deity/Destruction's Set Charge is the same entry-node shape at the same price (1 Action, 1 Investiture, cap tier, scene duration) but adds 'You may detonate any of your Charges as a Free Action on your turn' — the capability Fate does not reach until depth 2, and then only through an ally."
+    },
+    {
+     "name": "Inevitable Snare",
+     "dice": "additional (@tier)d(2 * @skills.green.rank + 2) keen — +1d6 at Tier 1; +2d8 at Tier 2",
+     "action": "Free Action rider at placement (+1 Investiture on top of Snare's 1)",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "RIDER on a rider: only pays out if the upgraded Snare triggers. Also forces the triggering target to test Speed vs. your Green (riderSkill 'spd', riderColor 'green', riderFailStatus 'disoriented'); on a failure, Disoriented until end of its next turn. Doubles the Snare's Investiture price, which is what makes it unsustainable at Tier 1. Its exact structural twin is deity/Destruction's Pinpoint Charge — same depth 1, same Free Action, same additional 1 Investiture — which adds Intellect to its dice AND ignores the target's deflect, where Inevitable Snare's dice stay Deflect-reducible keen."
+    },
+    {
+     "name": "Hexmark",
+     "dice": "flat [Tier] keen (1 at Tier 1, 2 at Tier 2) — no roll formula",
+     "action": "Reaction, no resource cost",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "TRIPLY CONDITIONAL RIDER, and NOT delivered by the Snare hazard: the Snare trigger only APPLIES the mark; damage then fires whenever the marked enemy takes damage from ANY source while within 10 ft of one of your Ordained Ground squares or unsprung Snares. Fires off ALLIES' damage too — but at +1 keen per instance for the whole of levels 1-5. Costs your one Reaction. COMPARATIVE: deity/Knowledge's Insight mark does the same job with Deflect-ignoring Vital damage and it stacks."
+    },
+    {
+     "name": "Foreknown Strike",
+     "dice": "additional (@tier)d(2 * @skills.green.rank + 2), authored type=keen — +1d6 at Tier 1; +2d8 at Tier 2",
+     "action": "2 Actions + 2 Investiture, once, lasts the scene",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "RIDER, but the load-bearing one: it converts the Snare from 'hope the enemy walks in' into a party-detonated bomb. COMPARATIVE COST FINDING (new this pass): deity/Destruction gets self-detonation as one clause of its depth-0 ENTRY with no ally required; Fate pays a depth-2 talent, 2 Actions and 2 Investiture for a worse version that outsources the trigger to another player's positioning and Free Action. TEXT/DATA DIVERGENCE: the card says 'an additional [Tier][Die] damage' with NO damage type; the authored damage block supplies type='keen'. WORDING FLAG: 'treating the center of the Snare's space as the triggering character' names a square, not a creature — who takes the damage when no enemy occupies the square is undefined."
+    },
+    {
+     "name": "Thread of Inevitability",
+     "dice": "no damage expression of its own; detonates EVERY unsprung Snare at full value and grants a free Strike or Aid from the ally on every active Ordained Ground square",
+     "action": "3 Actions + 3 Investiture, once per scene, delayed until a declared event occurs",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "HAZARD-DELIVERED damage. Payload is capped by the tree's OWN sustain limits ([Tier] Snares + [Tier] squares), so at Tier 1 the 'detonate everything' capstone detonates exactly one Snare and grants exactly one free Strike. Trigger reliability is partly GM-adjudicated. Same undefined-target wording as Foreknown Strike, plus a second flaw: 'a free Strike or Aid against the nearest enemy' — Aid targets an ally, not an enemy."
+    }
+   ],
+   "countReal": 5,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "~3 [Tier][Die] + Awareness of keen damage per Snare detonated, but only on the ally-triggered path. At Tier 1 with all three online (legal by L3): 1d6 (Snare) + 1d6 (Inevitable) + 1d6 (Foreknown — the card scopes that die to a Snare 'triggered this way', i.e. ally-detonated; an enemy who simply walks in eats 2d6+AWA, not 3d6+AWA) + AWA = 3d6 + AWA, ~10.5 + AWA. At Tier 2 rank 3 (L6+) the same three packages are 6d8 + AWA, ~27 + AWA, plus Restrained and a Speed-vs-Green Disoriented, for ONE of the placer's Actions plus 2 Investiture and one ally Free Action. Hexmark contributes only a flat [Tier]. COMPARATIVE CEILING: deity/Destruction's Cascading Failure detonates ANY NUMBER of Charges at 10 ft radius each with a bonus die for overlap, and The Unmooring does it at 15 ft radius ignoring deflect — Fate's 'peak' is one square, one enemy, Deflect-reducible.",
+   "repeatability": "Once per round, hard-capped by the sustain limit of [Tier] unsprung Snares (ONE at levels 1-5, TWO at 6-10) and by Investiture: a full-value Inevitable Snare costs 2 Investiture, needing two Draw Mana Actions at Tier 1 and therefore NOT sustainable; at Tier 2 Draw Mana returns 2 per Action so 'Draw Mana + place Inevitable Snare' is sustainable indefinitely with an Action to spare. At Tier 1 you cannot hold a second Snare until the first has sprung (the authored handler evicts the oldest). The capstone burst is once per scene.",
+   "verdict": "REAL but wholly conditional and entirely keen. Five talents participate in damage; ONE (Snare) actually creates it and three are riders, with Hexmark riding any damage source. The tree can deal damage from depth 0 / level 1, which is early, but until Foreknown Strike at depth 2 / level 3 the enemy decides whether any of it lands — a gate the structurally parallel deity/Destruction does not have, because Set Charge includes self-detonation at depth 0. Damage scales cleanly on both tier and Green rank and repeats every round, yet it is entirely Deflect-reducible keen (no vital, no spirit, nothing ignoring deflect — every comparable deity tree has at least one) and the tree cannot aim a single point of damage at a target of its choosing without first getting a token under that target's feet. Cleanly, ZERO damage false-positives: no mitigation talent even uses the word 'damage'. Checked in the other direction too — no summon, no Afflicted tick, no redirect, and no zone that damages on its own (contrast Civilization's Bastion, Death's Bone Garden, Destruction's dangerous terrain)."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 3,
+    "exemplars": "Snare; Ordained Ground",
+    "note": "Lopsided. Snare is a strong entry — 1 Action + 1 Investiture for [Tier][Die]+AWA and a full round of untested Restrained, repeatable from level 1, and it carries the tree's one clean corpus ownership. Ordained Ground DOES deliver the half of the stated fantasy it was written for, but it is the corpus's THIRD issue of one design: deity/Civilization's Lay Foundation is the same Free Action, same 1 Investiture, same '+1 to all defenses for allies beginning their turn there', same 'sustain up to your tier' — on a 10 ft square instead of 5 ft — and deity/Order's Covenant carries the same clauses again (+1 to all defenses, Aid at extended range, sustain up to your tier) with no square to stand on. Neither Fate entry delivers the foreknowledge half of the archetype, which lives only in Read the Threads at depth 1."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 4,
+    "exemplars": "Foreknown Strike; Weave the Thread; Read the Threads; Inevitable Snare",
+    "note": "CHECKED AND UPHELD at 4, with the comparative caveat recorded rather than folded into the number. Foreknown Strike is the pivot; Weave the Thread converts an ally's Aid into a Free Action and adds a Reactive Strike; Read the Threads is complete foreknowledge plus a free reposition; Inevitable Snare roughly doubles trap output and adds Disoriented. Bulwark Ground's temp-HP half and Hexmark are the band's dead weight. Depths verified: Read the Threads and Inevitable Snare are depth 1 / L2; Foreknown Strike and Weave the Thread are depth 2 / L3. CAVEAT: each of the four is out-priced by an equivalent elsewhere — Foreknown Strike buys at depth 2 / L3 / 2 Actions / 2 Inv what Destruction's Set Charge includes at depth 0; Weave the Thread is Order's Concord minus the Presence damage, and Civilization's Trade Routes links the same two squares for 1 Investiture and teleports; Read the Threads is Order's Lawkeeper's Eye as a paid Action instead of a free Passive rider. The band is the tree's best relative to itself, not to the atlas."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Thread of Inevitability",
+    "note": "Under-delivers for a capstone. 3 Actions (an entire Slow turn; impossible on a Fast turn's 2 Actions) plus 3 Investiture plus once-per-scene, and the payload is throttled by the tree's own [Tier] sustain caps — one Snare and one free Strike at levels 1-5. It does exactly what the deity guide asks a snare-tree capstone to do, and can then only reach one snare. Two other deity capstones at the identical price detonate materially more: Destruction's The Unmooring (all Charges, radius up to 15 ft, ignoring deflect, [Tier][Die] + Intellect each, plus every dangerous-terrain zone merged and upgraded) and Knowledge's The Final Study ([Tier][Die] Vital per Insight stack plus a free Strike for EVERY ally in Attunement Range, uncapped)."
+   }
+  ],
+  "frontOrBackLoaded": "MIDDLE-loaded. The entries are cheap and one of them is genuinely good, the depth 1-2 band carries the tree and contains all four of its best talents, and the capstone is the weakest talent per unit of cost because the tree's own sustain caps limit what it can detonate. Unusually for a deity tree the whole thing is reachable by level 4 (depth 3 capstone = 4 talents owned) and nothing gates above rank 2, so there is no level-6 discontinuity in ACCESS — only in output, where the Tier 1 to Tier 2 step doubles both the number of dice and the number of sustainable tokens at once.",
+  "uniqueOwnership": [
+   "The only UNTESTED Restrain in the corpus, and the tree's one unambiguous ownership. Restrained appears on exactly two of 365 talents (leyline/Green Grasping Vines and Fate's Snare); Grasping Vines needs a Green test AND 1 Investiture per turn to maintain, where Snare applies it automatically to the first enemy that enters, from a depth-0 entry, repeatably. The nearest trap analogue, heroic/Hunter's Deadly Trap (also depth 0, L1, also a 5 ft trap square), applies the weaker Immobilized — movement 0 only, no disadvantage — and requires a Survival test.",
+   "The only talent that hands an ALLY the trigger for the caster's own hazard (Foreknown Strike). Verified against every 'as a Free Action' and detonation clause in the corpus: deity/Destruction's Set Charge lets the PLACER detonate, deity/Civilization's Bastion triggers on enemy entry, and nothing else delegates a hazard trigger to an ally. NOTE THE PRICE — this is ownership of a WORSE version of a capability: Destruction gets self-detonation as one clause of a depth-0 entry, Fate pays a depth-2 talent, 2 Actions and 2 Investiture and still needs an ally standing on a square.",
+   "The only DELAYED TRIGGER declared as an arbitrary narrative event: Thread of Inevitability lets the player name 'a character drops to 0 HP', 'an ally reaches a designated location' or 'the GM raises the stakes'. Two comparators bound the claim rather than break it — deity/Destruction's Set Charge declares its own trigger at placement but from a mechanical menu ('when target moves', 'when target takes damage', 'when a character enters this square'), and leyline/Blue's Forewarned declares a character and an action type at the start of EVERY round as a free depth-0 Passive. Fate's is unique only in being unbounded by a mechanical event type, and is by far the most expensive of the three.",
+   "The only tree that converts foreknowledge into physical board state in one activation — Read the Threads reads a target's declared next action and movement and then, as a Free Action, slides a trap into the path it just told you about. leyline/Blue Read Intent and deity/Order Lawkeeper's Eye read the same intent (Lawkeeper's Eye for free, as a Passive, and it adds advantage on attacks against the target); leyline/Blue Intercept converts a foreseen action into disadvantage. None of them moves a hazard with the answer.",
+   "DOWNGRADED, NOT UNIQUE — 'the only source of advantage DENIAL in the game' (Bulwark Ground) is FALSE. leyline/Green **Natural Order** also denies advantage ('enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception', scene-long, every enemy in range). And because the system implements advantage as a tri-state where net state decides, imposing disadvantage is a strict superset of denying it — leyline/White **Voice of Authority** protects an ally against ANY hostile action at Attunement Range for 1 Investiture with no square required, heroic/Leader **Valiant Intervention** imposes disadvantage on tests against your allies, and heroic/Warrior **Defensive Position** stacks two. Bulwark Ground owns the PHRASING, not the effect, and its version is the most positionally constrained of the five.",
+   "DOWNGRADED, NOT UNIQUE — 'the most zone-saturated tree in the corpus / no other tree is 100% zone' is FALSE. **deity/Destruction is also 9 of 9**, and its zones spread, merge and damage on their own where Fate's are inert until a creature interacts with them. Fate ties for saturation and loses on zone quality. The related count 'at least six talents place a specific square' is also an undercount: roughly twenty do, across six trees.",
+   "WITHDRAWN, SELF-CONTRADICTED — 'the only tree that keeps its two token economies strictly separate' is refuted by the tree's own text. Hexmark's damage rider fires within 10 ft of 'any of your Ordained Ground squares OR unsprung Snares'; Foreknown Strike requires an ally on an Ordained Ground square to trigger a Snare; Thread of Inevitability fires both at once. The two economies are explicitly cross-linked from depth 1 onward. (Running two placed-token economies is not unique either: deity/Civilization runs Foundations plus a statted Combat Construct, deity/Destruction runs Charges plus dangerous terrain.)",
+   "WITHDRAWN — 'the only talent whose granted Reactive Strike is worded free' (Weave the Thread). leyline/Green **Drive the Prey** and deity/Sovereignty **Expose** both grant allies Reactive Strikes. And 'free' is not established to mean 'does not consume the Reaction'; the likelier reading is that it waives Reactive Strike's 1-focus cost."
+  ],
+  "gaps": [
+   "No healing whatsoever — nothing restores Health, Focus or Investiture to anyone.",
+   "No resource generation of any kind, and no interaction with Opportunity or the Plot Die at all, despite gating on White (whose design identity is explicitly Plot Die and Opportunity coordination). Seven of nine talents spend Investiture and the tree gives none back — one of five deity trees at 0 regen, and the only tree in the atlas whose nine talents never mention Opportunity, Focus or the Plot Die at all.",
+   "No self-mobility, no teleport, no repositioning of characters. Worse than neutral: the ally-facing half actively requires allies to stand still on 5 ft squares. Its own structural twin, deity/Civilization's Trade Routes, teleports the ally between the linked squares for 1 Investiture; Weave the Thread does not, and costs 2.",
+   "NO SELF-TRIGGER UNTIL DEPTH 2 — the sharpest comparative gap, new this pass. The placer can never spring their own trap. deity/Destruction's Set Charge includes 'you may detonate any of your Charges as a Free Action on your turn' in its depth-0 ENTRY; Fate must reach Foreknown Strike (depth 2, L3, 2 Actions + 2 Investiture) and then still needs an ally standing on an Ordained Ground square who will spend a Free Action. Against a stationary boss, a flyer, or a ranged enemy behind cover, the entire Snare half of the tree is inert for the first two levels of the tree and conditional thereafter.",
+   "No way to deal a single point of damage to a target of your choosing. Every point is delivered by a token a creature must first stand on or beside.",
+   "No Deflect-ignoring damage. All four damage clauses are keen. Every comparable deity tree has at least one: Destruction (Pinpoint Charge and The Unmooring ignore deflect), Knowledge (Vital), Death (Vital), Power (spirit).",
+   "Nothing works in an ambush or a scene you did not get to set up. Every talent is a scene-length placement made during the scene at Action cost, and the caps are [Tier] tokens. heroic/Hunter, whose intent file makes the same preparation promise, at least gets a CONCEALED trap at depth 0.",
+   "No personal defence. Every protective effect is ally-facing and requires the ally to be on your square.",
+   "No social influence, no interrogation, no reputation, no command.",
+   "No summons, companions or constructs.",
+   "No exploration, travel, downtime, crafting or survival content.",
+   "No condition removal and no counter to enemy control — the tree applies Restrained and Disoriented but cannot lift either from an ally.",
+   "No zone that acts on its own. Every token is inert until a creature interacts with it; there is no per-turn hazard tick (contrast Death's Bone Garden, Destruction's dangerous terrain, Civilization's Bastion). It also creates no difficult terrain, despite the Green gate — the only placed-token tree in the corpus that does not."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'the oracle who sets the board before initiative is rolled... Her blessed do not react to the battle; they have already read it.'",
+     "delivered": "NOT DELIVERED",
+     "evidence": "No talent operates before initiative or outside a scene. Every token is placed during the scene at Action and Investiture cost, all durations are 'for the scene', and the sustain caps are [Tier] — ONE square and ONE Snare at levels 1-5. The board is not set before initiative; it is assembled one token per round during the fight. And the tree does react: Hexmark is a Reaction, and seven of nine talents wait on someone else acting."
+    },
+    {
+     "claim": "CROSS-TREE (added by this pass, and the finding lens A cannot see): the promise Fate's intent file makes is ALSO made, in nearly the same words, by TWO other trees' intent files — and each delivers its half earlier and cheaper.",
+     "delivered": "PROMISE IS NOT EXCLUSIVE",
+     "evidence": "heroic/Hunter's intent: 'you don't have to be more powerful than your quarry, so long as you're better prepared... Through careful planning, Hunters choose when and where to strike, securing an upper hand through clever use of traps, high ground, and the element of surprise... Archers shape the battlefield before the frontline confrontation... methodical preparation culminating in an exhilarating onslaught.' Hunter delivers that at depth 0 with **Deadly Trap** — a CONCEALED 5 ft trap, no Investiture, damage plus Immobilized plus difficult terrain, or an Afflicted variant. leyline/Blue's intent: 'Blue leyline mages read the battle a beat before it happens... A Blue mage prefers to know, to prepare, and to redirect: intercepting an attack foreseen.' Blue delivers that at depth 0 with **Forewarned** (free Passive, declares a character and an action type EVERY round, pays a Reaction when it lands) plus **Intercept**. Fate's stated identity is split across two existing trees: Hunter owns 'prepared traps', Blue owns 'read the battle first'. Fate's distinctive contribution is only the JOIN of the two — and the join is what it charges the most for."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'A disciple of Olvarra anchors allies to Ordained Ground.'",
+     "delivered": "DELIVERS",
+     "evidence": "Ordained Ground, Bulwark Ground, Weave the Thread, Foreknown Strike and Thread of Inevitability all key off an ally standing on or beginning its turn on a square — five of nine talents. The anchoring is literal to the point of being a constraint."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'lays Snares on the squares an enemy has not yet chosen to enter. When the foreseen step comes, the trap is already waiting.'",
+     "delivered": "PARTIAL",
+     "evidence": "Snare, Inevitable Snare, Hexmark, Foreknown Strike and Thread of Inevitability all deliver the trap half. But 'foreseen' is carried by exactly ONE talent — Read the Threads (depth 1, L2) — and even that acts AFTER placement, sliding an already-placed token into the revealed path. Without it, Snare placement is a guess, not a prediction."
+    },
+    {
+     "claim": "PATH DESCRIPTION gameplay loop: 'See (Read the Threads) -> place (Ordained Ground + Snare) -> enemy walks in -> trigger.'",
+     "delivered": "DRIFTED (ordering)",
+     "evidence": "Read the Threads can only move a token that already exists ('you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft'), and its authored handler is edha-marker-command mode='move' — it operates on existing markers by construction. The implemented loop is place -> see -> reposition -> trigger."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'Signature resources: Ordained Ground; Snare.'",
+     "delivered": "DELIVERS, strongly",
+     "evidence": "Both are generated by an entry node and consumed, upgraded or referenced by all seven other talents (census: Ordained Ground 7 produced / 4 consumed, Snare 5 / 4 — both SEALED LOOPS). This satisfies deity guide principle 5 more completely than the guide asks — arguably too completely: no talent does anything without a token on the board."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Two entry nodes... The two entries should each independently deliver the deity's player-fantasy on turn one.'",
+     "delivered": "PARTIAL",
+     "evidence": "The guide's Olvarra identity is two-part — 'Oracle-trapper. Foreknowledge places Snares on predicted squares; allies anchor Ordained Ground positions' — and names both Ordained Ground (White-flavoured) and Snare (Green-flavoured) as signature resources. Each entry delivers exactly the half it was written for. The genuine miss applies to BOTH: neither delivers the FOREKNOWLEDGE the identity leads with; foresight arrives only at depth 1. Compare deity/Order, which folds the same foreknowledge into a free Passive rider (Lawkeeper's Eye) without spending a talent slot on it."
+    },
+    {
+     "claim": "DESIGN GUIDE colour split: 'White tests for ordained-ground bulwark effects and ally-coordination; Green tests for snare-trigger payloads and trap-spread.'",
+     "delivered": "NOT DELIVERED — no Fate character ever rolls a colour test",
+     "evidence": "Zero talents give the Fate character a test to roll, which is why deity-gate-audit reports 'tests: (none)' for Fate. The single test is on the ENEMY: Inevitable Snare's 'the target tests Speed vs. your Green' (riderSkill='spd', riderColor='green'), where Green is the DC. The White half of the rule has no referent at all, and the Green half is honoured only as a DC and as the die-sizer. Fate is one of only two trees the gate audit lists with NO colour test (the other is Civilization), and the audit names Fate's White 2+ as one of five TOLL BOOTHS — four of the five being White."
+    },
+    {
+     "claim": "DESIGN GUIDE: '3 Actions — Capstones only, one per tree, max.'",
+     "delivered": "DELIVERS",
+     "evidence": "Exactly one 3-Action talent (Thread of Inevitability) and it is the capstone at depth 3."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type distribution: Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free Action ~10-15%, Reaction ~10%.",
+     "delivered": "MISSES on three of six",
+     "evidence": "Recounted and confirmed: Passive 1 (11%, UNDER), Special 0 (0%, target 15-20% — the guide calls Specials 'the backbone of official talent design'; all ten deity trees have none), Action 2 (22%, in band), 2 Actions 2 (22%, in band), Free Action 2 (22% — Ordained Ground and Inevitable Snare; modestly over. Read the Threads is a 1-Action talent that CONTAINS a free-action rider, which is not the same thing), Reaction 1 (11%, on target), 3 Actions 1 (11%, capstone rule satisfied). The count of 2 agrees with the deterministic table's stated deity Free-Action range of 0-2."
+    },
+    {
+     "claim": "DESIGN GUIDE description length: entry/tier-2 ~30-45 words, tier-3 ~40-55, capstone up to ~70 ('a capstone that runs 90+ words is doing too much').",
+     "delivered": "MISSES on eight of nine",
+     "evidence": "Word counts re-derived programmatically from the authored text and confirmed exactly: Ordained Ground 66, Snare 68, Bulwark Ground 43 (the only one in band), Hexmark 48, Inevitable Snare 52, Read the Threads 59, Foreknown Strike 55, Weave the Thread 72, Thread of Inevitability 93 — which trips the guide's own explicit 90+ line."
+    },
+    {
+     "claim": "DESIGN GUIDE cost scale and prerequisite pattern (1 Inv entry / 2 Inv synthesis / 3 Inv + once-per-scene capstone; entries [C1] 2+ [C2] 2+; tier-2 prereq one entry; tier-3 'A or B'; capstone prereq a tier-3).",
+     "delivered": "DELIVERS exactly",
+     "evidence": "Entries: Ordained Ground and Snare, both 1 Investiture, both 'White 2+; Green 2+'. Tier-2: Bulwark Ground and Read the Threads off Ordained Ground; Hexmark and Inevitable Snare off Snare. Tier-3: Foreknown Strike ('Inevitable Snare or Hexmark'), Weave the Thread ('Read the Threads or Bulwark Ground'), both 2 Actions / 2 Investiture. Capstone: Thread of Inevitability ('Weave the Thread or Foreknown Strike'), 3 Investiture, once per scene. The connections arrays match the prose prereqs in every case — no inverted edge, no mutual pair, no silent AND (iron rule 7 checked)."
+    },
+    {
+     "claim": "DESIGN GUIDE pitfall: 'a capstone for a snare-laying tree should trigger every snare on a predicted event.'",
+     "delivered": "DELIVERS in form, UNDER-DELIVERS in effect",
+     "evidence": "Thread of Inevitability is literally the guide's worked example. But 'every snare' is bounded by the tree's own sustain cap of [Tier] unsprung Snares, so at levels 1-5 the capstone detonates one and at 6-10 it detonates two. It honours the letter of the rule while the resource cap quietly voids its scale."
+    },
+    {
+     "claim": "DESIGN GUIDE principle 9: 'Deity power is Radiant-tier... don't undersell the capstones.'",
+     "delivered": "NOT DELIVERED at the capstone",
+     "evidence": "3 Actions + 3 Investiture + once per scene buys one or two Snare detonations and one or two ally Strikes, on a GM-adjudicated trigger — not distinguishably above leyline power. Compare, at the IDENTICAL price: deity/Destruction's The Unmooring (all Charges detonate, each radius up to 15 ft, each ignoring deflect, each [Tier][Die] + Intellect, plus every dangerous-terrain zone merged and upgraded to [Tier][Die]) and deity/Knowledge's The Final Study ([Tier][Die] Vital per Insight stack, plus a free Strike for EVERY ally in Attunement Range with no tier cap)."
+    },
+    {
+     "claim": "DESIGN GUIDE principle 2: 'Each subsequent talent is a new twist on the same fantasy... No utility filler.' — tested ACROSS trees, which is where it fails.",
+     "delivered": "DRIFTED ACROSS TREES",
+     "evidence": "Fate's ally-facing half is the corpus's third issue of one design. Lay Foundation (deity/Civilization) vs Ordained Ground: both Free Action, both 1 Investiture, both 'designate a [size] square in Attunement Range... for the scene', both give allies that begin their turn there '+1 to all defenses until the start of their next turn', both 'sustain up to your tier' — Civilization's square is 10 ft to Fate's 5 ft. **Covenant (deity/Order)** carries the clauses a third time: '+1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range... You may sustain up to your tier active Covenants' — Ordained Ground's defense bonus AND its Aid-range extension, at better range, with no square to stand on. Trade Routes vs Weave the Thread share a near-verbatim idiom: 'choose two of your active [Foundations / Ordained Ground squares]... For the scene, they are linked: an ally standing [in / on] either linked [Foundation / square] may [teleport to the other / use the Aid action] as a Free Action once per [turn / round]' — and Trade Routes costs 1 Investiture to Weave the Thread's 2. Order's Concord is Weave the Thread's Aid clause plus Presence damage."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "Empirically this is a battlefield-engineering tree, not an oracle. Eight of its nine talents place, upgrade, move, link, remotely detonate and mass-detonate persistent 5 ft tokens; exactly one talent (Read the Threads) does foreknowledge, and it is a depth-1 optional pick that acts after placement rather than before it. Its real competitive strengths are zone saturation (9 of 9 talents, tied with deity/Destruction), a repeatable UNTESTED Restrained that no other talent in the corpus offers, and handing free actions to allies who hold ground — a support-engineer who builds an ally-anchored kill box. THE 'SOMETHING' TEST, answered honestly: Fate's something is 'ally-buff squares and enemy traps in one linked economy' — and each half is done better by an existing tree. deity/Civilization's Foundations are four times the area with the same bonus, and Bastion turns those same ally squares into enemy traps, so Civilization gets both halves out of ONE token economy plus a statted Construct. deity/Destruction's Charges detonate on the placer's own Free Action from a depth-0 entry, deal energy in a 10 ft radius rather than keen on a 5 ft square, and leave hazards that keep damaging and spreading. heroic/Hunter conceals a trap at depth 0 for no Investiture. leyline/Blue reads intent for free as a depth-0 Passive. What survives as genuinely Fate's is narrower than the profile it wore: an untested Restrain from level 1, the only ally-delegated hazard trigger, and the only narratively-declared delayed trigger — three real clauses, not a tree-wide identity."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Ordained Ground",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Ordained Ground (Free Action, 1 Inv, cap [Tier] active, scene duration, oldest evicted at cap); consumed/read by Bulwark Ground, Read the Threads, Weave the Thread, Foreknown Strike, Hexmark (10 ft proximity), Thread of Inevitability. Census: 7 produced / 4 consumed, SEALED LOOP. Mechanically the same token as deity/Civilization's Foundation (10 ft) and, in both effect clauses, as deity/Order's Covenant."
+   },
+   {
+    "keyword": "Snare",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Snare (1 Action, 1 Inv, cap [Tier] unsprung, scene duration, consumed on trigger); consumed/upgraded by Inevitable Snare, Hexmark, Foreknown Strike, Weave the Thread, Thread of Inevitability. Census: 5 / 4, SEALED LOOP. The same token shape as deity/Destruction's Charge minus self-detonation."
+   },
+   {
+    "keyword": "Hexmark / Hexmarked",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Hexmark applies the mark on a Snare trigger (markKey 'hexmark'); the mark is then the damage-rider condition for the scene, firing on damage from ANY source. The corpus's other damage-marks are deity/Knowledge's Insight (stacking, Vital) and heroic/Hunter's Quarry (9 consumers) — both do more with the mark."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME ONLY (zero produced)",
+    "talents": "Ordained Ground 1, Snare 1, Inevitable Snare +1, Read the Threads 1, Foreknown Strike 2, Weave the Thread 2, Thread of Inevitability 3 — 7 of 9 talents, 11 Investiture to deploy the kit once. Only Bulwark Ground and Hexmark are free."
+   },
+   {
+    "keyword": "Restrained",
+    "role": "PRODUCE",
+    "talents": "Snare (until the start of your next turn, no test required). One of only two Restrained sources in the corpus; the other is leyline/Green Grasping Vines, which is tested and needs 1 Investiture per turn. The tree's clearest ownership."
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Inevitable Snare (on a failed Speed vs. your Green test). Disoriented is the corpus's most common condition — 14 talents across 11 trees — so this clause is shared, not distinctive."
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCE",
+    "talents": "Bulwark Ground (equal to your tier — ONE at levels 1-5). One of 14 temp-HP talents across 9 trees and the smallest; deity/Civilization's Bonds of Community grants temp HP equal to your WHITE to every ally in any Foundation."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "DENY (neither produce nor consume)",
+    "talents": "Bulwark Ground. CORRECTED: NOT the corpus's only advantage-denial clause. leyline/Green Natural Order denies advantage gained from deception to every enemy in Attunement Range for the scene; and in the tri-state implementation, imposing disadvantage supersedes denying advantage, which leyline/White Voice of Authority (protecting an ally, at Attunement Range, no square required), heroic/Leader Valiant Intervention and heroic/Warrior Defensive Position all do. The tree grants no advantage anywhere."
+   },
+   {
+    "keyword": "Aid (standard 1-focus Reaction)",
+    "role": "CONSUME",
+    "talents": "Ordained Ground (up to 30 ft from the square — a RANGE change), Weave the Thread (Free Action once per round — an ACTION-TYPE change; these two are NOT redundant), Thread of Inevitability. None waives Aid's 1-focus cost. Both changes already exist in the deity atlas: Order's Covenant extends Aid to full Attunement Range from an ENTRY node, and Concord makes it a Free Action AND adds Presence damage."
+   },
+   {
+    "keyword": "Reactive Strike (standard 1-focus Reaction)",
+    "role": "CONSUME (granted, worded 'free')",
+    "talents": "Weave the Thread. Neither the card nor the authored handler says the ally's Reaction is not consumed; 'free' most plausibly waives the focus cost. Two other talents grant allies Reactive Strikes (leyline/Green Drive the Prey, deity/Sovereignty Expose)."
+   },
+   {
+    "keyword": "Strike (standard action)",
+    "role": "CONSUME (granted free)",
+    "talents": "Thread of Inevitability — 'a free Strike or Aid against the nearest enemy within 30 ft'; note the wording flaw, since Aid targets an ally. deity/Knowledge's The Final Study grants the same free Strike to EVERY ally in Attunement Range with no tier cap."
+   },
+   {
+    "keyword": "Free Action (granted to allies)",
+    "role": "PRODUCE",
+    "talents": "Foreknown Strike (ally triggers a Snare — a genuinely NEW action), Weave the Thread (ally Aids — a standard action made free). Not unique: deity/Order Concord, deity/Civilization Trade Routes and Siege Form, deity/Destruction Set Charge, deity/Knowledge Hunter's Discipline and Death Mark all use it."
+   },
+   {
+    "keyword": "Reaction (the 1-per-round slot)",
+    "role": "CONSUME",
+    "talents": "Hexmark is the tree's only Reaction, so there is essentially no internal contention (contrast leyline/White's SEVEN). Whether Weave the Thread's granted Reactive Strike consumes the ALLY's slot is undefined and is a table ruling. The tree never GRANTS a Reaction — heroic/Envoy's Foresight (a Passive, +1 Reaction every turn) and leyline/Blue's Forewarned do."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME (GREEN-sized)",
+    "talents": "Ordained Ground, Snare, Read the Threads, Weave the Thread. Every Fate placement handler carries color:'green' and the wiring notes read 'within Green Attunement Range' — the envelope is sized by GREEN rank, not White."
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME",
+    "talents": "Snare, Inevitable Snare, Foreknown Strike — all three resolve to (@tier)d(2 * @skills.green.rank + 2), the deity-atlas house formula also used by Destruction, Civilization and Knowledge."
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME",
+    "talents": "Caps sustained Ordained Ground squares and unsprung Snares (ONE each at levels 1-5); sets Bulwark Ground's temp HP and Hexmark's flat damage; throttles the capstone."
+   },
+   {
+    "keyword": "Green (skill / rank)",
+    "role": "CONSUME (die size + DC + gate; never a test you roll)",
+    "talents": "Every damage die size is 2 * @skills.green.rank + 2; Inevitable Snare's DC is your Green; Green 2+ is an entry gate; Green sizes Attunement Range for every placement."
+   },
+   {
+    "keyword": "White (skill / rank)",
+    "role": "CONSUME (entry gate ONLY — a pure toll booth)",
+    "talents": "White 2+ on both entries and nothing else. White does not even buy Attunement Range, because the placement handlers are Green-coloured. No talent tests White, sizes a die by White, or reads a White rank. deity-gate-audit lists Fate's White 2+ as one of five toll booths, four of which are White."
+   },
+   {
+    "keyword": "Awareness (attribute)",
+    "role": "CONSUME",
+    "talents": "Snare's damage formula adds @attr.awa"
+   },
+   {
+    "keyword": "Speed (skill)",
+    "role": "CONSUME (target's roll)",
+    "talents": "Inevitable Snare — the triggering target tests Speed (riderSkill 'spd')"
+   },
+   {
+    "keyword": "Defenses (+1 to all)",
+    "role": "PRODUCE",
+    "talents": "Ordained Ground. Shared idiom, not distinctive: deity/Civilization Lay Foundation, Bastion and Magnum Opus, deity/Order Covenant, and deity/Power Mantle of the Aspirant all also grant +1 or more to all defenses."
+   },
+   {
+    "keyword": "Keen damage",
+    "role": "PRODUCE",
+    "talents": "Snare, Inevitable Snare, Hexmark, Foreknown Strike — the tree's only damage type; Deflect-reducible, no vital or spirit and nothing that ignores deflect, which every comparable deity tree has. (Foreknown Strike's prose omits the type; the authored formula supplies keen.)"
+   },
+   {
+    "keyword": "Sustain (up to your tier)",
+    "role": "CONSUME",
+    "talents": "Ordained Ground and Snare both use the cap idiom, shared with Chaos, Order, Civilization, Death, Destruction, Power and Knowledge talents."
+   },
+   {
+    "keyword": "Scene (duration)",
+    "role": "CONSUME",
+    "talents": "Ordained Ground, Snare, Hexmark, Foreknown Strike, Weave the Thread, Thread of Inevitability"
+   },
+   {
+    "keyword": "Once per scene",
+    "role": "CONSUME",
+    "talents": "Thread of Inevitability (capstone gate; the authored handler enforces it BEFORE the 3 Investiture is charged)"
+   },
+   {
+    "keyword": "Declared event (player-authored trigger)",
+    "role": "PRODUCE",
+    "talents": "Thread of Inevitability — a fiction-level trigger with no mechanical event type behind it. deity/Destruction Set Charge declares a trigger from a mechanical menu; leyline/Blue Forewarned declares a character and an action type every round, free, as a depth-0 Passive."
+   },
+   {
+    "keyword": "Foreknowledge / declared intent",
+    "role": "PRODUCE",
+    "talents": "Read the Threads (the authored note says 'this turn' where the card says 'next turn' — a card-vs-wiring drift). Shared with leyline/Blue Read Intent and deity/Order Lawkeeper's Eye; Lawkeeper's Eye delivers it as a FREE Passive rider and adds advantage on attacks against the target."
+   },
+   {
+    "keyword": "Opportunity / Plot Die",
+    "role": "ABSENT",
+    "talents": "Not touched by any of the nine talents, despite the leyline guide assigning Opportunity and Plot Die integration to White"
+   },
+   {
+    "keyword": "Focus",
+    "role": "ABSENT",
+    "talents": "No talent spends, grants or strips Focus — though the Aid and Reactive Strike it routes both cost the ALLY 1 focus, unwaived"
+   },
+   {
+    "keyword": "Difficult terrain",
+    "role": "ABSENT",
+    "talents": "Never used, despite the Green gate and Green's Draw Mana rider producing it. Ten talents across five trees create difficult terrain; Fate is the only placed-token tree in the corpus that creates none, which is why its zone saturation does not translate into board control."
+   }
+  ],
+  "crossTreeHooks": [
+   "Ordained Ground, Bulwark Ground, Weave the Thread, Foreknown Strike and Thread of Inevitability all require an ALLY to voluntarily stand on, or begin its turn on, a specific 5 ft square. Five of nine talents have zero value in a solo scene.",
+   "Foreknown Strike hands the trigger for your hazard to an ALLY's Free Action. Its entire damage output is mediated by another player's choices. Note deity/Destruction gets the same capability with no ally at all, inside its depth-0 entry.",
+   "Weave the Thread's granted Reactive Strike scales with the ALLY's weapon and attack bonus, not with your tier. Whether it costs that ally their Reaction is undefined and is a table ruling.",
+   "Hexmark adds [Tier] keen 'whenever it takes damage from ANY source' — a pure multiplier on the party's number of damage instances, pairing best with many-small-hits allies and with any tree that applies Afflicted or other ongoing damage ticks (leyline/Red Afterburn, leyline/Black Dark Investiture, deity/Life Adaptive Mutation, heroic/Hunter Deadly Trap).",
+   "The tree generates zero Investiture and spends it in seven of nine talents, so it has a hard dependency on Draw Mana. At Tier 1 the treadmill is 1 Action per 1 Investiture, which directly caps the tree's cadence.",
+   "Every damage die is sized by GREEN skill rank, Inevitable Snare's DC is your Green, and every placement's Attunement Range is Green-sized — the tree's entire mechanical output is bought with leyline-Green skill investment made outside this tree.",
+   "WHITE rank buys the entry gate and nothing else — not even Attunement Range. The tree's only access to healing is White's Draw Mana rider, an attunement key rather than a talent here. One of five toll-booth gates the deity audit names, four of them White.",
+   "Snare's damage adds Awareness, an attribute that also sets Investiture maximum — a double dependency on an out-of-tree build choice, and a rare case where the two point the same way.",
+   "Thread of Inevitability's declared trigger is usually an event ANOTHER character causes, so the capstone's timing is outsourced to the party and the GM.",
+   "Bulwark Ground's advantage denial only has value against enemies that actually generate advantage, and it is the weakest of five corpus effects in that space.",
+   "Green's Draw Mana rider creates difficult terrain, which herds enemies into your Snares — a strong seam the tree never mentions and does not mechanically reference, so the synergy is emergent rather than designed.",
+   "OVERLAP, not synergy — deity/Civilization: a party already running Civilization gets Ordained Ground's effect twice over from Lay Foundation (same action type, same cost, same +1 all defenses, same tier cap, larger square) and Weave the Thread's shape from Trade Routes (cheaper, and it teleports). Bastion then turns Civilization's ally squares into enemy traps, which is Fate's whole second economy folded into one talent.",
+   "OVERLAP — deity/Order: Covenant already grants +1 to all defenses and Aid at extended range with a tier sustain cap; Concord already makes an ally's Aid a Free Action and adds Presence damage; Lawkeeper's Eye already reads a target's intended next action as a free Passive rider.",
+   "OVERLAP — deity/Destruction: Set Charge is Snare with self-detonation at the same entry price; Pinpoint Charge is Inevitable Snare that also ignores deflect and adds Intellect; Cascading Failure and The Unmooring are Thread of Inevitability without the [Tier] throttle. Fate's trap half is Destruction's trap half with the trigger taken away and given to an ally.",
+   "OVERLAP — heroic/Hunter and leyline/Blue own the two halves of Fate's STATED fantasy: Hunter's Deadly Trap conceals a 5 ft trap at depth 0 for no Investiture, and Blue's Forewarned predicts an action type every round as a free depth-0 Passive."
+  ],
+  "topThree": [
+   "Foreknown Strike — 2 Actions + 2 Investiture once per scene converts the entire trap economy from 'hope the enemy walks in' into a party-detonated bomb, and adds a third [Tier][Die] to every detonation. The single load-bearing talent in the tree, and the only ally-delegated hazard trigger in the corpus — though deity/Destruction gets self-detonation free inside its depth-0 entry, so Fate's best talent is buying a capability another tree treats as table stakes.",
+   "Snare — an entry node at level 1 that, for 1 Action + 1 Investiture, delivers [Tier][Die] + Awareness keen AND Restrained for a full round with NO test required, repeatably. Both the tree's damage floor and its best control, and the only untested Restrain in all 365 talents.",
+   "Weave the Thread (RESTORED to the top three this pass) — converts an ally's Aid from a 1-focus Reaction into a Free Action, freeing that ally's one Reaction, and adds a Reactive Strike off a trigger the tree itself supplies. Bulwark Ground was promoted into this seat on the strength of being 'the only advantage denial in all 365 talents', and that claim is false (leyline/Green Natural Order also denies advantage; leyline/White Voice of Authority, heroic/Leader Valiant Intervention and heroic/Warrior Defensive Position impose disadvantage, which supersedes it in a tri-state system), so it loses the seat. Weave the Thread's own caveats stand: it was previously credited with bypassing the 1-Reaction cap, which the text does not say, and deity/Order's Concord does the same Aid conversion plus Presence damage."
+  ],
+  "bottomThree": [
+   "Hexmark — burns your one Reaction for +1 keen per damage instance at Tier 1, gated behind a Snare firing AND the target staying within 10 ft of your tokens. The least-scaling payload in the tree, and the corpus's weakest damage-mark (deity/Knowledge's Insight stacks and deals Deflect-ignoring Vital).",
+   "Thread of Inevitability — a whole Slow turn plus 3 Investiture plus once-per-scene plus a GM-adjudicated trigger, to detonate a payload the tree's own [Tier] sustain caps limit to one Snare and one ally Strike at levels 1-5. Two deity capstones at the identical price (Destruction's The Unmooring, Knowledge's The Final Study) buy several times as much.",
+   "Bulwark Ground (DEMOTED this pass) — its temp-HP clause is 1 HP per round for the whole of levels 1-5, and its advantage-denial clause is no longer the corpus-unique effect it was credited with: leyline/Green's Natural Order also denies advantage, and three talents in other trees impose disadvantage instead, which is strictly better. What is left is a Passive whose two clauses are both the weakest version of an effect that exists elsewhere, gated on an ally standing on a 5 ft square."
+  ],
+  "weakTalents": [
+   {
+    "name": "Hexmark",
+    "reason": "Spends your one Reaction for the round on a mark worth a flat +[Tier] keen — +1 damage at Tier 1 — and only while the marked target loiters within 10 ft of a token you still have on the board. Triply conditional for the least-scaling payload in the tree. It does not compete well for the Reaction slot against simply Dodging."
+   },
+   {
+    "name": "Thread of Inevitability",
+    "reason": "OVERCOSTED. 3 Actions (a whole Slow turn, unplayable on a Fast turn's 2 Actions) + 3 Investiture + once per scene, and the payoff is capped by the tree's own [Tier] sustain limits — at levels 1-5 it detonates exactly ONE Snare and grants exactly ONE free Strike. Its trigger is partly GM-adjudicated. The capstone should have raised the token caps; instead it inherits them. deity/Destruction's The Unmooring and deity/Knowledge's The Final Study both buy far more at the identical price."
+   },
+   {
+    "name": "Bulwark Ground",
+    "reason": "CORRECTED DOWNWARD this pass. Previously excused as 'half-blank but carried by its second clause'. Both clauses are measurably the weakest version of an effect the corpus already has. The temp-HP clause pays 'equal to your tier' — ONE temporary HP per round for the whole of levels 1-5 — where deity/Civilization's Bonds of Community pays temp HP equal to your WHITE to every ally in any Foundation. The advantage-denial clause is not corpus-unique: leyline/Green's Natural Order denies advantage to every enemy in Attunement Range for the scene, and leyline/White's Voice of Authority, heroic/Leader's Valiant Intervention and heroic/Warrior's Defensive Position IMPOSE disadvantage, which in a tri-state system does everything advantage-denial does and more. Fate's version is also the most constrained of the five (one ally, standing on one 5 ft square)."
+   },
+   {
+    "name": "Ordained Ground",
+    "reason": "Not below the curve in effect, and it DOES deliver the half of the Olvarra fantasy both intent sources assign it. The problem is that it does no design work the corpus had not already done twice: it is deity/Civilization's Lay Foundation (same Free Action, same 1 Investiture, same 'designate a square in Attunement Range... for the scene', same '+1 to all defenses' for allies beginning their turn there, same 'sustain up to your tier') on a 5 ft square instead of 10 ft, and its second clause — Aid at extended range — is deity/Order's Covenant clause, which grants it at full Attunement Range with no square to stand on. A talent that is strictly the smaller version of two existing talents is the least distinctive entry node in the deity atlas."
+   },
+   {
+    "name": "Foreknown Strike / Thread of Inevitability (implementation cannot deliver)",
+    "reason": "Both say a Snare is triggered 'treating the center of the Snare's space as the triggering character'. A square is not a character; the text names no creature to take the damage or the Restrained condition when the square is empty. Thread of Inevitability adds a second wording flaw: it grants 'a free Strike or Aid against the nearest enemy', but Aid targets an ally. Both are the class of promise an implementation cannot honour without a table ruling. (The earlier entry accusing Weave the Thread of paying twice for Aid remains REMOVED — Ordained Ground changes Aid's RANGE and Weave the Thread changes its ACTION TYPE.)"
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "About 2 rounds of unconstrained play, then an indefinite throttled cadence of one placement per round. Opening pool is ~4 Investiture (2 + max(AWA,PRE)) and the tree spends 11 to deploy its full kit once. Round 1 is Ordained Ground (Free, 1 Inv) + Snare (1 Action, 1 Inv) = 2 Inv. At Tier 1 you may hold only ONE unsprung Snare, so a round-2 second Snare is legal only after the first has sprung (otherwise the handler's 'evict: oldest' discards the first); the realistic round 2 is Read the Threads to slide the existing Snare into the revealed path, or a re-place with the Inevitable rider — either way 1-2 Inv, and the pool is empty. From round 3 the character is on the Draw Mana treadmill: at Tier 1 that returns 1 Investiture per Action, so the sustainable loop is Draw Mana (1 Action) + one 1-Investiture placement (1 Action) + 1 spare Action — meaning the Inevitable Snare upgrade is NOT sustainable at levels 1-5. At Tier 2 (L6+) Draw Mana returns 2 per Action, so Draw Mana + Inevitable Snare becomes sustainable indefinitely with an Action to spare. The scene-length purchases (Foreknown Strike, Weave the Thread) are one-time buys that keep paying, so the true profile is 'pay a heavy opening, then run one Snare per round forever'.",
+   "triggerGatedCount": 7,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 7,
+   "note": "Counted by hand from the nine texts. Only 1 of 9 talents is a Reaction (Hexmark), so this tree suffers almost no contention for the hard 1-Reaction-per-round cap — a genuine structural advantage over leyline/White (7 Reactions competing for one slot, 52% trigger-gated). But 7 of 9 talents wait on someone ELSE acting before they pay out: Snare (an enemy must enter), Inevitable Snare (rider on that), Hexmark (a Snare must fire, then the target must take damage), Bulwark Ground (an ally must begin its turn on the square), Foreknown Strike (an ally must spend a Free Action), Weave the Thread (an ally must be on a square and an enemy must trigger a Snare), Thread of Inevitability (a declared event must occur). Ordained Ground's PLACEMENT resolves on your own turn, but its payout is equally ally-gated, so Read the Threads is the ONLY talent in the tree that both resolves AND pays out under your own control. The deterministic classifier bands deity trees at 0-3 trigger-gated; the text does not support that here and the text wins. The tree is unusually free of Reaction contention while being almost totally dependent on other characters' choices — it never competes with itself, and it never acts alone. The same 7 of 9 talents also spend Investiture the tree cannot replace."
+  }
+ },
+ "corrections": [
+  {
+   "field": "intentDrift.claims[action-type distribution].evidence",
+   "from": "Free Action 3 (33%, target 10-15% — more than double)",
+   "to": "Free Action 2 (22%) — Ordained Ground and Inevitable Snare only",
+   "reason": "MISCOUNT. The dossier lists exactly two Free Action talents: Ordained Ground ('action: Free Action') and Inevitable Snare ('action: Free Action'). Read the Threads is 'action: 1 Action' — it CONTAINS a free-action rider ('Immediately after, as a Free Action, you may move...'), which is not the same as being a Free Action talent. Full corrected distribution: Passive 1, Special 0, 1 Action 2, 2 Actions 2, Free 2, Reaction 1, 3 Actions 1 = 9. The corrected 2 also agrees with the prompt's own deterministic table, which bands deity trees at 0-2 Free Actions."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "At Tier 1 rank 2 the same package is 2d6 + AWA ≈ 10 keen",
+   "to": "At Tier 1 rank 2 the same package is 3d6 + AWA ≈ 10.5 + AWA",
+   "reason": "ARITHMETIC ERROR, internally inconsistent with the same sentence's Tier 2 figure. The profile's Tier 2 number (6d8) correctly sums THREE packages — Snare 2d8 + Inevitable Snare 2d8 + Foreknown Strike 2d8. At Tier 1 rank 2 each package is 1d6, so the same three sum to 3d6, not 2d6. All three are legal at Tier 1 (Foreknown Strike is depth 2 / earliest L3, well inside Tier 1's L1-5)."
+  },
+  {
+   "field": "axes[action_economy].evidence; uniqueOwnership; sustainability.note; mechanicalKeywords[Reaction]",
+   "from": "'the corpus's ONLY free Reactive Strike ... it sidesteps the hard 1-Reaction-per-round cap for a third party' / 'Weave the Thread's granted Reactive Strike is explicitly free and so does not consume the ally's slot'",
+   "to": "'free' is not established to mean 'does not consume the Reaction'; the likelier reading is that it waives Reactive Strike's 1-focus cost. Flagged as an undefined-wording item and a table ruling.",
+   "reason": "TEXT-VS-CLAIM. The card says only 'an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.' The authored handler (data/authored/deity-fate.json, edha-snare-react mode 'prompt') says the same and adds '(GM/players execute)'. Neither source says the Reaction slot is not consumed. Per SYSTEM-PRIMER, Reactive Strike is a reaction costing 1 focus, so 'free' most naturally reads as waiving the focus. The claim was load-bearing for action_economy, a uniqueOwnership bullet and a topThree entry; the score is kept at 4 because Foreknown Strike's genuinely new Free Action and Weave the Thread's Aid-as-Free-Action stand on their own."
+  },
+  {
+   "field": "uniqueOwnership (ally free action)",
+   "from": "'One of only two talents in the corpus that grants an ally a new Free Action (Foreknown Strike; the other is deity/Order Concord)'",
+   "to": "Four talents grant an ally a Free Action: deity/Order Concord, deity/Civilization Trade Routes, and Fate's own Weave the Thread and Foreknown Strike",
+   "reason": "CORPUS MISCOUNT, checked against data/domain.json. Trade Routes: 'an ally standing in either linked Foundation may teleport to the other as a Free Action once per turn.' Weave the Thread: 'an ally standing on either linked square may use the Aid action as a Free Action once per round.' Both were missed."
+  },
+  {
+   "field": "uniqueOwnership (free Reactive Strike)",
+   "from": "'The only source of a free Reactive Strike granted to an ALLY (Weave the Thread) — unique in the corpus'",
+   "to": "Only the WORD 'free' is unique; granting an ally a Reactive Strike is not",
+   "reason": "CORPUS MISCOUNT. Two other talents grant allies Reactive Strikes: leyline/Green Drive the Prey ('Allies may make Reactive Strikes against it if it moves within their reach') and deity/Sovereignty Expose ('any ally in Attunement Range who is that attack's target may make a Reactive Strike against it')."
+  },
+  {
+   "field": "uniqueOwnership (two token economies) + oneLineIdentity + crossTreeHooks + intentDrift.claims",
+   "from": "'The only tree running TWO simultaneous placed-token economies with independent sustain caps — one ally-facing and one enemy-facing ... deity/Destruction (Charge) and deity/Civilization (Lay Foundation) each run one token type'",
+   "to": "Scope narrowed, and a MISSED OVERLAP added: deity/Civilization runs Foundation (capped at tier) plus a statted Combat Construct, and its Bastion turns ally Foundations into enemy traps; deity/Destruction runs Charge (capped) plus persistent dangerous terrain",
+   "reason": "FALSE, verified in data/domain.json. Civilization's Bastion: 'each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage' — the exact ally-facing/enemy-facing square pairing claimed as Fate's alone. Worse for the profile, Fate's ally half is a near-clone of Civilization's: Lay Foundation vs Ordained Ground share action type (Free Action), cost (1 Investiture), 'designate a square in Attunement Range ... for the scene', '+1 to all defenses' for allies beginning their turn there, and 'sustain up to your tier'; Trade Routes vs Weave the Thread share the near-verbatim 'choose two of your active [X] ... For the scene, they are linked: an ally standing [in/on] either linked [X] may [Y] as a Free Action once per [turn/round]' idiom. This is the single biggest finding the profile missed; it is now a new intentDrift claim (design guide principle 2), a crossTreeHooks entry, a bottomThree entry and a weakTalents reason."
+  },
+  {
+   "field": "axes[terrain_zone].evidence and uniqueOwnership",
+   "from": "'only five talents in all 365 place a designated square, and Fate owns two of them'",
+   "to": "at least SIX: Ordained Ground, Snare, Civilization's Lay Foundation, Death's Bone Garden, Destruction's Set Charge and Pyre",
+   "reason": "COUNT WRONG, verified by regex over leyline.json / domain.json / cosmere.json. Score held at 5 but re-justified on saturation (9 of 9 talents are zone talents) rather than on exclusivity."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "3",
+   "to": "2",
+   "reason": "ARITHMETIC-GROUNDED DOWNGRADE, and the evidence overstated the reach. The profile wrote 'temporary HP equal to your tier each round to every ally on a square' — but Ordained Ground's own text caps it at '[Tier] Ordained Ground squares', which at levels 1-5 is exactly ONE 5 ft square, i.e. one ally. So the whole package is +1 to all defenses, 1 temporary HP per round, and the advantage denial, for one ally, with nothing at all for the Fate character. Against the rubric anchor ('a tree with one Reaction that reduces damage once per round scores protection 2, not 4') that is a 2."
+  },
+  {
+   "field": "crossTreeHooks; mechanicalKeywords[White]; intentDrift toll-booth",
+   "from": "'WHITE rank buys only Attunement Range and the entry gate'",
+   "to": "White buys the entry gate and NOTHING else — not even Attunement Range",
+   "reason": "TEXT/DATA CORRECTION from the authored overlay. Every Fate placement handler in data/authored/deity-fate.json carries color:'green' (Ordained Ground and Snare: edha-zone ... 'color':'green'; Weave the Thread: edha-zone kind 'link-markers', color 'green'), and the wiring notes read 'click-place a 5 ft marker square within Green Attunement Range'. The placement envelope is Green-sized. This makes Fate the sharpest toll-booth case in the deity atlas, stronger than the profile claimed."
+  },
+  {
+   "field": "intentDrift.claims[colour split].delivered and evidence",
+   "from": "'PARTIAL — the White half has no referent'; 'Exactly ONE talent in the entire tree calls for a test: Inevitable Snare's ... That is correctly Green ... so the Green half of the rule is honoured once'",
+   "to": "'NOT DELIVERED — no Fate character ever rolls a colour test'",
+   "reason": "IMPRECISE READING, and it contradicted the deterministic gate audit ('Fate tests: (none)') without saying so. The text is 'the triggering target tests Speed vs. your Green' and the authored rider fields are riderSkill 'spd' / riderColor 'green' — the ENEMY rolls Speed and your Green is the DC. No Fate talent gives the character a colour test to roll, so the Green half of the rule is honoured only as a DC and as the die-sizer, not as a test. The audit and the text agree; the profile's phrasing did not."
+  },
+  {
+   "field": "intentDrift.claims[both entries deliver]; powerByDepth[depth 0]; weakTalents[Ordained Ground]; bottomThree",
+   "from": "'Ordained Ground does not deliver the Thread-Reader fantasy at all ... the guide's Key talent reflex pitfall wearing an entry node's clothes'",
+   "to": "Ordained Ground DOES deliver the half of the fantasy both intent sources assign it; the genuine miss is that NEITHER entry delivers the foreknowledge half",
+   "reason": "CLAIM CONTRADICTED BY THE INTENT SOURCES. The path description's fantasy is explicitly two-part — 'A disciple of Olvarra anchors allies to Ordained Ground and lays Snares' — and DESIGN-GUIDE-CLAIMS' Olvarra identity reads 'Oracle-trapper. Foreknowledge places Snares on predicted squares; allies anchor Ordained Ground positions', naming Ordained Ground as the White-flavoured signature resource. Ordained Ground delivers precisely what it was written to deliver. Reworded to the narrower, defensible criticism (no foresight from either entry) and re-grounded on the Lay Foundation clone finding."
+  },
+  {
+   "field": "weakTalents[Weave the Thread (partially)]",
+   "from": "'It is also redundant with Ordained Ground's own Aid clause, so the tree pays twice for the same standard action'",
+   "to": "ENTRY REMOVED; the two clauses are different effects",
+   "reason": "MISREADING. Ordained Ground changes Aid's RANGE ('may use the Aid action at up to 30 ft range from that square'); Weave the Thread changes Aid's ACTION TYPE ('may use the Aid action as a Free Action once per round'). Per SYSTEM-PRIMER, Aid is a Reaction costing 1 focus, so converting it to a Free Action returns the ally's one Reaction — materially more than reproducing a standard action, and not redundant with a range extension. The primer's 'a talent that reproduces a standard action is worth roughly zero' applies to granting an action a character already had at the same cost."
+  },
+  {
+   "field": "axes[damage_direct].evidence and damageAccounting.damageTalents[Hexmark]",
+   "from": "'Four talents carry a damage expression, all delivered by the Snare hazard'",
+   "to": "THREE carry a roll formula and all three ride the Snare hazard; Hexmark's flat rider is NOT delivered by the Snare",
+   "reason": "TEXT-VS-CLAIM, internally inconsistent with the profile's own Hexmark note. The Snare trigger only APPLIES the Hexmark; the damage then fires 'whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares'. Hexmark also has no roll formula (the authored damage block is null), so calling it a 'damage expression' alongside the three formula talents blurred two different evidence streams."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Foreknown Strike].dice and note",
+   "from": "'additional (@tier)d(...) keen'",
+   "to": "same formula, with the TEXT/DATA divergence flagged: the card prose omits the damage type entirely",
+   "reason": "TEXT-VS-DATA. Foreknown Strike's card reads 'A Snare triggered this way deals an additional [Tier][Die] damage' — no type. The authored damage block supplies type:'keen'. The profile asserted keen without noting the prose gap. The conclusion ('it is all keen') survives on the formula, but the card should say so."
+  },
+  {
+   "field": "damageAccounting.repeatability and sustainability.roundsOfGoodOptions",
+   "from": "'round 2 is a second Snare with the Inevitable rider = 2 Inv and the pool is empty'",
+   "to": "at Tier 1 a second Snare is legal only after the first has sprung; otherwise the authored 'evict: oldest' discards the first",
+   "reason": "INTERNAL INCONSISTENCY with the profile's own cap arithmetic. The profile correctly states the cap is ONE unsprung Snare at levels 1-5, then describes a round-2 second placement as if the cap did not exist. Confirmed against the authored handler for Snare: edha-zone kind 'snare', capFormula '@tier', evict 'oldest'."
+  },
+  {
+   "field": "sustainability.note",
+   "from": "'Only Ordained Ground and Read the Threads resolve entirely on your own turn under your own control'",
+   "to": "Read the Threads is the ONLY talent that both resolves AND pays out under your own control",
+   "reason": "READING ERROR. Ordained Ground's placement resolves on your turn, but the talent does nothing until 'an ally that begins its turn on an Ordained Ground square' — its payout is as ally-gated as Bulwark Ground's. triggerGatedCount kept at 7 under the prompt's stated definition (fires when an ally/enemy acts), with a note that the deterministic classifier's 0-3 deity band under-counts here and the text wins."
+  },
+  {
+   "field": "weakTalents[Thread of Inevitability]; damageAccounting; mechanicalKeywords[Strike]",
+   "from": "(not mentioned)",
+   "to": "Added the second wording flaw: 'a free Strike or Aid against the nearest enemy' — Aid targets an ally, not an enemy",
+   "reason": "TEXT READING the profile missed while quoting the same sentence. Adjacent to the undefined-target flag it did catch."
+  },
+  {
+   "field": "uniqueOwnership (player-authored trigger)",
+   "from": "'The only player-authored delayed trigger'",
+   "to": "Unique only in being unbounded by a mechanical event type",
+   "reason": "OVERSTATED. deity/Destruction Set Charge also lets the player declare its own trigger at placement — 'Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target ta[kes damage]\")' — but from a mechanical menu rather than a fiction-level event."
+  },
+  {
+   "field": "uniqueOwnership (Restrained) and axes[control].evidence",
+   "from": "'The only hazard that both damages and applies Restrained; leyline/Green Grasping Vines is the only other Restrained source'",
+   "to": "UPHELD and strengthened: Snare is the corpus's only UNTESTED Restrain",
+   "reason": "CHECKED AND CONFIRMED, not corrected. A corpus scan of leyline.json / domain.json / cosmere.json returns exactly two talents naming Restrained: Grasping Vines and Snare. Grasping Vines additionally requires a Green test vs Physical defense and 1 Investiture per turn to maintain; Snare applies Restrained automatically. Control score held at 4 on this basis."
+  },
+  {
+   "field": "axes[debuff].evidence and uniqueOwnership (advantage denial)",
+   "from": "(claim as written)",
+   "to": "UPHELD, with the verification method recorded",
+   "reason": "CHECKED AND CONFIRMED, not corrected. A corpus-wide regex for every advantage-negation phrasing ('cannot/does not/loses/without ... advantage') across all three data files returns exactly one hit: Bulwark Ground. This is the profile's strongest surviving uniqueness claim and is now the tree's topThree entry in place of the Weave the Thread claim that failed."
+  },
+  {
+   "field": "intentDrift.claims[description length] and [prereq pattern]",
+   "from": "(claims as written)",
+   "to": "UPHELD; word counts re-counted by hand and the prereq graph re-checked",
+   "reason": "CHECKED, NO CHANGE. Ordained Ground counts 66 words and Snare 68 exactly as claimed; Thread of Inevitability counts 92 (93 counting the em dash), either way past the guide's explicit 90+ line. Every depth and earliest-L value in damageAccounting and powerByDepth also matches the dossier lines exactly (Snare 0/L1, Bulwark Ground 1/L2, Hexmark 1/L2, Inevitable Snare 1/L2, Read the Threads 1/L2, Foreknown Strike 2/L3, Weave the Thread 2/L3, Thread of Inevitability 3/L4), and every Cost field and dice expression checks out against the text (11 Investiture across 7 talents; [Tier][Die] = 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3). Reaction count (1, Hexmark) and countFalsePositiveMitigation (0 — no Fate talent uses the word 'damage' in a mitigation clause) are both correct."
+  },
+  {
+   "field": "uniqueOwnership[0] / axes.debuff.evidence / mechanicalKeywords['Advantage'] / topThree[2] / bottomThree / weakTalents['Bulwark Ground']",
+   "from": "\"The only source of advantage DENIAL in the game: Bulwark Ground... VERIFIED by corpus regex... exactly one hit for every advantage-negation phrasing tried... This is the tree's strongest genuine uniqueness claim.\"",
+   "to": "DOWNGRADED to 'owns the phrasing, not the effect — one of at least five corpus sources of advantage-cancellation, and the most constrained of them'.",
+   "reason": "The corpus regex missed a hit. leyline/Green **Natural Order**: 'Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.' That is a second literal advantage-denial clause, scene-long, against every enemy in range. Separately, the SYSTEM-PRIMER establishes advantage as a tri-state where net state decides, so IMPOSING disadvantage is a strict superset of denying advantage — and three talents do that in the ally-protection role Bulwark Ground occupies: leyline/White **Voice of Authority** ('When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage' — no square required, full Attunement Range), heroic/Leader **Valiant Intervention** ('give a target disadvantage on tests against your allies'), heroic/Warrior **Defensive Position** ('adds two disadvantages to attacks against you'). This claim was load-bearing: it was the sole justification for promoting Bulwark Ground into topThree, so Weave the Thread is restored to that seat and Bulwark Ground moves to bottomThree."
+  },
+  {
+   "field": "axes.control.score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION. The rubric's 4 is 'the tree is one of the better options in the game for this'. Counting condition-application and action-denial talents across all 21 trees from all-talents.json: leyline/Green 10, leyline/Black 8, deity/Death 4, leyline/Red 4, heroic/Warrior 4, deity/Power 3 (Kneel's Compelled + advantage on Compelled targets, Absolute Authority, Unstoppable Advance's Immobilized), deity/Order 3, deity/Civilization 3 — and Fate 2 (Snare, Inevitable Snare). leyline/Blue's Absolute Stillness applies 0 Speed AND 'cannot take Reactions' in one talent. Snare's untested Restrained is genuinely the best per-instance condition in the corpus, but the tree can apply exactly ONE per round through levels 1-5 (the [Tier] unsprung-Snare cap), and the delivery requires the enemy to walk into a nominated 5 ft square until Foreknown Strike at depth 2 / L3. Two talents, one application per round, positional precondition = the rubric's 3 ('a real, usable competency; several talents, at least one good one'), not 4."
+  },
+  {
+   "field": "axes.action_economy.score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION against the calibration anchor 'a talent granting an action a character already had is worth much less than one granting a NEW action'. Of Fate's four, only Foreknown Strike grants a NEW action; Weave the Thread and Thread of Inevitability route Aid and Strike (both standard), and Read the Threads' 'Free Action' moves a MARKER, not a character. Corpus comparison, all quoted from all-talents.json: heroic/Envoy **Foresight** (Passive) — 'Gain an additional reaction each turn', i.e. it doubles the hard-capped resource permanently for free; heroic/Leader **Synchronized Assault** — 'allies up to your ranks in Leadership gain an Action for an additional Strike'; heroic/Scholar **Turning Point** — 'you and your allies gain an Action on your next turns'; heroic/Warrior **Flamestance**/**Windstance** — 'gain an Action'; deity/Knowledge **The Final Study** — 'each ally in Attunement Range may immediately make a free Strike', uncapped where Fate's equivalent is capped at [Tier] allies. Those create actions and reactions; Fate mostly makes existing ones cheaper for allies standing on a specific square. 3."
+  },
+  {
+   "field": "axes.terrain_zone.evidence / uniqueOwnership[1]",
+   "from": "\"The most zone-saturated tree in the corpus: 9 of 9 talents... No other tree is 100% zone.\" and \"at least SIX talents in the 365 designate or place a specific square — Ordained Ground, Snare, Civilization's Lay Foundation, Death's Bone Garden, Destruction's Set Charge and Pyre — not five\"",
+   "to": "Tied, not first: deity/Destruction is also 9 of 9 and its zones are strictly more active; and the placement count is roughly TWENTY talents across six trees, not six.",
+   "reason": "Both are comparative miscounts. (a) Every one of Destruction's nine talents places, spreads, merges or rides a placed zone: Pyre ('the target's space and each adjacent 5 ft square become dangerous terrain for the scene... spreads to one adjacent flammable square'), Set Charge, Combustion Chain ('each of your dangerous terrain zones spreads 5 ft outward'), Concussive Yield, Pinpoint Charge, Walking Ruin ('every space you move through becomes dangerous terrain'), Cascading Failure ('their dangerous terrain zones merge into one contiguous hazard zone'), Fault Line ('A 60 ft long, 5 ft wide line... becomes dangerous terrain'), The Unmooring. So Fate is not the only 100%-zone tree, and Destruction's zones damage on their own where Fate's are inert. (b) A corpus scan for place/designate clauses returns ~20 talents across six trees, including ones the prior list omitted entirely — heroic/Hunter **Deadly Trap** ('Conceal a 5 ft entangling or impaling trap'), Destruction's Pinpoint Charge / Walking Ruin / Combustion Chain / Fault Line, Civilization's Bastion, leyline/Green's Thorn Field / Spreading Roots / Sudden Growth / Attunement rider. Score held at 5 (9/9 saturation is still pillar-level), but on saturation rather than exclusivity."
+  },
+  {
+   "field": "uniqueOwnership[2]",
+   "from": "\"The only tree whose two token economies are split ally-facing / enemy-facing with SEPARATE per-tier sustain caps, and the only one that keeps them strictly separate.\"",
+   "to": "WITHDRAWN — refuted by the tree's own text.",
+   "reason": "Self-contradicted by three of Fate's own cards. Hexmark's damage fires 'while within 10 ft of any of your Ordained Ground squares or unsprung Snares' — one condition spanning both token types. Foreknown Strike requires 'an ally standing on one of your Ordained Ground squares' to 'trigger any one of your unsprung Snares'. Thread of Inevitability fires both at once. The economies are explicitly cross-linked from depth 1, so 'strictly separate' is false. (Running two placed-token economies is also not unique: Civilization runs Foundations + a statted Combat Construct, Destruction runs Charges + dangerous terrain.)"
+  },
+  {
+   "field": "intentDrift.claims (new claim added)",
+   "from": "absent — the profile tested Fate's promises only against Fate's talents",
+   "to": "Added: the promise Fate's intent file makes is ALSO made by heroic/Hunter's and leyline/Blue's intent files, each delivering its half earlier and cheaper.",
+   "reason": "Lens (d) explicitly asks whether another tree's intent file makes the same promise; the prior pass never checked. heroic/Hunter's INTENT file: 'you don't have to be more powerful than your quarry, so long as you're better prepared... Through careful planning, Hunters choose when and where to strike, securing an upper hand through clever use of traps, high ground, and the element of surprise... Archers shape the battlefield before the frontline confrontation.' Hunter delivers that at depth 0 / L1 with Deadly Trap — a CONCEALED 5 ft trap, no Investiture. leyline/Blue's INTENT file: 'Blue leyline mages read the battle a beat before it happens... prefers to know, to prepare, and to redirect: intercepting an attack foreseen.' Blue delivers at depth 0 with Forewarned (free Passive, every round) plus Intercept. Fate's 'oracle who prepares the board' is therefore two other trees' promises joined, and it charges the most for the join."
+  },
+  {
+   "field": "gaps (new entry) / damageAccounting notes / crossTreeHooks / topThree[0]",
+   "from": "absent — the profile framed 'the enemy decides whether damage lands until depth 2' as an internal design fact",
+   "to": "Added as a comparative gap: NO SELF-TRIGGER UNTIL DEPTH 2, where the structurally identical deity/Destruction entry has it at depth 0.",
+   "reason": "deity/Destruction **Set Charge** (depth 0, L1, 1 Action, 1 Investiture, cap tier, scene duration — the same shape and price as Snare) reads: 'You may detonate any of your Charges as a Free Action on your turn.' Fate pays Foreknown Strike (depth 2, L3, 2 Actions, 2 Investiture) for a strictly worse version that additionally requires an ally standing on an Ordained Ground square to spend a Free Action. This is the single largest comparative deficit in the tree and it was invisible to a within-tree read."
+  },
+  {
+   "field": "powerByDepth[0].note / weakTalents['Ordained Ground'] / intentDrift final claim",
+   "from": "\"it is a near-clone of deity/Civilization's Lay Foundation\" (a two-tree comparison)",
+   "to": "Extended to a three-tree comparison: Ordained Ground's clauses are the corpus's THIRD issue of one design, because deity/Order's Covenant carries them too.",
+   "reason": "deity/Order **Covenant** (entry node, 1 Action, 1 Investiture): 'you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range... You may sustain up to your tier active Covenants.' That is BOTH of Ordained Ground's clauses (+1 to all defenses; Aid at extended range) plus the same tier sustain cap — at full Attunement Range rather than 30 ft, and with no square anyone must stand on. Order's Concord likewise pre-empts Weave the Thread's Aid-as-Free-Action clause and adds Presence damage on top. The overlap finding is materially stronger than 'a near-clone of one talent'."
+  },
+  {
+   "field": "axes.information.evidence",
+   "from": "\"leyline/Blue Read Intent and deity/Order Lawkeeper's Eye do comparable work, so this is not sole ownership.\"",
+   "to": "Sharpened: Lawkeeper's Eye delivers the same information as a FREE Passive rider and adds advantage on attacks against the target, so Fate pays the most of the four sources and is the only one paying a full Action.",
+   "reason": "deity/Order **Lawkeeper's Eye** is action=Passive: 'When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.' Read the Threads costs 1 Action + 1 Investiture for the first half alone. leyline/Blue **Forewarned** (depth 0, Passive) predicts an action type every round for free and pays a Reaction when it lands. The 2 stands, but the evidence understated how badly Fate loses the price comparison — a deflation check that concluded 'not 3' rather than 'not 1'."
+  },
+  {
+   "field": "axes.resource_economy.evidence",
+   "from": "\"Zero generation, confirmed against every Cost field.\"",
+   "to": "Same score, evidence strengthened with the deflation check the lens requires and with the corpus comparison.",
+   "reason": "Lens (c) names resource_economy as an axis where 0-1 scores hide real content in riders. I re-ran the check specifically for riders and confirmed nothing: no Investiture return, no Focus grant, no Opportunity generation anywhere in nine talents. The comparator is deity/Sovereignty **Expose** ('When a creature affected by your Censure fails a test, you recover 1 Investiture') plus one regen talent each in Chaos, Death, Life, Knowledge and Sovereignty. Fate is one of five deity trees at 0 regen and the only tree in the atlas whose nine talents never mention Opportunity, Focus or the Plot Die at all. Score correctly stays 0."
+  },
+  {
+   "field": "intentDrift.actuallyIs / oneLineIdentity",
+   "from": "\"It is a good tree wearing the wrong name... its ally-facing half is mechanically the same design as deity/Civilization's Foundation half\"",
+   "to": "Rewritten to answer the 'SOMETHING' test explicitly and name the trees that do each half better.",
+   "reason": "Lens (e) requires naming the tree's something and checking whether another tree does it better. Fate's something is 'ally-buff squares and enemy traps in one linked economy'. Each half is beaten: Civilization's Foundations are 10 ft to Fate's 5 ft with the identical bonus, and Bastion ('when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage and tests Agility vs. your Red; on a failure, it is Slowed') makes those same ally squares into enemy traps — both halves from ONE economy, plus a statted Construct. Destruction's Charges self-detonate at depth 0, hit a 10 ft radius, and leave hazards that spread. What genuinely survives as Fate's is three clauses (untested Restrain, ally-delegated hazard trigger, narrative delayed trigger), not a tree-wide identity."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "\"the package is 1d6 (Snare) + 1d6 (Inevitable) + 1d6 (Foreknown) + AWA = 3d6 + AWA\"",
+   "to": "Same figure, with the scoping condition made explicit: Foreknown Strike's die only applies on the ALLY-triggered path.",
+   "reason": "Foreknown Strike's card reads 'A Snare triggered this way deals an additional [Tier][Die] damage' — 'this way' scopes to the ally's Free-Action trigger. An enemy who simply walks into the Snare eats 2d6+AWA, not 3d6+AWA. The prior text mentioned the ally Free Action in passing but stated the 3d6 as the general case."
+  },
+  {
+   "field": "gaps (new entry)",
+   "from": "absent",
+   "to": "Added: 'No Deflect-ignoring damage. All four damage clauses are keen.'",
+   "reason": "A comparative gap the within-tree read noted as a texture ('it is all keen') but never scored as a gap against peers. Every comparable deity tree has at least one Deflect-ignoring source: Destruction (Pinpoint Charge 'ignores the primary target's deflect'; The Unmooring 'ignores deflect'), Knowledge (Vital), Death (Vital), Power (spirit). Per SYSTEM-PRIMER, vital/spirit are 'materially stronger per die'."
+  },
+  {
+   "field": "axes.damage_direct / axes.damage_scaling / axes.protection / axes.buff / axes.debuff / axes.mobility / axes.healing / axes.summons / axes.social_influence / axes.exploration_utility / powerByDepth ratings / sustainability counts / word counts",
+   "from": "(various)",
+   "to": "CHECKED AND UPHELD — scores unchanged; evidence extended with named cross-tree comparators.",
+   "reason": "I found nothing wrong with these fields' numbers. Verified independently: the nine word counts are exactly as stated (66/68/43/48/52/59/55/72/93 — Thread of Inevitability trips the guide's 90+ line without needing the em-dash caveat, so that hedge was dropped); the corrected action-type distribution (Passive 1, Special 0, Action 2, 2 Actions 2, Free 2, Reaction 1, 3 Actions 1) is right; Restrained really does appear on only two of 365 talents; ally-Free-Action grants really are shared by Order Concord, Civilization Trade Routes/Siege Form, Knowledge Hunter's Discipline/Death Mark and Destruction Set Charge; ally Reactive-Strike grants really are shared by Green Drive the Prey and Sovereignty Expose; the 7 costers / 1 Reaction / 7 trigger-gated counts hold. powerByDepth depth 1-2 was tested for deflation to 3 and held at 4 with the comparative caveat recorded in the note rather than folded into the number, since the four talents are genuinely the tree's weight even though each is out-priced elsewhere."
+  }
+ ]
+}

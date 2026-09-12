@@ -1,0 +1,659 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Agent",
+ "correctionCount": 37,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Agent",
+  "oneLineIdentity": "A focus-burning skill specialist that converts the GM's plot die into a player-controlled resource and buys extra actions with mental effort, backed by five expertises, one stun-on-hit unarmed jab, and no net damage above what any character already has — with seven of its 25 talents, including two of its three action-granters and its entire deepest band, locked behind skill rank 3+ and therefore level 6.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 1,
+    "evidence": "CORRECTED DOWN from 2. Three talents touch damage, but the tree adds essentially NO damage over the Strike every character already owns. Cheap Shot's ROLL FORMULA is `@scalar.damage.unarmed` type=impact — the actor's baseline unarmed scalar with no talent bonus at all; Subtle Takedown's text is bare 'Make an unarmed attack ... On a hit, they can't communicate' with no ROLL FORMULA and no damage clause. Both are therefore damage DOWNGRADES per action spent (unarmed damage, 1 or 2 Actions, 1 focus) bought for a rider — a Stun and a silence. The only net damage the tree contributes is Mighty ('+1 + your tier per action spent'), verified by name-match across all-talents.json as a SHARED generic node in six trees (heroic/Agent, Envoy, Hunter, Leader, Warrior and leyline/Red). Comparative anchor that settles this: heroic/Hunter occupies the identical ambush slot with Fatal Thrust — 'Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet' — i.e. a real damage payload where Agent has none. Zero [Tier][Die] expressions, zero vital/spirit, zero AoE; I searched all 25 for damage arriving without the word (summons, zones, hazards, Afflicted ticks, redirects) and found none. Not 0, because Cheap Shot does carry a real authored damage formula and Mighty is a real tier-scaling rider."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 1,
+    "evidence": "The only tier-scaling damage in the tree is Mighty's flat +1+tier per action spent (+2 at Tier 1, +3 at Tier 2), and it is a six-tree shared node. Its best in-tree pairing is Subtle Takedown, a 2-Action attack, for +4 at Tier 1 / +6 at Tier 2 — but that talent is L6 (Insight 3+), so the +6 and the Tier-2 die arrive at the same step and the combination never exists at Tier 1. Cheap Shot's @scalar.damage.unarmed does not reference tier at all. Repeatability is fine (Cheap Shot is 1 focus and can go every round while focus lasts) but the number barely grows."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Rests almost entirely on ONE node, and survives at 3 because that node is unique and early. Cheap Shot applies Stunned on a hit; searching all 365 talents for 'Stunned' returns exactly three, and Cheap Shot is the ONLY one that APPLIES it — leyline/Green's Natural Recovery and heroic/Envoy's Devoted Presence both REMOVE it. Stunned is the most valuable condition in a 3-action economy (lose reaction + two fewer actions, per SYSTEM-PRIMER), and Cheap Shot delivers it at depth 0, L1, for 1 Action + 1 focus, repeatably, testing Thievery vs. Cognitive. Everything else is narrative-tier, one-shot, and L6+: Subtle Takedown (target can't communicate, L6), Mercurial Façade (first character to see through the disguise is Surprised, L7 — and note Hunter's Startling Blow applies Surprised at L1 'on a hit or graze', so this is not a rare effect), Close the Case (on success the target backs down, L6). Not 4: no restrain, immobilise, forced movement or reaction denial, and leyline/Black (Hollow Command, Extract Thought), leyline/Blue (Ghostly Walls, Absolute Stillness) and heroic/Envoy (Steadfast Challenge → Calm Appeal → Peaceful Solution) all field deeper control benches."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Baleful (Passive, depth 1, L2) — to resist your influence a character must spend additional focus equal to your tier: a genuine numeric tax, though it is a SHARED node verified in exactly three trees (heroic/Agent, heroic/Leader, leyline/Blue). Mercurial Façade's Surprised (one fewer action, once, L7). Subtle Takedown's communication lockout (L6). No defence reduction, no vulnerability, and — checked against the resource-economy census's 14 disadvantage-producing talents across 9 trees — Agent produces NO disadvantage anywhere. Close the Case actually hands the TARGET an advantage against you on failure, a self-debuff."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Every protective node in the tree is a shared generic heroic talent, verified by name-match: Collected (+2 Cognitive and Spiritual defenses) appears in 5 trees (Agent, Envoy, Scholar, leyline/Blue, leyline/Green); Hardy ('+1 max health per level, including previous levels') in 7 (Agent, Hunter, Leader, Warrior, leyline/Black, Green, White). At L10 Hardy is +10 max Health, which is meaningful, but its size relative to the L10 pool cannot be stated from in-scope material — the primer gives only the L1 pool (10 + STR) and puts the advancement table out of bounds. Surefooted reduces damage from falling and dangerous terrain by twice your tier: two damage sources only. No shields, no temp HP (the census's 14 temp-HP talents span 9 trees, none of them Agent), no resistance, no interception, no ally-facing protection, nothing touching Physical defense or Deflect."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Checked all 25 talents and the dossier's formula census: 1 damage formula, 0 heal formulas. Nothing restores Health, Focus, or Investiture. Hardy raises maximum health but restores none of it. Gather Evidence's Focused reduces future focus costs; it does not return focus. Double Down's 'you lose 2 focus' moves the resource the wrong way. Contrast heroic/Envoy's Galvanize ('An ally rolls their recovery die and recovers that much focus') and Rallying Shout, which is what a heroic tree looks like when it does have this."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Ally-facing: Watchful Eye (Reaction, use Opportunist on a willing ally's plot die within 20 ft) is the tree's ONLY ally buff, and it manipulates a side die, not the d20. Self: re-read against advantage-ledger.md, the tree's real advantage grants are exactly three — Sleuth's Instincts (cognitive tests vs. characters whose motivation you know), Shadow Step (if in cover or obscured), Close the Case (if motivation known) — and all three are L6 once the rank-3 gate is applied, so an Agent below L6 has no self-advantage source in this tree at all. Per SYSTEM-PRIMER advantage is binary, so they do not stack and each is narrowly conditional. Quick Analysis / Fast Talker / Trickster's Hand appear in the advantage ledger only because they name the Gain Advantage ACTION; they grant no advantage and are not counted. No allied numeric bonuses and no allied rerolls — compare heroic/Leader's three command-die talents, which add a die to allied and personal d20 rolls, or heroic/Envoy's Rousing Presence/Determined line. The plot-die engine's value is scored under resource_economy, not double-counted here."
+   },
+   {
+    "axis": "action_economy",
+    "score": 4,
+    "evidence": "Quick Analysis (Free Action, 2 focus, depth 1, L2), Fast Talker (Free Action, 2 focus, depth 2, Insight 3+ so L6) and Trickster's Hand (Free Action, 2 focus, depth 2, Thievery 3+ so L6) each grant 2 ACTIONS — for Cognitive, Spiritual and Physical tests respectively — usable on Use a Skill, Gain Advantage, or an Agent talent. No test, no trigger, just focus; on a 3-action Slow turn that is a 66% turn increase for a Free Action. Agent also has FOUR Free-Action talents, the most of any of the 21 trees (counted across all-talents.json: Agent 4, Envoy 2, Hunter 2, deity/Fate 2, then 1 or 0). But the atlas-wide search for net-Action grants returns more than the prior profile listed, and one of them beats Agent on sustain: heroic/Envoy's Foresight ('Gain an additional reaction each turn') is permanent, free, and every turn — strictly more sustainable than a 2-focus burst; heroic/Leader's Synchronized Assault grants multiple allies an Action for an additional STRIKE; heroic/Scholar's Turning Point grants 'you and your allies' an Action; heroic/Warrior fields Flamestance, Windstance AND Cautious Advance ('gain 2 Actions to Brace or Gain Advantage'). Held at 4, not 5: it is not unique and not the best on sustain; the granted actions explicitly cannot Strike; two of the three named uses (Gain Advantage, Use a Skill) are standard actions everyone already has, which the primer prices at roughly zero; the L6 rank gate means an Agent at levels 1-5 owns exactly ONE granter, Quick Analysis, restricted to Cognitive tests — which in combat funds almost nothing, since the only Cognitive-test Agent talents are Get 'Em Talking and Close the Case; and the 2-focus price against a 3-5 focus pool caps real usage at 1-2 per scene. Still 4 rather than 3 because no other tree has three dedicated unconditional granters."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Surefooted (Passive, depth 1, L2) — movement +10, permanent and unconditional; shared node, name-match confirms 3 trees (Agent, Hunter, Warrior). Shadow Step (Free Action, 2 focus, depth 2, Thievery 3+ so L6) — after you Disengage, test Thievery vs. each enemy's Cognitive to hide; repositioning-adjacent but it rides on Disengage, an action every character already has. No teleport, no free Move, no ignoring difficult terrain, no forced repositioning out of turn. Compare deity/Power's Momentum of Victory (move 15 ft and free Strike) or leyline/Blue's Phantom Step for what a real mobility node looks like."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Read every talent looking for areas, hazards, walls, difficult ground or persistent features: none exists. Surefooted names dangerous terrain but only to reduce damage taken from it. The tree never creates or modifies a square of the battlefield."
+   },
+   {
+    "axis": "information",
+    "score": 3,
+    "evidence": "Get 'Em Talking (2 Actions, 1 focus, depth 0, L1) — test Deduction vs. Spiritual to learn a target's motivation, which becomes a tracked fact the tree keys off. Sleuth's Instincts (Passive, depth 3, Deduction 3+ so L6) — you know when those characters lie to you: reliable, repeatable lie detection. Gather Evidence (Passive, depth 2, L3) — Legal Codes expertise plus Focused on a successful cognitive test. Real and usable, but strictly bounded to the SOCIAL domain, which is what holds it to 3 rather than 4: the comparative set has five trees doing combat intel that Agent cannot touch — heroic/Hunter's Sharp Eye ('learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half'), deity/Life's Vital Diagnosis (exact HP, max HP, conditions, defenses), deity/Knowledge's Studied Mark plus Pack Share (the same, shared party-wide), deity/Order's Lawkeeper's Eye and deity/Fate's Read the Threads (the target's intended action next turn). Agent also has zero Perception/scouting and no detection of hidden creatures — leyline/Green's Primal Awareness owns that."
+   },
+   {
+    "axis": "social_influence",
+    "score": 4,
+    "evidence": "The broadest axis in the tree: Get 'Em Talking (learn motivation, then raise the stakes to leverage it all scene), Baleful (opponents pay extra focus to resist your influence), Close the Case (on success the target backs down), Sleuth's Instincts (advantage vs. known-motivation targets + lie detection), High Society Contacts and Underworld Contacts (expertise plus 2 focus to ADD Opportunity to a test in that sphere), Cover Story (false identity + culture expertise), Mercurial Façade (supply-free disguise), Plausible Excuse (feign innocence when discovered), Fast Talker (2 extra actions for Spiritual tests — Deception, Discipline, Insight, Intimidation, Leadership, Persuasion). Ten talents, and the L1-L5 half of that (Get 'Em Talking, Baleful, Cover Story, Plausible Excuse, High Society Contacts, Underworld Contacts) is already broad, so the L6 wall does not sink the score. Not 5, and the comparative reason is heroic/Leader, not just Agent's own narrowness: Leader's three command-die talents (Demonstrative, Confident and Shrewd Command) add a growing die to Athletics/Agility/Leadership, Intimidation/Leadership/Persuasion and Deception/Insight/Leadership d20 rolls — a numeric bonus Agent has none of — on top of Set at Odds, Grand Deception, Tactical Ploy, Rumormonger and Well Dressed. heroic/Envoy separately owns the line Agent cannot touch at all: Steadfast Challenge → Calm Appeal (pacify) → Peaceful Solution ('If all non-minion enemies are pacified, you ease tensions and end combat')."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 4,
+    "evidence": "Five expertise grants (Plausible Excuse: Sleight of Hand; Cover Story: a culture; High Society Contacts: High Society; Underworld Contacts: Criminal Groups; Gather Evidence: Legal Codes) plus Cover Story's false identity, Mercurial Façade's supply-free disguise, Shadow Step's hide-from-everyone, Surefooted's +10 movement and fall/terrain damage reduction, and the three Free-Action talents which each add 2 actions to skill tests — large in downtime, investigation and infiltration where actions are cheap and focus refills between scenes. Not 5 because heroic/Scholar is the reference: seven expertise-GRANTING talents (Erudition, Efficient Engineer, Prized Acquisition, Deep Study, Mind and Body, Emotional Intelligence, Ongoing Care — an eighth, Deep Contemplation, reassigns Erudition's picks rather than granting), and Erudition itself grants a rotating expertise plus ranks in two non-invested cognitive skills, reassignable after a long rest. Agent is a strong second, not the reference."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Nothing summoned, built, animated or commanded. High Society Contacts and Underworld Contacts REQUIRE a patron/follower as a prerequisite — the tree consumes an out-of-tree Reward (the path description's own suggested rewards are 'a bodyguard companion and patrons'), it does not grant a companion."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4. What Agent genuinely owns: it is the atlas's densest Opportunity producer — a strict search of all 365 talents for Opportunity GENERATION returns 7 talents in 4 trees (leyline/Black Predatory Insight, heroic/Agent Sure Outcome + High Society Contacts + Underworld Contacts, heroic/Envoy High Society Contacts, heroic/Leader Well Supplied + Rumormonger), and Agent holds 3 of the 7 for a currency with 17 consumers system-wide. Sure Outcome converts ANY Complication to Opportunity for 2 focus at L1, and Gather Evidence produces Focused (talents cost 1 less focus). But the axis measures GENERATION of Investiture / Focus / Opportunity, and by that definition Agent is weaker than the prior 4 claimed: it generates ZERO Investiture and ZERO focus (the measurement's focus-regen roster is Black 2, Envoy 2, Hunter 1, Leader 1 — Agent absent), while 12 of its 25 talents spend focus and Double Down can burn 2 more as a penalty. Two of its three Opportunity producers are locked to a single social sphere AND require an out-of-tree Patron reward the character may not have. heroic/Envoy is the reference tree on this axis and settles the comparison: Galvanize ('An ally rolls their recovery die and recovers that much focus'), Applied Motivation, Lessons in Patience, Inspired Zeal and Composed are five talents that hand focus back to the party. Plot-die manipulation is variance control, not currency generation, and is scored as the tree's identity rather than counted twice here. 3 = a real, usable competency with the best single instance of one currency; not 4."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Cheap Shot",
+     "dice": "@scalar.damage.unarmed (impact) — the actor's BASELINE unarmed scalar; the formula names no tier, rank or talent term, so the talent adds nothing to the damage a Strike would already deal. With Mighty owned, +1+tier on top (+2 at Tier 1, +3 at Tier 2).",
+     "action": "1 Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Costs 1 focus. Attack test Thievery vs. Cognitive, raising the stakes; damage only on a hit. Carries the Stunned payload, which is the whole reason to take it — and testing Thievery vs. Cognitive lets a skill-built Agent attack a defense brutes tend to be weak in. Only Agent talent with a machine-readable ROLL FORMULA (dossier census: 1 damage, 0 heal). No skill-rank prerequisite, so L1 is genuinely reachable."
+    },
+    {
+     "name": "Subtle Takedown",
+     "dice": "unarmed damage, no bonus (no ROLL FORMULA in the overlay; the text is bare 'Make an unarmed attack'). Pairs with Mighty for +2(1+tier), i.e. +6 at Tier 2.",
+     "action": "2 Actions",
+     "depth": 2,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "CORRECTED from earliestLevel 3. The dossier prints L3 from depth alone, but the prose prerequisite is 'Insight 3+' and the SYSTEM-PRIMER rank-cap table caps every skill at rank 2 through level 5 — rank 3 is a level-6 gate. The dossier's own header states the rule ('rank 3+ needs L6') and its rankGate field is empty for every Agent talent, so it applies the rule ONLY to leyline colour ranks. This is the third measurement bug the brief predicted, it is system-wide rather than Agent-specific (heroic/Hunter's Fatal Thrust prints L2 on Perception 3+; heroic/Envoy's Foresight prints L4 on Discipline 3+), and it affects seven Agent talents. Also heavily conditional: the target must be UNSUSPECTING, a state the tree cannot manufacture in combat. Costs no focus."
+    },
+    {
+     "name": "Mighty",
+     "dice": "flat +1 + tier per action spent on the attack (+2 at Tier 1, +3 at Tier 2). No dice.",
+     "action": "Passive rider",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "Pure rider — fires only on an already-successful weapon or unarmed hit. Verified by name-match across all-talents.json as a SHARED generic node in exactly 6 trees (heroic/Agent, Envoy, Hunter, Leader, Warrior and leyline/Red), so it is not Agent-distinctive damage. Its real value in an Agent's hands is on ordinary weapon Strikes, i.e. it improves the character's non-Agent attacks more than its Agent ones — and Agent's own action-granters cannot fund a Strike."
+    }
+   ],
+   "countReal": 3,
+   "countFalsePositiveMitigation": 1,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "About one [Tier][Die]-equivalent of IMPACT damage per Action, and that is generous. Through levels 1-5 the best single Action available is Cheap Shot + Mighty = baseline unarmed scalar + 2 impact. The unarmed scalar's value is not in the dossier; if it is a d4-class die it averages 2.5 (a d6 averages 3.5), so the package sits at or slightly below 1d6 = [Tier][Die] at Tier 1 rank 2 — and it is impact, so Deflect eats part of it, while a leyline [Tier][Die] spirit/vital talent ignores Deflect entirely. Burst ceiling: the multi-Cheap-Shot turn requires Trickster's Hand, which is Thievery 3+ and therefore L6, so it does not exist at Tier 1 at all. At L6+ (Tier 2) Trickster's Hand costs a Free Action + 2 focus and grants 2 extra Physical actions, giving 5 actions; focus, not actions, is the real cap — a WIL-2 Agent's pool of 4 buys Trickster's Hand plus TWO Cheap Shots, and the 5-focus / 3-Cheap-Shot line needs WIL 3 (pool 5), which the path's own build tips discourage. That turn is 2-3 x (unarmed + 3) impact plus 2-3 Stun attempts, once per scene. Nothing else scales this.",
+   "repeatability": "Cheap Shot is repeatable every Action for 1 focus, so the floor sustains for roughly 3-5 Actions per scene before focus runs out; Mighty is free and permanent. The burst turn (an action-granter plus multiple Cheap Shots) is a once-per-scene play and is unavailable before L6. There is no cooldown-free damage option and no way to deal damage without spending focus except riding Mighty on an ordinary Strike or using Subtle Takedown, the tree's one cost-free attack — which itself needs an unsuspecting target and level 6.",
+   "verdict": "This is not a damage tree and should never be scored as one — and the sharper statement, which the previous scoring missed, is that its two ATTACK talents add no damage whatsoever above the Strike every character already has. Cheap Shot rolls the bare @scalar.damage.unarmed; Subtle Takedown's text carries no damage clause at all. Both are per-action damage downgrades purchased for a rider (Stunned, a silence). The only net damage the tree contributes is Mighty, a shared generic node present in six trees. The comparative case is decisive: heroic/Hunter fills the same ambush slot with Startling Blow (Surprised on a hit or graze, L1) into Fatal Thrust ('Attack an unsuspecting target with a light melee weapon... Add 4d4 damage'), so the Agent prose's 'calculated strikes' is delivered by a different path. Zero [Tier][Die] expressions, zero vital/spirit damage, zero AoE, zero summon/zone/hazard/Afflicted damage — I looked specifically for damage that does not use the word and there is none. Exactly one talent, Surefooted ('reduce damage from falling and dangerous terrain by twice your tier'), is a mitigation false positive a keyword scan would count as damage, matching the census's MITIG 1; Hardy is durability, not damage. The prose census's 'SOURCE 0 / SRC+AMP 1' misses Cheap Shot, which carries an authored impact ROLL FORMULA, and Subtle Takedown, whose text says 'make an unarmed attack' — the formula stream catches the first. What would settle 'is unarmed+2 impact actually meaningful' is a real enemy's Health and Deflect, which the SYSTEM-PRIMER scope fence puts out of bounds."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (7 talents: Opportunist, Get 'Em Talking, Watchful Eye, Plausible Excuse, Sure Outcome, Cheap Shot, Risky Behavior) — all genuinely L1, none gated above skill rank 2",
+    "rating": 4,
+    "exemplars": "Cheap Shot (L1, 1 Action + 1 focus, the atlas's only Stun applier), Sure Outcome (L1, 2 focus, converts any Complication to Opportunity or buys Complication 4's +4 to the d20), Opportunist (free Special, a reroll every round for zero cost)",
+    "note": "The tree's two best talents are available at level 1. An Agent is at full identity — plot-die control plus a repeatable Stun — before it owns a single prerequisite. This is the only band with no rank-3 gate anywhere in it."
+   },
+   {
+    "band": "depth 1-2 (15 talents: Baleful, Quick Analysis, Collected, Cover Story, Double Down, Surefooted, Gather Evidence, Hardy, High Society Contacts, Mighty, Underworld Contacts, Subtle Takedown, Fast Talker, Shadow Step, Trickster's Hand) — 11 reachable L2-L3, but Subtle Takedown, Fast Talker, Shadow Step and Trickster's Hand are rank-3-gated to L6",
+    "rating": 4,
+    "exemplars": "Quick Analysis (L2, Free Action for +2 Cognitive Actions — the only pre-L6 action-granter in the tree), Fast Talker / Trickster's Hand (the same effect for Spiritual / Physical, but L6), Mighty (the tree's only tier-scaling damage), Collected (+2 to two defenses)",
+    "note": "The strongest band, but a large share of its weight is carried by shared generic heroic nodes that other trees also grant — every count verified by name-match across all 21 trees: Hardy 7, Mighty 6, Collected 5, Baleful 3, Surefooted 3, High Society Contacts 2. And the band splits in two by level: an L2-L5 Agent gets Quick Analysis and the generics (6 at L2, 5 at L3), while the other two action-granters and the tree's second attack wait for level 6."
+   },
+   {
+    "band": "depth 3 (3 talents: Close the Case, Sleuth's Instincts, Mercurial Façade) — ALL rank-3 gated; Close the Case and Sleuth's Instincts are L6, Mercurial Façade is L7",
+    "rating": 2,
+    "exemplars": "Close the Case (3 Actions + 3 focus for one Deduction test that gives the ENEMY an advantage on failure), Mercurial Façade (a disguise with one Surprised attached), Sleuth's Instincts (conditional advantage + lie detection)",
+    "note": "The weakest band in the tree, by a wide margin, and the level correction makes it worse rather than better: these are Tier-2, level-6-and-later picks competing against every other path's L6 power spike, and they deliver a coin-flip social test, a conditional passive, and a disguise. Mercurial Façade at L7 is the last talent in the tree by level and one of the least consequential."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED IN IDENTITY, WALLED IN BREADTH. Identity front-loads hard: the two best talents (Cheap Shot, Sure Outcome) are depth 0 at L1, and the whole plot-die engine (Opportunist, Risky Behavior, Watchful Eye, Sure Outcome, Double Down) is owned by L2. But the claim that 'all 25 talents are reachable by L4' and that 'there is no L6 discontinuity' is FALSE. SEVEN of 25 Agent talents carry a skill rank 3+ prose prerequisite — Subtle Takedown and Fast Talker (Insight 3+), Shadow Step and Trickster's Hand (Thievery 3+), Close the Case and Sleuth's Instincts (Deduction 3+), Mercurial Façade (Deception 3+) — and the SYSTEM-PRIMER's rank-cap table caps every skill at rank 2 through level 5. The corrected level map is 7 at L1, 6 at L2, 5 at L3 (Gather Evidence, Hardy, High Society Contacts, Mighty, Underworld Contacts), then NOTHING new until 6 more at L6 and Mercurial Façade at L7 (it needs Subtle Takedown, itself L6): 7+6+5+6+1 = 25. The brief's structural fact that heroic paths have no rank gate is true only of leyline COLOUR ranks; Agent gates 28% of its tree on ordinary skill ranks and hits the same level-6 cliff a leyline tree does — arriving with two-thirds of its action-economy engine and its entire deepest band at once. What levels 4 and 5 lack is not picks (18 talents are un-gated and a character can own at most 5 by L5) but any NEW unlock: the tree's un-gated menu is fully open at L3 and does not grow again until L6. Tier-driven growth remains trivial (Mighty's +2 becoming +3), so the L6 step is a breadth spike, not a power spike.",
+  "uniqueOwnership": [
+   "The ONLY plot-die reroll in the entire 365-talent atlas. Searching all talents for reroll returns exactly three real hits: Agent's Opportunist and Double Down (both reroll YOUR plot die) and deity/Chaos's Shatter Focus, which makes an enemy reroll a TEST and take the lower result — not a plot-die effect. (heroic/Hunter's Pack Hunting is a regex false positive: 'damage roll against your quarry' contains the substring 'roll again'.) This claim survives verification intact.",
+   "The only plot-die face conversion that UPGRADES a face — and the 'upgrade' needs a caveat. Sure Outcome turns any Complication into an Opportunity, or spends an Opportunity to buy Complication 4. Per cosmere-canon-reference §Complication, a Complication face carries +2 or +4 to the d20 AND gives the GM a Complication to spend (Hinder an Ally, Become Distracted, Influence the Narrative) — so the second direction is a trade, not a free +4. leyline/White's Pillar of Order also converts a face ('change it to a blank face'), so face-to-face conversion is not unique; only the upgrade direction and the bidirectionality are.",
+   "Among the most reliable net-Action generation in the atlas, but NOT the only source and NOT the best on sustain — CORRECTED TWICE. Quick Analysis, Fast Talker and Trickster's Hand each grant 2 actions for a Free Action + 2 focus with no test and no trigger, one per test category, and Agent carries four Free-Action talents, more than any of the 21 trees. But heroic/Envoy's Foresight ('Gain an additional reaction each turn') is a permanent, free, every-turn grant that outlasts Agent's focus-priced burst; heroic/Leader's Synchronized Assault grants allies an Action for an additional Strike; heroic/Scholar's Turning Point grants 'you and your allies' an Action on your next turns; heroic/Warrior fields Flamestance, Windstance and Cautious Advance. Agent's are unconditional, self-facing, and the densest; the others are test-gated or conditional but include the only ones that fund a Strike.",
+   "The ONLY talent that applies Stunned to an enemy — Cheap Shot. Verified across all 365 talents: the two other Stunned mentions (leyline/Green's Natural Recovery, heroic/Envoy's Devoted Presence) both REMOVE it. Given the primer's ranking of action denial, this makes a depth-0 L1 talent one of the most valuable single nodes in the system.",
+   "The DENSEST player-side 'raise the stakes' suite — but the previous claim that 'no other tree has more than one' is FALSE. Raising the stakes is defined as a GM action (cosmere-canon-reference: 'A GM action that triggers rolling the plot die'), and the full atlas roster is: heroic/Agent 4 (Risky Behavior on any test, plus Cheap Shot, Get 'Em Talking and Subtle Takedown baking it in), leyline/White 3 (Concordant Presence, Guiding Signal, Unity of Purpose — all ally-facing), heroic/Leader 1 (Cutthroat Tactics, handed to an ally), heroic/Scholar 1 (Overcharge, on its own fabrial attack) = 9. deity/Fate's Thread of Inevitability names 'the GM raises the stakes' only as a declarable trigger event. leyline/Red's Reckless Momentum, previously counted here, is NOT a raise-the-stakes talent — it 'spend[s] Opportunity to roll the Plot Die on your next test', which is plot-die production by another route. So Agent holds 4 of 9 and White holds 3.",
+   "The only ally-facing plot-die intervention that IMPROVES rather than merely cancels — but the mechanism is an INFERENCE, not text. Watchful Eye says 'Use Opportunist on the plot die of a willing ally'; Sure Outcome triggers 'When you use Opportunist'. Whether the combo lets you convert an ALLY's Complication to an Opportunity is a GM ruling, not something either card states. What is textual: leyline/White's Pillar of Order blanks an ally's Complication and heroic/Scholar's Contingency removes one, so no other tree upgrades an ally's face even in principle.",
+   "Structural oddity worth recording, NARROWED to the half that survives: the leyline design guide names plot-die manipulation as BLUE's capstone identity ('Choosing any Plot Die face is the ultimate Blue expression') — and Blue delivers NONE of it. I read all 25 Blue talents by name: not one references the plot die, Opportunity-as-a-face, or Complications; Blue's probability control is advantage/disadvantage and declaration effects instead. The guide's OTHER plot-die claim, that White's key mechanic is 'Plot Die integration... White rewards coordinated group action', IS delivered — White has three raise-the-stakes talents plus Pillar of Order, four of the atlas's plot-die talents — so the prior profile's 'neither tree delivers it' was false for White. The literal string 'plot die' appears in only three talents across two trees (Agent's Opportunist and Watchful Eye, leyline/Red's Reckless Momentum), but the mechanic is broader than the string."
+  ],
+  "gaps": [
+   "No healing whatsoever — not Health, not Focus, not Investiture, not to self, not to allies. An Agent standing over a downed ally has literally nothing to do; heroic/Envoy's Rallying Shout revives an Unconscious ally, which is what the alternative looks like.",
+   "No ranged damage and no AoE. Both ATTACK talents (Cheap Shot, Subtle Takedown) are unarmed melee, and the third damage talent is a melee hit rider. An Agent 40 ft from the fight contributes nothing offensive.",
+   "No terrain, zones, hazards or battlefield modification of any kind.",
+   "No summons, companions or constructs — the two Contacts talents consume an out-of-tree patron rather than granting one.",
+   "No ally protection, interception, damage redirection, temp HP or condition removal. Collected is self-only; the tree cannot cleanse a single condition off anyone.",
+   "No Investiture generation and no focus regeneration. An Agent who multiclasses into a leyline colour gets nothing back from this tree to pay for it, and in a long fight simply runs dry.",
+   "No Opportunity SINK of its own. The tree is the atlas's densest Opportunity factory and contains not one 'spend Opportunity to [effect]' payoff talent — verified against the 15 Opportunity-spending talents in the atlas, none of which is Agent's. An Agent's own Opportunities can only be cashed at the standard rates (Aid an Ally, Collect Yourself, Critically Hit, Influence the Narrative) or by an ally from another tree.",
+   "Nothing works on a target that cannot be talked to, deceived, or surprised. Get 'Em Talking, Close the Case, Baleful, Sleuth's Instincts, Subtle Takedown, Mercurial Façade, Plausible Excuse and both Contacts talents all need a thinking, communicating, socially-embedded target. Against beasts, oozes, constructs or the mindless, ten of 25 talents switch off at once — the single largest sit-on-hands scenario for this path.",
+   "No mounted, travel, crafting or survival content despite being an exploration-flavoured path — the exploration score comes from expertises and infiltration, not wilderness or logistics. heroic/Scholar owns crafting; heroic/Hunter owns survival and tracking.",
+   "No Fast-turn or initiative manipulation, despite the path prose promising 'swift movements' and 'the perfect moment'. leyline/Blue's Probable Outcome (change your fast/slow choice after everyone has chosen) is what that promise looks like when a tree keeps it.",
+   "NO NEW UNLOCKS AT LEVELS 4-5. Every talent not gated on skill rank 3+ is reachable by L3 (7 at L1, 6 at L2, 5 at L3 = 18 of 25); the remaining 7 all wait for L6 or L7. An Agent still has plenty of un-owned picks at L4-L5 — at most 5 talents can be owned by L5 — but the tree's menu stops growing at L3 and does not grow again for three levels, so those level-ups are spent deepening a shelf that is already fully visible."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'Artists of duplicity and sabotage.'",
+     "delivered": "PARTIAL — duplicity yes, sabotage no.",
+     "evidence": "Duplicity is fully delivered: Cover Story (false identity), Mercurial Façade (supply-free disguise), Plausible Excuse (feign innocence), Subtle Takedown (silence an unsuspecting target), both Contacts talents. Sabotage is delivered by NOTHING: no talent damages equipment, disables a device, plants evidence, poisons, or degrades an enemy's capability. The closest is Cheap Shot's Stun, which is combat control, not sabotage. Compare deity/Destruction, whose whole Charge economy is literal sabotage — the mechanic exists in the system, just not here."
+    },
+    {
+     "claim": "'Grasp the threads of fate in the palms of their hands, waiting for the perfect moment to pull.'",
+     "delivered": "DELIVERS — the atlas's densest expression of it, though the promise is not Agent's alone.",
+     "evidence": "Opportunist (reroll your plot die once per round), Sure Outcome (convert Complication to Opportunity or buy Complication 4), Double Down (reroll again), Watchful Eye (do it for an ally), Risky Behavior (choose the moment to raise the stakes at all). All five are L1-L2, so the fantasy lands immediately, and the rerolls are genuinely unique atlas-wide. Comparative note the prior profile missed: deity/Fate's intent file makes the same promise — 'the oracle who sets the board before initiative is rolled... they have already read it' — and delivers it with a completely different mechanic (Read the Threads learns a target's intended action; Ordained Ground and Snare pre-place the board). Agent owns the variance half of 'threads of fate'; Fate owns the foreknowledge half. Neither is drift; the promise is simply made twice."
+    },
+    {
+     "claim": "'Unravel the carefully laid plans of others.'",
+     "delivered": "DRIFTED.",
+     "evidence": "No talent interacts with an enemy's plan, readied action, reaction, buff, or prepared effect. No dispel, no counter, no interruption, no reaction denial except as a side effect of Cheap Shot's Stunned. Close the Case ('they back down') is the only talent that ends someone else's intention, and it costs 3 Actions and 3 focus and cannot be taken before level 6. The trees that actually do this: leyline/Blue (Forewarned + Intercept, Counterspell, False Premise), leyline/Black (Extract Thought, Hollow Command — both deny actions or Reactions), heroic/Leader (Tactical Ploy strips a reaction)."
+    },
+    {
+     "claim": "'Fool even the most prudent with their clever ruses.'",
+     "delivered": "DELIVERS.",
+     "evidence": "Mercurial Façade, Cover Story, Plausible Excuse, Baleful (opponents pay extra focus to resist your influence), Subtle Takedown's Insight-based approach. Note that the two strongest ruses (Mercurial Façade, Subtle Takedown) are L7 and L6. heroic/Leader's Grand Deception ('spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail') is a bigger single ruse than anything Agent owns, but Agent has the deeper bench."
+    },
+    {
+     "claim": "'Swift movements.'",
+     "delivered": "PARTIAL, thin.",
+     "evidence": "Surefooted (+10 movement, a shared generic node in 3 trees) and Shadow Step (hide after Disengage, L6) are the whole of it. No teleport, no free Move, no Fast-turn synergy, no initiative manipulation, no difficult-terrain ignoring — heroic/Warrior's Cautious Advance ignores difficult terrain and leyline/Blue's Phantom Step grants extra movement, so this is a promise other trees keep better."
+    },
+    {
+     "claim": "'Calculated strikes.'",
+     "delivered": "DRIFTED — and the comparative evidence makes it worse than the prior profile said.",
+     "evidence": "Two unarmed attack talents (Cheap Shot, Subtle Takedown), neither of which adds a single point of damage above the Strike any character already has, plus one shared flat rider (Mighty, present in 6 trees). No precision damage, no sneak-attack dice, no [Tier][Die] expression, no vital or spirit damage. The tree's own action-granters cannot fund a Strike — they legalise 'Use a Skill, Gain Advantage, or an Agent talent' only. And the assassin the prose describes exists elsewhere: heroic/Hunter's intent makes the same claim ('Hunters choose when and where to strike, securing an upper hand through... the element of surprise... the quarry won't perceive their assailant until it's too late') and Hunter DELIVERS it mechanically — Startling Blow (Action, L1) applies Surprised 'on a hit or graze', and Fatal Thrust attacks an unsuspecting target for '+4d4 damage, and gain two advantages if the weapon is Discreet'. Agent's Subtle Takedown occupies that exact slot with no damage payload, at level 6, needing a state the tree cannot create in combat. A player reading 'calculated strikes' and expecting a rogue's damage payoff should be playing Hunter."
+    },
+    {
+     "claim": "Investigator specialty: 'cultivate trustworthy instincts, learning to listen, collaborate, and pursue answers to questions others don't think to ask.'",
+     "delivered": "PARTIAL, with a structural problem.",
+     "evidence": "Listening and answers are delivered by Get 'Em Talking (learn motivation), Sleuth's Instincts (know when they lie), Gather Evidence (Legal Codes + Focused). Collaboration is delivered by exactly one talent, Watchful Eye. But the branch's own spine forces two off-theme shared nodes — Baleful (an influence tax) and Hardy (+1 max health per level) — between Get 'Em Talking and the Investigator capstones, and both capstones (Close the Case, Sleuth's Instincts) are Deduction 3+ and therefore level 6. Separately, the path description says Investigator is 'Available in the Stormlight Handbook', i.e. flags it as external content, yet the data ships EIGHT Investigator talents (Get 'Em Talking, Watchful Eye, Baleful, Quick Analysis, Gather Evidence, Hardy, Close the Case, Sleuth's Instincts): a straight description-vs-data disagreement worth recording."
+    },
+    {
+     "claim": "Spy specialty: 'plant themselves in sticky situations, ready to deflect or ease suspicion when it inevitably sweeps their way.'",
+     "delivered": "PARTIAL.",
+     "evidence": "Delivered by Plausible Excuse, Cover Story, Mercurial Façade, High Society Contacts. But the Spy branch also carries Mighty (a pure damage rider), Collected (+2 defenses) and Subtle Takedown (a 2-Action unarmed attack) — three of its EIGHT nodes are not suspicion management at all (Plausible Excuse, Sure Outcome, Collected, Cover Story, High Society Contacts, Mighty, Subtle Takedown, Mercurial Façade)."
+    },
+    {
+     "claim": "Thief specialty: 'train their bodies to keep pace... they risk it all to swindle the insurmountable odds.'",
+     "delivered": "DELIVERS — the best-served specialty claim.",
+     "evidence": "Risk is the actual mechanic: Risky Behavior (pay focus to raise the stakes on yourself), Double Down (reroll again, lose 2 focus on Complication), Cheap Shot (raise the stakes on your own attack). Body training: Surefooted (+10 move), Shadow Step, Trickster's Hand (extra Physical actions). Note that half the Thief branch (Fast Talker, Shadow Step, Trickster's Hand, plus Underworld Contacts' patron requirement) is level-6-or-reward-gated."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS: the action-type table's Heroic column reads Passive 34% / Special 30% / Action 14% / 2 Actions 8% / Free 7% / Reaction 5% / 3 Actions 2%.",
+     "delivered": "DEVIATES on two buckets — but this is a descriptive average, not a target Agent fails.",
+     "evidence": "Recounted across all 25 and it matches the normalised measurement exactly: Passive 8 (32%), Special 7 (28%), Action 1 (4%), 2 Actions 2 (8%), Free Action 4 (16%), Reaction 2 (8%), 3 Actions 1 (4%). The Action bucket is 10 points low and Free Action 9 points high. The Heroic % column is a descriptive average of 374 official talents across six heroic paths, while the TARGET column in that table is explicitly the LEYLINE target; no heroic-specific target exists, so a single path's deviation is not a design miss. The real finding is that Agent trades Actions for Free Actions — and a count across all 21 trees confirms four Free Actions is the MOST in the system (Envoy, Hunter and deity/Fate have 2; everything else has 1 or 0). The 'No 3-Action talents' revision principle is likewise a leyline principle; Close the Case's single 3-Action cost is 4% against an official heroic rate of 2%, i.e. one talent."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS names a key mechanic for each leyline colour and each deity, but NO key mechanic for any heroic path.",
+     "delivered": "DISAGREEMENT RECORDED, and NARROWED — it points at Blue, not at Blue and White.",
+     "evidence": "For heroic/Agent the design guide supplies only the benchmark table; it makes no key-mechanic claim. The path description names Opportunist as the Agent Key Talent, and the talent set backs that up (Watchful Eye, Sure Outcome and Double Down all reference Opportunist by name). The guide assigns 'Plot Die manipulation... Choosing any Plot Die face is the ultimate Blue expression' to BLUE — and reading all 25 Blue talents by name confirms Blue has zero plot-die content of any kind, so that identity is genuinely undelivered and heroic/Agent is where it landed instead. The guide's White claim ('Key mechanic: Plot Die integration. White rewards coordinated group action') IS delivered, contra the prior profile: White fields Concordant Presence, Guiding Signal and Unity of Purpose (all making ALLIES raise the stakes) plus Pillar of Order (blank an ally's Complication). Blue is the drift; White is not."
+    }
+   ],
+   "verdict": "PARTIAL. The fate-manipulation claim and the Thief specialty are delivered outright and (for the rerolls) uniquely; duplicity and the ruse claims are delivered; but sabotage, 'unravelling plans', 'swift movements' and 'calculated strikes' are all thin or absent, and for two of those the atlas has a tree that keeps the promise (Hunter for the ambush strike, Blue/Black for unravelling plans). What the tree ACTUALLY is: a focus-fuelled plot-die casino with the densest extra-Actions bench in the atlas and a deep expertise/infiltration bench, wearing one L1 Stun jab that deals baseline unarmed damage — and it is a two-stage tree, complete in identity at L2, menu-complete at L3, then static until L6 when a rank-3 wall opens seven more talents. It is a skill-and-tempo path, not a saboteur or an assassin.",
+   "actuallyIs": "A focus-fuelled plot-die manipulation engine — the atlas's only plot-die reroll — bolted to the densest net-Action bench in the system and a five-expertise social/infiltration kit, with one L1 unarmed Stun jab standing in for all of its promised offence, no damage above baseline, no resource regeneration, and 28% of its nodes behind a level-6 skill-rank wall."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "plot die",
+    "role": "BOTH",
+    "talents": "PRODUCE via raising the stakes (Risky Behavior, Cheap Shot, Get 'Em Talking, Subtle Takedown); MANIPULATE via Opportunist, Double Down, Sure Outcome, Watchful Eye. The literal string 'plot die' appears in only 3 talents across 2 trees (Agent's Watchful Eye and Opportunist, leyline/Red's Reckless Momentum), but the MECHANIC is broader: leyline/White fields four plot-die talents by effect (three raise-the-stakes plus Pillar of Order) and leyline/Blue — which the design guide says owns it — fields zero."
+   },
+   {
+    "keyword": "Opportunist (the Key talent, referenced by name by three other talents)",
+    "role": "BOTH",
+    "talents": "Opportunist grants it; Watchful Eye, Sure Outcome and Double Down all key off 'when you use Opportunist'"
+   },
+   {
+    "keyword": "raise the stakes",
+    "role": "PRODUCE",
+    "talents": "Risky Behavior (1 focus, any test), Cheap Shot, Get 'Em Talking, Subtle Takedown — normally a GM action. Four of the NINE raise-the-stakes talents in the atlas; the others are leyline/White's Concordant Presence, Guiding Signal and Unity of Purpose (three, all ally-facing), heroic/Leader's Cutthroat Tactics, and heroic/Scholar's Overcharge. leyline/Red's Reckless Momentum is NOT one — it spends Opportunity to roll the Plot Die."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "PRODUCE",
+    "talents": "Sure Outcome (converts any Complication into one), High Society Contacts, Underworld Contacts (add Opportunity to a test in one sphere). Three of the seven Opportunity-generating talents in the atlas (the others: leyline/Black's Predatory Insight, heroic/Envoy's High Society Contacts, heroic/Leader's Well Supplied and Rumormonger) — the densest producer. NOTHING in this tree spends Opportunity, against 15 Opportunity-spending talents elsewhere."
+   },
+   {
+    "keyword": "Complication / Complication 4",
+    "role": "BOTH",
+    "talents": "CONSUME: Sure Outcome converts any Complication to Opportunity. PRODUCE: Sure Outcome can deliberately buy Complication 4 — per cosmere-canon-reference the plot-die Complication faces carry +2 or +4 to the d20 AND hand the GM a Complication to spend, so this is a trade, not a pure gain. Double Down risks one and costs 2 focus when it lands. Elsewhere: leyline/White's Pillar of Order blanks an ally's Complication, heroic/Scholar's Contingency removes one, heroic/Leader's Cutthroat Tactics pays the Leader focus when an ally rolls one."
+   },
+   {
+    "keyword": "focus",
+    "role": "CONSUME",
+    "talents": "12 of 25 spend it, recounted against every Cost field: Get 'Em Talking 1, Cheap Shot 1, Risky Behavior 1, Plausible Excuse 2, Sure Outcome 2, Quick Analysis 2, High Society Contacts 2, Fast Talker 2, Shadow Step 2, Trickster's Hand 2, Underworld Contacts 2, Close the Case 3. Double Down can burn 2 more as a penalty. The tree never restores focus — the atlas's focus-regen roster is leyline/Black 2, heroic/Envoy 2, heroic/Hunter 1, heroic/Leader 1."
+   },
+   {
+    "keyword": "Focused (condition — talents cost 1 less focus)",
+    "role": "PRODUCE",
+    "talents": "Gather Evidence (on a successful cognitive test against a target). A discount, not generation."
+   },
+   {
+    "keyword": "Stunned (condition)",
+    "role": "PRODUCE",
+    "talents": "Cheap Shot — verified as the atlas's only applier of Stunned (the other two mentions, leyline/Green's Natural Recovery and heroic/Envoy's Devoted Presence, remove it)"
+   },
+   {
+    "keyword": "Surprised (condition)",
+    "role": "PRODUCE",
+    "talents": "Mercurial Façade (the first character to see through your disguise), L7 — not a rare effect: heroic/Hunter's Startling Blow applies Surprised at L1 on a hit or graze"
+   },
+   {
+    "keyword": "expertise",
+    "role": "PRODUCE",
+    "talents": "Plausible Excuse (Sleight of Hand), Cover Story (a culture), High Society Contacts (High Society), Underworld Contacts (Criminal Groups), Gather Evidence (Legal Codes) — five, against heroic/Scholar's seven granting talents (an eighth, Deep Contemplation, reassigns rather than grants)"
+   },
+   {
+    "keyword": "motivation (a tree-local tracked fact about a target)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Get 'Em Talking (L1). CONSUME: Close the Case (advantage if known) and Sleuth's Instincts (advantage + lie detection) — both L6 — plus Get 'Em Talking's own scene-long 'raise the stakes to leverage this motivation' clause. Functionally Agent's private token, though it is never named as a resource the way Quarry or Insight are."
+   },
+   {
+    "keyword": "influence / resisting influence",
+    "role": "CONSUME",
+    "talents": "Baleful taxes the resistance by tier focus (shared node, verified in leyline/Blue and heroic/Leader). Note leyline/White's Disciplined Mind is the counter-play: it reduces the focus cost to resist influence for a whole party."
+   },
+   {
+    "keyword": "advantage",
+    "role": "PRODUCE",
+    "talents": "Sleuth's Instincts, Shadow Step, Close the Case — all self, all conditional, all redundant with each other given the binary implementation, and all three are L6. Quick Analysis / Fast Talker / Trickster's Hand name the Gain Advantage ACTION but grant no advantage."
+   },
+   {
+    "keyword": "unarmed attack",
+    "role": "CONSUME",
+    "talents": "Cheap Shot, Subtle Takedown (both make one, neither adds damage to it); Mighty riders on one. Compare heroic/Hunter's Startling Blow (unarmed/improvised, applies Surprised) and heroic/Scholar's Anatomical Insight (unarmed hit → Exhausted) — unarmed attacks are a shared heroic idiom, not an Agent signature."
+   },
+   {
+    "keyword": "tier",
+    "role": "CONSUME",
+    "talents": "Baleful (focus tax = tier), Surefooted (2x tier damage reduction), Mighty (+1+tier per action spent), Hardy (+1 max health per level)"
+   },
+   {
+    "keyword": "Actions (as a granted quantity)",
+    "role": "PRODUCE",
+    "talents": "Quick Analysis (+2 Cognitive, L2), Fast Talker (+2 Spiritual, L6), Trickster's Hand (+2 Physical, L6) — the densest net-Action bench in the atlas. Other net-Action sources: heroic/Envoy's Foresight (+1 reaction EVERY turn, permanent), heroic/Leader's Synchronized Assault (allies, funds a Strike), heroic/Scholar's Turning Point (party-wide), heroic/Warrior's Flamestance, Windstance and Cautious Advance."
+   },
+   {
+    "keyword": "Cognitive / Spiritual / Physical test categories",
+    "role": "CONSUME",
+    "talents": "the three action-granters are keyed one to each — which is why the pre-L6 Agent's only granter (Quick Analysis, Cognitive) funds almost nothing in combat: the tree's Cognitive-test talents are Get 'Em Talking and Close the Case. Cheap Shot is a Thievery (Physical) test and is funded only by Trickster's Hand, an L6 talent."
+   },
+   {
+    "keyword": "Use a Skill / Gain Advantage (standard actions)",
+    "role": "CONSUME",
+    "talents": "the three action-granters name them as legal spends; per the primer a talent reproducing a standard action is worth roughly zero, so the payload is the 'or an Agent talent' clause. Notably Strike is NOT on the list — heroic/Leader's Synchronized Assault and heroic/Warrior's Flamestance both grant Actions that CAN attack."
+   },
+   {
+    "keyword": "Cognitive and Spiritual defenses",
+    "role": "PRODUCE",
+    "talents": "Collected (+2 to each) — shared node in 5 trees"
+   },
+   {
+    "keyword": "maximum health",
+    "role": "PRODUCE",
+    "talents": "Hardy (+1 per level including previous levels) — shared node in 7 trees, the most-shared node Agent carries"
+   },
+   {
+    "keyword": "movement",
+    "role": "PRODUCE",
+    "talents": "Surefooted (+10) — shared node in 3 trees"
+   },
+   {
+    "keyword": "Disengage",
+    "role": "CONSUME",
+    "talents": "Shadow Step triggers after you Disengage"
+   },
+   {
+    "keyword": "hidden / cover / obscured",
+    "role": "BOTH",
+    "talents": "Shadow Step (hide from each enemy; advantage if in cover or obscured) — the atlas's only hide talent, though leyline/Green's Primal Awareness and heroic/Warrior's Wary are the counters to it"
+   },
+   {
+    "keyword": "dangerous terrain / falling damage",
+    "role": "CONSUME",
+    "talents": "Surefooted mitigates both by twice your tier — this is the tree's one damage-census mitigation false positive"
+   },
+   {
+    "keyword": "unsuspecting (target state)",
+    "role": "CONSUME",
+    "talents": "Subtle Takedown requires it and the tree cannot reliably create it in combat. heroic/Hunter is the tree that can: Startling Blow applies Surprised at L1, and Fatal Thrust is the '+4d4 to an unsuspecting target' payoff Agent lacks."
+   },
+   {
+    "keyword": "Patron / follower (a character Reward, not a talent)",
+    "role": "CONSUME",
+    "talents": "High Society Contacts requires a patron in high society; Underworld Contacts requires a patron or follower in the criminal underworld — the path description recommends exactly these rewards. heroic/Leader's Rumormonger and heroic/Envoy's High Society Contacts carry the same out-of-tree dependency."
+   },
+   {
+    "keyword": "skill rank gates (Insight 2+/3+, Deduction 1+/3+, Deception 1+/3+, Thievery 3+)",
+    "role": "CONSUME",
+    "talents": "12 of 25 talents carry one. CRITICAL: the SEVEN rank-3+ gates — Subtle Takedown and Fast Talker (Insight 3+), Shadow Step and Trickster's Hand (Thievery 3+), Close the Case and Sleuth's Instincts (Deduction 3+), Mercurial Façade (Deception 3+) — are LEVEL 6 gates, because the skill rank cap is 2 through level 5. The dossier's earliest-L column does not reflect this (its rankGate field is empty for every Agent talent), and the bug is system-wide, not Agent-specific: heroic/Hunter's Fatal Thrust prints L2 on Perception 3+, heroic/Envoy's Foresight prints L4 on Discipline 3+."
+   }
+  ],
+  "crossTreeHooks": [
+   "The entire Opportunity output has no in-tree sink. Sure Outcome, High Society Contacts and Underworld Contacts manufacture Opportunity; not one Agent talent spends it. The full consumer list, verified across all 365 talents, is 15 talents in 8 trees — leyline/White's Mending Aura and Collective Resolve, leyline/Blue's Probability Cascade, leyline/Red's Reckless Momentum, Afterburn and Reckless Gambit, leyline/Green's Sudden Growth and Natural Recovery, leyline/Black's Predatory Insight, heroic/Scholar's Overcharge and Anatomical Insight, deity/Power's Momentum of Victory — making Agent the atlas's Opportunity supplier and a natural multiclass partner for any 'spend Opportunity to...' path, leyline/Red above all.",
+   "The plot-die landscape outside Agent, corrected and enumerated: leyline/White fields FOUR plot-die talents (Concordant Presence, Guiding Signal and Unity of Purpose all make allies raise the stakes; Pillar of Order blanks an ally's Complication for 1 Investiture at White 3+/L6); heroic/Scholar's Contingency removes an ally's Complication (2 focus) and Overcharge raises the stakes on its own fabrial attack; heroic/Leader's Cutthroat Tactics lets an ally raise the stakes and pays the Leader 1 focus on a Complication; leyline/Red's Reckless Momentum spends Opportunity to roll the Plot Die outright. Agent is the only tree that REROLLS or UPGRADES a face; the others produce, blank, or delete. leyline/Blue, which the design guide says owns this mechanic, has none of it.",
+   "Watchful Eye is worthless without a willing ally within 20 ft who is actually rolling a plot die — its value is set entirely by party composition and by how often the stakes get raised on someone else. It pairs specifically with leyline/White's three raise-the-stakes talents and heroic/Leader's Cutthroat Tactics, which are the atlas's manufacturers of ally plot-die rolls. Note the Watchful-Eye-plus-Sure-Outcome upgrade combo is an inference from 'when you use Opportunist', not stated on either card.",
+   "Mighty rides on ANY weapon or unarmed hit, so its value comes from whatever attack the character has from equipment or another path; it contributes more to a multiclassed Agent's non-Agent attacks than to the Agent tree itself. It is also a shared node with five other trees, so it is a seam by construction.",
+   "The three action-granters legalise 'Use a Skill', which means they fund any other path's skill-test talents, not just Agent talents — the strongest export in the tree. They explicitly do NOT fund a Strike, so they pair badly with weapon paths and well with heroic/Scholar, heroic/Envoy and leyline test-based kits.",
+   "Gather Evidence's Focused (talents cost 1 less focus) discounts every focus-costed talent the character owns from any tree — worth most alongside heroic/Leader (11 focus costers) or heroic/Envoy (8).",
+   "High Society Contacts and Underworld Contacts have prerequisites that are not talents at all — a patron in high society, a patron or follower in the criminal underworld. They depend on the GM's Reward economy, and heroic/Envoy and heroic/Leader carry the same dependency on their own Contacts/Rumormonger nodes.",
+   "Subtle Takedown needs an UNSUSPECTING target, which this tree can only manufacture out of combat (Mercurial Façade, Cover Story, Shadow Step). In combat it depends on an ally or the situation — and the ally who supplies it best is a heroic/Hunter with Startling Blow, who also has the far better payoff talent (Fatal Thrust) for the same state.",
+   "Get 'Em Talking, Close the Case, Baleful and Sleuth's Instincts all require a target with a motivation that can be learned and leveraged — dependent on GM adjudication and on the enemy being a person.",
+   "Cheap Shot's Stunned is the setup another tree cashes: any path with a 'when the target is Stunned / has lost a Reaction' rider gains from an Agent in the party, and since Cheap Shot is the atlas's ONLY Stunned applier, an Agent is the only way to turn one on.",
+   "Baleful, Hardy, Collected, Surefooted, Mighty and High Society Contacts are shared nodes appearing in 2-7 trees each (verified: Hardy 7, Mighty 6, Collected 5, Baleful 3, Surefooted 3, High Society Contacts 2), so an Agent multiclassing into Envoy, Leader, Hunter, Warrior, Scholar, leyline/Red, Blue, Black, Green or White will find duplicate entries it must not double-buy. Six of Agent's 25 nodes are shared generics.",
+   "The L4-L5 plateau is itself a cross-tree hook: no NEW Agent talent unlocks at those levels, and the path description's own recommended multi-path choices (Hunter, Scholar) are the natural spend — Hunter in particular supplies the Surprised state and the damage payload Agent's prose promises but does not deliver."
+  ],
+  "topThree": [
+   "Sure Outcome — depth 0, L1, Special, 2 focus. Converts any Complication into an Opportunity, or trades an Opportunity for Complication 4's +4 to the d20 (the face bonus is canon, but so is the GM's Complication spend that comes with it). The most efficient talent in the tree, the only face-upgrade in the atlas, and available at character creation.",
+   "Cheap Shot — depth 0, L1, 1 Action, 1 focus, unarmed attack Thievery vs. Cognitive; on a hit the target is Stunned. Verified as the atlas's ONLY Stun applier, repeatable, no rank gate, targeting a defense many bruisers are weak in, and the primer ranks action denial as the most valuable category in a 3-action economy. Its damage is irrelevant; its condition is a system monopoly.",
+   "Quick Analysis — Free Action, 2 focus, depth 1, L2, +2 Actions for Cognitive tests. The densest action-granting bench in the atlas belongs to Agent, and this is the ONE of its three granters that is not locked to level 6 — its twins Fast Talker and Trickster's Hand need Insight 3+ / Thievery 3+. Caveat that keeps it third rather than first: restricted to Cognitive tests, it funds almost nothing in combat until the Physical granter arrives at L6."
+  ],
+  "bottomThree": [
+   "Close the Case — depth 3, L6 (Deduction 3+), 3 Actions + 3 focus for one Deduction test that gives the target an advantage against you on failure. An entire Slow turn and the whole focus pool for a coin flip, arriving at the same level as every other path's Tier-2 spike.",
+   "Mercurial Façade — depth 3 and, because it needs Subtle Takedown (itself Insight 3+, L6) plus Deception 3+, the LAST talent in the tree by level at L7. It is a disguise plus a Surprised that only fires after the disguise has already failed — and heroic/Hunter's Startling Blow hands out the same condition at L1 on a hit or graze.",
+   "Watchful Eye — burns the round's single Reaction (competing with Dodge, Aid, Reactive Strike) to reroll an ally's side die, in the narrow window where the stakes happened to be raised on that ally. Its Cost field is undefined in the data. Mitigating: it is the hard prerequisite for Quick Analysis, so every Agent buys it anyway."
+  ],
+  "weakTalents": [
+   {
+    "name": "Close the Case",
+    "reason": "The tree's worst talent and a clear never-pick. 3 Actions (an entire Slow turn) plus 3 focus — most or all of an Agent's 3-5 pool — for a single Deduction vs. Cognitive test whose failure clause hands the TARGET an advantage against you. It is the tree's only 3-Action talent; the 'No 3-Action talents' principle is stated in the LEYLINE revision guide and the official heroic rate is 2%, so one talent at 4% is a mild deviation rather than a violation. The real indictment is level: Deduction 3+ makes it a LEVEL 6 pick, competing with every other path's Tier-2 spike, and it is still a coin flip that can leave you worse off. heroic/Envoy's Peaceful Solution ends the whole combat as a Free Action when enemies are pacified — that is what a top-of-tree social finisher looks like."
+   },
+   {
+    "name": "Mercurial Façade",
+    "reason": "Depth 3, and once the rank gate is applied correctly it is L7 — the last talent in the tree by level, because it needs Subtle Takedown (Insight 3+, L6) plus Deception 3+. It delivers a depth-0-tier effect: disguise without physical supplies, plus one Surprised on the first person who sees through it — a rider that only fires when the talent has already failed at its job, and a condition heroic/Hunter's Startling Blow applies at L1 on a hit or graze."
+   },
+   {
+    "name": "Watchful Eye",
+    "reason": "Spends your ONE Reaction per round — competing with Dodge, Aid and Reactive Strike, which every character wants — to reroll an ALLY's plot die, a side die that only exists when the stakes have been raised on that ally's test. Its Cost field is undefined in the data. High ceiling in a specific moment, near-zero expected value per round, and its value is set by party composition (it needs a leyline/White or heroic/Leader ally to manufacture ally plot-die rolls). Mitigating: it is a hard prerequisite for Quick Analysis, the tree's only pre-L6 action-granter, so it is a mandatory buy regardless."
+   },
+   {
+    "name": "Double Down",
+    "reason": "A second reroll that costs you 2 focus if it lands on Complication — a gamble stacked on a gamble whose failure state actively drains the resource every other Agent talent needs, in a tree with zero focus regeneration. Strictly a desperation button, and it is a mandatory prerequisite node for both Fast Talker and Underworld Contacts (verified against the connections field)."
+   },
+   {
+    "name": "Plausible Excuse",
+    "reason": "A Reaction whose first half is a flat expertise grant (no reaction needed) and whose second half spends 2 focus for a GM-adjudicated 'feign innocence'. As a Reaction it competes with Dodge for the round's single slot; as an effect it is a narrative out with no defined mechanical resolution and zero wiring (events=0 effects=0)."
+   },
+   {
+    "name": "Cover Story",
+    "reason": "A tax node: a Passive at depth 1 granting a false identity and one culture expertise, with no combat or mechanical value at all — but it is the mandatory gate to Mighty, High Society Contacts and Subtle Takedown (all three list it in connections), so every Spy build pays a level for flavour."
+   },
+   {
+    "name": "High Society Contacts / Underworld Contacts (overcosted)",
+    "reason": "Overcosted for their reach. 2 focus — the same price as +2 Actions — to add Opportunity to a single test in one specific sphere, and both additionally require an out-of-tree Reward (a patron in high society; a patron or follower in the criminal underworld) the character may simply not have. High Society Contacts is a shared node with heroic/Envoy (verified: 2 trees), and heroic/Leader's Well Supplied and Rumormonger are the same talent shape at the same price, so the pattern is a heroic-atlas idiom rather than an Agent strength."
+   },
+   {
+    "name": "Quick Analysis / Fast Talker / Trickster's Hand (padded promise, two are L6, and one is combat-inert)",
+    "reason": "Strong talents, but their advertised scope is padded: two of the three named uses, Use a Skill and Gain Advantage, are standard actions every character already has, and per SYSTEM-PRIMER a second advantage on the same roll is worth exactly zero — so 'spend two extra actions on Gain Advantage' is at most one unit of value, not two. The real payload is 'or an Agent talent', a narrower list than the text implies, and it explicitly excludes Strike (heroic/Leader's Synchronized Assault and heroic/Warrior's Flamestance both grant Actions that CAN attack). Worse on the level axis: Fast Talker (Insight 3+) and Trickster's Hand (Thievery 3+) are LEVEL 6, so for the first five levels an Agent owns only Quick Analysis — and because it is Cognitive-only while Cheap Shot is a Thievery (Physical) test, the pre-L6 granter cannot fund the tree's own attack."
+   },
+   {
+    "name": "Baleful / Hardy / Collected / Surefooted / Mighty / High Society Contacts (structural)",
+    "reason": "Not weak individually, but SIX of the tree's 25 nodes are SHARED generic heroic talents — every count verified by name-match across all 21 trees: Hardy appears in 7 trees, Mighty in 6, Collected in 5, Baleful and Surefooted in 3 each, High Society Contacts in 2. Worse, the Investigator spine runs Get 'Em Talking -> Baleful -> Hardy -> Close the Case / Sleuth's Instincts, forcing an Investigator to spend two levels on generic filler to reach its own capstones — which are then rank-3-gated to level 6 anyway."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "1-2 rounds of its premium plays, then 2-4 rounds of its cheap ones, then nothing. The tree's own build tips tell the player to prioritise Awareness, Intellect and Speed — NOT Willpower — so a typical Agent has WIL 1-2 and therefore a focus maximum of 3-4 (2 + WIL per the primer); a WIL-3 outlier reaches 5. Its signature plays cost 2 focus each (Sure Outcome, Quick Analysis, Fast Talker, Trickster's Hand, Shadow Step, both Contacts) and its deepest talent costs 3, so a 4-focus Agent gets exactly TWO premium activations per scene, or one premium play plus two Cheap Shots. Focus refills only on rests: there is no in-combat regeneration anywhere in the tree, and the sole relief is Gather Evidence's Focused (talents cost 1 less focus), which itself requires a successful cognitive test against a target. This is materially WORSE than the leyline baseline, where Draw Mana converts 1 Action into 1 Investiture (2 at Tier 2) and sustains ~50-66% uptime indefinitely — an Agent has no equivalent pump and simply runs out. It is also worse than the heroic comparison: heroic/Envoy hands focus back with Galvanize (an ally rolls their recovery die and recovers that much focus), Applied Motivation, Lessons in Patience and Inspired Zeal, and raises the ceiling with Composed. Free options that survive the drought: Opportunist, Watchful Eye, Double Down, Mercurial Façade and Subtle Takedown (all Cost: undefined in the data), plus the passives Mighty, Collected, Surefooted, Hardy, Baleful, Sleuth's Instincts, Cover Story and Gather Evidence. Subtle Takedown is not 'the only non-Passive talent with no resource cost' — it is the only talent that spends ACTIONS without also spending focus.",
+   "triggerGatedCount": 2,
+   "reactionCount": 2,
+   "resourceCostersOutOfTree": 12,
+   "note": "Reactions: 2 of 25 (Watchful Eye, Plausible Excuse) — the 1-Reaction-per-round cap creates no internal competition, but both compete with Dodge / Aid / Reactive Strike, which every character wants more. triggerGatedCount is 2, matching the deterministic measurement's definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit') and its reported 8% for Agent — the joint-lowest trigger-gated share in the system with Leader and Scholar, against leyline/White's 52%. Recorded separately under a different name: about 12 of 25 Agent talents are CONDITIONAL on something beyond a plain activation — Watchful Eye (ally's plot die), Plausible Excuse (discovered skulking), Opportunist / Double Down / Sure Outcome (need a plot die in play), Mighty (on a hit), Gather Evidence (on a successful cognitive test), Mercurial Façade (someone sees through), Subtle Takedown (unsuspecting target), Sleuth's Instincts and Close the Case (motivation already known), both Contacts talents (the right social sphere). resourceCostersOutOfTree = 12, the count of talents whose Cost field spends a resource this tree cannot regenerate (all focus), matching the measurement's 'costers Agent 12' — the highest focus-coster count of any tree in the atlas, against zero regeneration. Wiring note: 13 of 25 Agent talents ship with events=0 and effects=0, including Opportunist itself, Sure Outcome, Double Down and Watchful Eye — the entire signature plot-die engine is currently unautomated and resolved by hand (an engineering fact, not a design one)."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.damageTalents[Subtle Takedown].earliestLevel / powerByDepth bands / frontOrBackLoaded / bottomThree / axes evidence throughout",
+   "from": "Subtle Takedown earliestLevel 3; 'all 25 talents are reachable by L4'; 'there is no L6 discontinuity to look forward to'; 'the power curve is essentially flat after L3'; Mercurial Facade 'depth 3, L4'",
+   "to": "Seven talents are LEVEL 6+: Subtle Takedown and Fast Talker (Insight 3+), Shadow Step and Trickster's Hand (Thievery 3+), Close the Case and Sleuth's Instincts (Deduction 3+) at L6, and Mercurial Facade (Deception 3+ AND Subtle Takedown) at L7. Real level map: 7 at L1, 6 at L2, 4 at L3, nothing at L4-L5, 6 at L6, 1 at L7.",
+   "reason": "THE HEADLINE ERROR, and it is a dossier bug the profile inherited. SYSTEM-PRIMER: 'Tier 1 = levels 1-5, max skill rank 2; Tier 2 = levels 6-10, max skill rank 3' — a cap on EVERY skill, not just leyline colours. The heroic-Agent.md header states the same rule ('rank 3+ needs L6'), then the generator applies it only to colour-rank prereqs: leyline/White's Pillar of Order (White 3+) correctly prints 'earliest L6', while Agent's Subtle Takedown (Insight 3+) prints 'earliest L3'. The brief's structural fact that heroic paths carry no rank gate is true only of COLOUR ranks; Agent gates 28% of its tree on ordinary skill ranks. This is the third classifier bug the brief predicted."
+  },
+  {
+   "field": "axes.action_economy.score + evidence; uniqueOwnership; topThree",
+   "from": "score 5; 'Cross-checking all 365 talents: NOTHING else in the atlas grants net extra Actions'; 'The ONLY source of net extra ACTIONS'",
+   "to": "score 4; 'the most reliable net-Action generation in the atlas, but NOT the only one'",
+   "reason": "Refuted by text. heroic/Leader **Synchronized Assault**: 'On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.' heroic/Scholar **Turning Point**: 'On a success, you and your allies gain an Action on your next turns.' heroic/Warrior **Flamestance**: 'gain an Action to attack or Gain Advantage'; **Windstance**: 'use Free Action to gain an Action to Disengage or attack.' The profile checked only Cautious Advance (correctly net-zero) and the extra-Reaction talents. Score drops to 4 because the rubric reserves 5 for the reference implementation: Agent's grants are not unique, cannot fund a Strike (Leader's can), name two standard actions the primer prices at zero, and — with the level correction — number exactly ONE (Quick Analysis, Cognitive only) for levels 1-5."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "'If the unarmed scalar is a d4-class value averaging ~4.5'",
+   "to": "'if it is a d4-class die it averages 2.5'",
+   "reason": "Arithmetic error. A d4 averages 2.5; the profile's own comparison sentence names 3.5 for 1d6, so 4.5 for a d4 also inverts its own conclusion — it makes unarmed look BETTER than [Tier][Die] when the honest reading is at or below it."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "'At the deepest reachable point (all 25 talents are reachable by L4; Tier is still 1 until L6)... a turn of 3x Cheap Shot... for 5 focus — the ENTIRE focus pool of a typical Agent'",
+   "to": "The burst requires Trickster's Hand (Thievery 3+ = L6), so it exists only at Tier 2 where Mighty is +3; and 5 focus needs WIL 3 (pool 5), while the profile's own 'typical Agent' has 3-4 — a WIL-2 Agent affords Trickster's Hand plus TWO Cheap Shots.",
+   "reason": "Two errors compounding: the burst was placed at a level where its enabling talent does not exist, and the focus arithmetic (5 focus) contradicts the pool figure (3-4) stated in the same profile's sustainability field."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "11",
+   "to": "2",
+   "reason": "Definition mismatch that breaks cross-tree comparability. The deterministic measurement defines trigger-gated as 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit' and reports 2 (8%) for Agent; my recount agrees — only Watchful Eye and Plausible Excuse qualify. The profile's 11 counted self-triggered riders (Mighty 'when you hit', Gather Evidence 'when you succeed') and state preconditions (unsuspecting target, motivation known). That broader count is a real observation and is preserved in the note under the name CONDITIONAL (~12 of 25), but it cannot sit in a field whose sibling trees were measured differently."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "'Subtle Takedown (the only non-Passive talent with no resource cost)'",
+   "to": "'the only talent that spends ACTIONS without also spending focus'",
+   "reason": "Self-contradicting against the dossier and against the same sentence. Watchful Eye, Opportunist, Double Down and Mercurial Facade all carry 'cost: undefined' and are non-Passive; the profile lists Opportunist and Double Down as free options two clauses earlier."
+  },
+  {
+   "field": "intentDrift.claims[Investigator]",
+   "from": "'the data ships 7 Investigator talents'",
+   "to": "EIGHT: Get 'Em Talking, Watchful Eye, Baleful, Quick Analysis, Gather Evidence, Hardy, Close the Case, Sleuth's Instincts",
+   "reason": "Miscount against the specialty field. Recounted all 25: Investigator 8, Spy 8, Thief 8, Key 1 = 25. The description-vs-data finding it supports is sound and survives; only the number was wrong."
+  },
+  {
+   "field": "intentDrift.claims[Spy]",
+   "from": "'three of its seven nodes are not suspicion management'",
+   "to": "'three of its EIGHT nodes'",
+   "reason": "Same miscount. Spy = Plausible Excuse, Sure Outcome, Collected, Cover Story, High Society Contacts, Mighty, Subtle Takedown, Mercurial Facade = 8."
+  },
+  {
+   "field": "uniqueOwnership (plot die)",
+   "from": "'the only three non-Agent talents that touch the plot die (White's Pillar of Order, Scholar's Contingency, Chaos's Shatter Focus) merely delete or blank a Complication'",
+   "to": "Enumerated correctly: leyline/Red **Reckless Momentum** ('spend Opportunity to roll the Plot Die on your next test this turn') and heroic/Leader **Cutthroat Tactics** ('Your ally can raise the stakes instead of rolling your command die') were both missed; deity/Chaos's reroll talent rerolls an enemy's TEST, not a plot die.",
+   "reason": "Incomplete and partly misattributed. Grep of 'plot die' returns exactly 3 talents / 2 trees (Agent x2, leyline/Red x1), matching the measurement — so a leyline/Red plot-die talent exists and the profile's list omitted it. The narrower claims that survive are stated separately: Opportunist/Double Down ARE the atlas's only plot-die rerolls (grep-verified)."
+  },
+  {
+   "field": "uniqueOwnership (face conversion)",
+   "from": "'The ONLY conversion of a plot-die face in either direction... Nothing else in the atlas trades one face for another'",
+   "to": "'The only plot-die face conversion that UPGRADES a face'",
+   "reason": "leyline/White's Pillar of Order: 'change it to a blank face' — that is a face-to-face conversion. Only the upgrade direction and the bidirectionality are unique to Sure Outcome."
+  },
+  {
+   "field": "uniqueOwnership (raise the stakes)",
+   "from": "'The ONLY player-side self-service raise the stakes suite... Agent is the only path that manufactures plot-die rolls on demand'",
+   "to": "'The DENSEST... not the only one' — Agent holds 4 of the 9 raise-the-stakes talents",
+   "reason": "heroic/Scholar **Overcharge** is also self-service: 'Once per turn, you can raise the stakes on a fabrial attack.' Also leyline/White's Unity of Purpose ('When two or more allies aid the same test, raise the stakes'), Leader's Cutthroat Tactics, and Red's Reckless Momentum. The claim's substance (Agent has four; no other tree has more than one) is stronger stated honestly."
+  },
+  {
+   "field": "weakTalents[Close the Case]",
+   "from": "'against a design benchmark of 2% for official heroic paths and an explicit no 3-Action talents revision principle'",
+   "to": "Softened: the principle is in the LEYLINE revision guide (PART 3 #3) and the heroic 2% is descriptive; one talent at 4% is a mild deviation. The real indictment is that Deduction 3+ makes it a LEVEL 6 pick.",
+   "reason": "Applies a leyline-scoped design rule to a heroic path as though it were binding. DESIGN-GUIDE-CLAIMS labels the 0% 3-Action row as the TARGET Leyline column; the Heroic column is an observed average of official talents."
+  },
+  {
+   "field": "intentDrift.claims[action-type benchmark]",
+   "from": "'MISSES on three buckets... the tree is failing a target extracted partly from itself'",
+   "to": "'DEVIATES on two buckets — a descriptive average, not a target Agent fails'",
+   "reason": "Same category error. The counts themselves are correct and I re-verified all seven buckets independently (Passive 8/32%, Special 7/28%, Action 1/4%, 2 Actions 2/8%, Free 4/16%, Reaction 2/8%, 3 Actions 1/4%) — they match the normalised table exactly. Only the framing as a failed benchmark is wrong."
+  },
+  {
+   "field": "axes.protection.evidence",
+   "from": "Hardy '+1 max health per level including previous levels, which at L10 roughly doubles a base 10+STR pool'",
+   "to": "'+10 max Health at L10; its size relative to the L10 pool cannot be stated from in-scope material'",
+   "reason": "Compares a level-10 bonus against the LEVEL-1 pool. The primer gives 10+STR as the L1 value only and says max Health otherwise comes from the advancement table, which the scope fence puts out of bounds — so 'roughly doubles' is unsupported."
+  },
+  {
+   "field": "axes.exploration_utility.evidence",
+   "from": "'Scholar carries 8 expertise-granting talents'",
+   "to": "SEVEN",
+   "reason": "Grep of `gain_expertise` tags in heroic-Scholar.md returns 7. The comparative conclusion (Agent is a strong second at five) is unchanged."
+  },
+  {
+   "field": "gaps[ranged/AoE]",
+   "from": "'Both damage talents are unarmed melee'",
+   "to": "'Both ATTACK talents... and the third damage talent is a melee hit rider'",
+   "reason": "Internal inconsistency with the profile's own countReal of 3."
+  },
+  {
+   "field": "gaps + frontOrBackLoaded",
+   "from": "(absent)",
+   "to": "Added: a DEAD ZONE AT LEVELS 4-5 — 17 of 25 talents are reachable by L3 and the remaining 8 all wait for L6/L7, so an Agent's 4th and 5th level-ups buy nothing from this tree.",
+   "reason": "Direct consequence of the rank-gate correction, and the most actionable design finding in the recount."
+  },
+  {
+   "field": "VERIFIED, NO CHANGE — shared-node counts",
+   "from": "Mighty 6 trees, Hardy 7, Collected 5, Baleful 3, Surefooted 3, High Society Contacts 2",
+   "to": "unchanged — all six confirmed",
+   "reason": "I grepped '^## <name>' across all 21 dossiers for each. Mighty: Agent, Envoy, Hunter, Leader, Warrior, leyline/Red (6). Hardy: Agent, Hunter, Leader, Warrior, Black, Green, White (7). Collected: Agent, Envoy, Scholar, Blue, Green (5). Baleful: Agent, Leader, Blue (3). Surefooted: Agent, Hunter, Warrior (3). High Society Contacts: Agent, Envoy (2). Every number was exactly right."
+  },
+  {
+   "field": "VERIFIED, NO CHANGE — Stunned uniqueness, reroll uniqueness, Complication 4, focus-coster count, action-type counts, depth bands",
+   "from": "Cheap Shot is the atlas's only Stun applier; Opportunist/Double Down are the only plot-die rerolls; Complication 4 gives +4 on the d20; 12 of 25 talents spend focus; the 7/15/3 depth split",
+   "to": "unchanged — all confirmed",
+   "reason": "Stunned: grep returns 3 talents; Envoy's Devoted Presence and Green's Natural Recovery both REMOVE it (the profile even named them correctly). Reroll: grep returns 3; Chaos's is an enemy TEST reroll, not a plot die. Complication 4: cosmere-canon-reference §Complication — 'a bonus to the d20 result (+2 or +4 from the plot die face)... the number is the bonus side it lands on', so the profile's reading is right. Focus costers: recounted from every Cost field = 12, matching the measurement. Action types: recounted = 8/7/1/2/1/4/2, matching the normalised table exactly. Depth: 7 at depth 0, 15 at depth 1-2, 3 at depth 3 = 25, and every talent named in each band is in the right band."
+  },
+  {
+   "field": "VERIFIED, NO CHANGE — damage census",
+   "from": "countReal 3, countFalsePositiveMitigation 1, earliestDamageDepth 0, earliestDamageLevel 1",
+   "to": "unchanged",
+   "reason": "I re-read all 25 talents hunting for damage arriving without the word — summons, zones, hazards, Afflicted ticks, redirects, self-damage — and found none. Cheap Shot (authored impact ROLL FORMULA) and Subtle Takedown ('make an unarmed attack') are real damage the prose census missed; Surefooted is the one mitigation false positive, matching MITIG 1; Hardy is correctly excluded. The profile beat the classifier here and I am not disturbing it."
+  },
+  {
+   "field": "axes[damage_direct].score",
+   "from": "2",
+   "to": "1",
+   "reason": "Score inflation. Neither Agent ATTACK talent adds any damage above what every character already has. Cheap Shot's ROLL FORMULA is the bare `@scalar.damage.unarmed` (no tier, rank or talent term); Subtle Takedown's full text is 'Make an unarmed attack with Insight vs. an unsuspecting target's Cognitive, raising the stakes. On a hit, they can't communicate' — no damage clause, no formula. Both are per-action damage DOWNGRADES bought for a rider. The only net damage the tree adds is Mighty, verified by name-match as a shared node in six trees. Comparative anchor: heroic/Hunter fills the identical ambush slot with Fatal Thrust — 'Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet.' A tree whose attacks are worse than a Strike is a 1, not a 2."
+  },
+  {
+   "field": "axes[resource_economy].score",
+   "from": "4",
+   "to": "3",
+   "reason": "Score inflation against the axis's own definition ('GENERATING Investiture / Focus / Opportunity'). Agent generates zero Investiture and zero focus — the measurement's focus-regen roster is Black 2, Envoy 2, Hunter 1, Leader 1, with Agent absent — while 12 of 25 talents spend focus. Its generation is Opportunity only, from three talents, two of which (High Society Contacts, Underworld Contacts) are locked to a single social sphere AND require an out-of-tree Patron. heroic/Envoy is the reference tree by this definition: Galvanize ('An ally rolls their recovery die and recovers that much focus'), Applied Motivation, Lessons in Patience, Inspired Zeal and Composed all hand focus back. Plot-die manipulation is variance control, not currency generation, and was being counted as both identity and economy."
+  },
+  {
+   "field": "uniqueOwnership[raise the stakes] / mechanicalKeywords[raise the stakes]",
+   "from": "'Agent has four of the nine; no other tree has more than one'",
+   "to": "'Agent 4 of 9, leyline/White 3, Leader 1, Scholar 1'",
+   "reason": "False unique-ownership claim. A full-atlas search returns TEN raise-the-stakes hits, of which nine are producers: Agent's four, plus leyline/White's THREE (Concordant Presence 'the next ally testing that same skill this round raises the stakes'; Guiding Signal 'The next ally who tests against it this round raises the stakes'; Unity of Purpose 'When two or more allies aid the same test, raise the stakes'), Leader's Cutthroat Tactics and Scholar's Overcharge. Separately, leyline/Red's Reckless Momentum was miscounted as a raise-the-stakes talent — its text is 'spend Opportunity to roll the Plot Die on your next test this turn', a different mechanic."
+  },
+  {
+   "field": "uniqueOwnership[structural oddity] / intentDrift[design-guide key mechanic]",
+   "from": "'the guide assigns plot-die manipulation to Blue and plot-die integration to White — and neither tree delivers it'",
+   "to": "'Blue delivers none of it; White DOES deliver its claim'",
+   "reason": "Half the claim is false. The White key-mechanic claim is 'Plot Die integration. White rewards coordinated group action' — and White fields four plot-die talents (the three raise-the-stakes above plus Pillar of Order, 'change it to a blank face'), which is exactly that. The Blue claim IS undelivered: I read all 25 Blue talents by name and not one references the plot die, Opportunity-as-a-face, or Complications. Narrowing the finding to Blue alone makes it sharper, not weaker."
+  },
+  {
+   "field": "axes[action_economy].evidence / uniqueOwnership[net-Action generation]",
+   "from": "lists Leader's Synchronized Assault, Scholar's Turning Point, Warrior's Flamestance and Windstance",
+   "to": "adds heroic/Envoy's Foresight and heroic/Warrior's Cautious Advance; drops the 'most reliable in the atlas' framing to 'densest, but not best on sustain'",
+   "reason": "Incomplete comparative search. heroic/Envoy's **Foresight** ('Gain an additional reaction each turn') is a permanent, free, every-turn action grant that strictly outlasts Agent's 2-focus burst, and it was missed entirely. heroic/Warrior's Cautious Advance ('then gain 2 Actions to Brace or Gain Advantage') is a fourth Warrior source. Score held at 4 — Agent still has three dedicated unconditional granters and four Free-Action talents, the most of any of the 21 trees (verified count) — but the superlative was wrong."
+  },
+  {
+   "field": "frontOrBackLoaded / gaps[level map] / powerByDepth notes",
+   "from": "'7 at L1, 6 at L2, 4 at L3 = 17 of 25; the remaining 8 all wait for L6 or L7'",
+   "to": "'7 at L1, 6 at L2, 5 at L3 = 18 of 25; the remaining 7 wait for L6 or L7'",
+   "reason": "Arithmetic error: Underworld Contacts (depth 2, prereq 'Double Down; Patron or follower in criminal underworld', no rank-3 gate) was dropped from the L3 band. The profile's own uniqueOwnership and mechanicalKeywords entries correctly say SEVEN rank-3 gates while the gaps entry said eight. Corrected map sums to 25: 7+6+5+6+1."
+  },
+  {
+   "field": "gaps[dead zone] / crossTreeHooks[dead zone]",
+   "from": "'A DEAD ZONE AT LEVELS 4-5... An Agent has no in-tree pick at those levels'",
+   "to": "'NO NEW UNLOCKS AT LEVELS 4-5' — the menu stops growing, but picks remain",
+   "reason": "Overreach. 18 of 25 talents are un-gated and a character can own at most 5 by L5, so there are always Agent talents available to buy at L4 and L5. The defensible claim is narrower: no NEW talent becomes legal at those levels because the un-gated set is fully open at L3."
+  },
+  {
+   "field": "uniqueOwnership[ally-facing plot-die improvement]",
+   "from": "stated as fact that Watchful Eye + Sure Outcome converts an ally's Complication to an Opportunity",
+   "to": "flagged as an INFERENCE requiring a GM ruling",
+   "reason": "Neither card says it. Watchful Eye: 'Use Opportunist on the plot die of a willing ally within 20 ft.' Sure Outcome: 'When you use Opportunist, spend 2 focus to change...' Whether the second chains onto the first is an interpretation. The textual half of the claim — that White's Pillar of Order blanks and Scholar's Contingency removes, so nobody else upgrades — stands."
+  },
+  {
+   "field": "uniqueOwnership[Sure Outcome] / topThree[Sure Outcome] / mechanicalKeywords[Complication]",
+   "from": "'trades an Opportunity for Complication 4's +4 to the d20' presented as a clean upgrade",
+   "to": "same, with the canon caveat that the Complication face also hands the GM a Complication to spend",
+   "reason": "cosmere-canon-reference §Complication: 'A negative side effect on a test, also granting a bonus to the d20 result (+2 or +4 from the plot die face). The GM spends Complications for: Hinder an Ally, Become Distracted, Influence the Narrative.' The +4 is real but it is a trade, not a free gain."
+  },
+  {
+   "field": "intentDrift[calculated strikes] and [threads of fate]",
+   "from": "drift assessed against Agent's own text only",
+   "to": "adds the comparative half: Hunter makes and keeps the ambush promise; deity/Fate makes the same fate promise",
+   "reason": "Lens-B requirement (d). heroic/Hunter's INTENT file makes Agent's claim almost verbatim ('Hunters choose when and where to strike, securing an upper hand through... the element of surprise... the quarry won't perceive their assailant until it's too late') and DELIVERS it: Startling Blow applies Surprised 'on a hit or graze' at L1 and Fatal Thrust pays it off with +4d4. deity/Fate's INTENT makes Agent's fate claim ('the oracle who sets the board before initiative is rolled... they have already read it') and delivers the foreknowledge half with Read the Threads / Ordained Ground / Snare. Neither invalidates Agent's own delivery, but 'the only tree that does this' framing was unearned."
+  },
+  {
+   "field": "axes[information].evidence",
+   "from": "compared only against deity/Fate's Read the Threads",
+   "to": "compared against Hunter's Sharp Eye, Life's Vital Diagnosis, Knowledge's Studied Mark + Pack Share, Order's Lawkeeper's Eye, Fate's Read the Threads",
+   "reason": "Score of 3 confirmed, but the comparative basis was one tree deep. The five trees named all deliver COMBAT intel (lowest defense, exact HP, intended action, party-shared) that Agent has none of; Agent's information is entirely social-domain, and leyline/Green's Primal Awareness owns the Perception/tracking lane Agent also lacks."
+  },
+  {
+   "field": "axes[social_influence].evidence",
+   "from": "'Not 5 because it is all deception/leverage'",
+   "to": "adds the comparative reason: heroic/Leader matches or exceeds it, heroic/Envoy owns a lane Agent cannot touch",
+   "reason": "Score of 4 confirmed, but 'not 5' was argued from Agent's own narrowness rather than from the other 20 trees. Leader's three command-die talents (Demonstrative, Confident, Shrewd Command) add a growing die to Deception/Insight/Leadership/Intimidation/Persuasion d20 rolls — a numeric bonus Agent has none of — plus Set at Odds, Grand Deception, Tactical Ploy, Rumormonger. Envoy's Steadfast Challenge → Calm Appeal → Peaceful Solution ('If all non-minion enemies are pacified, you ease tensions and end combat') is a social win condition Agent has no analogue for."
+  },
+  {
+   "field": "axes[exploration_utility].evidence",
+   "from": "'Scholar carries SEVEN expertise-granting talents (not the 8 previously claimed)'",
+   "to": "kept at seven, with the eighth named and explained",
+   "reason": "Precision, not error. Eight Scholar talents mention expertise; seven carry the gain_expertise tag and actually grant one. The eighth, Deep Contemplation ('Reassign up to 2 skills and expertises from Erudition'), reassigns rather than grants. Naming it prevents the next reviewer re-litigating the count."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Subtle Takedown].note / mechanicalKeywords[skill rank gates]",
+   "from": "'this is a third measurement bug'",
+   "to": "same, plus proof it is system-wide rather than Agent-specific",
+   "reason": "Strengthening a correct finding. all-talents.json's `rankGate` field is EMPTY for every Agent talent even where prerequisites read 'Insight 3+', while leyline/White's Pillar of Order (prereq 'White 3+') correctly prints L6 — so the extractor recognises colour ranks only. The same bug mis-levels other trees: heroic/Hunter's Fatal Thrust prints L2 on Perception 3+, heroic/Envoy's Foresight prints L4 on Discipline 3+."
+  },
+  {
+   "field": "crossTreeHooks[Opportunity consumers] and [plot-die landscape]",
+   "from": "partial lists (four consumers; four plot-die talents outside Agent)",
+   "to": "full verified enumerations (15 Opportunity consumers in 8 trees; White's four plot-die talents named)",
+   "reason": "Completeness. The Opportunity-consumer list omitted White's Mending Aura and Collective Resolve, Blue's Probability Cascade, Red's Afterburn, Green's Sudden Growth and Natural Recovery, Scholar's Anatomical Insight and deity/Power's Momentum of Victory. The plot-die list omitted White's three raise-the-stakes talents."
+  },
+  {
+   "field": "axes[control].evidence / mechanicalKeywords[Surprised] / weakTalents[Mercurial Façade]",
+   "from": "Mercurial Façade's Surprised treated as a distinctive payload",
+   "to": "noted that Hunter's Startling Blow applies Surprised at L1 'on a hit or graze'",
+   "reason": "Comparative check on a payload the profile leaned on. Agent's L7 capstone rider hands out a condition another heroic tree gives away at L1 as an Action, on a hit OR a graze. The Stunned monopoly (Cheap Shot) survives verification and is what holds control at 3."
+  },
+  {
+   "field": "NOT CORRECTED — verified and left standing",
+   "from": "—",
+   "to": "—",
+   "reason": "These survived the adversarial pass unchanged, each re-derived from all-talents.json: (1) Cheap Shot is the atlas's ONLY applier of Stunned — the other two mentions (Green's Natural Recovery, Envoy's Devoted Presence) remove it. (2) Opportunist and Double Down are the atlas's only plot-die rerolls; Chaos's Shatter Focus rerolls a TEST, and Hunter's Pack Hunting was a regex artefact ('damage roll against' contains 'roll again'). (3) Shared-node counts all exact: Hardy 7 trees, Mighty 6, Collected 5, Baleful 3, Surefooted 3, High Society Contacts 2. (4) Four Free-Action talents is the most of any of the 21 trees. (5) Focus-coster count 12, matching the measurement. (6) The action-type census (Passive 8 / Special 7 / Action 1 / 2-Act 2 / 3-Act 1 / Free 4 / Reaction 2 = 25). (7) triggerGatedCount 2. (8) The 'something' test: Agent's something is plot-die control, and no other tree does it better — Blue, which the design guide says should, does not do it at all."
+  }
+ ]
+}

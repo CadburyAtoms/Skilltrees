@@ -1,0 +1,764 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "leyline/Red",
+ "correctionCount": 40,
+ "profile": {
+  "atlas": "leyline",
+  "tree": "Red",
+  "oneLineIdentity": "A 25-talent damage tree whose headline is a lie of position: the flashy Conflagration line is a modest 1d6/2d8 energy engine, while the tree's real ceiling is a free depth-2 Passive (Momentum's Edge) that adds your walking movement rate IN FEET — +20 to +30 impact — to any Strike made after a 20 ft approach, wrapped in a party-wide escalating +1 aura and the leyline atlas's only mass Reaction-denial package.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 5,
+    "evidence": "Score held at 5, but the JUSTIFICATION is rebased so it no longer hangs on one disputed formula. The independent census is the load-bearing evidence: leyline/Red is SOURCE=6, SRC+AMP=2, offensive(src)=8 - the highest offensive count of any of the 21 trees (next is deity/Knowledge at 7, in a 9-talent tree). Ten of 25 talents touch damage and SIX ORIGINATE it: Searing Bolt ([Tier][Die] energy, 1 Action + 1 Inv, depth 0/L1), Flame Surge ([Tier][Die] energy in a [Size] radius, half even on a success), Arc Flash (half [Tier][Die] to a SECOND character that was not being attacked), Chain Detonation (half [Tier][Die] to every creature within 5 ft of a kill), Afterburn (Afflicted[half [Tier][Die]] - new instances on later rounds with no further attack), Shockwave Slam (collision damage from forced movement). Four amplify: Kindle (+@skills.red.mod - VERIFIED as the SKILL mod, because the system computes skills[x].mod.derived = attrValue + rank (cosmere-rpg index.js:8487), so ~6 at L6, not ~3), Mighty (flat +(1+tier)), Volatile Strike, Momentum's Edge. Momentum's Edge is now an AMPLIFIER of an already-top score rather than the reason for it, and I verified both ends of its chain: data/authored/leyline-red.json:770 carries bonusFormula: \"@movement.walk.rate\", and the system's MOVEMENT_RATES = [20,25,30,40,60,80] via speedToMovementRate (index.js:8539) makes that +20 to +30 FEET of impact for a normal PC. COMPARATIVE CORRECTION (Lens B): the profile said 'no other leyline tree has a number like it'. leyline/Black's Withering Ray does - depth 0, L1, authored (2 * @tier)d(2 * @skills.black.rank + 2) type=vital, i.e. 2[Tier][Die] = 2d6 (avg 7) at L1 and 4d8 (avg 18) at L6, VITAL so it ignores Deflect entirely, for 1 Action and half [Die] health and NO Investiture. Same order of magnitude as Momentum's Edge, in a strictly better damage type, four depth-steps earlier. Red's lead is BREADTH, repeatability and multi-target reach - not per-hit quality: every point Red deals is impact or energy and therefore Deflect-reduced, and Red has ZERO vital and ZERO spirit damage. 5 still stands (damage is unambiguously this tree's defining pillar and its source count leads the system), and it survives even if Ben rules Momentum's Edge down to the Speed ATTRIBUTE (0-5) - that ruling would cost the tree its peak, not its identity."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Lowered 4 -> 3. The profile claimed 'Everything scales on [Tier][Die] or on tier/rank-derived stats' — that is textually false for the tree's two biggest riders. Seven talents DO scale on [Tier][Die] (Searing Bolt, Flame Surge, Arc Flash, Volatile Strike, Shockwave Slam, Afterburn, Chain Detonation) and jump hard at L6 (1d6 avg 3.5 -> 2d8 avg 9, a 2.57x step, arriving with Afterburn, Breaking Point, Chain Detonation and the Red 3+ gates). But the tree's LARGEST damage contributor, Momentum's Edge (@movement.walk.rate), is FLAT — a SPD-ladder value that never moves with tier. Kindle (@skills.red.mod) creeps only with the rank half of the skill mod; Mighty is (1+tier), +1 across the tree's entire life. So in real terms Red's damage is front-loaded: at L3 the free rider stack is ~7x the dice, at L10 it is ~3x. Repeatability is genuinely excellent — the rider stack is free and fires on an ordinary Strike every round forever — but 'keeps pace as tier rises' is only half true. COMPARATIVE ADDITION: Red's dice ceiling is ORDINARY for the system - one [Tier][Die], and five of its seven dice talents roll HALF of it. leyline/Black's entry talent already rolls 2[Tier][Die] (Withering Ray), and deity/Sovereignty's entire economy is damage-die-SIZE manipulation (7 talents). Nothing in Red raises a die size or a die count. So the only unusual thing about Red's scaling is its flat free-rider stack, which is precisely the part that does not scale."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Six talents, Reaction denial the through-line: Incite (1 Action + 1 Inv, Intimidation vs. Spiritual; on a success the TARGET chooses — Strike the nearest character OR lose its Reaction; the choice is the enemy's, so it is denial OR misdirection, never both, and the wiring leaves the forced action to the GM), Flashpoint (once/round, when a Red talent hits 2+ characters ALL affected lose a Reaction — mass denial, free, no action), Breaking Point (Special, 1 Inv, Disoriented on a second damage instance — the tree's best condition; note the authored watch is `scope: \"scene\"` with `whenTotal: at-least 2`, not the card's 'in a round', which if it plays as wired makes it far easier to trigger than the card promises), Explosive Leap (creatures within 5 ft of the landing test Physical or fall Prone), Shockwave Slam (push up to [Size] ft = 5 ft at rank 2, 10 ft at rank 3), Shatter Focus (drains 1 focus, indirectly denying Dodge/Aid/Reactive Strike, which each cost 1 focus). Held at 3: the ceiling is one Reaction plus Prone/Disoriented — checked all 25 texts, there is no Stunned, Restrained, Immobilized or Slowed anywhere — and the primer prices Action denial far above Reaction denial. COMPARATIVE ADDITION (Lens B): Incite is the WEAKER of the system's two forced-action implementations - deity/Power's Absolute Authority ('you choose the target's action on its next turn') lets the CASTER pick, where Incite leaves the choice to the enemy and can point the Strike at your own ally. And Red is not alone on Reaction denial: leyline/Black's Extract Thought is a FREE Passive that denies Reactions for a full round on a Deception success, leyline/Blue's Absolute Stillness denies them outright, and heroic/Warrior's Feinting Strike strips one on a hit. Red has the most instances; it does not have the best one. 3 holds."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Reckless Gambit (Exhausted[-2], a real cumulative penalty — but you must GRANT the target advantage first, at Opportunity + 1 Investiture; the authored effect applies a plain `exhausted` status with no [-2] value, so even the magnitude is in doubt at the table). Emotional Overload (1 Inv, Special: a disadvantage on the target's next NON-ATTACK test — the carve-out removes the rolls that matter, and since advantage/disadvantage cancel 1-for-1 and it triggers precisely when that character gained an advantage, it often nets to nothing). Shatter Focus (-1 focus). Kindle (loses concealment benefits). No defence reduction, no vulnerability, and the two headline debuffs both fight themselves."
+   },
+   {
+    "axis": "protection",
+    "score": 0,
+    "evidence": "Read all 25 talents for damage reduction, temp HP, shields, interception, resistance or redirection: none. Zero false-positive mitigation talents (the census agrees: MITIG 0). The tree is actively negative here — Red Leyline Attunement removes your Reaction until the start of your next turn on every Draw Mana, so on refuel rounds you cannot even Dodge. Worth noting for Ben: that Reaction loss is wired as an `edha-note` (a whispered chat reminder, 'GM-tracked'), so the single mechanism carrying the whole 'trade defense for devastation' thesis is not enforced by the engine."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "No Health, Focus or Investiture restoration to self or others. The dossier header confirms 0 heal formulas in the authored overlay. Flashpoint's 'regain 1 Investiture' is a self-refund on your own spend, counted under resource_economy, not healing."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "Battle Fever is the real one: Passive, no cost, no action — each time damage is dealt within Attunement Range by ANYONE (ally or enemy) you and allies gain +1 to your next test, max = Rank, resetting at the start of your turn. Being numeric it escapes the binary-advantage ceiling. Correction to the profile's figure: the cap is Rank, and the rank cap is 2 through level 5, so at its depth-1 / L2 home it is +1 to +2, reaching +3 only at L6. Feeding Frenzy is the same shape on a narrower trigger (and is wired `trigger: \"manual\"` — a GM must call edha.rally by hand). Burning Drive adds half [Die] to your first Physical test on a Fast turn — floor(1d8/2) averages 2.0 at rank 3, not the 2.5 the profile claimed. The advantage cluster — Red Leyline Attunement (Physical), Flashpoint (next Red test), Frenzied Tempo (Presence/Influence), Reckless Gambit (grant to a character) — is four producers worth roughly ONE unit per the primer, because they overlap on Physical/Red tests and advantage does not stack. Hence 3, not 4. COMPARATIVE ADDITION: Battle Fever's +1-to-Rank is real but small by cross-tree standards - deity/Power's Mantle of the Aspirant gives allies +1 to ALL tests for the whole scene with no trigger and no reset, and deity/Order's Covenant, deity/Civilization's Lay Foundation and deity/Fate's Ordained Ground all hand out flat +1s that persist. Red's version is free and needs no setup, which is why it still earns a 3; it is not a buff pillar."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "Explosive Leap is the only true grant, and it is small: a Free Action move of [Size] ft (5 ft at rank 2, 10 ft at rank 3) plus an AoE Prone save. Unstoppable adds a free half-Speed move (10-15 ft, wired `byHalfSpeed` off the walk rate) once per turn on a Fast turn. Eight Specials ride on actions you were already taking (Arc Flash, Volatile Strike, Emotional Overload, Shockwave Slam, Afterburn, Breaking Point, Reckless Gambit, Reckless Momentum) — genuinely action-efficient per the primer, but none grants a NEW action. Against that: Red Leyline Attunement DELETES your Reaction on every Draw Mana, and Reckless Advance charges 1 Action PLUS 1 Investiture for a 5-10 ft move when the standard Move action covers your whole 20-30 ft walk rate for one Action and no resource. Note also that Red's three Fast-turn payoffs are compensation for taking the turn type that gives you 2 Actions instead of 3 — none of them is worth the Action you gave up."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Lowered 3 -> 2 on the [Size] conversion the profile never performed. [Size] = 2.5/5/10/15/20 ft by rank, so at the ranks a leyline PC actually reaches (2 through L5, 3 from L6) every Red movement talent is a 5-10 ft step. Explosive Leap: Free Action, 5-10 ft, no provoking, plus a Prone save — good shape, tiny distance. Unstoppable: half your walk rate (10-15 ft), free, once/turn, Fast turns only, depth 5 / L6. Reckless Advance: 5-10 ft for 1 Action AND 1 Investiture, strictly worse than the free standard Move. Momentum's Edge is not mobility at all — it converts movement into damage. One good-but-small free reposition and one deep sustainer is 'present but minor'; you would not pick Red for movement."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 1,
+    "evidence": "Flame Surge hits a [Size] radius (5 ft at rank 2, 10 ft at rank 3) and Chain Detonation a 5 ft radius, so the tree touches areas — but nothing persists. No difficult terrain, hazards, walls or lingering fire. Afterburn's Afflicted sits on a creature, not the ground. Notable against the intent file's 'turn a battlefield into a furnace', and notable that the guide assigns persistent terrain to Green, not Red — and that leyline/Green's Thorn Field (difficult terrain dealing half [Tier][Die] keen to anything entering it) and deity/Destruction's dangerous-terrain suite are what Red's own prose describes."
+   },
+   {
+    "axis": "information",
+    "score": 1,
+    "evidence": "One incidental rider: Kindle makes creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until the end of your next turn (wired as `lightRadiusFt: 5`) — a real anti-stealth effect bolted to a damage talent. No detection, scouting, prediction or hidden-fact talents anywhere else in the tree."
+   },
+   {
+    "axis": "social_influence",
+    "score": 1,
+    "evidence": "Frenzied Tempo grants advantage on Influence tests, but only on a Fast turn — Fast/Slow turns exist only in combat, so it is a social bonus that only applies mid-fight (the wiring confirms the narrowness: `whenAttribute: \"pre\"`, `whenFastTurn: true`, and it excludes all five leyline skills). Incite rolls Intimidation but is combat compulsion, not leverage. Nothing on reputation, persuasion, deception or negotiation."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 1,
+    "evidence": "Almost nothing. Explosive Leap and Reckless Advance are traversal in the loosest sense and cover 5-10 ft; Kindle produces a 5 ft light source on a creature you have just burned. No travel, crafting, survival, downtime or non-combat problem-solving talent exists in the tree."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Checked all 25 — no companions, constructs, minions or animated allies. Red's only 'extra body' is Incite forcing an enemy to Strike the nearest character, which is control (and can point at your own ally), not a summon."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 1,
+    "evidence": "Lowered 2 -> 1 on a recount. Exactly ONE talent in the tree regains Investiture: Flashpoint, once per round, only when a Red talent hits 2+ characters, and only as the ALTERNATIVE to its mass-Reaction-denial mode — you cannot have both. (The supplied measurement says 'Red 2 regen'; I grepped the talent data and the only leyline Investiture-regain lines are Predatory Patience, Predator's Due, Predatory Insight and Flashpoint — the first three are not Red.) Reckless Momentum is not a generator: it SPENDS an Opportunity to roll the Plot Die, which may or may not return one. Against that, 9 talents spend Investiture and 3 spend Opportunity. One conditional, mutually-exclusive refund against twelve spends is 'one incidental talent', i.e. a 1. CONFIRMED THE CLASSIFIER BUG BY NAME: dossier/resource-economy.json lists prod leyline/Red = ['Flashpoint', 'Emotional Overload'] - and lists Emotional Overload under cons for the same currency, because its text is 'spend 1 Investiture'. That is the whole of the phantom second regen. The same file lists Emotional Overload as an ADVANTAGE producer too (its text is 'gains a disadvantage'; 'advantage' appears only as its TRIGGER), the same bug class the brief predicted. Text wins on both: one Investiture regen, four advantage producers."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Momentum's Edge",
+     "dice": "flat bonus impact equal to your walking movement rate in FEET — authored `bonusFormula: \"@movement.walk.rate\"`; MOVEMENT_RATES = [20,25,30,40,60,80] by SPD, so +20 to +30 for a normal PC",
+     "action": "Passive, free",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "THE TREE'S LARGEST NUMBER, and the profile under test declined to score it. The authored overlay — which wins in Foundry — is not ambiguous: it reads the movement rate in feet, and the engine's own schema hint says so verbatim ('Bonus = your Speed via @movement.walk.rate'). Condition is a 20 ft approach toward the target, which a charger meets every round. At L3 this is ~7x the tree's [Tier][Die] (1d6). It is flat, so it never grows. COMPARATIVE (Lens B): I grepped every authored overlay - @movement.walk.rate appears as a damage bonusFormula in exactly one place across all 365 talents (data/authored/leyline-red.json:770). Everywhere else it is an ActiveEffect KEY that raises movement (deity/Destruction, heroic/Agent, heroic/Hunter, heroic/Warrior all write system.movement.walk.rate.bonus), so those trees FEED this formula rather than compete with it. But it is not the biggest single damage number in the leyline atlas: Black's Withering Ray rolls 2[Tier][Die] VITAL at depth 0 / L1 (avg ~18 at L6, ignoring Deflect), comparable in size and better in type. Momentum's Edge's real distinction is that it is FREE, PASSIVE and repeats every round."
+    },
+    {
+     "name": "Searing Bolt",
+     "dice": "[Tier][Die] energy — `(@tier)d(2 * @skills.red.rank + 2)`; 1d6 (avg 3.5) at L1-5, 2d8 (avg 9) at L6+",
+     "action": "1 Action + 1 Investiture",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "ORIGINATOR. The tree's only single-target ranged attack; conditional only in the ordinary sense (a successful Red ranged attack test). The damage census reports Red's earliest offensive source as L2 — that is a classifier artefact; Searing Bolt is depth 0 / L1 and the text wins. Comparative note: at L1 it is out-damaged more than two to one by leyline/Black's Withering Ray (2[Tier][Die] vital, same 1 Action, no Investiture)."
+    },
+    {
+     "name": "Flame Surge",
+     "dice": "[Tier][Die] energy to each target in a [Size] radius (5 ft at rank 2, 10 ft at rank 3), HALF on a success",
+     "action": "2 Actions + 2 Investiture",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": false,
+     "note": "ORIGINATOR, and the only Red damage that cannot be fully avoided. But price the radius honestly: at Tier 1 it is a 5-FOOT radius for 2 of your 3 Actions and half your starting pool, dealing 1d6 (avg 3.5, or floor(1d6/2) on a success). The 'best damage per Action against 3+ targets' claim only holds at rank 3, where the radius reaches 10 ft. Also the trigger for Flashpoint. Wiring note: the burst handler carries `addSkillMod: \"red\"` of its own, so whether Kindle stacks on top of Flame Surge is unresolved."
+    },
+    {
+     "name": "Arc Flash",
+     "dice": "half [Tier][Die] energy — `floor((@tier)d(...)/2)`, avg ~4.25 at L6",
+     "action": "Special + 1 Investiture, once per round",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "ORIGINATOR, not a multiplier — it deals a NEW damage instance to a DIFFERENT character within 10 ft, one that was not being attacked. The profile under test filed it as a rider that 'multiplies' existing damage; it does not touch the triggering hit at all. Triggered by dealing energy damage, so any energy source switches it on."
+    },
+    {
+     "name": "Volatile Strike",
+     "dice": "half [Tier][Die] impact — `floor((@tier)d(...)/2)`, avg ~4.25 at L6",
+     "action": "Special + 1 Investiture",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "AMPLIFIER, double-gated: requires an existing melee HIT and then a SECOND test (Red vs. Physical) to add half a unit. Two successes plus a resource for ~4.25 Deflect-reduced damage is the worst rate in the tree."
+    },
+    {
+     "name": "Kindle",
+     "dice": "+ @skills.red.mod (flat) to every energy damage instance — the Red SKILL modifier (attribute + rank), so ~6 at L6, not ~3",
+     "action": "Passive, free",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "AMPLIFIER, and the highest-value one on the energy line — it adds to EVERY energy instance (Searing Bolt, Flame Surge per target, Arc Flash, Chain Detonation) at zero cost and zero action. The SKILL-mod reading is now verified at the system level, not inferred: cosmere-rpg index.js:8487 computes `this.skills[skill].mod.derived = attrValue + rank`, so with Red mapping to Strength it is roughly double the profile's assumed value."
+    },
+    {
+     "name": "Mighty",
+     "dice": "flat +(1 + your tier) — authored `bonusFormula: \"(1 + @tier)\"`, applies to impact/keen/spirit. So +2 at Tier 1, +3 at Tier 2. There is NO per-action multiplier in the wiring.",
+     "action": "Passive, free",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "AMPLIFIER - and NOT A RED TALENT IN ANY MEANINGFUL SENSE. Lens B correction: 'Mighty' appears VERBATIM in SIX trees - leyline/Red (depth 3, earliest L4) and heroic/Agent (d2/L3), heroic/Envoy (d1/L2), heroic/Hunter (d3/L4), heroic/Leader (d2/L3), heroic/Warrior (d1/L2). Red's copy is the joint-latest of the six; Warrior and Envoy get the identical talent two levels earlier. It is a shared generic weapon rider, so it is evidence about the atlas's talent library, not about Red's identity, and the card-vs-engine divergence is a system-wide issue rather than a Red one. The CARD says 'for each action spent, deal extra damage equal to 1 + your tier'; the authored handler is a flat bonusFormula: \"(1 + @tier)\" and its own description admits it - 'APPROXIMATION: canon text is + (1 + tier) PER ACTION SPENT ... modeled here as a single (1+tier) add ... Over-applies to any impact/keen/spirit damage, not only weapon Strikes - verify in play.' Two oddities do stay Red-specific: it is filed under the CONFLAGRATION specialty despite having no fire content, and its applies-to list includes SPIRIT damage, a type no Red talent can produce."
+    },
+    {
+     "name": "Shockwave Slam",
+     "dice": "half [Tier][Die] impact on collision — `floor((@tier)d(...)/2)`, avg ~4.25 at L6",
+     "action": "Special, no cost",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "ORIGINATOR but doubly conditional: needs a melee hit AND the pushed target (5-10 ft of push) to collide with an obstacle. In open ground it deals zero and is pure forced movement — its damage cannot be treated as reliable."
+    },
+    {
+     "name": "Afterburn",
+     "dice": "Afflicted[half [Tier][Die] energy] — ONGOING condition damage, ~4.25/round at L6",
+     "action": "Special + 1 Opportunity",
+     "depth": 4,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "ORIGINATOR of new damage instances on subsequent rounds with no further attack — the profile under test filed it as a 'multiplier on a hit already landed', which it is not. Gated on holding an Opportunity (a Plot Die outcome the tree barely generates). Red's only ongoing damage. COMPARATIVE: not the atlas's best ongoing-damage condition and not close - deity/Life's Adaptive Mutation (Venom Glands) puts Afflicted[half [Tier][Die] VITAL] on EVERY melee hit for a scene with no Opportunity cost, and leyline/Black's Dark Investiture also inflicts Afflicted. Afterburn is Red's only one."
+    },
+    {
+     "name": "Chain Detonation",
+     "dice": "half [Tier][Die] energy to each creature within 5 ft — ~4.25 each at L6",
+     "action": "Passive, free",
+     "depth": 5,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "ORIGINATOR against creatures that were never attacked. Kill-gated — only fires when a Red Conflagration talent reduces a creature to 0 HP, so it competes with allies for the killing blow. The authored handler adds `oncePerRound: true`, which the card text does not state: you cannot chain two kills in one round. COMPARATIVE: deity/Death's Necrotic Cascade is the same shape done strictly better - 1 Investiture, for the SCENE, when ANY character (not just your Conflagration kill) drops to 0 HP in Attunement Range, every enemy within 10 ft takes FULL [Tier][Die] SPIRIT damage. Chain Detonation is half dice, energy, 5 ft, kill-gated to your own talents, and capped once per round by its wiring."
+    }
+   ],
+   "countReal": 10,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "The profile under test computed the peak on the energy line and ranked the melee line last. That is backwards once Momentum's Edge is read as wired. At L6+ (Tier 2, Red rank 3, SPD 2 so a 25 ft walk rate, Red skill mod ~6): MELEE LINE, one Action, zero resources — Strike after a 20 ft approach = weapon damage + Momentum's Edge (+25 impact) + Mighty (+3) = about +28 flat on a single Action, before the weapon's own die; add Volatile Strike (Special, 1 Inv, ~4.25) and Shockwave Slam (Special, free, ~4.25 with an obstacle) and it reaches ~36. ENERGY LINE, one Action + 1 Investiture — Searing Bolt 2d8 (9) + Kindle (+6) = ~15, plus Arc Flash (Special, 1 Inv) ~4.25 + 6 = ~10 on a SECOND target, plus Afterburn's Afflicted[~4.25] per round for an Opportunity. AOE LINE, 2 Actions + 2 Investiture — Flame Surge ~9 (or ~4 on a success) plus Kindle per target inside a 10 ft radius, and it triggers Flashpoint free. So the peak is the nearly-free melee charge at roughly 28-36 per Action, about double the paid energy line, and roughly three to four times the tree's own nominal [Tier][Die]. Every point is impact or energy and therefore Deflect-reduced; the tree produces no vital or spirit damage at all, which per the primer discounts the whole figure against trees of the same nominal dice — and leyline/Black's Withering Ray reaches ~18 undeflectable at the same level for one Action, so Red's nominal peak is not as far ahead of the atlas as the raw number suggests. If Momentum's Edge is ruled down to the Speed attribute, the melee peak collapses to ~8 and the energy line becomes the peak, as the profile originally had it.",
+   "repeatability": "Corrected arithmetic. Arc Flash is a SPECIAL, not an Action, so the full single-target line fits inside one turn alongside a Draw: Draw Mana (1 Action) + Searing Bolt (1 Action, 1 Inv) + Arc Flash (Special, 1 Inv) uses 2 of 3 Actions. At Tier 1 that is net -1 Investiture per round against a starting pool of ~4, i.e. roughly FOUR rounds of full output (not the two the profile computed by assuming you never Draw), after which dropping Arc Flash makes Draw+Bolt net-zero and indefinite. At Tier 2 Draw returns 2, so Draw + Bolt + Arc Flash is net ZERO per round — sustainable indefinitely with a spare Action, and Flashpoint's refund pushes the AoE line positive when it hits 2+. The real tax is not Investiture, it is that Drawing every round means never holding a Reaction. And the floor barely depends on Investiture at all: Momentum's Edge, Mighty, Kindle, Chain Detonation, Battle Fever, Burning Drive and Unstoppable are free riders on ordinary Strikes and movement, and Momentum's Edge alone is worth more than the entire paid energy line. A Red character at 0 Investiture is not degraded; they are playing their best line.",
+   "verdict": "Red is the leyline atlas's damage tree, and by a wider margin than the profile under test allowed. Six of its ten damage talents ORIGINATE damage rather than amplify it (Searing Bolt, Flame Surge, Arc Flash, Shockwave Slam, Afterburn, Chain Detonation) — the census agrees at SOURCE=6 — and the claim that 'only Searing Bolt and Flame Surge create damage from nothing; eight of ten are multipliers on a hit already landed' is wrong for Arc Flash (hits a different character), Chain Detonation (hits different creatures) and Afterburn (ticks on later rounds with no attack). It is the only leyline colour combining kill-chaining, damage-arcing and an ongoing damage condition. But the load-bearing finding is elsewhere: the tree's single biggest number is Momentum's Edge, a FREE depth-2 Passive wired to `@movement.walk.rate`, adding +20 to +30 impact to a Strike after a 20 ft approach — six to eight times the [Tier][Die] available at the level you get it, and flat forever after. Everything else in the tree is a rounding error beside it. Two card-vs-engine divergences compound the picture and both need Ben: Mighty's card promises per-action multiplication and the engine gives a flat +(1+tier) (and that ruling covers six trees, not just Red); Chain Detonation's engine adds an undocumented once-per-round cap. Damage MITIGATION: zero talents in this tree reduce damage taken, so there are no false positives to discount — but note three talents (Battle Fever, Breaking Point, Unstoppable) mention damage only as a TRIGGER and deal none themselves. LENS B CORRECTION TO THE VERDICT'S SCOPE. 'Red is the leyline atlas's damage tree' is true on volume and repeatability and false on per-hit ceiling and damage quality: leyline/Black's Withering Ray (depth 0, L1, 1 Action, no Investiture, (2 * @tier)d(2 * @skills.black.rank + 2) VITAL) deals double Red's entry dice in a Deflect-ignoring type from level 1, and Black also owns the AoE-vital-plus-temp-HP play (Spoils of Isolation). The honest statement: Red has the most damage TALENTS (census offensive 8, highest of 21 trees), the only damage PROPAGATION in the leyline atlas, and the highest FREE floor; Black has the better damage per hit and the better damage type."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 3,
+    "exemplars": "Searing Bolt, Incite, Red Leyline Attunement, Reckless Advance",
+    "note": "A clean, functional level-1 package: one ranged attack at [Tier][Die] (1d6 here), one genuine control tool (Incite's forced-Strike-or-lose-Reaction is real pressure at L1, though the enemy chooses which), a free double-edged Attunement Key. Dragged down by Reckless Advance, which is not merely a paid standard action but a STRICTLY WORSE one: 5-10 ft for 1 Action + 1 Investiture, against Move's full 20-30 ft walk rate for 1 Action and nothing. Comparative: this band is weaker than Black's, whose depth-0 Withering Ray rolls 2[Tier][Die] vital for no Investiture."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 5,
+    "exemplars": "Momentum's Edge, Kindle, Flame Surge, Battle Fever, Flashpoint, Arc Flash",
+    "note": "Raised 4 -> 5. This band holds Momentum's Edge (depth 2 / L3), which as wired is the largest damage number in the leyline atlas and is free — so the strongest band is not merely 'the engine assembles here', it is 'the whole ceiling lives here'. Alongside it: Flame Surge for multi-target damage, Arc Flash for propagation to a new target, Kindle multiplying every energy instance free, Flashpoint converting an AoE hit into mass Reaction denial or a refunded Investiture, Battle Fever as a free party-wide escalating +1. A Red character who stops at depth 2 has the tree's entire ceiling and most of its identity."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Explosive Leap, Breaking Point, Mighty, Chain Detonation, Afterburn, Unstoppable, Shockwave Slam, Reckless Momentum",
+    "note": "Breadth rather than escalation, and nothing here beats a depth-2 Passive. Breaking Point (Disoriented) is genuinely strong; Explosive Leap is a good shape at a tiny 5-10 ft distance; Mighty and Unstoppable are free but small (+3 and a 10-15 ft move) — and Mighty is a generic talent five other trees also carry, three of them earlier; Chain Detonation and Afterburn are gated on a kill or an Opportunity; Reckless Gambit (L6) and Frenzied Tempo (L7 once its Intimidation 3+ chain is priced correctly) are below curve. The tree has NO capstone — both depth-5 talents are Passives — and nothing consumes the escalation the tree has been building."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED, and harder than the profile under test argued, because the tree's damage ceiling (Momentum's Edge) sits at depth 2 and never grows. Two corrections to how that case was made. First, the claim that the depth-1-2 core is 'all reachable by L3' conflates individual reachability with ownership: you gain one talent per level, and holding Searing Bolt, Arc Flash, Flame Surge, Kindle, Flashpoint, Incite and Battle Fever is SEVEN talents, i.e. level 7. Each is individually legal by L3; you can hold three of them. Second, the depth-3+ band is not merely 'options' — it contains the L6 dice discontinuity, which is a real power step for the seven [Tier][Die] talents. What makes the tree front-loaded is that the flat riders that dominate its output (Momentum's Edge, Kindle, Mighty) arrive by depth 3 and then stop scaling, so the dice step at L6 closes a gap rather than opening one. There is no capstone: the deepest talents (Chain Detonation, Unstoppable) are Passives, and the most expensive cost line in the tree (Reckless Gambit, Opportunity + 1 Investiture) is one of its worst talents. This contradicts the intent claim that Red 'grows stronger the worse the fight becomes' — structurally the tree does the opposite.",
+  "uniqueOwnership": [
+   "Momentum's Edge is the only talent in the 365 whose DAMAGE formula reads a movement rate. Verified by grepping every authored overlay: @movement.walk.rate appears as a damage bonusFormula exactly once (data/authored/leyline-red.json:770); the other four occurrences (deity/Destruction, heroic/Agent, heroic/Hunter, heroic/Warrior) are ActiveEffect keys that ADD to movement, so those trees feed this formula rather than duplicate it. CORRECTED FROM THE PROFILE UNDER TEST: it is NOT true that 'no other leyline tree has a number like it'. leyline/Black's Withering Ray rolls 2[Tier][Die] VITAL at depth 0 / L1 (~18 average at L6, ignoring Deflect) for one Action and no Investiture - comparable magnitude, better type, four depth-steps earlier. Momentum's Edge's genuine distinction is that it is free, passive, and repeats every round.",
+   "The only Attunement Key that charges a price. Red Leyline Attunement costs you your Reaction every time you Draw Mana; the other four leyline riders (White heal, Blue advantage, Black Weakened, Green difficult terrain) are pure gifts. Scoped correctly: 'Attunement Key' is a leyline-only object - heroic trees' Key-specialty talents are a different thing and do cost (Warrior's Vigilant Stance costs an Action to enter). Caveat for Ben: the Reaction loss is wired as an edha-note whisper whose own description says 'GM-tracked - nothing in the system exposes a Reaction to spend, so this is a reminder by design', so the mechanism carrying Red's whole 'trade defense for devastation' thesis is unenforced.",
+   "The densest Reaction-denial package in the atlas - DOWNGRADED from 'the only tree that makes it a through-line'. Across all 365 talents only seven strip or deny a Reaction, and Red owns three (Incite, Flashpoint, Breaking Point via Disoriented). The other four are leyline/Blue Absolute Stillness ('cannot take Reactions'), leyline/Black Extract Thought (a FREE Passive denying Reactions for a full round on a Deception success - a stronger single instance than anything Red has), heroic/Warrior Feinting Strike, and deity/Sovereignty's capstone. Flashpoint's free, no-action MASS denial off an AoE is unique WITHIN LEYLINE only: deity/Chaos's Cascade Collapse Disorients every Omen-bearing enemy in Attunement Range simultaneously - a full round of no reactions plus [Tier][Die] spirit - which is mass Reaction denial and strictly better.",
+   "The only damage PROPAGATION in the LEYLINE atlas: Arc Flash arcs a fresh half-unit onto a second character off any energy instance, Chain Detonation detonates a 5 ft AoE off any Conflagration kill. Scoped down from 'the only source as a package' - the deity atlas does it better in two places: deity/Death's Necrotic Cascade (scene-long, full [Tier][Die] SPIRIT to every enemy within 10 ft of ANY character dropping in range) and deity/Destruction's Combustion Chain (a kill spreads every dangerous-terrain zone 5 ft outward). Within leyline, nothing else moves damage from one target to the next.",
+   "Battle Fever is the only ESCALATING, damage-triggered numeric party buff in the system - free, no action, ticks up to Rank (+2 before L6, +3 after) on ANY damage dealt within Attunement Range by allies OR enemies, resets each turn. Softened from 'a unique shape': flat party-wide +1s are common (leyline/White Unyielding Accord, deity/Order Covenant, deity/Civilization Lay Foundation, deity/Fate Ordained Ground, and deity/Power's Mantle of the Aspirant, which gives allies +1 to ALL tests for the scene). What no other talent does is COUNT UP off the battlefield's own damage events rather than off the owner's actions. Being numeric it also dodges the binary-advantage ceiling.",
+   "Afterburn is Red's only ongoing damage condition and its only Opportunity-bought damage. NOT unique in the atlas and not the best: deity/Life's Adaptive Mutation (Venom Glands) applies Afflicted[half [Tier][Die] VITAL] to every melee hit for a scene at no Opportunity cost, deity/Fate's Inevitable Snare and leyline/Black's Dark Investiture also carry Afflicted, and the cross-tree count is 5 talents across 5 trees. Afterburn's one real advantage is that it is a Special rider on damage you were dealing anyway.",
+   "Kindle is the only talent in the 365 that adds a flat SKILL MODIFIER to every instance of a damage TYPE. The shape exists elsewhere but never on damage: leyline/Green's Verdant Mend and Resurgent Growth add the Green modifier to HEALING, and Green's Pack Sense / White's Shared Conviction and Bound by Word lend a modifier to an ALLY'S TEST. Kindle silently upgrades four other Red talents at once - Searing Bolt, Flame Surge (per target), Arc Flash and Chain Detonation.",
+   "NOT UNIQUE, stated because the profile under test treated it as Red's own: 'Mighty' is a shared generic talent appearing verbatim in SIX trees (leyline/Red d3/L4, heroic/Agent d2/L3, heroic/Envoy d1/L2, heroic/Hunter d3/L4, heroic/Leader d2/L3, heroic/Warrior d1/L2), and Red's copy is the latest-arriving of the six. Similarly 'Shatter Focus' is a name collision rather than an asset: deity/Chaos carries a completely different talent under the same name (a Reaction that removes an Omen to force a reroll-and-take-lower). Neither name should be read as Red identity."
+  ],
+  "gaps": [
+   "Healing: none at all — no Health, Focus or Investiture restoration to self or others (0 heal formulas). A Red-only PC cannot help a downed ally.",
+   "Protection: none at all — no temp HP, damage reduction, shields, interception, resistance or redirection. Worse than absent: the Attunement Key removes your Reaction on every Draw Mana, so on refuel rounds you cannot Dodge either.",
+   "Hard action denial: no Stunned, Restrained, Immobilized or Slowed anywhere in the 25. The denial ceiling is one Reaction plus Prone/Disoriented — and against an enemy that has already spent its Reaction, three of Red's six control talents do nothing.",
+   "Deflect-bypassing damage: zero vital and zero spirit damage. Against a high-Deflect adversary Red has no answer at all, and this is where its whole damage case is exposed, since its biggest number (Momentum's Edge) is impact — while the leyline tree next door (Black) deals vital from level 1.",
+   "Persistent battlefield control: no zones, no difficult terrain, no hazards, no walls. Every area effect is instantaneous, and every radius in the tree is 5-10 ft at reachable ranks.",
+   "Summons and companions: nothing.",
+   "Out-of-combat play — the biggest sit-on-your-hands gap. No travel, survival, crafting, downtime, detection, scouting or investigation talent exists; the one social talent (Frenzied Tempo) only works on a Fast turn, i.e. only in combat. In any scene without initiative, a Red-only PC's entire tree is inert except Kindle's light.",
+   "Ally support beyond a +1: Battle Fever and Feeding Frenzy give a small numeric bump capped at Rank; there is no way to grant an ally an action, remove a condition, or protect them.",
+   "Internal coherence of the damage package: the tree's headline specialty (Conflagration, ranged pyromancy) is NOT where its power is. The peak line is melee — Momentum's Edge, Mighty, Volatile Strike and Shockwave Slam all require a Strike, and Momentum's Edge additionally requires a 20 ft approach. A player who builds the tree as its prose describes (a ranged firebrand) never touches its ceiling.",
+   "Investiture-free ranged play: without Investiture, Searing Bolt is gone and Red is reduced to the melee rider stack — which, as wired, is its strongest line anyway, so the tree quietly punishes the ranged build twice.",
+   "COMPARATIVE GAP (Lens B): every headline Red's intent promises is delivered somewhere else in the atlas, by a tree that actually implements it. 'Chain detonations that turn a battlefield into a furnace' is deity/Destruction's entire tree (Pyre leaves dangerous terrain, Walking Ruin turns every square you cross into it, Combustion Chain spreads it on a kill) and, within leyline, Green's Thorn Field (difficult terrain dealing half [Tier][Die] keen to anything entering it) is the persistent fire Red does not have. 'Grow stronger the worse the fight becomes' is deity/Power's Warlord's Fury, an actual in-scene escalating counter capped at tier x 2. Red owns the vocabulary of both promises and the mechanics of neither."
+  ],
+  "weakTalents": [
+   {
+    "name": "Reckless Advance",
+    "reason": "NEVER-PICK, and strictly worse than a free standard action rather than merely equal to one. 1 Action AND 1 Investiture to move [Size] feet — 5 ft at rank 2, 10 ft at rank 3 — without provoking Reactions. The standard Move action costs 1 Action, no resource, and covers your full walk rate of 20-30 ft; Disengage covers the no-provoking half. It exists only as the connection node to Burning Drive and Volatile Strike."
+   },
+   {
+    "name": "Volatile Strike",
+    "reason": "OVERCOSTED and double-gated: a Special plus 1 Investiture, requiring an existing melee HIT and then a SECOND test (Red vs. Physical), to add half [Tier][Die] impact — floor(2d8/2) averages ~4.25 at L6, not 4.5. Two successes and a resource for a quarter of what Momentum's Edge gives free on the same Strike."
+   },
+   {
+    "name": "Emotional Overload",
+    "reason": "BELOW CURVE and self-defeating. 1 Investiture and a Special for a disadvantage on the target's next NON-ATTACK test — the carve-out excludes exactly the rolls worth stopping. Worse, advantage and disadvantage cancel 1-for-1 per the primer, and it triggers precisely when that character has just GAINED an advantage, so the common outcome is cancelling something rather than imposing a penalty. Note it cannot be redirected: the disadvantage lands on the character who gained the advantage, so it is not a tool you aim."
+   },
+   {
+    "name": "Burning Drive",
+    "reason": "Below curve for depth 1: half [Die] to your FIRST Physical test on Fast turns only. The authored formula is floor(1d(2*rank+2)/2), which averages 1.5 at rank 2 and 2.0 at rank 3 — the profile's '~2.5 at rank 3' overstates it. And it pays you for taking the turn type that gives you 2 Actions instead of 3. Free, so not a trap, but filler."
+   },
+   {
+    "name": "Frenzied Tempo",
+    "reason": "NEVER-PICK, and later than it looks: the dossier reports earliest L4, but its prereq chain runs through Feeding Frenzy (Intimidation 3+), and rank 3 is unreachable before level 6 — so Frenzied Tempo is a LEVEL 7 talent. What it buys at L7 is advantage on Influence tests when you take a Fast turn, i.e. a social bonus available only during combat rounds, in a tree with no other social play, redundant with Red's own advantage sources on the very rounds it fires, and binary."
+   },
+   {
+    "name": "Reckless Gambit",
+    "reason": "OVERCOSTED and internally contradictory. The tree's most expensive cost line (Opportunity + 1 Investiture) at depth 3 behind a Red 3+ gate (so L6), for an effect that fights itself: grant a character advantage, then make it Exhausted[-2]. On an ally it is a net loss (one binary advantage on one roll traded for a lasting -2 to everything); on an enemy you hand it an advantage first. The authored effect applies a bare `exhausted` status with no magnitude, so the [-2] may not even land."
+   },
+   {
+    "name": "Shatter Focus",
+    "reason": "Anti-synergistic with its own tree. It is Red's only Reaction, and Red Leyline Attunement removes your Reaction every time you Draw Mana — and the corrected sustainability arithmetic says a Red character Draws nearly every round, so the tree's resource engine switches this talent off almost permanently. It also competes for the hard 1-Reaction cap with Dodge, Aid and Reactive Strike. (Name collision worth knowing: deity/Chaos has an unrelated talent called Shatter Focus.)"
+   },
+   {
+    "name": "Feeding Frenzy",
+    "reason": "Below curve and mis-gated three ways. Its trigger requires an ENEMY to attack ANOTHER ENEMY, which Red can only create via Incite — and Incite forces a Strike on the NEAREST character, often you or an ally. Its prerequisite is Intimidation 3+, which under the primer's rank cap (rank 2 through L5) is unreachable before level 6, so the dossier's 'earliest L3' understates it by three levels and drags Frenzied Tempo to L7. And it is wired `trigger: \"manual\"` — a GM must call edha.rally by hand for it to do anything."
+   },
+   {
+    "name": "Shockwave Slam",
+    "reason": "Not a never-pick (it is free), but its damage clause is dead weight in most terrain: half [Tier][Die] impact ONLY on collision with an obstacle, after a push of 5-10 ft. In open ground it is a short shove and nothing more, so its listed damage cannot be treated as reliable."
+   },
+   {
+    "name": "Mighty",
+    "reason": "Not a trap — it is free — but it does not do what its card says, and it is not Red's. The card promises 'for each action spent, deal extra damage equal to 1 + your tier'; the authored wiring is a flat `(1 + @tier)` rider with no action term, and the handler's own description labels itself an APPROXIMATION. It is also the SAME talent as heroic/Agent, Envoy, Hunter, Leader and Warrior carry — Red's copy arrives at depth 3 / L4, two levels later than Warrior's and Envoy's. Red-specific oddities remain: it is filed under CONFLAGRATION with no fire content, and its applies-to list includes spirit damage, which no Red talent produces."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'they grow stronger the worse the fight becomes — every wound taken is fuel for the next blow.' Reinforced by the DESIGN GUIDE: 'Red gets stronger as fights escalate. Damage taken feeds future power'; 'HP sacrifice / self-harm for damage'; 'Costs favor: HP loss'.",
+     "delivered": "NOT DELIVERED — the tree's largest drift, and both intent sources are wrong the same way.",
+     "evidence": "Read all 25 texts: not one keys off damage TAKEN, HP lost, being wounded, or a health threshold, and not one spends HP as a cost. Every cost line is Investiture (9 talents) or Opportunity (3). The nearest approximations are Battle Fever, which triggers on damage dealt within Attunement Range by anyone — so an enemy hitting you does feed it, but so does everything else — and Breaking Point, which triggers on a TARGET taking damage twice. The design guide's stated Red currency (HP loss) is used by zero Red talents; the tree that actually pays in blood is Black, and I verified it: Withering Ray costs 'lose half [Die] health' and Dark Investiture costs 'lose health equal to your tier', both as their primary price."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'They trade defense for devastation. A Red mage drawing power surrenders their guard.'",
+     "delivered": "DELIVERED, but by exactly one mechanism — and that mechanism is not enforced.",
+     "evidence": "Red Leyline Attunement is the whole of it: Draw Mana costs your Reaction until the start of your next turn. A real, felt trade and well-designed, and the corrected sustainability arithmetic makes it bite harder than the profile allowed, since a Red character Draws most rounds. But no other talent trades defence for offence — no 'take damage to deal damage', no lowered defence for a bonus, no unguarded stance. One talent carries the entire thesis, it is the one granted free with the path, and the authored overlay implements the Reaction loss as an `edha-note` whisper ('GM-tracked'), so nothing at the table stops a player from using their Reaction anyway."
+    },
+    {
+     "claim": "SPECIALTY MOMENTUM: 'Force that compounds — reckless advances, volatile strikes, and unstoppable charges that hit harder the longer they run.'",
+     "delivered": "PARTIAL — and it is the specialty where the tree accidentally delivers hardest.",
+     "evidence": "Reckless Advance, Volatile Strike, Unstoppable, Explosive Leap, Momentum's Edge, Shockwave Slam, Burning Drive and Reckless Momentum are the eight Momentum talents, and all touch movement. There is no momentum COUNTER, no stack, nothing accumulating across rounds; every bonus resets within the turn, so 'compounds' is not implemented — and deity/Power's Warlord's Fury shows what an implemented version looks like (a scene-long tally of the fallen, capped at tier x 2). But 'hit harder the longer they run' IS implemented, literally and enormously: Momentum's Edge converts your walking movement rate in feet directly into impact damage after a 20 ft approach, which as wired is +20 to +30. The specialty's promise lands as a single within-turn distance check that happens to be the strongest repeatable free damage effect in the atlas."
+    },
+    {
+     "claim": "SPECIALTY CONFLAGRATION: 'Pyromancy unleashed — kindling, searing bolts, and chain detonations that turn a battlefield into a furnace.'",
+     "delivered": "DELIVERED as a coherent engine, but it is not where the tree's power is.",
+     "evidence": "Searing Bolt, Kindle, Flame Surge, Arc Flash, Flashpoint, Afterburn and Chain Detonation form a real loop: originate energy damage, add the Red skill mod to every instance, arc to a second target, sustain as Afflicted, detonate on a kill. Two corrections to the profile's account. First, Conflagration has EIGHT talents, not seven — Mighty is filed there, and is a generic weapon rider (shared with five heroic trees) with no fire content, a specialty misfile. Second, the overstatement is bigger than 'nothing persists': the radii are 5-10 ft at reachable ranks and the whole line is Deflect-reduced and Investiture-priced, while the tree's untagged melee riders out-damage it for free. 'Turn a battlefield into a furnace' has no zone, no hazard and no lingering fire behind it — deity/Destruction's dangerous terrain and leyline/Green's Thorn Field are where that sentence is actually implemented."
+    },
+    {
+     "claim": "SPECIALTY FRENZY: 'Passion as a weapon — inciting rage, shattering focus, and a feeding frenzy that escalates past the point of restraint.'",
+     "delivered": "PARTIAL — delivered in names, drifted in function.",
+     "evidence": "Incite, Shatter Focus, Feeding Frenzy, Battle Fever, Emotional Overload, Breaking Point, Frenzied Tempo and Reckless Gambit exist and are literally named after the claim. But what they DO: Battle Fever and Feeding Frenzy hand +1 (capped at Rank, so +2 before L6) to YOU AND EACH ALLY; Emotional Overload imposes a disadvantage; Shatter Focus drains 1 focus. Empirically Frenzy is a party-buff-and-attrition SUPPORT package, not an escalation engine on the Red mage. The one talent that reads as escalation on the target — Breaking Point (Disoriented on a second damage instance) — is control, and needs someone else's damage to trigger."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Red should have \"spend Opportunity to [devastating effect]\" talents.'",
+     "delivered": "PARTIAL.",
+     "evidence": "Three Opportunity spends exist (Afterburn, Reckless Gambit, Reckless Momentum), and cross-tree Red does lead: the whole atlas has nine Opportunity spenders and Red owns three of them, against White's two, Green's two, Blue's one and Scholar's one — so the guide's 'Opportunity fits Red and White' is honoured on count. But only Afterburn (ongoing Afflicted[half [Tier][Die]], ~4.25/round at L6) is near 'devastating'; Reckless Gambit is a self-contradicting buff/debuff; and Reckless Momentum spends an Opportunity to ROLL THE PLOT DIE — a direct incursion into the guide's stated Blue identity ('Blue manipulates probability... Plot Die manipulation is Blue's capstone identity'), violating its own principle 7 on colour boundaries. The cross-tree count confirms the oddity: Plot Die appears on 3 talents in 2 trees, leyline/Red and heroic/Agent, and Blue has zero."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Fast turn synergy' as a Red theme.",
+     "delivered": "DELIVERED as a hook, but the payoffs do not cover the price.",
+     "evidence": "Burning Drive (half [Die] to your first Physical test on a Fast turn, avg +1.5 to +2), Frenzied Tempo (advantage on Influence on a Fast turn), Unstoppable (free half-Speed move when you deal damage on a Fast turn). Three talents, a genuine mechanical hook, and no talent references Slow turns — the asymmetry is intentional and legible. But per the primer a Fast turn grants 2 Actions against a Slow turn's 3, so each of these is compensation for surrendering a whole Action, and none of the three is worth an Action. The hook exists; the incentive does not."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets: ~35% Passive, ~25-30% Special, ~15% Action, ~8% 2-Action, ~5-8% Free, ~5-8% Reaction, 0% 3-Action.",
+     "delivered": "MISSED ON SIX OF SEVEN TARGETS — one met.",
+     "evidence": "Counted by hand across all 25 and matching the supplied normalisation exactly: Passive/Always-Active 11 (44%, over the ~35% cap), Special 8 (32%, over the ~25-30% band), 1 Action 3 (12%, under ~15%), 2 Actions 1 (4%, half the ~8% target), Free Action 1 (4%, under ~5-8%), Reaction 1 (4%, under ~5-8%), 3 Actions 0 (the only target met). The profile under test reported these same seven numbers and then summarised them as 'two targets missed, one met exactly'; its own figures show six misses. The tree is over-passive and under-active, which is exactly why its damage floor is high and its per-Action ceiling sits on a free Passive. Description length also runs past the 20-25 word target on Kindle, Flashpoint, Momentum's Edge and Breaking Point."
+    },
+    {
+     "claim": "STRUCTURAL DISAGREEMENT BETWEEN THE TWO INTENT SOURCES, reported rather than resolved.",
+     "delivered": "They disagree, and the talents implement neither headline.",
+     "evidence": "The path description sells Red as a defence-shedding berserker fuelled by its own wounds; the design guide's colour-boundary line says only 'Red escalates momentum' while its cost note assigns HP-loss currency to Red. The talents implement neither — no HP costs, no wound-fuelled scaling, no compounding momentum counter. What they DO implement is the guide's separate, less-emphasised clauses: 'Explosive force, AoE, pyromancy' plus 'Fast turn synergy' — and, unannounced by either source, a movement-rate-to-damage conversion that is the tree's real power."
+    },
+    {
+     "claim": "CARD TEXT vs. AUTHORED WIRING — three divergences that change what the table actually plays.",
+     "delivered": "The wiring wins in Foundry, and Ben should rule on all three.",
+     "evidence": "(1) Mighty's card says 'for each action spent, deal extra damage equal to 1 + your tier'; the authored handler is a flat bonusFormula: \"(1 + @tier)\" with no action term, and the handler's own description admits it ('APPROXIMATION: canon text is + (1 + tier) PER ACTION SPENT ... modeled here as a single (1+tier) add'). SCOPE CORRECTION: this is not a Red bug. Mighty is the same talent in six trees (Red, Agent, Envoy, Hunter, Leader, Warrior), so Ben's ruling applies to all six and should be filed against the generic talent, not against Red. (2) Chain Detonation's card has no frequency limit; the authored handler carries `oncePerRound: true`. (3) Breaking Point's card says 'takes damage for the second time in a round'; the authored watch is `scope: \"scene\"`, `whenTotal: at-least 2`, which if it plays as wired fires far more readily than the card promises. Separately, Momentum's Edge's card says 'equal to your Speed' where the engine reads `@movement.walk.rate` (20-80 ft) — the card's wording is what let the profile under test treat the tree's biggest number as unscoreable."
+    },
+    {
+     "claim": "COMPARATIVE (Lens B): is the promise this tree makes ALSO made - and better kept - by another path's intent file?",
+     "delivered": "YES, twice over, and in both cases the other path delivers what Red only names.",
+     "evidence": "(1) ESCALATION. Red's path description: 'grow stronger the worse the fight becomes'; the design guide: 'Red gets stronger as fights escalate.' deity/Power's path description promises 'Each death builds toward a warlord's fury' with the signature resource 'Bounty - a tally of the fallen', and Warlord's Fury IMPLEMENTS it: 'your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2 ... when you reduce a character to 0 HP, this bonus immediately increases by 1.' That is the compounding scene-counter Red's Momentum specialty promises and does not have. (2) FIRE THAT PERSISTS. Red's Conflagration promises 'chain detonations that turn a battlefield into a furnace'; deity/Destruction's intent promises 'detonations chain across the field ... leaving dangerous terrain that keeps burning long after the blast', and its talents build exactly that (Set Charge, Pyre, Pinpoint Charge, Walking Ruin, Combustion Chain, Cascading Failure, The Unmooring). Red has no zone, no hazard, no lingering fire. (3) Minor: heroic/Leader's Champion specialty also sells charging momentum - 'Champions ferociously charge their foes. Their momentum is magnetic' - so even the vocabulary is shared. None of this makes Red bad; it means Red's intent prose describes three other paths more accurately than it describes Red."
+    }
+   ],
+   "actuallyIs": "A melee charger disguised as a ranged pyromancer. Red's prose, its specialty names and its Investiture costs all point at Conflagration, but its ceiling is a free Passive that turns a 20-foot run-up into +20 to +30 impact damage, supported by a flat weapon rider (Mighty), a melee half-die (Volatile Strike) and a shove (Shockwave Slam). Around that sits a genuinely good multi-target energy engine, the leyline atlas's only mass Reaction-denial package, and a free party-wide escalating +1. It escalates through the FIGHT (damage dealt near you, second hits landing, kills chaining), never through the mage's own wounds. Strip the flavour text and Red reads as the leyline atlas's damage leader with the highest free floor in the system, no defensive tools whatsoever, and a headline specialty that is not where its power lives. THE 'SOMETHING' TEST, answered comparatively: Red's something is REPEATABLE, MULTI-TARGET, FREE-FLOOR damage - the most damage talents of any tree in the system (census offensive 8 of 21 trees), the only propagation in the leyline atlas, and a rider stack that costs nothing. Three trees each beat it on one dimension it claims: Black on damage per hit and damage type (2[Tier][Die] vital at L1), deity/Destruction and Green on persistent fire, deity/Power on escalation. No tree beats it on all three at once, so the something is real - it is just narrower than the prose.",
+   "verdict": "PARTIAL, with one DRIFTED headline and one UNDECLARED identity. Conflagration and Fast-turn synergy deliver as vocabulary; Momentum delivers its promise ('hit harder the longer they run') far harder than anyone appears to have intended, via a movement-rate damage formula; Frenzy delivers its names but functions as party support. The single most-repeated promise across BOTH intent sources — 'every wound taken is fuel', 'damage taken feeds future power', 'costs favor HP loss' — is delivered by exactly zero talents, and is implemented by Black (HP costs) and deity/Power (kill escalation) instead. And neither intent source mentions the mechanic that actually defines the tree's power curve."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "BOTH (heavy CONSUME, trivial PRODUCE)",
+    "talents": "Consumed by Searing Bolt, Incite, Reckless Advance, Arc Flash, Flame Surge (2), Emotional Overload, Volatile Strike, Reckless Gambit, Breaking Point — 9 talents. Produced by exactly ONE: Flashpoint (regain 1, once/round, only when a Red talent hits 2+, and only INSTEAD of its Reaction-denial mode). The supplied 'Red 2 regen' measurement is a false positive — resource-economy.json's second entry is Emotional Overload, which SPENDS Investiture and is listed under consumers too."
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "CONSUME (rides it)",
+    "talents": "Red Leyline Attunement"
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME (scoping keyword)",
+    "talents": "Searing Bolt, Incite, Flame Surge, Battle Fever, Emotional Overload, Feeding Frenzy, Shatter Focus, Reckless Gambit, Breaking Point — 9 talents, the tree's dominant range term (15/30/60/90/120 ft by rank)"
+   },
+   {
+    "keyword": "Advantage",
+    "role": "BOTH",
+    "talents": "PRODUCE: Red Leyline Attunement (Physical), Flashpoint (next Red test), Reckless Gambit (grant to a character), Frenzied Tempo (Presence/Influence). Four producers, worth roughly one unit because advantage is binary. CONSUME/punish: Emotional Overload triggers when ANY character gains an advantage from ANY source, and lands its disadvantage on that same character."
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE",
+    "talents": "Emotional Overload (non-attack tests only) — the system-wide census notes disadvantage is produced by 14 talents and consumed by none"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "CONSUME (never reliably produces)",
+    "talents": "Consumed by Afterburn, Reckless Gambit, Reckless Momentum — three of the atlas's nine Opportunity spenders, the most of any tree, which is the one place the guide's 'Opportunity fits Red' lands. Reckless Momentum SPENDS an Opportunity to roll the Plot Die, which may return one — a gamble, not a generator."
+   },
+   {
+    "keyword": "Plot Die",
+    "role": "CONSUME",
+    "talents": "Reckless Momentum — the tree's only Plot Die interaction, and a bleed into Blue's stated capstone identity (Blue has zero Plot Die talents)"
+   },
+   {
+    "keyword": "focus",
+    "role": "CONSUME (strips it from others; never spends or restores its own)",
+    "talents": "Shatter Focus. No Red talent costs focus and none restores it — unusual across the atlas, where White, Blue and Black each have exactly one focus coster."
+   },
+   {
+    "keyword": "Reaction",
+    "role": "BOTH (spends its own, denies others')",
+    "talents": "SELF-LOSE: Red Leyline Attunement (lose yours on every Draw Mana — wired as a GM note, not enforced), Shatter Focus (uses yours). DENY: Incite, Flashpoint (all affected), Breaking Point (via Disoriented). Cross-tree: only seven talents in the 365 deny a Reaction and Red owns three of them."
+   },
+   {
+    "keyword": "Fast turn",
+    "role": "CONSUME (trigger)",
+    "talents": "Burning Drive, Frenzied Tempo, Unstoppable. No Red talent references Slow turns. A Fast turn costs you one of your three Actions, which none of the three payoffs is worth."
+   },
+   {
+    "keyword": "Energy damage",
+    "role": "BOTH (produces it and triggers off it)",
+    "talents": "PRODUCE: Searing Bolt, Flame Surge, Arc Flash, Chain Detonation. TRIGGER OFF: Arc Flash, Kindle, Afterburn all fire on 'when you deal energy damage' — from ANY source, not only Red's."
+   },
+   {
+    "keyword": "Impact damage",
+    "role": "PRODUCE",
+    "talents": "Momentum's Edge (the tree's largest number), Volatile Strike, Shockwave Slam; Mighty riders impact/keen/spirit"
+   },
+   {
+    "keyword": "@movement.walk.rate (Speed as a damage term)",
+    "role": "CONSUME (converts it into damage)",
+    "talents": "Momentum's Edge — bonus impact equal to the walking movement rate in feet (MOVEMENT_RATES = [20,25,30,40,60,80] by SPD, cosmere-rpg index.js:8539). Unstoppable reads the same stat for half-Speed movement. The only damage formula in the 365 denominated in feet; four other trees write `system.movement.walk.rate.bonus` as an ActiveEffect, which FEEDS it."
+   },
+   {
+    "keyword": "Afflicted[X]",
+    "role": "PRODUCE",
+    "talents": "Afterburn — the tree's only ongoing damage condition (5 talents across 5 trees carry Afflicted; deity/Life's Venom Glands is the strongest)"
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Breaking Point"
+   },
+   {
+    "keyword": "Exhausted[-X]",
+    "role": "PRODUCE",
+    "talents": "Reckless Gambit (card says Exhausted[-2]; the authored effect applies a bare `exhausted` with no magnitude)"
+   },
+   {
+    "keyword": "Prone",
+    "role": "PRODUCE",
+    "talents": "Explosive Leap"
+   },
+   {
+    "keyword": "Forced movement / push",
+    "role": "PRODUCE",
+    "talents": "Shockwave Slam (push [Size] ft = 5-10 ft; collision converts to half [Tier][Die] impact)"
+   },
+   {
+    "keyword": "Forced action (compulsion)",
+    "role": "PRODUCE",
+    "talents": "Incite — on a success the TARGET chooses: Strike the nearest character, or lose its Reaction. The choice is the enemy's, and the wiring leaves the forced action to the GM. Weaker than the system's other compulsion, deity/Power's Absolute Authority, where the caster chooses the action."
+   },
+   {
+    "keyword": "Concealment",
+    "role": "DENY",
+    "talents": "Kindle (targets shed light in 5 ft and lose concealment benefits)"
+   },
+   {
+    "keyword": "Provoking Reactions (bypass)",
+    "role": "CONSUME (opts out of it)",
+    "talents": "Reckless Advance, Explosive Leap, Unstoppable"
+   },
+   {
+    "keyword": "[Size]",
+    "role": "CONSUME (scaling term) — 2.5/5/10/15/20 ft by rank, so 5 ft through L5 and 10 ft from L6",
+    "talents": "Flame Surge (radius), Reckless Advance (distance), Explosive Leap (distance), Shockwave Slam (push distance)"
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME (scaling term) — 1d6 through L5, 2d8 from L6",
+    "talents": "Searing Bolt, Flame Surge (full); Arc Flash, Volatile Strike, Shockwave Slam, Afterburn, Chain Detonation (half, i.e. floor(2d8/2) ~4.25 at L6). Burning Drive uses half [Die], not [Tier][Die]. No Red talent doubles the term, unlike Black's Withering Ray (2[Tier][Die])."
+   },
+   {
+    "keyword": "Red modifier / Red skill rank",
+    "role": "CONSUME",
+    "talents": "Kindle adds `@skills.red.mod` (attribute + rank, per cosmere-rpg index.js:8487; Red maps to STRENGTH) to energy damage; Red 1+/2+/3+ gates 12 talents, and Red 3+ is a level-6 gate; Red is the tested skill for Searing Bolt, Flame Surge and Volatile Strike, and the save DC for Flame Surge"
+   },
+   {
+    "keyword": "Intimidation",
+    "role": "CONSUME",
+    "talents": "Incite (tested skill); Feeding Frenzy (Intimidation 3+ prerequisite — a rank gate that puts it at L6, not the L3 the depth model reports, and drags Frenzied Tempo to L7)"
+   },
+   {
+    "keyword": "Influence / Presence",
+    "role": "CONSUME",
+    "talents": "Frenzied Tempo (wired `whenAttribute: \"pre\"`, excluding all five leyline skills)"
+   },
+   {
+    "keyword": "Athletics",
+    "role": "CONSUME (target's defensive test)",
+    "talents": "Flame Surge"
+   },
+   {
+    "keyword": "0 HP / kill trigger",
+    "role": "CONSUME",
+    "talents": "Chain Detonation — one of 13 kill-triggered talents in the atlas, and the only leyline one that converts a kill into damage (Black's Predator's Due converts a kill into health and Investiture)"
+   },
+   {
+    "keyword": "Self-referential talent categories ('a Red talent you activate', 'a Red Conflagration talent')",
+    "role": "CONSUME",
+    "talents": "Flashpoint, Chain Detonation — payoffs gated on the tree's own talent tags, dead if the enabler is not taken"
+   },
+   {
+    "keyword": "Rank (as a cap value)",
+    "role": "CONSUME",
+    "talents": "Battle Fever and Feeding Frenzy cap their stacking +1 at 'max = Rank' — so +2 through level 5 and +3 from level 6, given the primer's rank cap"
+   },
+   {
+    "keyword": "HP as a cost",
+    "role": "ABSENT",
+    "talents": "None. Listed because both intent sources name HP loss as Red's signature currency and zero talents implement it — the mechanical proof of the drift. leyline/Black implements it twice (Withering Ray, Dark Investiture)."
+   }
+  ],
+  "crossTreeHooks": [
+   "Momentum's Edge — reads `@movement.walk.rate`, so ANY outside effect that raises the Red character's Speed attribute or movement rate raises their damage directly, and by 5-20 points per step on the MOVEMENT_RATES ladder [20,25,30,40,60,80]. Four trees write `system.movement.walk.rate.bonus` as an ActiveEffect (deity/Destruction's Walking Ruin, heroic/Agent, heroic/Hunter and heroic/Warrior's Surefooted) — those are literal damage buffs for a Red character. An Enhanced[+Speed] buff, a mount, or a Speed-raising item is worth more to a Red character than any damage buff in the game. This is the single largest cross-tree lever in the atlas and it is invisible from the card text.",
+   "Battle Fever — triggers on ANY damage dealt within Attunement Range, by allies or enemies. Its value is a direct function of how many damage instances the party generates per round: near-permanently at its Rank cap in a multi-attack party, close to dead in a stealth/control party. The tree's biggest party-composition dependency.",
+   "Feeding Frenzy — requires an ENEMY to attack ANOTHER ENEMY. Red's own Incite is a poor enabler (it forces a Strike on the NEAREST character, often an ally). The real fuel is another path's compulsion — verified: deity/Power's Absolute Authority ('you choose the target's action on its next turn') is the only talent in the atlas that can point an enemy at an enemy on the caster's terms; Kneel's Compelled and Black's domination are the softer versions. Without one, this Passive is inert, and it is wired to require a manual GM call even when it fires.",
+   "Arc Flash / Kindle / Afterburn — all trigger on 'when you deal energy damage' with no requirement that the energy came from a Red talent, so any energy weapon, item or ally-granted energy rider switches them on; conversely all three go dark against an energy-resistant enemy. deity/Destruction's Pyre and Charge detonations are energy, so a Razkael ally is a live enabler.",
+   "Emotional Overload — triggers when a character gains an advantage from ANY source, and lands on that character. It is a punish keyed on OTHER PEOPLE'S buffs, best against buff-heavy enemies; it cannot be redirected onto a different target, and a White/Blue/Green ally buffing an enemy is not a scenario, so its cross-tree value is narrower than it looks. Note the atlas produces advantage on 45 talents across 13 trees, so the trigger is common — it is the payload that is weak.",
+   "Afterburn, Reckless Gambit and Reckless Momentum — all gated on holding an Opportunity, which this tree never reliably generates. The design guide assigns Opportunity thematically to RED and WHITE (not White and Blue), so a White path that banks or manufactures Opportunity is what makes 3 of Red's 25 talents reliably live.",
+   "Breaking Point — needs a target to take damage a second time. Solo, Red must spend two damage sources; with an ally hitting the same target it fires free. A teamwork talent wearing a solo talent's costume — and its authored watch is scene-scoped, so in practice it may fire even more freely than the card suggests.",
+   "Shatter Focus — triggers on ANY character within range failing a test, so its uptime rises with every disadvantage or forced test the party imposes; it also competes with the party's Aid economy for the 1-Reaction cap, and with Red's own Draw Mana for the Reaction itself.",
+   "Chain Detonation — requires the KILLING BLOW to come from a Red Conflagration talent, putting it in direct competition with allies finishing targets, and the wiring caps it at once per round. It rewards a party that softens and lets Red execute — and it is strictly dominated by deity/Death's Necrotic Cascade, which fires on ANY character dropping in range, so a Morrath ally makes it redundant rather than better.",
+   "Shockwave Slam — its damage clause needs an obstacle to collide with, so it is enabled by terrain-creating paths (Green's difficult terrain, Olvarra's Ordained Ground, Razkael's dangerous terrain) and by battlefield design.",
+   "Red Leyline Attunement (the Reaction loss) — makes Red an unusually poor holder of any out-of-tree Reaction talent, and a poor recipient of ally effects keyed on the Red character reacting."
+  ],
+  "topThree": [
+   "Momentum's Edge — a free, no-action Passive at depth 2 / L3 that adds your walking movement rate IN FEET (+20 to +30 for a normal PC, up to +40 at high SPD) as impact damage to any Strike made after a 20 ft approach. As authored (`bonusFormula: \"@movement.walk.rate\"`) this is six to eight times the [Tier][Die] available at the level you can take it, costs nothing, and outweighs every other damage talent in the tree combined. Whether or not the number is intended, it is what Foundry rolls, and it is the reason this tree is a damage tree.",
+   "Kindle — a free Passive adding your Red skill modifier (attribute + rank, so ~6 at L6) to EVERY energy damage instance the tree produces, silently upgrading Searing Bolt, Flame Surge, Arc Flash and Chain Detonation at once, plus real anti-concealment. The highest value-per-slot pick on the energy line, and the only talent in the 365 that adds a skill modifier to a damage TYPE.",
+   "Battle Fever — free, no action, no cost, party-wide, triggers on any damage dealt within Attunement Range by anyone, stacks to Rank (+2 through L5, +3 from L6), resets on your turn. In practice a near-permanent party bonus from depth 1, and being numeric it escapes the binary-advantage ceiling. (Flashpoint and Breaking Point are the close runners-up; Flame Surge drops out of the top three once its radius is priced at 5 ft for the first five levels and 2 Actions plus 2 Investiture.)"
+  ],
+  "bottomThree": [
+   "Reckless Advance — 1 Action AND 1 Investiture for a 5-10 ft move, when the free standard Move action covers your whole 20-30 ft walk rate for one Action and Disengage covers the no-provoking clause. Not a paid reproduction of a standard action but a strictly worse one, sitting at depth 0 where it competes with Searing Bolt and Incite.",
+   "Reckless Gambit — the tree's most expensive cost line (Opportunity + 1 Investiture) at depth 3 behind a Red 3+ gate, so a level-6 talent, for an effect that fights itself: grant a character advantage, then Exhausted[-2]. Bad on an ally (one binary advantage traded for a lasting -2), bad on an enemy (you hand it an advantage first), and the authored effect may not even carry the -2.",
+   "Frenzied Tempo — a LEVEL 7 talent (depth 3, but its Feeding Frenzy prereq needs Intimidation 3+, unreachable before L6) granting advantage on Influence tests only on a Fast turn, i.e. only during combat rounds, in a tree with no other social play; redundant with Red's own advantage sources on the very rounds it fires, and advantage is binary."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Recomputed, because the profile under test treated Arc Flash as if it competed for an Action. It is a Special, so the full single-target line fits in one turn with a Draw: Draw Mana (1 Action, +Tier Investiture) + Searing Bolt (1 Action, -1) + Arc Flash (Special, -1), using 2 of 3 Actions. At Tier 1 (L1-5) that is net -1/round against a ~4 pool, giving roughly FOUR rounds of full output — not two — after which dropping Arc Flash makes the line net-zero and indefinite. At Tier 2 (L6+) Draw returns 2, so the same line is net ZERO per round, sustainable indefinitely with an Action to spare, and Flashpoint's once-per-round refund pushes the AoE line positive whenever it catches two or more. The AoE line (Draw + Flame Surge) is net -1 at Tier 1 and net 0 at Tier 2, consuming all three Actions. The real tax is not Investiture, it is the Reaction: sustaining any of these means Drawing most rounds, and every Draw deletes your Reaction. And the floor is barely Investiture-dependent at all — 14 of 25 talents cost nothing, and the free rider stack (Momentum's Edge, Mighty, Kindle, Chain Detonation, Battle Fever, Burning Drive, Unstoppable) contains the tree's single largest damage source. A Red character at 0 Investiture is not degraded; a melee Red character at 0 Investiture is playing optimally.",
+   "triggerGatedCount": 5,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 11,
+   "note": "triggerGatedCount corrected 18 -> 5. The supplied definition is 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'; by that definition the count is exactly five — Emotional Overload (a character gains an advantage), Battle Fever (damage dealt in range, by anyone), Feeding Frenzy (an enemy attacks another enemy), Shatter Focus (a character fails a test; also the tree's only Reaction), Breaking Point (a character takes damage a second time). That matches the supplied measurement of 5 (20%) exactly. The profile under test reported 18 by silently widening the definition to include self-triggered riders; that broader figure is a useful observation but not this field. For the record the broader tally is 14 self-triggered riders (Arc Flash, Volatile Strike, Kindle, Momentum's Edge, Mighty, Shockwave Slam, Afterburn, Chain Detonation, Flashpoint, Burning Drive, Frenzied Tempo, Unstoppable, Reckless Momentum, Red Leyline Attunement) plus those 5, leaving only 6 talents that fire on your unconditional say-so: Searing Bolt, Incite, Reckless Advance, Flame Surge, Explosive Leap, Reckless Gambit. Reactions: 1 of 25 (Shatter Focus) — nominally excellent against the hard 1-Reaction cap, but the tree sabotages its own single Reaction, since Red Leyline Attunement removes your Reaction on every Draw Mana and the corrected arithmetic says you Draw most rounds. Resource costers: 9 spend Investiture (Flame Surge spends 2), 3 spend Opportunity, 11 distinct talents in total; ZERO spend focus and ZERO spend HP."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.damageTalents[Momentum's Edge].dice / peakDamagePerAction / axes.damage_direct",
+   "from": "'flat bonus impact equal to your Speed' … 'ambiguous in the text and could be very large if read as a movement rate in feet; flagged as needing a designer ruling rather than scored at face value'",
+   "to": "'@movement.walk.rate' — the walking movement rate in FEET; MOVEMENT_RATES = [20,25,30,40,60,80] by SPD, so +20 to +30 impact for a normal PC",
+   "reason": "HEADLINE CORRECTION. The profile declined to score the tree's biggest number. The authored overlay — which wins in Foundry — settles it: data/authored/leyline-Red.json gives Momentum's Edge `\"bonusFormula\": \"@movement.walk.rate\"`, `\"whenMovedTowardFt\": 20`, appliesTo impact. The engine's own schema field hint says it verbatim: 'Momentum's Edge: ... Bonus = your Speed via @movement.walk.rate' (module-src/scripts/engine/53-native-event-system.js:1416). The system computes that as speedToMovementRate() over MOVEMENT_RATES = [20,25,30,40,60,80] (systems/cosmere-rpg/index.js:8539). So a FREE Passive at depth 2 / L3 adds ~+25 impact to a Strike after a 20 ft approach — six to eight times the [Tier][Die] (1d6, avg 3.5) available at that level. There is no ambiguity at the table."
+  },
+  {
+   "field": "axes.damage_direct.evidence / damageAccounting.verdict",
+   "from": "'Ten of 25 talents deal damage. Two ORIGINATE it' … 'only Searing Bolt and Flame Surge create damage from nothing; eight of ten are multipliers on a hit already landed'",
+   "to": "SIX originate: Searing Bolt, Flame Surge, Arc Flash, Shockwave Slam, Afterburn, Chain Detonation. Four amplify: Kindle, Mighty, Volatile Strike, Momentum's Edge.",
+   "reason": "Lens (a) inverted: the profile counted NEW damage sources as riders. Arc Flash 'a bolt arcs to one other character within 10 feet' — a fresh instance on a target that was not attacked; it never touches the triggering hit. Chain Detonation 'deal half [Tier][Die] energy damage to each creature within 5 ft' — new instances, new targets. Afterburn inflicts Afflicted[half [Tier][Die]], which deals damage on later rounds with no further attack. Shockwave Slam's collision damage is a new instance from forced movement. The supplied damage-census agrees independently at SOURCE=6 for Red; the profile's '2' contradicts both the census and the text."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "18",
+   "to": "5",
+   "reason": "Definitional inflation against the supplied vocabulary. The brief defines trigger-gated as 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'. By that definition the count is exactly five: Emotional Overload, Battle Fever, Feeding Frenzy, Shatter Focus, Breaking Point — which matches the supplied action-type measurement (Red trigger-gated 5, 20%) exactly. The profile reached 18 by silently widening the definition to include self-triggered riders, and its own note admits it ('13 self-triggered riders … and 5 gated on someone ELSE acting first'). The broader observation is preserved in the note field; the count field now uses the supplied definition. Its subsidiary '13 self-triggered' is also wrong — a hand recount gives 14 (Arc Flash, Volatile Strike, Kindle, Momentum's Edge, Mighty, Shockwave Slam, Afterburn, Chain Detonation, Flashpoint, Burning Drive, Frenzied Tempo, Unstoppable, Reckless Momentum, Red Leyline Attunement)."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Mighty].dice + note; weakTalents (Mighty added)",
+   "from": "'extra damage equal to (1 + your tier), per action spent' … \"'For each action spent' is ambiguous — a 2-action attack reading gives +6 at Tier 2\"",
+   "to": "flat +(1 + tier) with NO action term — authored `\"bonusFormula\": \"(1 + @tier)\"`, appliesTo 'impact, keen, spirit'",
+   "reason": "Card-vs-engine divergence, engine wins. The card promises per-action multiplication; the authored handler is a plain edha-damage-rider with a flat (1+@tier) formula and no action multiplier anywhere in it. So it is +2 at Tier 1 and +3 at Tier 2 regardless of how the attack is built, and the profile's '+6 at Tier 2' reading never happens at the table. Two further textual facts the profile missed: Mighty is filed under the CONFLAGRATION specialty despite being a pure weapon/unarmed rider with no fire content (a specialty misfile), and its applies-to list includes SPIRIT damage, a type no Red talent produces."
+  },
+  {
+   "field": "axes.resource_economy (score + evidence); mechanicalKeywords[Investiture]",
+   "from": "score 2; 'Two generators. Flashpoint … Reckless Momentum spends an Opportunity to roll the Plot Die, a chance to regenerate Opportunity.'",
+   "to": "score 1; exactly ONE Investiture generator (Flashpoint), and Reckless Momentum is a net Opportunity SPEND, not a generator",
+   "reason": "Recount plus a classifier bug. I grepped data/leyline.json for Investiture-regain lines: the only four in the whole leyline atlas are Predatory Patience, Predator's Due, Predatory Insight and Flashpoint — the first three are not Red. So the supplied measurement's 'Red 2 regen' is a false positive (the third classifier bug the brief predicted), and the tree has ONE conditional refund that is mutually exclusive with Flashpoint's better mode, against 9 Investiture costers and 3 Opportunity costers. Under the rubric that is '1 = one incidental talent', not 2."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "'Flame Surge + Kindle + Arc Flash + Battle Fever + Flashpoint is most of the identity and is all reachable by L3'",
+   "to": "Each is individually legal by L3; HOLDING them is seven talents (the five plus Incite and Searing Bolt as prereqs), i.e. level 7 — you can hold three at L3",
+   "reason": "Arithmetic error conflating individual reachability with simultaneous ownership. The depth model in the dossier header states 1 talent per level. Battle Fever requires Incite; Kindle connects to Arc Flash; Flashpoint requires Flame Surge or Arc Flash; Arc Flash and Flame Surge connect to Searing Bolt. The set is 7 talents. FRONT-LOADED still stands and is now argued from the fact that the flat riders (Momentum's Edge, Kindle, Mighty) arrive by depth 3 and then stop scaling."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets].delivered",
+   "from": "'PARTIAL — two targets missed, one met exactly'",
+   "to": "'MISSED ON SIX OF SEVEN TARGETS — one met'",
+   "reason": "The profile's own reported figures contradict its summary. Its numbers (which I verified by hand against all 25 dossier lines, and which match the supplied normalisation exactly: Pass 11 / Spec 8 / 1Act 3 / 2Act 1 / 3Act 0 / Free 1 / Reac 1) miss six of the seven targets: Passive 44% vs ~35% cap, Special 32% vs ~25-30%, 1 Action 12% vs ~15%, 2 Actions 4% vs ~8%, Free 4% vs ~5-8%, Reaction 4% vs ~5-8%. Only 3-Action (0%) is met."
+  },
+  {
+   "field": "axes.mobility (score + evidence); weakTalents[Reckless Advance]; multiple [Size] references",
+   "from": "mobility 3; 'Reckless Advance … reproduces a standard action and then charges a resource for it'",
+   "to": "mobility 2; Reckless Advance is STRICTLY WORSE than the free standard Move, not equal to it",
+   "reason": "The profile never converted [Size] into feet anywhere except Flame Surge. The primer gives [Size] = 2.5/5/10/15/20 ft by rank, and the rank cap is 2 through L5 and 3 from L6, so every Red movement talent is a 5-10 ft step: Explosive Leap 5-10 ft, Reckless Advance 5-10 ft, Shockwave Slam's push 5-10 ft. Meanwhile the standard Move action (primer §Action economy) costs 1 Action, no resource, and covers the full walk rate of 20-30 ft, and Disengage covers the no-provoking clause. Reckless Advance therefore charges 1 Action PLUS 1 Investiture for a third of what Move gives free. One good-but-tiny free reposition (Explosive Leap) and one depth-5 sustainer (Unstoppable, half walk rate = 10-15 ft, wired `byHalfSpeed`) is 'present but minor'."
+  },
+  {
+   "field": "damageAccounting.repeatability; sustainability.roundsOfGoodOptions",
+   "from": "'2 Investiture/round against a ~4 pool … 2 rounds at full output, then roughly 50% uptime'; Tier 2 '~60-65% uptime'",
+   "to": "~4 rounds at Tier 1, then net-zero and indefinite; Tier 2 is net ZERO per round and sustainable indefinitely with a spare Action",
+   "reason": "Arithmetic error: the profile priced the peak line as if you never Draw, and treated Arc Flash as competing for an Action. Arc Flash is a SPECIAL (dossier line: 'action: Special'), so Draw Mana (1 Action, +Tier) + Searing Bolt (1 Action, -1) + Arc Flash (Special, -1) uses only 2 of the 3 Actions in a Slow turn. At Tier 1 that is net -1/round from a ~4 pool = ~4 rounds, not 2. At Tier 2 Draw returns 2 (primer §Draw Mana), so the same line is net 0 and never dries up, with Flashpoint's refund pushing the AoE line positive. The true tax is the Reaction, not the Investiture — Drawing most rounds means never holding one."
+  },
+  {
+   "field": "weakTalents[Burning Drive].reason",
+   "from": "'half [Die] (~2.5 at rank 3)'",
+   "to": "~2.0 at rank 3 (~1.5 at rank 2)",
+   "reason": "Dice error. The authored formula is `floor((1d(2 * @skills.red.rank + 2)) / 2)`. At rank 3 that is floor(1d8/2), whose distribution (0,1,1,2,2,3,3,4) averages 2.0; at rank 2, floor(1d6/2) averages 1.5. The profile's conclusion (+2, filler) survives; the figure did not."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Volatile Strike].dice; weakTalents[Volatile Strike]",
+   "from": "'~4.5 at L6'",
+   "to": "~4.25 at L6",
+   "reason": "Dice error. The formula is `floor((@tier)d(2*@skills.red.rank+2)/2)` = floor(2d8/2), which averages 4.25, not 4.5 (1d8 averages 4.5, but the talent does not roll 1d8). The same correction applies to Arc Flash, Shockwave Slam, Afterburn and Chain Detonation, all of which use the identical floor-of-half formula."
+  },
+  {
+   "field": "weakTalents[Feeding Frenzy] — propagated to powerByDepth, bottomThree, weakTalents[Frenzied Tempo], mechanicalKeywords[Intimidation]",
+   "from": "The profile found the Intimidation 3+ / L6 error but left 'depth-3' Frenzied Tempo unpriced elsewhere in the document",
+   "to": "Feeding Frenzy is L6 (not the dossier's L3) and Frenzied Tempo is L7 (not L4), stated everywhere the talents appear",
+   "reason": "The profile's own catch was correct — the primer's tier/rank table caps skill rank at 2 through level 5, so an Intimidation 3+ prerequisite is a level-6 gate and the dossier's computed 'earliest L3' understates it — but it was asserted in one field and contradicted by 'a depth-3 talent' framing in bottomThree and powerByDepth. Now propagated."
+  },
+  {
+   "field": "crossTreeHooks[Opportunity]",
+   "from": "'A path that banks or manufactures Opportunity (the guide names White and Blue)'",
+   "to": "'the guide names Red and White'",
+   "reason": "Text-vs-claim error against DESIGN-GUIDE-CLAIMS.md, revision principle 6, which reads: 'Opportunity fits Red (capitalize on lucky breaks) and White (unity generates shared fortune).' Blue is assigned Focus, not Opportunity."
+  },
+  {
+   "field": "axes.buff.evidence; uniqueOwnership[Battle Fever]; topThree[Battle Fever]",
+   "from": "'a near-permanent +1 to +3 for the whole party at depth 1'",
+   "to": "+1 to +2 through level 5, reaching +3 only from level 6",
+   "reason": "Cap arithmetic. Battle Fever's text caps at 'max = Rank', and the primer's tier/rank table caps skill rank at 2 through L5. Quoting '+3' alongside 'at depth 1' (earliest L2) is internally impossible."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Kindle].dice; axes.damage_direct; peakDamagePerAction",
+   "from": "'+ Red modifier (flat)' — used at an assumed ~3 in the peak calculation",
+   "to": "`@skills.red.mod` — the Red SKILL modifier (attribute + rank), ~6 at L6, roughly double the assumed value",
+   "reason": "The profile left 'Red modifier' unresolved. The authored handler is `\"bonusFormula\": \"@skills.red.mod\"` — a skill mod, not an attribute mod. Red maps to Strength (build-forge leyline→attribute table), and a Cosmere skill mod is attribute + rank, so at L6 with STR 3 / rank 3 it is ~6. This roughly doubles the energy line's flat component the profile computed at ~3."
+  },
+  {
+   "field": "axes.damage_scaling (score + evidence)",
+   "from": "score 4; 'Everything scales on [Tier][Die] (…) or on tier/rank-derived stats (Mighty = 1+tier; Kindle = Red modifier; Momentum's Edge = Speed)'",
+   "to": "score 3; the two largest riders are FLAT and are not tier- or rank-derived at all",
+   "reason": "Textually false as written. Momentum's Edge reads a movement rate off the SPD ladder — it never moves with tier. Kindle reads a skill mod, whose only tier-adjacent component is the rank half (+1 across the tree's life). Mighty is (1+tier), also +1 across the tree's life. Only the seven [Tier][Die] talents genuinely scale, and they do so in one discontinuous step at L6. Since the tree's dominant damage contributor is flat, Red's output relative to its own dice DECLINES with tier — the opposite of the claim the score rested on."
+  },
+  {
+   "field": "axes.damage_direct.score; powerByDepth[depth 1-2].rating; topThree",
+   "from": "damage_direct 4; depth 1-2 rating 4; topThree = Flame Surge, Kindle, Battle Fever",
+   "to": "damage_direct 5; depth 1-2 rating 5; topThree = Momentum's Edge, Kindle, Battle Fever",
+   "reason": "Follows from the Momentum's Edge and six-originators corrections. Red has the most originating damage sources of any 25-talent tree in the system (census: 6 SOURCE vs. Black 3, Green 2, White 1, Blue 0), the only kill-chain + damage-arc + ongoing-condition package in the leyline atlas, and a free depth-2 Passive worth ~+25 per Strike. Flame Surge leaves the top three once priced honestly: 2 of 3 Actions plus 2 Investiture for a 5-FOOT radius through level 5. The Deflect caveat is retained and the score is explicitly conditioned: if Ben rules Momentum's Edge down to the Speed attribute (0-5), damage_direct returns to 4."
+  },
+  {
+   "field": "axes.control.evidence; mechanicalKeywords[Forced action]",
+   "from": "'Incite (… target must Strike the nearest character OR lose its Reaction: forced target choice AND denial)'",
+   "to": "The TARGET chooses — it is misdirection OR denial, never both, and the enemy picks which",
+   "reason": "Text-vs-claim. The card reads 'On a success, it must Strike the nearest character or lose its Reaction' — the disjunction belongs to the target, so the Red player cannot select the outcome. The authored handler confirms it is unresolved automation ('the GM resolves the forced action'). This also weakens the profile's own Feeding Frenzy enabler argument in the direction it already noted."
+  },
+  {
+   "field": "intentDrift.claims — new entry added",
+   "from": "(absent)",
+   "to": "'CARD TEXT vs. AUTHORED WIRING — three divergences that change what the table actually plays'",
+   "reason": "Three card-vs-engine divergences found by reading data/authored/leyline-Red.json against the dossier text, none of them in the profile: (1) Mighty's flat rider vs. its per-action card; (2) Chain Detonation's authored `\"oncePerRound\": true`, which the card does not state — you cannot chain two kills in a round; (3) Breaking Point's authored watch is `\"scope\": \"scene\"` with `\"whenTotal\": \"at-least\"`/2 while the card says 'for the second time in a round'. Also noted under protection/intentDrift: Red Leyline Attunement's Reaction loss — the one mechanism carrying the whole 'trade defense for devastation' thesis — is wired as an `edha-note` whisper marked 'GM-tracked', i.e. not enforced."
+  },
+  {
+   "field": "uniqueOwnership[Afterburn]",
+   "from": "'the only leyline route to an ongoing Afflicted damage condition bought with an Opportunity rather than Investiture'",
+   "to": "Red's only ongoing damage condition; the cross-atlas uniqueness claim withdrawn as unverifiable from a Red-only dossier",
+   "reason": "Over-claim. The supplied cross-tree counts show Afflicted on 5 talents across 5 trees. A Red-only dossier cannot establish which of those four other trees are leyline, so 'the only leyline route' is asserted beyond the evidence available."
+  },
+  {
+   "field": "intentDrift.claims[Conflagration].evidence",
+   "from": "Lists 7 Conflagration talents (Searing Bolt, Kindle, Flame Surge, Arc Flash, Flashpoint, Afterburn, Chain Detonation)",
+   "to": "Conflagration has EIGHT talents — Mighty is filed there",
+   "reason": "Miscount. The dossier's specialty field puts Mighty in Conflagration. The tree partitions 8 Conflagration / 8 Momentum / 8 Frenzy / 1 Key = 25. The profile silently dropped Mighty from the specialty roll-up, which also concealed the finding that a pure weapon rider with no fire content sits inside the pyromancy specialty."
+  },
+  {
+   "field": "intentDrift.claims[Fast turn synergy].delivered/evidence",
+   "from": "'DELIVERED.' — three talents, a genuine mechanical hook",
+   "to": "'DELIVERED as a hook, but the payoffs do not cover the price'",
+   "reason": "Missing arithmetic. Per the primer a Fast turn grants 2 Actions against a Slow turn's 3, so each Fast-turn payoff is compensation for surrendering a whole Action. Burning Drive is worth ~+2, Frenzied Tempo is a binary advantage on Influence, Unstoppable is a 10-15 ft move — none is worth an Action. The hook exists; the incentive does not."
+  },
+  {
+   "field": "weakTalents[Emotional Overload]; crossTreeHooks[Emotional Overload]",
+   "from": "'it can even be aimed at a moment your own White/Blue/Green ally created'",
+   "to": "It cannot be aimed — the disadvantage lands on the character who gained the advantage",
+   "reason": "Text-vs-claim. The card reads 'When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. IT gains a disadvantage on its next non-attack test.' The referent is fixed to the triggering character, so there is no targeting decision and no way to point it at an enemy off the back of an ally's buff."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction; actuallyIs",
+   "from": "Peak computed on the energy line (~2.5 [Tier][Die] units across two targets per Action); melee line ranked last at '1-1.5 units per Action'; identity 'a mid-range pyromancer/skirmisher'",
+   "to": "Peak is the MELEE line at ~28-36 per Action for at most 1 Investiture; identity 'a melee charger disguised as a ranged pyromancer'",
+   "reason": "Follows from Momentum's Edge and the corrected Kindle/Mighty values. At L6 with a 25 ft walk rate: Strike after a 20 ft approach = Momentum's Edge (+25) + Mighty (+3) = +28 flat for one Action and no resource, before the weapon's own die, reaching ~36 with Volatile Strike and Shockwave Slam. The energy line is ~15 for one Action and one Investiture. The profile ranked these exactly backwards, which also produced a wrong identity statement — the tree's ceiling requires melee and a run-up, so a player who builds it as its own prose describes never reaches it. Added as a new entry in `gaps` as well."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Searing Bolt].note; [Flame Surge].note",
+   "from": "(no cross-check note); 'Best damage-per-Action in the tree against 3+ targets'",
+   "to": "Notes the census/text disagreement on earliest offensive level, and conditions the 3+ target claim on rank 3",
+   "reason": "Two smaller checks. (a) The supplied damage-census reports Red's earliest offensive source at L2; Searing Bolt is depth 0 / earliest L1 in the dossier and carries a damage roll formula, so the census figure is a classifier artefact and the text wins — earliestDamageLevel 1 is confirmed correct. (b) Flame Surge's radius is [Size] = 5 ft through level 5, where catching three targets is rare; the claim only holds at rank 3 (10 ft). Also flagged: the burst handler carries `\"addSkillMod\": \"red\"` of its own, so whether Kindle stacks on Flame Surge is unresolved at the table."
+  },
+  {
+   "field": "CHECKED, NO CHANGE",
+   "from": "—",
+   "to": "—",
+   "reason": "Fields I verified against the text and did NOT change: countReal (10 — I re-derived the damage-touching set from all 25 texts and found no missed source; no summon, hazard, zone or redirect damage exists in this tree); countFalsePositiveMitigation (0 — no talent in Red reduces damage taken, matching the census MITIG 0, so the known 'deal half LESS damage' failure mode does not apply here); earliestDamageDepth 0 / earliestDamageLevel 1; every depth and earliest-L value in damageTalents (all ten match the dossier lines exactly); reactionCount 1; resourceCostersOutOfTree 11 (9 Investiture + 3 Opportunity − Reckless Gambit counted twice = 11 distinct, 14 free); the 9-talent Investiture-coster list; the 9-talent Attunement Range list; the [Tier][Die] and [Size] keyword lists; the action-type counts (11/8/3/1/0/1/1); the 'zero HP costs, zero focus costs' finding, which I re-read all 25 texts to confirm and which is the profile's strongest and correct intent-drift claim; the absence of Stunned/Restrained/Immobilized/Slowed; the absence of vital and spirit damage; and the Plot Die claim (Reckless Momentum is the tree's only one)."
+  },
+  {
+   "field": "uniqueOwnership[0] / axes.damage_direct.evidence / damageAccounting.damageTalents[Momentum's Edge].note / peakDamagePerAction",
+   "from": "\"No other leyline tree has a number like it\" — Momentum's Edge presented as the uncontested largest damage number in the leyline atlas.",
+   "to": "Kept the movement-rate uniqueness (verified: `@movement.walk.rate` is a damage bonusFormula in exactly ONE of the 365 talents, data/authored/leyline-red.json:770; the other four hits — deity/Destruction, heroic/Agent, heroic/Hunter, heroic/Warrior — are ActiveEffect keys that RAISE movement and therefore feed it). Deleted the magnitude claim: leyline/Black's Withering Ray is depth 0 / L1, 1 Action, no Investiture, authored `(2 * @tier)d(2 * @skills.black.rank + 2)` type=vital — 2[Tier][Die] = 2d6 at L1 and 4d8 (avg ~18) at L6, ignoring Deflect.",
+   "reason": "Lens B (a): the profile's headline uniqueness claim was checked only inside Red. Withering Ray is the same order of magnitude in a strictly better damage type, four depth-steps earlier, and it is the entry talent of the tree next door. Text + authored formula both verified."
+  },
+  {
+   "field": "axes.damage_direct.evidence (structure of the justification)",
+   "from": "\"Raised 4 -> 5 because the authored wiring settles the number the profile declined to score\" — the 5 was made to rest on the Momentum's Edge reading, with a caveat that a ruling to the Speed attribute would drop it to 4.",
+   "to": "Score held at 5 but rebased on the independent census (SOURCE=6, offensive(src)=8, the highest of all 21 trees) plus 10 damage-touching talents; Momentum's Edge is now an amplifier of an already-top score, and the evidence states the 5 survives Ben ruling it down to the Speed attribute.",
+   "reason": "Lens B (b): a headline score must not be hostage to a disputed formula flagged as needing a designer ruling. The score is correct; the argument for it was not. Also verified `@skills.red.mod` at the system level (cosmere-rpg index.js:8487 `skills[skill].mod.derived = attrValue + rank`), which the profile asserted without a citation."
+  },
+  {
+   "field": "uniqueOwnership[2] (Reaction denial)",
+   "from": "\"The only tree that makes stripping the enemy's REACTION a through-line rather than an incident… Mass reaction denial off an AoE is Flashpoint's alone.\"",
+   "to": "\"The densest Reaction-denial package in the atlas\" — 3 of the 7 talents in the 365 that deny a Reaction, naming the other four (leyline/Blue Absolute Stillness, leyline/Black Extract Thought, heroic/Warrior Feinting Strike, deity/Sovereignty). Flashpoint's mass denial scoped to LEYLINE ONLY: deity/Chaos's Cascade Collapse Disorients every Omen-bearing enemy in Attunement Range simultaneously (a full round of no reactions plus [Tier][Die] spirit).",
+   "reason": "Lens B (a). Searched all 365 descriptions for Reaction denial. Black's Extract Thought is a FREE Passive that denies Reactions for a full round — a stronger single instance than anything Red owns — and Cascade Collapse is mass Reaction denial that is strictly better than Flashpoint's one-Reaction strip."
+  },
+  {
+   "field": "uniqueOwnership[3] (propagation)",
+   "from": "\"The only source of damage PROPAGATION as a package… Nothing else in the leyline atlas moves damage from one target to the next.\"",
+   "to": "Scoped to the leyline atlas in the headline, with deity/Death's Necrotic Cascade (scene-long, full [Tier][Die] SPIRIT to every enemy within 10 ft of ANY character dropping in range, 1 Inv) and deity/Destruction's Combustion Chain named as strictly better implementations.",
+   "reason": "Lens B (a): the entry's headline said 'the only source' and only its last sentence carried the leyline scope, so the claim read as atlas-wide. Necrotic Cascade dominates Chain Detonation on every axis (full dice vs half, spirit vs energy, 10 ft vs 5 ft, any kill vs your-Conflagration-only, no once-per-round cap)."
+  },
+  {
+   "field": "uniqueOwnership[4] (Battle Fever)",
+   "from": "\"Battle Fever is a unique shape: a free, no-action, party-wide numeric bonus…\"",
+   "to": "Narrowed to \"the only ESCALATING, damage-triggered numeric party buff\", naming the flat comparators found by search: leyline/White Unyielding Accord, deity/Order Covenant, deity/Civilization Lay Foundation, deity/Fate Ordained Ground, deity/Power Mantle of the Aspirant (allies +1 to ALL tests for a scene, no trigger, no reset).",
+   "reason": "Lens B (a)+(b): party-wide numeric +1s are common across the atlas. What is actually unique is the count-up off battlefield damage events; the free/no-action/party-wide half of the claim is not."
+  },
+  {
+   "field": "uniqueOwnership[5] (Afterburn)",
+   "from": "\"Afterburn is Red's only ongoing damage condition and the only one in this tree bought with an Opportunity… softened from 'the only leyline route to an ongoing Afflicted condition' — a Red-only dossier cannot establish which of those are leyline.\"",
+   "to": "Settled the open question by reading the other trees: leyline/Black's Dark Investiture also inflicts Afflicted, deity/Fate's Inevitable Snare does, and deity/Life's Adaptive Mutation (Venom Glands) applies Afflicted[half [Tier][Die] VITAL] on EVERY melee hit for a scene with no Opportunity cost.",
+   "reason": "Lens B (a): the profile flagged this as unresolvable from a Red-only dossier. It is resolvable from all-talents.json, and the answer is that Afterburn is neither unique nor the best — its one advantage is being a Special rider on damage already being dealt."
+  },
+  {
+   "field": "uniqueOwnership (new entry 8) / damageAccounting[Mighty].note / weakTalents[Mighty] / intentDrift CARD-vs-WIRING claim / intentDrift Conflagration claim / powerByDepth depth 3+",
+   "from": "Mighty treated throughout as a Red talent — 'filed under the CONFLAGRATION specialty despite being a pure weapon rider', card-vs-engine divergence filed as a Red bug for Ben.",
+   "to": "Added the fact the profile missed entirely: 'Mighty' appears VERBATIM in SIX trees — leyline/Red (d3/L4), heroic/Agent (d2/L3), heroic/Envoy (d1/L2), heroic/Hunter (d3/L4), heroic/Leader (d2/L3), heroic/Warrior (d1/L2) — and Red's copy is the latest-arriving of the six. The card-vs-engine divergence is therefore a six-tree generic-talent ruling, not a Red one. Also quoted the handler's own self-description ('APPROXIMATION: canon text is + (1 + tier) PER ACTION SPENT … modeled here as a single (1+tier) add'). Added the 'Shatter Focus' name collision with an unrelated deity/Chaos talent.",
+   "reason": "Lens B (a): a duplicate-name sweep over all 365 talents. A talent five other trees carry earlier cannot be evidence of Red's identity, and filing a shared-talent bug against Red would send Ben's fix to the wrong place."
+  },
+  {
+   "field": "axes.control.evidence",
+   "from": "Incite described as 'denial OR misdirection, never both', with no cross-tree comparison; the axis's Reaction-denial case rested on Red owning the mechanic.",
+   "to": "Added that Incite is the WEAKER of the system's two forced-action implementations (deity/Power's Absolute Authority lets the CASTER choose the target's action), and that Black/Blue/Warrior each carry a Reaction-denial talent, Black's being stronger than any of Red's. Score held at 3.",
+   "reason": "Lens B (b): a 3 on control was carried mostly by 'Red owns Reaction denial'. It does not own it; it has the most instances and the weakest individual ones. The score survives, the argument needed the comparison."
+  },
+  {
+   "field": "axes.buff.evidence",
+   "from": "Battle Fever's numeric escape from the binary-advantage ceiling argued only within Red.",
+   "to": "Added the cross-tree calibration (Mantle of the Aspirant, Covenant, Lay Foundation, Ordained Ground) showing Red's +1-to-Rank is small by atlas standards and earns 3 on being free and setup-free, not on size.",
+   "reason": "Lens B (b): buff is one of the two axes the brief names as habitually inflated. 3 is right, but only once the comparators are on the page."
+  },
+  {
+   "field": "axes.damage_scaling.evidence",
+   "from": "Scaling argued entirely inside Red ([Tier][Die] vs the flat riders).",
+   "to": "Added that Red's dice term is ORDINARY system-wide — Black's entry talent already rolls 2[Tier][Die] and deity/Sovereignty's whole economy is die-SIZE manipulation, while nothing in Red raises a die size or count.",
+   "reason": "Lens B (b): 'does its damage keep pace as tier rises' is a comparative question. Red's answer is 'like everyone else's, minus the half-dice, plus flat riders that never move'."
+  },
+  {
+   "field": "axes.resource_economy.evidence / mechanicalKeywords[Investiture]",
+   "from": "'The supplied measurement says Red 2 regen … The Red 2 is the third classifier bug the brief predicted' — asserted without naming the phantom entry.",
+   "to": "Named it: dossier/resource-economy.json lists `prod leyline/Red = ['Flashpoint','Emotional Overload']` and lists Emotional Overload under `cons` for the same currency because its text is 'spend 1 Investiture'. Also documented that the same file counts Emotional Overload as an ADVANTAGE producer (its text grants a disadvantage; 'advantage' appears only in its trigger), confirming the profile's 4-producer advantage count.",
+   "reason": "Lens B (c) hygiene: a claimed classifier bug should name the row. Verified both by reading the JSON and by grepping every talent that regains Investiture — the leyline regen talents are Predatory Patience, Predator's Due, Predatory Insight (all Black) and Flashpoint. Score of 1 confirmed, not changed."
+  },
+  {
+   "field": "intentDrift.claims (new entry 11) / gaps (new entry) / intentDrift.actuallyIs",
+   "from": "Intent drift assessed only against Red's own two intent sources; the 'something' test not answered comparatively.",
+   "to": "Added the cross-intent finding: Red's two loudest promises are made AND KEPT by other paths — deity/Power's intent promises 'each death builds toward a warlord's fury' with a Bounty tally and Warlord's Fury implements the scene-counter Red's Momentum specialty only names; deity/Destruction's intent promises detonations that leave 'dangerous terrain that keeps burning' and its seven talents build it, while leyline/Green's Thorn Field is the persistent fire inside Red's own atlas; heroic/Leader's Champion specialty even shares the charging-momentum vocabulary. Answered the 'something' test: Red's something (repeatable, multi-target, free-floor damage) is real but is beaten on per-hit quality by Black, on persistence by Green and deity/Destruction, and on escalation by deity/Power.",
+   "reason": "Lens B (d)+(e), the two checks the profile did not perform at all. This is the finding that reframes the tree: Red's intent prose describes three other paths more accurately than it describes Red."
+  },
+  {
+   "field": "oneLineIdentity / gaps[Deflect-bypassing] / powerByDepth[depth 0] / damageAccounting.verdict",
+   "from": "'the atlas's only mass Reaction-denial package'; depth-0 band and the Deflect gap assessed without a comparator.",
+   "to": "'the leyline atlas's only mass Reaction-denial package'; the Deflect gap now names Black as the leyline tree that deals vital from level 1; the depth-0 band notes it is weaker than Black's; the damage verdict states plainly that Red has the most damage TALENTS while Black has the better damage per hit and the better damage type.",
+   "reason": "Lens B (a)+(e): three atlas-wide superlatives that only hold inside leyline, and a damage verdict that read as unqualified supremacy. The corrected wording is the one Ben can act on without being surprised at the table."
+  },
+  {
+   "field": "axes (all 15 scores)",
+   "from": "5/3/3/2/0/0/3/2/2/1/1/1/1/0/1",
+   "to": "UNCHANGED — no score moved.",
+   "reason": "Checked every axis against the other twenty trees. Deflation candidates (resource_economy, information, action_economy) re-verified by re-reading all 25 texts for hidden riders: Red has exactly one Investiture refund, one anti-concealment rider, and no talent that grants a new action, so 1/1/2 are right. Inflation candidates (damage_direct 5, control 3, buff 3) survive the comparison, though two of the three needed their arguments rebuilt (above). protection 0, healing 0 and summons 0 confirmed against the full text and the census's MITIG=0."
+  }
+ ]
+}

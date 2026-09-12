@@ -1,0 +1,644 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Knowledge",
+ "correctionCount": 34,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Knowledge",
+  "oneLineIdentity": "A single-target damage-multiplier engine: it stamps an accumulating counter on one enemy, reads that enemy's exact statblock, multiplies its own and its allies' damage by the counter, and refunds the Investiture it spends — and does nothing else at all: no control, no defence, no healing, no movement.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 5,
+    "evidence": "7 of 9 talents deal or add damage. Predatory Strike (1 Action, 1 Inv, depth 0, L1): weapon attack + [Tier][Die] Vital PER Insight, minimum 1. Killing Blow (1 Action, 2 Inv, depth 1, L6): [Tier][Die] Vital per Insight on a Red vs Physical test. The Final Study (3 Actions, 3 Inv, depth 3, L4, capstone): same payload plus a free Strike for every ally. Hunter's Discipline (Passive): flat +Tier Vital on every hit against the mark. Death Mark (Passive): on the mark's death, EACH ally in Attunement Range deals [Tier][Die] Vital to any enemy of their choice — untargeted party-wide free damage. The Pack: allies deal bonus Vital equal to your Insight count. Pack Share: allies deal bonus Vital equal to your Tier. Three machine-readable damage formulas, zero heal formulas. Re-counted against the nine dossier lines: Studied Mark and Accumulate are the only two talents with no damage clause, and no damage arrives by any unnamed route (no summon, no hazard, no zone, no Afflicted tick, no redirect). CORRECTED: the original evidence said 'every point of it is Vital'. Every point the TREE ITSELF ADDS is Vital, but Predatory Strike is 'make a melee or ranged weapon attack' — the weapon's own damage is its normal type and IS reduced by Deflect — and The Final Study's clause is 'each ally may immediately make a free Strike', i.e. ordinary weapon Strikes. Score held at 5 comparatively: 6 SOURCE + 1 SRC+AMP is the highest offensive density in the game per talent (7 of 9 = 78%, against leyline/Red's 8 of 25), and the single-target per-Action ceiling is the highest anywhere."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 5,
+    "evidence": "Scales on three axes at once: Tier ((@tier)d...), Red rank (d(2 * @skills.red.rank + 2)), and Insight count (x1 to x5). Crucially Predatory Strike does NOT consume Insight, so the peak repeats every round rather than being a nova, and Accumulate refunds 1 Investiture whenever the mark takes damage — which a Predatory Strike hit itself supplies — making one strike per round self-funding. Ceiling at L6 / Red 3 / 5 Insight is 5 x [Tier][Die] = 10d8 Vital per Action, sustained. CORRECTED uniqueness claim: the original said this is 'the only tree in the 365 whose damage expression is MULTIPLIED by an accumulating stack'. That is over-broad. deity/Power Warlord's Fury ('additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2') and leyline/Green Coordinated Hunt ('bonus damage equal to the number of different attackers who targeted it this round, maximum = Rank') both scale damage off an accumulating counter, and this tree's own The Pack does it flat ('equal to your Insight count'). What survives is narrower and still real: Knowledge is the only tree that multiplies DICE by a counter — 'deal [Tier][Die] Vital damage per Insight' appears exactly three times in the 365 (Predatory Strike, Killing Blow, The Final Study) and nowhere else; every other counter-scaled expression adds a small flat integer and is hard-capped at tier x 2 or Rank, where Insight caps at 5."
+   },
+   {
+    "axis": "control",
+    "score": 0,
+    "evidence": "Read all 9 texts line by line: no condition is ever applied, no action or reaction denied, nothing restrained, stunned, immobilised, slowed or knocked prone, no forced target choice, no forced movement. The tree READS conditions (Studied Mark, Pack Share) and never inflicts one."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Insight functions as a vulnerability marker — Pack Share and The Pack make the marked creature take bonus Vital from the whole party, Hunter's Discipline from you. 'Vulnerability' is named in the axis definition, so this is a genuine 2 and arguably a 3. Held to 2 because no talent imposes a numeric penalty on the target's own rolls or defences, grants disadvantage, or reduces Deflect, and because the mechanic is written entirely on the attackers' side and is already counted under damage_direct. Comparative anchor: deity/Sovereignty (Decree of Ruin, Edict of the Fallen — damage die size down one or two steps) and leyline/Blue (5 impose-disadvantage talents) are what a 4 on this axis looks like."
+   },
+   {
+    "axis": "protection",
+    "score": 0,
+    "evidence": "Searched all 9 texts for damage reduction, shields, temp HP, interception, resistance or redirection: none. The tree has zero defensive text and zero Reactions, so it cannot even respond to being attacked."
+   },
+   {
+    "axis": "healing",
+    "score": 1,
+    "evidence": "No Health restoration and no Focus restoration anywhere; 0 heal formulas in the authored overlay. The only restoration of any kind is Accumulate's 1 Investiture once per round, which the axis definition ('restoring Health, Focus, or Investiture') literally includes but which is the same single talent scored under resource_economy. CHECKED AND UPHELD at 1 rather than dropped to 0: the axis text names Investiture, and 'one incidental talent, or a rider on something else' describes Accumulate exactly. Note for cross-tree consistency that deity/Chaos Void Sense and deity/Life Prognosis carry the identical clause and should score the same 1 on this axis. A party wanting a healer gets nothing here."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "CORRECTED 4 -> 3. The talents are real: The Pack (1 Action, 2 Inv, depth 2, L3) gives every ally in Attunement Range bonus Vital equal to your Insight count (up to +5 each) for the scene; Pack Share (1 Action, 1 Inv, depth 1, L6) gives allies +Tier Vital plus the enemy read; they stack, so at Insight cap with Tier 2 an ally swings for +7 flat Vital. This tree grants ZERO advantage (confirmed absent from advantage-ledger.md), so the binary-advantage trap never applies. But 4 means 'the tree is one of the better options in the game for this' and that does not survive the cross-tree check. (1) Only 2 of 9 talents grant an ally bonus at all. (2) BOTH fire only against the one marked creature and only when allies choose to attack it. (3) deity/Sovereignty has FOUR ally-damage buffs in nine talents — Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty — all raising the ally's damage die size against ANY target with no mark condition; that is what a 4 looks like. (4) deity/Life's Apex Form (+Tier Vital on ALL attacks, +2 Deflect, regeneration) and Adaptive Mutation (Bone Spurs / Venom Glands / Dense Tissue) are unconditional; deity/Power's Mantle of the Aspirant gives every ally in range +1 to ALL tests; deity/Order's Concord grants Covenant allies a Free-Action Aid grant plus damage equal to your Presence; leyline/Green's Pack Pressure hands allies an extra [Tier][Die] — a whole die, where Pack Share hands a flat +Tier. Also CORRECTED within the evidence: the original cited 'deity/Life ... without a single-target lock' — Life's Vital Diagnosis IS locked to the Diagnosed creature; only Apex Form and Adaptive Mutation are unconditional."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "Hunter's Discipline and Death Mark each grant a Free Action re-mark on the quarry's death — a new free action, though one that can only be spent on re-marking. The Final Study grants every ally an immediate free Strike — but only on a successful test, once per scene, after paying 3 Actions, so the net swing is roughly +1 to +2 actions across the party. No talent grants you an extra Action or Reaction on your own turn, and the tree contains ZERO Specials — the action type the leyline guide calls the backbone of official design. Comparative: deity/Order Concord (a standing Free-Action Aid grant to every Covenant ally, every turn, for the scene) and deity/Fate Thread of Inevitability (a free Strike OR Aid per Ordained Ground square, plus every Snare) both do more with the same or lower spend."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "No talent moves anyone. No teleport, bonus movement, repositioning, or Speed change. Attunement Range is a range band the tree reads from, not movement it grants."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "No areas, hazards, difficult terrain, walls, or persistent features. Every effect is anchored to one creature (the mark) or to a radius used purely as an eligibility check for allies. (The character does get difficult terrain from the free Green Attunement Key, but that is the path gate, not this tree.)"
+   },
+   {
+    "axis": "information",
+    "score": 3,
+    "evidence": "Studied Mark (1 Action, 1 Inv, depth 0, L1) reveals the target's current HP, its conditions, and both its Physical and Spiritual defenses. Pack Share extends that read to every ally for the whole scene. NOT unique: a full sweep of the 365 finds enemy-reading talents in leyline/Blue (Read Intent — next action), leyline/Green (Scent the Weak — lowest HP), heroic/Hunter (Sharp Eye — lowest attribute / lowest defense / below-half resources), heroic/Agent (Get 'Em Talking, Sleuth's Instincts, Close the Case — motivation and lie detection), deity/Fate (Read the Threads — intended action and movement), deity/Order (Lawkeeper's Eye — intended action) and deity/Life (Vital Diagnosis, depth 0, L1, 1 Action, 1 Investiture: 'exact HP, max HP, conditions, and Physical and Spiritual defenses' FOR THE SCENE, i.e. strictly more information, persistently, at the same price and level). Held at 3 anyway because the score never rested on uniqueness: an exact-statblock read is a real, usable competency and 2 of 9 talents deliver it, and the party-share is genuinely this tree's alone. Not 4 because it is narrow — enemy statblock only, with no detection of hidden creatures, no scouting, no foreknowledge or prediction, and nothing out of combat; heroic/Agent's three-talent motivation-and-deceit suite is what a 4 looks like."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "No persuasion, command, deception, intimidation, reputation or leverage over people. The tree's only interactions with other characters are granting allies damage and reading an enemy's combat stats."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 1,
+    "evidence": "Studied Mark can be used out of combat on any creature in Attunement Range to size it up, and its Insight lasts until end of scene. That is all — no travel, crafting, survival, downtime, or non-combat problem solving anywhere in the tree."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companions, constructs, minions or animated allies. 'The Pack' and 'Pack Share' buff allies who already exist; the tree has no persistent entity of any kind. (Note the contrast with heroic/Hunter, which delivers a similar mark-a-quarry fantasy AND an animal companion.)"
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "Accumulate (Passive, depth 1, L2): recover 1 Investiture once per round whenever the marked creature takes damage from ANY source. It exactly funds ONE 1-Investiture Action per round with no Action spent. It is NOT 'strictly better than Draw Mana' — Draw Mana also fires the character's free Red/Green Attunement rider (advantage on the next Physical test / difficult terrain), needs no marked creature in range, and outscales it at Tier 2 (2 Investiture vs 1). It is also not unusual in kind: deity/Chaos Void Sense and deity/Life Prognosis carry the same clause almost verbatim ('when the marked creature takes damage from any source, you recover 1 Investiture once per round'), and Black, Red, Death and Sovereignty each carry a regen passive of their own. The tree generates zero Focus and zero Opportunity; Insight is tree-private and unspendable elsewhere."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Predatory Strike",
+     "dice": "weapon damage (normal type, Deflect applies) + [Tier][Die] Vital PER Insight (minimum 1). Formula (@tier)d(2 * @skills.red.rank + 2) type=vital. L1-5 (Tier 1, Red rank 2) = 1d6 per Insight; L6+ (Tier 2, Red rank 3) = 2d8 per Insight. At Insight cap 5: 5 x 1d6 = 5d6 (avg 17.5) / 5 x 2d8 = 10d8 (avg 45) bonus Vital.",
+     "action": "1 Action, 1 Investiture",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "CONDITIONAL RIDER: the bonus lands only 'on a hit' of a weapon attack, and the tree itself supplies no accuracy help (the free Red Attunement Key does — see gaps). But it is a rider on a repeatable Action, it does NOT consume Insight, and it places 1 more, so it ramps itself. This, not the capstone, is the tree's real damage engine. CORRECTED: only the BONUS is Vital; the weapon's own damage is its ordinary type and is reduced by Deflect."
+    },
+    {
+     "name": "Hunter's Discipline",
+     "dice": "flat +Tier Vital (not dice) on every hit against the marked creature: 1 at Tier 1, 2 at Tier 2.",
+     "action": "Passive, free",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "RIDER on an already-successful hit against the mark only. Small, but free and unlimited."
+    },
+    {
+     "name": "Killing Blow",
+     "dice": "[Tier][Die] Vital per Insight on success (removes all Insight); [Tier][Die] Vital on failure (removes 1). Formula (@tier)d(2 * @skills.red.rank + 2) type=vital.",
+     "action": "1 Action, 2 Investiture",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "CONDITIONAL on a Red vs Physical test, with a guaranteed [Tier][Die] floor on failure. Gated Red 3+, hence L6. Consumes the entire Insight stack, resetting the engine the rest of the tree exists to build — and zeroing The Pack's ally bonus at the same moment, since that bonus is read live off the Insight count. Predatory Strike deals the same dice for half the Investiture, keeps the stack, AND adds the weapon's own damage."
+    },
+    {
+     "name": "Pack Share",
+     "dice": "allies deal bonus Vital equal to your Tier (1, then 2) on attacks against the mark, for the scene.",
+     "action": "1 Action, 1 Investiture (one-time, scene duration)",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "DAMAGE DELIVERED BY ALLIES — still this tree causing it, so it counts. Conditional on having allies in Attunement Range AND their attacks hitting the specific marked creature. Gated Green 3+, hence L6 — and Green is a toll booth: no Knowledge talent ever tests Green or sizes a die off it. Comparative: deity/Life's Vital Diagnosis carries this exact clause ('You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier') at depth 0 / L1 with no rank gate, and heroic/Hunter's Pack Hunting is the same shape ('add your ranks in Survival to your ally's attack or damage roll against your quarry')."
+    },
+    {
+     "name": "Death Mark",
+     "dice": "each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice — 1d6 each at Tier 1 / rank 2, 2d8 each at Tier 2 / rank 3. With 3 allies that is 3d6 / 6d8 of free party damage.",
+     "action": "Passive, free (costs nobody an action)",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "CONDITIONAL on the marked creature dropping to 0 HP — but it is the only genuinely SPREAD damage in the tree (each ally picks their own target, not the mark). Easy to miss because the trigger is a death, not an attack, and the word 'damage' is buried in the second clause. No authored roll formula, so the deterministic formula count (3) does not see it. Comparative: deity/Death Necrotic Cascade and leyline/Red Chain Detonation are the same on-death-splash shape, both dealing the damage themselves rather than handing it to allies."
+    },
+    {
+     "name": "The Pack",
+     "dice": "allies deal bonus Vital equal to your INSIGHT COUNT (up to +5 flat) on attacks against the mark, for the scene.",
+     "action": "1 Action, 2 Investiture (one-time, scene duration)",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "DAMAGE DELIVERED BY ALLIES. Scales with the same counter the tree already maximises, so a party of three allies at Insight cap gains +5 Vital per hit each — the tree's largest total damage contribution, and it is legal at L3, three levels before Pack Share. Note the coupling: because the bonus reads the live Insight count, any talent that removes Insight (Killing Blow, The Final Study) turns The Pack off in the same instant."
+    },
+    {
+     "name": "The Final Study",
+     "dice": "[Tier][Die] Vital per Insight on success (removes all); [Tier][Die] on failure (removes 1). Formula (@tier)d(2 * @skills.red.rank + 2) type=vital. Plus a free Strike (ordinary weapon damage) for every ally in Attunement Range on success.",
+     "action": "3 Actions (an entire Slow turn), 3 Investiture, once per scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "CONDITIONAL on a Red vs Physical test AND once per scene. Per Action it is the WORST damage talent in the tree — one third the rate of Predatory Strike for three times the Investiture. Its unique payload is the party free-Strike clause; across all 365 talents only deity/Fate 'Thread of Inevitability' also hands allies free Strikes (verified: 'every Ordained Ground square you have active grants its standing ally a free Strike or Aid'; deity/Civilization 'Arsenal' grants an extra attack to your own Construct, deity/Power 'Momentum of Victory' a free Strike to YOU, not to allies). Note that Fate's capstone is the same 3 Actions / 3 Investiture / once per scene / depth 3 / L4 and ALSO triggers every unsprung Snare — strictly more for the same price."
+    }
+   ],
+   "countReal": 7,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "5 x [Tier][Die] Vital per Action at Insight cap (5) — that is 5d6 (avg 17.5) at L1-5 with Tier 1 and Red rank 2, and 10d8 (avg 45) at L6+ with Tier 2 and Red rank 3 — plus the weapon's own damage and +Tier from Hunter's Discipline. (The multiplier is 5, the Insight cap; the 10 in '10d8' is 5 x the Tier-2 die count, not a separate multiplier.) The talent-added damage is all Vital and therefore ignores Deflect; the weapon damage underneath it is the weapon's normal type and is not. This is delivered by Predatory Strike, which does NOT consume Insight, for 1 Action and 1 Investiture. CORRECTED SUSTAIN RATE: Accumulate refunds 1 Investiture ONCE PER ROUND, so exactly ONE Predatory Strike per round is free forever; a full 3-Action Slow turn costs 3 Investiture against that 1-Investiture refund and drains a ~5-6 pool in two or three rounds. So the sustained-indefinitely figure is one Action of peak output per round, not a whole turn of it. Ramp to cap: Studied Mark places 2, Accumulate adds 1 at the start of each of your turns (but only once a creature already bears Insight — it cannot self-start), Predatory Strike adds 1 per hit, an ally adds 1 per round via Pack Share / The Pack. With the full tree and a Slow turn, cap is reachable on round 1 (Studied Mark + two Predatory Strikes = 4, ally hit = 5) if the Investiture pool allows, and reliably by round 2. On top of that, per round, every ally adds +Insight (up to +5) from The Pack and +Tier from Pack Share against the same target.",
+   "repeatability": "Unlimited at one Action per round, with one caveat. Predatory Strike costs 1 Investiture; Accumulate returns 1 Investiture per round, triggered by the mark taking damage — which a Predatory Strike HIT supplies, but a miss does not (an ally's attack or any other damage source covers the gap). The engine is net-zero on resources for one strike per round and never needs an Action spent on Draw Mana; a second or third strike in the same round is paid out of pool. The only other limiters in the tree are The Final Study's once-per-scene, Insight's cap of 5 and end-of-scene fade, and the one-creature-at-a-time restriction on the mark.",
+   "verdict": "This is a damage tree wearing a Knowledge nameplate — 7 of 9 talents deal or add damage, and every point the tree itself ADDS is Vital, which ignores Deflect and which the primer says to use sparingly (the weapon damage it rides on, and the free Strikes it grants allies, are ordinary types). It is the highest SUSTAINED single-target damage ceiling reachable from any tree in the game, and genuinely sustained rather than a nova, because the strongest talent does not spend the resource it scales on — at a rate of one free Action per round. The counterweights are total one-dimensionality and one hard dependency: the tree can point all of that at only ONE creature at a time (placing Insight elsewhere wipes the stack), and Predatory Strike's entire output is gated behind an attack roll the tree gives no help landing. Damage MITIGATION is not counted because the tree contains none — a regex sweep for 'less damage / damage reduced' over all 365 talents returns only leyline/White Shield Wall and deity/Power Crown of Thorns, neither in this tree. The one word-only false positive is Accumulate, whose 'When that creature takes damage' clause is a TRIGGER, not damage dealt and not mitigation; countFalsePositiveMitigation is therefore 0, not 1."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 4,
+    "exemplars": "Predatory Strike, Studied Mark",
+    "note": "Unusually strong entries, both legal at L1. Predatory Strike is a 1-Action, 1-Investiture weapon attack with +1d6 Vital minimum that also places its own Insight, so it self-ramps with no other talent owned. Ramp with Predatory Strike alone and one attack per round: the stack is 0/1/2/3/4 on rounds 1-5 and the full +5d6 tier lands on the SIXTH attack — the '+5 per Insight' band only arrives fast if you spend two or three Actions a round on it, which the ~4 Investiture pool at L1 caps at four attacks total. Studied Mark front-loads the stack to 2 and hands you the enemy's current HP, conditions and both defences; that read is strong but NOT unique — deity/Life's Vital Diagnosis gives more of it, for the scene, at the same cost and level, and also carries Pack Share's +Tier ally damage clause on the same card. Both entries deliver the deity fantasy on turn one exactly as the deity guide demands."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 4,
+    "exemplars": "Accumulate, The Pack, Death Mark, Hunter's Discipline (duds: Killing Blow, Pack Share)",
+    "note": "The tree peaks here — six talents, four of them excellent. Accumulate makes one Action per round free forever, The Pack turns one mark into a party-wide +5 Vital, Death Mark makes every kill cascade into free damage from every ally plus a full-count free re-mark. Two of the six are near-dead weight: Killing Blow is dominated by the L1 entry it prereqs off, and Pack Share is dominated by The Pack while gated three levels later. Note the level inversion inside the band: Accumulate and Hunter's Discipline are L2, Killing Blow and Pack Share are L6, all four at depth 1."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 2,
+    "exemplars": "The Final Study",
+    "note": "The capstone is the weakest per-Action talent in the tree. It spends an entire Slow turn and 3 Investiture, once per scene, on a test, for the same per-Insight dice Predatory Strike throws every round for 1 Action and 1 Investiture — then wipes the stack (and with it The Pack's live ally bonus). Its only genuinely unique payload is the party free-Strike clause. Comparative anchor: deity/Fate's Thread of Inevitability is the same 3 Actions / 3 Investiture / once per scene / depth 3 / L4 and grants a free Strike OR Aid per Ordained Ground square AND triggers every unsprung Snare — the same slot, priced identically, doing strictly more. The deity guide's own pitfall list warns about 'capstones that don't pay off the tree's investment'; this one pays off in letter but not in magnitude. It is, however, within the guide's ~70-word capstone budget at 56 words."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED, and inverted at the top. The strongest talent in the tree is a depth-0 entry legal at level 1 (Predatory Strike); the economic engine that makes it free is depth 1 at L2; the biggest party contribution (The Pack) is depth 2 at L3; and the depth-3 capstone is the tree's worst damage-per-Action. The level gating also runs backwards against the depth gating: the two L6 talents (Killing Blow via Red 3+, Pack Share via Green 3+) are both depth 1, while the strictly better depth-2 and depth-3 talents (The Pack, Death Mark, The Final Study) are reachable at L3 and L4. A player is punished for climbing the rank gates and rewarded for climbing the talent chain — and those two rank gates are themselves against the deity guide, which says extra skill-rank gates beyond the entry 2+/2+ are rare in deity trees.",
+  "uniqueOwnership": [
+   "The only tree that multiplies DICE by an accumulating counter. 'deal [Tier][Die] Vital damage per Insight' appears exactly three times in the 365, all here (Predatory Strike, Killing Blow, The Final Study). CORRECTED from 'the only per-stack damage multiplier in the game': counter-scaled damage itself is not unique — deity/Power Warlord's Fury scales off a scene kill-count (capped at tier x 2), leyline/Green Coordinated Hunt off the number of attackers this round (capped at Rank), and this tree's own The Pack off the Insight count. All of those add a small flat integer under a hard cap; only Knowledge multiplies the dice expression itself, and its cap of 5 is the loosest of the four.",
+   "The only tree that SHARES an exact enemy statblock read with the whole party. CORRECTED from the original claim that Studied Mark and Pack Share are the only talents revealing current HP and defences — false: deity/Life Vital Diagnosis (depth 0, L1, 1 Action, 1 Investiture) reveals 'exact HP, max HP, conditions, and Physical and Spiritual defenses' for the whole scene, and heroic/Hunter Sharp Eye, leyline/Green Scent the Weak, leyline/Blue Read Intent, deity/Fate Read the Threads and deity/Order Lawkeeper's Eye all read an enemy in some fashion. What remains genuinely unique is Pack Share's clause extending a full statblock read to every ally in Attunement Range for the scene; deity/Order's Lawkeeper's Eye is the nearest miss and shares only an advantage with allies, not the numbers.",
+   "TIED, not sole, for the densest ally-damage-buffing tree. Four of nine talents (44%) cause allies to deal damage they otherwise would not: Pack Share, The Pack, Death Mark, The Final Study. CORRECTED TWICE. The original 'other trees have one such talent apiece' was false; the first correction's replacement claim, 'Knowledge still leads on density (4/9 = 44% vs Life's 3/9)', is ALSO false — deity/Sovereignty has four in nine (Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty), the same density, and Sovereignty's four raise the ally's damage die against ANY target while all four of Knowledge's require the ally to attack the one marked creature. Other ally-damage buffs live in leyline/Red (Momentum's Edge), leyline/Green (Pack Pressure — a full extra [Tier][Die] — and Coordinated Hunt), heroic/Hunter (Pack Hunting), deity/Chaos (Isolating Ruin), deity/Order (Concord), deity/Destruction (Pinpoint Charge) and deity/Life (Vital Diagnosis, Apex Form, Adaptive Mutation). Also still CORRECTED: leyline/White Shield Wall was once cited as an ally damage buff and is the opposite — 'attacks against them deal half [Tier][Die] LESS damage' is mitigation, the known classifier false positive. What Knowledge does keep alone here is that its ally buffs never use advantage, so none is ever wasted on a target someone else already gave advantage against.",
+   "The only kill-chain that transfers an accumulated COUNT. Hunter's Discipline (half, rounded down) and Death Mark (full) move the Insight count from a dying creature onto a new one as a Free Action, so the investment survives the target's death. CORRECTED for scope: the kill-then-re-mark shape itself is not unique — heroic/Hunter Cold Eyes is 'After you defeat your quarry, recover 1 focus and choose a new quarry', and deity/Death Reaper's Harvest mints a Harvested Remain on any death in range. Neither carries a stack count across, and that carry is what makes Knowledge's version a chain rather than a reset.",
+   "Self-funding damage — with the uniqueness downgraded. Accumulate refunds the exact Investiture one core Action costs, off a trigger allies can pull, so one strike per round carries no Action tax for Draw Mana. CORRECTED: the mechanism is not unique. deity/Chaos Void Sense and deity/Life Prognosis carry the same clause nearly verbatim on their own marked-target resources. What is unusual here is the pairing — a 1-Investiture-per-Action core loop matched exactly by a 1-Investiture-per-round refund the loop itself triggers."
+  ],
+  "gaps": [
+   "Total absence of control. Nothing restrains, stuns, disorients, immobilises, slows, knocks prone, or denies an action. Against an enemy that must be STOPPED rather than killed — a fleeing target, a caster mid-ritual, a brute charging the back line — a Knowledge character can only shoot at it and hope it dies first.",
+   "Zero defence, for anyone: no damage reduction, shield, temp HP, resistance, or interception. And zero Reactions in the whole tree, so the character has literally nothing to do on anyone else's turn.",
+   "No healing of Health or Focus. An ally drops and this tree cannot help.",
+   "No mobility. Cannot reposition itself or anyone else, cannot escape, cannot close a gap. If the mark leaves Attunement Range, Accumulate stops ticking and the tree cannot chase. (Partial outside answer: the free Green Attunement Key creates difficult terrain on any Draw Mana, which is the character's only native way to slow a mark down — but it costs an Action and belongs to the path gate, not the tree.)",
+   "Single-target lock. 'You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight.' Against a swarm of low-HP enemies the multiplier is worthless — the tree's only spread effect (Death Mark) fires after a kill. Every round spent on the wrong creature is a full engine reset.",
+   "No accuracy support OF ITS OWN — but the character is never actually without one. Predatory Strike's whole output rides on landing a weapon attack, and no Knowledge talent grants advantage (confirmed absent from advantage-ledger.md), an attack bonus, or a reroll. Scoped correctly: every Knowledge character is attuned to Red 2+ by definition and therefore holds the free Red Attunement Key, whose Draw Mana rider is 'gain an advantage on your next Physical test' — precisely the help Predatory Strike wants — and whose 'lose your Reaction' tax costs this tree literally nothing, because it has zero Reactions. The real cost is the Action: Drawing Mana for accuracy competes with the Predatory Strike it is meant to land.",
+   "Nothing at all out of combat. No travel, survival, crafting, downtime, social leverage, detection or scouting. In a scene with nothing to kill, a player with only this tree has no meaningful talent to press. Note the comparative sting: heroic/Hunter delivers the same mark-a-quarry fantasy AND survival, traps, stealth and a companion across 25 talents.",
+   "Solo characters lose half the tree. Pack Share, The Pack, Death Mark and The Final Study's best clause all require allies in Attunement Range; a lone Knowledge character holds four dead or half-dead talents.",
+   "Two anti-synergies inside the tree's own nine. Killing Blow and The Final Study remove all Insight on success — which simultaneously zeroes The Pack's ally bonus (read live off the Insight count) and drops Predatory Strike back to its minimum-1 floor. The tree's two 'payoff' talents each dismantle the two talents that make the payoff big."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'his is the knowledge of the hunt. To study a thing is to learn how to kill it, and to share that study with the pack.'",
+     "delivered": "DELIVERS",
+     "evidence": "Studying literally IS the damage formula: Studied Mark and Accumulate build the counter, Predatory Strike / Killing Blow / The Final Study multiply their dice by it, and Pack Share / The Pack / Death Mark hand the product to the party. The tree contains no knowledge that is not a damage input."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'A disciple of Gnothis marks a quarry and accumulates Insight upon it.'",
+     "delivered": "DELIVERS",
+     "evidence": "Five talents place Insight (Studied Mark 2, Accumulate 1/turn, Predatory Strike 1/hit, Pack Share and The Pack 1/round via allies) and two more transfer it on a kill; all nine reference it. Studied Mark's one-creature-at-a-time clause enforces the singular 'a quarry' precisely."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'every observation sharpens the killing blow.'",
+     "delivered": "DELIVERS",
+     "evidence": "The per-Insight multiplier is real. At Insight 5 with Tier 2 / Red 3 it is 10d8 Vital where a bare use is 2d8 — a 5x swing driven purely by observation, and the only dice-multiplying counter in the 365."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'the whole pack profits from what one hunter learns.'",
+     "delivered": "DELIVERS",
+     "evidence": "Pack Share shares the enemy read and adds ally damage; The Pack scales ally damage by your Insight; Death Mark gives every ally free Vital damage on the kill; The Final Study gives every ally a free Strike. 4 of 9 talents are ally-facing — tied with deity/Sovereignty for the highest density in the atlas, and the only one that also shares the information."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'Patience first, then a strike that lands like a verdict.'",
+     "delivered": "PARTIAL — contradicted by the tree's own math",
+     "evidence": "The verdict talents (Killing Blow, The Final Study) are exactly the two that CONSUME the accumulated Insight, and both are dominated per Action by Predatory Strike, which spends nothing and repeats every round. Optimal play is therefore no patience and no verdict: ramp for a round or two, then repeat the entry talent forever. The intended arc exists in the text and loses to the arithmetic."
+    },
+    {
+     "claim": "CROSS-ATLAS INTENT COLLISION (new finding, lens B(d)): is the promise this tree makes ALSO made by another path's intent file? YES — twice, and one of them is a 25-talent path.",
+     "delivered": "DRIFTED — the fantasy is not this tree's alone",
+     "evidence": "heroic/Hunter's intent file promises the same archetype in the same words: 'patiently surveil... no detail is too small... you don't have to be more powerful than your quarry, so long as you're better prepared... methodical preparation culminating in an exhilarating onslaught', with an Assassin specialty that 'exploits weaknesses to quickly incapacitate their quarry'. And it DELIVERS the same beats mechanically: Seek Quarry (mark a target, advantage to find, attack and STUDY it), Cold Eyes (kill your quarry, re-mark a new one), Pack Hunting (spend focus to add your Survival ranks to an ALLY's attack or damage roll against your quarry — Pack Share's clause, three levels earlier, and even sharing the word 'Pack'), Unrelenting Salvo (Strike your quarry more than once per turn). Separately, deity/Life's intent file promises 'reading an ally's anatomy to strike an enemy's with precision', which Vital Diagnosis delivers at depth 0 / L1 — the study-then-precision-damage half. And leyline/GREEN — one of this tree's own two gate colours — claims 'coordinated hunts, scenting the weak' as a named specialty (Instinct) and delivers Pack Hunter, Coordinated Hunt, Pack Pressure and Scent the Weak. So a Knowledge character pays Green 2+ (and Green 3+ for Pack Share) into a colour whose own leyline already owns the pack half of Gnothis's fantasy. What is left exclusively to Knowledge is the MAGNITUDE — the dice multiplier — not the fantasy."
+    },
+    {
+     "claim": "DEITY GUIDE: 'The two entries should each independently deliver the deity's player-fantasy on turn one.'",
+     "delivered": "DELIVERS",
+     "evidence": "Predatory Strike (the hunt) and Studied Mark (the study) are both depth 0, both gated 'Red 2+; Green 2+', both legal at L1, and each independently produces the predator-scholar feel."
+    },
+    {
+     "claim": "DEITY GUIDE: homebrew resources 'should be generated by an entry and spent by most of the rest of the tree.'",
+     "delivered": "PARTIAL",
+     "evidence": "Insight is generated by both entries and referenced by 9/9 talents, so the generation half is exemplary. But it is SPENT by exactly two talents (Killing Blow, The Final Study) and those are the two weakest picks — the spine is a counter that only goes up, with no sink a player would voluntarily use. The guide's own test names both halves; the sink half fails."
+    },
+    {
+     "claim": "DEITY GUIDE colour split for Gnothis: 'Red tests for the damage payload that comes from accumulated insight; GREEN tests for stack-generation, observation, and pack-share.'",
+     "delivered": "DRIFTED — the Green half is not implemented at all",
+     "evidence": "Two talents test Red vs Physical (Killing Blow, The Final Study — both activation=skill_test skill=red in the authored overlay). NOT ONE talent tests Green; the other seven carry an empty skill field. Studied Mark, Accumulate, Pack Share and The Pack — the exact stack-generation / observation / pack-share talents the guide assigns to Green — are all untested placements. Green's entire contribution is a rank number on prerequisites (Green 2+ entries, Green 3+ on Pack Share), which is what deity-gate-audit.js flags as a TOLL BOOTH. Red additionally owns the damage die itself (d(2 * @skills.red.rank + 2)), so a player who leaves Green at rank 2 and pumps Red loses nothing but access to Pack Share, the tree's worst talent."
+    },
+    {
+     "claim": "DEITY GUIDE prereq pattern: 'Tier-3 synthesis: prereq [Tier-2 talent A] or [Tier-2 talent B] from each branch' + principle 3, 'Tier-3 synthesis nodes bring the two halves together.'",
+     "delivered": "DRIFTED",
+     "evidence": "Neither synthesis node draws from both branches. Death Mark's prereq is 'Hunter's Discipline or Killing Blow' — both hang off the Predatory Strike entry. The Pack's is 'Accumulate or Pack Share' — both hang off the Studied Mark entry. The two halves of the tree therefore never converge until the capstone (The Final Study: 'The Pack or Death Mark'), so a player can reach depth 3 having touched only one entry's lane. The guide's stated purpose for the synthesis tier — bringing the branches together — is not served."
+    },
+    {
+     "claim": "DEITY GUIDE prereq pattern: 'Skill-rank gates beyond the entry-node 2+ requirement are rare in deity trees. The 2+ in both colors already gates the tree behind significant investment.'",
+     "delivered": "DRIFTED",
+     "evidence": "Knowledge carries TWO extra rank gates on tier-2 talents: Red 3+ on Killing Blow and Green 3+ on Pack Share. Because rank 3 is unreachable before level 6, these two gates are the sole cause of the depth/level inversion in the tree — two depth-1 talents stranded at L6 while depth-2 and depth-3 talents are legal at L3 and L4. And the Green 3+ gate charges six skill ranks for access to a colour the tree never tests and never uses to size a die. (Comparative note: deity/Sovereignty and deity/Life carry the same extra-gate pattern, so this is an atlas-wide drift, not a Knowledge-only one.)"
+    },
+    {
+     "claim": "DEITY GUIDE action-type targets: Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free Action ~10-15%, Reaction ~10%, 3 Actions capstone-only.",
+     "delivered": "DRIFTED",
+     "evidence": "Actual mix, counted from the nine dossier lines: Passive 3/9 (33%, just over target), 1 Action 5/9 (56%, well over the 25-35% target), 3 Actions 1/9 (correct, capstone only), and ZERO Specials, ZERO 2-Action talents, ZERO standalone Free Actions, ZERO Reactions. Four of the seven target categories are empty. Note the correct attribution: it is the LEYLINE guide that calls Specials 'elegant, action-efficient, and the backbone of official talent design'; the deity guide only sets the ~15-20% target. The zero-Special finding is also atlas-wide (all ten deity trees have none), so it is not a Knowledge-specific defect; the missing Reactions are, and they are why the character is inert on other people's turns."
+    },
+    {
+     "claim": "DEITY GUIDE description length: entry/tier-2 ~30-45 words, tier-3 synthesis ~40-55, capstone up to ~70.",
+     "delivered": "PARTIAL",
+     "evidence": "Word counts recomputed programmatically from the generator description field. OVER: Studied Mark 60 (entry, cap 45), Hunter's Discipline 51 (tier-2, cap 45), Pack Share 51 (tier-2, cap 45). WITHIN: Predatory Strike 35, Killing Blow 36, Accumulate 42, The Pack 41 and Death Mark 49 (both tier-3, cap 55), and The Final Study 56 (capstone, cap ~70). Three talents overrun, and the capstone is NOT one of them."
+    },
+    {
+     "claim": "DEITY GUIDE pitfall: 'a capstone for an insight-stacking tree should consume the stacks for a massive payload.'",
+     "delivered": "PARTIAL — letter yes, magnitude no",
+     "evidence": "The Final Study does consume all Insight for a per-Insight payload, literally the guide's named prescription for this exact tree. But at 3 Actions and 3 Investiture, once per scene, it produces one third the damage per Action of a talent available at level 1 for 1 Investiture. The guide's matching pitfall, 'capstones that don't pay off the tree's investment', is triggered on cost-efficiency rather than on theme — and deity/Fate's Thread of Inevitability shows what the same price buys elsewhere."
+    },
+    {
+     "claim": "DEITY GUIDE: 'Deity power is Radiant-tier... don't undersell the capstones' (leyline being the mortal, human-scale tier).",
+     "delivered": "DELIVERS at the tree level, MISSES at the capstone",
+     "evidence": "5 x [Tier][Die] = 10d8 Vital per Action every round, party-wide +5 Vital, and free party damage on every kill is comfortably above human scale and above what leyline trees produce. But the outsized power sits on Predatory Strike, a level-1 entry, not on the capstone the guide points at."
+    }
+   ],
+   "actuallyIs": "A one-target Vital-damage amplifier with an information rider bolted to its entry. What it really does is convert a single enemy into a multiplier that scales the entire party's damage, sustain one Action of that conversion per round for free via Accumulate, and cash it out through a repeatable level-1 Action. It is not a knowledge tree in any sense a player would recognise outside combat: it cannot scout, detect, predict, remember, deduce, or leverage anything socially, and even its in-combat read is matched and exceeded by deity/Life's Vital Diagnosis at the same level and cost. The 'study' is a damage counter, and the two talents actually built around the fantasy of studying-then-executing (Killing Blow, The Final Study) are the two the math tells you never to press. THE 'SOMETHING' TEST: this tree's something is the highest sustained single-target damage ceiling in the game, and nothing else comes close on that axis — but the FANTASY around it (mark a quarry, study it, share it with the pack, re-mark on the kill) is delivered more broadly by heroic/Hunter across 25 talents with stealth, traps, mobility and a companion attached, and its entry-tier version (read the statblock, give the party +Tier against the mark, refund Investiture when it takes damage) is delivered by deity/Life two talents earlier and with healing attached. Knowledge owns the number, not the idea.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Insight (stacking mark)",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Studied Mark (2), Accumulate (1/turn), Predatory Strike (1/hit), Hunter's Discipline (half on chain), Death Mark (full on chain), Pack Share and The Pack (1/round via allies). Consumed only by Killing Blow (all, or 1 on failure) and The Final Study (all, or 1). Cap 5; one creature at a time; re-marking wipes the stack; fades at end of scene. Tree-private as a RESOURCE — no other tree produces, spends or reads Insight stacks. NAME COLLISION, CORRECTED from three talents to six: 'Insight' is also a canon Cosmere RPG skill, used as such by heroic/Agent Subtle Takedown ('unarmed attack with Insight'), heroic/Leader Shrewd Command and heroic/Warrior Ironstance ('advantage on Insight'); and it is used in three talent TITLES that have nothing to do with this resource — leyline/Black Predatory Insight, heroic/Scholar Keen Insight, heroic/Scholar Anatomical Insight. Note also the near-collision of leyline/Black's 'Predatory Insight' with this tree's 'Predatory Strike'."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "BOTH",
+    "talents": "CONSUMED by 6 of 9, verified against the authored consumes field (Predatory Strike 1, Studied Mark 1, Killing Blow 2, Pack Share 1, The Pack 2, The Final Study 3 — 10 Investiture to run the whole tree once). PRODUCED by Accumulate (1/round when the mark takes damage from any source). Net-zero for exactly one Predatory Strike per round when it hits; additional strikes in the same round are paid from pool."
+   },
+   {
+    "keyword": "Vital damage",
+    "role": "PRODUCE",
+    "talents": "Every point of damage the tree ITSELF adds — Predatory Strike's bonus, Hunter's Discipline, Killing Blow, Pack Share, Death Mark, The Pack, The Final Study's payload. Vital ignores Deflect entirely, so this tree's added damage is worth materially more per die than an impact/keen/energy equivalent, and the design guides say to use Vital sparingly. CORRECTED: this is not 'all damage in the tree' — Predatory Strike's underlying weapon attack and The Final Study's granted ally Strikes deal ordinary weapon damage and ARE reduced by Deflect."
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME",
+    "talents": "Predatory Strike, Killing Blow, Death Mark, The Final Study. Realised in Foundry as (@tier)d(2 * @skills.red.rank + 2) on the three with authored formulas, so the die reads the RED rank specifically: rank 2 gives d6, rank 3 gives d8. Death Mark has no authored formula and is invisible to the machine-readable count of 3."
+   },
+   {
+    "keyword": "Tier (as a flat scalar)",
+    "role": "CONSUME",
+    "talents": "Hunter's Discipline (+Tier Vital on hit) and Pack Share (allies +Tier Vital). Distinct from [Tier][Die] — flat integers, 1 then 2. The same flat +Tier ally clause appears verbatim in deity/Life Vital Diagnosis and Apex Form."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "Studied Mark, Accumulate, Hunter's Discipline, Pack Share, Death Mark, The Pack, The Final Study — 7 of 9. Every ally-facing and mark-facing effect is bounded by it, so the tree's reach scales off leyline rank (15/30/60/90/120 ft) bought outside the tree."
+   },
+   {
+    "keyword": "Red (leyline skill / rank)",
+    "role": "CONSUME",
+    "talents": "Test skill for Killing Blow and The Final Study, the rank setting the damage die in all three roll formulas, and a gate (Red 2+ both entries, Red 3+ Killing Blow). The tree's single most important outside stat."
+   },
+   {
+    "keyword": "Green (leyline skill / rank)",
+    "role": "CONSUME (gate only)",
+    "talents": "Green 2+ on both entries, Green 3+ on Pack Share. No talent ever tests Green and no formula reads its rank — deity-gate-audit.js's TOLL BOOTH finding, confirmed against all nine texts. Sharpened comparatively: the leyline Green tree itself owns the pack / coordinated-hunt identity this tree charges Green ranks for (Pack Hunter, Coordinated Hunt, Pack Pressure, Scent the Weak), so the ranks are not wasted for the CHARACTER — only for this tree's own mechanics."
+   },
+   {
+    "keyword": "Attunement Keys (free, granted with the path)",
+    "role": "CONSUME (outside the tree, but always held)",
+    "talents": "No talent references them, but every Knowledge character holds BOTH the Red key (Draw Mana gives advantage on next Physical test, and costs your Reaction) and the Green key (Draw Mana creates difficult terrain). The Red key answers the tree's accuracy gap and its Reaction tax is free here, because the tree has zero Reactions; the Green key is the character's only way to slow a fleeing mark. Recorded because both of those gaps look worse on paper than they play."
+   },
+   {
+    "keyword": "Physical defense",
+    "role": "CONSUME",
+    "talents": "Target of the Red tests in Killing Blow and The Final Study; also revealed by Studied Mark and Pack Share."
+   },
+   {
+    "keyword": "Spiritual defense",
+    "role": "CONSUME (read only)",
+    "talents": "Revealed by Studied Mark (and 'defenses' generally by Pack Share). Never tested against."
+   },
+   {
+    "keyword": "Current HP / dropping to 0 HP",
+    "role": "CONSUME",
+    "talents": "Revealed by Studied Mark and Pack Share; the 0-HP threshold on the marked creature is the trigger for Hunter's Discipline's and Death Mark's chain clauses. The 0-HP trigger is a busy shared hook — 13 talents across 8 trees use it (leyline/Red Chain Detonation, deity/Death Reaper's Harvest and Necrotic Cascade, deity/Civilization Bonds of Community and Arsenal, deity/Destruction Combustion Chain, deity/Power Warlord's Advance and Warlord's Fury, deity/Fate Thread of Inevitability, plus these two)."
+   },
+   {
+    "keyword": "Conditions (as information)",
+    "role": "CONSUME (read only)",
+    "talents": "Studied Mark and Pack Share reveal the target's conditions. The tree never APPLIES a condition — no Weakened, Slowed, Restrained, Stunned, Afflicted, anything."
+   },
+   {
+    "keyword": "Free Action",
+    "role": "PRODUCE",
+    "talents": "Hunter's Discipline and Death Mark grant a Free Action re-mark on the quarry's death. Note it is a constrained free action — it can only be spent on choosing a new Insight target."
+   },
+   {
+    "keyword": "Strike (standard action, granted)",
+    "role": "PRODUCE",
+    "talents": "The Final Study grants every ally in Attunement Range an immediate free Strike on success. Only deity/Fate Thread of Inevitability also grants allies free Strikes."
+   },
+   {
+    "keyword": "Weapon attack (melee or ranged)",
+    "role": "CONSUME",
+    "talents": "Predatory Strike rides on one; its entire payload is gated behind that attack hitting. The weapon's own damage rides along and is NOT Vital."
+   },
+   {
+    "keyword": "Once per round",
+    "role": "CONSUME (limiter)",
+    "talents": "Accumulate's Investiture refund; Pack Share's and The Pack's ally-placed Insight."
+   },
+   {
+    "keyword": "Once per scene",
+    "role": "CONSUME (limiter)",
+    "talents": "The Final Study."
+   },
+   {
+    "keyword": "Scene (as a duration)",
+    "role": "CONSUME",
+    "talents": "Insight's fade timer (Studied Mark) and the duration of both party buffs (Pack Share, The Pack)."
+   },
+   {
+    "keyword": "Ally in Attunement Range (as an effect target)",
+    "role": "CONSUME",
+    "talents": "Pack Share, The Pack, Death Mark, The Final Study — 4 of 9 talents are inert or halved without allies present."
+   },
+   {
+    "keyword": "NOT PRESENT (recorded for the synergy map)",
+    "role": "neither",
+    "talents": "This tree never touches Opportunity, Focus, HP sacrifice, the Plot Die, advantage or disadvantage (confirmed absent from advantage-ledger.md), difficult terrain, zones, summons, Specials, Reactions, 2-Action talents, or any named condition. Its resource footprint is Investiture plus its own Insight, and nothing else."
+   }
+  ],
+  "crossTreeHooks": [
+   "Predatory Strike depends on an accuracy source it does not own — but the free Red Attunement Key already is one. Every Knowledge character is Red 2+ and therefore Draws Mana for 'advantage on your next Physical test'; the key's usual downside, losing your Reaction, costs this tree literally nothing because it has zero Reactions. Beyond that, any advantage-granting talent from another tree is worth far more to this character than to most, because one hit is worth up to 5 x [Tier][Die] Vital — and because a second advantage source frees the Action the key would otherwise cost. (Advantage is OVER-PRODUCED system-wide: 45 talents across 13 trees, so this partner is easy to find.)",
+   "Accumulate's Investiture refund triggers on the mark taking damage FROM ANY SOURCE — an ally's attack, a hazard, a zone, or an Afflicted condition applied by another tree pays this character's bills without them acting. A party with any persistent damage source turns Accumulate into a guaranteed refund every round, and covers the rounds where Predatory Strike misses.",
+   "Pack Share, The Pack, Death Mark and The Final Study's best clause all require allies in Attunement Range and, for the two buffs, allies attacking the SAME creature. This tree is the strongest argument in the atlas for a party focus-firing, and it is worthless without one.",
+   "Hunter's Discipline and Death Mark chain only when someone finishes the marked creature. If the Knowledge character is not the killer, another tree's execute/finisher talent is what turns their investment over.",
+   "The damage die comes from the Red leyline rank, and Attunement Range from leyline rank generally — both bought outside this tree, so its numbers are set by investment it does not provide.",
+   "The tree has zero control and zero protection, so it needs an outside source to keep the marked creature engaged and pinned long enough to be worth stacking, and to keep the Knowledge character alive meanwhile. Any Immobilize/Restrain, or a Green difficult-terrain cluster, is the natural partner — the mark leaving Attunement Range shuts Accumulate off.",
+   "Studied Mark and Pack Share hand exact HP and defence numbers to the party, which is worth much more when another tree owns an execute threshold, a defence-targeting choice, or a resistance-bypass decision that those numbers inform.",
+   "OVERLAP WARNING 1 (not a synergy): deity/Life duplicates this tree's spine at lower cost. Vital Diagnosis (depth 0, L1, 1 Action, 1 Inv) marks a creature, reveals MORE than Studied Mark for the whole scene, and gives you and your allies +Tier Vital against it — i.e. Studied Mark plus Pack Share's damage clause, without Pack Share's Green 3+ / L6 gate. Prognosis (depth 1, L2) is Accumulate's refund clause verbatim. A party already running a Life character gets much of Knowledge's non-multiplier value for free.",
+   "OVERLAP WARNING 2 (new, and the larger one): heroic/Hunter is the same fantasy at 25 talents. Seek Quarry (Special, depth 0, L1) marks a target with advantage to find, attack and study it; Cold Eyes re-marks on the kill; Pack Hunting adds your Survival ranks to an ALLY's attack or damage roll against your quarry — Pack Share's clause at depth 2 / L3 with no rank gate and no Investiture; Unrelenting Salvo lets you Strike the quarry more than once per turn. Hunter carries all of that PLUS traps, stealth, terrain, an animal companion and out-of-combat survival, and heroic paths have no leyline rank gate at all. What Knowledge still owns alone against both overlaps is the dice multiplier and the party statblock share."
+  ],
+  "topThree": [
+   "Predatory Strike — the entire tree in one depth-0, level-1 talent: 1 Action, 1 Investiture, weapon attack plus [Tier][Die] Vital PER Insight, does not consume the stack, and places another. Self-ramping, self-funding once Accumulate is owned, and the highest sustained damage-per-Action in the tree by a factor of three over its own capstone.",
+   "The Pack — 1 Action and 2 Investiture, once, and for the whole scene every ally deals bonus Vital equal to your Insight count (up to +5 each) against the mark. With three allies at cap this is the single largest total damage contribution the tree makes, and it is legal at level 3.",
+   "Accumulate — a free Passive that places a stack every turn AND refunds 1 Investiture per round off a trigger allies can pull. Not strictly better than Draw Mana (Draw Mana also fires the Attunement rider and scales to 2 Investiture at Tier 2), and not unique in kind (deity/Chaos Void Sense and deity/Life Prognosis are the same clause), but better where it counts: it costs no Action, so it is what makes one Action of peak output free every round for the rest of the scene."
+  ],
+  "bottomThree": [
+   "Killing Blow — dominated by Predatory Strike on every axis (double the Investiture, gated to L6 by Red 3+ where Predatory Strike is L1, no weapon damage, and it deletes the entire Insight stack the rest of the tree exists to build, switching off The Pack in the same instant) for identical dice.",
+   "The Final Study — a 3-Action, 3-Investiture, once-per-scene capstone dealing one third the damage per Action of a level-1 entry talent. Only the party free-Strike clause keeps it from being unplayable, and that clause fires only on a successful test — where deity/Fate's identically priced capstone grants Strike-or-Aid AND springs every Snare.",
+   "Pack Share — gives allies +Tier bonus Vital and is gated at Green 3+ (L6) in a colour the tree never tests, while The Pack gives them up to +5 and is available at L3 for one more Investiture. The weaker of the two ally buffs, arriving three levels later — and deity/Life's Vital Diagnosis and heroic/Hunter's Pack Hunting both deliver its ally-damage clause at L1 and L3 respectively."
+  ],
+  "weakTalents": [
+   {
+    "name": "Killing Blow",
+    "reason": "Strictly dominated by the depth-0 entry it prerequisites off. It rolls the identical formula (@tier)d(2 * @skills.red.rank + 2) per Insight that Predatory Strike rolls, but costs 2 Investiture instead of 1, forgoes the weapon's own damage dice, is gated behind Red 3+ (level 6) where Predatory Strike is legal at level 1, and — fatally — REMOVES ALL INSIGHT, dismantling the engine the other eight talents exist to build and switching off The Pack's ally bonus in the same instant. Its only edge is a guaranteed [Tier][Die] floor on a failed test. Overcosted and structurally self-defeating."
+   },
+   {
+    "name": "Pack Share",
+    "reason": "Dominated by The Pack, and gated harder than the thing dominating it. Pack Share gives allies +Tier (max 2) bonus Vital; The Pack gives them +Insight count (up to +5) for one more Investiture. The Pack is depth 2 / L3; Pack Share is depth 1 but locked behind Green 3+, i.e. L6 — the weaker buff arrives three levels later, behind a rank gate in a colour no Knowledge talent ever tests. Comparatively it is worse still: deity/Life Vital Diagnosis carries the same +Tier ally clause at depth 0 / L1 with a better read attached, and heroic/Hunter Pack Hunting carries it at depth 2 / L3 for 1 focus. Its only surviving unique value is extending the enemy read to allies. At 51 words it also overruns the guide's 30-45 tier-2 budget."
+   },
+   {
+    "name": "The Final Study",
+    "reason": "Overcosted capstone. 3 Actions (a whole Slow turn) plus 3 Investiture plus once-per-scene, on a test that can fail, to deal the same per-Insight dice Predatory Strike deals for 1 Action and 1 Investiture with no scene limit — three consecutive Predatory Strikes would deal roughly triple the dice for the same total Investiture, keep the stack, and add three weapons' worth of damage on top. Only the party free-Strike clause justifies the slot, and it fires only on success; the one comparable capstone in the game (deity/Fate Thread of Inevitability, same 3 Actions / 3 Investiture / once per scene / depth 3 / L4) grants allies a free Strike OR Aid and springs every Snare. (Its word count, 56, is NOT a problem — that is inside the guide's ~70-word capstone budget.)"
+   },
+   {
+    "name": "Hunter's Discipline",
+    "reason": "Not a never-pick (it is a required prereq for Death Mark and its +Tier Vital on every hit is free and unlimited), but its entire second clause is made redundant the moment Death Mark is taken — Death Mark transfers the FULL Insight count where Hunter's Discipline transfers half rounded down, from the same trigger, at the same range, as the same Free Action. Half the talent is dead weight from level 3 onward. At 51 words it is also over the guide's 30-45 tier-2 budget."
+   },
+   {
+    "name": "Studied Mark",
+    "reason": "Below the curve as an ACTION, though not as a talent, and less dispensable than it first looks. Its 60-word text is well past the deity guide's 30-45 entry target, and its active payload for 1 Action and 1 Investiture is 2 Insight — the same as two rounds of Accumulate, which is free. But Accumulate cannot self-start (it only fires 'if the creature bearing your Insight is in Attunement Range'), and Predatory Strike only places Insight ON A HIT, so Studied Mark is the tree's only guaranteed placer and its only way to re-point the mark without a kill. It survives as the initiator, the target-switch button, and the tree's information talent — not as a turn you want to take once the engine is running. Comparative sting: deity/Life's Vital Diagnosis is the same action, cost, depth and level and does everything Studied Mark does except place stacks, for the whole scene, with an ally damage buff attached."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Effectively unlimited at ONE Action per round once Accumulate (depth 1, L2) is owned. The core loop is Predatory Strike at 1 Investiture against Accumulate's 1 Investiture refund per round, and a Predatory Strike HIT itself supplies the 'mark takes damage' trigger the refund needs — so on hits the tree runs its BEST option once every round for the entire scene without ever spending an Action on Draw Mana. CORRECTED PRECISION: the refund is once per round, so it funds exactly one strike; a full 3-Action Slow turn spends 3 Investiture against that 1, and a ~5-6 Investiture pool at L6 absorbs only two or three such turns. On a miss the refund needs an ally (or any other damage source) to fire, which in a focus-firing party it usually will. Even at one Action per round this is a rare property: at Tier 1 a kit costing 1 Investiture per Action is normally capped at 50% uptime, and this tree's first Action each round sits at 100%. Without Accumulate the picture is ordinary — a ~4 Investiture pool at L1 buys 4 Predatory Strikes, then 50% uptime via Draw Mana. The scene-long buffs (Pack Share 1, The Pack 2) are one-time payments amortised over the fight, and The Final Study's 3 Investiture is a once-per-scene spike the pool absorbs. The real limiters are not resources at all: Insight's cap of 5, its end-of-scene fade, and the one-creature-at-a-time rule. A target swap, not an empty pool, is what stops this tree.",
+   "triggerGatedCount": 3,
+   "reactionCount": 0,
+   "resourceCostersOutOfTree": 6,
+   "note": "triggerGatedCount held at 3 (not 5). Applying the measurement's own definition — a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit — exactly three qualify: Accumulate (fires when the mark takes damage from any source), Hunter's Discipline (when you hit / when the mark drops to 0 HP) and Death Mark (when the mark drops to 0 HP). Pack Share and The Pack are self-activated 1-Action talents; only their once-per-round ally-Insight clauses are trigger-gated, and counting the whole talent pushed the tree to 5, outside the 0-3 band the measurement reports for every deity tree. 0 of 9 are Reactions, so the 1-Reaction-per-round cap never binds — but the flip side is that the character contributes nothing on anyone else's turn and cannot respond to being attacked; every deity tree sits at 0 or 1 Reaction, so this is a shared atlas trait, not a Knowledge-only defect. 6 of 9 spend a resource, all of it Investiture (10 total to run the tree once); no talent costs Focus, Opportunity, or HP, so this tree never competes with Focus- or Opportunity-hungry trees for the same pool."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "\"10 x [Tier][Die] Vital per Action at Insight cap (5) — 5d6 (~17.5) at L1-5 with Red rank 2, 10d8 (~45) at L6+ with Red rank 3\"",
+   "to": "\"5 x [Tier][Die] Vital per Action at Insight cap (5) — 5d6 (avg 17.5) at L1-5 (Tier 1, Red rank 2), 10d8 (avg 45) at L6+ (Tier 2, Red rank 3)\"",
+   "reason": "ARITHMETIC. The Insight cap is 5, so the multiplier on [Tier][Die] is 5, not 10. The label double-counted the Tier: 10d8 IS 5 x [Tier][Die] at Tier 2 (5 x 2d8). The dice totals quoted (5d6 / 10d8) were correct; the stated multiplier was not."
+  },
+  {
+   "field": "powerByDepth[depth 0 entries].note",
+   "from": "\"...so it self-ramps with no other talent owned and reaches +5d6 by round 4.\"",
+   "to": "\"...the stack is 0/1/2/3/4 on rounds 1-5 and the full +5d6 tier lands on the SIXTH attack, not by round 4\"",
+   "reason": "ARITHMETIC, recomputed from the text. Predatory Strike deals '[Tier][Die] per Insight ON the target (minimum 1), THEN place 1 Insight' — the stack it places is only available to the NEXT attack. With one attack per round and no other talent: attack 1 deals the minimum-1 band and leaves 1 Insight; the 5-Insight band is first available on attack 6. 'By round 4' is only true if you spend 2-3 Actions a round, which the ~4 Investiture pool at L1 caps at four attacks total."
+  },
+  {
+   "field": "intentDrift.claims[description length].evidence",
+   "from": "\"Studied Mark ~62 words and Pack Share ~57 are both well past the 30-45 entry/tier-2 cap; The Final Study ~72 is just past the capstone cap. Predatory Strike, Accumulate, Hunter's Discipline and The Pack are within range.\"",
+   "to": "\"OVER: Studied Mark 60, Hunter's Discipline 51, Pack Share 51 (all against the 30-45 entry/tier-2 cap). WITHIN: Predatory Strike 35, Killing Blow 36, Accumulate 42, The Pack 41 and Death Mark 49 (tier-3 band, cap 55), The Final Study 56 (capstone, cap ~70).\"",
+   "reason": "MISCOUNT, three ways, all recomputed programmatically from the authored text. (1) The Final Study is 56 words — INSIDE the guide's '~70' capstone budget, not 'just past' it. (2) Hunter's Discipline is 51 words — OVER the 30-45 tier-2 cap, and the profile listed it as compliant. (3) The profile ignored the guide's third band entirely ('Tier-3 synthesis talents: ~40-55 words'), under which Death Mark (49) and The Pack (41) are compliant. Numbers for Studied Mark (60, not ~62) and Pack Share (51, not ~57) also drifted."
+  },
+  {
+   "field": "uniqueOwnership[2] and axes.information.evidence and powerByDepth[depth 0].note",
+   "from": "\"The ONLY source of exact enemy statblock information. Studied Mark and Pack Share are the only two talents in the 365 that reveal a creature's current HP and its actual defence values.\" / \"Verified across all 365 talents: these two are the ONLY talents in the game revealing exact current HP and defence values.\" / \"information no other talent in the game provides\"",
+   "to": "\"The only tree that SHARES an exact enemy statblock read with the whole party\" — with the false uniqueness claim replaced by the deity/Life counterexample in all three places.",
+   "reason": "TEXT-VS-CLAIM, refuted verbatim. deity/Life **Vital Diagnosis** (depth 0, earliest L1, 1 Action, 1 Investiture — the same slot, cost and level as Studied Mark) reads: 'For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses.' That is MORE information than Studied Mark's one-shot read (it adds max HP and persists for the scene). The claim was stated three times across the profile and is false each time; only Pack Share's ally-sharing clause survives as unique. The original 'verified across all 365' check evidently searched for 'current HP' and missed 'exact HP'."
+  },
+  {
+   "field": "uniqueOwnership[3]",
+   "from": "\"Other trees have one such talent apiece (leyline Green Pack Pressure, leyline White Shield Wall, deity Order Concord, deity Life Vital Diagnosis)\"",
+   "to": "Corrected list of ally-damage buffs elsewhere: leyline/Red Momentum's Edge, leyline/Green Pack Pressure AND Coordinated Hunt, deity/Chaos Isolating Ruin, deity/Order Concord, deity/Destruction Pinpoint Charge, deity/Life Vital Diagnosis + Apex Form + Adaptive Mutation. Shield Wall removed.",
+   "reason": "TWO errors. (a) MITIGATION COUNTED AS DAMAGE — the known failure mode, repeated: leyline/White **Shield Wall** reads 'When two or more allies are adjacent to you, attacks against them deal half [Tier][Die] LESS damage.' That is damage reduction, not an ally damage buff. (b) MISCOUNT — 'one such talent apiece' is false; a regex sweep of all 365 finds two in leyline/Green and three in deity/Life. Knowledge still leads on density (4/9), so the headline survives; the supporting count did not."
+  },
+  {
+   "field": "uniqueOwnership[5] and axes.resource_economy.evidence and topThree[3]",
+   "from": "\"Accumulate ... strictly better than Draw Mana at Tier 1 (same Investiture, no Action spent, and allies' attacks pull the trigger)\" / \"the only tree whose peak damage output carries no Action tax for Draw Mana at all\"",
+   "to": "\"Not strictly better than Draw Mana — Draw Mana also fires the free Red/Green Attunement rider, needs no marked creature, and gives 2 Investiture at Tier 2. Accumulate is better in Action cost, not dominant.\" Uniqueness of the mechanism removed.",
+   "reason": "TEXT-VS-CLAIM. Per SYSTEM-PRIMER.md, Draw Mana recovers Investiture equal to TIER (2 at Tier 2, where Accumulate stays at 1) and additionally triggers the colour's Attunement rider. 'Strictly better' is false at Tier 2 and false at Tier 1 on the rider. The uniqueness claim also fails: deity/Chaos **Void Sense** ('Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture') and deity/Life **Prognosis** ('When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round') are the same clause on the same trigger shape — which the profile's own resource_economy evidence already conceded, contradicting its uniqueOwnership entry."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "5",
+   "to": "3",
+   "reason": "MISCOUNT against the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Only Accumulate, Hunter's Discipline and Death Mark qualify. Pack Share and The Pack are 1-Action talents the character activates on their own turn; only their once-per-round ally-Insight clauses are trigger-gated, and counting the whole talent pushed the tree to 5 — outside the 0-3 band the deterministic measurement reports for every deity tree, which is itself the tell."
+  },
+  {
+   "field": "damageAccounting.countFalsePositiveMitigation",
+   "from": "1",
+   "to": "0",
+   "reason": "CATEGORY ERROR. The field counts talents miscounted as damage because they are MITIGATION. A regex sweep for 'less damage / damage reduced' across all 365 talents returns only leyline/White Shield Wall and deity/Power Crown of Thorns — neither is in this tree, so Knowledge's mitigation false-positive count is 0. Accumulate's 'When that creature takes damage' is a trigger false-positive, a different category; it is now recorded as such in the verdict rather than counted here."
+  },
+  {
+   "field": "intentDrift.claims — NEW",
+   "from": "(absent)",
+   "to": "NEW DRIFT CLAIM: deity guide prereq pattern 'Tier-3 synthesis: prereq [Tier-2 A] or [Tier-2 B] from each branch' + principle 3 'synthesis nodes bring the two halves together' — DRIFTED.",
+   "reason": "Missed structural violation, found by reading the connections graph. Death Mark's prereq is 'Hunter's Discipline or Killing Blow', BOTH of which hang off the Predatory Strike entry. The Pack's is 'Accumulate or Pack Share', BOTH of which hang off the Studied Mark entry. Neither synthesis node draws from both branches, so the tree's two halves do not converge until the capstone and a player can reach depth 3 having touched only one entry's lane."
+  },
+  {
+   "field": "intentDrift.claims — NEW",
+   "from": "(absent)",
+   "to": "NEW DRIFT CLAIM: deity guide 'Skill-rank gates beyond the entry-node 2+ requirement are rare in deity trees' — DRIFTED.",
+   "reason": "Missed guide violation that is the actual CAUSE of the inversion the profile flagged in frontOrBackLoaded but attributed only to balance. Knowledge carries two extra rank gates (Red 3+ on Killing Blow, Green 3+ on Pack Share); because rank 3 is unreachable before L6, those two gates alone strand two depth-1 talents at L6 while depth-2 and depth-3 talents are legal at L3 and L4."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets].evidence",
+   "from": "\"The guide calls Specials 'the backbone of official talent design' and the tree has none\" (attributed to the DEITY GUIDE)",
+   "to": "Attributed to the LEYLINE guide, which is where the phrase appears; the deity guide only sets the ~15-20% Special target.",
+   "reason": "MISATTRIBUTED QUOTE. DESIGN-GUIDE-CLAIMS.md places 'Specials are the most important gap: they are elegant, action-efficient, and the backbone of official talent design' in the LEYLINE guide's Part 2. The deity guide's only Special claim is the percentage target. The finding (zero Specials) is unaffected; the citation was wrong."
+  },
+  {
+   "field": "gaps[No accuracy support] and crossTreeHooks[1]",
+   "from": "\"No accuracy support of its own. Predatory Strike's whole output rides on landing a weapon attack, and the tree grants no advantage ... A miss costs an Action, an Investiture, and a round of ramp.\"",
+   "to": "Same finding, with the scope corrected: the TREE grants none, but every Knowledge character holds the free Red Attunement Key (Draw Mana → 'gain an advantage on your next Physical test'), whose 'lose your Reaction' tax is free here because the tree has zero Reactions.",
+   "reason": "SCOPE ERROR against SYSTEM-PRIMER.md, which states the five Attunement Keys are 'Always Active, cost nothing, and are granted free with the path'. A Knowledge character is Red 2+ by gate definition, so the advantage source the profile says the character lacks is always in hand — the real cost is the Action, not the absence. The same correction applies to the mobility gap: the free Green key creates difficult terrain, the character's only native way to slow a fleeing mark."
+  },
+  {
+   "field": "weakTalents[Studied Mark].reason",
+   "from": "\"Once Accumulate is owned, spending an Action on Studied Mark instead of a Predatory Strike is usually wrong\"",
+   "to": "Same verdict on the action, but Studied Mark is the tree's only guaranteed Insight placer and its only way to re-point the mark without a kill.",
+   "reason": "TEXT-VS-CLAIM. Accumulate cannot self-start — it fires only 'if the creature bearing your Insight is in Attunement Range', so with no mark it does nothing — and Predatory Strike places Insight only ON A HIT. Studied Mark is therefore load-bearing as the initiator and the target-switch button, which the original reason implied it was not."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "\"...refunds the Investiture it spends, and does literally nothing else — no control, no defence, no healing, no movement.\"",
+   "to": "\"...reads that enemy's exact statblock, multiplies its own and its allies' damage by the counter, and refunds the Investiture it spends — and does nothing else at all...\"",
+   "reason": "INTERNAL CONTRADICTION. The profile scores information at 3 ('a real, usable competency') and describes Studied Mark as the tree's information talent, then says the tree does 'literally nothing else'. The enemy read is now named in the identity line so it matches the axes."
+  },
+  {
+   "field": "mechanicalKeywords[Insight].talents",
+   "from": "\"Tree-private — no other tree in the 365 produces, spends or reads Insight stacks.\"",
+   "to": "Same, qualified with the name collision: 'Insight' is also a canon Cosmere RPG SKILL, used as such in heroic/Agent Subtle Takedown ('unarmed attack with Insight'), heroic/Leader Shrewd Command and heroic/Warrior Ironstance ('advantage on Insight').",
+   "reason": "The resource claim is true, but a grep for 'Insight' across all 365 returns three non-Knowledge hits, all using it as the skill name. The homebrew resource collides with an existing canon skill — a table-facing ambiguity the profile's absolute phrasing would have hidden."
+  },
+  {
+   "field": "crossTreeHooks — NEW",
+   "from": "(absent)",
+   "to": "NEW: OVERLAP WARNING — deity/Life duplicates this tree's spine (Vital Diagnosis = Studied Mark + Pack Share's damage clause at L1 with no Green 3+ gate; Prognosis = Accumulate's refund clause verbatim).",
+   "reason": "Follows from the Vital Diagnosis refutation. It is the single most consequential cross-tree fact about Knowledge and the profile did not contain it: a party already running a Life character gets most of Knowledge's non-multiplier value for free, three levels earlier."
+  },
+  {
+   "field": "gaps — NEW",
+   "from": "(absent)",
+   "to": "NEW: two internal anti-synergies — Killing Blow and The Final Study remove all Insight on success, which simultaneously zeroes The Pack's ally bonus (read live off the Insight count) and drops Predatory Strike to its minimum-1 floor.",
+   "reason": "The profile noted the stack wipe hurts 'the engine' generically but never traced it to The Pack, whose bonus is explicitly 'equal to your Insight count'. Firing either payoff talent switches off the tree's largest party contribution in the same instant — a sharper statement of the same defect, now also recorded on the two talents' own damageAccounting notes."
+  },
+  {
+   "field": "(verified, no change)",
+   "from": "depth / earliestLevel / action / Cost on all 9 talents; countReal 7; earliestDamageDepth 0; earliestDamageLevel 1; reactionCount 0; resourceCostersOutOfTree 6; the three roll formulas; the 5d6 and 10d8 totals; damage_direct 5; damage_scaling 5; the per-Insight uniqueness claim; the free-Strike uniqueness claim; the Green-never-tested drift; the zero-Special / zero-Reaction / zero-2-Action mix; 'The Pack legal at L3, Pack Share at L6'",
+   "to": "unchanged",
+   "reason": "Each was re-derived from all-talents.json or re-read against the dossier text and holds. Depth/L values match the dossier exactly (0/1, 0/1, 1/2, 1/2, 1/6, 1/6, 2/3, 2/3, 3/4). Costs match the authored consumes field (1,1,-,-,2,1,-,2,3 = 10 Investiture, 6 costers). [Tier][Die] at Tier 1 rank 2 = 1d6 is correct throughout. The 'per <stack>' and 'ally free Strike' greps returned exactly the talents claimed. Also considered and DELIBERATELY LEFT: information 3 (its supporting uniqueness claim is false, but the score rested on the competency being real and narrow, which still holds) and healing 1 (the axis definition literally includes Investiture, so Accumulate is a legitimate incidental 1 even though it is also scored under resource_economy)."
+  },
+  {
+   "field": "axes[buff].score",
+   "from": "4",
+   "to": "3",
+   "reason": "Score inflation (lens B(b)). 4 claims the tree is 'one of the better options in the game' for buff. A sweep of all 365 talents for ally-damage/ally-bonus clauses shows deity/Sovereignty carries FOUR in nine talents — Exalt, Investiture of Authority, Sovereign's Balance and Sovereignty ('that ally's damage die size increases by one step / by two steps') — all unconditional on any target, where BOTH of Knowledge's ally buffs fire only against the single marked creature. deity/Life Apex Form ('deals additional Vital damage equal to your Tier on all attacks') and Adaptive Mutation are likewise unconditional; deity/Power Mantle of the Aspirant gives 'Allies in Attunement Range gain +1 to all tests'; deity/Order Concord grants a Free-Action Aid grant plus damage equal to Presence; leyline/Green Pack Pressure gives allies 'an extra [Tier][Die] damage' — a full die where Pack Share gives a flat +Tier. Only 2 of 9 Knowledge talents grant an ally bonus at all. 3 ('a real, usable competency; several talents, at least one good one') is the honest band."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "'7 of 9 talents deal or add damage, and every point of it is Vital (ignores Deflect)'",
+   "to": "'every point the TREE ITSELF ADDS is Vital' plus an explicit note that Predatory Strike's weapon attack and The Final Study's granted ally Strikes deal ordinary weapon damage reduced by Deflect",
+   "reason": "A claim the text does not support. Predatory Strike reads 'make a melee or ranged weapon attack. On a hit, deal BONUS Vital damage equal to [Tier][Die] per Insight' — the weapon's own damage is its normal type. The Final Study reads 'each ally in Attunement Range may immediately make a free Strike', i.e. ordinary Strikes. The '100% Vital, ignores Deflect' framing overstates the tree's Deflect-bypass by the whole weapon-damage component."
+  },
+  {
+   "field": "axes[damage_scaling].evidence + uniqueOwnership[0]",
+   "from": "'The only tree in the 365 whose damage expression is MULTIPLIED by an accumulating stack' / 'The ONLY per-stack damage multiplier in the game'",
+   "to": "'The only tree that multiplies DICE by an accumulating counter', with the near-misses named",
+   "reason": "Unique-ownership claim (lens B(a)) fails as stated. A sweep of all 365 finds two other counter-scaled damage expressions: deity/Power Warlord's Fury — 'additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2' — and leyline/Green Coordinated Hunt — 'bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank)'. This tree's own The Pack is a third ('bonus Vital damage equal to your Insight count'). What survives is the narrower and still-true claim that only Knowledge multiplies the DICE expression, and only its cap is 5 rather than tier x 2 or Rank."
+  },
+  {
+   "field": "uniqueOwnership[2]",
+   "from": "'The densest ally-damage-buffing tree in the game... Knowledge still leads on density (4/9 = 44% vs Life's 3/9)'",
+   "to": "'TIED, not sole' — deity/Sovereignty also has 4 of 9, and its four are unconditional",
+   "reason": "The profile had already corrected this claim once and the replacement is still false. deity/Sovereignty's Exalt, Investiture of Authority, Sovereign's Balance and Sovereignty are all ally-damage buffs (damage die size up one or two steps) — 4 of 9, the same density, with no mark condition. Knowledge does not lead; it ties, and loses on conditionality."
+  },
+  {
+   "field": "uniqueOwnership[3]",
+   "from": "'The only kill-chain that transfers accumulated stacks' (framed as the only kill-chain re-mark)",
+   "to": "'The only kill-chain that transfers an accumulated COUNT', with heroic/Hunter Cold Eyes named as the same shape without the count",
+   "reason": "Lens B(a). heroic/Hunter Cold Eyes is 'After you defeat your quarry, recover 1 focus and choose a new quarry' — the same kill-then-re-mark chain, at depth 2 / L3, for free. deity/Death Reaper's Harvest mints a resource on any death in range. Neither carries a stack count, so the count-carry survives; the chain shape itself does not."
+  },
+  {
+   "field": "intentDrift.claims[]",
+   "from": "(absent — the original tested only the path description and the deity guide)",
+   "to": "NEW claim: 'CROSS-ATLAS INTENT COLLISION' — DRIFTED",
+   "reason": "Lens B(d) explicitly asks whether the promise this tree makes is also made by another tree's intent file. It is, twice. heroic/Hunter's intent file promises the identical archetype ('patiently surveil... you don't have to be more powerful than your quarry, so long as you're better prepared... methodical preparation culminating in an exhilarating onslaught') and delivers the same beats with Seek Quarry, Cold Eyes, Pack Hunting and Unrelenting Salvo. deity/Life's promises 'reading an ally's anatomy to strike an enemy's with precision' and delivers it in Vital Diagnosis at depth 0 / L1. leyline/Green — one of Knowledge's own gate colours — names 'coordinated hunts, scenting the weak' as its Instinct specialty. The original profile never tested this and so never found that Knowledge's fantasy is shared; only its magnitude is exclusive."
+  },
+  {
+   "field": "intentDrift.actuallyIs",
+   "from": "(no 'something' test)",
+   "to": "Added the explicit 'something' verdict: the something is the highest sustained single-target damage ceiling in the game, but the surrounding fantasy is done more broadly by heroic/Hunter and its entry tier is done earlier by deity/Life",
+   "reason": "Lens B(e) requires naming the tree's something and checking whether another tree does it better. The damage ceiling survives the check; the identity does not."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction + repeatability + sustainability.roundsOfGoodOptions",
+   "from": "'the ceiling is SUSTAINED every round for the rest of the scene' / 'Unlimited on the core loop'",
+   "to": "Sustained at exactly ONE Action per round; a full 3-Action Slow turn spends 3 Investiture against a 1-Investiture refund",
+   "reason": "Arithmetic overstatement in the original. Accumulate reads 'you recover 1 Investiture ONCE PER ROUND', and Predatory Strike costs 1 Investiture per use. So the free-forever rate is one strike per round; two or three strikes in a turn drain a ~5-6 pool in two or three rounds. The peak figure was right; the claim that it repeats indefinitely at full turn volume was not."
+  },
+  {
+   "field": "axes[information].evidence",
+   "from": "only deity/Life's Vital Diagnosis named as a counter-example",
+   "to": "the full cross-atlas list of enemy-reading talents (leyline/Blue Read Intent, leyline/Green Scent the Weak, heroic/Hunter Sharp Eye, heroic/Agent Get 'Em Talking / Sleuth's Instincts / Close the Case, deity/Fate Read the Threads, deity/Order Lawkeeper's Eye, deity/Life Vital Diagnosis)",
+   "reason": "Lens B(a)/B(b). The score of 3 was defensible but the comparative frame was thin — heroic/Agent's three-talent suite is what a 4 looks like, and naming it fixes the calibration for the other twenty profiles."
+  },
+  {
+   "field": "uniqueOwnership[1]",
+   "from": "the party-share read claimed with no near-miss named",
+   "to": "deity/Order Lawkeeper's Eye added as the nearest miss (it shares an advantage with allies against an Edict-bound target, not the numbers)",
+   "reason": "A 'only tree that shares X with the party' claim needs the nearest competitor stated or it cannot be audited. Lawkeeper's Eye is the only other talent that extends anything derived from an enemy read to the whole party."
+  },
+  {
+   "field": "mechanicalKeywords[Insight].talents",
+   "from": "'Three of the 365 talents use the word to mean something entirely different'",
+   "to": "six talents — three canon-skill uses plus three talent TITLES (leyline/Black Predatory Insight, heroic/Scholar Keen Insight, heroic/Scholar Anatomical Insight)",
+   "reason": "Miscount. A grep for 'Insight' outside the tree returns six talents, and the three title uses are the more confusing collision at the table — leyline/Black's 'Predatory Insight' sits one word away from this tree's 'Predatory Strike'."
+  },
+  {
+   "field": "mechanicalKeywords[Vital damage].talents",
+   "from": "'Every point of damage in the tree'",
+   "to": "'Every point of damage the tree ITSELF adds', with the weapon-damage and granted-Strike exceptions stated",
+   "reason": "Same textual error as the damage_direct evidence, propagated into the keyword ledger."
+  },
+  {
+   "field": "axes[buff].evidence",
+   "from": "'deity/Life reaches comparable ally-damage buffing (Vital Diagnosis, Apex Form) without a single-target lock'",
+   "to": "Vital Diagnosis IS single-target locked; only Apex Form and Adaptive Mutation are unconditional",
+   "reason": "Factual error in the comparison. Vital Diagnosis's buff applies only to 'the Diagnosed creature' — the same lock the profile was criticising in Knowledge."
+  },
+  {
+   "field": "powerByDepth[depth 3+] + weakTalents[The Final Study] + bottomThree[The Final Study]",
+   "from": "the capstone judged weak against Predatory Strike only",
+   "to": "added the like-for-like comparative anchor: deity/Fate Thread of Inevitability is the same 3 Actions / 3 Investiture / once per scene / depth 3 / L4 and grants allies a free Strike OR Aid AND triggers every unsprung Snare",
+   "reason": "Lens B. A 'this capstone is overcosted' judgment is only settleable by looking at what the same price buys in another tree. Fate's is the exact price-match and does strictly more, which strengthens the finding from an internal comparison to a cross-tree one."
+  },
+  {
+   "field": "crossTreeHooks[]",
+   "from": "one OVERLAP WARNING (deity/Life)",
+   "to": "two — deity/Life plus a new, larger heroic/Hunter overlap (Seek Quarry, Cold Eyes, Pack Hunting, Unrelenting Salvo)",
+   "reason": "The heroic atlas was not swept in the original. heroic/Hunter's Pack Hunting ('add your ranks in Survival to your ally's attack or damage roll against your quarry') is Pack Share's clause at depth 2 / L3 with no rank gate and no Investiture, and Hunter has no leyline rank gate at all — the single most material comparative fact about this tree and it was missing."
+  },
+  {
+   "field": "axes[healing].score, axes[damage_direct].score, axes[damage_scaling].score, axes[control/protection/mobility/terrain_zone/social_influence/summons].score, sustainability.triggerGatedCount, damageAccounting.countReal, all depths/levels/word counts",
+   "from": "(as given)",
+   "to": "UNCHANGED — checked and upheld",
+   "reason": "Nothing wrong found. Every depth, earliest level, action type, cost, consumes entry, roll formula and word count in the profile was re-derived from all-talents.json and matched the dossier exactly (Studied Mark 60, Hunter's Discipline 51, Pack Share 51, Predatory Strike 35, Killing Blow 36, Accumulate 42, The Pack 41, Death Mark 49, The Final Study 56; action mix Passive 3 / 1 Action 5 / 3 Actions 1). The zero scores were verified line by line against all nine texts. healing was deliberately NOT dropped to 0: the axis definition names Investiture, and 'one incidental talent, or a rider' describes Accumulate exactly — a note was added that deity/Chaos Void Sense and deity/Life Prognosis must score the same 1 for cross-tree consistency. The 'only deity/Fate Thread of Inevitability also grants allies free Strikes' claim was re-swept and CONFIRMED."
+  }
+ ]
+}

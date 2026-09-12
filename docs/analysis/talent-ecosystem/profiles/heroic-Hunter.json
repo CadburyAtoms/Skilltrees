@@ -1,0 +1,711 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Hunter",
+ "correctionCount": 35,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Hunter",
+  "oneLineIdentity": "A zero-resource weapon-and-wilderness kit built on a persistent single-target \"quarry\" mark, one concealed skill-tested trap that either immobilises OR applies Deflect-ignoring ongoing damage, an animal companion the tree requires but never grants, and depth-3 damage multipliers that are mostly shared generic heroic talents Hunter pays more for than Warrior or Envoy - and whose two signature mechanics, the mark and the trap, are both implemented better by a deity tree (Knowledge's Insight line and Fate's Snare line respectively). What Hunter alone owns is doing all of it for FREE, from level 1, with no Investiture, no attunement and no divine gate.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 3,
+    "evidence": "Eight talents add damage of their own and two more route it through other bodies (ten rows in damageAccounting). Deadly Trap (2 Actions, depth 0, L1) is the only entry-level source: entangling = 2d4 IMPACT + Immobilized + difficult terrain; impaling = 2d4 KEEN (the ROLL FORMULA) + Afflicted[3 + ranks in Survival, vital]. The two modes are EXCLUSIVE - the text reads 'Conceal a 5 ft entangling or impaling trap'. Fatal Thrust adds 4d4 (ROLL FORMULA, type null). Mighty adds 1+tier per Action spent to every hit. Unrelenting Salvo lifts the once-per-turn same-weapon Strike limit; Swift Strikes buys a second Strike. NOT a 4, and the comparative case is stronger than the profile under test made it: (a) the census gives Hunter 1 SOURCE + 2 SRC/AMP = 3 offensive, against Red 8, Knowledge 7, Death 5; (b) COMPARATIVE CHECK ADDED - Hunter's two roll formulas are FLAT dice (2d4, 4d4) while heroic/Warrior's two are tier-scaled and land earlier: Devastating Blow is an extra 2d8 at depth 1 / L2 with no rank gate (formula `(2 + max(@tier - 2, 0))d8`) and Wit's End is 4d6 rising to 6d6 (`(4 + max((@tier-2)*2,0))d6`), against Hunter's Fatal Thrust 4d4 forever behind Perception 3+ (L6). Warrior also owns the only heroic multi-target attack, Meteoric Leap; Hunter has none; (c) Mighty is not Hunter's - the identical string is in leyline/Red and heroic Agent, Envoy, Leader and Warrior, and Hunter pays depth 3 / L4 for what Warrior and Envoy get at depth 1 / L2 (verified: neither of their chains carries a rank-3 gate, so those L2 numbers are real). Through L5 a Hunter's own damage is a 2d4 trap plus +2 per Action from L4. A real competency, not one of the better damage options in the game."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Repeatability is excellent and nearly free: Mighty is an unconditional passive rider on every hit, Unrelenting Salvo costs nothing, Swift Strikes costs 1 focus, and the tree spends zero Investiture (Sharp Eye is the only talent that even says the word, and only to read a target's). But the dice do not scale with tier: Deadly Trap is 2d4/2d6/2d8 by TALENT (Experienced Trapper, Hunter's Edge), not by tier, and Fatal Thrust is a flat 4d4 forever. Neither uses [Tier][Die] - the notation appears nowhere in the tree, and lens B checked all 43 damage formulas in the atlas: every leyline and deity formula is `(@tier)d(2 * rank + 2)`-shaped, and only Hunter's two and heroic/Warrior's two are hand-written dice - of which Warrior's two DO carry an @tier term and Hunter's carry none. Only three damage scalars grow: Mighty (1+tier = +2 at Tier 1, +3 at Tier 2), Deadly Trap's Afflicted (3 + Survival ranks, so 4-5 at Tier 1 where the rank cap is 2, and 6 at Tier 2), and Steady Aim (ranks in Perception, 2 then 3). Scaling rides skill ranks rather than tier - flatter than a [Tier][Die] tree, and it does not double at the L6 step the way leyline power does. Held at 3 rather than 2 only because the repeatability half of the axis is the best in the atlas."
+   },
+   {
+    "axis": "control",
+    "score": 2,
+    "evidence": "CORRECTED DOWN from 3 by lens A and CONFIRMED at 2 by comparison. Exactly two of 25 talents apply a control condition. Deadly Trap's ENTANGLING mode (and only that mode) Immobilizes and leaves difficult terrain, on a contested Survival vs. Cognitive test, after an enemy walks into a concealed square. Startling Blow (1 Action, depth 0, L1) makes an unarmed or improvised attack vs. Cognitive and applies Surprised on a hit or a graze. COMPARATIVE CHECK ADDED: both are outclassed by talents at the same depth in other trees. heroic/Agent's Cheap Shot (depth 0, L1, 1 focus) is the same shape as Startling Blow - an unarmed attack vs. Cognitive - and applies STUNNED (lose reaction, two fewer actions), which the primer calls the most valuable category in a 3-action economy, against Startling Blow's Surprised (one fewer action). deity/Fate's Snare, the direct analogue of Deadly Trap, applies RESTRAINED (movement 0 AND disadvantage on everything but escape) rather than Immobilized (movement 0 only). Shadowing's disadvantage is confined to the quarry's tests to SENSE you and is scored under debuff. The rubric's 3 requires 'several talents'; two, one mode-exclusive and one weapon-crippled, is 'present but minor'. No stun, no restrain, no Disoriented, no reaction denial, no forced target choice."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "Shadowing is the only penalty and it is a disadvantage confined to the quarry's tests to SENSE you - a stealth clause, not a combat debuff. Fatal Thrust's 'max damage rolls add a penalty to the injury roll' is a one-off rider on an already-maximum roll. No defence reduction, no vulnerability, no Weakened, no Exhausted anywhere in the 25. The resource census's 'disadvantage produced by 14 talents / 9 trees' credits Hunter with exactly one."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "CORRECTED DOWN from 3 by lens A; held at 2. The axis is 'damage reduction, shields, temp HP, interception, resistance, damage redirection'. Hunter has NONE of those in combat: a search for 'temporary'/'temp hp' across the tree returns nothing (Hunter is one of the 12 trees with zero temp HP), nothing intercepts, nothing redirects, and the only damage reduction is Surefooted's 'reduce damage from falling and dangerous terrain by twice your tier' - two damage sources, neither an attack. What it actually has is durability and evasion: Animal Bond's +1 to all defenses (conditional on a companion the tree never grants being within 10 ft), Protective Bond moving that same +1 to an ally for a full Action (net-zero for the party), Hardy's +1 max health per level (a verbatim talent SEVEN trees share), and Sidestep's extra Dodge Reaction, itself forbidden while wearing deflect-2+ armor. COMPARATIVE NOTE ADDED: Surefooted is ALSO a shared generic talent (heroic/Agent depth 1 L2, heroic/Warrior depth 2 L3), which the profile under test missed - so even the one damage-reduction line is not Hunter's own, and Agent reaches it a level sooner. Calibration anchor: 'a tree with one Reaction that reduces damage once per round scores protection 2, not 4' - Sidestep's granted Dodge is roughly that anchor, so 2 is the ceiling here."
+   },
+   {
+    "axis": "healing",
+    "score": 1,
+    "evidence": "Zero Health restoration in the whole tree - the dossier header confirms 0 heal formulas, and no talent text restores health to anyone. The only resource restoration in the axis's scope is Cold Eyes: 'After you defeat your quarry, recover 1 focus and choose a new quarry.' Hardy raises maximum health but restores nothing. Combat Training's once-per-round free graze avoids a focus spend rather than returning one. For contrast within the same atlas, heroic/Scholar carries Field Medicine, Swift Healer, Applied Medicine, Ongoing Care and Resuscitation."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Five talents name advantage (advantage-ledger, verified verbatim: Seek Quarry, Exploit Weakness, Fatal Thrust, Shadowing, Hunter's Edge) but advantage is binary, so that is not five units of value. Seek Quarry already grants an advantage on tests to find, attack and study the quarry, so Exploit Weakness's advantage is worth literally zero on exactly those three categories, and Fatal Thrust's 'gain two advantages' cannot be delivered by the tri-state implementation at all. What a character actually gains once per round is one advantage against one designated target. Ally-facing buff is thin: Pack Hunting (Reaction, 1 focus, adds ranks in Survival to an ally's attack or damage roll against your quarry) is the only one that touches an ally's roll; Hunter's Edge and Feral Connection buff the companion, and Protective Bond moves a +1 rather than adding one. COMPARATIVE CHECK ADDED: deity/Knowledge's Pack Share and The Pack do Pack Hunting's job for the WHOLE party, for the SCENE, on one spend, rather than one ally, one roll, one Reaction, one focus. Combat Training, Killing Edge and Feral Connection hand out six expertises between them."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 on comparative grounds. The individual pieces are real and two are confirmed unique: Sidestep grants an ADDITIONAL Reaction - a search of all 365 talents for extra/additional/another reaction returns exactly two hits, Sidestep and heroic/Envoy's Foresight, CONFIRMED - and Unrelenting Salvo removes the once-per-turn same-weapon Strike limit against your quarry (also CONFIRMED unique: it is the only one of the five 'once per turn' talents in the atlas that LIFTS the restriction rather than imposing one). Animal Bond gives a whole second body one or two Actions for a Free Action on your turn - a genuinely new action. But 4 means 'one of the better options in the game for this', and the comparison does not support it. (a) heroic/Agent carries THREE 'spend 2 focus to gain 2 actions' Free Actions - Quick Analysis (depth 1, L2), Fast Talker and Trickster's Hand (depth 2, L3) - covering Cognitive, Spiritual and Physical tests, plus Shadow Step; that is six actions a round of headroom, live from L2. (b) EVERY good member of Hunter's package is L6 or externally gated: Sidestep needs Stealth 3+ (L6), Unrelenting Salvo needs Agility 3+ (L6), Exploit Weakness needs Perception 3+ (L6), and Animal Bond's prerequisite is literally 'Animal companion', which no talent in the atlas grants. Through L5 the Hunter's non-companion action economy is Backstep (2 focus, re-prices Disengage) and Swift Strikes (1 Action AND 1 focus for a 1-Action Strike). (c) Backstep and Exploit Weakness re-price standard actions every character already has, which the primer prices at close to zero. Several talents, at least one good one = 3. The case for 4 - two atlas-unique mechanics plus a second acting body at depth 0 - is stated here rather than hidden; it fails only on availability."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Surefooted is a flat +10 ft movement passive, which is real - though it is shared verbatim with Agent (depth 1, L2) and Warrior (depth 2, L3), so Hunter is not even the earliest holder of it. Backstep gives a Disengage without spending an action after a ranged attack (2 focus). Tagging Shot bundles a 5 ft move into a 3-Action attack. No teleport, no repositioning of others, no climb, leap or fly. Present, minor."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 2,
+    "evidence": "CORRECTED DOWN from 3 on comparative grounds - the profile under test's clearest inflation. Deadly Trap places a CONCEALED 5 ft hazard object with no resource cost and no stated per-scene limit; entangling mode leaves that one square as difficult terrain; Experienced Trapper raises it to 2d6 / 2 rounds and Hunter's Edge to 2d8 / 3 rounds. That is ONE deployable, ONE square, ONE target, and the two 'upgrades' only tune its numbers - they add no new zone capability, and only ONE of the trap's two exclusive modes creates terrain at all. Against the field: deity/Fate is the reference implementation and does everything Hunter's trap line does, better - Snare is 1 Action (not 2), deals [Tier][Die] + Awareness keen (not flat 2d4), applies Restrained (not Immobilized), and you may SUSTAIN UP TO YOUR TIER unsprung Snares at once, on top of up to your tier Ordained Ground squares, with Inevitable Snare, Foreknown Strike, Hexmark, Weave the Thread and Thread of Inevitability all elaborating them - roughly 9 of 9 talents in the tree. leyline/Green creates difficult terrain FREE on every Draw Mana plus Sudden Growth; deity/Destruction leaves dangerous terrain from every detonation; deity/Death's Bone Garden is a 10 ft persistent damaging square; deity/Civilization's Bastion fortifies Foundations into damaging difficult terrain. You would not pick Hunter for terrain. 'Present but minor' = 2."
+   },
+   {
+    "axis": "information",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 on comparative grounds. Hunter's kit is real: Sharp Eye (Special, depth 1, L2, free) tests Perception vs. Cognitive to learn a target's lowest attribute, lowest defense, or whether health, focus, or Investiture are below half; Seek Quarry grants a standing advantage on tests to find and STUDY the quarry, free, at L1, with no expiry; Shadowing is a surveillance clause plus a designate-from-cover trigger; Animal Bond's companion can Track. But 4 requires being one of the better options IN THE GAME, and at least four trees deliver more: leyline/Blue - Forewarned (silently declare a character and an action type each round, free, L1), Read Intent (the GM reveals the creature's intended action next round), Probable Outcome (change your fast/slow choice after everyone else has committed), Telepathic Network; deity/Fate - Read the Threads (learn the action a character intends to take AND the movement it plans, then reposition a trap into its path), strictly beyond anything Sharp Eye can do; deity/Knowledge - Studied Mark reads current HP, all conditions AND both Physical and Spiritual defenses in one talent at depth 0, persists for the scene, and Pack Share broadcasts that read to every ally in range; heroic/Agent - Get 'Em Talking (learn the target's motivation) plus Sleuth's Instincts ('You know when those characters lie to you'). leyline/Green's Scent the Weak even automates the below-half read ('You know which creature within Attunement Range has the lowest HP') with no test at all. Also removed from the evidence: Combat Training's Military Life expertise, which is an expertise grant and not an information mechanic, and Seek Quarry's advantage, which is already scored under buff. A real, usable competency with one good talent = 3."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Checked all 25: nothing persuades, commands, deceives socially, or confers reputation or leverage over people. The tree's only social-adjacent grants are lore and craft expertises (Military Life, Animal Care). Startling Blow's Surprised is a combat condition applied by an attack, not social pressure. This is the sharpest divide in the heroic atlas - Agent, Envoy, Leader and Scholar all carry contact/reputation/influence suites (High Society Contacts, Underworld Contacts, Rumormonger, Cover Story, Mercurial Facade, Baleful) and Hunter carries none of it."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 4,
+    "evidence": "HELD at 4 after comparison, with the lane named. Experienced Trapper forages for characters up to your ranks in Survival and lets you fashion natural tools with Survival - an explicit downtime and provisioning engine, and the ONLY forage mechanic in the 365. Surefooted is +10 movement plus reduced falling and dangerous-terrain damage (travel). Animal Bond, Protective Bond and Feral Connection give a durable companion (Animal Care expertise, +5 x tier health, +2 defenses, +Survival ranks to all its tests). Shadowing is an infiltration and surveillance tool. Sharp Eye and Seek Quarry are reconnaissance and tracking. Combat Training and Killing Edge hand out five more expertises. COMPARATIVE CHECK ADDED: heroic/Scholar is the reference implementation of this axis and would score 5 - Erudition plus Deep Study plus Mind and Body plus Emotional Intelligence plus Deep Contemplation is a reassignable expertise-and-skill engine, and Efficient Engineer / Prized Acquisition / Fine Handiwork / Inventive Design / Experimental Tinkering is a whole crafting economy, with Ongoing Care and Resuscitation on top. heroic/Agent owns urban infiltration (Cover Story, Mercurial Facade, Plausible Excuse, the two Contacts talents). Hunter is not the best utility tree, but it owns the WILDERNESS AND TRAVEL lane outright and no other tree competes there, which is what 4 means."
+   },
+   {
+    "axis": "summons",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 by lens A; held at 3, with the uniqueness claim corrected. A four-talent companion sub-tree - Animal Bond, Protective Bond, Feral Connection, Hunter's Edge - and the word 'companion' does appear in exactly those four talents' prose and nowhere else in the 365. But the tree PRODUCES no summon: Animal Bond's prerequisite is literally 'Animal companion', the path description hands it to GM rewards ('you can't go wrong with an animal companion'), and the resource-economy census lists no companion producer anywhere. CORRECTION TO THE PROFILE UNDER TEST, which called this 'the only companion sub-tree in the atlas' and named Forge Construct as its only rival: deity/Civilization carries a FIVE-talent construct sub-tree - Forge Construct (mints it for 1 Investiture at depth 0), Tempered Edge, Siege Form, Arsenal and the Magnum Opus capstone (Colossus form) - which is larger than Hunter's, inside a NINE-talent tree, and it mints its own body. deity/Death's Risen Servant mints a second body from a Harvested Remain, and leyline/Blue's Phantom Double creates a duplicate. A tree that consumes and enhances a summon it never grants is not one of the better options in the game for summons; four talents of genuine support (a second acting body commanded for a Free Action, with its own HP, defence and test scaling) is a real competency = 3."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 1,
+    "evidence": "Cold Eyes is the only generator: recover 1 focus after you defeat your quarry. Combat Training's once-per-round free graze is a focus SAVING, not generation. Nothing produces Investiture, Opportunity, or Health - a search of all 365 confirms Opportunity appears in 22 talents across 11 trees and in NO Hunter talent, and Investiture is named once in the tree (Sharp Eye, reading whether a target's is below half). Against the single generator, four talents SPEND focus (Shadowing 3, Backstep 2, Pack Hunting 1, Swift Strikes 1), matching the census line 'Focus: ... Hunter 1 regen ... costers ... Hunter 4' exactly. A small net focus consumer with one kill-gated refund. Checked for hidden riders per lens (c): none - no Hunter talent returns focus on a graze, a hit, a Reaction, or a scene start, and none touches an ally's resources."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Deadly Trap",
+     "dice": "TWO EXCLUSIVE MODES. Entangling: 2d4 IMPACT (Deflect-reduced), Survival vs. Cognitive, Immobilized + difficult terrain. Impaling: 2d4 KEEN (the ROLL FORMULA), Survival vs. Physical, Afflicted[3 + ranks in Survival, VITAL]. Both dice rise to 2d6 (Experienced Trapper) then 2d8 (Hunter's Edge)",
+     "action": "2 Actions",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "The tree's biggest number and its only Deflect-ignoring damage - but only in the IMPALING mode, which has no control. The entangling mode's damage is IMPACT and IS reduced by Deflect. Conditional twice over: the trap is concealed and must be entered, and the payload rides a contested Survival test. DURATION DATA GAP: the base talent states NO Afflicted duration - only Experienced Trapper ('2 rounds duration') and Hunter's Edge ('3 rounds duration') name one. WIRING DATA GAP: the overlay carries only `2d4 keen` with events=0 effects=0 - the impact branch, both dice upgrades, and the entire Afflicted vital DoT have no formula. COMPARATIVE NOTE ADDED: deity/Fate's Snare is the same mechanic done better on every axis - 1 Action instead of 2, `(@tier)d(2*green+2) + @attr.awa keen` instead of flat 2d4, Restrained instead of Immobilized, and up to your tier of them sustained at once. Deadly Trap's advantages over it are that it costs no Investiture, needs no deity gate, and is legal at level 1."
+    },
+    {
+     "name": "Fatal Thrust",
+     "dice": "+4d4 (ROLL FORMULA, damageType null) on top of a light melee weapon attack vs. Cognitive",
+     "action": "2 Actions",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "RIDER + heavily conditional: target must be unsuspecting, weapon must be light melee, and the Discreet clause promises 'two advantages' which the binary tri-state implementation cannot deliver. Its own prerequisite is Perception 3+, so the TRUE earliest level is 6, not the 2 the precomputed column shows. damageType is null in the overlay and events=0 effects=0, so the 4d4 rolls untyped and nothing is automated. COMPARATIVE NOTE ADDED: heroic/Warrior's Devastating Blow is the same shape (2 Actions, a melee weapon attack, extra dice) for an extra 2d8 - larger average, tier-scaling formula, no unsuspecting requirement, no weapon-trait requirement - at depth 1 / L2 with NO rank gate anywhere in its chain (verified). Fatal Thrust is not the atlas's alpha strike; it is not even the heroic atlas's."
+    },
+    {
+     "name": "Mighty",
+     "dice": "+ (1 + tier) per Action spent on the attack; +2 at Tier 1, +3 at Tier 2",
+     "action": "Passive",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "Rider on a hit, but otherwise unconditional, free, and every round - the tree's most reliable damage. On a 2-Action attack it is +4 / +6. NOT A HUNTER TALENT: the identical string appears in leyline/Red and in heroic Agent, Envoy, Leader and Warrior, and Hunter pays MORE for it than any heroic peer - depth 3 / L4 here, against depth 1 / L2 in Warrior and Envoy and depth 2 / L3 in Agent and Leader. Verified that none of those cheaper chains hides a rank-3 gate, so their earlier levels are genuine while Hunter's is the joint-worst in the atlas (tied with leyline/Red)."
+    },
+    {
+     "name": "Steady Aim",
+     "dice": "+ ranks in Perception (2 at Tier 1, 3 at Tier 2), plus +half weapon range",
+     "action": "Action",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": false,
+     "note": "Costs a full Action to add 2-3 damage; below the curve versus simply Striking again once Mighty or Unrelenting Salvo is online. TEXT AMBIGUITY: the talent states no duration and no attachment ('Increase your weapon range by half and deal extra damage equal to your ranks in Perception'), so whether the bonus is a standing passive or applies to one following attack is unstated. Costed here as a one-attack buy - the reading least favourable to the talent - and flagged."
+    },
+    {
+     "name": "Unrelenting Salvo",
+     "dice": "no dice of its own - removes the once-per-turn same-weapon Strike limit against your quarry",
+     "action": "Passive",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "The tree's real damage multiplier: up to 3 ranged Strikes on a Slow turn, each carrying Mighty. Conditional on the target being your quarry and on using the same ranged weapon. Its Agility 3+ prerequisite means the TRUE earliest level is 6, not 4. CONFIRMED unique by search across all 365: five talents in the atlas contain 'once per turn' (Black's Unnerving Approach, Red's Unstoppable, Scholar's Overcharge, Civilization's Trade Routes, and this one) and Unrelenting Salvo is the only one that LIFTS the restriction rather than imposing one."
+    },
+    {
+     "name": "Swift Strikes",
+     "dice": "no dice of its own - a second Strike with the same weapon",
+     "action": "Action + 1 Focus",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": false,
+     "note": "Charges 1 Action AND 1 focus for a Strike that costs 1 Action anyway; its only value is bypassing the once-per-turn same-weapon rule, which Unrelenting Salvo does for free (ranged, quarry only). Verbatim identical to heroic/Warrior's Swift Strikes - and Warrior reaches it at depth 2 / L3 via Combat Training -> Hardy, a chain with no rank gate, while Hunter pays depth 3 / L4 via Killing Edge -> Shadowing -> Cold Eyes."
+    },
+    {
+     "name": "Tagging Shot",
+     "dice": "weapon dice only",
+     "action": "3 Actions",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": false,
+     "note": "Three Actions - an entire Slow turn - for a 5 ft move and ONE ranged attack. As damage this is a net loss versus Striking; the quarry tag it applies is already free on Seek Quarry. Prereq Perception 2+, legal at L1."
+    },
+    {
+     "name": "Startling Blow",
+     "dice": "unarmed or improvised weapon dice only",
+     "action": "Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": false,
+     "note": "Damage is incidental (unarmed/improvised is the weakest weapon class); the talent's real payload is Surprised on a hit or a graze. Directly outclassed by heroic/Agent's Cheap Shot at the same depth 0 / L1, which is also an unarmed attack vs. Cognitive and applies Stunned for 1 focus."
+    },
+    {
+     "name": "Animal Bond (companion attacks)",
+     "dice": "the companion's own attack dice; Free Action grants it one or two Actions on your turn",
+     "action": "Special (Free Action to command)",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "SUMMON damage - counted as this tree dealing damage, but gated on possessing an animal companion the tree never grants ('prereq: Animal companion'). Feral Connection adds ranks in Survival to the companion's tests and Hunter's Edge gives it advantage vs. your quarry. Note the symmetry the profile under test missed: heroic/Envoy's Foresight chain ALSO requires 'a companion' (Instill Confidence's prerequisite), so this external-grant dependency is a system convention rather than a Hunter-only defect - though Hunter hangs four talents on it."
+    },
+    {
+     "name": "Pack Hunting",
+     "dice": "+ ranks in Survival to an ALLY's attack or damage roll against your quarry",
+     "action": "Reaction + 1 Focus",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "Damage the tree causes but does not deal; requires an ally to attack the designated quarry, and consumes the single Reaction per round. Perception 3+ prerequisite makes the TRUE earliest level 6, not 3. deity/Knowledge's Pack Share and The Pack do this for every ally in Attunement Range for the whole scene on one Investiture spend, with no Reaction and no focus."
+    }
+   ],
+   "countReal": 10,
+   "countFalsePositiveMitigation": 1,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "At Tier 2 / rank 3 ([Tier][Die] = 2d8, avg 9) the tree's OWN added damage is about +3 flat per Action spent (Mighty, 1+tier = 3) - roughly one third of a [Tier][Die] per Action - but it is unconditional on every hit, costs nothing, and Unrelenting Salvo lets a Slow turn buy three Strikes, so a full turn adds ~+9 on top of three weapon rolls. Its two bursts are Fatal Thrust (+4d4, avg 10, ~1.1 [Tier][Die], 2 Actions, once per unsuspecting setup) and a fully upgraded IMPALING Deadly Trap (2d8 keen, avg 9, ~1 [Tier][Die], plus Afflicted[3+3 = 6 vital] over 3 rounds = ~18 Deflect-ignoring, 2 Actions to place). The trap is the highest-value spend per Action AND the only Deflect-ignoring source. ARITHMETIC CAVEAT: this is entirely a LEVEL 6+ picture. Unrelenting Salvo (Agility 3+), Fatal Thrust (Perception 3+) and the 2d8 upgrade (Hunter's Edge, Survival 3+) all need rank 3, unreachable before L6. Through L5 the peak is a 2d4 trap (avg 5, impact or keen) plus +2 per Action from Mighty at L4. COMPARATIVE CAVEAT ADDED BY LENS B: this L6 correction must be applied symmetrically to the trees Hunter is compared against, and it was - it mostly does not bite them. Warrior's Devastating Blow (extra 2d8, L2), Warrior's Swift Strikes (L3), Envoy's and Warrior's Mighty (L2) and Agent's Cheap Shot (L1) all sit in chains with NO rank-3 gate anywhere. Hunter's late arrival is therefore a real relative disadvantage, not an artefact of applying the correction to Hunter alone.",
+   "repeatability": "Very high for the multiplier half, low for the burst half. Mighty (free passive), Unrelenting Salvo (free passive) and Seek Quarry (free Special) run every round of every scene with no resource. Deadly Trap has no stated per-scene limit, so at 2 Actions it is genuinely re-placeable - though note deity/Fate's Snare carries an explicit cap (up to your tier unsprung) precisely because it is designed to be placed in quantity, which suggests Deadly Trap's silence is an omission rather than a licence and is a fair question for the designer. Swift Strikes costs 1 focus per use, so ~4-5 uses off a 2+WIL pool. Fatal Thrust is setup-gated on an unsuspecting target, so it is effectively once per engagement unless the party re-creates the condition.",
+   "verdict": "This is a real damage tree but a SHARED, LATE, and FLAT one, and almost none of the damage is the tree's own dice. Ten talents touch damage: two carry Foundry roll formulas (Deadly Trap 2d4 keen, Fatal Thrust 4d4 - matching the dossier header's '2 damage, 0 heal'), two are pure multipliers with no dice (Unrelenting Salvo, Swift Strikes), two are flat riders (Mighty, Steady Aim), two carry only weapon dice (Tagging Shot, Startling Blow), and two route damage through another body (Animal Bond's companion, Pack Hunting's ally). Exactly ONE talent only appears to be damage because it says the word: Surefooted ('reduce damage from falling and dangerous terrain by twice your tier') is mitigation and is not counted - matching the census's MITIG 1. Killing Edge is a borderline eleventh route - Deadly and Quickdraw on Knives and Slings raises weapon damage indirectly without naming a die. THREE COMPARATIVE FINDINGS LENS B ADDS: (1) FIVE of the tree's talents are verbatim generic heroic content, not four - Mighty, Hardy, Swift Strikes, Combat Training and SUREFOOTED, the last of which the profile under test missed entirely while citing it as evidence on three separate axes; (2) Hunter reaches Mighty, Swift Strikes and Hardy later than Warrior and Surefooted later than Agent, but reaches Combat Training at exactly the same depth and level as Warrior (depth 0 / L1) and Hardy at exactly the same depth and level as Agent (depth 2 / L3), so 'later than at least two other paths' is true for three of the five, not all five; (3) both of Hunter's roll formulas are hand-written flat dice with no @tier term, true of only one other tree in the atlas (Warrior - whose two DO scale). Earliest damage: depth 0, level 1, via Deadly Trap (and weapon damage through Tagging Shot / Startling Blow)."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 3,
+    "exemplars": "Deadly Trap, Animal Bond, Seek Quarry, Combat Training, Startling Blow, Killing Edge, Tagging Shot",
+    "note": "Seven talents. A strong, immediately usable entry band. Deadly Trap is one of the better L1 talents in the heroic atlas - but state its payload correctly: 2d4 impact + Immobilized + difficult terrain OR 2d4 keen + Afflicted[3 + Survival ranks vital], never both, and only the second ignores Deflect. Animal Bond is +1 to every defence plus a second acting body (if you have been given a companion). Seek Quarry is a free permanent advantage on one designated target. Combat Training is three expertises plus a focus-free graze every round - and is verbatim Warrior's, at the identical depth 0 / L1, so it is not a Hunter differentiator in either direction. Dragged down by Tagging Shot, a 3-Action talent that does what the free Key talent already does."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Sharp Eye, Fatal Thrust, Sidestep, Cold Eyes, Feral Connection, Hunter's Edge, Experienced Trapper (vs. Exploit Weakness, Steady Aim, Protective Bond)",
+    "note": "COUNT VERIFIED at 15. Depth 1 = Sharp Eye, Steady Aim, Fatal Thrust, Shadowing, Experienced Trapper, Protective Bond (6); depth 2 = Backstep, Exploit Weakness, Hardy, Cold Eyes, Sidestep, Feral Connection, Hunter's Edge, Pack Hunting, Surefooted (9); 7 + 15 + 3 = 25. The widest band and the most uneven. Sharp Eye and Sidestep are excellent; Fatal Thrust is the tree's alpha strike (though Warrior's Devastating Blow is bigger and four levels earlier); Feral Connection and the two trap upgrades are solid numeric growth. But Exploit Weakness is near-null (its advantage duplicates Seek Quarry's on find/attack/study, and advantage is binary), Steady Aim spends an Action for +2-3 damage, Protective Bond is a 1-Action net-zero transfer, and Hardy and Surefooted are both shared generic talents that Warrior, Leader or Agent reach at the same time or sooner. Five of the fifteen carry a rank-3 gate and are really level-6 talents."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 4,
+    "exemplars": "Mighty, Unrelenting Salvo, Swift Strikes",
+    "note": "Only three talents, all damage multipliers, and they compound: Mighty makes every Action spent worth +1+tier, and the other two let you spend more Actions on Strikes. This is where the tree's combat output actually lives. Two caveats: Mighty and Swift Strikes are verbatim generic heroic talents (Mighty in six trees, Swift Strikes shared with Warrior) that Hunter reaches at greater depth and a later level than Warrior, Envoy, Agent or Leader - verified against those trees' FULL prerequisite chains, none of which hides a rank gate, so the comparison is sound; and Unrelenting Salvo's Agility 3+ makes the band's only Hunter-exclusive member a level-6 pick."
+   },
+   {
+    "band": "structural note on reachability (not a depth band)",
+    "rating": 3,
+    "exemplars": "Fatal Thrust (Perception 3+), Exploit Weakness (Perception 3+), Sidestep (Stealth 3+), Hunter's Edge (Survival 3+), Pack Hunting (Perception 3+), Unrelenting Salvo (Agility 3+)",
+    "note": "REFRAMED BY LENS B - the profile under test presented this as a Hunter-specific penalty, and it is not. The observation itself is correct: heroic paths carry no leyline-COLOUR gate, but Hunter uses six SKILL-rank-3 prerequisites, all-talents.json records rankGate as an empty string for all 25, and the precomputed earliestLevel column therefore misses them, so those six are really level-6 talents. BUT counting the identical pattern across the whole atlas gives Agent 7, Warrior 6, Envoy 6, HUNTER 6, Leader 5, Scholar 5, and only 1-3 in each leyline tree. Hunter is the joint-MEDIAN heroic tree on this measure, not an outlier - so the correction lands on the shared structural assumption in the brief ('heroic paths are fully reachable by ~L4-L5', which is false for ALL SIX heroic paths), NOT on Hunter's standing against its peers. Two consequences the profile under test got backwards: heroic/Envoy's Foresight also carries Discipline 3+ and is therefore ALSO a level-6 talent, not the L4 the column shows, so it is not 'earlier' than Sidestep; and Hunter's cheaper generic talents (Mighty, Swift Strikes, Hardy, Surefooted, Combat Training) sit in chains with no rank gate at all, so their L1-L4 numbers are real. What IS distinctive is WHICH talents are late: Hunter's rank-3 gates sit on its signature mechanics."
+   }
+  ],
+  "frontOrBackLoaded": "Front-loads utility, control and information (the trap, the quarry mark, the companion, Combat Training, Sharp Eye all sit at depth 0-1 and are genuinely available L1-L2); back-loads combat output into three depth-3 multipliers, two of which are generic heroic talents other paths get sooner. The six skill-rank-3 prerequisites push a fifth of the tree to level 6, so the real power spike is at L6 - later than the heroic depth model suggests, though NOT later than its heroic peers, all of which carry 5-7 such gates (Agent 7, Warrior 6, Envoy 6, Hunter 6, Leader 5, Scholar 5). What IS distinctive is which talents are late: Hunter's rank-3 gates sit on its signature mechanics (the ranged payoff, the 2d8 trap upgrade, the only ally-facing buff, the extra Reaction) while Warrior's and Agent's sit mostly on secondary picks, so Hunter's identity lands later than theirs even though its gate count is identical.",
+  "uniqueOwnership": [
+   "The quarry mark, WITH THE ABSOLUTE CLAIM CORRECTED. The word appears in nine of Hunter's 25 talents and in no other tree's PROSE - but it is not absent from the data: deity/Destruction's Pinpoint Charge and deity/Fate's Hexmark both carry `quarry` in their authored tags, and more importantly the MECHANIC is not Hunter's alone. deity/Knowledge is an entire tree built on a persistent single-target mark: Studied Mark places Insight and reads the target's HP, conditions and both defenses; Accumulate grows it every turn; Hunter's Discipline and Death Mark re-designate on a kill exactly as Cold Eyes does (Death Mark transfers the FULL Insight count and fires a free party-wide [Tier][Die] vital); Predatory Strike, Killing Blow and The Final Study cash it in; Pack Share and The Pack extend it to every ally. deity/Fate's Hexmark is a second scene-long single-target mark, and it costs nothing. What survives as genuinely Hunter's: it is the only mark that is free AND self-directed - Seek Quarry costs no Investiture, no focus and no Opportunity, rides a Special, never expires, and is re-pointed on a kill by Cold Eyes, where Knowledge's costs 1 Investiture per placement and Fate's Hexmark requires a Snare to be triggered first.",
+   "The trap, WITH THE ABSOLUTE CLAIM CORRECTED - this is the profile under test's most overstated line. 'Trap' appears in seven talents across three trees once authored tags are read, not three: Hunter's Deadly Trap / Experienced Trapper / Hunter's Edge, deity/Fate's Snare and Inevitable Snare, and deity/Order's Edict and Sealed Edict. And deity/Fate's Snare is the same mechanic implemented better - a placed 5 ft square that triggers on the first enemy to enter it, for 1 Action instead of 2, dealing [Tier][Die] + Awareness keen instead of a flat 2d4, applying Restrained instead of Immobilized, with up to your tier sustained at once, and with Inevitable Snare, Foreknown Strike, Hexmark and Thread of Inevitability elaborating it. What survives as Hunter's: it is the only NO-RESOURCE trap, the only CONCEALED one, and the only one available at level 1 to a character with no leyline attunement and no deity gate. Hunter buys a worse trap at a price of zero.",
+   "The only skill-rank-scaled Afflicted. CENSUS CORRECTED AGAIN: the profile under test corrected the count from four to five and is still wrong - Afflicted appears in SEVEN talents once tags are read. Producers: leyline/Black's Dark Investiture ([Tier][Die] vital, for 1 Investiture plus health), leyline/Red's Afterburn (half [Tier][Die] energy, for an Opportunity), deity/Life's Adaptive Mutation (half [Tier][Die] vital, for 2 Investiture), deity/Death's Withering Touch and Consuming Decay (both tagged afflicted; Consuming Decay is a SCENE-LONG [Tier][Die] vital tick at the start of every one of the target's turns that also heals the caster - the strongest ongoing Deflect-ignoring damage in the atlas), and Hunter's Deadly Trap. Remover: leyline/Green's Natural Recovery. The narrow claim SURVIVES all seven: Hunter's Afflicted[3 + ranks in Survival] is the only one keyed to a skill rank rather than [Tier][Die], and the only one that costs no resource.",
+   "The only talent in the atlas that LIFTS the once-per-turn same-weapon Strike restriction (Unrelenting Salvo) - CONFIRMED. Five talents in the 365 contain 'once per turn' (Black's Unnerving Approach, Red's Unstoppable, Scholar's Overcharge, Civilization's Trade Routes, Unrelenting Salvo) and the other four impose a limit rather than removing one. Warrior owns an identical Swift Strikes and Leader's Synchronized Assault grants allies an extra Strike, but nobody else gets unlimited same-weapon Strikes for free. Note it is a level-6 talent (Agility 3+).",
+   "The only ANIMAL companion line - narrowed from 'the only companion sub-tree in the atlas', which is false. 'Companion' appears in exactly four talents' prose, all Hunter (Animal Bond / Protective Bond / Feral Connection / Hunter's Edge), letting a second body take one or two Actions on your turn for a Free Action with its own HP, defence and test scaling. But deity/Civilization runs a FIVE-talent construct sub-tree (Forge Construct, Tempered Edge, Siege Form, Arsenal, Magnum Opus) inside a nine-talent tree, deity/Death's Risen Servant raises a second body from a Harvested Remain, and leyline/Blue's Phantom Double creates a duplicate - all three MINT their companion, where all four of Hunter's require one the atlas never grants.",
+   "One of only two sources of an additional Reaction (Sidestep); the other is heroic/Envoy's Foresight, CONFIRMED by search across all 365. CORRECTION TO THE PROFILE UNDER TEST: it asserted twice that Foresight is EARLIER ('Envoy L4 vs Sidestep's true L6'). That is FALSE, and it is the same error the profile spent a whole section correcting in Hunter - Foresight's prerequisite line reads 'Instill Confidence; Discipline 3+', so its true earliest level is ALSO 6, and its chain additionally requires 'a companion' (Instill Confidence's own prerequisite). Foresight is still strictly better in EFFECT - unconditional, any reaction rather than Dodge only, no armor restriction - but the two land at the same level and both carry an external gate.",
+   "Sharp Eye is the only FREE statblock read in the atlas - the superlative corrected from 'the most actionable statblock-reading effect in the atlas'. It reads a target's lowest attribute, lowest defense, or whether health, focus or Investiture are below half, as a Special at depth 1 / L2 with no resource cost. But deity/Knowledge's Studied Mark reads current HP, all conditions AND both Physical and Spiritual defenses at depth 0, persists for the scene, and Pack Share broadcasts it to every ally; deity/Fate's Read the Threads reads the target's INTENDED ACTION and planned movement, which Sharp Eye cannot do at all; leyline/Blue's Read Intent does the same; leyline/Green's Scent the Weak gives the below-half read with no test at all. Sharp Eye's edge is price, not content.",
+   "The only forage / provisioning mechanic in the 365 (Experienced Trapper: 'You easily forage for characters up to your ranks in Survival. You can fashion natural tools using Survival'). Verified against every other tree - heroic/Scholar owns crafting and medicine, heroic/Agent owns urban contacts, leyline/Green owns terrain and healing, and none of them feeds a party on the road. This, not the trap and not the mark, is the cleanest unique-ownership claim in the tree."
+  ],
+  "gaps": [
+   "No area effect of any kind. Zero talents hit more than one target: no cone, no line, no burst, no 'each character in the area'. A Hunter facing four minions has exactly the same turn as a Hunter facing one. heroic/Warrior, the other weapon path, owns Meteoric Leap ('an unarmed attack vs. Physical of multiple targets, doubling damage'), so this is not a heroic-atlas limitation - it is Hunter's.",
+   "No healing whatsoever. Nothing restores Health to self or anyone else - zero heal formulas; the only resource restoration is 1 focus on a quarry kill. A Hunter cannot help a downed ally, where heroic/Scholar carries Field Medicine, Swift Healer, Applied Medicine, Ongoing Care and Resuscitation.",
+   "No Investiture and no Opportunity interaction. Opportunity appears in 22 talents across 11 trees and in zero Hunter talents; Investiture is named once (Sharp Eye, reading whether a target's is below half). The Investiture half is a HEROIC-atlas fact (no heroic tree spends it), but the Opportunity half is NOT - Agent, Envoy, Leader, Scholar and Warrior all interact with Opportunity and Hunter is the only heroic path that does not. In a party built around the leyline economy the Hunter is economically inert.",
+   "No hard control. Nothing stuns, restrains, Disorients, denies a Reaction, or forces a target choice. Immobilized (entangling trap only, mutually exclusive with the trap's Afflicted mode) and Surprised (unarmed/improvised attack only) are the entire control suite - two talents of 25, and both are outclassed at the same depth by heroic/Agent's Cheap Shot (Stunned) and deity/Fate's Snare (Restrained).",
+   "No social play. In a negotiation, a court scene, or an interrogation the Hunter has literally nothing - no persuasion, deception, command, or reputation talent. Four of the six heroic paths carry a contacts or influence suite.",
+   "Nothing to do about a target that is not your quarry. Exploit Weakness, Unrelenting Salvo, Hunter's Edge, Pack Hunting, Shadowing and Cold Eyes all read 'your quarry'; against a second enemy those six talents are inert until you re-designate. deity/Knowledge has the identical single-target restriction ('Insight on only one creature at a time'), so this is a property of mark-based design rather than a Hunter bug - but Knowledge pays for it with far larger per-mark payloads, and Hunter's mark grants only one binary advantage.",
+   "Nothing to do without an animal companion. Four Tracker talents are dead text unless the GM has granted a companion - Animal Bond's own prerequisite - and nothing in the 365 grants one. (heroic/Envoy's Instill Confidence carries the same external dependency, so Hunter is not alone in it, but Hunter has four talents riding on it against Envoy's one chain link.)",
+   "Nothing to do about being hit. No combat damage reduction (Surefooted covers only falling and dangerous terrain, and is shared with Agent and Warrior), no temp HP anywhere in the tree, no interception, no ally protection beyond moving a +1 defence aura. Hardy's extra max health is the whole answer, and it is a talent seven trees share.",
+   "The Archer's promised suppression turn does not exist: no forced movement, no fear condition, no cover creation, no elevation rules ('high ground' returns ZERO hits in the entire 365-talent atlas - CONFIRMED by search), no volley.",
+   "FIVE of the tree's most-cited talents are not the tree's own, not four. Mighty (six trees), Hardy (seven), Swift Strikes and Combat Training (verbatim with Warrior) and SUREFOOTED (Hunter, Agent, Warrior) - the last missed by the profile under test, and load-bearing because it was cited as evidence on the protection, mobility and exploration_utility axes. That is 20% of the tree. Hunter reaches Mighty, Swift Strikes and Hardy later than Warrior and Surefooted later than Agent, but reaches Combat Training at the identical depth 0 / L1 as Warrior and Hardy at the identical depth 2 / L3 as Agent. Stripped of shared talents, Hunter's combat identity is the trap, the quarry mark, Startling Blow and Unrelenting Salvo.",
+   "THE 'SOMETHING' TEST - the finding lens B was asked for. Hunter's something is the prepared ambush: mark a target, lay a hidden trap, watch unseen, then kill it. Two deity trees do that better and say so in their own intent files. deity/Knowledge (INTENT-deity-Knowledge.md): 'A disciple of Gnothis marks a quarry and accumulates Insight upon it; every observation sharpens the killing blow, and the whole pack profits from what one hunter learns. Patience first, then a strike that lands like a verdict.' That is Hunter's mark, Hunter's patience, Hunter's pack and Hunter's kill - using Hunter's own word 'quarry' - delivered in nine talents with a bigger read, a bigger payload and party-wide sharing. deity/Fate (INTENT-deity-Fate.md): 'lays Snares on the squares an enemy has not yet chosen to enter. When the foreseen step comes, the trap is already waiting.' That is Hunter's 'better prepared' with a superior trap. Hunter's genuine something, once those are subtracted, is narrower but real and defensible: it is the only tree that runs the whole mark-trap-track-ambush loop at ZERO resource cost from level 1 with no attunement and no deity gate, and it is the only wilderness travel-and-forage kit in the atlas."
+  ],
+  "weakTalents": [
+   {
+    "name": "Tagging Shot",
+    "reason": "NEVER-PICK. Three Actions - an entire Slow turn - to move 5 ft, make one ranged attack, and apply quarry on a hit or graze. Seek Quarry, the free Key talent every Hunter has, designates a quarry as a Special with no attack, no test, and no action cost. Tagging Shot spends a whole turn to do the Key talent's job worse. It is the tree's only 3-Action talent (1/25 = 4%). FRAMING: the '0% 3-Action' figure is the TARGET LEYLINE column of the design guide's benchmark table, and revision principle 3 is written for leyline trees; the heroic benchmark is 2%, and heroic/Leader ships TWO 3-Action talents and Agent one (Close the Case). Hunter is double the heroic baseline, not in breach of a stated heroic rule - there is no heroic design guide."
+   },
+   {
+    "name": "Exploit Weakness",
+    "reason": "NEAR-REDUNDANT. Seek Quarry already grants an advantage on tests to find, ATTACK, and study that same quarry, and advantage is binary (d20.number=2, kh), so on those three categories the second source is worth literally zero. It is not quite nothing - 'Gain Advantage on your quarry without spending an action' re-prices the 1-Action standard Gain Advantage into a Free Action and grants the advantage outright rather than testing for it, on every OTHER quarry-facing test (Grapple, Shove, a skill test). That is a small but real buy. It still costs a talent slot at depth 2 behind Perception 3+ (really level 6) for value on the tests that matter least."
+   },
+   {
+    "name": "Steady Aim",
+    "reason": "BELOW CURVE / OVERCOSTED, with a text gap. A full Action for +half weapon range and + ranks in Perception damage (2 at Tier 1, 3 at Tier 2). Once Mighty is online, that same Action spent on a Strike is worth more, and Mighty already pays 1+tier per Action for free. The text states no duration and no attachment to an attack, so how long the bonus lasts is genuinely unspecified - and the talent is events=0 effects=0, so nothing resolves it. Its value is mostly the range increase, and it is a prerequisite for Hardy and Backstep, so you pay for it anyway."
+   },
+   {
+    "name": "Swift Strikes",
+    "reason": "OVERCOSTED and redundant in-tree. 1 Action AND 1 focus for a Strike that costs 1 Action by itself; you pay a focus purely to bypass the once-per-turn same-weapon rule - which Unrelenting Salvo does for free (ranged, vs. quarry) at the same depth. Verbatim identical to heroic/Warrior's Swift Strikes, and Warrior gets it at depth 2 / L3 through a chain with no rank gate anywhere (Combat Training -> Hardy) while Hunter pays depth 3 / L4 - so it adds nothing distinctive to the atlas AND Hunter buys the shared talent at a worse price."
+   },
+   {
+    "name": "Protective Bond",
+    "reason": "MARGINAL. A full Action to move your Animal Bond +1 defence aura from you to an ally within 30 ft - a net-zero transfer for the party that costs an Action and strips your own bonus. It exists mainly as the prerequisite tax gating Feral Connection and Pack Hunting."
+   },
+   {
+    "name": "Fatal Thrust",
+    "reason": "NOT WEAK, BUT MIS-SPECIFIED AND OUTCLASSED. 'Gain two advantages if the weapon is Discreet' cannot be delivered - advantage is a tri-state, so the second is worth zero. Its damageType is null in the Foundry overlay (the 4d4 rolls untyped) and it is events=0 effects=0, so nothing about it is automated. Its Perception 3+ prerequisite makes it a level-6 talent listed as depth 1 / L2. COMPARATIVE ADDITION: heroic/Warrior's Devastating Blow is the same 2-Action extra-dice melee attack for an extra 2d8 with a tier-scaling formula, no unsuspecting requirement and no weapon-trait requirement, at depth 1 / L2 with no rank gate anywhere in its chain - so Hunter's alpha strike is smaller, flatter, more conditional and four levels later than the one the other weapon path gets."
+   },
+   {
+    "name": "Hardy",
+    "reason": "FUNCTIONAL BUT NOT HUNTER'S. +1 max health per level (including previous levels) is real, retroactive durability and worth taking. It is a shared generic talent appearing verbatim in SEVEN trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior). Leader and Warrior reach it at depth 1 / L2 against Hunter's depth 2 / L3; heroic/Agent reaches it at the SAME depth 2 / L3, so a blanket 'Hunter pays more than Warrior, Envoy, Agent or Leader' would be wrong for Agent; leyline/White pays the most, depth 3 / L6 behind White 3+. Also re-confirmed: there is no authored-override text on this talent or on ANY Hunter talent - the dossier carries no AUTHORED OVERRIDE DIVERGES flag and all 25 have an empty authoredDescription with an authoredBody identical to the generator prose."
+   },
+   {
+    "name": "Sidestep",
+    "reason": "STRONG EFFECT, SELF-DEFEATING CONDITION, AND OUTCLASSED IN KIND - BUT NOT IN TIMING. An additional Reaction is one of the most valuable things in a 1-Reaction economy, but it only works while you are not wearing armor with deflect 2 or higher - it asks you to give up Deflect to get a Dodge. Envoy's Foresight grants an additional reaction each turn with no condition and no restriction on its use, so it is strictly better in effect. CORRECTED: it is NOT earlier. Foresight's prerequisite line is 'Instill Confidence; Discipline 3+', so like Sidestep (Stealth 3+) it is a level-6 talent, and its chain additionally requires a companion. Both land at L6; only the effect differs."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Path prose: 'The thrill of the chase thrums in a Hunter's mind as they patiently surveil. No detail is too small or insignificant to ignore.'",
+     "delivered": "DELIVERS",
+     "evidence": "Sharp Eye (Perception vs. Cognitive to learn lowest attribute, lowest defense, or below-half health/focus/Investiture), Seek Quarry (advantage to find and study), Shadowing (quarry disadvantaged to sense you, you advantaged to avoid their notice), Animal Bond's companion Track. Surveillance is the single best-supported claim in the file, and unlike the damage half it is all live by L2-L3."
+    },
+    {
+     "claim": "Path prose: 'You don't have to be more powerful than your quarry, so long as you're better prepared' - preparation as the win condition.",
+     "delivered": "DELIVERS",
+     "evidence": "Deadly Trap (2 Actions of pre-placement for the tree's largest payload), Experienced Trapper and Hunter's Edge (upgrade the prepared thing), Shadowing (pre-designate from cover on a Spiritual success), Startling Blow into Fatal Thrust. The tree genuinely rewards setting up before the fight."
+    },
+    {
+     "claim": "Path prose: 'clever use of traps, HIGH GROUND, and the element of surprise'",
+     "delivered": "PARTIAL - one of three missing outright",
+     "evidence": "Traps: the Deadly Trap line, delivered - though see the uniqueOwnership correction: it is not the atlas's only trap and it is not its best. Surprise: Startling Blow applies Surprised, Fatal Thrust keys off unsuspecting, Shadowing keeps you unseen - delivered. High ground: NOTHING. A search of 'high ground' across all 365 talents returns ZERO hits system-wide, and 'elevat' returns only deity/Sovereignty's Investiture of Authority. No Hunter talent mentions elevation, height, or positional advantage. Steady Aim's range increase is the closest thing and it is not positional."
+    },
+    {
+     "claim": "Path prose: 'Some Hunters prefer a clean kill from afar.'",
+     "delivered": "PARTIAL",
+     "evidence": "The ranged package is thin until very late: Tagging Shot (3 Actions, a trap of a talent), Steady Aim (+half range, +Perception damage for an Action), Backstep (Disengage without an action after a ranged attack, 2 focus), and then Unrelenting Salvo - the only real ranged payoff, behind Agility 3+, i.e. level 6. A 'clean kill from afar' below L6 means a normal Strike with a free advantage."
+    },
+    {
+     "claim": "Path prose: 'Others make their work personal, striking in close quarters and taking pleasure in their prey's visceral panic.'",
+     "delivered": "DELIVERS",
+     "evidence": "Startling Blow (unarmed/improvised vs. Cognitive, Surprised on hit or graze), Killing Edge (Knives gain Deadly and Quickdraw), Fatal Thrust (4d4 to an unsuspecting target with a penalty to the injury roll), Cold Eyes (recover focus and re-mark on the kill), Mighty, Swift Strikes. The melee-assassin half is the mechanically strongest half of the tree - with the caveat that Mighty and Swift Strikes are shared generic talents, so half of that strength is not Hunter's own."
+    },
+    {
+     "claim": "Archer specialty: 'shape the battlefield before the frontline confrontation'",
+     "delivered": "DRIFTED - not delivered at all",
+     "evidence": "The Archer specialty's eight talents are Combat Training (expertises + focus-free graze), Tagging Shot (3-Action quarry tag), Sharp Eye (a scouting test), Steady Aim (+range/+damage), Exploit Weakness (a near-redundant advantage), Backstep (Disengage without an action), Hardy (+max health), Unrelenting Salvo (extra Strikes). Not one of them shapes anything: no zone, no forced movement, no cover, no terrain. The only battlefield-shaping talent in the tree, Deadly Trap, belongs to TRACKER. Two of the eight (Combat Training, Hardy) are not even Hunter's own text, so the drifted specialty is also the most generic one."
+    },
+    {
+     "claim": "Archer specialty: 'steadily unleash a torrent of arrows to SCATTER and TERRORIZE foes' (plural targets)",
+     "delivered": "DRIFTED - the sharpest drift in the tree",
+     "evidence": "There is no multi-target talent anywhere in the Hunter tree - no AoE, no volley, no splash, no 'each character in the area'. There is no fear or terror condition in the tree and no forced movement, so nothing scatters and nothing is terrorized. 'A torrent of arrows' is delivered by exactly one talent, Unrelenting Salvo, which fires repeatedly at ONE target (your quarry) with one weapon, and is level-6 gated behind Agility 3+."
+    },
+    {
+     "claim": "Assassin specialty: 'exploit weaknesses to quickly INCAPACITATE their quarry'",
+     "delivered": "PARTIAL",
+     "evidence": "Exploiting weaknesses is real but sits in ARCHER (Sharp Eye reads the lowest defense) rather than Assassin, and the Assassin talent literally named Exploit Weakness is the tree's most redundant pick. Killing quickly is delivered - Fatal Thrust's 4d4 plus injury-roll penalty, Mighty, Swift Strikes, Cold Eyes' kill loop. INCAPACITATE is not: the only incapacitating condition an Assassin talent applies is Surprised (Startling Blow), which is one fewer action - where heroic/Agent's Cheap Shot, at the same depth 0 / L1, applies Stunned (two fewer actions and no reaction). The Assassin kills; it does not incapacitate, and the path that is not the assassin path incapacitates better."
+    },
+    {
+     "claim": "Tracker specialty: 'trusty animal companions, scrounge provisions, deftly cross unfriendly terrain, set perilous traps'",
+     "delivered": "DELIVERS - the cleanest specialty in the tree",
+     "evidence": "Companions: Animal Bond, Protective Bond, Feral Connection, Hunter's Edge. Provisions: Experienced Trapper (forage for characters up to ranks in Survival, fashion natural tools with Survival) - the only forage mechanic in the 365. Crossing terrain: Surefooted (+10 movement, reduce falling and dangerous-terrain damage by twice tier), though this one is shared with Agent and Warrior. Traps: Deadly Trap plus two upgrades. Four for four - and Tracker owns every genuinely Hunter-exclusive mechanic in the tree. Caveats the prose itself flags: the companion talents require an animal companion the tree does not grant, and the specialty is marked 'Available in the Stormlight Handbook' - an external availability condition."
+    },
+    {
+     "claim": "LENS B CROSS-INTENT CHECK: is the promise this tree makes ALSO made by another tree's intent file? YES - by four of them, and two deliver it better.",
+     "delivered": "CONTESTED - Hunter's fantasy is the most duplicated in the atlas",
+     "evidence": "deity/Knowledge (INTENT-deity-Knowledge.md): 'Gnothis... is the deity of Knowledge - but his is the knowledge of the hunt. To study a thing is to learn how to kill it, and to share that study with the pack. A disciple of Gnothis marks a quarry and accumulates Insight upon it; every observation sharpens the killing blow, and the whole pack profits from what one hunter learns. Patience first, then a strike that lands like a verdict.' That is Hunter's mark, patience, pack and kill, in Hunter's own vocabulary, delivered by Studied Mark / Accumulate / Hunter's Discipline / Death Mark / Pack Share / The Pack / Killing Blow / The Final Study. deity/Fate (INTENT-deity-Fate.md): 'anchors allies to Ordained Ground and lays Snares on the squares an enemy has not yet chosen to enter. When the foreseen step comes, the trap is already waiting' - Hunter's preparation fantasy with a superior trap. leyline/Green (INTENT-leyline-Green.md): 'pack-leaders... coordinated hunts, scenting the weak', delivered by Predator's Instinct ('advantage on tests to track or locate characters suffering an injury or below half health') and Scent the Weak - Hunter's tracking and pack-hunting. leyline/Blue (INTENT-leyline-Blue.md): 'prefers to know, to prepare, and to redirect' - Hunter's foreknowledge-and-preparation. Note also that heroic/Agent's and heroic/Warrior's path descriptions both recommend Hunter as a multi-path and Hunter's recommends both of them - which is exactly where its five shared generic talents live, so the atlas's most-recommended multi-path duplicates a fifth of Hunter's tree."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS carries NO heroic standard - it is the leyline and deity guides only. The applicable line is the heroic benchmark COLUMN the leyline targets were derived from (Passive 34% / Special 30% / Action 14% / 2 Actions 8% / Free 7% / Reaction 5% / 3 Actions 2%), verified verbatim in PART 2 of the leyline guide. REPORTING THE DISAGREEMENT AS INSTRUCTED: the two intent sources do not conflict on content here, they simply do not overlap - the path description makes fantasy claims and the design guide makes no claim about heroic paths at all.",
+     "delivered": "DELIVERS on distribution, one overshoot",
+     "evidence": "Counted by hand off the dossier: Passive 8 (Killing Edge, Hardy, Cold Eyes, Feral Connection, Hunter's Edge, Surefooted, Unrelenting Salvo, Mighty), Special 7 (Combat Training, Seek Quarry, Animal Bond, Sharp Eye, Shadowing, Experienced Trapper, Sidestep), Action 4 (Startling Blow, Steady Aim, Protective Bond, Swift Strikes), 2 Actions 2 (Deadly Trap, Fatal Thrust), Free 2 (Backstep, Exploit Weakness), Reaction 1 (Pack Hunting), 3 Actions 1 (Tagging Shot) = 25, matching the deterministic table exactly. That is 32% / 28% / 16% / 8% / 8% / 4% / 4%, tracking the heroic column closely - Hunter is a well-shaped tree by the guide's own action-type yardstick. The only overshoot is Tagging Shot at 4% against a 2% heroic baseline, on a talent that is a never-pick anyway."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS: 'Leyline mages are mortal. Comparable to Heroic path characters, not Radiants' - so Hunter is one of the yardsticks leyline power is measured against.",
+     "delivered": "NOTED, tree is CLEAN on text bleed, but the PARITY CLAIM ITSELF fails at Tier 2",
+     "evidence": "Hunter's power level is human-scale and consistent with the claim: no flight, no resurrection, no Investiture, small fixed dice, and the [Tier][Die] notation never appears. There is no authored-override text anywhere in the tree - all 25 talents have an empty authoredDescription and an authoredBody identical to the generator prose, and the dossier carries no AUTHORED OVERRIDE DIVERGES flag, so the profile under test was right to reject the claimed Hardy override. The real cross-atlas observation is the opposite kind: Hardy, Mighty and Surefooted appear verbatim in leyline trees as well as heroic ones, so shared talents cross the atlas boundary by design. LENS B ADDITION - testing the parity claim against this tree: every leyline damage formula is `(@tier)d(2*rank+2)` and therefore doubles at the L6 step, while Hunter's two formulas are flat hand-written dice with no @tier term at all. At Tier 1 the two are comparable; at Tier 2 the leyline yardstick has pulled ahead of the heroic tree it is supposedly calibrated against. If leyline<->heroic parity is a real target, Hunter is the counterexample."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS: 'Use Focus and Opportunity thematically... Opportunity costs are elegant.'",
+     "delivered": "NOT APPLICABLE / NOT USED",
+     "evidence": "Hunter uses Focus in four talents (Shadowing 3, Backstep 2, Pack Hunting 1, Swift Strikes 1) and touches Opportunity zero times - confirmed by search across the 365. The guidance is written for leyline colours, so this is not a violation - but Hunter is the ONLY heroic path with no Opportunity interaction at all (Agent has four, Scholar four, Leader two, Envoy one, Warrior two), which makes it the single tree most disconnected from that economy."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "Two of the three specialties deliver their promise cleanly (Tracker completely, Assassin apart from the word 'incapacitate') and the path-level fantasy of patient surveillance and prepared ambush is genuinely supported. The Archer is the drift: its stated job - shaping the battlefield before the lines meet and scattering and terrorizing foes with a torrent of arrows - requires area effects, forced movement and a fear condition, and the tree contains none of the three; 'high ground' does not exist anywhere in the system. What the Archer specialty actually is: an expertise-and-durability stub built from two shared generic talents (Combat Training, Hardy), one good scouting test (Sharp Eye), one near-dead advantage (Exploit Weakness), a free Disengage (Backstep), and a single level-6 permission to Strike the same target repeatedly (Unrelenting Salvo). Empirically the whole tree is a wilderness-utility and information kit with one good trap, one free mark, and a set of late single-target weapon-damage multipliers - five of which it shares verbatim with other heroic paths that mostly reach them sooner. THE COMPARATIVE VERDICT LENS B ADDS: this is not a bad tree, but it is the atlas's most DUPLICATED one. Its damage multipliers are generic heroic content; its mark is a cheaper, weaker Insight (deity/Knowledge); its trap is a cheaper, weaker Snare (deity/Fate); its statblock read is a cheaper, narrower Studied Mark; its extra Reaction has an exact twin in Envoy's Foresight at the same level; its terrain is outdone by Green, Fate, Destruction and Death; its downtime utility is outdone by Scholar; its unarmed control is outdone by Agent. Its genuine, defensible claim is the one thing none of those rivals can match: it does all of it for FREE, from level 1, with no Investiture, no attunement, no deity gate and an empty focus pool - and it owns the wilderness travel-and-forage lane outright, Experienced Trapper being the only forage mechanic in the 365."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "quarry (a persistent single-target mark)",
+    "role": "BOTH - produced and consumed; the WORD is Hunter's in prose, the MECHANIC is not",
+    "talents": "PRODUCE (designate a quarry): Seek Quarry (free Special), Tagging Shot (on a hit or graze), Animal Bond (companion Tracks for 2 Actions), Shadowing (spend 3 focus on a Spiritual success from cover or obscured), Cold Eyes (re-mark on a kill). CONSUME (read 'your quarry'): Exploit Weakness, Unrelenting Salvo, Hunter's Edge, Pack Hunting, Shadowing, Cold Eyes, Seek Quarry itself. Nine of 25 talents name the word. CORRECTED: the word also appears as an authored TAG on deity/Destruction's Pinpoint Charge and deity/Fate's Hexmark, and the mechanic is the spine of deity/Knowledge's Insight line (8 of 9 talents) and of Hexmark. The census's 'Quarry 1 producer / 9 consumers SEALED LOOP' counts only Seek Quarry as the producer; the text supports five."
+   },
+   {
+    "keyword": "Focus",
+    "role": "BOTH, net CONSUMER",
+    "talents": "CONSUME: Shadowing (3), Backstep (2), Pack Hunting (1), Swift Strikes (1) - four costers, matching the census. PRODUCE: Cold Eyes (recover 1 on defeating your quarry) - one, matching the census. AVOID SPENDING: Combat Training (graze once per round without spending focus). For scale, Agent runs 12 focus costers and Leader 11, so Hunter is the lightest focus user among the heroic paths after Warrior."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "NEITHER - referenced only as information",
+    "talents": "Zero talents spend or grant Investiture. Sharp Eye can learn whether a target's Investiture is below half; that is the only mention of the word in the tree. This is a heroic-atlas property, not a Hunter one - no heroic tree spends Investiture (census: 'every heroic tree 0 regen / 0 costers')."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "NEITHER - completely absent, and Hunter is the ONLY heroic path of which that is true",
+    "talents": "Opportunity appears in 22 talents across 11 trees and in NO Hunter talent. Agent (Opportunist, Sure Outcome, Double Down, both Contacts talents), Envoy (High Society Contacts), Leader (Well Supplied, Rumormonger), Scholar (Efficient Engineer, Overcharge, Experimental Tinkering, Anatomical Insight) and Warrior (Signature Weapon, Bloodstance) all interact with it. Recorded because it is a live economy in every leyline tree and in five of six heroic paths, and this path alone is inert in it."
+   },
+   {
+    "keyword": "advantage",
+    "role": "PRODUCE",
+    "talents": "Exactly five, confirmed verbatim against advantage-ledger.md: Seek Quarry (find/attack/study the quarry), Exploit Weakness (Free Action, redundant with Seek Quarry on those three categories), Fatal Thrust ('two advantages' - undeliverable under the binary tri-state), Shadowing (to avoid the quarry's notice), Hunter's Edge (grants it to the companion). Net value in a round: one advantage, against one designated target. System-wide the census marks advantage OVER-PRODUCED (45 producers across 13 trees / 7 consumers), so Hunter's five are worth less than their count in any party containing a leyline mage."
+   },
+   {
+    "keyword": "disadvantage",
+    "role": "PRODUCE",
+    "talents": "Shadowing only - the quarry gains a disadvantage on tests to sense you. Consistent with the census's 'disadvantage: produced by 14 talents / 9 trees, consumed by none'."
+   },
+   {
+    "keyword": "Surprised / 'unsuspecting'",
+    "role": "BOTH",
+    "talents": "PRODUCE: Startling Blow (on a hit or a graze). CONSUME: Fatal Thrust (requires an unsuspecting target - note the wording seam: the condition applied is 'Surprised' but the consumer says 'unsuspecting', so the in-tree combo is not literally chained). Atlas-wide Surprised appears in 7 talents across 6 trees, so this is not a Hunter signature; heroic/Agent's Subtle Takedown consumes 'unsuspecting' too. NOTE for the trigger-gated count: 'unsuspecting' is a target STATE you can create yourself, not a trigger on another character's action."
+   },
+   {
+    "keyword": "Immobilized",
+    "role": "PRODUCE",
+    "talents": "Deadly Trap, ENTANGLING mode only (Survival vs. Cognitive). Mutually exclusive with the impaling mode's Afflicted - one trap, one mode. Compare deity/Fate's Snare, the same trigger shape at the same depth, which applies the strictly stronger Restrained (movement 0 AND disadvantage on everything but escape)."
+   },
+   {
+    "keyword": "Afflicted[X vital]",
+    "role": "PRODUCE",
+    "talents": "Deadly Trap, IMPALING mode only: Afflicted[vital damage equal to 3 + your ranks in Survival] - ongoing Deflect-ignoring damage, with the duration set by the upgrades (Experienced Trapper 2 rounds, Hunter's Edge 3 rounds; the base talent states no duration at all). CENSUS CORRECTED to SEVEN talents atlas-wide, not four or five: producers are leyline/Black's Dark Investiture, leyline/Red's Afterburn, deity/Life's Adaptive Mutation, deity/Death's Withering Touch and Consuming Decay, and this one; leyline/Green's Natural Recovery removes it. Hunter's is the only skill-rank-scaled instance and the only free one; deity/Death's Consuming Decay is the strongest (scene-long [Tier][Die] vital every turn, healing the caster)."
+   },
+   {
+    "keyword": "difficult terrain",
+    "role": "PRODUCE",
+    "talents": "Deadly Trap, entangling mode (the trap's 5 ft area becomes difficult terrain). Exclusive with the impaling payload. Atlas-wide difficult terrain is 10 talents / 5 trees, and leyline/Green produces it FREE on every Draw Mana, so one conditional square is the low end of the field."
+   },
+   {
+    "keyword": "dangerous terrain",
+    "role": "CONSUME (mitigate)",
+    "talents": "Surefooted - reduce damage from falling and dangerous terrain by twice your tier. The tree's only damage reduction of any kind, it applies to no attack, and it is shared verbatim with heroic/Agent (depth 1, L2) and heroic/Warrior (depth 2, L3)."
+   },
+   {
+    "keyword": "graze",
+    "role": "CONSUME / re-price",
+    "talents": "Combat Training (graze once per round without spending focus - a focus saving, not an action gain; verbatim shared with heroic/Warrior at the same depth 0 / L1); Tagging Shot and Startling Blow both trigger 'on a hit or a graze'."
+   },
+   {
+    "keyword": "expertise",
+    "role": "PRODUCE",
+    "talents": "Combat Training (a weapon, an armor, Military Life), Killing Edge (Knives, Slings), Feral Connection (Animal Care) - six in total. Experienced Trapper adds natural-tool fashioning via Survival. For scale, heroic/Scholar's Erudition line grants REASSIGNABLE expertises AND non-invested skill ranks (Erudition, Deep Study, Mind and Body, Emotional Intelligence, Deep Contemplation) and is the atlas's reference for this."
+   },
+   {
+    "keyword": "expert weapon traits: Deadly, Quickdraw, Discreet",
+    "role": "BOTH",
+    "talents": "PRODUCE: Killing Edge grants Deadly and Quickdraw to Knives and Slings. CONSUME: Fatal Thrust's bonus clause requires a Discreet weapon - and the bonus it promises (two advantages) is undeliverable."
+   },
+   {
+    "keyword": "deflect",
+    "role": "CONSUME as a constraint / bypass",
+    "talents": "Sidestep only works while your armor's deflect is below 2 - an anti-synergy with your own defence. Deadly Trap's impaling Afflicted deals vital damage, which ignores Deflect; the entangling mode's 2d4 is IMPACT and is reduced by it. Atlas-wide Deflect appears in 14 talents across 7 trees; deity/Civilization's Tempered Edge and deity/Destruction's Pinpoint Charge ignore it outright."
+   },
+   {
+    "keyword": "Reaction (the 1-per-round cap)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Sidestep grants an additional Reaction, usable only to Dodge - one of only two such talents in the atlas (the other is heroic/Envoy's Foresight, which is unconditional and unrestricted but lands at the SAME level 6 once its Discipline 3+ prerequisite is applied). CONSUME: Pack Hunting is the tree's only Reaction talent, so the cap barely binds here - contrast leyline/White's seven Reactions competing for one slot."
+   },
+   {
+    "keyword": "animal companion",
+    "role": "CONSUME (external prerequisite) then enhance - never produced",
+    "talents": "Animal Bond's prerequisite is literally 'Animal companion' and no talent in the tree - or anywhere in the 365 - grants one. Protective Bond, Feral Connection and Hunter's Edge all scale it (+5 x tier health, +2 defenses, +ranks in Survival to its tests, advantage vs. your quarry). The atlas's other second-body lines all MINT theirs: deity/Civilization's Forge Construct plus four supporting talents, deity/Death's Risen Servant, leyline/Blue's Phantom Double. heroic/Envoy's Instill Confidence also requires 'a companion', so the external dependency is a system convention rather than a Hunter-only defect."
+   },
+   {
+    "keyword": "defenses (Physical / Cognitive / Spiritual)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Animal Bond (+1 to all your defenses while the companion is within 10 ft), Protective Bond (transfer it to an ally within 30 ft), Feral Connection (+2 to the companion's). TARGET: Cognitive (Startling Blow, Fatal Thrust, Sharp Eye, Deadly Trap entangling), Physical (Deadly Trap impaling), Spiritual (Shadowing's designation trigger). Sharp Eye reads the target's LOWEST defense; deity/Knowledge's Studied Mark reads both Physical and Spiritual outright and keeps them for the scene."
+   },
+   {
+    "keyword": "injury roll",
+    "role": "CONSUME",
+    "talents": "Fatal Thrust - maximum damage rolls add a penalty to the injury roll. The only injury-table interaction in the tree; Injury appears in 6 talents / 5 trees atlas-wide."
+   },
+   {
+    "keyword": "maximum Health",
+    "role": "PRODUCE",
+    "talents": "Hardy (+1 max health per level, including previous levels) - a retroactive HP ramp, not healing. Verbatim shared with six other trees (leyline White/Black/Green, heroic Agent/Leader/Warrior); Leader and Warrior reach it at depth 1 / L2 against Hunter's depth 2 / L3, Agent at the identical depth 2 / L3, and leyline/White latest of all at depth 3 / L6."
+   },
+   {
+    "keyword": "movement / weapon range",
+    "role": "PRODUCE",
+    "talents": "Surefooted (+10 ft movement - shared with Agent at depth 1 / L2 and Warrior at depth 2 / L3), Steady Aim (+half weapon range, duration unstated), Tagging Shot (a bundled 5 ft move)."
+   },
+   {
+    "keyword": "standard actions re-priced (Disengage, Brace, Dodge, Gain Advantage, Strike)",
+    "role": "CONSUME",
+    "talents": "Backstep (Disengage without an action + Brace, 2 focus), Exploit Weakness (Gain Advantage as a Free Action), Sidestep (an extra Dodge Reaction), Unrelenting Salvo and Swift Strikes (extra Strikes). Per the primer, a talent reproducing a standard action is worth roughly zero; these RE-PRICE rather than reproduce, which is worth more but far less than a new action. Contrast heroic/Agent's Quick Analysis, Fast Talker and Trickster's Hand, which each grant TWO actions for 2 focus."
+   },
+   {
+    "keyword": "skill ranks as scalars: Perception, Survival, Stealth, Agility",
+    "role": "CONSUME - this tree's primary scaling channel",
+    "talents": "Steady Aim (+Perception ranks damage), Deadly Trap (Afflicted = 3 + Survival ranks), Pack Hunting (+Survival ranks to an ally's roll), Feral Connection (+Survival ranks to companion tests), Experienced Trapper (forage for up to Survival ranks characters). Also as prerequisites: Perception 2+/3+, Survival 1+/2+/3+, Stealth 1+/2+/3+, Agility 1+/2+/3+. SIX of the 25 carry a rank-3 gate and are therefore level-6 talents, which all-talents.json's empty rankGate field and the precomputed earliestLevel column both miss - but so do Agent's 7, Warrior's 6, Envoy's 6, Leader's 5 and Scholar's 5, so this is a heroic-atlas measurement bug, not a Hunter penalty. Hunter scales on skill investment where leyline and deity trees scale on [Tier][Die]."
+   },
+   {
+    "keyword": "tier",
+    "role": "CONSUME",
+    "talents": "Mighty (1 + tier per Action spent), Feral Connection (companion +5 x tier health), Surefooted (reduce falling and dangerous-terrain damage by twice tier). The tree never uses [Tier][Die] notation at all, and neither of its two Foundry roll formulas contains an @tier term - unique in the atlas alongside heroic/Warrior, whose two hand-written formulas DO scale with tier. Tier is the scaling channel Hunter opted out of."
+   },
+   {
+    "keyword": "concealed trap (a placed, hidden, 5 ft hazard object)",
+    "role": "PRODUCE",
+    "talents": "Deadly Trap, upgraded by Experienced Trapper and Hunter's Edge. CORRECTED: 'trap' appears in seven talents across three trees once authored tags are read - Hunter's three, deity/Fate's Snare and Inevitable Snare, and deity/Order's Edict and Sealed Edict (a conditional trigger rather than a spatial one). Fate's Snare is the same object type built better in every dimension except price; Hunter's is the only one that is CONCEALED, the only one that costs no Investiture, and the only one needing no deity gate."
+   }
+  ],
+  "crossTreeHooks": [
+   "Animal Bond, Protective Bond, Feral Connection, Hunter's Edge - all four hang off possessing an animal companion the tree does not grant (Animal Bond's own prerequisite is 'Animal companion'). The path description explicitly points at rewards ('you can't go wrong with an animal companion'), so the entire Tracker companion branch depends on GM supply, not on any talent in the system. heroic/Envoy's Instill Confidence carries the same 'a companion' prerequisite, so the dependency is a system convention, but Hunter has four talents riding on it.",
+   "SHARED GENERIC TALENTS - the biggest cross-tree seam, and FIVE not four. Mighty is verbatim identical across SIX trees (leyline/Red, heroic Agent, Envoy, Hunter, Leader, Warrior); Hardy across SEVEN (leyline White/Black/Green, heroic Agent, Hunter, Leader, Warrior); SUREFOOTED across THREE (heroic Agent depth 1 L2, Hunter depth 2 L3, Warrior depth 2 L3) - missed entirely by the profile under test; Combat Training and Swift Strikes are verbatim Warrior's. Hunter reaches Mighty, Swift Strikes and Hardy later than Warrior and Surefooted later than Agent, but reaches Combat Training at the IDENTICAL depth 0 / L1 as Warrior and Hardy at the IDENTICAL depth 2 / L3 as Agent. Compounding it: Hunter's own path description recommends Warrior and Agent as multi-paths, and both of THEIR path descriptions recommend Hunter - so the single most-recommended multi-path pairing in the atlas duplicates a fifth of Hunter's tree, and a multi-path character would take every duplicated talent in the other path first.",
+   "Pack Hunting - a Reaction that only fires when an ALLY attacks your quarry. Dead in a solo scene, and it needs the party to agree on a focus target. deity/Knowledge's The Pack and Pack Share do the same job for every ally for the whole scene without a Reaction and without focus.",
+   "Protective Bond - needs an ally within 30 ft to be worth an Action.",
+   "Fatal Thrust - needs an unsuspecting target. In-tree only Startling Blow makes anything Surprised, and it says 'Surprised' where Fatal Thrust says 'unsuspecting'; in practice the talent leans on the party or a GM ambush to supply the condition. It also needs a light melee weapon with the Discreet trait - an equipment dependency on top. heroic/Agent's Subtle Takedown has the same 'unsuspecting' requirement, so an Agent in the party competes for the same setup.",
+   "Killing Edge - its Deadly/Quickdraw grant only matters if you carry Knives or Slings; an equipment hook.",
+   "Sidestep - anti-synergises with any party or reward that gives you deflect-2+ armor. Outclassed in effect by heroic/Envoy's Foresight (unconditional, any reaction, no armor clause) but NOT in timing: both are level-6 talents once Foresight's Discipline 3+ is applied, and Foresight's chain also needs a companion.",
+   "Seek Quarry and Exploit Weakness - worth nothing on a roll where an ally (or a Blue/Red Draw Mana rider) has already granted advantage, because advantage is binary. The Hunter's advantage only has value when it is the sole source in that moment, and the census marks advantage OVER-PRODUCED system-wide (45 producers across 13 trees / 7 consumers). A party containing any leyline mage supplies advantage on its own.",
+   "Cold Eyes - the focus refund and the re-mark both require actually DEFEATING the quarry, which in practice depends on the party's damage as much as the Hunter's.",
+   "Deadly Trap and Startling Blow - both are contested tests against a defense, so their value is set by adversary defence numbers the scope fence excludes; what would settle 'is 2d4 + Immobilized a lot' is the adversary statblock data this review may not read."
+  ],
+  "topThree": [
+   "Deadly Trap - depth 0, level 1, 2 Actions, no resource cost, no stated per-scene limit: EITHER 2d4 impact (to 2d8) plus Immobilized plus difficult terrain OR 2d4 keen plus Afflicted[3 + Survival ranks vital]. The modes are exclusive, but either half is a strong entry-level talent, and the impaling half is the tree's only Deflect-ignoring damage. Listed with the comparative caveat the profile under test omitted: it is NOT the only trap in the atlas and it is not the best one - deity/Fate's Snare beats it on action cost, damage scaling, condition severity and quantity. Deadly Trap's claim is that it is the only CONCEALED trap, costs nothing, and needs no deity gate.",
+   "Animal Bond - depth 0, level 1: +1 to ALL your defenses, plus a second acting body you command with a Free Action for one or two Actions per turn, plus a companion-driven way to designate quarry. The action-economy value alone would justify the slot - conditional entirely on a companion the tree cannot give you, where deity/Civilization's Forge Construct mints an equivalent body for 1 Investiture at the same depth and then upgrades it four more times.",
+   "Sharp Eye - depth 1, level 2, a free Special: test Perception vs. Cognitive to learn a target's lowest attribute, lowest defense, or whether health, focus or Investiture are below half. PROMOTED over Mighty, which the profile under test ranked here. Mighty is not Hunter's talent at all - six trees carry it verbatim and four reach it sooner - so ranking it in a Hunter top three ranks generic heroic content as a tree strength. Sharp Eye is the best thing in the tree that Hunter actually owns: the only free statblock read in the atlas, it directs the whole party's targeting, and it is live at L2 with no rank gate."
+  ],
+  "bottomThree": [
+   "Tagging Shot - 3 Actions (a whole Slow turn) to do what the free Key talent Seek Quarry already does, plus one ranged attack. The tree's only 3-Action talent, at double the 2% heroic benchmark.",
+   "Exploit Weakness - a Free Action to gain an advantage the Key talent already grants on find, attack and study against the same target; binary advantage makes it worth literally zero on exactly those tests, and it sits at depth 2 behind Perception 3+ (a level-6 gate). It is not quite nothing - it re-prices the 1-Action standard Gain Advantage for OTHER quarry-facing tests - but it buys the least of any pick in the tree.",
+   "Steady Aim - a full Action for +half range and +2-3 damage, worse than Striking once Mighty is online, duration unstated in the text, and a prerequisite for Hardy and Backstep so you pay for it anyway."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Effectively unlimited - and lens B confirms this is the tree's single strongest COMPARATIVE claim, the one axis on which nothing in the atlas beats it. Its best repeatable options cost nothing at all: Mighty, Unrelenting Salvo, Hardy, Cold Eyes, Surefooted, Feral Connection, Hunter's Edge and Killing Edge are free Passives; Seek Quarry, Combat Training, Sharp Eye, Sidestep, Animal Bond and Experienced Trapper are free Specials; Animal Bond's companion commands are a Free Action; Deadly Trap and Startling Blow cost only Actions. A Hunter runs its full combat plan every round of every scene with an empty focus pool and zero Investiture. Only four talents spend a resource, all Focus: with a starting pool of 2+WIL (~4-5) that is roughly 4 Swift Strikes, or 2 Backsteps, or one Shadowing designation (3) plus a Pack Hunting (1) - and Cold Eyes refunds 1 per quarry kill while Combat Training's free graze saves one per round. COMPARATIVE FRAME ADDED: every leyline tree runs 9-15 Investiture costers against 0-2 bonus-regen talents and is capped near 50% uptime at Tier 1 by Draw Mana; every deity tree runs 6-9 Investiture costers against 0-1 regen; heroic/Agent runs 12 focus costers and Leader 11. Hunter is the least resource-constrained tree in the 365, by the census's own numbers. Counterweight: everything free is also everything late or shared - the free Passives that matter (Mighty, Unrelenting Salvo) arrive at L4 and L6 and one of the two is in five other trees.",
+   "triggerGatedCount": 4,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 4,
+   "note": "Reactions: 1 of 25 (Pack Hunting), matching the deterministic action-type table, so the 1-Reaction-per-round cap barely binds - and Sidestep RELIEVES the cap by granting an extra Dodge Reaction rather than competing for it. Unusually clean; contrast leyline/White's seven Reactions competing for one slot. TRIGGER-GATED 4, applying the stated definition (a Reaction, or a talent that only fires when an ally or enemy acts, or when you are hit): Pack Hunting (a Reaction, and an ally must attack your quarry), Deadly Trap's payload (an enemy must enter the concealed square), Sidestep's granted Dodge (an enemy must attack you), Cold Eyes (the quarry must die). Fatal Thrust is excluded: 'unsuspecting' is a target state you can create yourself with Startling Blow on your own turn, not a trigger on another character's action. Self-triggered riders (Mighty on your own hit, Backstep after your own ranged attack, Combat Training's graze) are correctly excluded. DISAGREEMENT RECORDED: the deterministic action-type table scores Hunter trigger-gated at 1 (4%), counting only the Reaction; the text-based reading gives 4 (16%). Either way Hunter is the LEAST trigger-gated tree in the atlas against leyline/White's 52%, which is a genuine comparative strength - a Hunter's plan does not wait on anyone. Resource-costing talents: 4 of 25, all Focus (Shadowing 3, Backstep 2, Pack Hunting 1, Swift Strikes 1); zero Investiture, zero Opportunity, zero health cost - matching the census's 'Hunter 4 costers, 1 regen'. WIRING NOTE for the repo, not a power finding, VERIFIED at 14: fourteen of the 25 carry events=0 AND effects=0 (Combat Training, Killing Edge, Animal Bond, Deadly Trap, Steady Aim, Fatal Thrust, Shadowing, Experienced Trapper, Protective Bond, Exploit Weakness, Feral Connection, Hunter's Edge, Unrelenting Salvo, Swift Strikes), including both talents that carry a damage formula. 14/25 = 56%, matching the census's 'Hunter 56% unwired' exactly."
+  }
+ },
+ "corrections": [
+  {
+   "field": "powerByDepth[1].note (band size)",
+   "from": "The widest band (12 talents)",
+   "to": "CORRECTED COUNT: 15 talents, not 12",
+   "reason": "ARITHMETIC ERROR. Counted off the dossier depth lines: depth 1 = Sharp Eye, Steady Aim, Fatal Thrust, Shadowing, Experienced Trapper, Protective Bond (6); depth 2 = Backstep, Exploit Weakness, Hardy, Cold Eyes, Sidestep, Feral Connection, Hunter's Edge, Pack Hunting, Surefooted (9). 6+9 = 15. Verified against all-talents.json: Counter({2:9, 0:7, 1:6, 3:3}). The bands must sum to 25 and 7+12+3 = 22, so the original could not have been right."
+  },
+  {
+   "field": "weakTalents[Hardy].reason AND intentDrift.claims[10].evidence",
+   "from": "the authored override that WINS in Foundry opens 'The leyline doesn't just heal you' - leyline-atlas flavour pasted onto a heroic path talent... a cross-atlas text bleed that should be corrected",
+   "to": "THAT TEXT DOES NOT EXIST. No Hunter talent carries an authored override at all; the real finding is that Hardy is a generic talent shared verbatim by seven trees, and Leader and Warrior reach it at depth 1 / L2 where Hunter pays depth 2 / L3",
+   "reason": "FABRICATED EVIDENCE - the single most serious error in the profile, and it was asserted twice. `grep -n AUTHORED C:/Users/benhe/AppData/Local/Temp/edha-eco/dossier/heroic-Hunter.md` returns NO MATCH (exit 1), so no talent in this tree carries the '⚠️ AUTHORED OVERRIDE DIVERGES' flag the brief says the dossiers stamp on all 12 divergent talents. Confirmed independently in all-talents.json: Hardy's authoredDescription is the empty string and its authoredBody is byte-identical to the generator prose 'Gain +1 max health per level (including previous levels).' The string 'The leyline doesn't just heal you' appears nowhere in the tree. Checked all 25 talents the same way - zero divergences."
+  },
+  {
+   "field": "sustainability.note (wiring count)",
+   "from": "13 of the 25 carry events=0 and effects=0 (... Surefooted ...)",
+   "to": "CORRECTED 13 -> 14, and Surefooted removed / Shadowing and Exploit Weakness added",
+   "reason": "MISCOUNT AND A MISCLASSIFICATION. Surefooted has effects=1 (dossier line 165: 'wiring: events=0 effects=1'), so it IS wired and does not belong on an unwired list; Shadowing (events=0 effects=0) and Exploit Weakness (events=0 effects=0) were both omitted. The true set is 14: Combat Training, Steady Aim, Exploit Weakness, Unrelenting Salvo, Killing Edge, Fatal Thrust, Shadowing, Swift Strikes, Deadly Trap, Animal Bond, Experienced Trapper, Protective Bond, Feral Connection, Hunter's Edge. 14/25 = 56%, which matches the deterministic census's 'Hunter 56% unwired' exactly - the profile's 13 (52%) contradicted the ground-truth measurement it was sitting next to."
+  },
+  {
+   "field": "axes[damage_direct].evidence (opening count)",
+   "from": "Seven talents add real damage and two more route it through other bodies",
+   "to": "Eight talents add damage of their own and two more route it through other bodies",
+   "reason": "INTERNAL ARITHMETIC INCONSISTENCY. 7 + 2 = 9, but countReal is 10 and the damageTalents table has ten rows. The tree's own-damage rows are Deadly Trap, Fatal Thrust, Mighty, Steady Aim, Unrelenting Salvo, Swift Strikes, Tagging Shot, Startling Blow = 8, plus the two routed rows (Animal Bond's companion, Pack Hunting's ally) = 10."
+  },
+  {
+   "field": "axes[damage_direct].score",
+   "from": "4",
+   "to": "3",
+   "reason": "INFLATED. Three grounds, all textual. (a) The census gives Hunter 1 SOURCE + 2 SRC/AMP = 3 offensive against Red 8, Knowledge 7, Death 5, and the dossier header confirms only 2 roll formulas in the whole tree; rubric 4 means 'one of the better options in the game', which 3 offensive and 2 formulas does not support. (b) The tree's single most reliable damage source is not Hunter's: Mighty's string is verbatim identical in leyline/Red and heroic Agent, Envoy, Leader and Warrior, and Hunter pays depth 3 / L4 where Warrior and Envoy pay depth 1 / L2 (verified in all-talents.json). (c) The profile's own peak-damage arithmetic is a level-6 picture - Unrelenting Salvo (Agility 3+), Fatal Thrust (Perception 3+) and the 2d8 upgrade (Hunter's Edge, Survival 3+) all need rank 3, unreachable before L6. Through L5 the tree's own damage is a 2d4 trap plus +2 per Action from L4."
+  },
+  {
+   "field": "axes[control].score",
+   "from": "3",
+   "to": "2",
+   "reason": "INFLATED against the stated rubric. Rubric 3 requires 'several talents, at least one good one'. Exactly TWO of 25 apply a control condition: Deadly Trap's entangling mode (Immobilized, contested Survival vs. Cognitive, and only after an enemy walks into a concealed square) and Startling Blow (Surprised, but delivered by an unarmed or improvised weapon attack - the weakest weapon class). Shadowing's clause is a disadvantage on tests to SENSE you and is already scored under debuff. Two talents is the rubric's 2 - 'present but minor; you would not pick this tree for it'."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "3",
+   "to": "2",
+   "reason": "INFLATED, and the profile's own evidence string concedes the reason ('durability and evasion, not interception, temp HP, or damage redirection'). The axis definition is 'damage reduction, shields, temp HP, interception, resistance, damage redirection' and Hunter has none of those in combat: greps for 'temporary health' and 'temp hp' return nothing in the tree, and the only damage reduction is Surefooted's falling-and-dangerous-terrain clause, which applies to no attack. Calibration anchor: 'a tree with one Reaction that reduces damage once per round scores protection 2, not 4' - Hunter's package (a +1 defence aura gated on an external companion, a shared +1 max HP/level talent, a Dodge-only extra Reaction forbidden while wearing deflect-2+ armor) is weaker than that anchor."
+  },
+  {
+   "field": "axes[summons].score",
+   "from": "4",
+   "to": "3",
+   "reason": "INFLATED. Animal Bond's prerequisite is literally 'Animal companion' (dossier line 48) and no talent in the 365 grants a companion - the path description hands it to GM rewards. A tree that consumes and enhances a summon it never produces cannot be 'one of the better options in the game' for summons; deity/Civilization's Forge Construct actually mints its construct for Investiture. Four talents of real support is rubric 3 ('a real, usable competency'), not 4."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "5",
+   "to": "4",
+   "reason": "OVERCOUNT. Applying the lens's stated definition (a Reaction, or a talent that only fires when an ally/enemy acts, or when you are hit), the qualifying set is Pack Hunting (Reaction; an ally must attack), Deadly Trap's payload (an enemy must enter the square), Sidestep's granted Dodge (an enemy must attack you), and Cold Eyes (the quarry must die) = 4. Fatal Thrust is removed: 'Attack an unsuspecting target' is a target STATE you can create yourself on your own turn with Startling Blow, not a trigger on another character's action. Disagreement recorded in the note: the deterministic action-type table scores Hunter trigger-gated at 1 (4%), counting only the Reaction."
+  },
+  {
+   "field": "powerByDepth[0].note and topThree[0] (Deadly Trap payload)",
+   "from": "2d4 + Immobilized + difficult terrain + Afflicted vital, no resource cost",
+   "to": "2d4 IMPACT + Immobilized + difficult terrain OR 2d4 KEEN + Afflicted[3 + Survival ranks vital], never both, and only the second ignores Deflect",
+   "reason": "MISREADING - the two modes are EXCLUSIVE. Text: 'Conceal a 5 ft entangling OR impaling trap. Entangling Trap: Test Survival vs. Cognitive, roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain. Impaling Trap: Test Survival vs. Physical, roll 2d4 keen damage. Target is Afflicted [vital damage equal to 3 + your ranks in Survival].' The depth-0 note listed all four payloads as one bundle. Also load-bearing per the primer's damage-type rule: the entangling mode's 2d4 is IMPACT and IS reduced by Deflect, so the tree's 'Deflect-ignoring' claim belongs only to the impaling mode - which has no control."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Deadly Trap].dice (Afflicted duration)",
+   "from": "applies Afflicted[...] for 1/2/3 rounds",
+   "to": "duration set only by the upgrades (Experienced Trapper 2 rounds, Hunter's Edge 3 rounds); the base talent states NO duration at all - flagged as a data gap",
+   "reason": "TEXT-VS-CLAIM. The base Deadly Trap text contains no duration clause of any kind. Only Experienced Trapper ('2 rounds duration') and Hunter's Edge ('3 rounds duration') name one. The profile's '1' for the base case is an inferred assumption presented as text."
+  },
+  {
+   "field": "uniqueOwnership[2] (Afflicted census)",
+   "from": "Afflicted appears in only four places atlas-wide (plus Black's Dark Investiture, Red's Afterburn, Life's Adaptive Mutation)",
+   "to": "Afflicted appears in FIVE talents atlas-wide - the fifth is leyline/Green's Natural Recovery, which REMOVES it, so there are four producers",
+   "reason": "MISSED HIT. A grep of all 365 talent texts for 'afflicted' returns five: leyline/Black Dark Investiture, leyline/Red Afterburn, leyline/Green Natural Recovery ('remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened'), heroic/Hunter Deadly Trap, deity/Life Adaptive Mutation. The rest of the claim is CONFIRMED by reading the other three: Dark Investiture is [Tier][Die] vital for 1 Investiture + health, Afterburn half [Tier][Die] energy for an Opportunity, Adaptive Mutation half [Tier][Die] vital for 2 Investiture - so Hunter's is indeed the only skill-rank-keyed and the only resource-free one."
+  },
+  {
+   "field": "weakTalents[Exploit Weakness].reason and bottomThree[1]",
+   "from": "NEVER-PICK AS WRITTEN... It costs a talent slot at depth 2 behind Perception 3+ (really level 6) to buy nothing",
+   "to": "NEAR-REDUNDANT: it is worth literally zero on find/attack/study, but it does re-price the 1-Action standard Gain Advantage into a Free Action for every OTHER quarry-facing test, and grants rather than tests for it",
+   "reason": "OVERSTATEMENT THAT CONTRADICTS THE PROFILE'S OWN action_economy EVIDENCE, which correctly lists Exploit Weakness as 'converts Gain Advantage (a 1-Action standard action) into a Free Action'. Seek Quarry's advantage is scoped to 'tests to find, attack, and study'; Exploit Weakness reads 'Gain Advantage on your quarry without spending an action' with no scope limit and no test. The primer's Standard Actions list confirms Gain Advantage is a 1-Action skill test everyone has. It buys the least in the tree, but not nothing."
+  },
+  {
+   "field": "weakTalents[Tagging Shot].reason (design-principle framing)",
+   "from": "against a stated design principle of 0% (and a 2% heroic baseline)",
+   "to": "the '0% 3-Action' figure is the TARGET LEYLINE column, not a heroic standard; the heroic benchmark is 2%, and heroic/Leader ships TWO 3-Action talents and Agent one",
+   "reason": "CATEGORY ERROR against the source. DESIGN-GUIDE-CLAIMS.md PART 2's table has separate 'Heroic %' (2%) and 'TARGET Leyline %' (0%) columns, and revision principle 3 sits inside the LEYLINE guide. The action-type table shows Agent 1 and Leader 2 three-Action talents, so Hunter's single one is not anomalous among heroic paths. The talent is still a never-pick; only the rule cited against it was wrong."
+  },
+  {
+   "field": "crossTreeHooks (new entry) + gaps (new entry) + topThree[2] + damageAccounting.verdict",
+   "from": "only Combat Training and Swift Strikes named as Warrior duplicates",
+   "to": "added the full shared-generic-talent finding: Mighty verbatim in six trees, Hardy in seven, plus Combat Training and Swift Strikes",
+   "reason": "MISSED FINDING, and it is load-bearing for the damage score. Verified in all-talents.json by exact-name lookup: Mighty is byte-identical in leyline/Red and heroic Agent, Envoy, Hunter, Leader, Warrior; Hardy in leyline White/Black/Green and heroic Agent, Hunter, Leader, Warrior. Hunter reaches Mighty at depth 3 / L4 (Warrior and Envoy: depth 1 / L2), Swift Strikes at depth 3 / L4 (Warrior: depth 2 / L3) and Hardy at depth 2 / L3 (Leader and Warrior: depth 1 / L2). Hunter pays MORE for shared content than the paths it shares it with."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction (new caveat)",
+   "from": "(no level caveat)",
+   "to": "added: this whole picture is a LEVEL 6+ picture; through L5 the peak is a 2d4 trap plus +2 per Action from L4",
+   "reason": "The arithmetic in the field is all correct and was re-checked (2d8 avg 9; Mighty 1+tier = 3 at Tier 2; 3/9 = one third; 3 Actions x 3 = +9; 4d4 avg 10 = 1.1 [Tier][Die]; Afflicted 3+3 = 6 x 3 rounds = 18) - but every component requires a rank-3 prerequisite the profile's own structural correction identified as a level-6 gate. Stating the peak without the gate overstates the tree's L1-L5 output, which is the range the depth model is about."
+  },
+  {
+   "field": "uniqueOwnership[5] (Sidestep vs Foresight)",
+   "from": "Envoy's Foresight, which is strictly better because it is unconditional",
+   "to": "strictly better AND reachable earlier - Envoy L4 vs Sidestep's true L6, because Sidestep is gated behind Stealth 3+",
+   "reason": "UNDERSTATED, and the underlying claim was verified rather than assumed. A grep of all 365 for 'additional reaction' / 'extra reaction' / 'another reaction' returns exactly two hits - Sidestep and Envoy's Foresight ('Gain an additional reaction each turn', Passive, depth 3, L4) - so the 'only two in the atlas' claim is CONFIRMED. But the profile's own structural correction puts Sidestep at true L6 (Stealth 3+), so Foresight wins on timing too despite sitting a depth deeper."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Steady Aim].note",
+   "from": "Costs a full Action to add 2-3 damage",
+   "to": "added: the text states no duration and no attachment to an attack, so the bonus's scope is genuinely unspecified; costed here as a one-attack buy and flagged",
+   "reason": "TEXT AMBIGUITY the profile priced without flagging. Full text: 'Increase your weapon range by half and deal extra damage equal to your ranks in Perception.' Nothing says the damage applies to one attack, to attacks this turn, or permanently. The talent is events=0 effects=0, so nothing in the overlay resolves it either. The chosen reading is the one least favourable to the talent, which is the right default but must be declared."
+  },
+  {
+   "field": "(no change - CHECKED AND CONFIRMED)",
+   "from": "multiple claims",
+   "to": "left as written",
+   "reason": "Claims I attacked and could not break, listed so the record shows the lens was applied to all of them. Action-type distribution: hand-counted to Passive 8 / Special 7 / Action 4 / 2-Act 2 / Free 2 / Reaction 1 / 3-Act 1 = 25, matching the deterministic table and the profile's percentages exactly. Focus costers 4 and regen 1 - matches the census. Reaction count 1 - matches. earliestDamageDepth 0 / earliestDamageLevel 1 via Deadly Trap - matches the dossier. Every per-talent depth and earliestLevel in damageAccounting matches the dossier line. The six rank-3 prerequisites are all present (Fatal Thrust, Exploit Weakness, Pack Hunting = Perception 3+; Sidestep = Stealth 3+; Hunter's Edge = Survival 3+; Unrelenting Salvo = Agility 3+) and all-talents.json's rankGate is empty for all 25, which is exactly why the precomputed column misses them - the structural correction is real and I strengthened it. Surefooted correctly excluded as mitigation (matches census MITIG 1). 'quarry' exclusive to Hunter and in 9 talents - grep-confirmed. 'trap' exclusive to Hunter's three - grep-confirmed. 'companion' exclusive to Hunter's four - grep-confirmed. 'high ground' returns ZERO hits system-wide and 'elevat' only deity/Sovereignty - grep-confirmed, so the Archer high-ground drift finding stands. Zero Opportunity and one Investiture mention (Sharp Eye) - grep-confirmed. Unrelenting Salvo unique among all 365 for lifting the same-weapon Strike limit - grep-confirmed. The five advantage talents match advantage-ledger.md line for line. The heroic benchmark column is quoted verbatim from DESIGN-GUIDE-CLAIMS.md PART 2. Focus-pool arithmetic (2+WIL ~ 4-5 = 4 Swift Strikes / 2 Backsteps / Shadowing+Pack Hunting) is correct. Combat Training and Swift Strikes are byte-identical to Warrior's."
+  },
+  {
+   "field": "uniqueOwnership[1] — \"The only trap\"",
+   "from": "\"'trap' appears in the whole atlas only in Deadly Trap, Experienced Trapper and Hunter's Edge... The only comparable placement is deity/Fate's Snare line, which spends Investiture and is divine magic.\"",
+   "to": "'trap' appears in SEVEN talents across THREE trees; deity/Fate's Snare is the same mechanic implemented better on every dimension except price. Hunter's surviving claim: the only CONCEALED trap, the only one costing no resource, the only one legal at L1 with no deity gate.",
+   "reason": "A search of all 365 talents including the authored `tags` field returns: Hunter's three, deity/Fate's Snare and Inevitable Snare (tag `trap`), and deity/Order's Edict and Sealed Edict (tag `trap`). And Snare's text beats Deadly Trap's item-for-item: '1 Action... place a Snare on a 5 ft square... the target takes [Tier][Die] + Awareness keen damage and is Restrained... You may sustain up to your tier unsprung Snares' vs. Hunter's 2 Actions, flat 2d4, Immobilized, one at a time. Restrained is strictly stronger than Immobilized per SYSTEM-PRIMER (movement 0 AND disadvantage on everything but escape, vs. movement 0). Snare also carries three elaborating talents (Inevitable Snare, Foreknown Strike, Hexmark) plus the Thread of Inevitability capstone."
+  },
+  {
+   "field": "uniqueOwnership[0] — \"quarry ... a grep of all 365 talents returns the word ONLY in Hunter\"",
+   "from": "\"It is the only persistent, free, no-resource, re-designatable single-target mark in the game.\"",
+   "to": "The word appears in no other tree's PROSE but does appear as an authored tag on deity/Destruction's Pinpoint Charge and deity/Fate's Hexmark; and the MECHANIC is the spine of deity/Knowledge (8 of 9 talents). Narrowed to: the only mark that is free AND self-directed.",
+   "reason": "deity/Knowledge's Studied Mark ('choose a creature... Place 2 Insight on it... You may have Insight on only one creature at a time') is a persistent single-target mark; Accumulate grows it; Death Mark and Hunter's Discipline re-designate it on a kill exactly as Cold Eyes does; Killing Blow, Predatory Strike, The Final Study, Pack Share and The Pack consume it. deity/Fate's Hexmark is a second scene-long single-target mark and costs nothing. The Knowledge INTENT file even uses Hunter's word: 'A disciple of Gnothis marks a quarry and accumulates Insight upon it.'"
+  },
+  {
+   "field": "uniqueOwnership[2] — the Afflicted census",
+   "from": "\"CORRECTED CENSUS: Afflicted appears in FIVE talents atlas-wide, not four — Black's Dark Investiture, Red's Afterburn, Hunter's Deadly Trap, Life's Adaptive Mutation, and leyline/Green's Natural Recovery.\"",
+   "to": "SEVEN talents atlas-wide. The five listed plus deity/Death's Withering Touch and Consuming Decay, both tagged `afflicted`. The narrow claim (only skill-rank-scaled, only resource-free) survives all seven.",
+   "reason": "The profile under test corrected the count once and was still wrong. Querying description+authoredBody+tags across all 365 returns seven. Consuming Decay is materially the strongest of them — 'For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt' — which changes the comparative framing of Hunter's 'ongoing Deflect-ignoring damage' selling point."
+  },
+  {
+   "field": "uniqueOwnership[4] — \"The only companion sub-tree in the atlas\"",
+   "from": "\"deity/Civilization's Forge Construct is the only rival — and it MINTS its construct for Investiture.\"",
+   "to": "The only ANIMAL companion line. deity/Civilization runs a FIVE-talent construct sub-tree inside a NINE-talent tree — larger than Hunter's — and mints its own body; deity/Death's Risen Servant and leyline/Blue's Phantom Double also mint theirs.",
+   "reason": "Forge Construct is not a lone talent: Tempered Edge ('Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect'), Siege Form, Arsenal ('your Combat Construct gains an additional attack per turn') and the Magnum Opus capstone ('transforms into a Colossus') all support it. That is 5 of 9 talents against Hunter's 4 of 25, and Civilization supplies the body it enhances."
+  },
+  {
+   "field": "uniqueOwnership[5], weakTalents/Sidestep, crossTreeHooks — \"Foresight is also EARLIER (Envoy L4 vs Sidestep's true L6)\"",
+   "from": "\"because Sidestep is gated behind Stealth 3+, Foresight is also EARLIER (Envoy L4 vs Sidestep's true L6) despite sitting a depth deeper.\"",
+   "to": "Foresight is NOT earlier. Its prerequisite line reads 'Instill Confidence; Discipline 3+', so its true earliest level is ALSO 6; its chain additionally requires 'a companion'. Both land at L6; only the effect differs.",
+   "reason": "This is the same rank-gate error the profile spent a whole powerByDepth band correcting in Hunter, applied asymmetrically to the comparator. all-talents.json: heroic/Envoy Foresight, depth 3, prerequisites 'Instill Confidence; Discipline 3+'; resolving the chain gives Foresight ← Instill Confidence ('Lessons in Patience; a companion') ← Lessons in Patience ('Sound Advice; Discipline 2+'). The claim appears three times in the profile and is false all three."
+  },
+  {
+   "field": "uniqueOwnership[6] — Sharp Eye \"the most actionable statblock-reading effect in the atlas\"",
+   "from": "\"Sharp Eye's specific read ... is the most actionable statblock-reading effect in the atlas.\"",
+   "to": "Sharp Eye is the only FREE statblock read in the atlas — the superlative is price, not content.",
+   "reason": "deity/Knowledge's Studied Mark reads 'its current HP, conditions, and Physical and Spiritual defenses' at depth 0 and keeps it for the scene, and Pack Share broadcasts that read to every ally in Attunement Range. deity/Fate's Read the Threads ('You learn the action it intends to take on its next turn and any movement it plans') and leyline/Blue's Read Intent read INTENT, which Sharp Eye cannot. leyline/Green's Scent the Weak gives the below-half read with no test at all."
+  },
+  {
+   "field": "gaps[9] and crossTreeHooks[1] — the shared-generic-talent count",
+   "from": "\"Four of the tree's most-cited combat talents are not the tree's own. Mighty (six trees), Hardy (seven), Swift Strikes and Combat Training (verbatim with Warrior)... Hunter reaches Mighty, Hardy and Swift Strikes at greater depth and later level than Warrior, Envoy, Agent or Leader.\"",
+   "to": "FIVE, not four — SUREFOOTED is also verbatim shared (heroic/Agent depth 1 L2, Hunter depth 2 L3, Warrior depth 2 L3). And the 'later than' clause is wrong for two of the five: Combat Training is depth 0 / L1 in BOTH Hunter and Warrior, and Hardy is depth 2 / L3 in BOTH Hunter and Agent.",
+   "reason": "Name-matching every Hunter talent against the other 340 returns five shared: Combat Training, Hardy, Mighty, Swift Strikes, Surefooted. The omission is load-bearing because the profile cited Surefooted as evidence on three separate axes (protection, mobility, exploration_utility) while treating it as Hunter's own. Verified depths: Hardy — White d3 L6, Black d2 L3, Green d2 L3, Agent d2 L3, Hunter d2 L3, Leader d1 L2, Warrior d1 L2."
+  },
+  {
+   "field": "powerByDepth[3] — the reachability band",
+   "from": "\"Hunter is therefore NOT fully reachable by L4-L5\" presented as a Hunter-specific finding and applied to Hunter's talents only.",
+   "to": "REFRAMED: the observation is correct but it is a HEROIC-ATLAS fact, not a Hunter penalty. Rank-3 skill gates per tree: Agent 7, Warrior 6, Envoy 6, HUNTER 6, Leader 5, Scholar 5, leyline 1-3 each. Hunter is the joint median. Verified that Hunter's cheaper generic talents sit in chains with NO rank gate, so their L1-L4 numbers are real, and that the comparators the profile used (Warrior's Devastating Blow L2, Swift Strikes L3, Mighty L2; Agent's Cheap Shot L1) genuinely carry no hidden gate.",
+   "reason": "The profile applied the L6 correction to Hunter and then compared the corrected Hunter against other trees' UNCORRECTED numbers, which manufactures a penalty. Counting `(skill) 3+` prerequisites across all 365 shows every heroic tree carries 5-7. What survives is a narrower, better claim: the gate count is identical to peers, but Hunter's gates sit on its SIGNATURE talents (ranged payoff, 2d8 trap, only ally buff, extra Reaction) where Warrior's and Agent's sit on secondary picks."
+  },
+  {
+   "field": "axes/terrain_zone.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Score inflation on comparison. The axis is 'areas, hazards, difficult ground, walls, persistent battlefield features'. Hunter has ONE deployable, ONE 5 ft square, ONE target, and only one of its two exclusive modes creates terrain at all; the two 'upgrades' tune dice and duration and add no zone capability. Against deity/Fate (up to tier Snares plus up to tier Ordained Ground squares, ~9 of 9 talents), leyline/Green (difficult terrain FREE on every Draw Mana plus Sudden Growth), deity/Destruction (dangerous terrain from every detonation), deity/Death's Bone Garden (10 ft persistent damaging square) and deity/Civilization's Bastion, the rubric's 2 — 'present but minor; you would not pick this tree for it' — is the honest fit."
+  },
+  {
+   "field": "axes/information.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Score inflation on comparison. 4 means 'one of the better options in the game'; at least four trees deliver more. leyline/Blue: Forewarned, Read Intent, Probable Outcome, Telepathic Network, Calculated Patience. deity/Fate: Read the Threads (intended action + planned movement). deity/Knowledge: Studied Mark (HP, conditions, both defenses, scene-long, depth 0) plus Pack Share (broadcast to the party). heroic/Agent: Get 'Em Talking plus Sleuth's Instincts ('You know when those characters lie to you'). Two of the profile's supporting items were also padding: Combat Training's Military Life expertise is an expertise grant, not information, and Seek Quarry's advantage is already scored under buff."
+  },
+  {
+   "field": "axes/action_economy.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Score inflation on availability. The unique mechanics are confirmed (Sidestep and Envoy's Foresight are the only two extra-Reaction talents in 365; Unrelenting Salvo is the only one of five 'once per turn' talents that LIFTS the restriction). But heroic/Agent carries THREE 'spend 2 focus to gain 2 actions' Free Actions — Quick Analysis (L2), Fast Talker and Trickster's Hand (L3) — covering Cognitive, Spiritual and Physical, plus Shadow Step; and EVERY good member of Hunter's package is L6 (Sidestep Stealth 3+, Unrelenting Salvo Agility 3+, Exploit Weakness Perception 3+) or externally gated (Animal Bond's 'Animal companion'). Through L5 Hunter's non-companion action economy is Backstep plus an overcosted Swift Strikes. The case for 4 is preserved in the evidence field rather than discarded."
+  },
+  {
+   "field": "topThree[2]",
+   "from": "Mighty",
+   "to": "Sharp Eye",
+   "reason": "Ranking Mighty as a Hunter tree strength ranks generic heroic content: the identical string is in six trees and four of them reach it sooner (Warrior d1 L2, Envoy d1 L2, Agent d2 L3, Leader d2 L3 vs Hunter d3 L4). Sharp Eye is the best talent in the tree that Hunter actually owns — the only free statblock read in the atlas, live at L2 with no rank gate."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "(no cross-intent check — lens B item (d) was not addressed)",
+   "to": "New claim entry: Hunter's promise is ALSO made by four other intent files, and two deliver it better.",
+   "reason": "INTENT-deity-Knowledge.md verbatim: 'A disciple of Gnothis marks a quarry and accumulates Insight upon it; every observation sharpens the killing blow, and the whole pack profits from what one hunter learns. Patience first, then a strike that lands like a verdict.' INTENT-deity-Fate.md: 'lays Snares on the squares an enemy has not yet chosen to enter. When the foreseen step comes, the trap is already waiting.' INTENT-leyline-Green.md: 'pack-leaders... coordinated hunts, scenting the weak.' INTENT-leyline-Blue.md: 'prefers to know, to prepare, and to redirect.' Hunter's fantasy is the most duplicated in the atlas."
+  },
+  {
+   "field": "gaps — the 'something' test (lens B item (e))",
+   "from": "(absent)",
+   "to": "New gaps entry naming Hunter's something and the two trees that do it better, then naming what genuinely survives.",
+   "reason": "Required by the lens. Hunter's something is the prepared ambush loop; deity/Knowledge does the mark-and-hunt better and deity/Fate does the trap better. What survives and is defensible: Hunter is the only tree that runs the whole loop at ZERO resource cost from level 1 with no attunement and no deity gate (census: least-constrained tree in the 365, and the only heroic path with zero Opportunity interaction is also the only one with nothing to spend), and Experienced Trapper is the ONLY forage/provisioning mechanic in the 365 — added as a new uniqueOwnership entry, since it is a cleaner unique claim than either the trap or the mark."
+  },
+  {
+   "field": "axes evidence (damage_direct, damage_scaling, control, protection, buff, summons, mobility) and damageAccounting notes",
+   "from": "(evidence argued largely from within the tree)",
+   "to": "Comparators added to each: Warrior's Devastating Blow (extra 2d8, d1 L2, tier-scaling, no rank gate) and Wit's End (4d6→6d6) and Meteoric Leap (the only heroic multi-target attack); Agent's Cheap Shot (Stunned, d0 L1) vs Startling Blow (Surprised); Fate's Snare (Restrained) vs Deadly Trap (Immobilized); Knowledge's Pack Share/The Pack vs Pack Hunting; Civilization's five construct talents vs Hunter's four companion talents; Surefooted shared with Agent d1 L2.",
+   "reason": "Lens B's mandate. Also newly established: of the 43 damage roll formulas in the atlas, every leyline and deity formula is `(@tier)d(2*rank+2)`-shaped, and only Hunter's two (2d4, 4d4) and Warrior's two are hand-written — of which Warrior's DO carry an @tier term and Hunter's carry none. That makes Hunter the only tree in the atlas whose authored damage does not scale with tier at all, which also supplies a genuine test of the design guide's 'leyline mages... comparable to Heroic path characters' parity claim: at Tier 2 the leyline yardstick has pulled ahead of the heroic tree it is calibrated against."
+  },
+  {
+   "field": "NOT CHANGED — checked and left standing",
+   "from": "—",
+   "to": "—",
+   "reason": "Verified and correct, so left alone: Sidestep/Foresight are the ONLY two extra-Reaction talents in 365 (confirmed); Unrelenting Salvo is the only Strike-limit lifter (confirmed against all five 'once per turn' talents); 'high ground' returns ZERO hits system-wide (confirmed); Hunter has zero Opportunity mentions against 22 talents / 11 trees (confirmed); 'companion' appears in exactly four talents' prose, all Hunter (confirmed); the 14/25 events=0-effects=0 wiring count (recounted talent by talent, correct, matching the census's 56%); the action-type distribution 8/7/4/2/2/1/1 (recounted, matches the deterministic table); the depth-band counts 7/15/3 (recounted); the four focus costers and one regen (matches census); the rejection of the claimed Hardy authored override (re-verified — no Hunter talent has a non-empty authoredDescription and none carries an AUTHORED OVERRIDE DIVERGES flag); the six rank-3 prerequisites (re-listed, correct); no temp HP anywhere in the tree; Mighty in six trees and Hardy in seven with the specific depths as stated."
+  }
+ ]
+}

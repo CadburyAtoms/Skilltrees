@@ -1,0 +1,636 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Order",
+ "correctionCount": 33,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Order",
+  "oneLineIdentity": "A two-resource mark-and-bodyguard tree: it marks one enemy with a freely-declared behavioural prohibition that punishes violation with Deflect-ignoring spirit damage and Disoriented while giving the whole party one unit of advantage against that target, and simultaneously binds a single willing ally into a scene-long two-way pact of +1 to all defenses, per-round temporary HP and shared wounds. Its prohibition is unique in the corpus; its mark-payoff and its ally-fortification are both done better elsewhere (deity/Knowledge and deity/Fate respectively).",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 3,
+    "evidence": "FOUR of nine talents create damage and all four are spirit (ignores Deflect), matching both deterministic streams (damage-census SOURCE 3 + SRC+AMP 1 = 4 offensive sources; the dossier header reports exactly 4 damage roll formulas): Edict ([Tier][Die]+Intellect on violation, formula (@tier)d(2*@skills.blue.rank+2)+@attr.int), Sealed Edict (an additional [Tier][Die] on a failed Discipline vs Blue), Verdict ([Tier][Die] to 'each other enemy within 10 ft' that fails Discipline — the chosen target is not in the splash), and Final Decree ([Tier][Die]+Intellect to each enemy within 10 ft of the violator plus a cascade of every active Edict). Concord is a fifth damage-bearing talent but is an AMPLIFIER, not a source: it adds flat +Presence to a Covenant ally's own attack and carries no roll formula. Held at 3, not 4, on comparison as well as on conditionality: every instance waits on an enemy's choice and the tree has no at-will attack, where deity/Knowledge's Predatory Strike (1 Action, 1 Investiture, depth 0) is a repeatable weapon attack with bonus Vital scaling per Insight. Order is a real, usable damage competency; it is not one of the better options in the game for damage."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 2,
+    "evidence": "All four formulas key off (@tier)d(2*@skills.blue.rank+2), so dice go 1d6 (Tier 1 rank 2) to 2d8 (Tier 2 rank 3), and Edict/Final Decree add Intellect flat. That keeps pace on paper; repeatability does not. Active Edicts cap at tier ('You may sustain up to your tier Edicts' — ONE at levels 1-5), each Edict is consumed on trigger, and the only way to cash one on demand is Verdict at 2 Actions + 2 Investiture + a Blue vs Cognitive test. Nothing in the tree fires damage every round. Contrast deity/Knowledge, whose Insight stacks make the same [Tier][Die] scale a second time with a resource that grows within the scene."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 on comparative grounds. Order's control is real and novel but SOFT: Edict names any prohibited action ('move from its space, attack a chosen ally, activate Investiture') and the enemy either complies — costing it one option, no Actions — or eats [Tier][Die]+Intellect spirit and Disoriented. Verdict spreads Disoriented to each other enemy within 10 ft failing Discipline vs Blue; Final Decree applies the prohibition to every enemy in Attunement Range at once. But the tree has NO forced action, NO action denial and NO hard immobilisation, and Disoriented is the weakest member of the denial family the primer prices. A 4 means 'the tree is one of the better options in the game for this', and it is not: deity/Power's Kneel (1 Action, 1 Investiture, depth 0, L1) makes the target Compelled — 'the target must spend its next action either moving toward you or...' — and its Absolute Authority (2 Actions, depth 1, L2) lets YOU choose the target's action outright; leyline/Black's Hollow Command (depth 0, L1) means 'the target cannot take actions on its next turn'; deity/Fate's Snare (depth 0, L1) and leyline/Green's Grasping Vines (depth 1, L2) both apply Restrained. Compound the tier cap — exactly ONE enemy constrained at levels 1-5 — and 3 ('a real, usable competency; several talents, at least one good one') is the honest score."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "One instance: Sealed Edict applies Weakened until the end of the target's next turn, and only on a violated Edict where the target also fails Discipline vs Blue — a condition on a condition, gated to L6 by the Blue 3+ prereq. Lawkeeper's Eye is a soft defensive debuff in effect but is scored under buff (it grants allies advantage rather than imposing disadvantage). No defence reduction, no vulnerability, no numeric penalties anywhere else — a notable absence given Blue, one of Order's gate colours, is the corpus's disadvantage engine (5 impose_disadvantage talents)."
+   },
+   {
+    "axis": "protection",
+    "score": 3,
+    "evidence": "Four of nine talents and three mitigation modes, but the magnitudes are small and Tier-1 capped. Covenant: +1 to ALL defenses for you and the ally for the scene, 1 Action / 1 Investiture at L1. Bear Witness: temp HP equal to your ranks in White at the start of every round — that is 2 (rank cap 2 at levels 1-5), 3 at L6-10, to at most tier Covenant allies, i.e. ONE ally for all of Tier 1. Shoulder the Oath: a no-cost Reaction redirecting half an ally's damage, reducing the remainder by your White ranks and granting both parties temp HP. Final Decree grants Witnesses [Tier][Die] temp HP. The calibration anchor puts 'one Reaction that reduces damage once per round' at 2; Order is that Reaction (a better version) plus a +1-defenses buff on two characters plus 2 temp HP a round to one ally, which lands at 3 — not at 'one of the better options in the game', which is leyline/White (10 Passives, 7 Reactions, 4 mitigation talents, its whole identity). Comparative check against its nearest deity peer: deity/Fate reaches an equivalent package at the same depths — Ordained Ground gives +1 to all defenses as a FREE Action at depth 0, and Bulwark Ground adds tier temp HP per round AND denies attackers advantage against the protected ally. 3 is where Order sits both absolutely and relatively."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Looked and found nothing; the dossier header confirms 0 heal formulas. No talent restores Health, Focus or Investiture to anyone. Bear Witness, Shoulder the Oath and Final Decree grant TEMPORARY HP, a new pool rather than restoration, scored under protection; the healing associated with Order's gate colour White is the Draw Mana attunement rider, not a talent in this tree. No condition removal and no Injury removal either."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "CORRECTED EVIDENCE (score unchanged). Lawkeeper's Eye is the standout: you and ALL your allies have advantage on attack tests against any Edict-bound character you can see — persistent, party-wide, zero cost, zero action to maintain. Concord adds flat +Presence damage to each Covenant ally's first attack each round and lets Covenant allies grant Aid as a Free Action. Covenant's '+1 to all defenses' is deliberately NOT counted here (it is a defensive number, scored under protection) — the earlier pass double-counted it across both axes. Scored 3 not 4 because of binary advantage: Lawkeeper's Eye, Concord's granted Aid and Final Decree's 'advantage on its next attack test' are three overlapping sources worth exactly ONE advantage between them, the non-advantage buff reaches only tier Covenant partners (one ally at L1-5), and the corpus over-produces advantage (45 producers / 13 trees vs 7 consumers). The comparative ceiling is instructive: deity/Knowledge's Pack Share and The Pack give every ally in Attunement Range bonus Vital damage that SCALES with the Insight count and stacks with whatever advantage the party already has — strictly a bigger ally-offence buff than one unit of binary advantage."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "Concord converts Aid from a Reaction costing 1 focus into a Free Action for Covenant allies — real under the 1-Reaction-per-round cap, because it frees the ally's Reaction for Dodge or Reactive Strike and saves the focus — but the primer is explicit that re-granting a standard action every character already has is worth much less than granting a new one, and how many targets that clause has at Tier 1 turns on whether the Order character counts as 'any other Covenant ally' (see corrections). Covenant extends Aid's targeting to Attunement Range instead of adjacency. Sealed Edict is a Free Action rider — an activation type, not generated economy. Verdict forces an Edict to resolve outside the enemy's turn, but costs YOU 2 Actions to do it. Nothing grants the Order character an extra Action or Reaction, and note what the same slot buys elsewhere: deity/Fate's Weave the Thread (2 Actions, 2 Investiture, depth 2 — identical cost and depth to Concord) grants a Free-Action Aid AND a free Reactive Strike; Fate's Thread of Inevitability grants every anchored ally a free Strike or Aid; deity/Knowledge's The Final Study and Death Mark give every ally a free Strike or free damage; and leyline/Blue's Forewarned generates an actual extra Reaction for free at depth 0, L1. Order re-grants; those trees create. Held at 2 rather than 1 only because two talents genuinely touch Aid's economy and the Reaction-cap saving is real."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "Looked and found nothing. No movement, teleport, repositioning of self or others, terrain-ignoring or speed bonus. Actively costly here: Covenant, Bear Witness, Shoulder the Oath and Concord all require staying inside Attunement Range of the partner and the tree offers no tool to maintain that. Contrast deity/Civilization's Trade Routes, at the same depth, which lets an ally teleport between linked Foundations as a Free Action."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Looked and found nothing. Every effect binds to a CHARACTER (Edicts on enemies, Covenants on allies) rather than to ground. No walls, hazards, difficult terrain, persistent squares or battlefield features. Verdict's 10-ft burst and Final Decree's Attunement Range are measurement radii around a creature, not placed features — contrast deity/Civilization's Lay Foundation and deity/Fate's Ordained Ground, which deliver a comparable +1-to-all-defenses package through ground squares, both as Free Actions at depth 0."
+   },
+   {
+    "axis": "information",
+    "score": 1,
+    "evidence": "CORRECTED DOWN from 2 by strict application of the rubric, and by comparison. The tree's ONLY informational content is a sub-clause of one talent: Lawkeeper's Eye, 'When you place an Edict, you learn the bound character's intended action on its next turn.' The rubric's 1 is literally 'one incidental talent, OR a rider on something else', and this is a rider on a talent whose other half is the advantage grant; no second Order talent carries any information effect (I checked all nine texts). It is also not unique, and the earlier refutation named a talent that does not exist. Three talents read an enemy's chosen action: this one; deity/Fate's Read the Threads (NOT 'Olvarra's Sight', which appears nowhere in the 365) — 1 Action + 1 Investiture, depth 1, L2, on ANY character in Attunement Range, 'You learn the action it intends to take on its next turn and any movement it plans to make', and it then converts the reading into board position by moving a Snare or Ordained Ground square into the revealed path; and leyline/Blue's Read Intent (1 Action + 1 Investiture + a Blue vs Cognitive test, depth 3, L4), in one of Order's own gate colours. What survives is narrow and true: Order's is the only FREE, no-action, no-test version — but it only reads a target you have already spent an Action and an Investiture to Edict, and the tree attaches no mechanism for acting on what it learns."
+   },
+   {
+    "axis": "social_influence",
+    "score": 1,
+    "evidence": "Thin and GM-dependent, and exactly one talent supplies it. Edict's declared prohibition is a mechanically enforced constraint on any character in Attunement Range ('do not leave this room', 'do not raise a hand against him') and can serve as out-of-combat leverage, which is why this is 1 and not 0. But it costs Investiture, requires no social test, and lasts only for the scene. There is no social TEST anywhere in the tree and no persuasion, deception, command, reputation or Influence support — a striking absence for the Lawgiver's path, and one that leyline/Black (Deception-driven domination), heroic/Envoy and deity/Power all fill better."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 0,
+    "evidence": "Looked and found nothing. No travel, survival, crafting, downtime, sensing or non-combat problem solving. Both signature resources are explicitly scene-duration ('unviolated Edicts fade at the end of the scene'; Covenants last 'for the scene'), so neither even persists across a journey."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Looked and found nothing. No companions, constructs, minions, animated allies or persistent entities. Witnesses (Final Decree) are existing allies given a label, not summoned creatures. The corpus's summon trees are deity/Civilization (Combat Construct), deity/Death (Risen Servant) and heroic/Hunter (animal companion); Order touches none of that space."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "Looked and found nothing generated; I counted the Cost fields myself and they match the census (Order 0 regen / 6 costers). Pure net consumer: Covenant 1, Edict 1, Sealed Edict +1, Concord 2, Verdict 2, Final Decree 3 — six of nine talents spend Investiture, ten Investiture to deploy the whole kit once, zero Investiture, Focus or Opportunity returned by any talent. The tree never touches Focus or Opportunity at all. This is a real gap relative to its own atlas: five of the ten deity trees carry a bonus-regen talent (Chaos, Death, Life, Knowledge, Sovereignty), and deity/Knowledge's Accumulate returns 1 Investiture per round for free off the mark that tree was already placing — the exact shape Order's Edict loop could have had and does not."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Edict",
+     "dice": "[Tier][Die] + Intellect spirit — formula (@tier)d(2 * @skills.blue.rank + 2) + @attr.int, i.e. 1d6+INT at Tier 1 rank 2, 2d8+INT at Tier 2 rank 3",
+     "action": "1 Action to place (1 Investiture); damage resolves later, off-turn, on the enemy's own action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "SOURCE. CONDITIONAL TRAP. Fires only the first time the bound character takes the specific prohibited action the player named, then the Edict is consumed. A disciplined opponent who simply obeys generates zero damage. Active Edicts cap at tier — ONE at levels 1-5. Carries Disoriented until the start of your next turn. Comparative note: deity/Fate's Snare occupies the same slot (1 Action, 1 Investiture, depth 0, L1) and delivers [Tier][Die] + Awareness keen plus RESTRAINED — a materially stronger condition — but is positional and cannot be aimed at a chosen creature. Order trades condition strength for the ability to name the target and the trigger."
+    },
+    {
+     "name": "Sealed Edict",
+     "dice": "additional [Tier][Die] spirit — formula (@tier)d(2 * @skills.blue.rank + 2)",
+     "action": "Free Action rider at placement (additional 1 Investiture) — costs NO Action",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "SOURCE. CONDITIONAL ON A CONDITIONAL. Requires the Edict to be violated AND the target to fail Discipline vs your Blue. The extra Investiture is paid at placement, so it is wasted outright on every Edict that never gets violated. Depth 1 but gated to L6 by its Blue 3+ prereq. Adds Weakened until the end of the target's next turn. Its structural twins are deity/Fate's Inevitable Snare and deity/Destruction's Pinpoint Charge — identical shape (Free Action, +1 Investiture declared at placement, upgrade rider) — and both of those arrive at L2 with no rank gate, where Sealed Edict's Blue 3+ pushes it to L6."
+    },
+    {
+     "name": "Verdict",
+     "dice": "[Tier][Die] spirit to each OTHER enemy within 10 ft that fails Discipline vs your Blue (the chosen target is NOT in the splash), PLUS it forces that one target's Edict to resolve ([Tier][Die]+Intellect spirit, and Sealed Edict's rider if applied) — formula (@tier)d(2 * @skills.blue.rank + 2)",
+     "action": "2 Actions, 2 Investiture, plus a Blue vs Cognitive test that must succeed",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "SOURCE. THE TREE'S ONLY PLAYER-FORCED DAMAGE and its structural keystone: it converts the conditional Edict trap into damage on the player's schedule. Still conditional on (a) an Edict already placed, (b) your own test succeeding, (c) each splash enemy failing its own Discipline save. It violates only the ONE Edict on its chosen target — only Final Decree cascades every active Edict. CORRECTED COMPARISON: the overcosting claim survives but two of its three citations were wrong. deity/Destruction's entry Set Charge does say 'You may detonate any of your Charges as a Free Action on your turn' — that comparator stands. deity/Destruction's Cascading Failure costs 2 Actions AND 2 Investiture — the SAME price as Verdict, not cheaper — but detonates ANY NUMBER of Charges, merges their hazard zones, and requires no test. deity/Fate's ally-springs-the-trap talent is Foreknown Strike (NOT 'Fated Trap', which does not exist in the corpus), 2 Actions AND 2 Investiture, depth 2, L3 — a one-time scene-long licence after which allies spring Snares as Free Actions. Corrected statement: Verdict is priced at parity with its two nearest peers, detonates one token instead of many, buys no ongoing licence, and is the only one of the three that can miss."
+    },
+    {
+     "name": "Final Decree",
+     "dice": "[Tier][Die] + Intellect spirit to each enemy within 10 ft of the violator, PLUS every active Edict you hold triggers simultaneously — formula (@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+     "action": "3 Actions (an entire Slow turn), 3 Investiture, once per scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "SOURCE. CONDITIONAL AND ENEMY-CONTROLLED. The whole payload waits on the first bound enemy choosing to take the named prohibited action; against opponents who know the rule, the correct play is simply to obey. Once per scene. Also grants Witnesses [Tier][Die] temp HP and an advantage on their next attack test — and since it binds every enemy in Attunement Range 'as if bound by your Edict', Lawkeeper's Eye already supplies that advantage against every such target the Witness can SEE, so the rider is redundant for any owner of both except against an unseen enemy. Comparative: the three other deity capstones that cash a placed-token economy — Destruction's The Unmooring, Fate's Thread of Inevitability, Knowledge's The Final Study — all fire on the PLAYER's own declaration or test. Final Decree is the only deity capstone in the atlas whose trigger is handed to the opponent."
+    },
+    {
+     "name": "Concord",
+     "dice": "flat additional damage equal to your Presence on each Covenant ally's FIRST attack each round (no die, no roll formula)",
+     "action": "2 Actions, 2 Investiture, once for the scene",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "AMPLIFIER, NOT A SOURCE — this is why countReal is 4, not 5. It is a rider on an ALLY's attack, carries no roll formula, and the damage-census classifies it as the tree's AMPLIFY 1, separate from its 4 offensive sources. Only lands if an ally actually attacks, and only on the first attack per round per Covenant ally; Covenants cap at tier, so at levels 1-5 that is you and one partner. Real damage the tree causes, but delivered by other people and small (roughly +3)."
+    }
+   ],
+   "countReal": 4,
+   "countFalsePositiveMitigation": 1,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "At the deepest reachable point (L6+, Tier 2, Blue rank 3, [Tier][Die] = 2d8, mean 9): the best line on the player's own schedule is Edict (1 Action, 1 Investiture) + the Sealed rider (a FREE Action, 1 Investiture) + Verdict (2 Actions, 2 Investiture) = 3 Actions and 4 Investiture, exactly one Slow turn, so the whole cycle fits inside a single round. A second Edict adds nothing to this line, because Verdict violates only the one Edict on its chosen target. Against a 3-enemy cluster that cashes out as 2d8+INT (Edict) + 2d8 (Sealed) + 2d8 x2 (splash on the two OTHER enemies) = four instances of [Tier][Die], i.e. 8d8 + INT ~ 39 spirit across three targets — about 1.33 [Tier][Die] per Action, and that is the BEST case: it needs your Blue vs Cognitive test to hit and three separate Discipline saves to fail. Against a lone target with no cluster the same 3 Actions yield 4d8 + INT ~ 21, about 0.67 [Tier][Die] per Action. Every point of it is SPIRIT, which ignores Deflect and is worth materially more per die than the impact/keen/energy most of the corpus deals, and it arrives with Disoriented attached — so the tree punches above its raw dice count while sitting well below a dedicated damage tree on throughput. The Final Decree line is larger in absolute terms (two pre-placed Edicts cascading plus the 10-ft burst, roughly 8-10d8 plus several INT) but costs 5 Actions and 5 Investiture, is once per scene, and fires only when an enemy chooses to violate.",
+   "repeatability": "Poor and structurally capped — but the cap is Investiture, not Actions. Active Edicts cap at TIER (one at L1-5, two at L6-10) and each is consumed when it triggers, so the tree cannot stack a growing threat — the opposite of deity/Knowledge, whose Insight grows every round off the same kind of mark, and of deity/Destruction, which banks tier Charges and detonates them together. A full Verdict cycle costs 3 Actions and 3 Investiture (Edict 1+1, Verdict 2+2); the Actions fit inside one Slow turn, so what stops it repeating next round is purely that the tree generates zero Investiture. From a starting pool of roughly 4 (Tier 1) to 6 a character gets one full cycle, then falls back to Draw Mana at Tier Investiture per Action. Realistic sustained rate: one Verdict cycle roughly every third round. What IS free and repeatable every round is the non-damage floor — Bear Witness's temp HP, Lawkeeper's Eye's party-wide advantage, and Shoulder the Oath's Reaction.",
+   "verdict": "Real damage, premium type, lumpy delivery, enemy-gated. FOUR talents create damage (a fifth, Concord, only amplifies an ally's attack) and every one is conditional: three need an enemy to take a forbidden action, one of those also needs a failed save, and only Verdict can make damage happen on the player's own schedule — at 2 Actions plus 2 Investiture plus a test that can miss, exactly the price deity/Destruction's Cascading Failure charges to detonate any number of Charges with no test at all. There is NO at-will attack and no round-to-round damage option; a player with only this tree who has placed their Edict and Covenant and is out of Investiture has nothing damaging to do but Strike. Exactly ONE talent looks like damage and is not: Shoulder the Oath uses the word 'damage' four times and is pure mitigation (take half instead, reduce the remainder) — do not count it, and the damage-census agrees (MITIG 1). Covenant's '+1 to all defenses' is likewise defensive. Net: a soft-control-and-mark tree that bills its control in spirit damage, not a damage tree."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 4,
+    "exemplars": "Covenant, Edict",
+    "note": "The tree's best per-Action value sits at the entry, and both entries deliver the Lawgiver fantasy independently on turn one, exactly as the deity guide demands. Covenant buys +1 to ALL defenses on two characters for the entire scene for one Action and one Investiture at L1. Edict is a 1d6+INT spirit trap (Tier 1 rank 2) plus Disoriented plus, more importantly, a free behavioural constraint on any enemy in Attunement Range. Comparative caveat that keeps this at 4 rather than 5: both of Order's entries cost a full Action, where the two deity trees delivering the nearest equivalents do it as FREE Actions at depth 0 — deity/Civilization's Lay Foundation and deity/Fate's Ordained Ground each grant +1 to all defenses for 1 Investiture without spending an Action, and Ordained Ground carries a remote-Aid clause too. Order pays an Action for portability and reciprocity; a fair trade, not a free win."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Lawkeeper's Eye and Verdict (high); Bear Witness and Shoulder the Oath (solid, free); Concord and Sealed Edict (weak)",
+    "note": "Wide spread. Lawkeeper's Eye is arguably the tree's best talent — free, passive, party-wide persistent attack advantage plus intent foreknowledge at depth 1, L2 (neither half is best-in-class, but no other talent in the corpus delivers both at once for zero cost). Verdict is the engine that makes the Edict branch reliable. Shoulder the Oath is genuinely best-in-class damage redirection; Bear Witness pays only 2 temp HP to one ally at Tier 1 and is beaten outright by deity/Fate's Bulwark Ground at the same depth, level and cost. Concord is overcosted at 2 Actions + 2 Investiture for a Covenant network the tier cap barely supplies before L6 — and its exact cost-and-depth twin, deity/Fate's Weave the Thread, grants the same Free-Action Aid PLUS a free Reactive Strike. Sealed Edict is a conditional on a conditional gated to L6, where its structural twins (Fate's Inevitable Snare, Destruction's Pinpoint Charge) arrive at L2."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Final Decree",
+    "note": "A capstone that honours the tree structurally — the only talent combining both signature resources, cascading every Edict while rewarding every Covenant Witness — but priced badly: 3 Actions (an entire Slow turn) plus 3 Investiture plus once-per-scene, for a payload whose trigger is entirely under enemy control. Checked against the other nine deity capstones: it is the ONLY one that hands its trigger to the opponent; Destruction's The Unmooring, Fate's Thread of Inevitability and Knowledge's The Final Study all fire on the player's own declaration or test. Its advantage-on-next-attack rider is worth nothing to a Witness already benefiting from Lawkeeper's Eye, which under Final Decree covers every bound enemy the Witness can see."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED. The two depth-0 entries are the highest value-per-Action in the tree and both work from level 1; the free depth-1 passives (Lawkeeper's Eye, Bear Witness) and the free Reaction (Shoulder the Oath) extend that at no further cost. Power then flattens: the depth-2 nodes cost 2 Actions and 2 Investiture each and are both matched or beaten by same-cost, same-depth talents in deity/Fate and deity/Destruction, and the capstone costs a full turn, the whole Investiture pool and a once-per-scene charge for an enemy-triggered payoff. A player who takes only Covenant, Edict, Lawkeeper's Eye and Shoulder the Oath has most of what this tree offers.",
+  "uniqueOwnership": [
+   "The only PROHIBITION-shaped effect in the game — the DIRECTION of the framing is what is unique, not the act of declaring something on a character. Three other talents let you declare a trigger or an action type: deity/Destruction's Set Charge ('Declare its trigger when you place it ... alternatives include \"when target moves,\" \"when target takes damage\"') may be placed on a character, so a freely-declared non-positional trigger that travels with the target is NOT unique to Order; deity/Fate's Thread of Inevitability declares an arbitrary scene event; and — the closest structural cousin, missed by the earlier pass and sitting in Order's own gate colour — leyline/Blue's Forewarned (Passive, free, depth 0, L1): 'silently declare one character and one action type. If that character takes the declared action before your next turn, you gain 1 Reaction.' That is the same declare-an-action-type-on-a-named-enemy shape, free and refreshed every round. What Order alone does is INVERT it: an Edict tells the target what it may not do and punishes the choice, making it the only placed effect in the corpus whose ideal outcome is that it never fires — control first, damage second. A Charge is a bomb its owner detonates at will; Forewarned is a prediction that pays the predictor; an Edict cannot be detonated at all without paying Verdict.",
+   "The only FREE instance of declared-intent foreknowledge — but the comparison must name the right talents, and the earlier pass did not. Three talents read an enemy's chosen action: Lawkeeper's Eye; deity/Fate's Read the Threads (the earlier citation 'Olvarra's Sight' matches no talent in the 365) — 1 Action + 1 Investiture, depth 1, L2, on any character in Attunement Range, and it immediately converts the reading into board position by moving a Snare or Ordained Ground square 'to any space the target will pass through'; and leyline/Blue's Read Intent (1 Action + 1 Investiture + a Blue vs Cognitive test, depth 3, L4), in one of Order's own gate colours. Order's is the only one costing no action, no Investiture and no test, and the only one restricted to a target you have already Edicted — and the only one with no mechanism attached for acting on what it learns.",
+   "The only PERSON-bound, two-way sustained pact. Verified by grep across all 365 talents: a +1-or-better to-all-defenses effect exists in four other places (deity/Civilization's Lay Foundation +1 and Magnum Opus +2, deity/Fate's Ordained Ground +1, deity/Power's Mantle of the Aspirant +2), and the remote-Aid clause exists in exactly one (Ordained Ground: 'may use the Aid action at up to 30 ft range from that square'). CORRECTION to the earlier claim that the full package 'exists twice elsewhere': Civilization's Lay Foundation has the defence half but NOT the Aid half, so only Fate's Ordained Ground carries both. Both comparators are ground-bound and both are FREE ACTIONS at depth 0, i.e. cheaper in action economy than Covenant. Covenant's genuine uniqueness is reciprocity and portability: it is the only two-way pact in the corpus — both parties gain, the Order character included; it travels with the ally anywhere in Attunement Range; and it breaks if either attacks the other.",
+   "Best-in-class damage redirection, confirmed by grep. Only two other talents move damage between characters: leyline/White's Shared Burden ('When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place' — Reaction, 2 Investiture, adjacent only, depth 2, L3) and deity/Power's Mantle of the Aspirant, which redirects damage the OPPOSITE way, from the caster out to willing allies, and only inside a 3-Action once-per-scene capstone. leyline/White's Devoted Conduit is the nearest passive relative (reduces damage an ally takes 'intended for another creature' by half [Tier][Die]). Shoulder the Oath dominates all of them for its role: a FREE Reaction at Attunement Range, at depth 1 / L2, that also reduces the remaining damage by your White ranks and grants temp HP to both parties — three protective effects in one no-cost Reaction.",
+   "The cleanest zero-cost, party-wide, persistent attack advantage against a marked target — unique in that exact form (heroic/Hunter's Seek Quarry grants the advantage to YOU only; deity/Civilization's Bonds of Community grants allies a single triggered advantage; deity/Fate's Bulwark Ground denies advantage rather than granting it). BUT this is where the SOMETHING TEST bites, and the finding goes against Order: the JOB it does — make the whole party better at hitting one marked enemy — is done BETTER by deity/Knowledge, by a wide margin. Pack Share and The Pack give every ally in Attunement Range bonus Vital damage against the marked creature that scales with the Insight count and STACKS with any advantage the party already has, and Death Mark hands every ally free [Tier][Die] Vital on the mark's death. Order's advantage is binary, caps at one unit, and is worth literally zero in any round an ally already has advantage from one of the corpus's 45 other producers. Order owns the prohibition; it does not own the mark-payoff."
+  ],
+  "gaps": [
+   "No healing whatsoever — cannot restore a single point of Health, Focus or Investiture to anyone, cannot stabilise or raise a downed ally, cannot remove a condition or an Injury. Confirmed by both streams: 0 heal formulas in the dossier header. A party leaning on Order for support gets temp HP and defence numbers and nothing else.",
+   "No mobility at all, and the tree punishes that: Covenant, Bear Witness, Shoulder the Oath and Concord all require staying within Attunement Range of the partner, and no talent moves you, moves them, or extends the range. The tree wants a frontline partner and gives you no way to keep up with one — where deity/Civilization's Trade Routes, at the same depth, teleports its anchored ally between zones as a Free Action.",
+   "No resource generation. Ten Investiture across six talents to deploy the whole kit, zero returned; the character is entirely dependent on Draw Mana (a leyline attunement, not this tree) or another path. Five of the ten deity trees carry a bonus-regen talent, and deity/Knowledge's Accumulate returns 1 Investiture per round off the same kind of mark Order already places.",
+   "No repeatable damage. There is no at-will attack. Once the Edict is placed and unviolated and the Investiture is gone, the player's turn is Strike or Draw Mana — the classic sitting-on-hands round for this tree.",
+   "Nothing works solo. Covenant, Bear Witness, Shoulder the Oath, Concord and half of Final Decree are dead in any scene without a willing ally, and Lawkeeper's Eye's advantage rider and Concord's damage rider need allies who attack. An Order character alone has two functioning talents.",
+   "No answer to an enemy outside Attunement Range, out of line of sight, or untargetable — every talent keys off Attunement Range, and Lawkeeper's Eye requires you to SEE the bound character.",
+   "No terrain, no zones, no summons, no scouting, no travel, survival, crafting or downtime content of any kind. Both signature resources expire at the end of the scene.",
+   "No hard action denial. Nothing Stuns, Restrains, Immobilises, Compels or knocks Prone; the strongest condition the tree produces is Disoriented, and the prohibition itself is voluntary-compliance rather than enforced. This is the gap that caps control at 3 — deity/Power (Kneel, Absolute Authority), leyline/Black (Hollow Command), deity/Fate (Snare) and leyline/Green (Grasping Vines) all reach harder control at equal or shallower depth.",
+   "No social mechanics despite the Lawgiver framing — no social TEST anywhere in the tree, no Influence support, no command, no reputation, no persuasion. An Order character cannot compel a hostile NPC to negotiate, only to avoid one named act on pain of damage.",
+   "No mark-payoff scaling. The Edict is a mark, but nothing in the tree makes the mark grow and nothing lets an ally add to it — contrast deity/Knowledge's Insight (allies place stacks, stacks multiply damage) and heroic/Hunter's quarry (a whole tree of quarry riders). Order's mark carries exactly one binary advantage and one delayed die, forever."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Path description: 'A disciple of Tessavain declares Edicts that punish the first forbidden act.'",
+     "delivered": "DELIVERS",
+     "evidence": "Edict is exactly this, at depth 0 and L1; Sealed Edict upgrades the punishment (extra [Tier][Die] spirit + Weakened), Verdict forces the violation and spreads it, Final Decree applies it to every enemy at once. All FOUR roll formulas in the tree are spirit damage keyed to Blue rank, confirming the punishment is implemented, not just prose."
+    },
+    {
+     "claim": "Path description: 'and swears Covenants that fortify sworn allies.'",
+     "delivered": "DELIVERS",
+     "evidence": "Covenant (+1 to all defenses on both parties for the scene, remote Aid), Bear Witness (temp HP each round), Shoulder the Oath (take half the ally's damage, reduce the rest, temp HP to both), Concord (Free-Action Aid network, +Presence damage), Final Decree (Witnesses gain temp HP and advantage). Four of nine talents exist purely to fortify a Covenant partner."
+    },
+    {
+     "claim": "Path description: 'To break his law is to be struck by it; to keep it is to be shielded.'",
+     "delivered": "PARTIAL",
+     "evidence": "The first half is fully implemented (Edict / Sealed Edict / Verdict / Final Decree). The second half has NO mechanical referent: no talent gives an Edict-bound character anything for complying. The shielding in this tree (Covenant, Bear Witness, Shoulder the Oath) attaches to a different population entirely — willing allies who swore a pact — and is unconnected to keeping any Edict. The aphorism describes one reciprocal system; the talents implement two unrelated ones."
+    },
+    {
+     "claim": "Path description: 'His word, once given, binds both ways.'",
+     "delivered": "PARTIAL",
+     "evidence": "The only two-way binding is Covenant ('A Covenant ends if either party deliberately attacks the other') and Shoulder the Oath's shared wound — and that reciprocity IS genuinely unique in the corpus, since no other talent binds the caster and an ally symmetrically. But the Order character accepts no cost, restriction or reciprocal obligation from their own Edicts — they can name any prohibition, break it themselves freely, and pay nothing. The binding is one-way in exactly the half of the tree where the phrase is most evocative."
+    },
+    {
+     "claim": "Deity guide colour-split rule, verbatim (DESIGN-GUIDE-CLAIMS.md line 236): 'White tests for binding pacts and group coordination; Blue tests for oath-violation detection, cognitive enforcement, and Lawkeeper foresight.'",
+     "delivered": "DRIFTED",
+     "evidence": "There is not a single White TEST in the tree. Every test is Blue: Verdict tests Blue vs Cognitive, and both Sealed Edict and Verdict make the enemy test Discipline vs YOUR BLUE. All FOUR damage formulas are (@tier)d(2 * @skills.blue.rank + 2). White appears only as a static number — 'ranks in White' for Bear Witness's temp HP and Shoulder the Oath's damage reduction — and as the entry gate. Half the colour-split rule is unimplemented; White is a stat here, not a skill you roll. The deity-gate-audit's 'toll booth' label slightly overstates it (White never tests and never sizes a damage die, but it does scale two talents' flat numbers, which is more than a pure toll booth). COMPARATIVE CONTEXT: Order is one of FOUR trees that gate White and reward it with no test — Civilization, Fate and Sovereignty are the others, and Sovereignty demands White 3+ while testing it zero times — so this is a White-wide atlas failure Order participates in, not an isolated Order defect. It remains the tree's most concrete drift."
+    },
+    {
+     "claim": "Deity guide: homebrew resources 'should be generated by an entry and spent by most of the rest of the tree' (DESIGN-GUIDE-CLAIMS.md line 205).",
+     "delivered": "DELIVERS",
+     "evidence": "Unusually cleanly, and better than the guide itself asked for: the guide's PART 4 entry for Tessavain names the homebrew resource only vaguely — 'Sacred Oaths and Binding Clauses (declared rules) function as soft tokens' — and the tree shipped two HARD tokens instead, each with a stated cap (tier active) and duration (scene). Edict (entry) is read by Lawkeeper's Eye, Sealed Edict, Verdict and Final Decree; Covenant (entry) is read by Bear Witness, Shoulder the Oath, Concord and Final Decree. All seven non-entry talents consume one of the two resources, with zero utility filler. The signature-resource audit confirms Edict is found in 5 talents' text. Comparatively this is the atlas's tightest spine: deity/Sovereignty promises Decree and delivers a talent title and one flavour line, and deity/Power promises Bounty and delivers nothing named at all."
+    },
+    {
+     "claim": "Deity guide: fantasy on the first talent, from BOTH entries — a player who picks either entry should feel the deity's archetype on turn one.",
+     "delivered": "DELIVERS",
+     "evidence": "Both entries are 1 Action / 1 Investiture at depth 0, earliest L1, and each delivers a distinct, complete half of the Lawgiver fantasy: Edict makes you the prohibition-speaker immediately, Covenant makes you the oath-binder immediately. Neither is setup for the other, so the guide's 'single-entry tree' pitfall is avoided."
+    },
+    {
+     "claim": "Deity guide: 'Both branches deliver, then converge' — tier-3 synthesis nodes bring the two halves together.",
+     "delivered": "PARTIAL",
+     "evidence": "The branches never converge below the capstone. Verdict is pure Edict; Concord is pure Covenant; neither synthesis node touches the other resource, and neither is reachable from the opposite branch (Verdict's connections are Lawkeeper's Eye and Sealed Edict — both Edict-side; Concord's are Bear Witness and Shoulder the Oath — both Covenant-side). The tree is structurally two parallel four-talent trees sharing a single capstone. Only Final Decree fuses Edicts and Covenants."
+    },
+    {
+     "claim": "Deity guide: '3 Actions — Capstones only, one per tree, max' (DESIGN-GUIDE-CLAIMS.md line 162).",
+     "delivered": "DELIVERS",
+     "evidence": "Exactly one 3-Action talent (Final Decree) and it is the capstone at depth 3. No 3-Action talent below it. All ten deity trees pass this one, so it is not a differentiator."
+    },
+    {
+     "claim": "Deity guide action-type targets (DESIGN-GUIDE-CLAIMS.md lines 155-162): ~25-30% Passive, ~15-20% Special, ~25-35% Action, ~15-25% 2 Actions, ~10-15% Free, ~10% Reaction.",
+     "delivered": "PARTIAL",
+     "evidence": "Counted from the dossier and re-verified independently against all-talents.json: Passive 2/9 (22%), Special 0/9 (0%), 1 Action 2/9 (22%), 2 Actions 2/9 (22%), Free 1/9 (11%), Reaction 1/9 (11%), 3 Actions 1/9 (11%). Passive and 1-Action sit a little under target; 2 Actions, Free and Reaction are in band. The one real miss is Specials, which the leyline guide calls 'the most important gap' and the deity guide targets at 15-20%. Order has ZERO Specials — nothing rides on an action you were already taking, which is why its active plays all cost full Actions. All ten deity trees share this, so it is an atlas-wide miss rather than an Order-specific one."
+    },
+    {
+     "claim": "Deity guide description-length caps (DESIGN-GUIDE-CLAIMS.md lines 170-172): entry / Tier-2 ~30-45 words, Tier-3 synthesis ~40-55, capstones up to ~70.",
+     "delivered": "DRIFTED",
+     "evidence": "Word-counted every talent: SIX of nine exceed their band. Entries — Covenant 73 and Edict 77 against a ~30-45 cap, both roughly 1.7x over. Tier-2 — Sealed Edict 47 and Shoulder the Oath 51 against ~30-45 (Bear Witness 25 and Lawkeeper's Eye 40 are fine). Tier-3 synthesis — Verdict 61 against ~40-55 (Concord 53 is inside). Capstone — Final Decree 82 against ~70: over the cap and 'overdesigned' by the guide's wording, but it does NOT cross the guide's separate '90+ words is doing too much' line. COMPARATIVE CONTEXT added on this pass: 38 of the 90 deity talents (42%) breach their band, so this is a guide the atlas broadly ignores. Order is second-worst by mean word count (56.6 words, behind Fate at 61.8) and second-worst by breach count (6/9, behind Fate at 7/9); Chaos breaches zero and Life breaches one. So the finding is real and Order is a bad offender, but it is not an Order-specific defect. Covenant alone carries a spend, a touch requirement, a defence buff, a range-extension on Aid, a break clause and a sustain cap."
+    },
+    {
+     "claim": "CROSS-TREE PROMISE OVERLAP (new row, added by lens B(d)): is the promise this tree makes also made by another tree's intent file?",
+     "delivered": "PARTIAL — Order wins the contested half outright and loses the other",
+     "evidence": "Both halves of Order's promise are claimed elsewhere. (1) DECLARED LAW: deity/Sovereignty's intent file promises 'Decrees — declared laws that hold sway within his reach' and its signature resource is 'Decree — a declared law projected within a radius: allies inside are elevated, enemies inside are diminished'. The deterministic signature-resource audit finds Decree is NAME ONLY in Sovereignty — one talent title, one flavour line, no zone, no radius, all nine Sovereignty talents single-target. So two deity intent files promise declared law and only Order implements it; Order should be credited with owning that fantasy outright. (2) FORTIFIED ALLY: deity/Fate promises 'anchors allies to Ordained Ground ... fortifies whoever holds it' and deity/Civilization promises 'binds allies with the shared strength of foundations and trade'. Both deliver, both through ground rather than through a person, and both at a lower action cost (Free Action, depth 0). On this half Order is the third implementation of a thrice-promised idea, differentiated only by portability and reciprocity."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "It delivers both headline promises — Edicts that punish and Covenants that fortify — with the tightest resource spine in the deity atlas: every non-entry talent reads one of its two signature resources, at a moment when Sovereignty's promised Decree is a name and Power's promised Bounty is absent. But it is not the balanced two-colour Lawgiver the design guide describes. It is a BLUE tree wearing White's gate: every test and all four damage formulas key off Blue rank, while White is reduced to a flat number for temp HP and damage reduction. Empirically it is a single-target SOFT-control-and-mark package with a one-ally bodyguard attachment. Both of those roles are contested and Order loses both contests on raw output: deity/Power and leyline/Black reach harder control at equal or shallower depth, and deity/Knowledge's mark makes the party hit the marked enemy far harder than one unit of binary advantage ever can. What Order alone has is the PROHIBITION — the only placed effect in the game whose ideal outcome is that it never fires, and the only delivered implementation of a 'declared law' that two deity intent files promise — plus the only two-way, person-bound, portable pact in the corpus. Those two are the tree's real 'something', and neither is a damage or control ceiling; both are shapes nothing else in the game has."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Edict",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Edict (1 Action, 1 Investiture; cap = tier active; scene duration). Read/consumed by Lawkeeper's Eye (foresight + advantage while it holds), Sealed Edict (upgrade rider at placement), Verdict (forces the violation of ONE Edict), Final Decree (mass placement + cascades every active Edict). Consumed on violation. SEALED LOOP per the resource census (3 produce / 1 consume)."
+   },
+   {
+    "keyword": "Covenant",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Covenant (1 Action, 1 Investiture; cap = tier active; scene duration; ends if either party deliberately attacks the other). Read by Bear Witness, Shoulder the Oath, Concord, Final Decree (Witnesses). Not tracked as a named currency by the resource census, but structurally the tree's second sealed loop."
+   },
+   {
+    "keyword": "Sealed (Edict state)",
+    "role": "PRODUCE",
+    "talents": "Sealed Edict — an upgrade state declared on an Edict at placement for an additional 1 Investiture, as a Free Action. Structural twins elsewhere: deity/Fate's Inevitable Snare and deity/Destruction's Pinpoint Charge — identical shape, both depth 1 / L2, where this one is L6."
+   },
+   {
+    "keyword": "Concord (Covenant-network state)",
+    "role": "PRODUCE",
+    "talents": "Concord — a scene-long state layered over all active Covenants. Its cost-and-depth twin is deity/Fate's Weave the Thread (2 Actions, 2 Investiture, depth 2, L3), which grants the same Free-Action Aid plus a free Reactive Strike."
+   },
+   {
+    "keyword": "Witness",
+    "role": "PRODUCE",
+    "talents": "Final Decree — Covenant allies named as Witnesses for the capstone's payout."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME only",
+    "talents": "Covenant 1, Edict 1, Sealed Edict +1, Concord 2, Verdict 2, Final Decree 3 — ten total across six of nine talents to deploy the kit. Nothing in the tree generates Investiture (resource-economy census: Order 0 regen / 6 costers). Order, Civilization, Destruction, Fate and Power are the five deity trees with zero regen; the other five each carry one."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "The range term for eight of nine talents (all but Sealed Edict, which inherits it from Edict). Scales 15/30/60/90/120 ft by rank."
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME",
+    "talents": "Caps active Edicts (Edict) and active Covenants (Covenant) — ONE of each at levels 1-5, two at 6-10. Also the multiplier in every [Tier][Die] expression."
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME",
+    "talents": "Edict, Sealed Edict, Verdict, Final Decree (damage — 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3); Final Decree (temp HP)."
+   },
+   {
+    "keyword": "Blue (skill rank)",
+    "role": "CONSUME",
+    "talents": "The tree's entire test and damage economy: Verdict tests Blue vs Cognitive; Sealed Edict and Verdict force Discipline vs your Blue; ALL FOUR roll formulas are (@tier)d(2 * @skills.blue.rank + 2). Also the Blue 3+ gate on Sealed Edict and the Blue 2+ entry gate. The deity-gate-audit records Order as blue:1 test and blue:4 die-sizings — the highest single-colour die-sizing count of any deity tree."
+   },
+   {
+    "keyword": "White (skill ranks)",
+    "role": "CONSUME",
+    "talents": "A flat NUMBER only, never rolled: Bear Witness (temp HP = ranks in White, i.e. 2 at L1-5, 3 at L6-10), Shoulder the Oath (damage reduction and temp HP = ranks in White). Plus the White 2+ entry gate. One of four deity trees that gate White and never test it."
+   },
+   {
+    "keyword": "Intellect (attribute)",
+    "role": "CONSUME",
+    "talents": "Flat adder on Edict and Final Decree damage (@attr.int)."
+   },
+   {
+    "keyword": "Presence (attribute)",
+    "role": "CONSUME",
+    "talents": "Concord — additional damage equal to your Presence on each Covenant ally's first attack each round."
+   },
+   {
+    "keyword": "Discipline (skill)",
+    "role": "CONSUME",
+    "talents": "The enemy's resisting skill for Sealed Edict and Verdict (tested against your Blue)."
+   },
+   {
+    "keyword": "Cognitive (defense)",
+    "role": "CONSUME",
+    "talents": "Verdict's target defence (Blue vs Cognitive)."
+   },
+   {
+    "keyword": "Spirit damage",
+    "role": "PRODUCE",
+    "talents": "Edict, Sealed Edict, Verdict, Final Decree — the tree's ONLY damage type, and it ignores Deflect entirely. Order is one of the few trees whose damage is 100% Deflect-ignoring (deity/Knowledge, all Vital, is the other clean case)."
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Edict (on violation), Verdict (to each failing OTHER enemy within 10 ft), and via Final Decree's Edict cascade. Disoriented is the corpus's most widely spread condition (14 talents / 11 trees), so Order is not distinctive here."
+   },
+   {
+    "keyword": "Weakened",
+    "role": "PRODUCE",
+    "talents": "Sealed Edict (on a failed Discipline vs Blue). One of 12 talents across 6 trees."
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCE",
+    "talents": "Bear Witness (= ranks in White, every round), Shoulder the Oath (= ranks in White, to both parties), Final Decree ([Tier][Die] to each Witness). Three of the corpus's 14 temp-HP producers; nothing anywhere consumes temp HP as a currency, so these overlap with other parties' sources rather than combining."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE",
+    "talents": "Lawkeeper's Eye (you and all allies, on attack tests vs the Edict-bound character, persistent and free) and Final Decree (Witnesses' next attack test) are the two the advantage ledger records for this tree; Concord adds a third indirectly, by granting the benefit of the Aid action. These do not stack — advantage is binary — and the corpus already over-produces it (45 producers / 13 trees vs 7 consumers)."
+   },
+   {
+    "keyword": "Aid (standard action)",
+    "role": "CONSUME and re-grant",
+    "talents": "Covenant extends Aid's targeting to Attunement Range; Concord lets a Covenant ally grant the Aid benefit as a Free Action on its turn, bypassing Aid's normal Reaction + 1 focus cost. Whether that clause has a legal target at Tier 1 depends on whether the Order character counts as 'any other Covenant ally' — an open reading, not a settled one (see corrections). Neither clause is unique: deity/Fate does both through ground squares (Ordained Ground's 30-ft Aid, Weave the Thread's Free-Action Aid)."
+   },
+   {
+    "keyword": "Defenses (+1 to all)",
+    "role": "PRODUCE",
+    "talents": "Covenant — to both parties while within Attunement Range of each other, for the scene. Four other talents produce a defence bonus (Civilization's Lay Foundation +1 and Magnum Opus +2, Fate's Ordained Ground +1, Power's Mantle of the Aspirant +2); Order's is the only one bound to a person rather than to a square or to the caster."
+   },
+   {
+    "keyword": "Damage redirection / damage share",
+    "role": "PRODUCE",
+    "talents": "Shoulder the Oath — take half an ally's incoming damage instead, then reduce the remainder by your ranks in White. Classified MITIGATION by the damage-census, correctly; it is not a damage source. Only two comparators exist corpus-wide: leyline/White's Shared Burden and, in the reverse direction, deity/Power's Mantle of the Aspirant."
+   },
+   {
+    "keyword": "Once per scene",
+    "role": "CONSUME",
+    "talents": "Final Decree — the only use-limit gate in the tree."
+   },
+   {
+    "keyword": "Focus",
+    "role": "NEITHER",
+    "talents": "Never spent, generated or referenced by any Order talent — notable given the leyline guide assigns Focus to Blue ('precision costs mental effort'), one of this tree's two gate colours. Concord implicitly SAVES focus by making Aid free. Consistent with the atlas: Focus is a heroic currency and only three leyline talents spend it."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "NEITHER",
+    "talents": "Never produced or spent anywhere in the tree, despite the leyline guide's 'Opportunity fits White (unity generates shared fortune)' and the deity guide's placement of Opportunity spends in the Free-Action band."
+   },
+   {
+    "keyword": "Plot Die",
+    "role": "NEITHER",
+    "talents": "Untouched, despite the leyline guide naming Plot Die integration as White's key mechanic and Plot Die manipulation as Blue's capstone identity — the two colours that gate this tree. Corpus-wide only 3 talents in 2 trees (leyline/Red and heroic/Agent) touch the Plot Die at all, so this is a system-wide miss rather than an Order-specific one."
+   }
+  ],
+  "crossTreeHooks": [
+   "Lawkeeper's Eye — its main clause is 'you AND YOUR ALLIES have advantage on attack tests against that character'. Worth nothing without allies who attack, and worth nothing in any round where those allies already have advantage from another source (binary advantage). Its value peaks in a party with no other advantage generator — and the corpus over-produces advantage (45 talents / 13 trees produce it, 7 consume it), so that party is rare. Directly anti-synergistic with a deity/Knowledge partner, whose Pack Share and The Pack already supply a bigger, stacking version of the same job.",
+   "Concord — '+Presence damage on each Covenant ally's first attack each round' requires allies who attack, and the Free-Action Aid clause needs multiple Covenant participants, which the tier cap does not clearly supply before L6. Its ceiling is set entirely by the rest of the party, and its exact cost-and-depth twin (deity/Fate's Weave the Thread) does the same job plus a free Reactive Strike.",
+   "Covenant, Bear Witness, Shoulder the Oath — all require a willing ALLY who stays inside Attunement Range. The tree wants a durable melee partner and has no mobility to keep pace with one; a partner with self-repositioning or a range-extending effect fixes this seam. deity/Civilization's Trade Routes (ally teleports between Foundations as a Free Action) is the cleanest external fix in the corpus.",
+   "Edict, Sealed Edict, Final Decree damage — depends on the enemy CHOOSING to act, so it pairs powerfully with any outside effect that forces or compels an enemy action, converting a voluntary-compliance prohibition into a guaranteed violation on someone else's turn. The named sources: deity/Power's Kneel (Compelled — 'must spend its next action either moving toward you or...') and Absolute Authority ('you choose the target's action on its next turn'), leyline/Red's Incite ('it must Strike the nearest character or lose its Reaction'), and leyline/Green's Drive the Prey ('must move away from you on their next turn'). Power + Order is the strongest two-path combination this tree has, and it is the seam that turns Order's soft control into hard control.",
+   "Sealed Edict and Verdict — both resolve on the target's DISCIPLINE test. Any ally effect that imposes disadvantage on Discipline, applies Exhausted, or drains the target converts these from coin-flips into reliable damage. The corpus produces disadvantage in 14 talents across 9 trees and consumes it nowhere, so this seam is available and unclaimed — and leyline/Blue, Order's own gate colour, is the largest producer (5 talents).",
+   "Verdict's 10-ft cascade and Final Decree's 10-ft burst — want enemies CLUSTERED. Strong seam with any tree that pulls enemies together or creates difficult terrain that bunches them (leyline/Green's cluster engine is built for exactly this); anti-synergistic with isolation-based partners (leyline/Black) that scatter the enemy line.",
+   "Investiture — ten Investiture to run the kit and zero generated in-tree. The character is wholly dependent on Draw Mana (a leyline attunement, not this tree) or another path's regeneration; a partner or path that returns Investiture roughly doubles this tree's active output.",
+   "Temporary HP (Bear Witness, Shoulder the Oath, Final Decree) — temp HP generally does not stack, so these overlap and are partly wasted alongside other temp-HP sources in the party (14 talents across 9 trees produce it, notably deity/Fate's Bulwark Ground and deity/Civilization's Bonds of Community). Order's temp HP is best in a party that has none.",
+   "Lawkeeper's Eye's intent foreknowledge — its value is realised by whoever can ACT on the information (a readied ally, an interrupt, a repositioner). Alone, the Order character usually cannot convert knowing an enemy's next action into anything, because the tree has no Reaction that keys off it. It is also redundant beside a party member holding leyline/Blue's Read Intent or deity/Fate's Read the Threads, both of which read intent on any target rather than only an Edicted one — and Fate's converts the reading into board position in the same activation. The nearest thing in the corpus to a built-in payoff for a correct prediction is leyline/Blue's Forewarned, which turns one into an extra Reaction."
+  ],
+  "topThree": [
+   "Lawkeeper's Eye — free, passive, no action to place or maintain, and it does two things at once: party-wide persistent attack advantage against a marked enemy, and intent foreknowledge. Neither half is best-in-class (deity/Knowledge's mark-payoff is bigger and stacks; deity/Fate's Read the Threads works on anyone and repositions a trap in the same activation), but nothing else in the corpus delivers either for zero cost at depth 1, L2, and no other talent delivers both at once.",
+   "Verdict — the structural keystone. It converts the tree's conditional Edict economy into damage that happens on the player's schedule, and adds a 10-ft spirit-damage-plus-Disoriented cascade on top. Without it the Edict branch is at the enemy's mercy. Priced at parity with deity/Destruction's Cascading Failure while hitting fewer targets and being the only one of its peer group that can miss — and still a top-three pick.",
+   "Covenant — one Action and one routine-cost Investiture at level 1 buys +1 to ALL defenses on two characters for the whole scene, plus remote Aid, plus the hook every other Covenant talent reads. The best value-per-Action in the tree, and the corpus's only two-way, person-bound pact — though deity/Fate and deity/Civilization both deliver the defence half as a Free Action at the same depth."
+  ],
+  "bottomThree": [
+   "Concord — 2 Actions and 2 Investiture at depth 2 for a Covenant network the tier cap barely supplies before L6, and its headline clause re-grants a standard action every character already has. Its cost-and-depth twin, deity/Fate's Weave the Thread, grants the same Free-Action Aid plus a free Reactive Strike for allies: same price, same slot, strictly more.",
+   "Sealed Edict — pays a second Investiture at placement for a conditional on a conditional, and loses that Investiture entirely on any Edict that never gets violated. Depth 1 but locked to L6, where its two identical-shape twins (Fate's Inevitable Snare, Destruction's Pinpoint Charge) are available at L2 with no rank gate.",
+   "Bear Witness — free and repeating, but temporary HP equal to your ranks in White is 2 per round at L1-5, to a maximum of one ally, in a depth-1 slot competing with Lawkeeper's Eye. deity/Fate's Bulwark Ground sits at the same depth, level and cost (free Passive), and grants temp HP AND denies attackers advantage against the protected ally."
+  ],
+  "weakTalents": [
+   {
+    "name": "Concord",
+    "reason": "OVERCOSTED, and now with an exact comparator rather than an assertion. 2 Actions plus 2 Investiture at depth 2, and Covenants cap at TIER, so at levels 1-5 you hold exactly one Covenant. The clause reads 'an ally in a Covenant with you may ... grant any other Covenant ally the benefit of the Aid action'; Covenant's own text says 'you and that ally enter a Covenant', so if the Order character is a Covenant member the ally can Free-Action Aid YOU at Tier 1, and only if 'Covenant ally' excludes the Order character does the clause have no legal target before Tier 2 — a genuine rules ambiguity worth escalating to Ben as a ruling, not the settled dead letter an earlier pass asserted. Either way the Aid it grants is a standard action every character already has, and the advantage from it does not stack with Lawkeeper's Eye's or Final Decree's. What reliably survives is flat +Presence damage on one to three first-attacks per round. THE COMPARATOR SETTLES IT: deity/Fate's Weave the Thread costs 2 Actions + 2 Investiture at depth 2, L3 — identical price, identical slot — and grants a Free-Action Aid once per round to any ally on a linked square PLUS a free Reactive Strike against any enemy who trips a Snare within 30 ft."
+   },
+   {
+    "name": "Sealed Edict",
+    "reason": "A conditional on a conditional, sold at a premium, and the only talent of its shape in the atlas carrying a rank gate. The Investiture is spent at PLACEMENT, so it is lost outright on every Edict the enemy never violates; and even on a violation the extra [Tier][Die] and Weakened only land if the target also fails Discipline vs your Blue. Nominally depth 1 but gated to level 6 by its Blue 3+ prereq, so it arrives at the same level the base Edict's die improves anyway. The atlas has two structurally identical Free-Action upgrade riders — deity/Fate's Inevitable Snare and deity/Destruction's Pinpoint Charge, both 'when you place X, spend an additional 1 Investiture to declare it...' — and NEITHER carries a rank gate; both are depth 1, L2. Compare Lawkeeper's Eye at the same depth in the same tree: free, unconditional, party-wide, available at L2. Its one real virtue is that the rider costs a Free Action, not an Action."
+   },
+   {
+    "name": "Bear Witness",
+    "reason": "BELOW THE CURVE for a depth-1 deity talent, and beaten outright by its direct analogue. Temporary HP equal to ranks in White is 2 at levels 1-5 and 3 at 6-10, delivered to at most tier Covenant allies — one ally for the whole of Tier 1. deity/Fate's Bulwark Ground occupies the same depth (1), the same level (L2) and the same cost (free Passive) and grants temp HP equal to your tier PLUS a standing denial of advantage to anyone attacking the protected ally — two effects to Bear Witness's one. Free and repeating, so not a never-pick, but as the deity guide's 'new twist on the same fantasy' it adds the least of any node in the tree while competing for a pick with Lawkeeper's Eye. It is also the only talent in the tree under its description word cap (25 words against ~30-45), a fair index of how little it carries."
+   },
+   {
+    "name": "Final Decree",
+    "reason": "PROMISE-VS-DELIVERY RISK, not a never-pick — and uniquely bad in the atlas on one specific axis. 3 Actions is an entire Slow turn, plus 3 Investiture, plus once per scene — and the trigger is 100% under enemy control: 'The first time any bound enemy takes the prohibited action'. Against opponents who understand the prohibition, the correct play is simply to obey it, and the capstone does nothing for the rest of the scene. CHECKED against the other nine deity capstones on this pass: Destruction's The Unmooring, Fate's Thread of Inevitability and Knowledge's The Final Study all cash their tree's placed-token economy on the PLAYER's own declaration or test, and Sovereignty's, Power's and Civilization's capstones apply a scene-long state immediately. Final Decree is the ONLY deity capstone in the atlas that hands its trigger to the opponent. It also grants Witnesses 'an advantage on its next attack test', worth zero to any Witness already holding advantage from Lawkeeper's Eye — and because Final Decree binds every enemy in Attunement Range as if Edicted, Lawkeeper's Eye covers every such target the Witness can SEE, so the rider is redundant except against an unseen enemy."
+   },
+   {
+    "name": "Verdict (cost note only)",
+    "reason": "Not weak — it is a top-three talent — but the overcosting claim needed re-checking, and two of the earlier pass's three citations were factually wrong. CORRECTED: forcing your own placed trigger to fire costs Order 2 Actions plus 2 Investiture plus a Blue vs Cognitive test that can simply fail. (a) deity/Destruction's entry-level Set Charge does say 'You may detonate any of your Charges as a Free Action on your turn' — that comparator stands and is damning. (b) deity/Destruction's Cascading Failure costs 2 Actions AND 2 Investiture — the SAME as Verdict, not 'for 2 Investiture' as previously claimed — but detonates ANY NUMBER of Charges, merges their hazard zones, and requires no test. (c) The Fate comparator is Foreknown Strike, NOT 'Fated Trap' (a talent that does not exist in the corpus), and it costs 2 Actions AND 2 Investiture, not '2 Investiture' — but it buys a scene-long licence for allies to spring any Snare as a Free Action, where Verdict buys one detonation. NET CORRECTED VERDICT: Verdict is priced at parity with its two 2-Action peers while detonating one token instead of many, buying no ongoing licence, and being the only one of the three that can miss."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Two distinct answers, and the split is the point. The SETUP is genuinely durable: Covenant and Edict both last the scene, so a 2-Action, 2-Investiture opening investment then pays out at zero further cost every round through Bear Witness's temp HP, Lawkeeper's Eye's party-wide advantage, and Shoulder the Oath's free Reaction — a low, steady floor that never runs out for the whole fight. The ACTIVE loop is the opposite: a full Verdict cycle costs 3 Actions and 3 Investiture (Edict 1+1, Verdict 2+2) — the Actions fit inside a single Slow turn, so the binding constraint is purely Investiture. From a Tier-1 pool of about 4 (2 + max(AWA,PRE)), Covenant + Edict + Verdict spends the pool exactly, giving ONE cycle; after that the character must spend an Action on Draw Mana for 1 Investiture per Action (2 per Action from L6). Realistically: roughly 2 rounds of full-power play, then one meaningful Investiture play about every third round, on top of a passive floor that persists indefinitely. The tree degrades gracefully rather than going dark, but it cannot press an advantage — and unlike deity/Knowledge, whose Accumulate refunds 1 Investiture per round off the mark it was already placing, Order has no in-tree faucet to shorten that gap.",
+   "triggerGatedCount": 4,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 6,
+   "note": "RECOUNTED, and one count corrected for internal consistency. Reactions: 1 of 9 (Shoulder the Oath) — a real virtue, because the tree never makes its own Reactions compete for the 1-per-round cap, unlike leyline/White's seven. Trigger-gated: 4 of 9 by the stated definition (a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit) — Edict, Sealed Edict and Final Decree all wait on an enemy taking the prohibited action, and Shoulder the Oath is a Reaction. CORRECTED DOWN from 5: Concord was counted on the grounds that its payload needs a Covenant ally to attack, but Concord itself RESOLVES on activation (it establishes a scene-long state), which is the same ground on which the earlier pass correctly excluded Lawkeeper's Eye, Covenant and Bear Witness — all of them equally ally-dependent. Applying the test consistently gives 4. A divergence to record rather than resolve: the deterministic action-type table reports deity trees at 0-3 trigger-gated rows, so even 4 sits outside the measured band — the classifier evidently does not read 'the first time the bound character takes the prohibited action' as a trigger gate, and per the brief the talent text wins. Four of nine is still an unusually high fraction and is the tree's core fragility, since most of its output is not on the player's own schedule; Verdict exists precisely to buy that schedule back, at 2 Actions and 2 Investiture a use. Investiture spenders: 6 of 9 (the resourceCostersOutOfTree figure — in-tree Cost fields, counted by hand and matching the census's 0 regen / 6 costers), totalling 10 Investiture for the full kit against a pool of roughly 4 at L1 and 6 at L6-10, with zero in-tree regeneration; Focus and Opportunity are never touched, so Draw Mana is the character's only faucet."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.countReal",
+   "from": "5",
+   "to": "4",
+   "reason": "Concord was counted as a damage source. Its text is 'each Covenant ally's first attack each round deals additional damage equal to your Presence' — a rider on an ALLY's attack, with no roll formula. Both deterministic streams agree: the dossier header reports exactly 4 damage roll formulas (Edict, Sealed Edict, Verdict, Final Decree) and damage-census gives Order SOURCE 3 + SRC+AMP 1 = 4 offensive sources with AMPLIFY 1 listed separately. The profile's own note on Concord already said it was 'not damage the Order character deals', so the count contradicted its own evidence. Concord is retained in damageTalents, relabelled AMPLIFIER."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction (dice)",
+   "from": "'2d8+INT (Edict) + 2d8 (Sealed) + 2d8 x2 (splash) ≈ 6d8 + INT ≈ 39'",
+   "to": "'... = 8d8 + INT ≈ 39'",
+   "reason": "Arithmetic error. The line enumerates four instances of 2d8 and then labels the sum 6d8; four instances of 2d8 is 8d8 (mean 36). The stated total of ≈39 is only consistent with 8d8+INT, so the total was right and the dice label wrong."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction (Action and Investiture count)",
+   "from": "'3 Actions and 3 Investiture of setup (Edict + Sealed rider + a second Edict) followed by Verdict at 2 Actions and 2 Investiture ... for 5 Actions and 5 Investiture — about 0.9 [Tier][Die] per Action'",
+   "to": "'Edict (1 Action, 1 Inv) + Sealed rider (FREE Action, 1 Inv) + Verdict (2 Actions, 2 Inv) = 3 Actions and 4 Investiture ... about 1.33 [Tier][Die] per Action'",
+   "reason": "Two reading errors. (1) Sealed Edict's action type in the dossier is 'Free Action', so it costs no Action — the profile charged it one. (2) The 'second Edict' contributes nothing to this line: Verdict says 'choose a character bound by one of your Edicts ... the Edict is immediately considered violated' — it violates ONE Edict; only Final Decree cascades 'every active Edict you have'. Correcting both drops the line from 5 Actions/5 Inv to 3 Actions/4 Inv and raises the per-Action rate from 0.9 to 1.33 (clustered) and from 0.5 to 0.67 (lone target). The ≈39 and ≈21 damage totals were correct and stand."
+  },
+  {
+   "field": "damageAccounting.repeatability / sustainability.roundsOfGoodOptions",
+   "from": "'A full Verdict cycle costs 3 Actions and 3 Investiture (Edict + Verdict) and cannot run in consecutive rounds'",
+   "to": "same cost, but the constraint restated as Investiture-only; the 3 Actions fit inside one Slow turn",
+   "reason": "The Investiture arithmetic was right (3 per cycle, zero regen, ~4 pool at Tier 1) but the phrasing implied an Action constraint. A Slow turn is 3 Actions (SYSTEM-PRIMER), and Edict (1) + Verdict (2) = exactly 3, so the entire cycle is one round's worth of Actions. What blocks a repeat is the empty Investiture pool, nothing else — a fact the profile missed."
+  },
+  {
+   "field": "axes.information.evidence + uniqueOwnership[1] + topThree[0] + powerByDepth[depth 1-2]",
+   "from": "'A grep of all 365 talents finds this the only instance of declared-intent foreknowledge in the game' / 'the single instance of reading an enemy's chosen action before it happens'",
+   "to": "Not unique — three talents do it; Order's is the only free, no-action, no-test version",
+   "reason": "REFUTED by grep of all-talents.json. deity/Fate's Olvarra's Sight: 'Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make.' leyline/Blue's Read Intent (line 175 of leyline-Blue.md): 'Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.' The original grep evidently searched the exact string 'intended action', which only Lawkeeper's Eye uses. Fate's version is strictly broader in targeting (any character, no Edict required). Blue is one of Order's own two gate colours, which makes the redundancy worse, not better. Score left at 2 — Order's is still free and repeatable — but the uniqueness claim is removed and a crossTreeHooks redundancy note added."
+  },
+  {
+   "field": "uniqueOwnership[0]",
+   "from": "'The only BEHAVIOUR-gated trap in the game. Every other placed trigger in the corpus fires on a positional event (entering a square, a detonation) ... It also travels with the target instead of sitting on the ground.'",
+   "to": "'The only PROHIBITION-shaped trap in the game' — reframed; the behaviour-gating and target-travelling claims are refuted",
+   "reason": "REFUTED by the text of deity/Destruction's Set Charge: 'place a Charge on an object, character, or 5 ft square ... Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\").' That is a freely-declared, non-positional, behaviour-keyed trigger on an open list, and it can be placed on a CHARACTER, so it travels with the target too. The residual true claim is the framing direction: an Edict is a prohibition the target can obey, making it the only placed effect whose ideal outcome is that it never fires — and unlike a Charge it cannot be detonated at will."
+  },
+  {
+   "field": "axes.protection.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Inflated against the stated anchor ('a tree with one Reaction that reduces damage once per round scores protection 2, not 4') and against the tree's own arithmetic. Temp HP is 'equal to your ranks in White' — the rank cap is 2 at levels 1-5 and 3 at 6-10, so Bear Witness pays 2/round and Shoulder the Oath reduces damage by 2. Covenants cap at tier ('up to your tier active Covenants'), so all of it reaches exactly ONE ally for the whole of Tier 1. That is the anchor's single Reaction (a better version) plus a +1-defenses buff on two characters plus 2 temp HP a round — a real competency (3), not 'one of the better options in the game' (4), which by the action-type census is leyline/White (10 Passives, 7 Reactions, 4 mitigation talents). Control was re-checked at 4 and left standing; that one is defensible."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "6 (Edict, Sealed Edict, Shoulder the Oath, Lawkeeper's Eye, Concord, Final Decree)",
+   "to": "5 (Lawkeeper's Eye removed)",
+   "reason": "Lawkeeper's Eye does not meet the definition supplied ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Its text is 'When YOU place an Edict, you learn ...' — self-initiated — and its second clause, 'While you can see a character bound by one of your Edicts, you and your allies have advantage', is a continuous state, not a trigger. Nothing in it waits on another character acting."
+  },
+  {
+   "field": "intentDrift claims[10] (description-length caps)",
+   "from": "'Both entries run roughly 75 words ... and Final Decree runs roughly 86 words against a ~70 cap, which by the guide's own test means \"doing too much\"'",
+   "to": "Six of nine talents exceed their band; Final Decree is 82 words and does NOT cross the guide's '90+' test",
+   "reason": "Two errors plus an incomplete sample. (1) Final Decree is 82 words, not ~86, and the guide states two separate thresholds — 'Capstones: up to ~70 words (more is overdesigned)' and 'A capstone that runs 90+ words is doing too much.' 82 breaches the first, not the second the profile invoked. (2) Only the two entries and the capstone were measured. Word-counting all nine: Covenant 73, Edict 77 (entry cap ~30-45); Bear Witness 25, Lawkeeper's Eye 40, Sealed Edict 47, Shoulder the Oath 51 (Tier-2 cap ~30-45); Concord 53, Verdict 61 (synthesis cap ~40-55); Final Decree 82 (capstone ~70). Six exceed their band, not three — the drift is worse than reported."
+  },
+  {
+   "field": "intentDrift claims[4] evidence + mechanicalKeywords 'Blue (skill rank)' + axes.damage_direct",
+   "from": "'All three damage formulas are (@tier)d(2 * @skills.blue.rank + 2)' / 'all three roll formulas'",
+   "to": "'All FOUR'",
+   "reason": "Miscount. The dossier header states 'Machine-readable roll formulas in this tree: 4 damage, 0 heal' and prints a ROLL FORMULA line on four talents: Edict and Final Decree with '+ @attr.int', Sealed Edict and Verdict without. The profile's own damageAccounting listed all four, so the intentDrift and keyword sections contradicted it. This matters because the count is the load-bearing evidence for the Blue-vs-White colour-split drift finding — which is otherwise correct and is verified verbatim against DESIGN-GUIDE-CLAIMS.md line 236."
+  },
+  {
+   "field": "weakTalents Concord / axes.action_economy / crossTreeHooks",
+   "from": "'the clause ... has no other Covenant ally to target' (asserted as fact at Tier 1)",
+   "to": "flagged as a genuine rules ambiguity worth a ruling",
+   "reason": "Text-vs-claim. Covenant reads 'you and that ally enter a Covenant', which places BOTH parties in the pact; Concord reads 'an ally in a Covenant with you may ... grant any other Covenant ally the benefit of the Aid action'. Whether 'any other Covenant ally' includes the Order character is unresolved on the page. If it does, the ally can Free-Action Aid you at Tier 1 and the clause is live from L3, not dead until L6. The profile stated one of two readings as settled fact and built a bottom-three verdict on it. Score left at 2 because the granted benefit is Aid, a standard action the primer prices at 'roughly zero' either way."
+  },
+  {
+   "field": "axes.social_influence.evidence",
+   "from": "scored 1 while asserting 'a tree named for the Lawgiver has no social mechanics at all'",
+   "to": "contradiction removed; the residual claim is 'no social TEST anywhere in the tree'",
+   "reason": "Internal contradiction: a 1 means one incidental instance, which the same evidence string then denied existed. The accurate statement is that Edict's prohibition is real out-of-combat leverage (hence 1, not 0) but no talent tests a social skill or supports Influence."
+  },
+  {
+   "field": "axes.damage_direct.evidence and Verdict's dice string",
+   "from": "'Verdict ([Tier][Die] to each other enemy within 10 ft...)' with the target's inclusion left unclear",
+   "to": "made explicit that the chosen target is NOT in the splash",
+   "reason": "Precision, not error — the profile's phrasing echoed the text but the peak-damage line depended on it. Verdict reads 'each OTHER enemy within 10 ft of the target tests Discipline', so the target takes only its own Edict's damage and the splash count is (cluster size − 1)."
+  },
+  {
+   "field": "weakTalents 'Verdict (cost note only)'",
+   "from": "'other placed-trap trees can force their trap to fire as a Free Action or for Investiture alone' (uncited)",
+   "to": "same claim, now cited to the specific talents",
+   "reason": "CONFIRMED, not corrected — but the comparison was an unsupported assertion, so I verified it. deity/Destruction Set Charge: 'You may detonate any of your Charges as a Free Action on your turn'; a deeper Destruction talent: 'Spend 2 Investiture and detonate any number of your active Charges simultaneously'; deity/Fate Fated Trap: an ally 'may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft'. Order pays 2 Actions + 2 Investiture + a test that can miss. The claim stands and is now evidenced."
+  },
+  {
+   "field": "uniqueOwnership[2], [3] and the Final Decree redundancy claim",
+   "from": "uncited cross-tree comparisons",
+   "to": "CONFIRMED, citations added; the Final Decree claim strengthened",
+   "reason": "Verified rather than changed. (a) The +1-to-all-defenses-plus-remote-Aid package exists twice elsewhere and both are ground-bound: Civilization's Foundation and Fate's Ordained Ground ('+1 to all defenses ... and may use the Aid action'). (b) The corpus's only other take-half effect is leyline/White's 'When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place' — so Shoulder the Oath being free and at Attunement Range is genuinely best-in-class. (c) Final Decree's advantage rider is not merely 'often' redundant but structurally so: it binds every enemy in Attunement Range 'as if bound by your Edict', which is exactly Lawkeeper's Eye's condition."
+  },
+  {
+   "field": "(checked, no change) all depth and earliestLevel values, all dice expressions, all Cost fields, reactionCount, resource totals",
+   "from": "—",
+   "to": "—",
+   "reason": "Recomputed every one against the dossier lines and the primer. Depths/levels all correct: Covenant d0/L1, Edict d0/L1, Bear Witness d1/L2, Lawkeeper's Eye d1/L2, Sealed Edict d1/L6, Shoulder the Oath d1/L2, Concord d2/L3, Verdict d2/L3, Final Decree d3/L4 — including earliestDamageDepth 0 / earliestDamageLevel 1. Dice: (@tier)d(2*@skills.blue.rank+2) yields exactly 1d6 at Tier 1 rank 2 and 2d8 at Tier 2 rank 3, and '2d8 ≈ 9' is the correct mean. Costs: 1/1/1/2/2/3 across six of nine talents = 10 Investiture, matching the census's 0 regen / 6 costers. Action-type distribution (Passive 2, 1 Action 2, 2 Actions 2, Free 1, Reaction 1, 3 Actions 1 = 9) and its percentages are correct, as are the deity guide targets quoted. reactionCount 1 is correct — Shoulder the Oath is the tree's only Reaction. No missed damage: no summon, hazard, zone, Afflicted tick or redirect delivers damage anywhere in this tree, and Shoulder the Oath is correctly excluded as mitigation."
+  },
+  {
+   "field": "axes[control].score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION. A 4 means 'the tree is one of the better options in the game for this'. Order's control is entirely SOFT: Edict is voluntary compliance (the enemy loses one option, spends no Actions, and a disciplined opponent simply obeys), and the only condition it applies is Disoriented — the weakest member of the denial family the primer prices. The tree has no forced action, no action denial, no immobilisation. Corpus comparators at equal or shallower depth: deity/Power Kneel (1 Action, 1 Inv, depth 0, L1) 'the target is Compelled ... the target must spend its next action either moving toward you or...' and Absolute Authority (depth 1, L2) 'you choose the target's action on its next turn'; leyline/Black Hollow Command (depth 0, L1) 'the target cannot take actions on its next turn'; deity/Fate Snare (depth 0, L1) and leyline/Green Grasping Vines (depth 1, L2) both 'Restrained'. Add the tier cap (ONE enemy constrained at L1-5) and 3 is the honest score."
+  },
+  {
+   "field": "axes[information].score",
+   "from": "2",
+   "to": "1",
+   "reason": "SCORE INFLATION by strict rubric. The rubric's 1 is literally 'one incidental talent, OR a rider on something else'. Order's ONLY informational content is one sub-clause of Lawkeeper's Eye ('When you place an Edict, you learn the bound character's intended action on its next turn'), on a talent whose other half is the advantage grant; I read all nine talent texts and no second Order talent carries any information effect. The tree also attaches no mechanism for acting on what it learns, where deity/Fate's Read the Threads converts the same reading into board position in the same activation. The profile's own evidence text ('One talent, and a rider on a talent whose other half is the advantage grant') describes a 1."
+  },
+  {
+   "field": "axes[information].evidence, uniqueOwnership[1], crossTreeHooks[8], topThree[0]",
+   "from": "deity/Fate's Olvarra's Sight ('You learn the action it intends to take on its next turn and any movement it plans to make', 1 Investiture, any character in Attunement Range)",
+   "to": "deity/Fate's Read the Threads (1 Action + 1 Investiture, depth 1, L2, any character in Attunement Range) — and it then moves a Snare or Ordained Ground square 'to any space the target will pass through'",
+   "reason": "FACTUAL ERROR, three occurrences. There is no talent named 'Olvarra's Sight' anywhere in the 365 (grep on name returns []; the Fate tree is Ordained Ground, Snare, Read the Threads, Bulwark Ground, Inevitable Snare, Hexmark, Weave the Thread, Foreknown Strike, Thread of Inevitability). The quoted text is Read the Threads'. The profile also omitted its 1-Action cost, which understated it — and missed its second clause, which makes Fate's version strictly more useful than Order's free one."
+  },
+  {
+   "field": "weakTalents['Verdict (cost note only)'].reason and damageAccounting.damageTalents[Verdict].note",
+   "from": "deity/Fate's Fated Trap lets an ALLY spring a Snare as a Free Action off a one-time 2-Investiture setup",
+   "to": "deity/Fate's Foreknown Strike (2 Actions AND 2 Investiture, depth 2, L3) buys a scene-long licence for allies to spring any Snare as a Free Action",
+   "reason": "FACTUAL ERROR. 'Fated Trap' does not exist in the corpus. The real talent is Foreknown Strike, and its setup costs 2 Actions in addition to 2 Investiture — the profile cited it as a '2-Investiture setup', which made Order look worse than the evidence supports."
+  },
+  {
+   "field": "weakTalents['Verdict (cost note only)'].reason, damageAccounting.damageTalents[Verdict].note, damageAccounting.verdict",
+   "from": "a deeper Destruction talent detonates any number for 2 Investiture",
+   "to": "deity/Destruction's Cascading Failure costs 2 Actions AND 2 Investiture — the SAME price as Verdict, not cheaper — but detonates ANY NUMBER of Charges, merges their hazard zones, and requires no test",
+   "reason": "FACTUAL ERROR of the same kind. Verified in all-talents.json: Cascading Failure is '2 Actions | 2 Investiture | d2 L3'. The overcosting FINDING survives (Set Charge's Free-Action detonation is a genuine free comparator, and Verdict is the only one of the three that can miss) but the profile's framing 'Order pays the most for the least flexible version' was wrong on price — it pays the same and gets less."
+  },
+  {
+   "field": "uniqueOwnership[0]",
+   "from": "deity/Destruction's Set Charge is the only cited counter-example to the freely-declared-trigger claim",
+   "to": "adds leyline/Blue's Forewarned (Passive, free, depth 0, L1): 'silently declare one character and one action type. If that character takes the declared action before your next turn, you gain 1 Reaction.'",
+   "reason": "UNIQUE-OWNERSHIP CLAIM under-tested. Forewarned is the closest structural cousin to Edict in the entire corpus — the same declare-an-action-type-on-a-named-enemy shape, free, refreshed every round, at depth 0 — and it sits in leyline/Blue, one of Order's own two gate colours. The surviving unique claim (Order INVERTS the shape: the only placed effect whose ideal outcome is that it never fires) is stronger for being stated against the right comparator."
+  },
+  {
+   "field": "uniqueOwnership[2]",
+   "from": "the same package — +1 to all defenses plus remote Aid for a standing ally — exists twice elsewhere (Civilization's Foundation; Fate's Ordained Ground)",
+   "to": "only ONE tree carries the full package: deity/Civilization's Lay Foundation has the +1-to-all-defenses half but NO Aid clause; only deity/Fate's Ordained Ground has both ('may use the Aid action at up to 30 ft range from that square'). Both comparators are FREE ACTIONS at depth 0, i.e. cheaper in action economy than Covenant's 1 Action.",
+   "reason": "OVERSTATED counter-claim in one direction and UNDERSTATED in another. Grep for 'to all defenses' returns five talents; Lay Foundation's text has no Aid. But the profile missed that both ground versions are Free Actions, which is the material comparative fact — Covenant is NOT the cheapest delivery of this package in the corpus. It also fixes the talent name (Lay Foundation, not 'Foundation')."
+  },
+  {
+   "field": "uniqueOwnership[3]",
+   "from": "The corpus's only other take-half effect is leyline/White's Shared Burden",
+   "to": "adds deity/Power's Mantle of the Aspirant (redirects damage the OPPOSITE way, caster-to-allies, inside a 3-Action once-per-scene capstone) and leyline/White's Devoted Conduit as the nearest passive relative",
+   "reason": "COMPLETENESS. Grep on 'in their place|damage instead|take half|redirect' returns four talents corpus-wide. The 'best-in-class' verdict for Shoulder the Oath is unchanged and correct — it is a FREE Reaction at Attunement Range at depth 1/L2 that also reduces the remainder and grants temp HP to both parties, against Shared Burden's 2 Investiture and adjacency."
+  },
+  {
+   "field": "uniqueOwnership[4] and oneLineIdentity and intentDrift.actuallyIs",
+   "from": "'The cleanest zero-cost, party-wide, persistent attack advantage against a marked target' stated as an unqualified strength; identity billed as 'making the whole party hit that target more easily'",
+   "to": "the FORM is unique but the JOB is done better by deity/Knowledge — Pack Share and The Pack give every ally in Attunement Range bonus Vital damage against the marked creature that SCALES with Insight count and STACKS with any advantage the party already has, and Death Mark hands every ally free [Tier][Die] Vital on the mark's death; Order's advantage is binary, caps at one unit, and is worth zero in any round an ally already has advantage from one of the corpus's 45 other producers",
+   "reason": "THE 'SOMETHING' TEST (lens e). This is the finding the profile was missing: Order's headline output is not the thing Order is best at. Its real 'something' is the PROHIBITION and the two-way portable pact, neither of which any other tree has. Rewrote oneLineIdentity and actuallyIs accordingly."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "5",
+   "to": "4",
+   "reason": "INTERNAL INCONSISTENCY. The profile excluded Lawkeeper's Eye (correctly) because its effects are a continuous state and a self-triggered rider, but counted Concord, which likewise RESOLVES on activation — it establishes a scene-long state — and is ally-dependent in exactly the way Covenant and Bear Witness are, both of which the profile excluded. Applying the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit') consistently gives 4: Edict, Sealed Edict, Final Decree, Shoulder the Oath. Also added a required note that even 4 sits outside the deterministic table's 0-3 deity band, i.e. the classifier does not read 'the first time the bound character takes the prohibited action' as a trigger gate, and per the brief the talent text wins."
+  },
+  {
+   "field": "intentDrift.claims (new row appended)",
+   "from": "(absent)",
+   "to": "CROSS-TREE PROMISE OVERLAP: deity/Sovereignty's intent file promises 'Decrees — declared laws that hold sway within his reach' and the signature-resource audit finds Decree is NAME ONLY there (all nine Sovereignty talents single-target, no zone, no radius). deity/Fate promises 'anchors allies to Ordained Ground ... fortifies whoever holds it' and deity/Civilization promises 'binds allies with the shared strength of foundations'.",
+   "reason": "Lens B(d) explicitly asks whether this tree's promise is ALSO made by another tree's intent file, and the profile never checked. Both halves of Order's promise are double-claimed. On declared law Order wins outright — it is the corpus's only delivered implementation of a fantasy two intent files promise, which is a credit the profile was not giving it. On ally-fortification Order is the third implementation of a thrice-promised idea, differentiated only by portability and reciprocity."
+  },
+  {
+   "field": "intentDrift.claims[description-length].evidence",
+   "from": "SIX of nine exceed their band ... This remains a finding against Order",
+   "to": "same six talents and same word counts (re-verified: Edict 77, Covenant 73, Verdict 61, Shoulder the Oath 51, Sealed Edict 47, Final Decree 82), PLUS comparative context — 38 of the 90 deity talents (42%) breach their band; Order is second-worst by mean (56.6 words) and by breach count (6/9), both behind Fate (61.8, 7/9); Chaos breaches zero",
+   "reason": "The word counts were exactly right and I confirmed all nine by script — that field survives unchanged. But a lens-B pass must say whether the miss is Order-specific or atlas-wide, and it is substantially atlas-wide."
+  },
+  {
+   "field": "weakTalents[Concord].reason / [Sealed Edict].reason / [Bear Witness].reason / [Final Decree].reason",
+   "from": "weakness asserted on intra-tree grounds only",
+   "to": "each now carries the exact same-cost, same-depth corpus comparator: Concord vs deity/Fate's Weave the Thread (2 Actions + 2 Inv, depth 2, L3 — same Free-Action Aid PLUS a free Reactive Strike); Sealed Edict vs Fate's Inevitable Snare and Destruction's Pinpoint Charge (identical Free-Action +1-Investiture upgrade-rider shape, both depth 1/L2 with NO rank gate, where Sealed Edict's Blue 3+ pushes it to L6); Bear Witness vs Fate's Bulwark Ground (same depth, level and free-Passive cost, granting temp HP AND advantage-denial); Final Decree checked against all nine other deity capstones — it is the ONLY one whose trigger is handed to the opponent",
+   "reason": "Lens B requires weakness claims to be settled against the other twenty trees, not asserted from inside the tree. All four survive and are now stronger; none was overturned."
+  },
+  {
+   "field": "axes[buff].evidence",
+   "from": "cited Covenant's '+1 to all defenses to two characters for the scene' as buff evidence while also scoring it under protection",
+   "to": "Covenant's defence bonus is scored under protection only; buff evidence is now Lawkeeper's Eye + Concord + Final Decree's rider, with the note that deity/Knowledge's ally-damage buff is strictly larger because it scales and stacks where binary advantage cannot",
+   "reason": "DOUBLE-COUNTING across two axes. The score stays at 3 — the remaining evidence still supports 'a real, usable competency with at least one good talent' — but the reasoning no longer counts one clause twice."
+  },
+  {
+   "field": "powerByDepth[depth 0].note and axes[protection]/[terrain_zone]/[mobility]/[action_economy] evidence",
+   "from": "intra-tree reasoning only",
+   "to": "comparators added throughout: Lay Foundation and Ordained Ground deliver +1-to-all-defenses as FREE Actions at depth 0; Fate's Bulwark Ground beats Bear Witness; Civilization's Trade Routes is the mobility Order lacks; Fate's Weave the Thread / Thread of Inevitability and Knowledge's The Final Study / Death Mark grant genuinely NEW free actions where Order only re-grants Aid",
+   "reason": "Lens B housekeeping. Scores for protection (3), mobility (0), terrain_zone (0) and action_economy (2) all SURVIVE unchanged and are now defended comparatively. I specifically considered deflating action_economy to 1 and did not: two talents touch Aid's economy and the saving of the ally's Reaction under the 1-per-round cap is real, so 'present but minor' is right."
+  },
+  {
+   "field": "gaps (new entry appended)",
+   "from": "(absent)",
+   "to": "'No mark-payoff scaling. The Edict is a mark, but nothing in the tree makes the mark grow and nothing lets an ally add to it — contrast deity/Knowledge's Insight and heroic/Hunter's quarry. Order's mark carries exactly one binary advantage and one delayed die, forever.'",
+   "reason": "The gap only becomes visible on a cross-tree read, and it is the structural reason the tree's mark loses the comparison to Knowledge's. Also strengthened the existing 'no hard action denial' gap by naming the four trees that beat it at equal or shallower depth."
+  },
+  {
+   "field": "NOT CHANGED — checked and found correct",
+   "from": "—",
+   "to": "—",
+   "reason": "Fields I attacked and could not break: all nine word counts (recomputed by script, exact match); the action-type distribution (Passive 2 / Special 0 / 1 Action 2 / 2 Actions 2 / Free 1 / Reaction 1 / 3 Actions 1); the four roll formulas and the countReal=4 / countFalsePositiveMitigation=1 split (Shoulder the Oath and Covenant correctly excluded, Concord correctly demoted to amplifier); the peakDamagePerAction arithmetic (8d8+INT ~ 39 across three targets, 1.33 [Tier][Die] per Action); the Tier-1 Investiture pool of 4 exactly funding Covenant+Edict+Verdict; the 'only two-way pact in the corpus' claim (grep on pact/bond/sworn/oath/linked returns nothing else reciprocal); 'best-in-class damage redirection'; the White-never-tests drift; the both-entries-deliver-turn-one claim; and the resource-spine claim, which is if anything understated — the deity guide only asked for 'soft tokens' and the tree shipped two hard ones with caps and durations."
+  }
+ ]
+}

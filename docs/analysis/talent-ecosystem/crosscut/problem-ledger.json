@@ -1,0 +1,239 @@
+{
+ "run": "wf_0b59b6ca-5bc",
+ "summary": "Ranked ledger of 20 problems, each re-verified this session against raw talent text, `data/authored/*`, `data/domain.json`/`data/leyline.json`, or engine source. Four headline findings from the thirteen analyses are DROPPED as measurement artefacts — most importantly the \"42 mis-dated talents / fix derive-dossiers.js\" item that eight analyses called the top repo action: I ran the check and 0 of the 75 talents carrying a \"3+\" prerequisite are dated below L6 in the current dossier (regenerated 18:58). The correction is already in the data, and gate timing turns out to be near-symmetric (heroic mean 6.0 L6-gated talents per tree, leyline 6.4) — so the brief's own premise (\"heroic trees are reachable by ~L4-L5\") is the thing that was wrong, not the tooling. The two most serious real problems are structural and neither is about damage: (1) leyline/White gives a player 2 talents out of 25 to spend an Action on while every deity tree gives 5-8 out of 9 — an agency gap, which is the correct diagnosis of the designer's White/Blue worry and means \"add damage\" would be the wrong fix; (2) fourteen of twenty-one trees can never damage two enemies with one play at any level, and five of six heroic paths have literally zero. The correct answer to designer question 2 is that gate timing is fine and formula SCALING is not: every leyline/deity damage die is `(@tier)d(2*rank+2)` and multiplies x2.57 at level 6, while all five heroic damage formulas are flat across tiers 1-2 by construction.",
+ "droppedAsArtefact": [
+  "THE 41/42/43/52 MIS-DATED TALENTS BUG — DEAD AS AN ACTION ITEM. Eight analyses call \"fix derive-dossiers.js\" the highest-value repo action. I ran it against the live dossier: of 365 talents, 75 carry an 'X 3+' prerequisite and ZERO have earliestLevel < 6. `rankGate` is populated with the non-colour skill (Devastating Blow `Athletics 3+`, Wit's End `Intimidation 3+`, Foresight `Discipline 3+`). The dossier was regenerated at 18:58 after most analyses ran. The CONCLUSIONS reached through the phantom bug are right (heroic is back-loaded to L6); the repo fix is done. Only residue: one over-correction, ledger item 20.",
+  "\"HEROIC PATHS ARE FULLY REACHABLE BY ~L4-L5\" (the brief's own stated structural fact) — REFUTED, and this is what caused six analyses to chase a nonexistent tooling bug. Recomputed L6-gated talents per tree: heroic Agent 7, Envoy 6, Hunter 6, Scholar 6, Warrior 6, Leader 5 (mean 6.0); leyline White 5, Black 5, Red 6, Blue 8, Green 8 (mean 6.4). Gate timing between the two atlases is near-symmetric. Any finding of the form \"leyline is uniquely back-loaded\" is dead.",
+  "\"THE HEROIC ATLAS'S ACTION-TYPE MIX IS WRONG\" — REFUTED. Measured across all 150 heroic talents: Passive 34% / Special 29% / Action 14% / 2 Actions 8% / Free 7% / Reaction 5% / 3 Actions 3%, against the official Cosmere benchmark the guide cites (34/30/14/8/7/5/2). Seven rows out of seven. There is no heroic design guide in DESIGN-GUIDE-CLAIMS.md, so every heroic criticism measured against leyline/deity conventions is measuring the wrong standard.",
+  "\"FOUR OF THE FIVE DEITY TOLL BOOTHS ARE WHITE\" (the brief's deity-gate-audit) — REFUTED by counting BOTH channels in data/authored/deity-*.json (`@skills.<c>.rank` plus the `color`/`rangeColor` targeting field). Exactly ONE pure toll booth exists: Fate/White (0 rank refs, 0 colour refs). Three near-dead gates: Sovereignty/White (1), Destruction/Blue (1), Life/Blue (1) — two of those three are not White. Knowledge/Green is NOT a toll booth (0 rank, 5 rangeColor — Green sizes Attunement Range). Civilization/White is the tree's DAMAGE DIE (5 rank refs: the Combat Construct's HP and its Slam attack are both `(@tier)d(2*@skills.white.rank+2)`). Order/White carries 4 rank + 2 colour refs. Any recommendation built on \"White is the colour nobody rewards\" rests on a classifier that read one field of two.",
+  "\"ADVANTAGE IS OVER-PRODUCED — 45 TALENTS ACROSS 13 TREES\" — ~2.5x over-counted on the measure that matters. The true producer count is 36, and only about 15 can land on an attack roll; the other ~21 sit on non-colliding skills (Cognitive, Perception, Deception, Intimidation, Insight, Agility, stealth, social, Erudition, Deduction). Since a PC holds one leyline + one heroic path or one deity tree, acute redundancy is three specific pairings (Green+Hunter, inside Order, inside Power), not ecosystem-wide. And where a free grant exists a player never buys the paid one, so the cost is a talent slot, not a resource.",
+  "THE COSINE-SIMILARITY MATRIX AS AN ARBITER OF ANYTHING. Black<->Red is the top pair of 210 at 0.920 while Black is 5 vital / 0 energy and Red 6 energy / 0 vital — opposite damage types the vector cannot see. Its `deal_damage` classifier misses 33 of the 43 formula-carrying talents. And the Blue<->Scholar rank moves 10 -> 20 -> 25 -> ~122 depending purely on dimension selection. The metric measures shared sentence shape. Retire it; keep the text-level correspondence tables.",
+  "\"BLUE AND SCHOLAR DO THE SAME THING\" (the review's trigger hypothesis) — REFUTED on text. 17 of 25 Blue talents and 18 of 25 Scholar talents have no correspondence in the other tree; currencies are disjoint (Blue 16/25 Investiture, Scholar 0/25 Investiture and 7/25 Focus); a full third of each tree (Blue's 8 Illusion talents, Scholar's 8 Artifabrian) has zero contact with the other, and neither path's INTENT file mentions the other. What they share is a party ROLE SLOT and a failure mode — which is ledger item 1, not a redundancy.",
+  "\"BLUE'S FIVE DISADVANTAGE TALENTS COLLAPSE INTO ONE\" — over-applies the primer, whose binary rule is about a second source ON THE SAME ROLL. Blue's five fire on different targets at different times. The narrow true version (Pattern Recognition and False Premise both write \"their next test\" and are mutually worthless on one target in one round) is real but small.",
+  "\"WHITE OUT-CONTRIBUTES RED AT TIER 2 BY ROUGHLY 2:1\" — withdrawn by its own critic on four independent grounds (the 35-point round needs 9-10 talents; 12 of 35 points ride an unsettled Draw Mana ruling; 18 points assume four enemy attacks per round, an out-of-scope adversary assumption; the Red round omits a second Searing Bolt and Momentum's Edge). Mitigation is not fungible with damage anyway.",
+  "\"SOVEREIGNTY DOES NOTHING FOR ITS OWNER / EVERY ONE OF ITS NINE IS MEDIATED\" — refuted by the tree's own text. Five talents shrink an enemy's damage dice for ALL its damage including attacks on the owner, and Sovereign's Favor grants [Tier][Die] temp HP on use with no subsequent roll. Also \"nine axes at zero\" is a 9-talent-vs-25-talent artefact: all ten deity trees score 3-9 zeros against all five leyline trees at 2-3.",
+  "CROSS-TREE \"STRICT DOMINATION\" CLAIMS GENERALLY (Exalt vs The Pack, Risen Servant vs Forge Construct, etc.). A player picks a god and gets nine talents; the choices they actually make are inside their own tree. Two of the eight claimed dominations collapse on reading anyway (Risen Servant sustains up to TIER servants against Forge Construct's flat one; Kneel's advantage clause is a free standing rider fed by the Black Attunement Key every Power character carries)."
+ ],
+ "problemLedger": [
+  {
+   "rank": 1,
+   "problem": "leyline/White gives a player two talents in twenty-five that they can spend an Action on; the tree's problem is agency, not damage, and adding damage would not fix it.",
+   "evidence": "Action-costing census (1 Action + 2 Actions + 3 Actions, excluding Free and Reaction), recomputed over all 365 this session: leyline/White 2/25 (Guiding Signal 1A at L1, Ordered Advance 2A at L4). Next lowest are heroic/Envoy 3/25, heroic/Scholar 3/25, heroic/Agent 4/25, leyline/Red 4/25, leyline/Blue 5/25. Every deity tree runs 5-8 of 9 (Death 8, Power 8, Life 8, Chaos 7, Sovereignty 7, Civilization 6, Knowledge 6, Order 5, Destruction 5, Fate 5). heroic/Warrior is 13/25. Normalised: leyline ~18% of slots, heroic ~25%, deity ~72%. White's remaining 23 slots are 10 Passives, 6 Specials and 7 Reactions, and the 7 Reactions compete for one slot per round — of which three (Interposing Shield 'an ally within 10 feet takes damage', Retributive Guard 'an ally adjacent to you takes damage from an enemy', Shared Burden 'an ally adjacent to you takes damage') fire on the same event. leyline/Blue's five Action talents include three illusions, and its three teeth (Counterspell, Ghostly Walls -> Absolute Stillness, Anticipate) are all L6.",
+   "severity": "Changes play every round of every fight, at every level 1-10. This is what the two PCs who triggered the review are actually experiencing: not 'I do no damage' but 'I Draw Mana and then have two Actions my sheet gives me nothing to do with'.",
+   "kind": "DESIGN",
+   "blastRadius": "Two trees acutely (leyline/White, leyline/Blue) and the two PCs in them; the census covers all 21 trees and reframes the leyline atlas generally (18% of slots Action-costing against deity's 72%).",
+   "needsRuling": true,
+   "objection": "The defence advocate: White's action-light shape is Revision Principle 1 ('Specials first') plus the primer's 'a talent that reproduces a standard action is worth roughly zero' carried to their conclusion; and White is the only colour whose refuel Action is itself an effect — the Key heals every ally in range for Tier on every Draw Mana, and Beacon of Stability is a Special riding that same Draw Mana to strip a condition, so White has no dead refuel round. Its seven Reactions have five distinct trigger classes, so the slot is coverage, not redundancy.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 2,
+   "problem": "Fourteen of twenty-one trees can never damage two enemies with one play at any level, and five of six heroic paths have literally zero multi-enemy damage talents.",
+   "evidence": "Full-corpus census run this session and hand-checked against every candidate's text. Trees with a multi-enemy damage talent: deity/Destruction 3 (Set Charge d0/L1 '10 ft, each character'; Fault Line d2/L3 60 ft line; The Unmooring capstone), leyline/Red 3 (Flame Surge d1/L2 [Size] area, Arc Flash d1/L2 arcs to one other, Chain Detonation d5/L6), deity/Order 2 (Verdict d2/L3 'each other enemy within 10 ft', Final Decree capstone), deity/Chaos 2 (Cascade Collapse d2/L3, Unravel Everything d3/L4 — but BOTH detonate 'all your Omens' against a cap of 'up to tier', which is 1 through level 5, so both are single-target for the whole of L1-5), deity/Civilization 1 (Magnum Opus, capstone, 3 Actions, once per scene), deity/Death 1 (Necrotic Cascade d2/L3, triggers only on a death), deity/Power 1 (Unstoppable Advance d1/L2, only enemies whose space you move through), leyline/Black 1 (Spoils of Isolation d2/L3, flat damage = your tier). heroic/Warrior has exactly one in scope: Meteoric Leap, depth 3, `Athletics 3+`, level 6, 2 Actions + 2 focus, unarmed (Shard Training's graze-additional-targets is a second but is gated on 'Access to a Shardblade and Shardplate', a GM reward outside the fence). ZERO in leyline/Blue, leyline/Green, leyline/White, heroic/Agent, heroic/Envoy, heroic/Hunter, heroic/Leader, heroic/Scholar, deity/Fate, deity/Life, deity/Knowledge, deity/Sovereignty. Before level 6, exactly TWO trees have a repeatable unconditional multi-enemy play: deity/Destruction (Set Charge, L1) and leyline/Red (Flame Surge, L2). And Black's one AoE is built backwards: Spoils of Isolation reads 'Each Weakened character within Attunement Range', and Black's only two Weakened sources — the Attunement Key ('enemies... with no ally within 5 feet become Weakened') and Sapping Hex ('When you hit an Isolated character... it becomes Weakened') — both require the target to be standing apart from every other enemy, so the AoE scales with how spread out the enemies are and does nothing against a clump.",
+   "severity": "Not a balance question — an encounter-design constraint, at every level. The GM cannot put four enemies on the table without the fight becoming a queue, and that is true for the specific party this review was commissioned about.",
+   "kind": "DESIGN",
+   "blastRadius": "All 21 trees measured; 12 at zero. The whole heroic atlas (150 talents, six paths) has one in-scope talent, at level 6.",
+   "needsRuling": true,
+   "objection": "None of the thirteen analyses raised this, so no advocate has defended it. The nearest available objection is scope: whether the right target-count budget is 'most trees can hit groups' or 'groups are one specialist's job' cannot be settled without adversary statblocks (are minion packs the norm?), which the fence excludes.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 3,
+   "problem": "Every leyline and deity damage die multiplies by 2.57x at level 6; every heroic damage formula is flat across tiers 1 and 2 by construction. That, not gate timing, is the answer to designer question 2.",
+   "evidence": "Dumped all 43 damage and 11 heal formulas. Every leyline and deity damage/heal formula without exception is `(@tier)d(2 * @skills.<colour>.rank + 2)` — 1d6 (mean 3.5) at Tier 1 / rank 2, 2d8 (mean 9) at Tier 2 / rank 3, a factor of 2.57 at level 6. All five heroic damage formulas are flat over the L1-10 window: Wit's End `(4 + max((@tier - 2) * 2, 0))d6` = 4d6 at Tier 1 AND Tier 2 (its tier term is dead until Tier 3 = level 11); Devastating Blow `(2 + max(@tier - 2, 0))d8` = 2d8 at both; Fatal Thrust 4d4; Deadly Trap 2d4; Cheap Shot `@scalar.damage.unarmed`. Scholar's three heals are worse still — `@skills.med.rank` and `@skills.lor.rank`, a flat 2 or 3 added to the patient's recovery die. Meanwhile gate timing between the atlases is near-symmetric (heroic 5-7 L6 talents per tree, leyline 5-8), so the widely reported 'leyline is uniquely back-loaded' framing is false and the real asymmetry is scaling.",
+   "severity": "Bites hard from level 6 to 10 — half the campaign's level range. Below 6 the atlases are comparable; at 6 the leyline/deity character's dice double and the heroic character's do not move.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "All 11 leyline+heroic trees; structurally the whole heroic atlas (150 talents) against the whole leyline+deity atlas (215).",
+   "needsRuling": true,
+   "objection": "The defence advocate: heroic talents scale on SKILL RANKS, not tier, and every heroic damage talent is a rider on a weapon attack whose base damage grows with equipment — so excluding weapon dice 'on both sides' is not symmetric, because leyline damage talents are self-contained and heroic ones are not. Weapons are outside the fence, so the ratio cannot be settled inside the 365.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 4,
+   "problem": "deity/Sovereignty's promised signature resource Decree does not exist in any talent, and its nine talents are assembled from two repeated clauses.",
+   "evidence": "I read all nine this session. INTENT-deity-Sovereignty.md prints in bold '**Signature resource:** _Decree_ — a declared law projected within a radius: allies inside are elevated, enemies inside are diminished', and the deity guide repeats it under a section carrying no disclaimer. Every one of the nine targets 'a creature in Attunement Range' or 'a willing ally'; a search of the tree for radius/aura/zone/area returns NOTHING. 'Decree' appears only inside the talent name 'Decree of Ruin'. Separately the nine are built from two clauses: 'damage die size increases by one step (maximum d12)' in Exalt, Investiture of Authority, Sovereign's Balance and Sovereignty; 'decreases by one step (minimum d4)' in Censure, Decree of Ruin, Edict of the Fallen (two steps) and Sovereignty (two steps) — a denser redundancy than any cross-tree pair anyone found. The payload is the smallest unit of effect in the game: one die step is +1.0 average per die, and against the four flat-damage riders in the corpus (Momentum of Victory, Cheap Shot, Pack Share, Vital Diagnosis) it is worth exactly zero. And the tree's two biggest elevate effects cannot both pay out: Investiture of Authority (+1 for the scene) and the capstone (+2 for the scene) compete for the same headroom, and on a rank-3 ally rolling [Tier][Die] = d8 there are only two rungs to the d12 cap.",
+   "severity": "A player meets the Decree promise before they ever roll a die, because the path description is what they read when choosing a god. The die-step payload is below the threshold at which a human at a table perceives that anything happened — a perceptibility failure at every level.",
+   "kind": "DOCUMENTATION",
+   "blastRadius": "One tree, nine talents — but it is the atlas's worst outlier and it is one of ten equally-priced choices a player makes once. (Kind is split: the Decree promise is DOCUMENTATION; the two-clause construction and the sub-perceptual payload are DESIGN.)",
+   "needsRuling": true,
+   "objection": "The defence advocate: the tree is not empty. Sovereign's Favor grants [Tier][Die] temp HP on every Exalt (~3.5 at Tier 1, ~9.0 at Tier 2), unmediated by the die ladder and repeatable from L2. Expose is a free L2 Passive generating Investiture uncapped and converting every enemy miss into an ally Reactive Strike. Edict of the Fallen is a scene-long -2 die steps plus party temp HP for 2 Actions at L3. The capstone's third clause is a scene-long enemy reaction lock. And 'damage_direct 0' is the rubric having no cell for an amplifier that never swings — deity/Knowledge does the identical thing and scores 5/5 because it also holds a sword.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 5,
+   "problem": "The Frightened condition is required by two deity/Power talents and produced by no talent in the game, so both clauses are permanently dead.",
+   "evidence": "Grep of all 365 for 'Frightened' returns exactly three hits and no producer. deity/Power Kneel's standing rider: 'You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.' deity/Power Absolute Authority: 'choose a Compelled, Frightened, or Weakened character in Attunement Range' — its target requirement. deity/Death Risen Servant lists Frightened as an immunity. Nothing in the corpus applies it. Both Power talents survive on their Compelled and Weakened branches — Kneel produces Compelled itself, and every Power character holds Black 2+ and therefore the Black Attunement Key, which applies Weakened on every Draw Mana — so this is a dead clause, not a dead talent.",
+   "severity": "Small at the table but immediate: a player reads a condition name on their own card, asks how to cause it, and the answer is that nothing in the game can.",
+   "kind": "DOCUMENTATION",
+   "blastRadius": "Two talents in one tree, plus one immunity line in another. Trivial to fix by wording.",
+   "needsRuling": false,
+   "objection": "None offered. Both clauses have live alternative branches, so nothing is unplayable.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 6,
+   "problem": "leyline/Red's Momentum's Edge is broken in one of two directions and both are live: its card says 'your Speed' and its authored handler reads a movement rate in feet.",
+   "evidence": "Card text (verified): 'When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.' Authored rule at data/authored/leyline-red.json, `/talents/Momentum's Edge/events/C9iBvvgzsAIsCNhq/handler/bonusFormula = @movement.walk.rate`, with `damage.formula: null`. Three readings, and the text supports all three: (a) `@movement.walk.rate` is a DerivedValueField object and resolves to nothing; (b) it resolves to a movement rate, ~+25-30 flat impact, against 1-4 for every other damage rider in the corpus; (c) 'Speed' is a tested SKILL in this system (Destruction's Concussive Yield 'tests Speed vs. your Red'; Fate's Inevitable Snare 'tests Speed vs. your Green'), and every other attribute-reading rider in the corpus means the modifier (Withering Ray '+ Presence', Withering Touch '+ WIL', Snare '+ Awareness'), which would make it +2 to +5. Free, no action, depth 2 / L3 Passive either way.",
+   "severity": "If (b), it is the largest damage rider in the game on a free depth-2 Passive and it decides whether leyline/Red is the best damage tree at levels 1-5. If (a), a talent silently does nothing. Both are live now.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One talent, but load-bearing for the whole damage-distribution answer — it is the only place in the review where one measurement swings a tree's ranking.",
+   "needsRuling": true,
+   "objection": "The defence advocate: this is probably a one-token overlay typo, not a Red identity crisis — the card is arguably already correct and `@movement.walk.rate` is the outlier. Redesigning the talent to fix a bad token discards a working card.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 7,
+   "problem": "The engine ships two temporary-HP writers with opposite behaviour, and one file's own header contradicts itself, so on some routes a smaller grant deletes a larger pool.",
+   "evidence": "module-src/scripts/engine/28-temporary-hp.js line 6 reads 'the pool does not stack, a larger grant replaces a smaller one' and line 13, seven lines later, reads 'House rules: only ONE source of Temp HP at a time (a new grant OVERWRITES the old, even if smaller)'. The code implements the second: `edhaWriteTempHp` sets the flag unconditionally and `edhaSetTempHp` is documented as 'set (replace) an actor's Temp HP — overwrites any existing source'. Meanwhile module-src/scripts/engine/51-green-restoration.js:93 `edhaGrantTempHpCross` computes `wins = inc > (held?.value ?? 0)` and keeps the higher ('A TIE is not a win'). A third position is asserted in data: deity/Sovereignty's Sovereign's Favor card says 'This talent's temporary HP does not stack', implying that other temp HP does. 14 talents across 9 trees produce temporary HP (Order 3, Power 2, Life 2, Sovereignty 2, plus singles).",
+   "severity": "Felt directly and confusingly: on the overwriting routes a player's shield gets smaller when an ally helps them. Any level.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "14 talents across 9 trees, both atlases. Also invalidates every temp-HP-summed-over-rounds figure produced in this review (Order's Bear Witness, Sovereignty's swing arithmetic).",
+   "needsRuling": true,
+   "objection": "Scope: this is an engine question, not a 365-talent question, and it should be filed as a ruling (unify the writers, THEN decide the canon) rather than used as arithmetic in any tree comparison until it is unified.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 8,
+   "problem": "The deity atlas contains zero Special-action talents in ninety, against a written 15-20% target that the leyline atlas successfully hit.",
+   "evidence": "Action-type census: deity Special count = 0 across all ten trees, all 90 talents. The deity design guide states a 15-20% Special target; the primer states a Special 'is worth materially more than an Action of the same effect size'. The same instruction was applied to leyline and worked — the leyline guide's own text admits the defect it was written to fix ('The current leyline trees have 0% Specials and 14% 3-Action costs — both need fixing. Specials are the most important gap'), and today leyline runs 27 Specials of 125 (22%) with Red 32%, Green 28%, White 24%, Blue 20%, and leyline 3-Action talents = 0 of 125 (target hit exactly).",
+   "severity": "Structural, felt as turn efficiency: every deity effect costs a full Action or better, which is part of why deity trees run 5-8 Action-costing talents in 9.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "All ten deity trees, 90 talents.",
+   "needsRuling": true,
+   "objection": "The defence advocate: converting deity Actions to Specials makes deity trees strictly MORE action-efficient, widening exactly the deity-vs-leyline gap the primer flags as the thing to watch. If deity Specials are added, leyline needs the compensating look first.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 9,
+   "problem": "Two iron-rule-7 prose-vs-connections divergences are live on main in deity/Death, and in both cases Foundry demands a talent the card does not name.",
+   "evidence": "Read from data/domain.json this session. Raise Dead: card prerequisite reads 'Necrotic Cascade or Speak with the Fallen'; `connections` is ['Necrotic Cascade','Risen Servant'] — Speak with the Fallen is absent and Risen Servant, which the card never mentions, is a managed prerequisite. Necrotic Cascade: card prerequisite reads 'Consuming Decay'; `connections` is ['Consuming Decay','Death Ward'] — Death Ward is silently ANDed on. This is iron rule 7's third, ungated case: `validateConnections` only checks that a name resolves inside the tree, and the DAG/reachability gates only catch cycles and unreachable nodes, so neither fails any gate. A sweep of the other nine deity trees finds no third instance.",
+   "severity": "The sharpest kind of felt defect — a player picks a talent, Foundry refuses, and the card gives no reason. Levels 3-4 in deity/Death.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "Two talents in one tree, but the class is systemic — this is the ungated case CLAUDE.md's iron rule 7 explicitly warns has no gate.",
+   "needsRuling": false,
+   "objection": "None. Both are unambiguous data errors.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 10,
+   "problem": "leyline/Black violates its own design guide's action-type rules outright while the other four leyline trees complied with the same revision pass.",
+   "evidence": "Measured: Black is 15 Passives of 25 (9 marked '∞' + 6 marked 'Passive') = 60%, against the leyline guide's Revision Principle 4, 'Eliminate Passives above 35%'. Black has 1 Special of 25 = 4%, against a 25-30% target and the guide's own 'Specials are the most important gap'. Comparison within the same atlas: Red 32% Special, Green 28%, White 24%, Blue 20%. This is not an atlas-wide problem; it is one tree that did not get the pass.",
+   "severity": "Felt as turn shape: a Black player's sheet is mostly things that happen to them rather than things they do. Every level.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One tree, 25 talents.",
+   "needsRuling": false,
+   "objection": "The defence advocate concedes this one explicitly: 'no reading of the guide excuses it.'",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 11,
+   "problem": "The design guide assigns the Plot Die as a key mechanic to two different leyline colours; Blue, which the guide calls its capstone identity, implements zero, and heroic/Agent implements six including the exact effect the guide reserves for Blue.",
+   "evidence": "DESIGN-GUIDE-CLAIMS.md PART 4, verbatim: Blue — 'Key mechanic: Plot Die manipulation is Blue's capstone identity. Choosing any Plot Die face is the ultimate Blue expression.' White, twelve lines earlier in the same section — 'Key mechanic: Plot Die integration. White rewards coordinated group action.' Full-corpus count of plot die / raise(s|d) the stakes / Complication: 15 talents across 6 trees — heroic/Agent 6 (Opportunist, Watchful Eye, Get 'Em Talking, Sure Outcome, Risky Behavior, Double Down), leyline/White 4 (Concordant Presence, Guiding Signal, Unity of Purpose, Pillar of Order), heroic/Scholar 2, deity/Fate 1, heroic/Leader 1, leyline/Red 1. leyline/Blue: 0. Agent holds the only rerolls in the corpus and the largest face edit (Sure Outcome, 'any Complication to Opportunity'). Note the brief's own inline census ('Plot Die 3 talents / 2 trees, leyline/Red and heroic/Agent ONLY') is wrong by a factor of five and no analysis flagged it.",
+   "severity": "No effect at the table today — nothing is broken, a talent is simply absent. It matters because a Blue plot-die line that CHOOSES faces would be unique in the leyline atlas, would collide with no binary channel, and would repair Blue's thin early game without adding damage.",
+   "kind": "DOCUMENTATION",
+   "blastRadius": "Three trees (Blue, White, Agent) plus the guide itself. (Kind is contingent: DOCUMENTATION if PART 4 is non-binding, DESIGN if it is.)",
+   "needsRuling": true,
+   "objection": "The defence advocate, and it is the sharpest objection in the whole review: the line lives in DESIGN-GUIDE-CLAIMS.md PART 4, whose header note reads '> **Note:** Attunement/Physical/Cognitive have been replaced by Specialties. The descriptions below are reference, not law.' The section is self-labelled non-binding. The BINDING intent source, INTENT-leyline-Blue.md, promises Foresight, Calculation and Illusion and never mentions the plot die — and Blue implements all three (it is the only tree in 365 that CREATES illusions). By contrast the DEITY guide's Part 4 carries no such disclaimer, which is exactly why Sovereignty/Decree is real drift and Blue/plot-die may not be.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 12,
+   "problem": "Six deity trees cap their signature resource at 'up to your tier', which is 1 for all of levels 1-5, flattening the atlas's Tier-1 identity; one talent is literally uncastable below level 6.",
+   "evidence": "Verified verbatim: Chaos Entropy Strike 'up to tier Omens active simultaneously'; Order Edict 'up to your tier Edicts' AND Covenant 'up to your tier active Covenants'; Civilization Lay Foundation 'up to your tier Foundations'; Destruction Set Charge 'up to your tier Charges'; Fate Ordained Ground 'up to your tier Ordained Ground squares' AND Snare 'up to your tier unsprung Snares'; Death Risen Servant 'up to your tier Risen Servants'. Tier = 1 through level 5. Consequences: Civilization's Trade Routes (depth 1, dated L2) reads 'choose two of your active Foundations' and is UNCASTABLE until level 6; Chaos's Spreading Omen ('one additional enemy... subject to your Omen cap') is dominated by its own entry, and Cascade Collapse and Unravel Everything are single-target through L5; Destruction's Cascading Failure ('when two or more Charges detonate') and The Unmooring have no second Charge to work with; Order's Lawkeeper's Eye and Final Decree run off a single Edict. And the cap is not applied uniformly — Civilization's Forge Construct reads 'You may sustain one active Construct', a flat 1 that never scales with tier, uniquely among the ten sustain clauses.",
+   "severity": "Bites for the first five levels — the entire span this campaign is currently in — across six of ten deity trees. One talent is unusable and at least four are strictly dominated at Tier 1.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "Six deity trees; at least eight downstream talents rendered dominated, single-target or uncastable at Tier 1.",
+   "needsRuling": true,
+   "objection": "The scaling is intentional — the cap is what makes level 6 feel like a step change, and deity Principle 5 wants the signature resource to be the tree's spine. Contrast deity/Knowledge, whose Insight cap is a flat 5, and which is the strongest damage tree in the game.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 13,
+   "problem": "Roughly 40 talent slots (11%) are duplicate stock, concentrated in the heroic atlas, and priced by host-tree depth rather than by value.",
+   "evidence": "Recomputed both ways this session. 12 duplicate-NAME families = 39 slots; 12 byte-identical-TEXT families = 36 slots; they are not the same twelve. Mighty is verbatim in six trees (leyline/Red, Agent, Envoy, Hunter, Leader, Warrior). Hardy is 7 slots in 7 trees under 3 text variants, so BOTH measures undercount semantic duplication. Collected is verbatim in five. 'Increase your max and current focus by your tier' ships in three trees under three names (Envoy's Composed, Leader's Focused Mind, Scholar's Clear Mind). Pricing is inconsistent: Collected is free at depth 0 / L1 in Envoy and costs a Blue 3+ / level-6 slot in Blue. All ten deity trees are clean. One false positive inflates every published count: 'Shatter Focus' exists in leyline/Red and deity/Chaos with genuinely different mechanics — a name collision, not shared stock. The honest figure is ~40 slots (11%); the '41' every published recommendation is costed against is unsupported on either measure.",
+   "severity": "No mechanical failure — an identity and opportunity cost. A player who reads their whole tree sees five of Hunter's 25 slots repeated in Warrior. It is a large part of why heroic paths feel less distinct than leyline ones.",
+   "kind": "DESIGN",
+   "blastRadius": "11 of 21 trees; heroic 30 of 150 slots (20%), leyline 9 of 125, deity 0 of 90.",
+   "needsRuling": true,
+   "objection": "The defence advocate: this is the least-felt finding in the review — a player sees the talents in their own tree, and two players would have to lay sheets side by side to notice. Worse, the proposed fix is dangerous: Combat Training and Hardy are load-bearing MANAGED prerequisites (Combat Training gates Devastating Blow; Hardy gates Swift Strikes in Warrior and Unrelenting Salvo in Hunter), so lifting them out severs `connections` edges — squarely iron rule 7 territory, in a review that has already found two live connections divergences. The 'returns ~29 slots' figure prices the gain and not the graph repair.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 14,
+   "problem": "Two talents ship card text describing a stacking advantage model the binary implementation cannot represent, and both are unwired, so a player reads something false on their own sheet.",
+   "evidence": "heroic/Hunter Fatal Thrust: 'Add 4d4 damage, and gain two advantages if the weapon is Discreet.' heroic/Warrior Defensive Position: 'The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.' Per SYSTEM-PRIMER.md advantage and disadvantage are one binary scalar. Both talents carry hasEvents=false, eventCount=0, hasEffects=false — so no engine code touches either, and the widely repeated claim that 'the engine folds them away' is wrong; it is a table adjudication, which makes this a card-text ruling needing no code change. Defensive Position's surviving clause is worth more than the analyses credited: canon Brace requires cover, so 'allies can Brace behind your shield' is a canon-Brace-without-cover allowance.",
+   "severity": "Felt the first time a player uses either talent and asks what the second advantage did. Levels 2 (Defensive Position) and 6 (Fatal Thrust).",
+   "kind": "DOCUMENTATION",
+   "blastRadius": "Two talents in two heroic trees.",
+   "needsRuling": true,
+   "objection": "The recommended remedy — converting the binary grants to summing `edha-next-test-mod` formula modifiers — is riskier than the defect. That primitive is used by exactly ONE adversary ability and by zero talents, so it is unproven inside the fence; and uncapped additive numeric bonuses are independently the ecosystem's largest identified balance risk. Converting binary grants into summing ones trades a 'does nothing' problem for an unbounded 'does too much' one.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 15,
+   "problem": "leyline/White's Interposing Shield uses `half [Die]` where its two siblings use `half [Tier][Die]`, so the costed Reaction mitigates less than half what the free Passives do.",
+   "evidence": "Verbatim: Interposing Shield (Reaction, 1 Investiture, depth 1 / L2) 'reduce that damage by half [Die]'. Devoted Conduit (Passive, free, depth 2 / L3) 'reduce that damage by half [Tier][Die]'. Shield Wall (Passive, free, depth 3 / L4) 'attacks against them deal half [Tier][Die] less damage'. At Tier 2 the costed Reaction mitigates ~2.0 while the free Passives mitigate ~4.5.",
+   "severity": "A player will feel their Reaction being underwhelming and will never diagnose it as a missing token. Levels 2-10.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One talent.",
+   "needsRuling": false,
+   "objection": "None — almost certainly an authoring slip and a one-token fix.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 16,
+   "problem": "deity/Chaos's capstone is the only one of ten without a once-per-scene limiter, so it is repeatable every turn the player can pay for it.",
+   "evidence": "Counted 'once per scene' across all ten deity trees: Order 1, Civilization 1, Death 1, Destruction 1, Fate 1, Power 1, Life 1, Knowledge 1, Sovereignty 1 — Chaos 0. Chaos's 3-Action capstone Unravel Everything ('Place an Omen on every enemy in Attunement Range up to your cap... each removed Omen deals [Tier][Die] + Awareness spirit damage... Enemies that are Isolated when their Omen is removed instead take 2[Tier][Die] vital damage') costs 3 Investiture and carries no scene limiter. Nine trees pay a once-per-scene tax on their capstone and one does not.",
+   "severity": "Level 4 onward, and only when the Chaos player has the Investiture — but the ceiling is real (a 2x-tier vital multiplier applied to every Isolated enemy in range).",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One talent; a nine-of-ten conformance break.",
+   "needsRuling": false,
+   "objection": "None. Trivially checkable and never checked by any analysis.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 17,
+   "problem": "leyline/Black's Withering Ray is the only 2x-tier damage formula in the game and the only damage entry that is both double-sized and free of Investiture, at depth 0 / level 1.",
+   "evidence": "Of all 43 damage formulas, exactly one carries a doubled tier term: Withering Ray, `(2 * @tier)d(2 * @skills.black.rank + 2)` = 2d6 at Tier 1 / rank 2 and 4d8 at Tier 2 / rank 3. Its card: depth 0, level 1, 1 Action, cost 'Lose half [Die] health' — no Investiture, no once-per-turn limiter, ranged, vs Spiritual, dealing VITAL damage which ignores Deflect. Compare the other leyline damage entry at the same depth and level, Red's Searing Bolt: 1 Action, 1 Investiture, `(@tier)d(2*@skills.red.rank+2)` energy, Deflect-reduced. Withering Ray is double the dice, off the Investiture economy entirely, and bypasses Deflect. (The only other 2x-tier formula in the corpus is deity/Life's Surgical Precision, a heal.)",
+   "severity": "Level 1 onward. It is why leyline/Black's damage line is effectively unlimited in Investiture terms — its throttle is HP, not the Draw Mana economy every other caster runs on.",
+   "kind": "DESIGN",
+   "blastRadius": "One talent, but it sets the leyline damage ceiling and every leyline-vs-heroic and leyline-vs-leyline comparison in this review is denominated against it.",
+   "needsRuling": true,
+   "objection": "The HP cost is a real throttle and it is Black's stated identity — the guide says 'Costs favor HP loss... Black pays in blood and willpower', and the self-damage is ~1.5 HP per cast at Tier 1 and ~2.0 at Tier 2 against a 10+STR pool, so three casts a turn costs 4.5-6 HP.",
+   "objectionSurvives": true
+  },
+  {
+   "rank": 18,
+   "problem": "leyline/Blue's Counterspell has a typo in its Cost field that silently removes it from every automated census.",
+   "evidence": "data/leyline.json:840 reads `\"cost\": \"2 Focus; 1 Investiure\"`. Because of it every regex census counts Blue at 15 Investiture-costing talents instead of 16, and one of the review's own critics reproduced the miss and 'corrected' the correct figure back to 15. Separately, Counterspell fires only when a character 'spends Investiture to activate a talent' — no heroic path spends Investiture (all six run on focus), so Blue's signature counter is inert against a Warrior, Agent, Envoy, Leader, Scholar or Hunter entirely.",
+   "severity": "Invisible at the table. Worth fixing only because it permanently corrupts future census runs.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One field; corrupts every Blue economy figure ever computed.",
+   "needsRuling": false,
+   "objection": "None.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 19,
+   "problem": "The design guide states leyline/Black's Draw Mana rider at double the radius the shipped talent uses.",
+   "evidence": "DESIGN-GUIDE-CLAIMS.md, Black: 'Draw Mana rider: Enemies within Attunement Range with no ally within 10 ft become Weakened', and 'Key mechanic: \"No allied creature within 10 ft\" is the consistent isolation trigger.' The shipped Black Leyline Attunement talent: 'When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.' Sapping Hex uses 5 feet too, as does Chaos's Isolated definition. The guide is the outlier, and this is the mechanic carrying Black's entire isolation identity and the Weakened supply that feeds deity/Power and Black's own Spoils of Isolation.",
+   "severity": "None until someone authors from the guide, at which point the new talent uses the wrong radius. Documentation hazard.",
+   "kind": "DOCUMENTATION",
+   "blastRadius": "The guide; potentially every future Black or Power talent authored from it.",
+   "needsRuling": false,
+   "objection": "None. 5 ft is used consistently by three shipped talents in two trees; the guide is simply stale.",
+   "objectionSurvives": false
+  },
+  {
+   "rank": 20,
+   "problem": "The dossier's earliest-level fix over-corrects one talent by applying the skill-rank cap to an attribute, and one authored/source cost divergence remains open.",
+   "evidence": "Of the 222 talents carrying a populated `rankGate`, exactly one gates on an attribute rather than a skill: leyline/White's Shared Burden, `rankGate: \"Strength 3+; White 2+\"`, now dated earliest L6. SYSTEM-PRIMER.md's rank-cap table (rank 2 through L5, rank 3 from L6) governs SKILL ranks; Strength is an attribute, used as one by the primer itself (`Health = 10 + STR`), and attribute points arrive at levels 3/6/9. Every other 3+ gate in the set is a real skill (heroic/Hunter's Unrelenting Salvo, `Agility 3+`, is correct — Agility is a canon skill). Recorded alongside it: leyline/White's Mending Aura is the one material authored-text divergence in the corpus — the authored text costs 'an Opportunity AND 1 Investiture' and the source prose costs Opportunity only; the authored text wins in Foundry and the source prose owes a fix.",
+   "severity": "None at the table. It mis-dates one talent and would mislead the next pacing analysis.",
+   "kind": "IMPLEMENTATION",
+   "blastRadius": "One talent in the tooling; one talent in the data.",
+   "needsRuling": false,
+   "objection": "None. Settle Shared Burden against the advancement table (attribute points at 3/6/9) and re-date it.",
+   "objectionSurvives": false
+  }
+ ]
+}

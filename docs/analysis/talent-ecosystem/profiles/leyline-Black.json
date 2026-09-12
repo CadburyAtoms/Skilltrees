@@ -1,0 +1,683 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "leyline/Black",
+ "correctionCount": 36,
+ "profile": {
+  "atlas": "leyline",
+  "tree": "Black",
+  "oneLineIdentity": "A repeatable single-target vital-damage engine paid for in the caster's own blood — self-buffed to near-permanent advantage by its own cost — hung on the set's only whole-turn action denial, plus a late Weakened lock that pins one enemy away from its allies.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 4,
+    "evidence": "Four real damage sources, all vital (Deflect-ignoring). CENSUS DIVERGENCE STANDS: damage-census.js reports 3 SOURCE for Black and the dossier reports 3 roll formulas; the fourth is Spoils of Isolation, whose fixed 'vital damage equal to your tier' has no formula (talent-rolls.json has no entry for it at all), so both automated streams miss it. The text wins. COMPARATIVE CONFIRMATION ADDED BY LENS B: Withering Ray (depth 0, L1, 1 Action) is the ONLY talent in all 365 whose damage formula carries a doubled tier multiplier — `(2 * @tier)d(2 * @skills.black.rank + 2)`; scanning every one of the 43 isDamageFormula talents in all-talents.json, all 42 others are `(@tier)d(...)`. It is vital, and it costs NO Investiture — only half [Die] HP — so it repeats 3x per Slow turn. For scale, Red's depth-0 Searing Bolt is 1 Action + 1 Investiture for [Tier][Die] ENERGY (Deflect-reduced), and deity/Death's depth-0 Withering Touch is 1 Action + 1 Investiture for [Tier][Die] + Willpower vital: Black's entry node is roughly double the dice, of the best type, for no Investiture. Dark Investiture (d3, L4, 2 Actions) adds [Tier][Die] vital plus Afflicted[[Tier][Die] vital] ongoing. Sovereign of Solitude (d5, L6, Reaction) [Tier][Die] vital. Spoils of Isolation (d2, L3) is AoE but flat vital = tier. Severance (d1, L2) converts ALL your attacks vs Isolated targets to vital — the only damage-type conversion in the 365-talent set (/damage type/ hits exactly one talent). HELD AT 4, NOT 5, ON BREADTH: Red carries 8 offensive talents to Black's 4, including a real AoE (Flame Surge), a chain (Arc Flash), an on-kill splash (Chain Detonation) and an Afflicted rider (Afterburn). Black owns the best single blow in the atlas and almost nothing else."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 4,
+    "evidence": "Withering Ray scales 2[Tier][Die] — 2d6 (mean 7) at L1-5, 4d8 (mean 18) at L6+ — so the rank-3 gate multiplies it by ~2.6x, not 'roughly double': the tier multiplier and the die size jump in the same step, and that doubled multiplier is unique in the set (see damage_direct). ENGINE UPLIFT RE-VERIFIED IN THE REPO: data/talent-rolls.json's _README says a formula carrying `testSkill` makes the engine 'auto-add that skill's modifier (rank+attribute) to the damage'; all three Black formulas carry testSkill 'black' with testAttribute 'default', and LEYLINE_SKILLS maps black to attribute 'pre' (module-src/scripts/engine/01-shared-core.js:118-124), so the table actually rolls 2d6 + Black rank + Presence. That uplift applies to every skill-tested damage talent system-wide, so it raises absolute numbers without changing cross-tree ranking. Repeatable every Action with no Investiture cost, so throughput is limited only by the HP bar, which Hardy (+1 max HP per level — but see protection: a shared talent, not a Black asset), Predator's Due ([Tier][Die] health on kill) and Sanguine Reservoir (bank the loss as Reserve) all widen. Dark Investiture's Afflicted stream and Sovereign of Solitude also scale on [Tier][Die]. Spoils of Isolation is the one non-scaling outlier (flat tier = 1 or 2 points). Not 5: only one talent in the tree actually scales at the top of the curve."
+   },
+   {
+    "axis": "control",
+    "score": 4,
+    "evidence": "DOWNGRADED FROM 5 ON COMPARATIVE GROUNDS (lens B). The uniqueness holds and is re-verified: Hollow Command's 'the target cannot take actions on its next turn' is the sole instance of that phrase in all 365 talents, with 0 hits for /cannot act/ and /loses its turn/ as well; it removes a whole 3-Action turn, for 2 Actions and 1 Investiture, at depth 0 / L1. It is the single best control talent in the set. But a 5 means 'the reference implementation of this axis', and three other trees deliver more control, earlier and more reliably. leyline/GREEN: Grasping Vines (d1, L2, 1 Action) applies RESTRAINED — movement 0 plus disadvantage on everything but escape — and is sustainable for 1 Investiture a turn; Drive the Prey adds Slowed + forced movement away + free ally Reactive Strikes; and the free Attunement rider makes difficult terrain every Draw Mana. deity/FATE: Snare (d0, L1) places Restrained, up to tier sustained, plus Inevitable Snare's Disoriented. deity/POWER reaches action theft at L2 — Kneel (d0, L1, Compelled: 'must spend its next action either moving toward you or doing nothing') into Absolute Authority (d1, L2, 'you choose the target's action on its next turn'), which is exactly what Black's Puppeteer does at a true L8. deity/ORDER's Edict (d0, L1, up to tier sustained) is literal forced-choice denial. Black's own inventory is four talents — Hollow Command (L1), Extract Thought (true L6, reaction denial), Sovereign of Solitude (L6, Reaction, 2 Inv, triple-conditional), Puppeteer (true L8, may never fire) — plus Dread Presence's L5 movement restriction. Every category on the axis is present, but concentrated in one entry node with a late, partly dead tail. That is a strength, not a pillar."
+   },
+   {
+    "axis": "debuff",
+    "score": 4,
+    "evidence": "EVIDENCE CORRECTED, SCORE HELD. The prior text argued breadth from 'SIX Black talents name Weakened', but four of those six are CONSUMERS (Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude) already scored under resource_economy, damage and control — counting them here is double-counting. The real debuff inventory is FIVE talents. PRODUCERS: Black Leyline Attunement (the Draw Mana rider Weakens enemies in Attunement Range with no ally within 5 ft, free) and Sapping Hex (d1, Weakened on any hit vs an Isolated target). PENALTIES: Coercive Pressure (d1, disadvantage on an enemy's next Cognitive test when it loses focus, once per round per enemy), Whispered Doubt (d3, true L7, every enemy focus spend costs 1 more), Necrotic Grasp (d1, halves healing the target receives). Weakened is engine-enforced (module-src/scripts/engine/01-shared-core.js:488 edhaWeakenedPreRoll, hooked at :507 — 'disadvantage on every str/spd test while Weakened'), so it is a real disadvantage source and not just a tag. Severance strips the value of Deflect but is damage conversion, scored under damage_direct. 4 survives comparatively rather than by count: leyline/Blue carries five impose-disadvantage talents and deity/Sovereignty is a seven-talent damage-die-shrink engine, so Black is one of several good options, not the best — but its Weakened production is free and repeats on every Draw Mana, which neither of those matches. Not 5: the numeric penalties are narrow (one skill category each) and there is no defence reduction or vulnerability effect."
+   },
+   {
+    "axis": "protection",
+    "score": 1,
+    "evidence": "DOWNGRADED FROM 2 (lens B). Black has ZERO damage reduction, shields, resistance, interception or redirection — verified by scanning all 365 talents for /deflect|resist|reduce .{0,25}damage|take half|less damage/: Black returns nothing, while leyline/White returns five (Guardian Stance +1 Deflect, Interposing Shield, Shared Burden, Devoted Conduit, Shield Wall). The calibration anchor puts ONE damage-reducing Reaction at 2; Black does not have one. What is left is a single incidental rider — Spoils of Isolation's Temporary HP, a flat tier per Weakened target, i.e. 1-2 points a head, the smallest of the 14 temp-HP grants in the set — and Hardy, which is NOT a Black competency at all: scanning /maximum (hp|health)/ shows Hardy is a shared generic talent carried with identical text by SEVEN of the twenty-one trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior). A talent a third of the atlas can also take is baseline, not identity, and it cannot be evidence that Black is better at protection than its neighbours. Composed's +2 max focus marginally funds the standard Dodge reaction (1 focus), which every character already has without any talent. One incidental rider plus a shared passive is a 1."
+   },
+   {
+    "axis": "healing",
+    "score": 1,
+    "evidence": "One talent: Predator's Due (d4, L6, Black 3+) — regain [Tier][Die] health and 1 Investiture when you reduce a character to 0 health. Self-only and kill-gated. No talent in the tree can heal an ally, stabilise anyone, or remove a condition or Injury. The dossier confirms 0 heal formulas in Black. Focus and Investiture restoration (Siphoned Will, Predatory Insight, Predatory Patience) are scored under resource_economy to avoid double-counting."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Self-only, and advantage is binary — but better than the tree first reads. Blood Price (d1, L2, Passive, free) grants an advantage on your next Black test when a Ritual talent costs you health, and BOTH HP-costing Ritual talents resolve the loss BEFORE their test ('Lose half [Die] health, THEN make a ranged Black attack'; 'lose health equal to your tier, THEN test Black'), so the advantage lands on that same talent's own attack test — near-100% uptime on the tree's whole damage plan from L2, not a half-uptime rider on the second cast. The advantage ledger confirms Black carries exactly two advantage producers: Blood Price and Predatory Insight (d2, Special — advantage on your next Deception test for Opportunity + 1 Investiture). Different skills, so they do not collide with each other. Predatory Patience (d3) is the only additive bonus: +[Die] to the attack test against a Weakened creature, which stacks with advantage rather than colliding. Held at 2 because ZERO talents in the tree target or benefit an ally at all — and because, comparatively, leyline/Green's Scent the Weak grants advantage on your first test each round against the lowest-HP creature for free, with no trigger and no cost, blanket-overlapping both of Black's sources."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "The character never gains an action. Unnerving Approach is a Free Action rider on movement you were already making; Predatory Insight is the tree's single Special (1 of 25 = 4%, against the guide's 25-30% target). Puppeteer directs an enemy's action rather than granting you one, and both Reactions (Puppeteer, Sovereign of Solitude) sit at L6-L8 and compete for the single Reaction per round. Opportunity is consumed by exactly one talent and generated by none. Black's action-economy swing is on the ENEMY ledger (Hollow Command, Extract Thought), scored under control. Deflation check run: nothing hides in the riders — no talent in the tree grants a Strike, an Aid, a free Move or an extra Reaction the way deity/Fate's Weave the Thread or heroic/Hunter's Sidestep do."
+   },
+   {
+    "axis": "mobility",
+    "score": 1,
+    "evidence": "One talent, and it is a narrow paid upgrade rather than the never-pick it is often read as: Cruel Step (d2, 1 Action + 1 Investiture) moves you 10 ft toward an Isolated character without provoking Reactive Strikes. The canon baseline is Disengage — 1 Action, move 5 FT without triggering Reactive Strikes (cosmere-canon-reference SKILL.md §Disengage, SR p.32) — and Move does not avoid Reactive Strikes at all, so Cruel Step is double Disengage's distance for the same action, plus 1 Investiture and an Isolated-target restriction. Below curve, not dominated. No teleport, no dash, no repositioning beyond that. Unnerving Approach moves an ENEMY's ally, which is forced movement, not the mage's mobility."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 1,
+    "evidence": "No terrain, hazards, difficult ground, walls or placed areas exist in the tree. The only persistent battlefield feature is Dread Presence (d4, L5) — an aura over Attunement Range that forbids Weakened creatures from moving closer to their allies. It is zone-shaped control, not terrain. Comparative scale for the axis: leyline/Green gets difficult terrain FREE on every Draw Mana and builds five talents on it, and deity/Fate places Ordained Ground and Snares as its whole economy — that is what a 4-5 looks like here."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Looked and found nothing. No detection, scouting, tracking, foreknowledge, prediction or hidden-fact reveal in any of the 25 talents. Extract Thought and Predatory Insight are named for mind-reading but deliver reaction denial and an advantage on Deception respectively; neither reveals a fact. Deflation check run against the places information usually hides — riders on passives, Attunement-Range clauses, the Reserve ledger: Sanguine Reservoir tracks your own resource, not an enemy's, and no Black talent grants sensing the way deity/Chaos's Void Sense ('you sense the location of every enemy bearing your Omen through any obstruction'), deity/Life's Vital Diagnosis ('you know its exact HP, max HP, conditions and defenses') or leyline/Green's Scent the Weak ('you know which creature has the lowest HP') do. 0 confirmed."
+   },
+   {
+    "axis": "social_influence",
+    "score": 2,
+    "evidence": "A Deception sub-theme rather than a social competency, and it is a real internal engine: Predatory Insight grants advantage on Deception, Hollow Command tests Deception vs Spiritual, Siphoned Will refunds focus on that success, and Extract Thought fires off any successful Deception test while gating on Deception 3+. Puppeteer forcibly chooses an enemy's action. But every payoff is combat-only: no persuasion, leadership, command, reputation or negotiation effect anywhere, and nothing that works on a person you are not already fighting. For contrast, heroic/Envoy and heroic/Leader carry influence talents that resolve outside combat entirely — this axis is theirs."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 0,
+    "evidence": "Looked and found nothing. No travel, survival, crafting, downtime, expertise-granting or non-combat problem-solving talent in the tree. Every one of the 25 talents resolves inside a combat frame; the sole exception is Predatory Insight's Deception advantage, scored under social_influence."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Looked and found nothing. No companions, constructs, minions, animated allies or persistent entities of any kind. For scale, deity/Death's Risen Servant and Raise Dead and deity/Civilization's Combat Construct are what this axis is for — and Death is gated Black 2+, so a Black mage reaches summons only by leaving the tree."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 4,
+    "evidence": "SCORE HELD, ONE CLAIM RETRACTED. Held because the cross-tree census is decisive: only 9 talents in all 365 produce Investiture and Black owns 2 of them (Predatory Patience, Predator's Due — verified by scanning /(regain|gain|recover|restore) .* Investiture/ across all-talents.json, which returns Black x2, Red x1, and one each in Chaos, Death, Life, Knowledge and Sovereignty); only 6 produce Focus and Black owns 2 (Siphoned Will regains focus = tier on a Hollow Command success; Predatory Insight regains 1 focus whenever any character hits 0 focus); and Black alone owns an HP-to-Investiture bank (Sanguine Reservoir stores health lost to Ritual talents as Reserve, cap = ranks in Black, spendable AS Investiture; Double Dip then lets Reserve substitute for the health cost). Composed raises maximum focus by tier (a cap, not regen). RETRACTED: the prior claim that Draw Mana -> Withering Ray 'breaks the primer's 50%-uptime Draw Mana tax outright' because 'Black creates Weakened for free via its Draw Mana rider'. The rider only Weakens enemies with NO ALLY WITHIN 5 FEET, and this profile's own central finding is that the tree can barely manufacture that state (one talent, Unnerving Approach, Free Action, once per turn). So the Investiture-positive loop is conditional on how the enemy chose to stand — a real ceiling-raiser against a scattered enemy, and simply off against a disciplined line. Not 5: each individual return is 1-2 points, Reserve caps at 2-3, and the tree generates no Opportunity at all while consuming it in one talent."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Withering Ray",
+     "dice": "2[Tier][Die] vital — formula (2 * @tier)d(2 * @skills.black.rank + 2), type=vital. The ONLY doubled-tier damage formula in all 365 talents; every other one of the 43 is (@tier)d(...). 2d6 (mean 7) at L1-5 (Tier 1 rank 2); 4d8 (mean 18) at L6+ (Tier 2 rank 3). Because the formula carries testSkill 'black' with testAttribute 'default', the engine also adds Black rank + Presence to the damage roll (data/talent-rolls.json _README).",
+     "action": "1 Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Conditional only on the ranged Black attack vs Spiritual HITTING — no resource gate. Costs half [Die] health, NOT Investiture, which is what makes it the tree's whole damage plan: repeatable 3x per Slow turn indefinitely, limited by the HP bar rather than by Draw Mana. Half [Die] rounds down, so at rank 2 (d6) the mean cost is 1.5 HP per cast, about 4.5 HP for a full Slow turn; at rank 3 (d8) the mean is 1.75, about 5.25 HP per turn. Vital, so Deflect does nothing. From L2, Blood Price gives it advantage on essentially every cast, because the health loss resolves before the attack test. CROSS-TREE SCALE (added by lens B): Red's depth-0 Searing Bolt is 1 Action + 1 Investiture for [Tier][Die] ENERGY; deity/Death's depth-0 Withering Touch is 1 Action + 1 Investiture for [Tier][Die] + Willpower vital; deity/Power's Warlord's Advance is 1 Action + 1 Investiture for [Tier][Die] impact. Withering Ray beats all three on dice and pays no Investiture."
+    },
+    {
+     "name": "Dark Investiture",
+     "dice": "[Tier][Die] vital on impact — formula (@tier)d(2 * @skills.black.rank + 2), type=vital — PLUS Afflicted[[Tier][Die] vital] ongoing. 1d6 at Tier 1, 2d8 at Tier 2.",
+     "action": "2 Actions",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "Gated on a successful Black vs Spiritual test; costs 1 Investiture AND health equal to tier. The Afflicted rider is ongoing condition damage and IS this tree dealing damage — it matches the initial hit after one round and out-damages it from round two. Per Action upfront it is ONE QUARTER of a Withering Ray (2 Actions for 1[Tier][Die] against 1 Action for 2[Tier][Die]), not half; it pays off only if the fight lasts. Wiring note: talent-rolls.json says its single formula represents 'the Afflicted ongoing amount applied on success', so impact and tick share one formula in Foundry while the prose grants both. Comparator: leyline/Red's Afterburn buys Afflicted[half [Tier][Die] energy] for an Opportunity on a Special, no Investiture and no Actions — the same condition for a far smaller price, in a tree the design guide assigns Opportunity to."
+    },
+    {
+     "name": "Sovereign of Solitude",
+     "dice": "[Tier][Die] vital — formula (@tier)d(2 * @skills.black.rank + 2), type=vital. 2d8 at L6.",
+     "action": "Reaction",
+     "depth": 5,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "Triple-conditional: target must be Weakened, must MOVE, and the Black vs Spiritual test must succeed for the damage (the movement-0 clause appears to land on the spend alone). Costs 2 Investiture. Competes with Puppeteer for the single Reaction per round, though Puppeteer's true unlock is L8, so they do not in fact arrive together."
+    },
+    {
+     "name": "Spoils of Isolation",
+     "dice": "vital damage equal to your tier — a FLAT 1 (Tier 1) or 2 (Tier 2) points per target. No roll formula; talent-rolls.json has no entry for it at all, which is why both automated damage streams miss it.",
+     "action": "2 Actions",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "The tree's only area effect and nearly worthless as damage: 2 Actions + 1 Investiture for 1-2 points per Weakened character in Attunement Range. Its real payload is the Temporary HP equal to total damage dealt — which is the smallest of the 14 temp-HP grants in the set (deity/Power's Investiture of Command gives three allies [Tier][Die] each; deity/Order's Bear Witness refreshes every round). Conditional on targets already being Weakened, which requires the Draw Mana rider or Sapping Hex to have fired first."
+    },
+    {
+     "name": "Severance (AMPLIFIER, not a source)",
+     "dice": "no dice of its own — converts your attacks' damage type",
+     "action": "Passive",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "Listed for completeness and flagged as NOT an independent damage source: it converts your attacks against Isolated characters to vital instead of their normal type. Conditional on the target being Isolated — a state the tree can produce only through Unnerving Approach, though deity/Chaos can apply it outright. It is nevertheless the single largest effective damage increase in the tree, because it strips Deflect from every weapon Strike you make, and a /damage type/ scan of all 365 confirms it is the only damage-type conversion in the set."
+    }
+   ],
+   "countReal": 4,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "2[Tier][Die] vital per Action — Withering Ray, i.e. 2d6 (~7) at L1-5 and 4d8 (~18) at L6-10, plus the engine-added Black rank + Presence modifier on every roll; vital means Deflect subtracts nothing. This is the highest per-Action damage in the leyline atlas and the only doubled-tier damage formula in all 365 talents. Sustained ceiling at L6+: three Withering Rays in a Slow turn = 12d8 ~ 54 vital before modifiers, for 3 Actions and roughly 5 health (three half-d8 rolls, mean 1.75 each — NOT 6-12), no Investiture at all, and net POSITIVE Investiture IF the targets happen to be Weakened and Predatory Patience is online — a condition on enemy formation, not a standing state. Add up to 1[Tier][Die] vital/round of Afflicted from Dark Investiture and 1[Tier][Die] vital off-turn from Sovereign of Solitude. Severance additionally converts every ordinary weapon Strike against an Isolated target to vital.",
+   "repeatability": "The damage engine is NOT resource-limited, which is unusual for a leyline tree. Withering Ray costs only half [Die] health (mean 1.5 at rank 2, rounding down), so it repeats every Action for as long as the HP bar lasts — about 4.5 HP per full-throttle Slow turn at L1 against a 10+STR pool, i.e. roughly three such turns before the mage is the one in danger, extended by Hardy (a shared talent seven trees carry, so not a Black-specific extension), refunded by Predator's Due on kills, and partly reclaimed by Sanguine Reservoir, which banks the same health loss as Reserve and spends it as Investiture. Dark Investiture and Sovereign of Solitude are Investiture-gated and are the ones that actually run out (2 Inv each at L6 against a ~4-6 pool). Predatory Patience refunds 1 Investiture per successful hit on a Weakened creature with no per-round cap — but the Weakened supply is itself gated on enemies standing apart, so treat that refund as situational rather than as a standing economy (corrected from 'which the tree Weakens for free').",
+   "verdict": "REAL, FRONT-LOADED AND VITAL-TYPED. Black can deal damage at depth 0 / level 1, which is as early as it goes; it deals the strongest damage type in the game with every one of its four sources; and its entry node is the only doubled-tier damage formula in the system. But it is a strictly single-target engine: exactly one talent (Spoils of Isolation) touches more than one enemy and it deals a flat 1-2 points, against Red's Flame Surge, Arc Flash and Chain Detonation. Zero talents in the tree are damage MITIGATION, so there are no false positives to strip out — the only 'health' language that could be misread is health paid as a COST (Withering Ray, Dark Investiture) or health gained (Hardy, Predator's Due, Sanguine Reservoir's Reserve, Spoils of Isolation's Temp HP), which are the tree's economy rather than either damage or defence. Recorded divergence: the automated census counts 3 sources, not 4, because Spoils of Isolation's fixed tier-value damage has no talent-rolls.json entry."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (4 talents, all L1)",
+    "rating": 5,
+    "exemplars": "Withering Ray, Hollow Command, Black Leyline Attunement, Unnerving Approach",
+    "note": "An extraordinary entry band, and cross-tree checking made it stronger rather than weaker. Withering Ray delivers the set's only doubled-tier damage formula — 2d6 repeatable Deflect-ignoring vital for 1 Action and no Investiture — at level 1. Hollow Command removes an entire enemy turn, the only 'cannot take actions' effect in the 365-talent set, for 2 Actions and 1 Investiture, also at level 1; the nearest depth-0 equivalents anywhere are deity/Power's Kneel (forces ONE action) and deity/Fate's Snare (Restrained, and a placed trap that must be walked into). The free Attunement rider Weakens isolated enemies for nothing, and it is the only Draw Mana rider of the five that debuffs enemies rather than buffing the caster. A Black character is already doing the thing the tree is for on their first turn of their first session."
+   },
+   {
+    "band": "depth 1-2 (11 talents, L2-L3 nominal — except Extract Thought, truly L6)",
+    "rating": 3,
+    "exemplars": "Severance and Blood Price (both stronger than they read); Extract Thought (strong but really L6); Cruel Step, Siphoned Will, Necrotic Grasp (the weak end)",
+    "note": "Shallower than depth 0 but not the trough it first appears. Severance is the standout — a passive that converts every attack against an Isolated target to vital, unique in the game. Blood Price is the correction: because both HP-costing Ritual talents lose the health BEFORE they test, its advantage lands on that same talent's own attack, giving the tree's damage engine near-permanent advantage from L2 for a free passive. Extract Thought blanket-denies Reactions off any Deception success, but its real gate is Deception 3+ and skill rank 3 is unreachable before level 6, so it is not a level-3 talent at all. HARDY REMOVED FROM THE EXEMPLARS (lens B): the prior version called it 'quietly good', but it is a shared generic talent that seven of the twenty-one trees carry with identical text, so it says nothing about Black. Against the standouts, Spoils of Isolation's damage is a flat 1-2 points, Siphoned Will is double-gated and unwired, and Necrotic Grasp is roster-dependent — and merely HALVES healing where deity/Death's depth-0 Withering Touch denies it outright."
+   },
+   {
+    "band": "depth 3+ (10 talents, L4-L6 nominal — Whispered Doubt/Composed truly L7, Puppeteer truly L8)",
+    "rating": 4,
+    "exemplars": "Sovereign of Solitude, Dark Investiture, Predatory Patience, Sanguine Reservoir; Puppeteer (late and unfunded)",
+    "note": "Recovers strongly at the rank-3 gate. Sovereign of Solitude pins a Weakened mover at movement 0 and adds 2d8 vital off-turn; Dark Investiture adds the tree's only ongoing damage stream; Predatory Patience is the best economy talent in the tree and, against a scattered enemy, the thing that bends the Draw Mana tax (softened from 'breaks' — the Weakened supply it depends on is conditional). Sanguine Reservoir is the tree's genuinely unique piece of design. Dragged down by the Subjugation tail: Composed (+2 max focus for a whole slot, true earliest L7), Puppeteer (true earliest L8, requiring a 0-focus enemy the tree cannot produce — while heroic/Warrior reaches the same 0-focus payoff at L6 with its own drain attached, and deity/Power reaches the same action theft at L2 with no precondition), Double Dip (a scene-long conditional on a resource that caps at 2-3), and the fact that half the band exists to fuel the depth-0 engine rather than raise the ceiling."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED, with a late economy payoff rather than a late power spike — and more front-loaded than the depth model shows, because the Subjugation branch's real levels are later than reported. The two best talents in the tree (Withering Ray, Hollow Command) are both depth 0 / level 1, and a Black character is close to fully expressed at level 2 once Severance and Blood Price land. Levels 3-10 mostly buy fuel and sustain for that level-1 engine — Hardy, Sanguine Reservoir, Predator's Due, Predatory Patience and Double Dip all exist to keep Withering Ray firing. The one genuine late capability jump is the rank-3 gate at L6, which doubles the tier multiplier and upgrades the die simultaneously, taking Withering Ray from 2d6 (~7) to 4d8 (~18) — a ~2.6x step, not a doubling. The Subjugation payoff, meanwhile, is pushed out to L6/L7/L8 by Extract Thought's Deception 3+ gate and arrives partly unfunded. Note when comparing across the atlas: this L6 discontinuity is a leyline-wide property, not a Black one — heroic paths carry no colour rank gate at all, so a heroic tree's whole 25 is reachable by ~L4-L5 while Black's Subjugation branch is still four levels away.",
+  "uniqueOwnership": [
+   "CONFIRMED UNIQUE — the only HP-to-Investiture conversion in the game. Sanguine Reservoir banks health lost to Ritual talents as Reserve (cap = ranks in Black) and lets you spend it as Investiture; Double Dip then lets Reserve substitute for the health cost itself. Verified two ways across all 365: 'Reserve' appears in exactly these two talents, and no other talent converts health into Investiture in either direction (Predator's Due grants both separately; leyline/Green's Mender's Instinct spends Investiture to give health, which is the opposite trade).",
+   "CONFIRMED UNIQUE BY PHRASE, NARROWED IN FUNCTION — the only whole-turn action denial. Hollow Command's 'the target cannot take actions on its next turn' is the sole instance in the 365-talent set (0 hits for /cannot act/ and /loses its turn/ too), at depth 0, level 1. But the prior version named only deity/Power's Absolute Authority as the external comparison and did not scale it, which understates how contested the category is. Full comparator list, all verified: deity/Power Kneel (depth 0, L1, 1 Action, 1 Inv — Compelled, 'must spend its next action either moving toward you or doing nothing') and Absolute Authority (depth 1, L2, 'you choose the target's action on its next turn' — exactly what Black's Puppeteer does at a true L8, six levels later); deity/Fate Snare (depth 0, L1 — Restrained, placed, sustainable up to tier); leyline/Green Grasping Vines (depth 1, L2 — Restrained, sustainable for 1 Investiture a turn); deity/Order Edict (depth 0, L1 — a declared prohibited action, up to tier sustained). Black owns the strongest single instance; it does not own the category.",
+   "CONFIRMED UNIQUE — the only damage-type conversion. Severance's 'deal vital damage instead of their normal damage type' is the only hit for /damage type/ in the whole set. It upgrades an entire weapon kit past Deflect with one free passive at depth 1.",
+   "CONFIRMED UNIQUE — the only Attunement key that debuffs enemies. Checked against all five riders in SYSTEM-PRIMER.md: White heals allies, Blue and Red grant the caster advantage, Green shapes terrain; Black's applies Weakened to isolated enemies, making the tree's free action-economy resource an offensive one.",
+   "NARROWED — Black owns the only focus-attrition loop that ends in ACTION THEFT, but NOT the only complete focus loop, and its own loop is the broken one. The verified part holds: Whispered Doubt taxes every enemy focus spend, Coercive Pressure punishes the loss with disadvantage, Puppeteer converts a 0-focus enemy into a stolen action, and only one talent outside Black keys off '0 focus' at all (heroic/Warrior Wit's End). What the claim missed: heroic/WARRIOR owns the only COMPLETE drain-to-payoff loop in the set, self-contained and earlier — Feinting Strike (depth 1, Intimidation 2+, L2) removes focus equal to your ranks in Intimidation AND strips the Reaction, and Wit's End (depth 2, Intimidation 3+, so a true L6) cashes a 0-focus target for +4d6 that ignores Deflect and cannot graze. Black holds the payoff half with no drain, two levels later.",
+   "CONFIRMED UNIQUE — the only 'cannot willingly move closer to any allies' effect. Dread Presence turns Weakened into a soft-lock that forbids reconsolidation — isolation enforced rather than merely rewarded. 'Willingly' returns exactly one talent across all 365.",
+   "STRENGTHENED AND NARROWED — Withering Ray is the only doubled-tier damage formula in the game, but 'the only leyline talent that rolls its own multi-die damage with no Investiture cost' is still too strong. STRENGTHENED: scanning every damage formula in all 365 talents, Withering Ray alone uses `(2 * @tier)d(...)`; all 42 others use `(@tier)d(...)`. It also pays in health rather than Investiture, sidestepping the Draw-Mana uptime tax that constrains every other colour's ACTIVE damage plan. NARROWED FURTHER THAN THE PRIOR PASS: leyline/Red's Shockwave Slam is a Special with cost '—' that carries its OWN roll formula, `floor((@tier)d(2 * @skills.red.rank + 2) / 2)` impact — a second no-Investiture leyline talent with a real formula, missing from the prior list (which named Thorn Field, Mighty, Momentum's Edge, Kindle and Chain Detonation). Black's claim is to the biggest free-standing die pool, not to the existence of free leyline damage."
+  ],
+  "gaps": [
+   "Zero ally support. Not one of the 25 talents targets, buffs, heals, shields or moves an ally. In a party fight Black contributes only to the enemy side of the ledger.",
+   "Zero damage mitigation. No damage reduction, resistance, shields, interception or redirection anywhere — while leyline/White carries five such talents. The entire defensive plan is a larger HP bar (from Hardy, a talent seven of the twenty-one trees also carry) and killing the thing first, while Withering Ray is actively spending that same HP bar.",
+   "Effectively no healing. Predator's Due is self-only, kill-gated and arrives at L6. Cannot stabilise a downed ally, cannot remove a condition, cannot remove an Injury.",
+   "No answer to a crowd. Exactly one AoE (Spoils of Isolation) and it deals a flat 1-2 points. Against three or more enemies who stay in formation, the Isolated triggers (Sapping Hex, Severance, Cruel Step) all go dark at once, the free Weakened rider stops firing, Predatory Patience's Investiture refund stops with it, and the mage is left making ordinary Strikes.",
+   "No information at all: no detection, tracking, scouting, prediction or hidden-fact reveal, despite two talents named for mind-reading.",
+   "No exploration or downtime utility: no travel, survival, crafting, expertise or non-combat problem-solving talent exists. Out of combat Black offers one Deception advantage that costs an Opportunity and 1 Investiture, and nothing else.",
+   "Almost no mobility. Cruel Step is a 1-Investiture, Isolated-gated upgrade on Disengage's 5 ft and nothing else exists — no teleport, no dash, no escape.",
+   "No terrain, no zones, no summons, no companions.",
+   "The tree cannot drain enemy focus. Whispered Doubt only taxes a spend the enemy chose to make; no talent removes focus directly. So Puppeteer, the Subjugation payoff, waits at L8 on a 0-focus state the tree has no way to produce — a state heroic/Warrior manufactures for itself from L2 with Feinting Strike.",
+   "Single-defence dependency: Withering Ray, Hollow Command, Dark Investiture and Sovereign of Solitude ALL test against Spiritual defence (only Double Dip tests Cognitive — four of the tree's five tests). One high-Spiritual enemy blanks the tree's entire active kit simultaneously.",
+   "COMPARATIVE GAP (added by lens B) — Black's signature mechanic is owned more completely by a nine-talent tree. deity/Chaos can APPLY Isolated twice over (Isolating Pressure and Isolating Ruin both read 'the target is Isolated until the start of your next turn') and deals vital damage off it; Black, in twenty-five talents, can create the state once, on a Free Action, once per turn, only against a target that happens to be standing within 10 ft of exactly one ally. Across all 365 talents /Isolated/ returns just seven — Black's four and Chaos's three — and the only two that CREATE it are Chaos's. The isolation engine's ignition belongs to the deity tree Black rank pays for.",
+   "COMPARATIVE GAP — the tree's other half is a subset of its nearest neighbour. Black<->Red is the highest functional-similarity pair of all 210 (0.920) and Red carries 8 offensive talents to Black's 4, with AoE, a chain and an on-kill splash Black has no equivalent of. Outside Hollow Command, the vital damage type, and the Reserve/blood economy, there is little Black does that Red does not do in the same shape and wider.",
+   "Situations where a Black player sits on their hands: a disciplined enemy line that never separates; a single boss with a bodyguard who stays adjacent; any social scene needing persuasion or leadership; every travel, survival or downtime challenge; any round where an ally is dying."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'Black leyline mages are predators... cutting a target from the herd' — the path is an isolation ENGINE that creates the separation it feeds on.",
+     "delivered": "PARTIAL — the tree overwhelmingly REWARDS isolation it did not create, and another tree creates it.",
+     "evidence": "Exactly one talent cuts a target from the herd: Unnerving Approach (depth 0, Free Action, 1 Investiture, once per turn, push one ally [Size] ft). The other three Isolated talents — Sapping Hex, Severance, Cruel Step — all require the target to be Isolated already. The real engine is Weakened, not Isolated: two talents PRODUCE Weakened (Black Leyline Attunement, Sapping Hex) and four consume it, against four that name Isolated with a single producer. Only Dread Presence enforces separation once created. Cross-tree: the only talents in all 365 that APPLY Isolated belong to deity/Chaos."
+    },
+    {
+     "claim": "'Health spent for power' — blood is the currency.",
+     "delivered": "DELIVERS as flavour and as an economy, but NOT as the dominant cost.",
+     "evidence": "Six talents are built on the health economy: Withering Ray and Dark Investiture pay health; Blood Price, Hardy, Sanguine Reservoir and Double Dip manage it. The engine talent genuinely is HP-fuelled, the cost is small in practice (mean 1.5 HP per Withering Ray at rank 2), and Blood Price converts the payment itself into advantage on the very attack it paid for — the tightest loop in the tree. Two caveats: by count Investiture is the real cost (see the design-guide claim below), and one of the six (Hardy) is a shared talent seven trees carry with identical text, so it is not part of Black's identity at all — the health economy is really five talents, of which two are the same Reserve mechanic."
+    },
+    {
+     "claim": "'Focus stripped from the enemy mind' (and the Subjugation specialty's 'commands the depleted cannot refuse').",
+     "delivered": "PARTIAL — the payoff exists, the stripping does not, and another tree runs the whole loop.",
+     "evidence": "No talent in the tree removes enemy focus. Whispered Doubt only taxes a spend the enemy chooses to make; Coercive Pressure only reacts to a loss it did not cause; Predatory Insight only reacts to any character reaching 0 focus. Puppeteer, the capstone of the specialty, requires a 0-focus enemy the tree has no way to produce — and its real earliest level is 8, not the 6 the depth model reports. Cross-tree confirmation added by lens B: in all 365 talents only TWO actually remove focus involuntarily — leyline/Red Shatter Focus and heroic/Warrior Feinting Strike — and Warrior pairs its own drain (L2) with its own 0-focus payoff (Wit's End, Intimidation 3+, true L6). The 'depletion' half of Black's fantasy is entirely outsourced, to a heroic tree that does not need to outsource it."
+    },
+    {
+     "claim": "'Vital wounds that no armor turns aside.'",
+     "delivered": "DELIVERS — the best-realised claim in the file.",
+     "evidence": "All four damage sources are vital (Withering Ray, Dark Investiture, Sovereign of Solitude, Spoils of Isolation), and Severance converts ordinary weapon attacks against Isolated targets to vital as well — the only damage-type conversion in the 365-talent set. Deflect never applies to anything this tree does. Withering Ray is additionally the only doubled-tier damage formula in the game. Note for cross-tree comparison: vital damage itself is NOT Black's alone — deity/Chaos, Death, Knowledge and Power all deal it — but Black is the only tree that converts an existing weapon kit into it."
+    },
+    {
+     "claim": "'Surrounded, a Black mage falters; isolated with their prey, they are inevitable.'",
+     "delivered": "NOT DELIVERED — the downside is unimplemented flavour.",
+     "evidence": "No talent penalises the Black mage for being surrounded, and no talent weakens as adjacent enemies increase. There is no anti-synergy mechanic anywhere in the 25; if anything Spoils of Isolation prefers multiple targets. The claimed drawback costs the player nothing, which means the claimed strength was never paid for. The real drawback is indirect and unstated: a formation that never splits switches off the free Weakened rider, Sapping Hex, Severance, Cruel Step and Predatory Patience's Investiture refund at once."
+    },
+    {
+     "claim": "Isolation specialty: 'predatory patience, hexes, and a dread presence that makes solitude lethal.'",
+     "delivered": "DELIVERS.",
+     "evidence": "Predatory Patience, Sapping Hex and Dread Presence are literally the named talents, and Dread Presence does exactly what the sentence promises."
+    },
+    {
+     "claim": "Ritual specialty: 'sacrificial costs, withering touch, and reservoirs of stolen Investiture.'",
+     "delivered": "DELIVERS.",
+     "evidence": "Withering Ray, Dark Investiture (sacrificial costs), Sanguine Reservoir and Double Dip (the literal reservoir, Reserve spent as Investiture), plus Blood Price, Hardy, Necrotic Grasp and Predator's Due — eight talents carry Specialty: Ritual, exactly as many as each of the other two specialties. Naming note found by lens B: 'withering touch' is also the literal name of a deity/Death talent (Black/Green gate, depth 0) which delivers the same fantasy — [Tier][Die] + Willpower vital plus total healing denial — for 1 Action and 1 Investiture."
+    },
+    {
+     "claim": "Subjugation specialty: 'siphoned will, coercive pressure, and commands the depleted cannot refuse.'",
+     "delivered": "DELIVERS by name, PARTIAL in function, and LATE.",
+     "evidence": "Siphoned Will, Coercive Pressure, Hollow Command and Puppeteer are all present and Hollow Command is the strongest single control talent in the game. The 'depleted' precondition is the unfunded part (see the focus claim), and the branch's back half is L6/L7/L8 rather than the L3/L4/L6 the depth model reports."
+    },
+    {
+     "claim": "COMPARATIVE INTENT OVERLAP (added by lens B) — another path's intent file makes two of Black's own promises, and delivers the half Black cannot.",
+     "delivered": "DRIFT AGAINST A RIVAL TREE. deity/Chaos claims Black's isolation-and-vital promise AND its focus-seizing promise, in nine talents; deity/Power claims Black's domination promise and reaches the payoff six levels earlier.",
+     "evidence": "INTENT-deity-Chaos.md: a disciple of Maelith banks misfortune and spends it 'as focus seized, as advantage stolen, as Vital wounds carved into a target left isolated and alone.' That is Black's own sentence. And Chaos delivers the half Black does not — Isolating Pressure and Isolating Ruin are the only talents in the set that APPLY Isolated. Chaos is gated Black 2+/Blue 2+, so this is less a competitor for the slot than a verdict on it: the tree that can actually cut a target from the herd is the deity tree you buy WITH Black rank, not Black itself. INTENT-deity-Power.md makes the other overlap: Tyrith's blessed 'compel' and force foes to kneel 'Compelled, Weakened, made to serve' — Black's Subjugation fantasy — and deliver it at Kneel (depth 0, L1) into Absolute Authority (depth 1, L2, 'you choose the target's action on its next turn') against Black's Puppeteer at a true L8. Both paths are gated on Black 2+, so a Black mage is the natural buyer of both, which is design working; but it means the leyline tree's two headline specialties are each done better nine talents away."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Costs favor HP loss (Physical), Focus (Cognitive), Investiture sparingly. Black pays in blood and willpower.'",
+     "delivered": "DRIFTED — inverted by the data.",
+     "evidence": "Recounted directly from the 25 talent records: exactly 10 carry a cost, and NINE spend Investiture (Unnerving Approach, Hollow Command, Cruel Step, Spoils of Isolation, Predatory Insight, Dark Investiture, Puppeteer, Sovereign of Solitude, Double Dip). Two spend health (Withering Ray, Dark Investiture) and exactly ONE spends focus (Puppeteer, 2) — matching resource-economy.js, which finds exactly 1 Focus coster in Black. Investiture is the dominant cost by a factor of four; blood is a skin over an Investiture economy that the tree then partly refills via Predatory Patience, Predator's Due and Sanguine Reservoir."
+    },
+    {
+     "claim": "DESIGN GUIDE, Black themes: 'Focus economy — spend Focus for leverage, strip enemy Focus, dominate the depleted.'",
+     "delivered": "DRIFTED on two of three (added by lens B).",
+     "evidence": "'Spend Focus for leverage' is one talent (Puppeteer, 2 focus — the tree's only Focus coster). 'Strip enemy Focus' is zero talents. 'Dominate the depleted' is one talent (Puppeteer again), at a true L8, gated on a state nothing in the tree creates. The entire stated Focus economy resolves into a single level-8 Reaction — while the design guide's own colour table assigns Focus to Black as a signature cost."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets: ~35% Passive, 25-30% Special, ~15% Action, ~8% 2-Action, 5-8% Free, 5-8% Reaction, 0% 3-Action.",
+     "delivered": "DRIFTED badly on the two headline numbers.",
+     "evidence": "Recounted directly from the 25 talent records and matching the deterministic table exactly: Passive-equivalent (Passive 6 + Always Active 9) 15/25 = 60% against a 35% target; Special 1/25 = 4% against a 25-30% target (Predatory Insight is the tree's only Special). Action 3/25 = 12%, 2-Action 3/25 = 12% (target 8%), Free 1/25 = 4%, Reaction 2/25 = 8%, 3-Action 0/25 = 0% (target met). The guide's own diagnosis — 'the current leyline trees have 0% Specials... Specials are the most important gap' — is still essentially true of Black, and Black is the WORST of the five leyline trees on both numbers (Red is 44% Passive / 32% Special, White 40%/24%, Blue 36%/20%, Green 36%/28%)."
+    },
+    {
+     "claim": "INTENT vs DESIGN GUIDE vs TALENTS: the isolation radius (reported, not resolved).",
+     "delivered": "BOTH INTENT SOURCES DISAGREE WITH THE SHIPPED TALENTS.",
+     "evidence": "The path description says the Draw Mana rider fires on 'no ally within 10 ft' and the leyline guide's Black entry says \"'No allied creature within 10 ft' is the consistent isolation trigger\". The shipped talents say 5 feet: Black Leyline Attunement ('no ally within 5 feet') and Sapping Hex ('one with no ally within 5 feet'). Meanwhile Unnerving Approach selects its push target 'within 10 ft', so the tree contains both numbers and they do not line up — half of Unnerving Approach's legal targets sit outside the radius that would have mattered."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Leyline mages are mortal. Comparable to Heroic path characters, not Radiants.'",
+     "delivered": "HOLDS at the top end, but the depth-0 band is hot.",
+     "evidence": "No flying, no death regeneration, no shardblades; the ceiling is human-scale. But Hollow Command at level 1 removes an entire enemy turn and is the only such effect in the set, and Withering Ray at level 1 is the only doubled-tier damage formula in the set — two Radiant-shaped effects on entry nodes, in a tree whose depth-3+ band is mostly fuel. The parity target is worth testing the other way too: heroic/Warrior's Wit's End deals +4d6 ignoring Deflect for 2 Actions and 1 focus at a true L6, so the heroic ceiling is not obviously lower — Black's advantage over the heroic paths is that its ceiling arrives at level 1."
+    },
+    {
+     "claim": "DEPTH-MODEL CAVEAT worth carrying into the cross-tree comparison.",
+     "delivered": "The dossier's 'earliest L' under-counts for FOUR Subjugation talents — and the same correction is owed to other trees, not only Black.",
+     "evidence": "The depth model applies the rank-3 -> level-6 rule to COLOUR gates only. Extract Thought's prerequisite is Deception 3+, a skill rank 3, which the primer's cap table also puts at level 6 — so Extract Thought is L6, not L3. Connections are managed prerequisites, so Composed and Whispered Doubt (both connected to Extract Thought) are L7, not L4, and Puppeteer (connections: Composed) is L8, not L6. LENS B ADDITION — apply it symmetrically or the comparison is unfair to Black: leyline/Blue's Baleful gates on Persuasion 3+ (printed L4, really L6), heroic/Warrior's Wit's End on Intimidation 3+ (printed L3, really L6), and heroic/Envoy's Calm Appeal on Discipline 2+ (printed L3, unaffected). Several trees are later than the dossier says; Black is simply the one where the correction hits a whole branch."
+    }
+   ],
+   "actuallyIs": "A single-target vital-damage attrition engine with the best single control talent in the game, wearing an isolation theme it mostly does not enforce and cannot start. The Isolated condition is a gate on a conditionally-free Weakened rider rather than an engine the tree drives — and deity/Chaos, gated on Black rank, is the only path in the set that can actually apply Isolated. The 'blood cost' identity is a small, self-rewarding tax (Blood Price turns the payment into advantage on the very attack that paid it) laid over an Investiture economy the tree partly refills. The enemy-focus-drain specialty is a payoff with no primer, pushed to level 8, while heroic/Warrior runs the complete drain-and-cash version of that loop from L2. Comparatively, Black is functionally Red's nearest neighbour (0.920, the highest pair of 210) with a narrower damage kit, a better damage type, an HP economy, and one extraordinary entry-node control talent. What a player actually does: Draw Mana to Weaken whatever happens to be standing alone, fire Withering Ray for 2[Tier][Die] Deflect-ignoring damage with advantage every Action until the HP bar or the target runs out, and spend one turn deleting an enemy turn with Hollow Command.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "BOTH",
+    "talents": "CONSUME: Unnerving Approach, Hollow Command, Cruel Step, Spoils of Isolation, Predatory Insight, Dark Investiture, Puppeteer, Sovereign of Solitude, Double Dip (9 — verified against the talent records and matching resource-economy.js). PRODUCE: Predatory Patience (1 per hit on a Weakened creature, no per-round cap), Predator's Due (1 per kill); Sanguine Reservoir additionally makes Reserve spendable as Investiture. Cross-tree scale: only 9 talents in all 365 produce Investiture, so Black holds two of nine — Red holds one (Flashpoint), and Chaos, Death, Life, Knowledge and Sovereignty one each."
+   },
+   {
+    "keyword": "Reserve",
+    "role": "BOTH",
+    "talents": "PRODUCE: Sanguine Reservoir (health lost to Ritual talents, cap = ranks in Black). CONSUME: Double Dip (Reserve substitutes for the health cost), and Reserve is spendable as Investiture anywhere. Black-only homebrew resource — grep-verified to appear in exactly these two of the 365 talents, and the only health-to-Investiture conversion in the set."
+   },
+   {
+    "keyword": "Focus",
+    "role": "BOTH",
+    "talents": "CONSUME: Puppeteer (2 focus) — the tree's only Focus coster, matching the census. PRODUCE: Siphoned Will (tier, on Hollow Command success), Predatory Insight (1, whenever any character hits 0 focus); Composed raises maximum focus by tier (a cap increase, not regen). Only 6 talents in the set produce Focus; Black holds two, the leyline maximum."
+   },
+   {
+    "keyword": "Health / HP",
+    "role": "BOTH",
+    "talents": "CONSUME as cost: Withering Ray (half [Die], mean 1.5 at rank 2), Dark Investiture (tier). PRODUCE: Hardy (+1 max health per level — a SHARED talent carried with identical text by leyline White and Green and by heroic Agent, Hunter, Leader and Warrior, so not a Black-specific asset), Predator's Due ([Tier][Die] on kill). Trigger keyword for Blood Price and Sanguine Reservoir ('when you lose health from a Ritual talent'). Both HP-costing talents resolve the loss BEFORE their test, which is what makes Blood Price a self-triggering advantage engine rather than a second-cast rider."
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCE",
+    "talents": "Spoils of Isolation (equal to total vital damage dealt — a flat tier per Weakened target). One of 14 temp-HP talents across 9 trees, and the smallest of them: deity/Power's Investiture of Command grants three allies [Tier][Die] each, deity/Order's Bear Witness refreshes every round, deity/Fate's Bulwark Ground refreshes every round on a zone."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "CONSUME",
+    "talents": "Predatory Insight only. The tree generates no Opportunity at all — a one-way dependency on the Plot Die, and the design guide assigns Opportunity thematically to Red and White rather than Black, so this is the one costed talent running on a currency the tree is not supposed to use."
+   },
+   {
+    "keyword": "Weakened (condition)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Black Leyline Attunement (Draw Mana rider, free, but ONLY against enemies with no ally within 5 ft — not 'all isolated enemies' unconditionally), Sapping Hex (on hit vs Isolated). CONSUME: Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude. Engine-enforced: 01-shared-core.js:507 hooks disadvantage on every Strength/Speed test while Weakened. External sources verified across all 365: only deity/Order Sealed Edict and deity/Power Absolute Authority (Weakened on a FAILED test, i.e. its consolation prize). deity/Power Kneel and deity/Death Consuming Decay are CONSUMERS; leyline/Green Natural Recovery and deity/Life Surgical Precision REMOVE Weakened."
+   },
+   {
+    "keyword": "Isolated (state: 'no ally within 5 feet')",
+    "role": "BOTH",
+    "talents": "PRODUCE: Unnerving Approach (the only in-tree creator). CONSUME: Sapping Hex, Severance, Cruel Step. Definitional drift: 5 ft in the talents, 10 ft in both intent sources, and Unnerving Approach itself uses a 10 ft selection radius. External: /Isolated/ returns exactly 7 talents in the whole set — Black's four and deity/Chaos's three (Isolating Pressure, Isolating Ruin, Unravel Everything) — and the only two talents anywhere that APPLY the state are Chaos's."
+   },
+   {
+    "keyword": "Afflicted[X]",
+    "role": "PRODUCE",
+    "talents": "Dark Investiture (Afflicted [[Tier][Die] vital]) — the tree's only ongoing damage condition. One of 5 Afflicted talents across 5 trees; leyline/Red's Afterburn buys Afflicted[half [Tier][Die] energy] for an Opportunity on a Special with no Investiture and no Actions, against Dark Investiture's 2 Actions + 1 Investiture + health."
+   },
+   {
+    "keyword": "Vital damage",
+    "role": "PRODUCE",
+    "talents": "Withering Ray, Dark Investiture, Sovereign of Solitude, Spoils of Isolation; Severance CONVERTS your other attacks to it. Ignores Deflect entirely. Not exclusive to Black — deity/Chaos, Death, Knowledge and Power all deal vital, and Knowledge's Predatory Strike stacks [Tier][Die] per Insight — but Black is the only tree that converts an existing weapon kit into it, and the only leyline tree that uses it at all."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE",
+    "talents": "Blood Price (next Black test — in practice the Ritual attack that just paid for it), Predatory Insight (next Deception test). Self-only and binary; the advantage ledger confirms these are Black's only two. They do NOT collide with each other (different skills), and because Black's skill attribute is Presence (01-shared-core.js:121) and Deception is a Spiritual skill, they do not collide with Blue's Cognitive rider or Red's Physical rider either. They DO collide with leyline/Green's Scent the Weak, which grants advantage on your first test each round against the lowest-HP creature, free and untriggered."
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE",
+    "talents": "Coercive Pressure (next Cognitive test of an enemy that lost focus, once per round per enemy); the Weakened condition additionally imposes engine-enforced disadvantage on Strength/Speed tests. Note the system-wide census: disadvantage is produced by 14 talents across 9 trees and CONSUMED by none, so Black's two contributions sit in an over-produced currency."
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "CONSUME",
+    "talents": "Black Leyline Attunement's rider is the tree's Weakened engine, and unlike Red's rider it does NOT cost the Reaction — which matters because Black has two Reactions. It is the only one of the five riders that touches enemies at all; its output is conditional on enemy formation rather than free in practice."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "The tree's universal targeting radius — Black Leyline Attunement, Withering Ray, Hollow Command, Coercive Pressure, Cruel Step, Spoils of Isolation, Dark Investiture, Whispered Doubt, Dread Presence, Puppeteer, Sovereign of Solitude, Double Dip."
+   },
+   {
+    "keyword": "Ritual (talent subtype / tag)",
+    "role": "BOTH",
+    "talents": "An internal keyword the tree triggers off: Blood Price, Sanguine Reservoir and Double Dip all key on 'a Ritual talent'. Members (Specialty: Ritual, 8 of 25): Withering Ray, Blood Price, Necrotic Grasp, Hardy, Dark Investiture, Predator's Due, Sanguine Reservoir, Double Dip."
+   },
+   {
+    "keyword": "Deception (skill)",
+    "role": "CONSUME",
+    "talents": "Hollow Command tests it vs Spiritual; Extract Thought triggers on any successful Deception test AND gates on Deception 3+ (a level-6 gate the depth model does not reflect, and the root of the whole branch's L6/L7/L8 tail); Predatory Insight buffs it. Deception is a Spiritual (Presence) skill in canon, so its advantage does not collide with Blue's or Red's Draw Mana riders. Black is not alone in gating on a non-colour skill rank 3 — leyline/Blue's Baleful (Persuasion 3+) and heroic/Warrior's Wit's End (Intimidation 3+) do the same — but Black is the only tree where the rank-3 skill gate sits at the ROOT of a branch and pushes four talents later."
+   },
+   {
+    "keyword": "Spiritual defence",
+    "role": "CONSUME",
+    "talents": "Withering Ray, Hollow Command, Dark Investiture, Sovereign of Solitude all test against it — four of the tree's five tests, a single-defence concentration."
+   },
+   {
+    "keyword": "Cognitive defence",
+    "role": "CONSUME",
+    "talents": "Double Dip only."
+   },
+   {
+    "keyword": "Black (colour skill rank)",
+    "role": "CONSUME",
+    "talents": "Rank gates at 1+/2+/3+ across the tree; [Die] size derives from it; Sanguine Reservoir's Reserve cap equals ranks in Black; the roll formulas read @skills.black.rank; and because those formulas carry testSkill 'black', the engine adds Black rank + Presence to the damage they roll. Externally, Black rank 2+ is a gate colour on three deity trees (Chaos, Death, Power) and rank 3+ on Sovereignty — and per the gate audit Sovereignty tests Black three times while never testing the White it also charges you for."
+   },
+   {
+    "keyword": "Action denial ('cannot take actions')",
+    "role": "PRODUCE",
+    "talents": "Hollow Command (whole turn — the only instance of the phrase in the set), Puppeteer (chooses one of the enemy's actions, at a true L8). Engine marker: noactions. External category comparators: deity/Power Kneel and Absolute Authority, deity/Fate Snare, leyline/Green Grasping Vines, deity/Order Edict."
+   },
+   {
+    "keyword": "Reaction denial ('cannot take Reactions')",
+    "role": "PRODUCE",
+    "talents": "Extract Thought. Engine marker: noreactions. Not unique: leyline/Blue Absolute Stillness strips Reactions from a 0-Speed creature, leyline/Red Flashpoint can make all affected characters lose a Reaction, and heroic/Warrior Feinting Strike strips one on a hit. Black owns the broadest trigger (any successful Deception test), not the only instance."
+   },
+   {
+    "keyword": "Movement rate 0 / movement restriction",
+    "role": "PRODUCE",
+    "talents": "Sovereign of Solitude (rate 0), Dread Presence (cannot willingly move closer to allies)."
+   },
+   {
+    "keyword": "Forced movement (push)",
+    "role": "PRODUCE",
+    "talents": "Unnerving Approach ([Size] ft — 5 ft at rank 2 — on an enemy's ALLY, not on the target)."
+   },
+   {
+    "keyword": "Reactive Strike",
+    "role": "CONSUME",
+    "talents": "Cruel Step (avoids provoking them, over 10 ft, against the canon Disengage baseline of 1 Action for 5 ft)."
+   },
+   {
+    "keyword": "Healing reduction",
+    "role": "PRODUCE",
+    "talents": "Necrotic Grasp (halved until the end of your next turn, on any Black attack hit). The weak version of the effect: deity/Death's Withering Touch, a depth-0 talent, makes the target unable to regain HP at all for the same window while also dealing [Tier][Die] + Willpower vital."
+   },
+   {
+    "keyword": "[Tier][Die] / [Size] / Tier",
+    "role": "CONSUME",
+    "talents": "Scaling nouns: [Tier][Die] on Withering Ray (2x — the only doubled multiplier in the set), Dark Investiture, Sovereign of Solitude, Predator's Due; [Die] additive on Predatory Patience; half [Die] as Withering Ray's HP cost; [Size] on Unnerving Approach's push; flat tier on Spoils of Isolation, Siphoned Will, Composed and Dark Investiture's HP cost."
+   }
+  ],
+  "crossTreeHooks": [
+   "FUNCTIONAL NEIGHBOUR (added by lens B) — Black<->Red is the single highest similarity pair of all 210 (0.920), and Red is a superset of Black's damage half. Red carries 8 offensive talents to Black's 4, plus the AoE (Flame Surge), the chain (Arc Flash), the on-kill splash (Chain Detonation) and an Afflicted rider (Afterburn), and its Attunement rider buffs the caster. What actually separates Black from its nearest neighbour is exactly three things: the vital damage type on every source, the HP-for-power economy (Blood Price, Sanguine Reservoir, Double Dip, Reserve), and Hollow Command. Everything else Black does, Red does in the same shape and wider. Practical read: in a party that already has a Red, Black's marginal contribution is the control talent and the Deflect bypass, not the damage.",
+   "Puppeteer (d4, true L8) — requires an enemy at 0 focus, which Black cannot itself produce. Verified across all 365, only TWO talents involuntarily REMOVE focus: leyline/Red Shatter Focus ('When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus' — free, and the cleanest one) and heroic/Warrior Feinting Strike ('loses focus equal to your ranks in Intimidation'). FOUR more merely TAX a voluntary spend the way Whispered Doubt does: the three Baleful copies (leyline/Blue behind Persuasion 3+ so a true L6, heroic/Agent L2, heroic/Leader L3) and heroic/Envoy Calm Appeal ('Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline') — Calm Appeal was missing from the previous list. NOT leyline/Blue Counterspell, which spends YOUR 2 focus and 1 Investiture and does not drain the enemy at all. Direct ANTI-synergy also exists and was unlisted: leyline/White Disciplined Mind lets you and your allies 'reduce the focus cost to resist influence by 1 (minimum 1)', which is the mirror image of Whispered Doubt and Baleful — a White ally partly cancels Black's whole focus-tax plan.",
+   "NAME-COLLISION TRAP for anyone re-checking the focus economy (added by lens B): 'Shatter Focus' exists in TWO trees and only one drains focus. leyline/Red's is the Reaction costing an enemy 1 focus on a failed test. deity/Chaos's Shatter Focus, despite the name, reads 'Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result' — no focus is touched. Checked both the generator prose and the authored body: they agree here, so the flagged Shatter Focus authored divergence does not change this reading. A name-based search would wrongly credit deity/Chaos as a second focus source.",
+   "heroic/Warrior owns the COMPLETE version of Black's Subjugation loop (added by lens B). Feinting Strike (depth 1, Intimidation 2+, L2) drains focus equal to your Intimidation ranks and strips the Reaction; Wit's End (depth 2, Intimidation 3+, so a true L6) then hits that 0-focus target for +4d6 which ignores Deflect and cannot graze. Warrior manufactures the state and cashes it inside its own tree, two levels ahead of Black's payoff and with the drain included. Black holds the payoff alone, at L8.",
+   "deity/Power reaches Black's other Subjugation payoff six levels earlier and with no precondition: Kneel (depth 0, L1, 1 Action, 1 Inv, Compelled) into Absolute Authority (depth 1, L2, 2 Actions, 2 Inv — 'you choose the target's action on its next turn'). Power is gated Black 2+/Red 2+, so a Black mage is exactly who buys it. If the goal is action theft rather than the flavour of Puppeteer, this is the route.",
+   "Predatory Insight — 'regain 1 focus when ANY character reaches 0 focus' has the same dependency as Puppeteer, and its activation additionally requires rolling an Opportunity, which Red and White manipulate. Note the system-wide count: Opportunity is produced by 9 talents in 5 trees and consumed by 17 in 9 — Black is a pure consumer of a contested currency.",
+   "Coercive Pressure — fires only when an enemy LOSES focus; Red's Shatter Focus is the direct enabler and Warrior's Feinting Strike the other, otherwise it waits on the enemy voluntarily spending.",
+   "Whispered Doubt — taxes an enemy's voluntary spend by 1. It stacks with Baleful and with Envoy's Calm Appeal (both of which force the spend) and with anything that makes enemies Dodge, Aid or Reactive Strike, all of which cost 1 focus. It is directly countered by an ally running leyline/White's Disciplined Mind.",
+   "Severance / Sapping Hex / Cruel Step / Unnerving Approach — all gate on Isolated (no ally within 5 ft). Any partner effect that forces enemy movement, kills the adjacent ally, or scatters a formation (Red AoE, White shoves, Green terrain) switches four Black talents on at once. deity/Chaos is the only path that can APPLY Isolated directly (Isolating Pressure and Isolating Ruin both read 'the target is Isolated until the start of your next turn'), and it is gated Black 2+/Blue 2+ — so the fix for Black's largest structural gap is a deity tree bought with Black rank. Conversely leyline/Green is directly antagonistic and the design guide says so in as many words: 'Green's cluster engine mirrors Black's isolation engine', and 'Black isolates; Green clusters'. The two colours' key mechanics work against each other in the same party.",
+   "Predatory Patience — refunds 1 Investiture per successful attack on a Weakened creature. Verified external Weakened SOURCES are only two: deity/Order Sealed Edict (violation -> Weakened until end of its next turn) and deity/Power Absolute Authority (Weakened on a FAILED test). deity/Power Kneel and deity/Death Consuming Decay are Weakened CONSUMERS, not sources, and leyline/Green Natural Recovery and deity/Life Surgical Precision REMOVE Weakened — a partner running either is actively switching Black off.",
+   "Spoils of Isolation — scales with the NUMBER of Weakened characters, which Black produces one at a time (or several at once via the Draw Mana rider, but only if they are already spread out). An outside mass-Weakened effect would turn it from a 1-point tickle into a real AoE; none exists in the set — both external sources are single-target.",
+   "Sapping Hex, Severance and Necrotic Grasp all trigger on 'when you hit' / 'your attacks', including ordinary weapon Strikes — so a martial multiclass or weapon-focused heroic path converts three Black passives into a permanent weapon upgrade without spending Investiture. Blood Price does NOT extend to this: its trigger is losing health to a Ritual talent, so it stays bound to Withering Ray and Dark Investiture.",
+   "Blood Price and Predatory Insight both grant advantage, and advantage is binary — but the collision surface is much narrower than it looks. Black's skill attribute is Presence (module-src/scripts/engine/01-shared-core.js:121) and Deception is a Spiritual skill, so neither collides with Blue's rider (advantage on your next Cognitive test) or Red's rider (next Physical test), and they do not collide with each other. The real redundancy is leyline/Green's Scent the Weak ('your first test against it each round gains advantage'), which is free, untriggered, and blanket-overlaps both. System-wide, advantage is produced by 45 talents across 13 trees and consumed by 7 — an over-produced currency, so Black's two producers are worth less in a mixed party than in isolation.",
+   "Necrotic Grasp — value depends entirely on the GM's adversary roster containing healers; zero value against opposition that never heals. It is also the weaker version of an effect on a tree Black rank pays for: deity/Death's depth-0 Withering Touch denies healing entirely for the same window.",
+   "deity/Chaos (Maelith) is the natural deity destination for a Black leyline character on three counts, all verified: it is the only external consumer of the Isolated keyword, the only path anywhere that can MANUFACTURE the state Severance and Sapping Hex need, and its own path description promises the same 'Vital wounds carved into a target left isolated and alone' Black's does. It is also, per the gate audit, the ONLY deity tree that cleanly tests both its gate colours (blue:3, black:3), so the Black rank you already have is actually used."
+  ],
+  "topThree": [
+   "Withering Ray — 2[Tier][Die] vital for 1 Action at depth 0 / level 1, the only doubled-tier damage formula in all 365 talents, costing a mean 1.5 health rather than Investiture, so it repeats every Action indefinitely and gains advantage from Blood Price on essentially every cast (and against a Weakened target with Predatory Patience online, actually generates Investiture while it fires). It is the tree's entire damage plan and the strongest per-Action damage talent in the leyline atlas — roughly double Red's depth-0 Searing Bolt, of a better damage type, for no Investiture.",
+   "Hollow Command — the only 'the target cannot take actions on its next turn' effect in all 365 talents, available at depth 0 / level 1 for 2 Actions and 1 Investiture. Removing an entire enemy turn for two of yours is the best action-economy trade in the tree by a wide margin, and no other tree at any depth denies a whole turn: the nearest are deity/Power's Absolute Authority (one action, L2) and the Restrained appliers in Green and Fate.",
+   "Severance — a depth-1 passive that converts every one of your attacks against an Isolated target to vital damage. The only damage-type conversion in the set, permanently strips Deflect from your whole kit including ordinary weapon Strikes, and costs nothing to run. Its only limit is that the tree can barely manufacture the Isolated state it needs — deity/Chaos can, twice."
+  ],
+  "bottomThree": [
+   "Composed — one whole talent slot for +2 maximum focus (never +1: it sits behind Extract Thought's Deception 3+ gate, so its true earliest level is 7, which is always Tier 2). It exists only to be Puppeteer's prerequisite, and Puppeteer is itself an L8 Reaction with an unfunded precondition that two other trees satisfy for themselves.",
+   "Siphoned Will — returns focus equal to tier, but only when Hollow Command SUCCEEDS, and Hollow Command costs 2 Actions plus 1 Investiture and can fail its test. Realistically once or twice per fight for 1-2 focus. It is also the tree's single unwired talent (events=0 effects=0), i.e. the whole of Black's 4% unwired figure.",
+   "Necrotic Grasp — roster-dependent to the point of being a dead slot in most fights, and the weak version of an effect done better at depth 0 elsewhere (deity/Death's Withering Touch denies healing outright). Halving healing 'until the end of your next turn' does nothing unless the opposition heals inside that window."
+  ],
+  "weakTalents": [
+   {
+    "name": "Composed",
+    "reason": "A whole talent slot for +2 maximum focus, sitting behind Extract Thought's Deception 3+ gate, so its true earliest level is 7 (Tier 2), not the level 4 the depth model reports — meaning it is never the '+1' it appears to be, and never worth more than +2. Its only real function is to be Puppeteer's prerequisite, and because connections are managed prerequisites, taking it is mandatory to reach Puppeteer at all."
+   },
+   {
+    "name": "Siphoned Will",
+    "reason": "Below curve and double-gated. Returns focus equal to tier (1, or 2 at L6) but only when Hollow Command SUCCEEDS, and Hollow Command costs 2 Actions plus 1 Investiture and can fail its test. Realistically once or twice per fight for 1-2 focus. Implementation note: its wiring line reads events=0 effects=0, so the talent carries no automation on its document at all."
+   },
+   {
+    "name": "Necrotic Grasp",
+    "reason": "Roster-dependent to the point of being a dead slot in most fights. Halving healing 'until the end of your next turn' does nothing unless the opposition heals inside that window; against a typical adversary that never heals it has literally no effect all session. Comparative weight: deity/Death's Withering Touch — a depth-0 talent on a tree gated by Black 2+ — denies healing entirely for the same window AND deals [Tier][Die] + Willpower vital, so the effect is not merely narrow, it is the worse copy."
+   },
+   {
+    "name": "Spoils of Isolation",
+    "reason": "OVERCOSTED for its damage. 2 Actions plus 1 Investiture — two thirds of a Slow turn — for a flat 1 point of vital damage per Weakened character (2 at Tier 2). The Temporary HP rider is the only thing keeping it playable and equals that same tiny total; it is the smallest of the 14 temp-HP grants in the set. For the same 2 Actions, two Withering Rays deal 4d6 to one target."
+   },
+   {
+    "name": "Puppeteer",
+    "reason": "Structurally stranded, and outclassed on both ends. Its connections chain is Extract Thought (Deception 3+, L6) -> Composed (L7) -> Puppeteer (L8), so it arrives two levels later than the depth model reports; it is a Reaction competing for the single Reaction slot; and its trigger is a character at 0 focus, a state no Black talent can create (only leyline/Red Shatter Focus and heroic/Warrior Feinting Strike drain focus at all). Cross-tree: deity/Power's Absolute Authority does the same thing — 'you choose the target's action on its next turn' — at depth 1, level 2, with no focus precondition; and heroic/Warrior reaches the 0-focus payoff at a true L6 with its own drain attached. A level-8 slot that may never fire, doing a job two other trees do earlier."
+   },
+   {
+    "name": "Cruel Step",
+    "reason": "Below curve but NOT a never-pick and NOT dominated — a common misreading. Canon Disengage is 1 Action for only 5 ft without triggering Reactive Strikes (cosmere-canon-reference SKILL.md §Disengage, SR p.32), and Move does not avoid Reactive Strikes at all, so Cruel Step delivers double Disengage's no-provoke distance for the same single action. What makes it weak is the 1 Investiture on top and the requirement that the destination character already be Isolated — the one state this tree struggles to produce."
+   },
+   {
+    "name": "Unnerving Approach",
+    "reason": "Not a never-pick — it is the tree's ONLY herd-cutting tool and the entire Isolation specialty depends on it — but mechanically incoherent as written. It selects an ally 'within 10 ft' while Isolated is defined at 'no ally within 5 feet' (Sapping Hex, Black Leyline Attunement), so roughly half its legal targets were never breaking isolation and pushing them accomplishes nothing. At rank 2 the push is [Size] = 5 ft, which only just clears the 5-ft threshold from an adjacent position. Comparative weight: deity/Chaos applies Isolated outright on a test, twice, so the design problem this talent fails to solve is solved cleanly nine talents away."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Two different answers, which is the tree's most distinctive economic fact. The DAMAGE line is effectively unlimited in Investiture terms and limited by health instead: Withering Ray costs half [Die] health, rounding down — mean 1.5 at rank 2, 1.75 at rank 3 — so three casts in a Slow turn cost about 4.5 HP at L1 from a 10+STR pool (not the ~6 a naive read gives), roughly three full-throttle turns before the mage is the one in danger, widened by Hardy (+1 max health per level — a shared talent, so this is not an edge over the seven trees that also carry it), refunded on kills by Predator's Due, and partly reclaimed by Sanguine Reservoir, which banks the same loss as Reserve and spends it as Investiture. The CONTROL/UTILITY line runs on Investiture: at L1 the ~4 pool covers about four 1-Investiture activations, and Draw Mana's 1-per-Action at Tier 1 imposes the standard 50% uptime. From L4, Predatory Patience refunds 1 Investiture on every successful attack against a Weakened creature with no per-round cap — CORRECTED FROM THE PRIOR PASS: the free Attunement rider only makes Weakened cheap against enemies already standing apart, so this bends the Draw Mana tax against a scattered enemy and does nothing against a disciplined line. It is a conditional break, not an outright one, and it is still the strongest Investiture-regen position in the leyline atlas. The 2-Investiture L6 talents (Sovereign of Solitude, Double Dip) are about two uses per fight without that refund chain running.",
+   "triggerGatedCount": 6,
+   "reactionCount": 2,
+   "resourceCostersOutOfTree": 10,
+   "note": "Recounted directly from the 25 talent records and matching the deterministic table. Reactions: 2 of 25 (8%) — Puppeteer and Sovereign of Solitude. Sovereign unlocks at L6 and Puppeteer at a true L8 (Deception 3+ -> Composed -> Puppeteer), so they do NOT arrive together as the depth model suggests; from L8 a Black mage holding both will use one and waste the other most rounds. Mitigating factor, and a genuine edge over the tree Black most resembles: unlike Red, Black's Draw Mana rider does not cost the Reaction, so the slot is at least available. Gated on someone ELSE acting first: 6 of 25 (24%) — Coercive Pressure (enemy loses focus), Whispered Doubt (enemy spends focus), Dread Presence (enemy tries to move), Puppeteer (0-focus enemy takes its turn), Sovereign of Solitude (Weakened enemy moves), Predatory Insight (any character hits 0 focus). That 24% is mid-table across the atlas — leyline/White is 52% (with SEVEN Reactions competing for one slot) and heroic/Hunter is 4% — so Black is not unusually reactive; it is unusually PASSIVE. Costed talents: 10 of 25 (40%) spend a resource — 9 spend Investiture, 2 spend health, 1 spends focus, 1 spends Opportunity (the sum exceeds 10 because Dark Investiture, Puppeteer and Predatory Insight each spend two). The remaining 15 are Passive (6) or Always Active (9), which is 60% against the design guide's 35% target and the highest passive share of any of the five leyline trees."
+  }
+ },
+ "corrections": [
+  {
+   "field": "weakTalents[Cruel Step] / axes.mobility.evidence / bottomThree",
+   "from": "'NEVER-PICK and OVERCOSTED... when every character already has Move (1 Action, full Speed, typically 25 ft) and Disengage (1 Action, no Reactive Strikes). Strictly worse than two standard actions the character already has'; bottomThree: 'when the free Move action covers full Speed and the free Disengage already prevents Reactive Strikes'",
+   "to": "Below curve but NOT dominated: canon Disengage is 1 Action to move 5 FT without triggering Reactive Strikes, so Cruel Step gives DOUBLE that distance for the same single action; the cost is the 1 Investiture and the Isolated-target restriction. Removed from bottomThree.",
+   "reason": "TEXT-VS-CLAIM. .claude/skills/cosmere-canon-reference/SKILL.md §Disengage: 'An action: move 5 ft without triggering Reactive Strikes. [SR p.32]'. Move is 1 Action and does not avoid Reactive Strikes at all, and neither Move nor Disengage is 'free' (both are 1 ▶ per SYSTEM-PRIMER §Action economy). The profile's '25 ft full Speed' figure appears nowhere in the primer or the canon reference. Cruel Step therefore does in one action what the baseline cannot do at all at that range, so 'strictly worse than two standard actions' is false in both directions."
+  },
+  {
+   "field": "weakTalents[Blood Price] / bottomThree / axes.buff.evidence / powerByDepth[depth 1-2]",
+   "from": "'Below curve... it grants advantage on the SECOND Withering Ray only: a half-uptime rider on a thing you were doing anyway.' Listed as the tree's #2 worst talent.",
+   "to": "Blood Price grants advantage on the very Ritual attack that paid for it — near-100% uptime on the tree's whole damage plan from L2, for a free depth-1 Passive. Removed from weakTalents and bottomThree.",
+   "reason": "TEXT-VS-CLAIM / sequencing misread. Withering Ray reads 'Lose half [Die] health, THEN make a ranged Black attack vs. Spiritual'; Dark Investiture reads 'Spend 1 Investiture and lose health equal to your tier, THEN test Black vs. Spiritual'. In both, the health loss resolves BEFORE the test, so 'your next Black test' IS that talent's own attack roll, not the following cast."
+  },
+  {
+   "field": "powerByDepth[depth 3+] / weakTalents / gaps / sustainability.note / intentDrift depth caveat / axes.control",
+   "from": "Puppeteer at 'd4, L6' throughout; the depth caveat corrected only Extract Thought (L6) and Composed/Whispered Doubt (L7).",
+   "to": "Puppeteer's true earliest level is L8, not L6. The caveat now covers FOUR talents, not three.",
+   "reason": "DEPTH/LEVEL ERROR the profile missed while making the same correction one node upstream. Connections are managed prerequisites (iron rule 7 / task brief). Puppeteer connections: Composed; Composed connections: Extract Thought; Extract Thought prereq: Deception 3+. Skill rank 3 is unreachable before L6 (SYSTEM-PRIMER tier/rank-cap table), so Extract Thought L6 -> Composed L7 -> Puppeteer L8. Its Black 3+ gate is not the binding constraint."
+  },
+  {
+   "field": "weakTalents[Composed] / bottomThree / axes.protection / axes.resource_economy / powerByDepth[depth 3+]",
+   "from": "'+1 maximum focus at Tier 1 (+2 at Tier 2)... so its true earliest level is 7' — internally contradictory; and 'Composed (+1 focus for a whole slot)'.",
+   "to": "Composed is always +2 maximum focus, never +1.",
+   "reason": "ARITHMETIC / internal contradiction. The profile itself establishes Composed's true earliest level is 7, and L7 is Tier 2 (SYSTEM-PRIMER: Tier 2 = levels 6-10), so 'your tier' is always 2 by the time the talent can be owned. The +1 figure is unreachable."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Dark Investiture].note",
+   "from": "'Per Action upfront it is half a Withering Ray'",
+   "to": "Per Action upfront it is ONE QUARTER of a Withering Ray.",
+   "reason": "ARITHMETIC. Dark Investiture is 2 Actions for 1[Tier][Die]; Withering Ray is 1 Action for 2[Tier][Die]. 0.5[Tier][Die]/Action vs 2[Tier][Die]/Action = one quarter, not half."
+  },
+  {
+   "field": "damageAccounting.repeatability / peakDamagePerAction / sustainability.roundsOfGoodOptions",
+   "from": "'about 6 HP per Slow turn against a 10+STR pool' (L1) and 'roughly 6-12 health' (L6+) for three Withering Rays.",
+   "to": "~4.5 HP per Slow turn at L1-5, and ~5.25 HP at L6+.",
+   "reason": "DICE/COST ARITHMETIC. SYSTEM-PRIMER: 'half [Die] rounds down'. At rank 2, [Die]=d6, so half [Die] yields 0/1/1/2/2/3 = mean 1.5; three casts = 4.5. At rank 3, [Die]=d8, mean 1.75; three casts = 5.25. The profile over-stated the L1 cost by ~33% and the L6 cost by up to 130%."
+  },
+  {
+   "field": "axes.damage_scaling.evidence / frontOrBackLoaded",
+   "from": "'the tier multiplier and die size both jump at the rank-3 gate, so it roughly doubles at L6'",
+   "to": "~2.6x, not a doubling: 2d6 mean 7 -> 4d8 mean 18.",
+   "reason": "ARITHMETIC. 2d6 mean = 7.0; 4d8 mean = 18.0; 18/7 = 2.57."
+  },
+  {
+   "field": "axes.damage_scaling.evidence / peakDamagePerAction / mechanicalKeywords[Black]",
+   "from": "(absent) — all damage figures given as raw dice only.",
+   "to": "Added: the engine auto-adds the test skill's modifier (rank + attribute) to the damage of any formula carrying `testSkill`, and all three Black formulas carry testSkill 'black'.",
+   "reason": "MISSED MECHANIC that raises every damage number. data/talent-rolls.json schema note: \"If present -> activation.type becomes 'skill_test' AND the engine auto-adds that skill's modifier (rank+attribute) to the damage.\" Black's attribute is Presence (module-src/scripts/engine/01-shared-core.js:121 `black: { label: \"Black\", attribute: \"pre\" }`). Flagged as system-wide so it does not distort cross-tree ranking."
+  },
+  {
+   "field": "uniqueOwnership (last bullet)",
+   "from": "'The only leyline damage engine that is not Investiture-gated.'",
+   "to": "Narrowed to: the only leyline talent that rolls its own multi-die ATTACK damage with no Investiture cost — with Green's Thorn Field and four Red riders named as the counter-examples.",
+   "reason": "TEXT-VS-CLAIM, refuted by direct query of all-talents.json. leyline/Green Thorn Field (∞, cost —): 'Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it' — free damage fed by Green's free Draw Mana rider. leyline/Red Mighty, Momentum's Edge, Kindle and Chain Detonation all deal damage at cost '—'."
+  },
+  {
+   "field": "axes.debuff.evidence / intentDrift claim 1 / mechanicalKeywords[Weakened]",
+   "from": "'five talents key off Weakened (Black Leyline Attunement, Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude) against four off Isolated'",
+   "to": "SIX talents name Weakened — Sapping Hex was omitted, and it is a second in-tree Weakened PRODUCER ('When you hit an Isolated character... it becomes Weakened').",
+   "reason": "MISCOUNT. Sapping Hex was assigned only to the Isolated list, but it names both keywords and is one of only two Weakened sources in the tree."
+  },
+  {
+   "field": "crossTreeHooks[Puppeteer]",
+   "from": "'Needs... leyline/Blue Counterspell (forces a 2-focus spend)'",
+   "to": "Replaced with leyline/Red Shatter Focus ('When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus'), plus Feinting Strike and the three Baleful copies; Counterspell explicitly ruled out.",
+   "reason": "TEXT-VS-CLAIM. Blue's Counterspell reads 'spend 2 focus and 1 Investiture to test Blue vs. their Cognitive defense' — YOU spend the focus; it drains nothing from the enemy. Red's Shatter Focus is the only free direct focus-drainer in the 365, and the profile missed it entirely while naming a talent that does the opposite."
+  },
+  {
+   "field": "crossTreeHooks[Predatory Patience]",
+   "from": "'Any external Weakened source (deity/Power's domination line, deity/Order's violation rider, deity/Death's Weakened-gated decay) becomes a Black Investiture faucet.'",
+   "to": "Only deity/Order Sealed Edict and deity/Power Absolute Authority actually APPLY Weakened; deity/Death Consuming Decay is a consumer, and Green's Natural Recovery and Life's Surgical Precision REMOVE Weakened.",
+   "reason": "TEXT-VS-CLAIM. Consuming Decay: 'choose a Weakened character or a character below half HP' — it selects an already-Weakened target. Only 6 non-Black talents name Weakened at all, and 3 of those remove it, which is a live anti-synergy the profile did not report."
+  },
+  {
+   "field": "crossTreeHooks[advantage] / mechanicalKeywords[Advantage] / axes.buff.evidence",
+   "from": "'they are dead weight beside Blue's Attunement rider, Red's Attunement rider, Green's Scent the Weak, or each other. Black's advantage output is anti-synergistic with almost any partner.'",
+   "to": "They do not collide with Blue's rider, Red's rider, or each other; only Green's Scent the Weak overlaps.",
+   "reason": "TEXT-VS-CLAIM. Blue's rider grants advantage on your next COGNITIVE test; Red's on your next PHYSICAL test. Blood Price grants it on your next BLACK test (Black's attribute is Presence, i.e. Spiritual realm — 01-shared-core.js:121) and Predatory Insight on a DECEPTION test (Spiritual/Presence per cosmere-canon-reference §Skills). Different test categories cannot be the same roll. The two Black talents also target different skills, so they do not overlap with each other."
+  },
+  {
+   "field": "damageAccounting.verdict / axes.damage_direct.evidence",
+   "from": "countReal 4 asserted with no note on the automated streams.",
+   "to": "Divergence explicitly recorded: damage-census.js and the roll-formula stream both report 3; the fourth is Spoils of Isolation's formula-less fixed 'vital damage equal to your tier'.",
+   "reason": "The brief requires saying so where the text and the deterministic measurements disagree. countReal 4 stands (text wins) but the disagreement was unreported."
+  },
+  {
+   "field": "bottomThree / weakTalents composition",
+   "from": "bottomThree: Cruel Step, Blood Price, Composed.",
+   "to": "bottomThree: Composed, Siphoned Will, Necrotic Grasp. Puppeteer added to weakTalents; Cruel Step's entry rewritten and downgraded from 'never-pick'.",
+   "reason": "Consequence of corrections 1, 2 and 3: both original bottom-three entries other than Composed rested on misreadings, and Puppeteer's newly-established L8 + unfunded trigger makes it a stronger candidate than either."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Dark Investiture].note",
+   "from": "(absent)",
+   "to": "Added the wiring note that talent-rolls.json describes its single formula as 'the Afflicted[[Tier][Die] vital] ongoing amount applied on success'.",
+   "reason": "Evidence-stream disagreement worth flagging: the prose grants an impact hit AND an Afflicted tick, but only one formula ships, so the two share it in Foundry. Text wins for the profile; the note preserves the discrepancy."
+  },
+  {
+   "field": "axes.control.evidence / social_influence / powerByDepth[depth 1-2]",
+   "from": "Extract Thought cited at 'd2' with no level, implying availability alongside its depth-2 neighbours.",
+   "to": "Explicitly annotated L6 wherever it appears.",
+   "reason": "Consistency with the profile's own depth caveat, which it stated once and then did not apply in the axis evidence."
+  },
+  {
+   "field": "FIELDS CHECKED AND FOUND CORRECT (no change)",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Verified against the text and left unchanged: all 25 talents' depth and earliest-L values; the 4/11/10 band split; the action-type recount (Passive 6 + ∞ 9 = 15, Action 3, 2-Action 3, Free 1, Reaction 2, Special 1 = 25); resourceCostersOutOfTree = 10 and the 9-Investiture / 2-health / 1-focus / 1-Opportunity breakdown; reactionCount = 2; triggerGatedCount = 6; countFalsePositiveMitigation = 0 (Black has no mitigation talent, so the Shield Wall class of error cannot occur here); the Withering Ray dice claim (2d6 at Tier 1 rank 2, 4d8 at Tier 2 rank 3) and its 12d8 ≈ 54 arithmetic; Spoils of Isolation as flat tier; the four-of-five Spiritual-defence concentration; the 8/8/8/1 specialty split; the 'cannot take actions', 'Reserve', 'willingly', '0 focus' and damage-type-conversion uniqueness claims (all grep-verified against all-talents.json); the Weakened engine citation (01-shared-core.js:488/:507); the 5 ft vs 10 ft isolation-radius drift; and the design-guide cost-inversion finding."
+  },
+  {
+   "field": "axes[control].score",
+   "from": "5",
+   "to": "4",
+   "reason": "Score inflation. The phrase-uniqueness holds (Hollow Command's 'the target cannot take actions on its next turn' is the only hit in 365; /cannot act/ and /loses its turn/ return 0), but 5 means 'the reference implementation of this axis' and three trees deliver more control, earlier and more reliably. leyline/Green: Grasping Vines (d1, L2, 1 Action) applies Restrained — movement 0 plus disadvantage on everything but escape — sustainable for 1 Investiture a turn, plus Drive the Prey (Slowed + forced movement + free ally Reactive Strikes) plus a free difficult-terrain Attunement key. deity/Fate: Snare (d0, L1, Restrained, up to tier sustained) + Inevitable Snare (Disoriented). deity/Power: Kneel (d0, L1, 'must spend its next action either moving toward you or doing nothing') into Absolute Authority (d1, L2, 'you choose the target's action on its next turn') — exactly Puppeteer's effect six levels earlier. deity/Order: Edict (d0, L1, declared prohibited action, up to tier sustained). Black's own inventory is four control talents of which three arrive L6-L8 and one (Puppeteer) may never fire."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "2",
+   "to": "1",
+   "reason": "Score inflation. Scanning all 365 for /deflect|resist|reduce .{0,25}damage|take half|less damage/ returns ZERO Black talents and five White ones (Guardian Stance, Interposing Shield, Shared Burden, Devoted Conduit, Shield Wall). The calibration anchor puts one damage-reducing Reaction at 2; Black has none. What remains is one incidental temp-HP rider (Spoils of Isolation, flat tier = 1-2 points, the smallest of the 14 temp-HP grants in the set) plus Hardy — and scanning /maximum (hp|health)/ shows Hardy is a shared generic talent carried with identical text by SEVEN of the twenty-one trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior), so it cannot be evidence that Black is better at protection than its neighbours."
+  },
+  {
+   "field": "axes[debuff].evidence",
+   "from": "'SIX Black talents name Weakened, two of them producers' presented as breadth",
+   "to": "Corrected to the real five-talent debuff inventory, with named cross-tree comparators; score held at 4",
+   "reason": "Double-counting. Four of the six Weakened talents (Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude) are CONSUMERS already scored under resource_economy, damage and control. The genuine debuff set is Black Leyline Attunement + Sapping Hex (producers), Coercive Pressure, Whispered Doubt, Necrotic Grasp. 4 still survives comparatively — leyline/Blue has five impose-disadvantage talents and deity/Sovereignty is a seven-talent die-shrink engine, so Black is one of several good options, not the best — but the score now rests on a defensible count."
+  },
+  {
+   "field": "axes[resource_economy].evidence",
+   "from": "'Black creates Weakened for free via its Draw Mana rider ... which breaks the primer's 50%-uptime Draw Mana tax outright'",
+   "to": "Retracted to a conditional break; score held at 4 on the census",
+   "reason": "Internally inconsistent with the profile's own central finding. The Attunement rider only Weakens enemies with NO ALLY WITHIN 5 FEET, and the profile elsewhere concludes the tree can barely manufacture that state (one talent, Unnerving Approach, once per turn). The Investiture-positive loop is therefore conditional on enemy formation, not free. Score held because the census is decisive independently: only 9 of 365 talents produce Investiture and Black owns 2 (verified by scanning /(regain|gain|recover|restore) .* Investiture/ — Black x2, Red x1, one each in Chaos/Death/Life/Knowledge/Sovereignty), only 6 produce Focus and Black owns 2, and Black alone owns an HP-to-Investiture bank."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "Withering Ray described only by its own formula",
+   "to": "Added the cross-tree fact that settles it, plus the breadth counterweight",
+   "reason": "Score deflation risk resolved and score held at 4. Scanning every one of the 43 isDamageFormula talents in all-talents.json, Withering Ray is the ONLY one carrying a doubled tier multiplier — (2 * @tier)d(...); all 42 others are (@tier)d(...). Red's depth-0 Searing Bolt is 1 Action + 1 Investiture for [Tier][Die] ENERGY; deity/Death's Withering Touch is [Tier][Die] + Willpower vital for 1 Investiture. Held at 4 rather than 5 because Red carries 8 offensive talents to Black's 4 with a real AoE, a chain and an on-kill splash."
+  },
+  {
+   "field": "uniqueOwnership[1] (whole-turn action denial)",
+   "from": "'The nearest external comparison is deity/Power's Absolute Authority, which chooses one action rather than denying the turn.'",
+   "to": "Full comparator list with depths and levels: Power Kneel (d0,L1) and Absolute Authority (d1,L2), Fate Snare (d0,L1), Green Grasping Vines (d1,L2), Order Edict (d0,L1)",
+   "reason": "Lens B(a): the phrase claim is true but the category claim was unscaled. Absolute Authority delivers Puppeteer's exact effect at L2 against Black's true L8, and four separate trees reach comparable denial at depth 0-1. Black owns the strongest single instance, not the category."
+  },
+  {
+   "field": "uniqueOwnership[4] (only focus-attrition loop with a payoff)",
+   "from": "'The only enemy-focus-attrition loop with a payoff at the end of it'",
+   "to": "Narrowed: Black owns the only loop ending in ACTION THEFT, but heroic/Warrior owns the only COMPLETE drain-to-payoff loop, and it lands earlier",
+   "reason": "Refuted by text. heroic/Warrior Feinting Strike (depth 1, Intimidation 2+, L2) 'loses focus equal to your ranks in Intimidation' and Wit's End (depth 2, Intimidation 3+, so a true L6) cashes a 0-focus target for +4d6 ignoring Deflect that cannot graze. Warrior manufactures the state and spends it inside its own tree, two levels ahead of Black's payoff, while Black has the payoff half and no drain at all."
+  },
+  {
+   "field": "uniqueOwnership[6] (only free-standing leyline damage roll)",
+   "from": "Narrowed list naming Thorn Field, Mighty, Momentum's Edge, Kindle, Chain Detonation",
+   "to": "Strengthened with the 2x-tier uniqueness AND narrowed again to add leyline/Red Shockwave Slam",
+   "reason": "Lens B(a). Shockwave Slam is a Special with cost '—' carrying its own roll formula floor((@tier)d(2 * @skills.red.rank + 2) / 2) impact — a second no-Investiture leyline talent with a real formula, missing from the prior list. The defensible claim is the biggest free-standing die pool, not the existence of free leyline damage."
+  },
+  {
+   "field": "crossTreeHooks (external focus-drainers)",
+   "from": "'leyline/Red Shatter Focus, heroic/Warrior Feinting Strike, and the three Baleful copies'",
+   "to": "Added heroic/Envoy Calm Appeal; separated the two true DRAINS from the four voluntary-spend TAXES; added the leyline/White Disciplined Mind anti-synergy",
+   "reason": "Incomplete search. Scanning /loses? .{0,25}focus|additional focus|reduce .{0,15}focus/ across all 365 also returns heroic/Envoy Calm Appeal ('Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline') and leyline/White Disciplined Mind, which lets allies 'reduce the focus cost to resist influence by 1' — the direct counter to Whispered Doubt and Baleful, previously unlisted. Only TWO talents in the set involuntarily remove focus, which is the number that matters for Puppeteer."
+  },
+  {
+   "field": "crossTreeHooks (new entry)",
+   "from": "absent",
+   "to": "Black<->Red 0.920 — the highest functional-similarity pair of all 210 — with what actually separates them",
+   "reason": "Lens B(e), the 'something' test. The profile never engaged with its own tree's top overlap fact. Red is a superset of Black's damage half (8 offensive talents to 4, plus AoE, chain and on-kill splash), so Black's marginal contribution beside a Red is exactly three things: the vital damage type, the Reserve/blood economy, and Hollow Command."
+  },
+  {
+   "field": "crossTreeHooks (new entries)",
+   "from": "absent",
+   "to": "heroic/Warrior's complete Subjugation loop; deity/Power's earlier action theft; and a 'Shatter Focus' name-collision guard",
+   "reason": "Lens B(a) and a verification trap worth recording. 'Shatter Focus' exists in TWO trees and only leyline/Red's drains focus — deity/Chaos's reads 'Remove the Omen; that enemy rerolls and takes the lower result', touching no focus at all (both generator prose and authored body agree, so the flagged authored divergence does not change it). A name-based search would wrongly credit Chaos as a second focus source."
+  },
+  {
+   "field": "intentDrift.claims (new claim)",
+   "from": "absent",
+   "to": "COMPARATIVE INTENT OVERLAP — deity/Chaos and deity/Power make Black's own promises and deliver the halves Black cannot",
+   "reason": "Lens B(d): the profile never checked whether another tree's intent file makes the same promise. INTENT-deity-Chaos.md promises 'focus seized ... Vital wounds carved into a target left isolated and alone' — Black's own sentence — and Chaos delivers the missing half: Isolating Pressure and Isolating Ruin are the only talents in all 365 that APPLY Isolated (/Isolated/ returns 7 talents: Black's 4 and Chaos's 3). INTENT-deity-Power.md promises 'Compelled, Weakened, made to serve' and reaches turn-hijack at L2. Both are gated on Black 2+, so a nine-talent deity tree owns Black's signature mechanic more completely than Black's twenty-five."
+  },
+  {
+   "field": "intentDrift.claims (new claim)",
+   "from": "absent",
+   "to": "DESIGN GUIDE Black themes: 'spend Focus for leverage, strip enemy Focus, dominate the depleted' — drifted on two of three",
+   "reason": "The design guide's Black entry states a Focus economy the profile tested only for the intent prose, not the guide. 'Strip enemy Focus' is zero talents; 'spend Focus for leverage' and 'dominate the depleted' are the same single talent, Puppeteer, at a true L8. The whole stated Focus economy resolves into one level-8 Reaction."
+  },
+  {
+   "field": "powerByDepth[depth 1-2].exemplars",
+   "from": "'... Hardy (quietly good); ...'",
+   "to": "Hardy removed from the exemplars, with the reason stated in the note",
+   "reason": "Lens B(a). Hardy is a shared generic talent that seven of the twenty-one trees carry with identical text, so it cannot be an exemplar of what Black's depth 1-2 band is worth relative to other trees."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions and damageAccounting.repeatability",
+   "from": "'Black is one of the few leyline trees that can genuinely break the Draw Mana tax'; 'which the tree Weakens for free'",
+   "to": "Conditional break — bends the tax against a scattered enemy, does nothing against a disciplined line",
+   "reason": "Same retraction as the resource_economy axis, applied everywhere the claim appeared. The Weakened supply Predatory Patience depends on is gated on enemies standing with no ally within 5 ft, which the profile's own gaps section says the tree cannot arrange."
+  },
+  {
+   "field": "gaps (two new entries)",
+   "from": "absent",
+   "to": "Added the deity/Chaos isolation-ownership gap and the Black<->Red subset gap",
+   "reason": "Lens B(d) and B(e). The profile listed only internal absences; the two most consequential gaps are comparative — another tree owns Black's signature mechanic's ignition, and Black's damage half is a narrower version of its nearest functional neighbour's."
+  },
+  {
+   "field": "intentDrift.claims (depth-model caveat)",
+   "from": "Applied the rank-3 -> L6 correction to Black only",
+   "to": "Applied symmetrically, naming leyline/Blue Baleful (Persuasion 3+, really L6) and heroic/Warrior Wit's End (Intimidation 3+, really L6)",
+   "reason": "Lens B fairness. Correcting only Black's printed levels while comparing against other trees' uncorrected ones would systematically disadvantage Black in the cross-tree ranking. Several trees are later than the dossier says; Black is the one where the correction hits a whole branch."
+  },
+  {
+   "field": "axes[buff].evidence and oneLineIdentity",
+   "from": "buff evidence had no cross-tree comparator; identity claimed 'a Weakened lock that leaves one enemy immobilised, alone, and unable to act'",
+   "to": "Added leyline/Green Scent the Weak as the redundancy that blunts both Black advantage sources; trimmed the identity line's conflation of the Weakened lock with Hollow Command",
+   "reason": "Lens B(b) on buff: advantage is binary and Green grants it free, untriggered, on the lowest-HP creature every round, so Black's two producers are worth less in a mixed party — score held at 2 but now defensible against other trees. The identity line merged the L5/L6 Weakened lock (Dread Presence + Sovereign of Solitude) with Hollow Command's L1 action denial, implying a single combined effect the tree does not have."
+  }
+ ]
+}

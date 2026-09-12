@@ -1,0 +1,753 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Civilization",
+ "correctionCount": 41,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Civilization",
+  "oneLineIdentity": "A summoner-engineer tree: one Action at level 1 builds a persistent autonomous attacker that four later talents multiply until it throws roughly 4 [Tier][Die] a round for free — and, read plainly, throws all of it through Deflect — plus a side-line in 10 ft defensive squares that nudge allied defenses up and hurt enemies who walk through them.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 4,
+    "evidence": "6 of 9 talents deal or amplify damage (the damage-census classifier's 3 SOURCE + 2 AMPLIFY = 5 undercounts by one; the text supports 6). Forge Construct (depth 0, L1) gives a Construct with one melee attack per turn dealing [Tier][Die] impact, on its own initiative slot. Tempered Edge: 'Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect' — the subject of both predicates is 'melee attacks', so on the plain reading the WHOLE melee attack ignores deflect. Siege Form converts to a 60 ft ranged attack for [Tier][Die] + Strength energy. Arsenal grants a second attack per turn plus a free Strike on a kill. Bastion deals [Tier][Die] impact on entry into a fortified Foundation (ROLL FORMULA (@tier)d(2*@skills.red.rank+2) type=impact). Magnum Opus adds [Tier][Die] energy splash to every enemy within 10 ft of the Construct's target. COMPARATIVE CHECK ADDED: not a 5, and the reason is stronger than 'the character has no attack talent'. Every point of Civilization's damage is impact or energy — the two Deflect-reduced types — whereas deity/Death (Withering Touch [Tier][Die] + Willpower vital, Consuming Decay [Tier][Die] vital per target turn, Necrotic Cascade [Tier][Die] spirit) and deity/Knowledge (Predatory Strike, Killing Blow and The Final Study all deal [Tier][Die] VITAL per Insight, up to 5 Insight) route their whole output through Deflect-ignoring types, which SYSTEM-PRIMER says to 'weigh well above' impact per die. Knowledge's Killing Blow at 5 Insight is 5 x [Tier][Die] vital in one 2-Action play, and Knowledge also hands every ally a bonus-vital rider (Pack Share, The Pack, Death Mark). Civilization is a genuine damage tree but not top of the atlas on damage QUALITY — its claim is sustained, free, unconditional per-round volume, not per-die weight."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 4,
+    "evidence": "Scaling is multiplicative in a way few trees achieve: Tempered Edge doubles dice per attack, Arsenal doubles attacks per turn, Magnum Opus multiplies targets per attack, and every expression is [Tier][Die]-denominated so all of it steps at L6. Repeatable every round at zero marginal Action and zero marginal Investiture, indefinitely. Held off 5 because the Construct's own HP scales only as [Tier][Die] + tier x 2 (~5.5 at Tier 1 rank 2, ~13 at Tier 2 rank 3) with defenses equal to yours minus 2 — survivability does not keep pace. COMPARATOR CORRECTED: Death's Risen Servant does scale its COUNT with tier ('up to your tier Risen Servants') while Civilization's Construct is 'one active Construct' forever — but each Risen Servant costs 1 Investiture AND a Harvested Remain, and Reaper's Harvest caps Remains at tier too, so at Tier 1 Death also fields exactly ONE body. The divergence begins at Tier 2, and Death pays for it at depth 2 / earliest L3 against Civilization's depth 0 / L1; Death's body is also strictly flimsier ([Tier][Die] HP with no +tier x 2, defenses yours minus THREE)."
+   },
+   {
+    "axis": "control",
+    "score": 2,
+    "evidence": "Bastion: enemies treat fortified Foundations as difficult terrain and, on entry, test Agility vs. your Red or are Slowed until the start of their next turn. Magnum Opus: while the Colossus is up, EVERY Construct attack splashes and each affected enemy tests Agility vs. your Red or is knocked Prone — 'Once per scene' caps the TRANSFORMATION, not the save, so with Arsenal this is two AoE Prone saves a round for the rest of the scene. That is the whole list — no Stun, Restrain, Immobilize, Disorient, no action or reaction denial. Only TWO of nine talents impose a condition at all. COMPARATIVE CHECK: stays at 2 rather than rising on the corrected repeatability, because deity/Fate's Snare — a depth 0, earliest-L1, 1-Action entry — Restrains (movement 0 AND disadvantage on everything but escape), and Inevitable Snare adds Disoriented (no reactions). Fate buys harder conditions two depth-bands earlier. SYSTEM-PRIMER: 'Action denial (Stunned, Disoriented, Restrained) is the most valuable category'; Civilization touches none of it."
+   },
+   {
+    "axis": "debuff",
+    "score": 0,
+    "evidence": "Checked all nine talents for numeric penalties, defence reduction, vulnerability, or disadvantage granting and found none. Nearest candidates are Tempered Edge's 'ignore deflect' (a quality of this tree's own damage, not a penalty applied to the target) and Bastion's Slowed / Magnum Opus's Prone (conditions, scored under control). No talent lowers an enemy's defenses, imposes disadvantage, or applies Weakened, Exhausted or Afflicted. Consistent with the resource-economy census, which does not list this tree among the 9 trees that produce disadvantage."
+   },
+   {
+    "axis": "protection",
+    "score": 3,
+    "evidence": "Five talents touch it. Lay Foundation: allies beginning their turn in a Foundation gain +1 to all defenses. Magnum Opus: each ally in a Foundation gains +2 to all defenses. Bastion: your Construct in a fortified Foundation gains +2. Siege Form: Construct gains +2 deflect. Bonds of Community: temporary HP equal to your White (2 at Tier 1, 3 at Tier 2). Every point is positional — at Tier 1 you sustain exactly ONE 10 ft Foundation — two of the five bonuses go to the summon rather than to people, and none of it is damage reduction, interception, resistance, or redirection. HELD AT 3 AFTER AN EXPLICIT PUSH TO 2: I tested lowering it, because deity/Fate delivers strictly more ally protection at the same depths (Ordained Ground gives the same +1 to all defenses PLUS Aid at 30 ft range from the square; Bulwark Ground adds temporary HP every round AND 'attacks against that ally cannot benefit from advantage', a rider Civilization has no analogue for). It stays at 3 only because this profile routes ALL of the tree's defence bonuses into protection and scores buff at 1; dropping protection to 2 as well would under-represent a tree whose capstone gives +2 to all defenses to every ally in a Foundation for the scene. The honest comparative statement: third-tier on this axis, behind Fate and leyline/White."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Checked and found nothing that restores Health, Focus or Investiture to anyone. Bonds of Community grants temporary HP, which is not restoration. Forge Construct's 'you may reforge it by using this talent again' is a rebuild at full cost, not a repair — notable because both intent sources explicitly promise the disciple 'repairs' the Construct. The dossier header confirms 0 heal formulas, and the Investiture-regen census gives Civilization 0 regen / 7 costers."
+   },
+   {
+    "axis": "buff",
+    "score": 1,
+    "evidence": "LOWERED from 2. Judged as what an ally actually gains in one round, and NOT double-counting the defence bonuses already scored under protection. Stripped of those, the tree's entire roll-affecting buff is Bonds of Community: ONE advantage on the next attack test, binary (worth literally zero to an ally already carrying advantage from Blue/Red attunement, Green's Pack Hunter — 'You both gain an advantage on your next attack test' — or Green's Scent the Weak), gated on a character dropping to 0 HP inside a 10 ft square, costing the round's only Reaction. No rerolls, no numeric bonuses, no Enhanced/Empowered/Determined/Focused. COMPARATOR CORRECTED — the previous version misquoted the comparison and the misquote ran through four other fields. deity/Fate's Bulwark Ground (Passive, depth 1, earliest L2 — the same slot) pays 'temporary HP equal to your TIER', a flat 1 at Tier 1 and 2 at Tier 2, NOT [Tier][Die]. Per instance Bonds of Community actually pays MORE (White rank: 2 at Tier 1, 3 at Tier 2). What settles the score is cadence and rider, not magnitude: Bulwark Ground pays every round with no trigger and additionally denies advantage to attacks against the ally, while Bonds of Community fires once, on a rare trigger, and burns the round's only Reaction. One binary advantage on a rare Reaction is 'one incidental talent', i.e. a 1."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "The Construct is the engine: Forge Construct converts 1 Action + 1 Investiture into an attack every round for the rest of the scene, on its own initiative slot — a genuinely new body acting, not a rebadged standard action. Arsenal grants the Construct a second attack per turn plus a free Strike (with a 15 ft move) on a kill. Trade Routes grants allies a Free Action teleport once per turn — inoperable before level 6. Siege Form can be ended as a Free Action, which is trivial. At Tier 1 the ENTIRE non-Construct action economy is zero, and the character themselves never gains an Action or a Reaction at any tier. COMPARATIVE CHECK (the lens's named deflation risk, so I counted the field): searching all 365 talents for granted/extra/free actions and attacks puts Civilization at 3 such talents — tied third with heroic/Scholar, heroic/Warrior and deity/Knowledge, behind deity/Fate (4: Weave the Thread's Free-Action Aid and free Reactive Strikes, Foreknown Strike's Free-Action Snare trigger, Thread of Inevitability's free Strike-or-Aid for every ally on Ordained Ground). Held to 3 on the strength of the extra body plus that count — a 4 would need the character to gain something themselves, and they never do."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Trade Routes: an ally standing in either of two linked Foundations may teleport to the other as a Free Action once per turn — verified as the ONLY teleport effect in all 365 talents. Arsenal: the Construct moves up to 15 ft free on a kill. Construct Speed 25 ft (set to 0 by Siege Form). Scored low despite the uniqueness: the character gains no movement of their own, and Trade Routes is inoperable before level 6 because Lay Foundation caps Foundations at 'up to your tier' — one at Tier 1 — while Trade Routes needs two. By contrast deity/Destruction's Walking Ruin is a free Passive that raises the character's own Speed by 10 ft for the scene, and heroic/Warrior's Windstance buys a Free-Action Disengage; Civilization gives its own character nothing."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 3,
+    "evidence": "LOWERED from 4 on comparative grounds. Five of nine talents key off Foundations: Lay Foundation (scene-long 10 ft square, Free Action + 1 Investiture, sustain up to tier), Bonds of Community (fires only inside them), Trade Routes (links two), Bastion (fortifies every Foundation into difficult terrain dealing [Tier][Die] impact on entry with a Slowed save), Magnum Opus (+2 defenses to every ally in one). Persistent, scene-duration, simultaneously buffing and hazardous — a real competency. But a 4 means 'one of the better options in the game for this', and counting zone/square/terrain/radius talents across all 21 trees puts Civilization FOURTH: deity/Destruction 9 of 9 (Pyre's dangerous terrain spreads to an adjacent square at the end of every one of your turns, Walking Ruin makes every space you move through dangerous terrain, Combustion Chain spreads every zone on a kill, The Unmooring merges all of it and raises its damage), deity/Fate 8 of 9 across TWO square types plus a capstone that fires every one of them, leyline/Green 6 — and Green additionally creates difficult terrain off the free Attunement Key every time it Draws Mana, at zero talent cost. Compounding it: only ONE Foundation exists for the whole of Tier 1 (levels 1-5), and only one of the five talents (Bastion) does anything to an enemy at all. Third-or-fourth best, with a one-square cap through the entire tier-1 band, is 'a real, usable competency', i.e. 3."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Checked and found nothing. No detection, scouting, foreknowledge, prediction, intent-reading, or hidden-fact talent anywhere in the nine. The Construct is granted no sensory or scouting function in its text — contrast Death's Reaper's Harvest ('You sense each of your active Remains through any obstruction'), Knowledge's Studied Mark ('learn its current HP, conditions, and Physical and Spiritual defenses') and Fate's Read the Threads ('You learn the action it intends to take on its next turn'), which show the deity atlas hands resource-adjacent talents a sense whenever it wants to."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Checked and found nothing, which is striking for a deity whose stated fantasy is 'the bonds that turn a crowd into a community'. No persuasion, leadership, command, deception, reputation, or negotiation mechanic. 'Community' is implemented entirely as 'allies standing in a square you drew'. The atlas does deliver this fantasy — deity/Order's Tessavain binds allies in Covenants and punishes violation, heroic/Envoy and heroic/Leader carry the social competencies — just not here."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 1,
+    "evidence": "Nothing is written for travel, crafting, survival or downtime. The two incidental hooks are that Forge Construct and Trade Routes both last 'for the scene', so a GM could allow a Speed-25 Construct to carry, haul or trip a hazard, and a two-node link to shortcut a traversal — though both Trade Routes nodes must sit in Attunement Range (15-60 ft), making it a tactical shuffle, not travel. Neither talent grants an exploration function in its text, and unlike heroic/Hunter's companion (Feral Connection grants 'expertise in Animal Care' and a Survival-scaled bonus to the companion's tests) the Construct gets no skill or sense at all. Remarkably non-utilitarian for a builder deity."
+   },
+   {
+    "axis": "summons",
+    "score": 5,
+    "evidence": "The defining pillar, and it survives the comparative push. Forge Construct creates the Combat Construct (HP [Tier][Die] + tier x 2, deflect 1, Speed 25, defenses yours minus 2, one melee attack, its own initiative slot, sustain 1, reforgeable). FIVE further talents upgrade it: Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus. Only two trees in the atlas carry summon-tagged talents at all (this one and Death), verified by scanning the tags field of all 365. Caveat, and it is real: heroic/Hunter carries a companion ladder of four animal_companion-tagged talents (Animal Bond, Protective Bond, Feral Connection, Hunter's Edge), so 'no other tree upgrades a companion' is false — and on two sub-axes the Hunter's is BETTER. Feral Connection gives the companion +5 x tier HP and +2 defenses (against the Construct's [Tier][Die] + tier x 2 and defenses-minus-2), and Animal Bond's 'Use a Free Action to give your companion one or two Actions on your turn' is genuine per-round commanding — the exact word Civilization's intent promises and does not deliver. The whole Hunter ladder also costs no Investiture. Civilization keeps the 5 because the entity is CREATED by an in-tree depth-0 talent (the Hunter's prereq is literally 'Animal companion', an external path feature), because it gains switchable modes, and because its damage — not its durability — scales multiplicatively."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "Checked and found zero generation of Investiture, Focus or Opportunity — matching the deterministic census exactly (Civilization 0 regen / 7 costers). Seven of nine talents have an Investiture cost (1/1/1/1/2/2/3 = 11 to deploy the whole tree in one scene), and Opportunity and Focus are never mentioned at all. Comparative sting: the other two summon-adjacent trees both pay themselves — deity/Death's Reaper's Harvest is a depth-0 Passive that recovers 1 Investiture every time anything drops to 0 HP in Attunement Range, and deity/Knowledge's Accumulate recovers 1 Investiture per round off its own mark. Civilization's engine is the one with no meter running in its favour."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Forge Construct",
+     "dice": "[Tier][Die] impact per Construct melee attack, one attack per turn (1d6 at Tier 1 rank 2; 2d8 at Tier 2 rank 3)",
+     "action": "1 Action + 1 Investiture to create; the attack itself costs the character nothing thereafter",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Conditional on the Construct surviving: HP [Tier][Die] + tier x 2 (~5.5 at Tier 1, ~13 at Tier 2), deflect 1, defenses yours minus 2. No ROLL FORMULA — the attack is rolled by the Construct actor, so the dossier's floor of 2 damage formulas undercounts the tree."
+    },
+    {
+     "name": "Tempered Edge",
+     "dice": "+[Tier][Die] energy added to each Construct MELEE attack, and the melee attack ignores deflect",
+     "action": "Passive, no cost",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "RIDER. Plain reading: one subject ('melee attacks'), two predicates, so the whole attack ignores deflect. Flagged as ambiguous wording rather than resolved. Siege Form REPLACES the melee attack, turning this talent off entirely. COMPARATIVE NOTE ADDED: deflect-ignoring is not rare in the deity atlas — Destruction's Pinpoint Charge and The Unmooring both ignore deflect explicitly, and Death's and Knowledge's whole output is vital/spirit, which ignores it by damage type."
+    },
+    {
+     "name": "Siege Form",
+     "dice": "[Tier][Die] + Strength energy, ranged 60 ft, one attack per turn (replaces the melee attack)",
+     "action": "2 Actions + 1 Investiture, then free per round",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "SWAPS the attack profile. Net of Tempered Edge it is a large loss and it breaks Arsenal's move-and-Strike chain (Speed 0). CLAIM REFINED: Destruction's Fault Line shares the identical damage expression AND the 60 ft number, so the expression is not unique — but Fault Line is a 60 ft long, 5 ft wide LINE hitting every character in it, not a single-target ranged attack, so the shapes differ. Across all 365 talents, 13 carry a [Tier][Die] + <attribute> expression (7 deity trees); the '+ Strength energy' pairing specifically is shared only with Fault Line."
+    },
+    {
+     "name": "Arsenal",
+     "dice": "Doubles the Construct's attacks: a second attack per turn at the current per-attack packet (so +2d8 impact +2d8 energy at Tier 2 with Tempered Edge). Plus a free Strike after a kill.",
+     "action": "2 Actions + 2 Investiture once, then free every round",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "The extra attack per turn is UNCONDITIONAL once bought — this is why the talent is not trigger-gated. Only the move-15-ft-and-free-Strike half is a kill-conditional rider."
+    },
+    {
+     "name": "Bastion",
+     "dice": "[Tier][Die] impact — ROLL FORMULA (@tier)d(2 * @skills.red.rank + 2) type=impact",
+     "action": "2 Actions + 2 Investiture once; the damage then fires for free per enemy entry",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "ZONE damage, conditional on an enemy CHOOSING to enter a fortified Foundation — and the same talent makes that square difficult terrain, so a competent enemy walks around. At Tier 1 there is exactly one Foundation to fortify. Comparator: Fate's Snare is a depth-0 1-Action entry paying [Tier][Die] + Awareness keen AND Restrained on the same entry trigger, but is consumed; Bastion trades the harder condition and the attribute rider for indefinite repeatability."
+    },
+    {
+     "name": "Magnum Opus",
+     "dice": "+[Tier][Die] energy to EACH enemy within 10 ft of the Construct's target — ROLL FORMULA (@tier)d(2 * @skills.red.rank + 2) type=energy",
+     "action": "3 Actions + 3 Investiture, once per scene; the splash then rides EVERY Construct attack for the rest of the scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "RIDER, conditional on enemies clustering within 10 ft of the target. 'Once per scene' caps the TRANSFORMATION, not the splash — with Arsenal that is two splashes and two AoE Prone saves per round for the rest of the scene. Ambiguity worth flagging: 'each enemy within 10 ft of the target' arguably includes the target itself (0 ft)."
+    }
+   ],
+   "countReal": 6,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "At Tier 2 rank 3 ([Tier][Die] = 2d8) with Forge Construct + Tempered Edge + Arsenal online, the Construct throws 2 attacks per round of 2d8 impact + 2d8 energy = 8d8 (avg 36) per round at a MARGINAL cost of zero Actions and zero Investiture. Setup is 3 Actions and 3 Investiture total, so a 4-round scene is ~24-32d8 for 3 Actions — ~4 [Tier][Die] per Action, rising the longer the fight runs. Magnum Opus adds +2d8 energy to every enemy within 10 ft of the target on EVERY attack thereafter; Bastion adds 2d8 impact per enemy entry. CAVEAT ON DEFLECT: on the plain reading of Tempered Edge the melee engine is Deflect-immune, so the discount applies only to Siege Form's ranged attack and Bastion's zone damage. COMPARATIVE SCOPE ADDED: this is the best ratio available INSIDE these nine talents, not in the atlas. deity/Knowledge's Killing Blow at 5 Insight deals 5 x [Tier][Die] VITAL for 2 Actions + 2 Investiture (2.5 [Tier][Die]/Action of deflect-ignoring damage in one burst), and The Final Study repeats that once per scene while also granting every ally a free Strike; deity/Destruction's The Unmooring detonates every Charge at 15 ft radius ignoring deflect for [Tier][Die] + Intellect each. Civilization's claim is sustained unconditional volume at zero marginal cost, not peak burst and not damage quality.",
+   "repeatability": "The most repeatable damage shape available in the system: the Construct attacks on its own initiative slot every round for the entire scene without consuming any of the character's Actions or Investiture, and — unlike every rival zero-Action source — it requires no choice by the enemy. Bastion repeats per entry. Magnum Opus's transformation is once per scene but its splash rides every attack thereafter. The true limiter is the Construct's ~13 HP at Tier 2 with defenses two below yours — reforging costs 1 Action + 1 Investiture and, on a strict reading of 'your Combat Construct', the scene-long upgrades bought with Arsenal (2A/2I) and Siege Form (2A/1I) go with it. The atlas's one hard counter: deity/Destruction's Fault Line — 'structures and Constructs along the line take triple damage'.",
+   "verdict": "Genuinely a damage tree, and on paper the highest damage-per-Action ratio constructible from these nine talents. But the whole engine is one fragile summon capped at ONE forever: the character has no attack talent of their own, so the realised figure is a survival roll rather than a damage roll. Compared across the atlas the tree wins on cadence and loses on quality — all of its damage is impact/energy (Deflect-reduced), while Death, Knowledge and Chaos route theirs through vital/spirit, which SYSTEM-PRIMER says to weigh materially higher per die. I checked for damage-mitigation talents miscounted as damage and found ZERO false positives, and for damage arriving without the word (summon attacks, hazards, zones, ticks, redirects) and found none missed."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 4,
+    "exemplars": "Forge Construct, Lay Foundation",
+    "note": "Very strong but lopsided. Forge Construct is one of the best level-1 talents in the atlas, and it is two depth-bands and two levels earlier than Death's Risen Servant (depth 2, L3, and Remain-taxed per body). Lay Foundation is a Free Action AND 1 Investiture for a single 10 ft square granting +1 to defenses; infrastructure whose payoff lives entirely in four later talents, failing the deity guide's 'both entries deliver the fantasy on turn one' rule. COMPARATIVE ADDED: Fate's Ordained Ground is the same Free Action, same 1 Investiture, same +1 to all defenses on a smaller (5 ft) square, but additionally lets the standing ally Aid at 30 ft — a turn-one function Lay Foundation does not have. Band held at 4 because a player only needs one entry to function and that entry is exceptional."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Tempered Edge, Arsenal, Bastion (up); Trade Routes, Bonds of Community, Siege Form (down)",
+    "note": "RATING LOWERED from 4 to 3 for internal consistency: a band in which this profile's own note puts THREE of six talents below curve cannot also be scored 'a strength'. Upside is real. Against it: Trade Routes cannot be used at all before level 6; Siege Form anti-synergises with its own sibling; and Bonds of Community pays a flat 2-3 temp HP on a rare Reaction where Fate's Bulwark Ground, at the identical depth 1 / earliest L2, pays temp HP equal to your tier EVERY round with no trigger and additionally denies advantage to attacks against the ally (COMPARATOR CORRECTED — Bulwark Ground's payout is flat tier, 1 or 2, not [Tier][Die]; per instance it is SMALLER than Bonds of Community, and it is the cadence and the rider that make it the better talent, not the size)."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Magnum Opus",
+    "note": "RATING LOWERED from 4 to 3 for internal consistency: the band's only member sits on this profile's own weakTalents list as OVERCOSTED. Correctly SHAPED as a capstone, and the splash and Prone save ride every attack for the rest of the scene. But 3 Actions is a complete Slow turn and 3 Investiture is most of a Tier-2 pool on a tree that generates none. COMPARATIVE ADDED: the other 3-Action deity capstones fire the tree's stored resource in one go (Destruction's The Unmooring detonates every Charge; Fate's Thread of Inevitability springs every Snare and gives every Ordained-Ground ally a free Strike; Knowledge's The Final Study spends every Insight), whereas Magnum Opus consumes nothing and instead adds a rider to an engine already running — the deity guide's 'capstones that don't pay off the tree's investment' pitfall in its milder form."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED with a mid-tree multiplier spike. The best economic talent is the depth-0 entry (Forge Construct), the best cost-to-effect talent is a free depth-1 Passive (Tempered Edge), and the damage curve is essentially set by depth 0-2. The capstone is expensive rather than transformative. Against a single target a player who stops at depth 2 has essentially ALL of the tree's combat output; against a cluster of three the capstone can roughly double it, so the honest figure is ~80-100% depending on enemy spacing.",
+  "uniqueOwnership": [
+   "The only summoned entity in the atlas with a multi-talent upgrade ladder OWNED BY ITS OWN TREE: Forge Construct -> Tempered Edge -> Siege Form -> Arsenal -> Bastion -> Magnum Opus is six talents servicing one entity, and only two trees carry summon-tagged talents at all. Stated carefully, because the naive version is false: deity/Death's Risen Servant is a single standalone talent with no upgrade talents (only Raise Dead connects to it, and that revives a character rather than improving the servant), but heroic/Hunter DOES have a four-talent companion ladder — Animal Bond (depth 0, a SPECIAL, no cost) -> Protective Bond -> Feral Connection, plus Hunter's Edge hanging off a different prereq (Experienced Trapper; Survival 3+). The real distinctions are that the Hunter's companion is an external path feature (its prereq is literally 'Animal companion') while Civilization's entity is created by an in-tree talent and gains switchable modes — and that they upgrade opposite things: Hunter's ladder buys durability and control (+5 x tier HP, +2 defenses, a Survival-scaled test bonus, and a Free Action to hand the companion one or two Actions), Civilization's buys damage.",
+   "The only teleport effect anywhere in the 365 talents — Trade Routes. VERIFICATION METHOD RECORDED: searched every talent's generator description, authored override and authored body for 'teleport' (one talent, three field hits) and then for ten teleport-synonym patterns — swap/switch/exchange/trade places, instantly move, instantly appear, appear in, blink, step through, vanish, reappear — zero further hits. The claim survives.",
+   "The only MODES on a SUMMONED entity: Siege Form and Colossus (Magnum Opus) are stance changes on a creature you built, one endable as a Free Action. NOT 'the only modes in the system' — heroic/Warrior runs SEVEN stances on the character themselves (Flamestance, Ironstance, Windstance, Stonestance, Vigilant Stance, Vinestance, Bloodstance; Vigilant Stance lets you enter the others as a Free Action). Count corrected from five.",
+   "The tree's fortified Foundation is the only SQUARE that simultaneously buffs allies, impedes movement, deals entry damage and imposes a condition save — but the previous wording, 'in ONE talent', is FALSE and is corrected here: the four-way square is Lay Foundation (+1 to all defenses to allies who begin their turn there) PLUS Bastion (difficult terrain, [Tier][Die] impact on entry, Agility-vs-Red or Slowed, and +2 defenses to a Construct standing in it), i.e. two talents and a depth-0-to-depth-2 investment. Stated narrowly on purpose: deity/Fate reaches a comparable combination across two square types plus a mark — Ordained Ground buffs and never damages, Snare damages and Restrains (a harder condition than Slowed) in ONE depth-0 talent but is consumed on trigger, Hexmark adds [Tier] keen damage to a marked enemy for being within 10 ft of an Ordained Ground square or unsprung Snare, and Weave the Thread (NOT 'Aligned Fates' — no talent by that name exists in the 365) grants free Reactive Strikes to allies on linked squares. Death's Bone Garden is difficult terrain plus damage with no ally buff at all.",
+   "The largest per-round damage output that costs the character zero Actions on an ongoing basis, and — corrected — the only such output that is UNCONDITIONAL. Two prior claims here were too strong and are withdrawn: 'the only zero-Action ongoing damage source' is refuted by deity/Death's Risen Servant (identical 'acts on your initiative immediately after your turn' wording, and it sustains up to your TIER servants), Death's Bone Garden and Consuming Decay, and deity/Destruction's scene-long dangerous terrain; and 'the only such output that upgrade talents can multiply' is refuted by Destruction outright, whose dangerous terrain is multiplied by Combustion Chain (every zone spreads 5 ft on a kill, plus a fresh 10 ft radius) and by The Unmooring (all zones merge and their damage rises to [Tier][Die]). What survives comparison is that every rival zero-Action source needs the enemy to enter or end a turn in a square, or to already be marked; the Construct simply attacks on its own initiative whatever the enemy does.",
+   "The only tree the atlas writes an explicit counter for: deity/Destruction's Fault Line ends 'structures and Constructs along the line take triple damage'. Verified by searching all 365 descriptions for each tree's homebrew resource name — Construct is the ONLY one that appears in another tree's text at all (fabrial, Snare, Ordained Ground, Charge, Remain, Omen, Edict, Foundation and quarry are each confined to their own tree), and it appears there as a vulnerability."
+  ],
+  "gaps": [
+   "You cannot attack anything yourself. There is not one talent that lets the character deal damage with their own body or a weapon. If the Construct is dead and you have no Investiture, this tree contributes literally nothing offensive to a round. Both other deity trees built around a persistent threat give the character a personal attack as well (Death's Withering Touch, Knowledge's Predatory Strike, both depth-0 entries).",
+   "No healing of any kind — and, despite both intent sources promising it, no repair for the Construct. An ally at 1 HP standing in your Foundation gets +1 to defenses and nothing else.",
+   "No resource generation. Every Investiture-costing talent spends and none returns any. With a starting pool of ~4, a Civilization character without out-of-tree Draw Mana uptime is broke after their opening turn — where Death's Reaper's Harvest and Knowledge's Accumulate both refund 1 Investiture on triggers their own trees generate.",
+   "No social influence, persuasion, leadership, or reputation mechanic. At a council table or any scene about 'the bonds that turn a crowd into a community', a player with only this tree sits on their hands.",
+   "No information: no scouting, detection, foreknowledge, or intent-reading. The Construct is not even granted a sense, unlike Death's Remains, Knowledge's Studied Mark or Fate's Read the Threads.",
+   "No hard control. Nothing Stuns, Restrains, Immobilizes, Disorients, or denies an Action or a Reaction. Slowed and Prone are the ceiling, and only two of nine talents impose a condition at all. Fate buys Restrained at depth 0.",
+   "No mobility for the character. No dash, no teleport of your own, no disengage — Trade Routes moves ALLIES, and only between squares you have to have built first.",
+   "Nothing works against an enemy who refuses to come to you. Half the tree requires characters to be standing in specific 10 ft squares; against a ranged or kiting enemy those talents are dead text, and Bastion's own difficult terrain gives enemies a reason to route around.",
+   "No answer to a single Foundation. Before level 6 the sustain cap is one square. NOT unique to this tree — the same tier cap makes Fate's Weave the Thread uncastable before L6 too — but it bites Civilization harder because Civilization has only one square TYPE, so its cap-1 square must serve five talents.",
+   "No second Construct, ever. 'You may sustain one active Construct' is a hard cap that never scales with tier. Death's Risen Servant scales its count with tier — though each body also costs a Harvested Remain, itself capped at tier, so the two trees are level at ONE body for the whole of Tier 1 and diverge only from level 6.",
+   "No condition removal, no anti-influence defence, no counterplay to being Stunned or Restrained yourself."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'Her blessed raise works of metal and will that fight on their behalf' / 'forges a Combat Construct'",
+     "delivered": "DELIVERED",
+     "evidence": "Forge Construct (depth 0, L1) creates a Combat Construct with its own initiative slot, HP, deflect, defenses, Speed and attack. Turn-one fantasy, exactly as promised, and no other tree's intent file claims construct-building — this promise is Civilization's alone."
+    },
+    {
+     "claim": "'specializes it for war'",
+     "delivered": "DELIVERED",
+     "evidence": "Tempered Edge, Siege Form, Arsenal, Magnum Opus — four distinct specialisation talents, each a genuinely different facet."
+    },
+    {
+     "claim": "'repairs ... it' — and the design guide's Kethane entry repeats it: 'Build, specialize, repair, and command Combat Constructs'",
+     "delivered": "NOT DELIVERED",
+     "evidence": "No repair, heal, restore, or HP-recovery effect for the Construct anywhere in the nine talents; 0 heal formulas in the tree. The only remedy is Forge Construct's 'you may reforge it by using this talent again' — a full rebuild that, on a strict reading of 'your Combat Construct', also discards the scene-long upgrades bought with Arsenal and Siege Form. Both intent sources promise repair independently. COMPARATIVE ADDED: the atlas can do this — heroic/Hunter's Feral Connection permanently raises the companion's health by 5 x tier, and deity/Life is built entirely on restoration — so the omission is a gap, not a system limit."
+    },
+    {
+     "claim": "'commands it across the field' / design guide: 'command Combat Constructs' (plural)",
+     "delivered": "PARTIAL",
+     "evidence": "'Command' appears TWICE — Siege Form and Arsenal — but neither is per-round direction of the Construct's actions: it 'acts on your initiative immediately after your turn' automatically, and Arsenal's command is a kill-triggered rider. COMPARATIVE PROOF ADDED that this is a real miss rather than a system limit: heroic/Hunter's Animal Bond — a depth-0 SPECIAL with no cost — reads 'Use a Free Action to give your companion one or two Actions on your turn', which is exactly the commanding Civilization's intent promises. The atlas has the mechanic; this tree does not use it. The plural is wrong too — 'You may sustain one active Construct', where the two comparable entities (Death's Risen Servant, Destruction's Charges) both scale their count with tier."
+    },
+    {
+     "claim": "'binds allies with the shared strength of foundations and trade'",
+     "delivered": "PARTIAL",
+     "evidence": "Foundations are real and load-bearing. 'Trade' is a single talent, Trade Routes, uncastable before level 6 because Lay Foundation's sustain cap equals your tier and Trade Routes requires 'two of your active Foundations'. The trade half of the claim does not exist for the first five levels of play."
+    },
+    {
+     "claim": "DUPLICATE PROMISE (comparative lens): the Foundation half of Civilization's identity is also promised, near-verbatim, by deity/Fate's intent file",
+     "delivered": "DUPLICATED — and Fate delivers it better",
+     "evidence": "Civilization's signature-resource line: 'Foundation — a designated square that steadies allies who hold it.' Fate's: 'Ordained Ground — an ally-anchored square that fortifies whoever holds it.' Same mechanical promise, same Free-Action / 1-Investiture cost, same +1 to all defenses on begin-turn, same 'up to your tier' sustain cap — and Fate's square additionally lets the standing ally use Aid at up to 30 ft, gains temp HP every round from Bulwark Ground, denies advantage to attacks against the ally, can be MOVED 10 ft by Read the Threads onto a square the enemy will pass through, and is fired en masse by the capstone. Both trees even gate on White 2+. A genuine identity collision, and Civilization is the loser on the shared half: its only edge is the square's size (10 ft vs 5 ft) and Bastion's entry damage."
+    },
+    {
+     "claim": "'the forge, the wall, and the bonds that turn a crowd into a community'",
+     "delivered": "DRIFTED on the third element",
+     "evidence": "The forge is Forge Construct; the wall is Lay Foundation and Bastion; the bonds are absent as anything social. 'Community' is implemented as 'allies who happen to be standing in a square you drew'. The atlas delivers this fantasy elsewhere: deity/Order 'swears Covenants that fortify sworn allies', heroic/Leader and heroic/Envoy carry the social competencies outright."
+    },
+    {
+     "claim": "Design guide colour split: 'Red tests for Construct combat-attack tests and kinetic damage riders; White tests for community-buff effects and coordination (Trade Routes, Bonds of Community)'",
+     "delivered": "DRIFTED",
+     "evidence": "White is never tested anywhere in the tree. Both tests are 'tests Agility vs. your Red', and both ROLL FORMULAs key the die size to Red alone. Trade Routes and Bonds of Community — the two talents the guide names as White-tested — contain no test at all. MEASUREMENT DISAGREEMENT recorded: deity-gate-audit lists White 2+ as a pure TOLL BOOTH; the text is marginally kinder — White appears once, as the flat temporary-HP number in Bonds of Community. One flat number on one Reaction is still, in substance, a toll booth. COMPARATIVE ADDED: this is one of four White toll-booth gates in the deity atlas (Order, Civilization, Fate, Sovereignty), so it is an atlas-wide pattern, not a Civilization-specific slip."
+    },
+    {
+     "claim": "Design guide: 'two entry nodes, both requiring [C1] 2+; [C2] 2+', and 'each entry should independently deliver the deity's player-fantasy on turn one'",
+     "delivered": "PARTIAL",
+     "evidence": "Structure correct — both depth 0, both gated Red 2+; White 2+. But only Forge Construct delivers the construct-smith fantasy on turn one; Lay Foundation is deferred infrastructure that also costs 1 Investiture. The guide's own 'single-entry trees' pitfall."
+    },
+    {
+     "claim": "Design guide: 'Tier-3 synthesis: prereq [Tier-2 talent A] or [Tier-2 talent B] from each branch' / 'synthesis nodes bring the two halves together'",
+     "delivered": "NOT DELIVERED",
+     "evidence": "NEITHER depth-2 node is a synthesis node: Arsenal's prereq is 'Tempered Edge or Siege Form' (both Construct branch) and Bastion's is 'Trade Routes or Bonds of Community' (both Foundation branch) — the prereq graph never crosses branches below the capstone. Magnum Opus's prereq is 'Arsenal or Bastion', an OR, so a player can reach the capstone having never touched the other half. COMPARATIVE ADDED: deity/Fate has the same 'or' shape at depth 2 but each of those genuinely combines both resources in its effect — Foreknown Strike lets an ally on Ordained Ground fire a Snare — which is what a synthesis node is supposed to look like."
+    },
+    {
+     "claim": "Design guide: 'Homebrew resources should be the spine of the tree, not a side mechanic'",
+     "delivered": "DELIVERED, with a structural caveat",
+     "evidence": "Both resources are genuine spines — Combat Construct generated by one entry and spent by five other talents; Foundation generated by the other entry and spent by four. Cleaner than most deity trees. The caveat is the row above: TWO spines that never cross in the prereq graph."
+    },
+    {
+     "claim": "Design guide action-type targets (Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free ~10-15%, Reaction ~10%, 3 Actions capstone only)",
+     "delivered": "PARTIAL — three clear misses, one marginal",
+     "evidence": "Passive 1/9 (11% — MISS), Special 0/9 (MISS, though every deity tree in the atlas is 0% Special so this is an atlas-wide miss), Action 2/9 (22% — marginal miss), 2 Actions 3/9 (33% — MISS), Free 1/9 (on target), Reaction 1/9 (on target), 3 Actions 1/9 and it IS the capstone (compliant). Total checks out at 9. Three 2-Action talents plus a 3-Action capstone means 9 of the tree's Actions are sunk into setup, 11 counting the two 1-Action talents."
+    },
+    {
+     "claim": "Design guide: description length — entries ~30-45 words, tier-3 ~40-55, capstone up to ~70",
+     "delivered": "MISSED",
+     "evidence": "Word counts verified programmatically against all nine generator descriptions: Forge Construct 74 as an ENTRY (target 30-45), Lay Foundation 46 (marginal miss), Tempered Edge 14, Siege Form 57 against 30-45, Trade Routes 35, Bonds of Community 34, Arsenal 45, Bastion 64 as a tier-3 against 40-55, Magnum Opus 75 against a ~70 cap. Every substantial talent runs long, and Forge Construct, the worst offender, is an entry node."
+    },
+    {
+     "claim": "Design guide: 'Every non-Passive deity talent opens with Spend X Investiture and ...'",
+     "delivered": "PARTIAL",
+     "evidence": "Seven of nine comply verbatim. Tempered Edge is Passive and correctly exempt. Bonds of Community is a Reaction with a blank Cost field and no spend phrase — legal only under the guide's Passive exemption, which does not apply to it."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "A summon-artillery tree with a defensive-zone side-business it does not own. You spend your opening turn building an autonomous attacker on a separate initiative slot, buy two or three multipliers for it, and then spend the rest of the fight doing very little while it does ~4 [Tier][Die] a round for free — and, on the plain reading of Tempered Edge, does that damage straight through Deflect. That summon engine is the tree's 'something', and no other tree does it the same way: Death's servant is later, flimsier and Remain-taxed; Hunter's companion is tougher and genuinely commandable but is an external path feature that never gains modes and never scales its damage. The 'civilization' half is weaker news — one 10 ft square that gives allies +1 to defenses and, once fortified, hurts enemies who step in it, delivering a promise ('a designated square that steadies allies who hold it') that deity/Fate's intent file makes in almost the same words and then delivers earlier, cheaper and with more riders. There is no repair, no plural constructs, no per-round commanding, no cross-branch synthesis node, and nothing social whatsoever — the community fantasy is entirely flavour text."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Combat Construct",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Forge Construct (produces; cap 1 and never scales; scene; reforgeable); Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus (consume/upgrade). Named by one talent OUTSIDE this tree — Destruction's Fault Line, as a triple-damage vulnerability."
+   },
+   {
+    "keyword": "Foundation",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Lay Foundation (produces; cap = your tier; scene); Bonds of Community, Trade Routes, Bastion, Magnum Opus (consume). Functionally the same object as Fate's Ordained Ground — same cost, same action type, same +1 defenses, same tier cap — at 10 ft instead of 5 ft."
+   },
+   {
+    "keyword": "Siege Form (Construct mode)",
+    "role": "PRODUCE",
+    "talents": "Siege Form — a named switchable stance on the summon; ended as a Free Action"
+   },
+   {
+    "keyword": "Colossus (Construct mode)",
+    "role": "PRODUCE",
+    "talents": "Magnum Opus — the capstone transformation; once per scene, lasts the scene"
+   },
+   {
+    "keyword": "fortified (Foundation state)",
+    "role": "PRODUCE",
+    "talents": "Bastion"
+   },
+   {
+    "keyword": "linked (Foundation state)",
+    "role": "PRODUCE",
+    "talents": "Trade Routes — requires two active Foundations, therefore inert at Tier 1. Fate's Weave the Thread links two Ordained Ground squares under the identical tier cap and is inert at Tier 1 for exactly the same reason."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME only — zero production",
+    "talents": "Forge Construct 1, Lay Foundation 1, Siege Form 1, Trade Routes 1, Arsenal 2, Bastion 2, Magnum Opus 3 = 11 to deploy the whole tree in one scene"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "neither — never mentioned",
+    "talents": "none; notable because the leyline guide says Opportunity fits Red and White thematically, and this tree is gated on exactly Red and White"
+   },
+   {
+    "keyword": "Focus",
+    "role": "neither — never mentioned",
+    "talents": "none"
+   },
+   {
+    "keyword": "[Tier][Die] / Tier",
+    "role": "CONSUME",
+    "talents": "every damage, HP and sustain-cap expression in the tree; 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3"
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "Lay Foundation (placement); Trade Routes implicitly, via Foundations"
+   },
+   {
+    "keyword": "Red (skill rank)",
+    "role": "CONSUME",
+    "talents": "gate (Red 2+) on both entries; the defence value in Bastion's and Magnum Opus's Agility tests; the die-size driver in both ROLL FORMULAs"
+   },
+   {
+    "keyword": "White (skill rank)",
+    "role": "CONSUME",
+    "talents": "gate (White 2+) on both entries; the temporary-HP number in Bonds of Community, its ONLY mechanical use anywhere in the tree. Never tested — one of the four White toll-booth gates in the deity atlas (Order, Civilization, Fate, Sovereignty)."
+   },
+   {
+    "keyword": "deflect",
+    "role": "PRODUCE and BYPASS",
+    "talents": "Forge Construct (deflect 1) and Siege Form (+2 deflect) produce it; Tempered Edge bypasses it — on the plain reading, for the whole melee attack. NOT a unique bypass: Destruction's Pinpoint Charge and The Unmooring both ignore deflect by name, and Death/Knowledge bypass it by damage type (vital/spirit)."
+   },
+   {
+    "keyword": "defenses (all defenses)",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Lay Foundation +1 to allies; Bastion +2 to the Construct; Magnum Opus +2 to the Construct and to allies in Foundations; Siege Form +2 deflect. Consumed as a derived value: Construct defenses = yours minus 2"
+   },
+   {
+    "keyword": "temporary HP",
+    "role": "PRODUCE",
+    "talents": "Bonds of Community (equal to your White — a FLAT 2 at Tier 1 / 3 at Tier 2, not a die). CORRECTED COMPARATOR: Fate's Bulwark Ground pays temporary HP 'equal to your tier' — a flat 1 or 2, also not a die, and SMALLER per instance than Bonds of Community. Bulwark Ground is the better talent because it pays every round with no trigger and adds an advantage-denial rider, not because it pays more."
+   },
+   {
+    "keyword": "advantage",
+    "role": "PRODUCE",
+    "talents": "Bonds of Community only — one, on the next attack test. Never consumed by any talent in this tree; across the 365 only three talents consume advantage at all (leyline/White Voice of Authority, leyline/Blue Intercept, leyline/Blue Reactive Analysis), consistent with the census verdict that advantage is over-produced system-wide."
+   },
+   {
+    "keyword": "difficult terrain",
+    "role": "PRODUCE",
+    "talents": "Bastion (fortified Foundations). Shares vocabulary with Green's Draw Mana rider and cluster engine, and with Death's Bone Garden."
+   },
+   {
+    "keyword": "Slowed",
+    "role": "PRODUCE",
+    "talents": "Bastion (Agility vs. your Red on entry)"
+   },
+   {
+    "keyword": "Prone",
+    "role": "PRODUCE",
+    "talents": "Magnum Opus (Agility vs. your Red, AoE, on every Construct attack once the Colossus is up). Prone-on-a-save is the deity atlas's common currency: Destruction's Concussive Yield and Fault Line both use Speed vs. your Red for the same condition."
+   },
+   {
+    "keyword": "Agility test",
+    "role": "CONSUME",
+    "talents": "Bastion, Magnum Opus — the tree's only two tests, both Agility vs. your Red"
+   },
+   {
+    "keyword": "impact damage",
+    "role": "PRODUCE",
+    "talents": "Forge Construct (Construct melee), Bastion (zone entry)"
+   },
+   {
+    "keyword": "energy damage",
+    "role": "PRODUCE",
+    "talents": "Tempered Edge, Siege Form, Magnum Opus. Impact and energy are BOTH Deflect-reduced — the tree deals no vital or spirit damage at all, unlike Death, Knowledge, Chaos and Order."
+   },
+   {
+    "keyword": "Strength (attribute)",
+    "role": "CONSUME",
+    "talents": "Siege Form — [Tier][Die] + Strength; the only attribute rider in THIS tree. COUNT CORRECTED: 13 talents across seven deity trees carry a [Tier][Die] + <attribute> expression (Chaos 3, Destruction 3, Order 2, Death 2, Civilization 1, Fate 1, Life 1), not eight; the '+ Strength energy' pairing specifically is shared with exactly one other talent, Destruction's Fault Line."
+   },
+   {
+    "keyword": "Speed",
+    "role": "PRODUCE and MODIFY",
+    "talents": "Forge Construct (Speed 25 ft), Siege Form (Speed becomes 0)"
+   },
+   {
+    "keyword": "reach",
+    "role": "PRODUCE",
+    "talents": "Magnum Opus (reach 10 ft)"
+   },
+   {
+    "keyword": "initiative slot",
+    "role": "PRODUCE",
+    "talents": "Forge Construct — 'acts on your initiative immediately after your turn'; the same wording deity/Death uses for Risen Servant, and Raise Dead"
+   },
+   {
+    "keyword": "sustain (cap)",
+    "role": "CONSUME",
+    "talents": "Forge Construct ('one active Construct' — flat, never scales, and the ONLY flat cap among the deity atlas's persistent resources: Foundations, Ordained Ground, Snares, Charges, Remains and Risen Servants all read 'up to your tier'); Lay Foundation ('up to your tier Foundations') — the single most load-bearing number in the tree"
+   },
+   {
+    "keyword": "once per scene",
+    "role": "CONSUME",
+    "talents": "Magnum Opus — and it caps the transformation only, not the splash or the Prone save"
+   },
+   {
+    "keyword": "scene (duration)",
+    "role": "CONSUME",
+    "talents": "all seven Investiture-costing talents"
+   },
+   {
+    "keyword": "reduces a character to 0 HP (trigger)",
+    "role": "CONSUME",
+    "talents": "Arsenal (Construct kill -> free move + Strike); Bonds of Community (ANY character — ally or enemy). The atlas's most-used trigger: Death's Reaper's Harvest and Necrotic Cascade, Destruction's Combustion Chain, Knowledge's Hunter's Discipline and Death Mark, and Fate's capstone all key off it."
+   },
+   {
+    "keyword": "free Strike",
+    "role": "PRODUCE",
+    "talents": "Arsenal"
+   },
+   {
+    "keyword": "teleport",
+    "role": "PRODUCE",
+    "talents": "Trade Routes — the atlas's only instance of the effect, confirmed by keyword search plus a ten-pattern synonym sweep"
+   },
+   {
+    "keyword": "Free Action (granted to others)",
+    "role": "PRODUCE",
+    "talents": "Trade Routes (ally teleport, once per turn); Siege Form (ending your own mode)"
+   },
+   {
+    "keyword": "Reaction",
+    "role": "CONSUME",
+    "talents": "Bonds of Community — the tree's only one"
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "neither — never mentioned, but structurally depended on",
+    "talents": "no talent names it; the tree's 11-Investiture deployment cost is payable only through it"
+   }
+  ],
+  "crossTreeHooks": [
+   "Investiture generation is ENTIRELY out-of-tree. All seven Investiture-costing talents spend and nothing returns any (census: 0 regen / 7 costers). The single largest external dependency in the tree.",
+   "deity/Destruction's Fault Line is the atlas's only anti-Construct clause: 'structures and Constructs along the line take triple damage'. A ~13-HP Construct at Tier 2 dies outright. Verified as the only case in the 365 where one tree's homebrew resource is named by another tree at all.",
+   "Bonds of Community needs a character to drop to 0 HP inside a square you control — the text says 'a character', not 'an ally', so an enemy killed inside your Foundation triggers it too. It pairs with anything that funnels enemies into a square: Green's difficult terrain, Fate's Snares, Black's isolation pressure.",
+   "Bonds of Community's advantage is REDUNDANT with any ally already generating advantage — Blue's attunement, Red's attunement, Green's Pack Hunter, Green's Scent the Weak. The census counts 45 advantage-producing talents across 13 trees against only three consumers, so this redundancy is close to certain in any real party.",
+   "Red's own attunement rider strips your Reaction when you Draw Mana. Since Draw Mana is how you pay for this tree's Investiture, drawing to fund a Foundation turns off Bonds of Community — the tree's only Reaction conflicts with the Red half of its own gate.",
+   "White's attunement rider (allies regain Health equal to your tier on Draw Mana) is the natural partner for a tree with zero healing, and White rank sets Bonds of Community's temp HP — yet the tree never tests White, so the White gate pays for an out-of-tree rider rather than in-tree effects.",
+   "Both ROLL FORMULAs are (@tier)d(2 * @skills.red.rank + 2), so Red investment made anywhere else multiplies this tree's zone and AoE damage AND raises the defence its two saves are tested against. Red rank is a double-dip; White rank is close to a dead stat once the gate is paid.",
+   "Foundations only pay out to allies who BEGIN THEIR TURN inside them, so the defensive half depends on other players choosing to stand in your square. deity/Fate's Ordained Ground has the same dependency and pays for it with a 30 ft Aid range; Civilization gives the standing ally no reason of its own.",
+   "Trade Routes' teleport is worth nothing unless the party wants to be in two places — value set by party composition and objective, not by this tree. Both nodes must sit within Attunement Range, so it is a tactical shuffle, not travel.",
+   "Tempered Edge's deflect bypass is worth a lot against armoured adversaries and nothing extra against unarmoured ones — value set by the opposition, not the build.",
+   "The Construct's defenses are 'equal to yours minus 2', so armour and defensive investment from ANY other tree determine whether this tree's damage engine survives contact. Contrast heroic/Hunter, whose Feral Connection puts +5 x tier HP and +2 defenses on its companion from inside its own tree.",
+   "The tree produces difficult terrain (Bastion) — the same vocabulary as Green's Draw Mana rider and Death's Bone Garden. Green's Apex Predator ('While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests') may or may not read a fortified Foundation as yours: a wiring seam worth checking."
+  ],
+  "topThree": [
+   "Tempered Edge — a Passive with no cost, no action, and no condition that doubles the Construct's per-attack damage and, on the plain reading of its own sentence, makes the whole melee attack ignore deflect. By a wide margin the best cost-to-effect ratio in the tree.",
+   "Forge Construct — 1 Action + 1 Investiture at level 1 buys a scene-long autonomous attacker with its own initiative slot; the Action is repaid every round for the rest of the fight. Two depth-bands and two levels earlier than the atlas's only comparable summon (Death's Risen Servant, depth 2 / L3, Remain-taxed).",
+   "Arsenal — 2 Actions + 2 Investiture once, then the Construct attacks twice every round for the scene, plus a move-and-free-Strike chain on kills. Takes the engine from ~2 [Tier][Die] a round to ~4 at zero ongoing cost."
+  ],
+  "bottomThree": [
+   "Trade Routes — needs two active Foundations against a tier cap of one, so it is literally uncastable until level 6 despite sitting at depth 1 / earliest level 2. COMPARATIVE NOTE ADDED: this defect is NOT unique — deity/Fate's Weave the Thread (depth 2, earliest L3) needs two active Ordained Ground squares under the identical 'up to your tier' cap and is uncastable before L6 for exactly the same reason. An atlas-wide authoring pattern; Trade Routes is simply the earliest and most exposed instance.",
+   "Bonds of Community — a rare trigger for a flat 2-3 temporary HP and one binary advantage that is often already redundant, while burning the round's only Reaction and conflicting with Red's Draw Mana rider. COMPARATOR CORRECTED: Fate's Bulwark Ground pays 'temporary HP equal to your tier' — a flat 1 at Tier 1, 2 at Tier 2 — which is LESS per instance than Bonds of Community. Bulwark Ground still wins, but on cadence and rider (every round, no trigger, plus 'attacks against that ally cannot benefit from advantage'), not on size. Bonds of Community stays in the bottom three on trigger-rarity and Reaction cost, not on payout.",
+   "Siege Form — 2 Actions + 1 Investiture to immobilise your own Construct and, by replacing its melee attack, silently switch off Tempered Edge and Arsenal's kill chain. Its two branch siblings each make it strictly worse, and the damage expression it buys is shared with Destruction's Fault Line."
+  ],
+  "weakTalents": [
+   {
+    "name": "Trade Routes",
+    "reason": "Structurally inoperable at the level it becomes available: requires 'two of your active Foundations' against Lay Foundation's 'up to your tier Foundations' — exactly ONE at Tier 1. A depth-1 talent with an earliest level of 2 that cannot be cast until level 6. Even after that, 1 Action + 1 Investiture for an ally repositioning tool confined to Attunement Range. (Fate's Weave the Thread has the same structural defect at depth 2.)"
+   },
+   {
+    "name": "Bonds of Community",
+    "reason": "A Reaction with a rare trigger paying temporary HP equal to your White rank — a flat 2 at Tier 1 and 3 at Tier 2, not a die — plus one binary advantage worth zero to any ally already carrying advantage. It consumes the round's only Reaction, and Red's attunement rider strips your Reaction when you Draw Mana. Below curve, though the previous 'provably so' framing overstated the proof: Fate's Bulwark Ground at the identical depth pays a FLAT tier (1-2) rather than [Tier][Die], so it is smaller per instance and wins only on cadence plus its advantage-denial rider."
+   },
+   {
+    "name": "Siege Form",
+    "reason": "OVERCOSTED AND ANTI-SYNERGISTIC. 2 Actions + 1 Investiture to set the Construct's Speed to 0 and swap its melee attack for a ranged one — silently disabling Tempered Edge and Arsenal's move-and-Strike chain. Its two depth-1 siblings on the same branch each make it worse. A 2-Action price for what is, net of the losses, +Strength and range."
+   },
+   {
+    "name": "Lay Foundation",
+    "reason": "Below the entry-node bar the deity guide sets. At Tier 1 it is 1 Investiture — a quarter of a level-1 pool — for one 10 ft square granting +1 to all defenses; pure infrastructure with no fantasy payload, deferred to four later talents, one of which its own sustain cap makes uncastable. The comparison that damns it is inside the atlas: deity/Fate's Ordained Ground is the same action, same cost, same +1 to all defenses, and additionally lets the standing ally use Aid at up to 30 ft — a turn-one function Lay Foundation does not have."
+   },
+   {
+    "name": "Magnum Opus",
+    "reason": "OVERCOSTED for its slot rather than weak in effect. 3 Actions is an entire Slow turn, 3 Investiture is most of a Tier-2 pool on a tree with zero generation, and it competes with the turn you need to reforge a dead Construct. The effect is capstone-appropriate and better than a first read suggests; the price assumes a resource economy this tree does not have. It is also the one deity capstone that consumes none of its tree's stored resource, where Destruction, Fate and Knowledge all cash theirs in."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Effectively the whole scene, for an unusual reason: the tree's good options are SETUP costs, not per-round costs. Forge Construct (1A/1I) + Tempered Edge (free) + Arsenal (2A/2I) is 3 Actions and 3 Investiture spent once, after which the tree produces its full ~4 [Tier][Die] per round for ZERO Actions and ZERO Investiture, indefinitely — a fundamentally different sustainability profile from a spend-per-round tree, and the tree's single biggest structural advantage. The counterweight: deploying ALL nine talents costs 11 Investiture in one scene against a starting pool of ~4 with zero in-tree generation — where Death and Knowledge both refund Investiture off triggers their own trees create — so a realistic opening is a full Slow turn that leaves you broke. The real limiter is not the pool but Construct HP (~5.5 at Tier 1, ~13 at Tier 2, defenses yours minus 2, singled out for triple damage by Destruction's Fault Line). Every Construct death costs 1 Action + 1 Investiture to reforge and, on a strict reading of 'your Combat Construct', re-buying Arsenal and Siege Form too — a 3-5 Action, 3-4 Investiture rebuild you almost certainly cannot afford twice.",
+   "triggerGatedCount": 2,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 7,
+   "note": "Reactions: 1 of 9 (Bonds of Community), so the 1-Reaction-per-round cap NEVER binds internally — a genuine (if accidental) advantage over Reaction-heavy trees like leyline/White's seven. Trigger-gated, strictly applied: 2 of 9 — Bonds of Community and Bastion (its damage and Slowed require an enemy to CHOOSE to enter a square the same talent makes difficult terrain; only its +2 Construct defenses is unconditional). The previous count of 4 wrongly included Arsenal and Magnum Opus, both of which have unconditional cores with merely conditional riders attached; 4 also exceeded the deterministic table's stated 0-3 trigger-gated range for deity trees. Resource-costing talents: 7 of 9 spend Investiture and the tree generates none."
+  }
+ },
+ "corrections": [
+  {
+   "field": "axes[damage_direct].evidence, damageAccounting.damageTalents[Tempered Edge].note, damageAccounting.peakDamagePerAction, damageAccounting.verdict, oneLineIdentity, intentDrift.actuallyIs, crossTreeHooks, topThree, mechanicalKeywords[deflect]",
+   "from": "\"Tempered Edge adds a second [Tier][Die] energy packet that ignores deflect\" / \"all of it is Deflect-reducible impact/energy except Tempered Edge's packet\" / \"only Tempered Edge's packet ignores it — so per die this is worth meaningfully less than a spirit/vital tree's output\"",
+   "to": "On the plain reading the WHOLE melee attack ignores deflect, not only the added packet; the Deflect discount therefore applies only to Siege Form's ranged attack and Bastion's zone damage, which makes the tree stronger than the previous reading claimed",
+   "reason": "TEXT-VS-CLAIM. Tempered Edge reads: 'Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.' One subject ('melee attacks'), two coordinated predicates ('deal an additional...' and 'ignore deflect'). The profile's reading requires attaching 'ignore deflect' to the noun phrase '[Tier][Die] energy damage' rather than to the sentence's subject. This is load-bearing: it flips the headline damage caveat from a discount to a premium. Flagged as ambiguous authoring rather than silently resolved."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets].evidence",
+   "from": "\"Action 1/9 (11%, target 25-35%)\" and \"misses on four of seven\"",
+   "to": "\"Action 2/9 (22%, target 25-35% — marginal miss)\" and \"three clear misses, one marginal\"",
+   "reason": "MISCOUNT. TWO talents are 1 Action, not one: Forge Construct ('action: 1 Action') and Trade Routes ('action: 1 Action'). Recount of all nine: Passive 1, Special 0, 1 Action 2, 2 Actions 3, 3 Actions 1, Free 1, Reaction 1 = 9. Correcting Action to 22% moves it from a large miss to a marginal one and downgrades the headline from four misses to three."
+  },
+  {
+   "field": "sustainability.triggerGatedCount and sustainability.note",
+   "from": "4 — \"Bonds of Community, Bastion's damage and Slowed, Arsenal's chain, Magnum Opus's splash and Prone\"",
+   "to": "2 — Bonds of Community and Bastion only",
+   "reason": "COUNT ERROR against the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Arsenal's core effect — 'your Combat Construct gains an additional attack per turn' — is unconditional once bought; only the kill-chain is a rider. Magnum Opus's Colossus stat block (+[Tier][Die] x 2 HP, +2 defenses, reach 10 ft) and its ally +2 defenses rider fire regardless of what anyone else does. Neither 'only fires' on another character's action. The profile's own note conceded 'three of those four are riders on a talent that also does something unconditional' — which is an admission the count was wrong. 4 also exceeded the deterministic table's stated 0-3 trigger-gated range for deity trees."
+  },
+  {
+   "field": "axes[control].evidence and gaps[no hard control]",
+   "from": "\"Magnum Opus: each enemy in the splash tests Agility vs. your Red or is knocked Prone, once per scene\" / \"Prone (Magnum Opus, once per scene) are the ceiling\"",
+   "to": "The 'Once per scene' clause caps the TRANSFORMATION, not the save; once the Colossus is up the splash and the Prone save ride EVERY Construct attack for the rest of the scene — two AoE Prone saves a round with Arsenal",
+   "reason": "TEXT-VS-CLAIM, and internally inconsistent with the profile's own damageAccounting entry ('the splash then rides every Construct attack for the scene'). Magnum Opus reads: 'Your Combat Construct transforms into a Colossus for the scene: ... its attacks deal an additional [Tier][Die] energy damage to each enemy within 10 ft of the target; each affected enemy tests Agility vs. your Red and is knocked Prone on a failure. ... Once per scene.' The once-per-scene attaches to the activation. Score kept at 2 because only two of nine talents impose a condition at all and both are soft."
+  },
+  {
+   "field": "uniqueOwnership[5] (\"only ranged attack that adds a raw attribute\")",
+   "from": "\"The only ranged attack in the game that adds a raw attribute (Strength) to its damage dice rather than a rank die alone — Siege Form's [Tier][Die] + Strength energy.\"",
+   "to": "Claim REMOVED. Replaced with the anti-Construct finding. Siege Form's expression is noted as 'the only attribute rider in THIS tree, but NOT unique in the atlas'.",
+   "reason": "REFUTED BY TEXT. deity/Destruction's Fault Line: 'A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage' — the identical expression, identical range, identical damage type. A grep over the dossiers finds eight distinct attribute-added damage expressions across the atlas (Awareness x3 forms, Intellect x3, Strength x2, Willpower, plus Presence on temp HP)."
+  },
+  {
+   "field": "uniqueOwnership[6] (\"only damage source that costs the character zero Actions per round\")",
+   "from": "\"The only damage source that costs the character zero Actions per round on an ongoing basis. Every other tree's repeatable damage consumes the actor's own action economy.\"",
+   "to": "\"The largest per-round damage output that costs the character zero Actions on an ongoing basis, and the only such output that upgrade talents can multiply\" — with the refutation named explicitly",
+   "reason": "REFUTED BY TEXT. deity/Death's Risen Servant uses the IDENTICAL wording: 'one melee attack per turn dealing [Tier][Die] keen damage ... acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants' — and it scales its count with tier, where Civilization's Construct is capped at one forever. Also refuted by Death's Bone Garden ('a character that ends its turn in the square takes [Tier][Die] keen damage'), Death's Consuming Decay ('at the start of each of the target's turns it takes [Tier][Die] vital damage'), and Destruction's scene-long dangerous terrain."
+  },
+  {
+   "field": "uniqueOwnership[3] (\"only entity MODES in the system\")",
+   "from": "\"The only entity MODES in the system ... Nothing else in the atlas has a switchable form.\"",
+   "to": "\"The only MODES on a SUMMONED entity\", with heroic/Warrior's stance suite named as the refutation of the broader claim",
+   "reason": "REFUTED BY TEXT. heroic/Warrior runs a full switchable-stance system on the character: Flamestance, Ironstance, Windstance, Stonestance and Vigilant Stance, each written as 'Enter <X>stance: ...', plus a talent reading 'you can enter other stances as a Free Action' and another allowing stance entry mid-conversation for 1 focus. That is a switchable form on a creature, endable/swappable as a Free Action — exactly what the claim said nothing else had."
+  },
+  {
+   "field": "uniqueOwnership[1] (\"only multi-talent upgrade ladder on a summon\")",
+   "from": "\"No other tree in the atlas has a multi-talent upgrade ladder on a summon — ... the Hunter's animal companion is a heroic-path feature with scattered riders and no mode changes.\"",
+   "to": "Restated: only two trees carry summon-tagged talents at all, Death's Risen Servant has no upgrades, but heroic/Hunter DOES have a four-talent ladder (Animal Bond, Feral Connection, Hunter's Edge, Protective Bond). The real distinction is that the Hunter's companion is an external path feature and Civilization's is created by an in-tree talent and gains modes.",
+   "reason": "OVERSTATED. Four Hunter talents service the companion, and 'scattered riders' undersells them: one gives '+5 x tier health, +2 defenses, and their tests gain a bonus equal to your ranks in Survival'; Animal Bond gives 'a Free Action to give your companion one or two Actions on your turn'. That is a genuine upgrade ladder. The claim survives only in the narrower form, which is what the corrected text asserts — and the Hunter's companion is provably external because a Hunter talent's prereq is literally 'Animal companion'."
+  },
+  {
+   "field": "uniqueOwnership[4] (\"only zone that is simultaneously an ally buff and an enemy hazard\")",
+   "from": "\"Fate's Ordained Ground buffs allies but never damages; Destruction's dangerous terrain damages but never buffs; Green's difficult terrain neither buffs nor damages.\"",
+   "to": "Narrowed to 'the only single square that in ONE talent buffs allies, impedes movement, deals entry damage and imposes a condition save', with the Fate near-miss named",
+   "reason": "OVERSTATED. deity/Fate's Hexmark reads: 'the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares' — which makes an ally-buffing Ordained Ground square a damage-amplifying hazard for a marked enemy. Fate's Aligned Fates also grants allies on linked Ordained Ground squares 'a free Reactive Strike against the triggering enemy'. Fate reaches the same combination across two square types plus a mark; the narrowed claim (one talent, one square) is what actually survives."
+  },
+  {
+   "field": "axes[buff].score",
+   "from": "2",
+   "to": "1",
+   "reason": "DOUBLE-COUNTING. The profile's buff evidence is carried by 'Standing in a Foundation: +1 to all defenses (Lay Foundation), rising to +3 while Magnum Opus is up' — but those same two clauses are already the first two items of its own protection evidence. Stripped of the defence bonuses, the tree's entire roll-affecting ally buff is Bonds of Community's single binary advantage, on a rare trigger, costing the round's only Reaction — the rubric's definition of a 1 ('one incidental talent, or a rider on something else'). Comparator that settles it: deity/Fate's Bulwark Ground, same depth 1 / earliest L2, pays allies on its square [Tier][Die] temp HP EVERY round with no trigger, against Civilization's flat 2-3 on a Reaction."
+  },
+  {
+   "field": "powerByDepth[depth 1-2].rating",
+   "from": "4",
+   "to": "3",
+   "reason": "INTERNAL CONTRADICTION. The band's own note says 'three of the six talents in this band are below curve' and names all three (Trade Routes uncastable before L6, Bonds of Community below curve, Siege Form anti-synergistic). A band where half the members are below curve does not meet the rubric's 4 ('a strength; one of the better options in the game')."
+  },
+  {
+   "field": "powerByDepth[depth 3+].rating",
+   "from": "4",
+   "to": "3",
+   "reason": "INTERNAL CONTRADICTION. The band has exactly one member, Magnum Opus, and the same profile lists it in weakTalents as 'OVERCOSTED', with the band note itself saying '3 Actions is a complete Slow turn, 3 Investiture is most of a Tier-2 pool ... it competes with the turn you would have spent forging or rebuilding'. That does not support a 4."
+  },
+  {
+   "field": "intentDrift.claims[description length].evidence",
+   "from": "\"Bastion ~72 as a tier-3 (target 40-55)\", \"Siege Form ~63 against a 30-45 target\", \"Forge Construct runs ~72 words\"",
+   "to": "Bastion ~64, Siege Form ~57, Forge Construct ~74",
+   "reason": "WORD-COUNT ERRORS. Hand-counted from the dossier TEXT lines: Bastion is 64 words (overstated by 8), Siege Form 57 (overstated by 6), Forge Construct 74 (understated by 2), Magnum Opus 75 (correct). Direction of every finding is unchanged — all four still exceed their targets — but the numbers were wrong and Forge Construct, the worst offender, is understated."
+  },
+  {
+   "field": "intentDrift.claims[commands it].evidence",
+   "from": "\"the only directed command in the tree is Arsenal's on-kill move-and-Strike\"",
+   "to": "The word 'command' appears twice — Siege Form ('command your Combat Construct to enter Siege Form') and Arsenal ('command it to move up to 15 ft') — but neither is a per-round direction of the Construct's actions",
+   "reason": "TEXT-VS-CLAIM. Siege Form's opening clause was missed. Verdict PARTIAL is unchanged, and the hard cap of one Construct still refutes the guide's plural, but the evidence string as written did not match the text."
+  },
+  {
+   "field": "intentDrift.claims[synthesis nodes] — evidence and delivered",
+   "from": "Folded into the 'Homebrew resources' row as \"'synthesis nodes bring the two halves together' is only half-met\", delivered = DELIVERED with a caveat",
+   "to": "Split out as its own claim row, delivered = NOT DELIVERED",
+   "reason": "UNDER-STATED, and testable against the prereq data. NEITHER depth-2 node crosses branches: Arsenal's prereq is 'Tempered Edge or Siege Form' (both Construct branch), Bastion's is 'Trade Routes or Bonds of Community' (both Foundation branch). The guide asks for '[Tier-2 talent A] or [Tier-2 talent B] FROM EACH BRANCH'. And Magnum Opus's prereq is 'Arsenal or Bastion', an OR, so the capstone is reachable having never touched the other half of the tree. The tree has no cross-branch prereq edge at any depth."
+  },
+  {
+   "field": "intentDrift.claims[colour split].evidence",
+   "from": "(no note on the deterministic measurement)",
+   "to": "Added an explicit MEASUREMENT DISAGREEMENT note",
+   "reason": "REQUIRED DISCLOSURE. deity-gate-audit lists Civilization White 2+ as a TOLL BOOTH defined as 'a gate colour the tree never tests AND never uses to size a damage die, so the rank investment buys nothing but the gate itself'. The text is marginally kinder than the classifier: White does have exactly one mechanical use, as the flat temporary-HP number in Bonds of Community. The conclusion (a Red tree charging a White entry tax) survives, but the disagreement is recorded rather than passed over."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "(no note on the deterministic classifier)",
+   "to": "Added: the damage-census's 3 SOURCE + 2 AMPLIFY = 5 undercounts by one against the text's 6",
+   "reason": "REQUIRED DISCLOSURE of a text-vs-classifier disagreement. Six talents deal or amplify damage by the text (Forge Construct, Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus); the regex classifier lands on five. The text wins, and this is a third classifier gap of the kind the brief predicted."
+  },
+  {
+   "field": "crossTreeHooks (new entry)",
+   "from": "(absent)",
+   "to": "deity/Destruction's Fault Line — 'structures and Constructs along the line take triple damage' — is the atlas's only anti-Construct clause and a hard counter to this tree's entire engine",
+   "reason": "MISSED FINDING. A grep for 'Construct' across all dossiers outside Civilization returns exactly one talent text hit, and it is a triple-damage clause aimed at this tree's only damage engine. A ~13-HP Tier-2 Construct dies outright. This belongs in crossTreeHooks and in the repeatability/sustainability discussion, and the profile had neither."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "\"A player who stops at depth 2 has ~80% of the tree's combat output.\"",
+   "to": "\"~80-100% depending on enemy spacing\" — essentially all of it against a single target, roughly half against a cluster of three",
+   "reason": "IMPRECISION. Magnum Opus's splash targets 'each enemy within 10 ft of the target', so against one isolated enemy the capstone adds no damage to the primary target at all (leaving depth-2 at ~100% of output), while against three clustered enemies it roughly doubles per-attack damage. A single flat percentage misrepresents both cases."
+  },
+  {
+   "field": "crossTreeHooks[Bonds of Community trigger], weakTalents[Bonds of Community]",
+   "from": "\"a rare, un-forceable trigger (a character must drop to 0 HP inside one of your Foundations)\"",
+   "to": "\"a rare trigger\" — with the note that the text says 'a character', not 'an ally', so an enemy killed inside your Foundation triggers it too",
+   "reason": "TEXT-VS-CLAIM. Bonds of Community reads 'When a character drops to 0 HP within one of your Foundations'. 'Character' covers enemies, so the trigger is forceable by killing something inside your own square — the practical obstacle is Bastion making that square difficult terrain, not the wording. 'Un-forceable' overstated the case; the talent is still below curve for the other reasons given."
+  },
+  {
+   "field": "axes[damage_scaling].evidence, gaps (new entry), mechanicalKeywords[Combat Construct]",
+   "from": "(the one-Construct cap noted only as 'cap 1')",
+   "to": "Added that the cap NEVER scales with tier, against Death's Risen Servant which sustains 'up to your tier'",
+   "reason": "MISSED COMPARATIVE FACT. Forge Construct: 'You may sustain one active Construct' — a flat cap. Every other sustain cap in the atlas that I checked (Lay Foundation, Risen Servant, Ordained Ground, Snare, Charge, Harvested Remain) is written 'up to your tier'. Civilization's central resource is the only one that does not scale, which is a real structural weakness the profile's gaps list omitted."
+  },
+  {
+   "field": "damageAccounting.verdict",
+   "from": "\"I checked specifically for damage-mitigation talents miscounted as damage and found ZERO false positives\"",
+   "to": "Same, plus an explicit statement that the reverse direction was also checked (damage arriving without the word — summon attacks, hazards, zones, per-turn ticks, redirects) and none was missed",
+   "reason": "COMPLETENESS. The lens requires checking miscounts in BOTH directions. Confirmed: Lay Foundation, Trade Routes and Bonds of Community contain no damage of any kind, and the six damage talents are complete. No 'deal half [Tier][Die] LESS damage' style mitigation wording exists anywhere in the tree, so countFalsePositiveMitigation = 0 stands."
+  },
+  {
+   "field": "axes[buff].evidence, powerByDepth[depth 1-2].note, bottomThree[Bonds of Community], weakTalents[Bonds of Community], mechanicalKeywords[temporary HP]",
+   "from": "deity/Fate's Bulwark Ground ... hands allies standing on its square [Tier][Die] temporary HP EVERY round with no trigger at all — Civilization's equivalent is a flat 2-3 on a rare Reaction. That is 'one incidental talent', i.e. a 1. / 'The damning comparator' / 'provably so' / 'not a die, unlike Fate's Bulwark Ground [Tier][Die]'",
+   "to": "Bulwark Ground pays 'temporary HP equal to your tier' — a FLAT 1 at Tier 1 and 2 at Tier 2, not a die, and SMALLER per instance than Bonds of Community's White-rank 2-3. It is the better talent on cadence (every round, no trigger) and on its second clause ('While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage'), not on magnitude. Rewritten in all five places; the 'provably so' framing is withdrawn.",
+   "reason": "The profile's single most load-bearing comparative claim, repeated in five fields, misquotes the text. deity-Fate.md, Bulwark Ground: 'an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier.' The scores it was used to justify (buff 1, the depth-1-2 downgrade, the bottomThree ranking) all survive, but on different reasoning that has to be stated."
+  },
+  {
+   "field": "uniqueOwnership[4]",
+   "from": "'Aligned Fates grants free Reactive Strikes from those squares'",
+   "to": "'Weave the Thread ... grants free Reactive Strikes to allies on linked squares (NOT \"Aligned Fates\" — no talent by that name exists in the 365)'",
+   "reason": "Searched every talent name in all-talents.json: 'Aligned Fates' returns False, 'Weave the Thread' returns True. The profile cited a talent that does not exist."
+  },
+  {
+   "field": "uniqueOwnership[4]",
+   "from": "'The only single square that in ONE talent buffs allies, impedes movement, deals entry damage and imposes a condition save: a fortified Foundation (Bastion) gives +1/+3 defenses to allies AND difficult terrain AND [Tier][Die] impact AND a Slowed save.'",
+   "to": "The four-way square is Lay Foundation PLUS Bastion — two talents and a depth-0-to-depth-2 investment. Bastion's own text gives +2 defenses only to 'Your Combat Construct standing in a fortified Foundation'; the ally-facing +1 comes from Lay Foundation.",
+   "reason": "Bastion's text contains no ally buff at all. Reading it as one talent inflates the uniqueness claim. Added the counter-comparison that Fate's Snare delivers damage + Restrained (a harder condition than Slowed) in ONE depth-0 talent."
+  },
+  {
+   "field": "uniqueOwnership[5]",
+   "from": "'The largest per-round damage output that costs the character zero Actions on an ongoing basis, and the only such output that upgrade talents can multiply.'",
+   "to": "Withdrew 'the only such output that upgrade talents can multiply'; the surviving distinction is that Civilization's is the only zero-Action ongoing output that is UNCONDITIONAL.",
+   "reason": "Refuted by deity/Destruction: dangerous terrain is created by Pyre/Set Charge/Walking Ruin and then multiplied by Combustion Chain ('each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain') and by The Unmooring ('All dangerous terrain you have placed during this scene merges into one contiguous hazard zone ... the damage from that zone increases to [Tier][Die]'). That is a zero-Action ongoing source multiplied by upgrade talents."
+  },
+  {
+   "field": "axes[terrain_zone].score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION. Counting zone/square/terrain/radius talents across all 21 trees puts Civilization fourth (Destruction 9, Fate 8, Green 6, Civilization 5), and both trees above it are the same 9-talent size, so they beat it on density too. Green additionally produces difficult terrain off the free Attunement Key at zero talent cost. Compounded by the profile's own finding that only ONE Foundation exists for the whole of Tier 1 and that only Bastion does anything to an enemy. 'One of the better options in the game' does not survive being fourth with a one-square cap through levels 1-5."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "3",
+   "to": "3 (held, with the push recorded)",
+   "reason": "CHECKED AND NOT CHANGED, stated explicitly because the lens requires it. I pushed for 2 on the ground that Fate delivers strictly more ally protection at the same depths (Ordained Ground = same +1 to all defenses PLUS Aid at 30 ft; Bulwark Ground adds per-round temp HP AND advantage-denial). It stays at 3 only because this profile routes ALL defence bonuses into protection and scores buff at 1 — lowering both would under-represent a capstone that gives +2 to all defenses to every ally in a Foundation for the scene. The evidence string now says so and names the tree's true rank on the axis."
+  },
+  {
+   "field": "uniqueOwnership[3]",
+   "from": "'heroic/Warrior runs a full stance suite on the character themselves (Flamestance, Ironstance, Windstance, Stonestance, Vigilant Stance, one of which lets you enter other stances as a Free Action)'",
+   "to": "SEVEN stances — Flamestance, Ironstance, Windstance, Stonestance, Vigilant Stance, Vinestance, Bloodstance",
+   "reason": "Miscount. heroic-Warrior.md lists Vinestance ('Enter Vinestance: Your Physical and Cognitive defenses increase by 1...') and Bloodstance ('Enter Bloodstance: Your Opportunity range ... expands by 2') in addition to the five named."
+  },
+  {
+   "field": "mechanicalKeywords[Strength (attribute)]",
+   "from": "'eight distinct attribute-added damage expressions exist across the 365 talents'",
+   "to": "13 talents across seven deity trees carry a [Tier][Die] + <attribute> expression (Chaos 3, Destruction 3, Order 2, Death 2, Civilization 1, Fate 1, Life 1); the '+ Strength energy' pairing specifically is shared with exactly one other talent, Destruction's Fault Line.",
+   "reason": "Miscount, verified by regex over all 365 descriptions."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Siege Form].note",
+   "from": "'NOT unique: deity/Destruction's Fault Line uses the identical [Tier][Die] + Strength energy expression at 60 ft.'",
+   "to": "Same expression and same 60 ft number, but Fault Line is a 60 ft long, 5 ft wide LINE hitting every character in it, not a single-target ranged attack — the shapes differ.",
+   "reason": "The claim as written implies Siege Form's profile is duplicated elsewhere. Fault Line's text is an AoE line, so 'not even unique' overstated the overlap."
+  },
+  {
+   "field": "axes[damage_scaling].evidence, gaps[No second Construct], intentDrift[command]",
+   "from": "'Death's Risen Servant, by contrast, scales its COUNT with tier; Civilization's Construct is capped at one forever.'",
+   "to": "True from Tier 2 only. Each Risen Servant costs 1 Investiture AND a Harvested Remain, and Reaper's Harvest caps Remains at tier too, so at Tier 1 Death also fields exactly ONE body — and pays for it at depth 2 / earliest L3 with a flimsier body ([Tier][Die] HP, no +tier x 2, defenses yours minus THREE).",
+   "reason": "The count-scaling comparison is gated by a second tier-capped resource the profile did not account for, which makes the two trees level for the whole of levels 1-5."
+  },
+  {
+   "field": "uniqueOwnership[1], axes[summons].evidence, intentDrift[command], intentDrift[repairs]",
+   "from": "'heroic/Hunter DOES have a four-talent ladder on a persistent companion (Animal Bond, Feral Connection, Hunter's Edge, Protective Bond)' — stated only as a caveat",
+   "to": "Sharpened into a lens-(e) 'something' finding: the chain proper is Animal Bond -> Protective Bond -> Feral Connection (Hunter's Edge hangs off 'Experienced Trapper; Survival 3+'), the whole ladder costs NO Investiture, Animal Bond is a depth-0 SPECIAL, and on two sub-axes the Hunter's companion is BETTER — Feral Connection gives +5 x tier HP and +2 defenses (against the Construct's [Tier][Die] + tier x 2 and defenses-minus-2), and Animal Bond's 'Use a Free Action to give your companion one or two Actions on your turn' is the per-round commanding Civilization's intent promises and never delivers.",
+   "reason": "THE 'SOMETHING' TEST. Civilization's something is the upgradeable persistent entity; another tree does two-thirds of it better. Durability is precisely the axis the profile itself identifies as the Construct's fatal weakness, and Hunter fixes it from inside its own tree. It also converts the 'commands it' drift row from a wording complaint into a demonstrated miss."
+  },
+  {
+   "field": "intentDrift.claims (new row added)",
+   "from": "absent",
+   "to": "New row: 'DUPLICATE PROMISE — the Foundation half of Civilization's identity is also promised, near-verbatim, by deity/Fate's intent file.' Civilization: 'Foundation — a designated square that steadies allies who hold it.' Fate: 'Ordained Ground — an ally-anchored square that fortifies whoever holds it.' Same cost, action type, +1 defenses, tier cap; both gate on White 2+; Fate adds 30 ft Aid, per-round temp HP, advantage denial, a Read-the-Threads reposition, and a capstone that fires them all.",
+   "reason": "LENS (d) explicitly asks whether the promise is also made by another tree's intent file. It is, and this is the strongest finding of the pass: two of ten deity trees own the same mechanical object, and Civilization loses on the shared half. Also propagated into weakTalents[Lay Foundation], powerByDepth[depth 0] and actuallyIs."
+  },
+  {
+   "field": "axes[damage_direct].evidence, damageAccounting.peakDamagePerAction, damageAccounting.verdict, mechanicalKeywords[energy damage], mechanicalKeywords[deflect]",
+   "from": "'the highest damage-per-Action ratio I can construct' presented without a cross-tree frame; Tempered Edge's deflect bypass presented as the finding that 'makes the tree stronger'",
+   "to": "Scoped to 'inside these nine talents', and balanced against Knowledge's Killing Blow (5 x [Tier][Die] VITAL for 2 Actions at 5 Insight) and Destruction's The Unmooring (every Charge at 15 ft radius ignoring deflect). Added the damage-TYPE finding: every point of Civilization's damage is impact or energy, both Deflect-reduced, while Death, Knowledge and Chaos route theirs through vital/spirit, which SYSTEM-PRIMER says to weigh 'materially stronger per die'. Also noted the deflect bypass is not rare (Pinpoint Charge, The Unmooring bypass by name; Death/Knowledge bypass by type).",
+   "reason": "SCORE INFLATION guard on damage_direct 4. The profile's headline made the tree sound like the atlas's damage leader; comparison shows it leads on cadence and trails on quality. The score survives at 4; the framing did not."
+  },
+  {
+   "field": "axes[action_economy].evidence, axes[control].evidence, axes[mobility].evidence, axes[information].evidence, axes[exploration_utility].evidence, axes[resource_economy].evidence",
+   "from": "single-tree evidence only",
+   "to": "Each now carries a named cross-tree comparator: action_economy counted across all 365 (Civilization 3, tied third, behind Fate 4) — the lens's named deflation risk, checked and held at 3; control against Fate's depth-0 Restrained; mobility against Destruction's Walking Ruin and Warrior's Windstance; information against Reaper's Harvest / Studied Mark / Read the Threads; exploration against Feral Connection's Animal Care expertise; resource_economy against Reaper's Harvest and Accumulate.",
+   "reason": "LENS (c) requires checking 0-1 and mid scores for deflation hidden in riders. All six were checked; none moved, but none of them previously carried the comparative evidence that justifies holding them."
+  },
+  {
+   "field": "uniqueOwnership[2] (teleport), uniqueOwnership[6] (the anti-Construct counter)",
+   "from": "asserted",
+   "to": "CONFIRMED and the verification method recorded in the field",
+   "reason": "Both are the kind of 'the only X' claim this lens exists to break, so I tried. Teleport: one talent, three field hits, plus a ten-pattern synonym sweep (swap/switch/exchange/trade places, instantly move, instantly appear, appear in, blink, step through, vanish, reappear) returning zero further hits. Cross-tree resource naming: searched all 365 descriptions for Construct, fabrial, artifice, Snare, Ordained, Charge, Remain, Omen, Edict, Foundation, quarry — every resource is confined to its own tree except Construct, which appears in Destruction. Both claims stand as written."
+  },
+  {
+   "field": "bottomThree[Trade Routes], weakTalents[Trade Routes], gaps[No answer to a single Foundation]",
+   "from": "Trade Routes' L6 inoperability presented as a Civilization-specific defect",
+   "to": "Added: deity/Fate's Weave the Thread (depth 2, earliest L3) requires two active Ordained Ground squares under the identical 'up to your tier' cap and is uncastable before L6 for exactly the same reason. An atlas-wide authoring pattern; Trade Routes is the earliest and most exposed instance.",
+   "reason": "The finding is real but was presented as unique. Two of ten deity trees ship a talent the tier cap makes uncastable at the level it unlocks, which is a design-system finding rather than a tree-specific one."
+  },
+  {
+   "field": "powerByDepth[depth 3+].note",
+   "from": "capstone judged only against its own cost",
+   "to": "Added the cross-tree capstone comparison: Destruction's The Unmooring, Fate's Thread of Inevitability and Knowledge's The Final Study all CONSUME the tree's stored resource; Magnum Opus consumes nothing and adds a rider to an engine already running — the deity guide's 'capstones that don't pay off the tree's investment' pitfall in mild form.",
+   "reason": "The rating (3) was already correct but rested on cost alone. The comparative reason is stronger and is what the guide's own pitfall list is testing for."
+  },
+  {
+   "field": "intentDrift[synthesis], intentDrift[White colour split], intentDrift[action-type targets]",
+   "from": "stated as Civilization findings",
+   "to": "Each now says whether the fault is Civilization's or the atlas's: the White toll booth is one of four (Order, Civilization, Fate, Sovereignty); 0% Special is every deity tree, all ten; but the non-synthesis prereq graph IS Civilization's own, and Fate is named as the tree that gets it right (Foreknown Strike lets an ally on Ordained Ground fire a Snare).",
+   "reason": "LENS (d) — a drift shared by ten trees is a different finding from a drift unique to one, and the profile did not distinguish them."
+  },
+  {
+   "field": "intentDrift.claims[description length], intentDrift.claims[action-type targets]",
+   "from": "'~72 words', '~63', '~72', 'RECOUNTED'",
+   "to": "Verified programmatically: 74 / 46 / 14 / 57 / 35 / 34 / 45 / 64 / 75. Action-type split 1 Passive, 1 Free, 1 Reaction, 2 Action, 3 two-Action, 1 three-Action = 9.",
+   "reason": "CHECKED, NOTHING WRONG. The profile's recounted numbers match the data exactly; I am recording the verification rather than a correction, and added Lay Foundation's 46-word marginal entry miss which the profile omitted."
+  }
+ ]
+}

@@ -1,0 +1,657 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Death",
+ "correctionCount": 37,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Death",
+  "oneLineIdentity": "A corpse-economy engine: every creature that dies near you refunds Investiture and leaves a spendable token, which the tree converts into scene-long, action-free damage sources (an ongoing vital drain, a spirit-damage death chain, a bone-hazard square, a raised servant) plus a one-shot death-negation and, once per scene, the atlas's only resurrection.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 4,
+    "evidence": "Five of nine talents deal damage, four with machine-readable formulas (matching the census's SOURCE=5). Withering Touch (1 Action, melee weapon attack + (@tier)d(2*black.rank+2) + WIL VITAL), Consuming Decay (scene-long (@tier)d(2*black.rank+2) VITAL tick), Necrotic Cascade ((@tier)d(2*black.rank+2) SPIRIT burst on every drop-to-0), Bone Garden ((@tier)d(2*green.rank+2) KEEN zone), Risen Servant ([Tier][Die] keen melee attack per servant per round, no authored formula). Two of the five bypass Deflect entirely (vital/spirit), which the primer prices materially above impact/keen. COMPARATIVE CHECK (damage-formula count recounted across all 21 trees): Destruction 6, Chaos 5, then Order / Red / Death 4, then Black / Fate / Power / Knowledge 3 — so Death is mid-pack on formula count but top of the atlas on PERSISTENCE (four of its five sources keep firing free every round) and joint-top on Deflect-ignoring share (2 of 5). Held at 4, not 5, because only Withering Touch is on-demand and unconditional; everything else is triggered, placed, or delivered by a body."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 4,
+    "evidence": "Every formula is [Tier][Die] keyed to black.rank or green.rank, so all five sources scale with tier and rank. Four of the five (Consuming Decay, Necrotic Cascade, Bone Garden, Risen Servant) persist for the scene and repeat every round at zero further Action cost, and Risen Servant multiplies with tier — that repeatability is the best in the deity set alongside Civilization's Construct. CORRECTION TO THE PREVIOUS EVIDENCE: the previous profile held the score down with 'the die bump is BOUGHT, not granted', but that is a SYSTEM-WIDE fact — every [Tier][Die] formula in all 21 trees keys off a skill rank — so it cannot discriminate Death from anything. The Death-specific version is that its dice are split across BOTH gate colours (black.rank sizes three formulas, green.rank sizes Bone Garden), so reaching 2d8 on every source costs Black 3 AND Green 3 — six skill ranks where a single-colour tree needs three. Per the gate audit that split is shared with Chaos (blue:3/black:2) and Destruction (red:5/blue:1), so it is a deity-tree tax, not a Death penalty. Held off 5 because the per-instance die is small and the two best sources are gated on the enemy already being Weakened/bloodied or on someone dying."
+   },
+   {
+    "axis": "control",
+    "score": 1,
+    "evidence": "The entire basis is (a) Bone Garden's difficult-terrain rider, already the whole of the terrain_zone score, (b) Withering Touch's 'cannot regain HP until the end of your next turn', a heal-denial already scored under debuff, and (c) Raise Dead's Disoriented, applied to the character YOU just revived — a drawback on your own side, not enemy control. Nothing Stuns, Restrains, Immobilizes, Slows, Frightens, forces a target choice, or removes an enemy Action or Reaction. COMPARATIVE: peer deity trees that touch control actually apply conditions to enemies — Civilization's Bastion and Magnum Opus (Slowed, Prone), Destruction's Fault Line (Prone), Fate's Snares (Disoriented) — and Death applies none. 'One incidental talent, or a rider on something else' = 1."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "One rider: Withering Touch's 'The target cannot regain HP until the end of your next turn'. VERIFIED unique across all 365 talents against four phrasings ('cannot regain HP/health', 'cannot be healed', 'healing has no effect', 'no healing') — exactly one hit. No defence reduction, no vulnerability, no disadvantage-likes, no Weakened/Exhausted application (Consuming Decay CONSUMES Weakened as a target gate rather than applying it)."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Death Ward (2 Actions, 2 Investiture) is genuinely strong — for the scene the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temp HP; pre-castable, no once-per-scene cap, stackable around a party at 2 Investiture each. COMPARATIVE (added): the atlas's only other death-negation is leyline/White's Unbreakable Line — 'once per round, when an ally adjacent to you would drop to 0 health, spend 3 Investiture and test White with a DC equal to 1/2 of the damage taken. On a success, they drop to 1 health instead' — and Death Ward beats it on every term: cheaper (2 vs 3 Investiture), pre-cast rather than reactive, any character in Attunement Range rather than an adjacent ally, no DC-scaling test, and temp HP on top. So Death Ward is plausibly the best single death-negation in the game. It is still ONE talent, where the rubric's 3 requires 'several talents'. No damage reduction, resistance, Deflect bonus, interception, redirection or shield anywhere, and nothing protects you reactively (0 Reactions). Top of the 2 band."
+   },
+   {
+    "axis": "healing",
+    "score": 2,
+    "evidence": "Consuming Decay returns HP equal to half the damage it deals, every round, to YOU only (1.75/round at 1d6, 4.5 at 2d8) — small but perpetual and free. Death Ward's drop-to-1-HP plus temp HP is a life-save rather than a heal. Raise Dead restores a dead character to 1 HP. No talent heals a merely-wounded ally. COMPARATIVE: leyline/Black's Predator's Due ('when you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture') is the same self-leech shape from this character's own mandatory colour, and Green/Life do real ally healing with Injury removal — nobody would pick Death for this axis. AXIS-BOUNDARY NOTE: this axis's definition literally includes restoring Investiture, which would pull Reaper's Harvest in; it is scored under resource_economy instead to avoid counting the same talent twice."
+   },
+   {
+    "axis": "buff",
+    "score": 0,
+    "evidence": "CORRECTED DOWN from 1 — the previous score double-counted Death Ward, which is already the whole of the protection score, and the protection axis definition explicitly enumerates 'temp HP' as protection, not buff. This axis is 'allied bonuses, rerolls, advantage-likes, granting bonuses to rolls', and Death grants NONE: a scan of all nine talent texts for 'advantage', 'Opportunity', 'focus' and 'plot die' returns ZERO hits in the entire tree, there are no rerolls, no numeric bonuses to any ally roll, and no condition removal. Necrotic Cascade damages only enemies; Risen Servant carries an 'ally_buff' tag whose text contains no ally buff (a tagging error, not a capability). 'The tree does not do this at all' = 0. This matters comparatively: trees that actually buff (White, Blue, Envoy, Leader, Order, Sovereignty) grant advantage, temp HP AND roll bonuses, and awarding Death a 1 for a temp-HP rider already counted elsewhere flattens that distinction."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "CORRECTED DOWN from 3. An atlas-wide sweep for granted / free / extra / additional actions, reactions and strikes returns Fate 4, Warrior 3, Civilization 3, Knowledge 3, Blue 2, Envoy 2, Hunter 2, Scholar 2, and 1 each in Leader, Order, Destruction, Power, Sovereignty — and Death ZERO. Death has 0 Free Actions, 0 Specials and 0 Reactions; it grants no ally an action (Order's Concord and Fate's Foreknown Strike both do), gains no extra reaction (Envoy's Foresight does), and gets no free Strike (Civilization's Arsenal does). Its only genuine claim is Risen Servant: 1 Action + 1 Investiture + 1 Remain buys a body with its own turn on your initiative, up to TIER servants — a strictly weaker copy of Civilization's Combat Construct (HP [Tier][Die] vs [Tier][Die] + tier x 2; no deflect vs deflect 1; defenses -3 vs -2; zero upgrade talents vs five). Raise Dead returns one ally's turns but is net-neutral in the round it is cast. The previous 3 also counted 'converting one Action into a scene-long free source', which is repeatability — already the whole of damage_scaling 4 — not action economy as this axis defines it. Present but minor = 2."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "Read all nine talents for movement, Speed, teleport, shift, repositioning or escape language: nothing. Bone Garden's difficult terrain restricts OTHERS and is scored under terrain_zone; Risen Servant's Speed 25 ft belongs to the summon. The character's own mobility is untouched — unlike Power's Warlord's Advance (move on a kill) or Civilization's Trade Routes (linked-Foundation transit)."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 2,
+    "evidence": "Bone Garden is the tree's ONLY placed, persistent battlefield feature: a scene-long 10 ft square that is both difficult terrain and a [Tier][Die] keen hazard to anything ending its turn there, repeatable one per Harvested Remain. Necrotic Cascade places nothing — it is a standing trigger rule over your whole Attunement Range whose 10 ft burst exists only at the instant a character dies; counting it as a second zone double-counts a damage trigger already scored under damage_direct. COMPARATIVE (recounted: 10 difficult-terrain talents atlas-wide): leyline/Green 6, then exactly 1 each in Hunter, Warrior, Civilization and Death. Against Green's six-talent cluster engine, Fate's seven Ordained Ground talents and Destruction's dangerous-terrain spine, one good zone talent = 2."
+   },
+   {
+    "axis": "information",
+    "score": 2,
+    "evidence": "Speak with the Fallen is a genuinely good, genuinely unique primitive — three truthfully-answered questions of anyone dead within 24 hours, VERIFIED as the atlas's only corpse-interrogation effect (a search for question / interrogate / 'answers truthfully' across all 365 talents returns only this talent). The second 'information' talent is Reaper's Harvest sensing YOUR OWN marked corpses through obstruction, which locates things you already know about — and COMPARATIVELY that primitive is not Death's: deity/Chaos's Void Sense is the identical sentence pointed in the useful direction ('you sense the location of every enemy bearing your Omen through any obstruction'). No enemy-intent reading (Fate's Read the Threads does that), no scouting of the living, no detection, no foreknowledge, no combat information at all. One strong talent plus a weak rider = 2."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Looked for persuasion, command, deception, intimidation, reputation or leverage over living people across all nine talents: nothing. Speak with the Fallen extracts information from a spirit but exerts no influence over anyone living and involves no test at all; its output is scored under information. Death Ward's contested clause is a save-your-life effect, not coercion."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 3,
+    "evidence": "Speak with the Fallen (any remains within 24 hours, no Remain required if you touch the body) is a complete investigation tool for downtime and mystery play, and its 2-Action cost is irrelevant outside combat. Raise Dead undoes a death within the last hour — VERIFIED as the atlas's only resurrection. Reaper's Harvest's through-obstruction sensing of active Remains gives a crude corpse-anchored tracking beacon. Two first-class, atlas-unique non-combat problem-solvers is a real competency; held at 3 rather than 4 because there is nothing for travel, crafting, survival or environmental problems (Hunter, Scholar and Agent all carry those), and every tool in the kit needs a body to work on."
+   },
+   {
+    "axis": "summons",
+    "score": 2,
+    "evidence": "Risen Servant is a properly statted companion — HP [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, one melee attack per turn for [Tier][Die] keen, immune to Frightened/Compelled/Disoriented, up to tier of them. It is the tree's ONLY summon: Raise Dead revives an existing character rather than creating a servant. CORRECTED CLAIM: the previous profile called Death 'the atlas's second summoner'; it is THIRD. deity/Civilization runs a six-talent Combat Construct subsystem (Forge Construct, Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus) and heroic/Hunter a four-talent animal-companion line (Animal Bond, Protective Bond, Feral Connection — 'your animal companion's health increases by 5 x your tier, and their defenses increase by 2' — and Hunter's Edge). Death has one talent, worse than Civilization's Construct in every stat field and with no upgrade support. Not 1 only because Risen Servant is multi-instance (up to tier bodies, where Civilization sustains exactly one)."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 3,
+    "evidence": "Reaper's Harvest: 'When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture' — Passive, no action, no test, firing on ALLIES' kills and on minions dropping. CORRECTED COMPARATIVE: the atlas has NINE Investiture-producing talents, not the seven previously counted — leyline/Black Predatory Patience, Sanguine Reservoir ('store the lost amount as Reserve ... you may spend Reserve as Investiture') and Predator's Due; leyline/Red Flashpoint; deity Void Sense, Reaper's Harvest, Prognosis, Accumulate and Expose. Two prior claims do not survive: Predator's Due ('when you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture') also needs no mark, no test and no action, and 'the only one with no once-per-round limiter' is false — Predatory Patience, Predator's Due and Expose have none either. What DOES survive: Reaper's Harvest is the only generator requiring no prior mark AND no attack, kill or action of your own, and at depth 0 / L1 it is the earliest of the nine by three depth steps. It also mints the tree's second currency (Harvested Remain, 1 free at scene start, cap = tier). Held to 3: one generator talent, self-only, no Focus / Opportunity / party regeneration, and it generates nothing in a single-enemy fight until that enemy dies — where Knowledge's Accumulate and Life's Prognosis pay out every round against a boss."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Withering Touch",
+     "dice": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil VITAL — 1d6+WIL at Black rank 2 (all of L1-5); 2d6+WIL at L6 if still rank 2; 2d8+WIL only once Black 3 is bought — PLUS the weapon's own damage",
+     "action": "1 Action, 1 Investiture",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "RIDER: a melee weapon attack whose bonus damage lands only on a hit, so it inherits the character's out-of-tree attack bonus and weapon. Vital ignores Deflect. The only on-demand, repeat-every-turn damage talent in the tree; also melee-only, which is the one thing that forces this caster into contact range."
+    },
+    {
+     "name": "Bone Garden",
+     "dice": "(@tier)d(2 * @skills.green.rank + 2) KEEN — 1d6 at Green rank 2; 2d8 only if GREEN rank 3 is bought separately from Black",
+     "action": "1 Action, 1 Investiture, 1 Harvested Remain",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "ZONE damage, doubly conditional: only to a character that ENDS ITS TURN in the 10 ft square, and the same talent makes that square difficult terrain, which discourages standing in it. Keen is Deflect-reduced. Persists the scene, free after placement. The tree's only green.rank-scaled talent, and the only reason Death is not a toll booth on its second gate colour."
+    },
+    {
+     "name": "Consuming Decay",
+     "dice": "(@tier)d(2 * @skills.black.rank + 2) VITAL (1d6 at rank 2 -> 2d8 at Tier 2 rank 3), every round",
+     "action": "2 Actions, 2 Investiture (once)",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "ONGOING damage. Conditional ONLY at application: target must already be Weakened or below half HP. Then it ticks at the start of each of the target's turns for the WHOLE SCENE with no further cost, no concentration clause and no save. Vital, ignores Deflect. Leeches half the damage back as HP to the caster. VERIFIED against all 365 talents: the atlas's only scene-duration, no-test, no-save per-turn damage tick aimed at an enemy (Life's Primal Regeneration and Apex Form are the same shape pointed at allies as healing). See crossTreeHooks for the Dark Investiture comparison — which is 2 Actions, NOT 'one fewer Action' as previously stated."
+    },
+    {
+     "name": "Necrotic Cascade",
+     "dice": "(@tier)d(2 * @skills.black.rank + 2) SPIRIT (1d6 -> 2d8) to EACH enemy within 10 ft of the corpse",
+     "action": "1 Action, 1 Investiture (once)",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "TRIGGERED AoE, scene-long once paid. Fires when ANY character drops to 0 HP in Attunement Range — including kills by allies and by your Risen Servants, and including your own side dropping (the burst hits only enemies, so an ally going down is a benefit). Spirit ignores Deflect. Zero output against a single enemy until it dies. NOT unique in kind — leyline/Red's Chain Detonation is the same death-triggered burst at half the die, half the radius and only off your own Conflagration kills."
+    },
+    {
+     "name": "Risen Servant",
+     "dice": "[Tier][Die] KEEN per servant per turn — NO authored roll formula and NO named skill, so the data does not say which colour's rank sizes the die. Assumed 1d6 -> 2d8; this is an authoring gap, not a measurement.",
+     "action": "1 Action, 1 Investiture, 1 Harvested Remain (once); attacks free thereafter",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "SUMMON damage — real tree damage, delivered by a body. Repeats every round for free and multiplies with tier. Conditional on the servant surviving and reaching a target: HP = [Tier][Die] (avg 3.5 at Tier 1, 9 at Tier 2), defenses yours MINUS 3. COMPARATIVE: Civilization's Forge Construct — same sentence structure, same 1 Action / 1 Investiture, one depth-step earlier — grants HP [Tier][Die] + tier x 2, deflect 1, defenses minus 2, an explicit reforge clause and five upgrade talents; Risen Servant gets none of that. Attack bonus unspecified in the data (as is the Construct's, so that gap is atlas-level)."
+    }
+   ],
+   "countReal": 5,
+   "countFalsePositiveMitigation": 1,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "On demand, 1 Action buys weapon damage + [Tier][Die] + WIL vital (Withering Touch) — about 2d8 + WIL vital plus a weapon strike at Tier 2 with Black 3. But that is not this tree's real figure. The deepest reachable state is a STANDING one: installing all four persistent sources costs Bone Garden 1 Action/1 Investiture + Consuming Decay 2 Actions/2 Investiture + Necrotic Cascade 1 Action/1 Investiture + Risen Servant 1 Action/1 Investiture = 5 ACTIONS AND 5 INVESTITURE, plus 2 Harvested Remains — nearly two entire Slow turns. Once paid, at Tier 2 with rank 3 bought, the free per-round output is roughly Consuming Decay 2d8 vital (avg 9) + up to two Risen Servants at 2d8 keen (avg 18 if both are alive and both hit, with an undefined attack bonus) = about 27 raw, plus Bone Garden 2d8 only if an enemy chooses to end its turn on difficult terrain and Necrotic Cascade 2d8 per nearby enemy only when something dies. Honest optimistic band: 20-30 per round for 0 Actions, contingent on positioning, enemy count and two fragile bodies surviving. Normalised: after the ramp this tree spends ~0 Actions per [Tier][Die] delivered. Two of the units (vital, spirit) ignore Deflect and are worth materially more per die than the keen ones.",
+   "repeatability": "Exceptional after ramp, poor before it. Four of the five sources persist for the scene and cost nothing to repeat; only Withering Touch is re-paid per use. The binding constraint is the RAMP, and it is TWO constraints: (1) about 5 Actions and 5 Investiture against a starting pool of ~4 at L1, and (2) HARVESTED REMAINS — 'You begin each scene with 1 Harvested Remain', cap = tier, so at scene start you hold exactly ONE Remain regardless of level and can fund exactly ONE of Bone Garden / Risen Servant / Speak with the Fallen before anything has died. The engine is gated on CORPSES, not only on Investiture. Reaper's Harvest then refunds 1 Investiture and 1 Remain per drop-to-0 in range, so a fight with multiple bodies self-funds the ramp; a single-boss fight with no minions never pays that refund, leaves the second Remain-spender unaffordable, and leaves Necrotic Cascade and Consuming Decay's gate cold.",
+   "verdict": "This IS a damage tree, and unusually so for nine talents — 5 of 9 deal damage, two in Deflect-ignoring types, and four keep dealing it for free every round for the rest of the scene. But it is damage of a specific shape: back-loaded, triggered, and parasitic on things dying. Its first damage arrives at depth 0 / level 1 (Withering Touch), yet its characteristic output does not exist until roughly two full Slow turns and at least one enemy corpse have been spent on it, and roughly half of that output is switched off entirely against one healthy enemy. Damage MITIGATION is not counted as damage: exactly ONE talent (Death Ward) reads as damage-adjacent because it talks about dropping to 0 HP and grants temporary HP, and it deals nothing; Raise Dead is a second death-worded talent with zero damage and is not mitigation either."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 4,
+    "exemplars": "Reaper's Harvest, Withering Touch",
+    "note": "Both entries are depth 0 / earliest L1 and both deliver the necromancer fantasy with no setup, exactly as the deity guide's principle 1 demands (it names these two talents by name). Withering Touch is a Deflect-ignoring vital rider plus the atlas's only heal-denial; Reaper's Harvest is a free, action-less, unlimited Investiture engine that mints the tree's token and starts every scene pre-loaded with one Remain — and it is the earliest Investiture generator in the game, where the other eight sit at depth 1-4 / L2-L6."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 5,
+    "exemplars": "Bone Garden, Consuming Decay, Death Ward, Speak with the Fallen (all depth 1, L2); Necrotic Cascade, Risen Servant (both depth 2, L3)",
+    "note": "Six of nine talents, every one reachable by L3, containing the entire engine: a persistent hazard zone, the atlas's only scene-long free vital drain with self-leech, the atlas's best death-negation ward (beats leyline/White's Unbreakable Line on cost, range, action type and rider), the atlas's only speak-with-dead, the atlas's strongest death-triggered burst and a summoned extra attacker. No filler at all. The split is 4 at depth 1 and 2 at depth 2, and the two depth-2 nodes are the tree's synthesis pair."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Raise Dead (depth 3, earliest L4)",
+    "note": "The lone capstone. Narratively the biggest effect in the atlas (verified: the only resurrection anywhere in 365 talents) but mechanically the tree's worst cost/effect ratio: 3 Actions + 4 Investiture + once per scene to return one ally at 1 HP, Disoriented, with a permanent extra injury — and it consumes only ONE Remain, and only 'if one represents the target', so it does not cash in what the tree spent the scene stockpiling. Compare Civilization's Magnum Opus and Knowledge's The Final Study, capstones that transform or consume what their trees built."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED against depth, BACK-LOADED within a fight. Everything that defines the tree is owned by level 3 and the curve is flat after depth 2 — the capstone is a narrative payoff, not a power spike, so a player is fully operational eight talents in and gains little from the ninth. Inside a given combat the opposite holds: the first two Slow turns and the first corpse pay for an engine that then runs for free until the scene ends, so the tree is weakest exactly where a short fight ends.",
+  "uniqueOwnership": [
+   "The only resurrection in the atlas. VERIFIED by searching all 365 talents for 'returns to life / resurrect / back to life': exactly one hit, Raise Dead. No other tree can undo a death at all.",
+   "The only corpse-interrogation. VERIFIED: Speak with the Fallen is the atlas's sole 'ask the dead questions' effect, and it works on any remains within 24 hours rather than only harvested ones.",
+   "The only heal-denial. VERIFIED across all 365 talents against four phrasings ('cannot regain HP/health', 'cannot be healed', 'healing has no effect', 'no healing'): Withering Touch's clause is the single instance in the game.",
+   "The only scene-duration, no-test, no-save ongoing damage tick aimed at an enemy (Consuming Decay), and the only one that leeches half its damage back to the caster. NOT the only ongoing enemy damage: Afflicted[X] is ongoing damage by the primer's own definition, and three talents inflict it — leyline/Black Dark Investiture, leyline/Red Afterburn ('inflict Afflicted[half [Tier][Die] energy]') and deity/Life Adaptive Mutation's Venom Glands ('melee hits inflict Afflicted [half [Tier][Die] Vital]', granted to an ally).",
+   "The earliest and least-conditional Investiture generator in the game. CORRECTED: there are NINE generators atlas-wide (Predatory Patience, Sanguine Reservoir, Predator's Due, Flashpoint, Void Sense, Reaper's Harvest, Prognosis, Accumulate, Expose), not seven, and Reaper's Harvest is NOT the only one lacking a once-per-round limiter — Predatory Patience, Predator's Due and Expose lack one too, and Predator's Due likewise needs no mark, no test and no action. What is genuinely unique: Reaper's Harvest is the only generator requiring no prior mark AND no attack, kill or action of your own — it pays out on any character dropping in Attunement Range, including the party's kills — and at depth 0 / L1 it is the earliest by three depth steps.",
+   "The densest drop-to-0 trigger cluster in the game — but the runner-ups were miscounted. Recounted across all 365 talents: Death 3 (Reaper's Harvest, Necrotic Cascade, Death Ward), then deity/Civilization 2 (Bonds of Community, Arsenal), deity/Power 2 (Warlord's Advance, Warlord's Fury) and deity/Knowledge 2 (Hunter's Discipline, Death Mark), then 1 each in leyline/White (Unbreakable Line), leyline/Black (Predator's Due), leyline/Red (Chain Detonation), deity/Destruction (Combustion Chain) and deity/Fate (Thread of Inevitability). The previous list named leyline SPECIALTIES ('Bulwark', 'Illusion', 'Champion') as if they were trees, omitted Power entirely, and no Illusion or Champion talent carries the trigger. Death still leads.",
+   "Harvested Remain — a corpse token generated by one Passive entry and named in the cost line of FOUR of the remaining eight talents. CORRECTED from 'the cleanest homebrew-resource spine in the deity set': deity/Civilization's Combat Construct is generated by one entry and consumed or upgraded by FIVE of the remaining eight (Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus), all unconditionally, a tighter spine than Death's four-of-eight with two conditional spenders. Death's is one of the two or three cleanest, not the cleanest.",
+   "A death-triggered AoE damage chain (Necrotic Cascade) — one of TWO, and much the stronger. leyline/Red's Chain Detonation is the same effect ('when you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft'). Necrotic Cascade beats it on every term — full [Tier][Die] not half, spirit not energy, 10 ft not 5, any character's death not only your own kills with one specialty — and sits at depth 2 / L3 against Chain Detonation's depth 5 / L6."
+  ],
+  "gaps": [
+   "No mobility of any kind — nothing grants a Move, shift, teleport, extra Speed, disengage or escape.",
+   "No hard control. Nothing Stuns, Restrains, Immobilizes, Slows, Frightens, Grapples, or removes an enemy Action or Reaction. Bone Garden's avoidable difficult terrain is the entire suite, in a system where the primer calls action denial the most valuable category there is — and peer deity trees (Civilization's Slowed/Prone, Destruction's Prone, Fate's Snares) all apply real conditions.",
+   "No Reactions at all — 0 of 9. The character never acts on anyone else's turn.",
+   "No Specials and no Free Actions either — 0 of 9 each, against deity targets of ~15-20% and ~10-15%. Verified comparatively: an atlas-wide sweep for granted / free / extra actions and reactions returns hits in 13 trees and ZERO in Death.",
+   "No ally healing. Consuming Decay heals only the caster; Death Ward fires only at 0 HP; Raise Dead works only on the already-dead. A wounded ally at 3 HP gets nothing.",
+   "No contribution to anyone's dice. Zero advantage granting (verified: 'advantage', 'Opportunity', 'focus' and 'plot die' appear in none of the nine talents), zero rerolls, zero numeric bonuses, zero condition removal.",
+   "No support for its own summon. Risen Servant is the tree's only companion talent and nothing else upgrades, repairs, heals, commands or protects it — against Civilization, where five of eight remaining talents exist to make the Construct better, and Hunter, where three do. The summon is a one-off, not a subsystem.",
+   "No ranged offence. The one on-demand damage talent is a MELEE weapon attack; everything else must be placed or waits for a trigger.",
+   "No social influence, deception, intimidation or leverage over living people.",
+   "No self-defence. No damage reduction, resistance, Deflect bonus, shield or temp HP for yourself in ordinary play — a squishy caster who must stand in melee to use Withering Touch.",
+   "Nothing for travel, survival, crafting, or environmental problems — the exploration kit is entirely corpse-based.",
+   "The single-enemy hole is the big one: in a boss fight with no minions, Reaper's Harvest generates neither Investiture nor Remains, so you are stuck at the ONE Remain you start with; Necrotic Cascade fires never; Consuming Decay cannot be applied until the boss is Weakened or bloodied; Raise Dead and Speak with the Fallen have no corpse. Five of nine talents sit idle until someone dies. Comparatively this is the sharpest version of the problem in the deity set — Knowledge's Accumulate and Life's Prognosis pay out every round against a single target, where Death's engine pays nothing.",
+   "Two authoring gaps make the numbers unresolvable: Risen Servant's [Tier][Die] names no colour and carries no roll formula, and its attack bonus is undefined (Civilization's Construct shares the attack-bonus omission, so that half is atlas-level); and nothing in a two-colour deity tree says which colour's rank sets Attunement Range, the geometry five of nine talents depend on."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'Her blessed are necromancers who treat the fallen as a crop to be reaped' — the corpse-as-harvest fantasy.",
+     "delivered": "YES",
+     "evidence": "Reaper's Harvest marks every corpse dropping in Attunement Range as a Harvested Remain, caps them at tier, and grants one free at scene start. Four talents name them in their cost. The metaphor is literally the mechanic."
+    },
+    {
+     "claim": "'A disciple of Morrath kills with withering curses and Death Wards.'",
+     "delivered": "PARTIAL",
+     "evidence": "Withering curses: yes. But Death Ward KILLS NOTHING; its text is 'the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP'. The intent sentence lists the tree's only protective talent as a method of killing."
+    },
+    {
+     "claim": "'Then harvests the corpse for what remains.'",
+     "delivered": "YES",
+     "evidence": "Reaper's Harvest, Passive, no action cost, no test, plus 1 Investiture per drop-to-0 in range with no once-per-round limiter."
+    },
+    {
+     "claim": "'Those Harvested Remains fuel her darker work: bone gardens, risen servants, words wrung from the dead, and at the last, the dead made to rise whole.'",
+     "delivered": "YES",
+     "evidence": "A one-to-one match with Bone Garden, Risen Servant, Speak with the Fallen and Raise Dead. Caveat: Speak with the Fallen makes the Remain optional ('or touch any remains ... within the last 24 hours') and Raise Dead consumes one only 'if one represents the target'."
+    },
+    {
+     "claim": "Signature resource: 'Harvested Remain ... spent to power Morrath's corpse-magic', cap = tier, scene duration.",
+     "delivered": "YES",
+     "evidence": "Generated by one entry Passive and spent by four of the other eight — satisfying deity guide principle 5. The measured check agrees: 'ok: Death/Harvested Remain (5)'. Comparative caveat added by this pass: Civilization's Combat Construct spine is tighter (five unconditional consumers of eight)."
+    },
+    {
+     "claim": "CROSS-TREE DUPLICATE PROMISE (comparative lens d): deity/Power's path description makes the same deaths-fuel-you promise — 'they grow with every enemy laid low ... feeds on the kill', signature resource 'Bounty — a tally of the fallen; each enemy slain within your range adds one'.",
+     "delivered": "DEATH DELIVERS IT; POWER DOES NOT",
+     "evidence": "Power's Bounty is recorded ABSENT by the signature-resource measurement, and its nearest implementation, Warlord's Fury, counts characters reduced BELOW HALF HP during the scene, not the slain. Death's Reaper's Harvest is the only talent in the atlas that pays out on any character dropping to 0 HP in your range with no mark, action or kill of your own. Made by two path descriptions, honoured by one."
+    },
+    {
+     "claim": "Design guide principle 1: 'Withering Touch makes you a necromancer on turn one; Reaper's Harvest also makes you a necromancer on turn one.'",
+     "delivered": "YES",
+     "evidence": "Both depth 0, earliest L1, both prereq 'Black 2+; Green 2+', neither is setup. Two genuinely different fantasies, so the guide's 'single-entry tree' pitfall is avoided."
+    },
+    {
+     "claim": "Design guide colour split: 'Black tests for curses, vital damage, Death Ward against unwilling targets, and direct diminishment. Green tests rare — most Green talents are placements or interactions with already-dead targets.'",
+     "delivered": "YES",
+     "evidence": "Exact fidelity in the authored formulas, matching the deity-gate audit (tests black:1, sizes black:3 green:1). Black scales Withering Touch, Consuming Decay and Necrotic Cascade; GREEN scales only Bone Garden — the placement. The tree's one skill test is Death Ward's 'test Black vs. Spiritual'. Death is NOT one of the five toll-booth trees."
+    },
+    {
+     "claim": "Design guide gameplay loop: 'Kill (Black) -> harvest the corpse (Green) -> spend Remains on Bone Garden / Risen Servant / Speak with the Fallen / Raise Dead.'",
+     "delivered": "YES, with a dependency the claim does not mention",
+     "evidence": "Reaper's Harvest fires on ANY character dropping in range, so most Remains come from the party's kills, and the loop stalls entirely in a single-enemy fight — where you are held to the one Remain the scene starts you with."
+    },
+    {
+     "claim": "Design guide action-type targets for deity trees: ~25-30% Passive, ~15-20% Special, ~25-35% Action, ~15-25% 2 Actions, ~10-15% Free, ~10% Reaction, 3 Actions capstone-only.",
+     "delivered": "NO — the clearest drift in the tree",
+     "evidence": "Recounted, all nine: Passive 1 = 11% (under); Special 0 = 0% (target 15-20%); 1 Action 4 = 44% (over); 2 Actions 3 = 33% (over); Free 0 = 0% (target 10-15%); Reaction 0 = 0% (target 10%); 3 Actions 1 (the capstone) = compliant. COMPARATIVE NOTE ADDED: the zero-Special part is atlas-wide (all ten deity trees have 0% Special), so it is not a Death finding. What IS Death-specific is the zero-Free-Action AND zero-Reaction combination on top of it — why the action economy is 'spend a whole Action or do nothing'."
+    },
+    {
+     "claim": "Design guide description lengths: entry/tier-2 ~30-45 words, tier-3 synthesis ~40-55, capstone up to ~70.",
+     "delivered": "PARTIAL",
+     "evidence": "All nine recounted from the talent data: Necrotic Cascade 28, Withering Touch 30, Bone Garden 40, Speak with the Fallen 47, Consuming Decay 48 in or near band; Raise Dead 57 inside the capstone cap. Over: Reaper's Harvest 61 and Death Ward 61 against a 45 cap, and Risen Servant 71 — a tier-3 talent at capstone length."
+    },
+    {
+     "claim": "Design guide cost scale: '4 Investiture is reserved for the genuinely catastrophic (Raise Dead, etc.)'.",
+     "delivered": "YES",
+     "evidence": "The guide names this talent and the tree matches: 1 Investiture on entry-tier, 2 on tier-2 synthesis, 4 only on Raise Dead. Totals 1/1/1/1/2/2/2/4 = 14 to fire every talent once. Every non-Passive talent opens with the required 'Spend X Investiture and ...' phrasing."
+    },
+    {
+     "claim": "Deity guide principle 9: 'Deity power is Radiant-tier ... don't undersell the capstones.'",
+     "delivered": "PARTIAL",
+     "evidence": "The tree's MIDDLE is Radiant-tier — a free scene-long vital drain, a corpse-detonation field and a summoned body all bought by level 3. The capstone is the undersold part: Raise Dead's cosmic flavour priced at 3 Actions + 4 Investiture for a 1 HP body with an extra injury."
+    }
+   ],
+   "verdict": "DELIVERS",
+   "actuallyIs": "It delivers what it claims, so there is no wholesale drift — but the intent prose systematically underplays what the tree is. The path description sells a killer ('kills with withering curses'), while the talent set is an ENGINE-BUILDER and an ECONOMY: only one of nine talents is a repeatable on-command attack, and the play pattern is to spend the better part of two Slow turns installing scene-long effects, then contribute damage for free while doing something else. Its economy is a larger part of its identity than the curses the prose leads with. Second under-stated fact: the tree feeds on the PARTY's kills, and its Remain supply — capped at tier, starting at exactly one — makes corpses, not Investiture, the true rate limiter. The one outright inaccuracy is naming Death Ward as a way this path kills. THE 'SOMETHING' TEST (comparative lens e): Death's something is 'deaths in my range are my fuel, and I turn them into free damage that never stops'. No other tree does that — deity/Power's intent promises it and does not implement it; leyline/Black's Predator's Due and Predatory Patience implement a narrower version (your own kills only) four to six levels deeper; leyline/Red's Chain Detonation implements a smaller death-burst gated on your own Conflagration kills. Where Death IS beaten is the adjacent competency: for 'a persistent thing that deals free damage every round', deity/Civilization does it better and with far more support — one Construct with better HP, deflect and defenses, upgraded by five talents — where Death's Risen Servant stands alone. Death owns the trigger; Civilization owns the engine."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Harvested Remain",
+    "role": "BOTH — produced by Reaper's Harvest (on any drop-to-0 in Attunement Range; exactly 1 free at scene start regardless of tier; cap = tier; unused fade at scene end); consumed by Bone Garden, Risen Servant, Speak with the Fallen (optional) and Raise Dead (conditional). The starting stock of ONE is the tree's real round-1 constraint.",
+    "talents": "Reaper's Harvest; Bone Garden; Risen Servant; Speak with the Fallen; Raise Dead"
+   },
+   {
+    "keyword": "Investiture",
+    "role": "BOTH — consumed by 8 of 9 talents (1/1/1/1/2/2/2/4 = 14 total); produced by Reaper's Harvest at 1 per character dropping to 0 HP in Attunement Range, free, action-less, no once-per-round cap. One of NINE Investiture producers atlas-wide, and the earliest (depth 0 / L1)",
+    "talents": "all except Reaper's Harvest consume; Reaper's Harvest produces"
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUMES/CARES ABOUT — the tree's universal geometry; skill rank sets the operating radius (15/30/60/90/120 ft). AMBIGUITY: nothing in the data says whether Black or Green rank sets it in a two-colour tree.",
+    "talents": "Reaper's Harvest; Bone Garden; Consuming Decay; Death Ward; Necrotic Cascade"
+   },
+   {
+    "keyword": "drop to 0 HP (the death trigger)",
+    "role": "CONSUMES — the tree's master trigger, keyed by three talents. Recounted atlas-wide: Death 3, then Civilization / Power / Knowledge 2 each, then 1 each in White, Black, Red, Destruction and Fate. Death leads.",
+    "talents": "Reaper's Harvest; Necrotic Cascade; Death Ward"
+   },
+   {
+    "keyword": "Weakened",
+    "role": "CONSUMES ONLY — Consuming Decay requires a Weakened (or below-half-HP) target; the tree never applies Weakened itself. The Black leyline Attunement Key rider is the in-house supplier",
+    "talents": "Consuming Decay"
+   },
+   {
+    "keyword": "Afflicted (in effect, not in name)",
+    "role": "PRODUCES — Consuming Decay is an ongoing per-turn damage effect carrying the 'afflicted' tag but not the condition. NOT the atlas's only enemy-facing tick: leyline/Black Dark Investiture, leyline/Red Afterburn and deity/Life Adaptive Mutation (Venom Glands, granted to an ally) all apply the real Afflicted[X].",
+    "talents": "Consuming Decay"
+   },
+   {
+    "keyword": "Vital damage",
+    "role": "PRODUCES — ignores Deflect",
+    "talents": "Withering Touch; Consuming Decay"
+   },
+   {
+    "keyword": "Spirit damage",
+    "role": "PRODUCES — ignores Deflect",
+    "talents": "Necrotic Cascade"
+   },
+   {
+    "keyword": "Keen damage",
+    "role": "PRODUCES — Deflect-reduced",
+    "talents": "Bone Garden; Risen Servant"
+   },
+   {
+    "keyword": "HP-regain denial ('cannot regain HP')",
+    "role": "PRODUCES — verified as the atlas's only instance across four phrasings",
+    "talents": "Withering Touch"
+   },
+   {
+    "keyword": "Difficult terrain",
+    "role": "PRODUCES — a scene-long 10 ft square, repeatable per Remain; 1 of the atlas's 10 difficult-terrain talents (leyline/Green holds 6; Hunter, Warrior, Civilization and Death 1 each)",
+    "talents": "Bone Garden"
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCES — [Tier][Die] + Presence at the moment of would-be death. One of 14 temp-HP talents across 9 trees (Order 3; Power, Life, Sovereignty 2 each)",
+    "talents": "Death Ward"
+   },
+   {
+    "keyword": "Injury",
+    "role": "PRODUCES (as a cost) — Raise Dead inflicts one additional injury on the character it revives; nothing in the tree removes injuries",
+    "talents": "Raise Dead"
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "BOTH, oddly — applied to the character YOU revive (Raise Dead) and granted as an immunity to your summon (Risen Servant). Never applied to an enemy",
+    "talents": "Raise Dead; Risen Servant"
+   },
+   {
+    "keyword": "Frightened",
+    "role": "CARES ABOUT — Risen Servant is immune",
+    "talents": "Risen Servant"
+   },
+   {
+    "keyword": "Compelled",
+    "role": "CARES ABOUT — Risen Servant is immune",
+    "talents": "Risen Servant"
+   },
+   {
+    "keyword": "Risen Servant (the entity)",
+    "role": "PRODUCES — a statted summon: HP [Tier][Die], Speed 25 ft, defenses = yours minus 3, one [Tier][Die] keen melee attack per turn, acts on your initiative immediately after your turn, up to tier sustained. Attack bonus and governing rank both undefined. One of the atlas's THREE companion subsystems and the least supported (Civilization's Construct: 6 talents; Hunter's animal companion: 4; Death: 1).",
+    "talents": "Risen Servant"
+   },
+   {
+    "keyword": "Black skill rank",
+    "role": "CONSUMES — entry gate (Black 2+), the die size for three damage formulas, and the tree's only skill test. Rank 3 is not granted by reaching L6; it must be bought — as in every tree in the game.",
+    "talents": "gate on both entries; Withering Touch; Consuming Decay; Necrotic Cascade; Death Ward (test Black vs. Spiritual)"
+   },
+   {
+    "keyword": "Green skill rank",
+    "role": "CONSUMES — entry gate (Green 2+) and the die size for exactly one formula. Reaching 2d8 on every source costs six ranks (Black 3 + Green 3) where a single-colour tree needs three; Chaos and Destruction carry the same split.",
+    "talents": "gate on both entries; Bone Garden"
+   },
+   {
+    "keyword": "Spiritual defense",
+    "role": "CARES ABOUT — the target number for the tree's single contested test",
+    "talents": "Death Ward"
+   },
+   {
+    "keyword": "Willpower",
+    "role": "CONSUMES — flat damage adder on the tree's on-demand attack",
+    "talents": "Withering Touch"
+   },
+   {
+    "keyword": "Presence",
+    "role": "CONSUMES — temp HP adder",
+    "talents": "Death Ward"
+   },
+   {
+    "keyword": "Tier",
+    "role": "CARES ABOUT — sets dice COUNT, the Harvested Remain cap, and the Risen Servant cap simultaneously, so L6 multiplies the tree in three places at once. It does NOT set the die size; that is skill rank, bought separately.",
+    "talents": "Reaper's Harvest; Risen Servant; every damage formula"
+   },
+   {
+    "keyword": "Focus / Opportunity / Plot Die / advantage",
+    "role": "NEITHER — the tree touches NONE of these. Verified across all nine talent texts: no talent spends or grants Focus, none uses Opportunity, none interacts with the Plot Die, and the word 'advantage' appears zero times. Its only currencies are Investiture, Harvested Remains and other people's deaths",
+    "talents": "(none)"
+   }
+  ],
+  "crossTreeHooks": [
+   "Consuming Decay is the tree's biggest external dependency: it can only be applied to a target already Weakened or below half HP. The Black leyline Attunement Key (Draw Mana Weakens enemies in Attunement Range with no ally within 5 ft) is the in-house supplier and this character necessarily has Black 2+. DOC DRIFT recorded, not resolved: SYSTEM-PRIMER says 'no ally within 5 ft' while the leyline guide's Black identity says 'no allied creature within 10 ft'.",
+   "REDUNDANCY WITH ITS OWN GATE COLOUR, restated correctly: leyline/Black Dark Investiture deals [Tier][Die] vital immediately AND applies Afflicted[[Tier][Die] vital] — the same die and damage type as Consuming Decay — for 1 Investiture instead of 2. CORRECTION: it is NOT 'one fewer Action'. Dark Investiture is a 2-Action talent, exactly like Consuming Decay, and additionally costs health equal to your tier and requires a SUCCESSFUL test Black vs. Spiritual, where Consuming Decay has no test at all. Consuming Decay's premium buys scene duration, guaranteed application, no HP cost and the leech.",
+   "THE BLACK KILL-ECONOMY STACKS WITH THIS TREE, and it is half-bought already. Three of the atlas's nine Investiture producers are Black — Predatory Patience, Predator's Due ('regain [Tier][Die] health and 1 Investiture' when you reduce a character to 0) and Sanguine Reservoir (HP lost to Ritual talents becomes Reserve, spendable as Investiture) — and Black is a mandatory rank-2+ colour for every Death character. Reaper's Harvest pays on ANY death in range; Predator's Due pays again, with healing, on the ones you cause.",
+   "Reaper's Harvest and Necrotic Cascade both trigger on ANY character dropping to 0 HP in Attunement Range — so Investiture income, Remain supply and the biggest AoE all scale with the PARTY's kill rate and with encounter design, not with the necromancer's own output. A party of single-target grinders starves it.",
+   "Withering Touch is a rider on a melee weapon attack, so its value is set by out-of-tree attack bonus, weapon dice and any advantage source from elsewhere. It is also the only reason a Death character stands in melee, so it wants a survivability tree behind it.",
+   "Death Ward and Raise Dead exist to be spent on ALLIES; both are worth nothing in a solo scene and both scale with party size.",
+   "Raise Dead inflicts a permanent additional injury and this tree cannot remove injuries. The design guide states plainly that GREEN heals deeply and removes Injuries (White cannot) — so Green leyline, or deity/Life, is the partner that makes the capstone clean. Green is already a mandatory rank-2+ colour here, so the fix sits inside the character's own gate.",
+   "Bone Garden's difficult terrain is only as good as someone's ability to force enemies into it; it wants forced movement, a pull, a Grapple, or Green's six-talent cluster engine. On its own it is a square enemies walk around.",
+   "The tree grants no advantage, no rerolls and no Focus, so it takes a full share of any party-wide buff without contributing back — a one-directional seam for White or Blue partners.",
+   "Zero Reactions is a positive seam: the tree never competes for the 1-Reaction-per-round cap, so it pairs cleanly with a Reaction-heavy tree (leyline/White has seven) that would otherwise be strangled by it."
+  ],
+  "topThree": [
+   "Reaper's Harvest — a Passive, action-less, cost-free Investiture generator with no once-per-round limiter that fires on every drop-to-0 in Attunement Range (including allies' kills), mints the token four other talents spend, and starts every scene pre-loaded. Checked against all NINE generators in the atlas: the only one requiring no prior mark and no attack, kill or action of your own, and the earliest by three depth steps. CORRECTED: not the only one without a round limiter — Predatory Patience, Predator's Due and Expose lack one too. Still the reason the rest of the tree is affordable.",
+   "Consuming Decay — 2 Actions and 2 Investiture, once, buys [Tier][Die] VITAL damage at the start of every one of the target's turns for the entire scene, with no test, no save, no concentration clause and no further cost, plus half of it back as healing to you. Verified as the atlas's only scene-duration, no-test ongoing enemy tick. Caveat, corrected: Black's own Dark Investiture applies Afflicted[[Tier][Die] vital] plus immediate damage for half the Investiture at the SAME 2-Action cost (plus HP and a required test), so this talent uniquely buys duration, guaranteed application and the leech.",
+   "Necrotic Cascade — 1 Action and 1 Investiture installs a scene-long rule converting every death anywhere in Attunement Range into [Tier][Die] Deflect-ignoring spirit damage to every enemy within 10 ft of the corpse, chaining off its own kills. Comparatively the strongest death-burst in the game: leyline/Red's Chain Detonation, the only other one, deals HALF [Tier][Die] energy in 5 ft off your own Conflagration kills only, at depth 5 / L6 against this talent's depth 2 / L3. Dead weight against one enemy."
+  ],
+  "bottomThree": [
+   "Raise Dead — 3 Actions, 4 Investiture, once per scene, to return one character at 1 HP, Disoriented, with a permanent extra injury, spending at most one Remain and only 'if one represents the target'. The atlas's only resurrection and the tree's worst cost-to-battlefield-effect ratio; it does not cash in the stockpile the tree spent the scene building, where Civilization's Magnum Opus and Knowledge's The Final Study both do exactly that.",
+   "Speak with the Fallen — a tier-2 combat price (2 Actions, 2 Investiture) on a purely out-of-combat effect, and its 'or touch any remains within 24 hours' clause makes the Harvested Remain it is supposed to consume optional most of the time.",
+   "Bone Garden — spends the same Remain as Risen Servant, from a stock of exactly one at scene start, for a 10 ft square whose own difficult terrain gives enemies their best reason never to satisfy the damage condition. The weakest use of the tree's signature resource, though it is also the tree's only green.rank scaling."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Effectively unlimited AFTER a ramp of roughly two full Slow turns plus a corpse. Installing the four persistent sources costs 5 Actions, 5 Investiture and TWO Harvested Remains, against a starting Investiture pool of ~4 at L1 and a starting Remain stock of exactly ONE — so the tree cannot install itself in one go and needs either a Draw Mana Action or, for the second Remain-spender, an actual corpse. Once installed, Consuming Decay, Necrotic Cascade, Bone Garden and Risen Servant all persist for the scene at ZERO Actions and ZERO Investiture, so from round 3 or 4 the character can spend every Action on Withering Touch, Draw Mana or something else while the engine produces. Reaper's Harvest then refunds 1 Investiture AND 1 Remain per drop-to-0 in range, free and uncapped, making the tree net-positive on both currencies in a multi-body fight. The failure mode is the mirror image: a short fight, or a single-enemy fight with no minions, ends before the ramp pays off.",
+   "triggerGatedCount": 4,
+   "reactionCount": 0,
+   "resourceCostersOutOfTree": 8,
+   "note": "Under the dossier's stated definition the count is FOUR: Reaper's Harvest and Necrotic Cascade (fire when a character drops to 0 HP), Bone Garden (fires when a character ends its turn in the square) and Death Ward (payoff fires when the warded target would drop to 0 HP). Not 6: Speak with the Fallen and Raise Dead are gated on a PREREQUISITE (remains of a given age), not another character's action, and Consuming Decay is gated on target STATE at application and then ticks on its own. The regex classifier reads 3; 4 is the honest reading. The broader 'conditional in some way' count IS 6: only Withering Touch, Death Ward's casting, and Risen Servant's attacks after placement are unconditional on command. Reactions: 0 of 9 — verified comparatively, an atlas-wide sweep for granted or extra actions and reactions returns hits in 13 trees and none in Death. Investiture spenders: 8 of 9 in-tree, 1/1/1/1/2/2/2/4 = 14 to fire every talent once, against a pool of ~4 at L1."
+  },
+  "weakTalents": [
+   {
+    "name": "Raise Dead",
+    "reason": "OVERCOSTED CAPSTONE. 3 Actions (your entire Slow turn) + 4 Investiture (more than a starting pool of ~4) + once per scene, to return a character at 1 HP, Disoriented, carrying a permanent additional injury — a body that drops again to the next attack. Action-neutral at best in the round it fires. Out of combat the one-hour window makes it a scene tool that did not need a combat action cost at all. It trips the deity guide's own pitfall ('capstones that don't pay off the tree's investment'): it consumes exactly ONE Harvested Remain, and only 'if one represents the target'."
+   },
+   {
+    "name": "Speak with the Fallen",
+    "reason": "OVERCOSTED, and it undercuts the tree's spine. 2 Actions + 2 Investiture is a tier-2 combat price on an effect with no combat use whatsoever. 'Or touch any remains of a character that died within the last 24 hours' means the Harvested Remain is optional in most situations, so a talent the intent file lists as a Remain-spender usually is not one. Still the atlas's only corpse-interrogation."
+   },
+   {
+    "name": "Risen Servant",
+    "reason": "TEXT PROMISES MORE THAN THE NUMBERS DELIVER, and it is measurably the weaker of the atlas's two statted summons. HP = [Tier][Die] means avg 3.5 HP at Tier 1 and 9 at Tier 2, defenses yours MINUS 3, no deflect — where Civilization's Forge Construct, at the same 1 Action / 1 Investiture and one depth-step earlier, gets [Tier][Die] + tier x 2 HP, deflect 1, defenses minus 2, an explicit reforge clause and five upgrade talents. 'Sustain up to your tier Risen Servants' is a cap you will rarely reach and the scene-long duration is fiction. The data defines neither its attack bonus nor which rank sizes its [Tier][Die]."
+   },
+   {
+    "name": "Death Ward",
+    "reason": "NEAR-DEAD TEXT in half the talent. 'If the target is unwilling, test Black vs. Spiritual' gates a purely beneficial effect behind a contested roll. There is exactly one legitimate use (warding an enemy you need alive), so the branch is not literally inert, but no ordinary combatant has reason to resist and no rule turns the ward into a drawback. The rest is the tree's strongest defensive effect and beats leyline/White's Unbreakable Line outright on cost, range, action type and rider; this is an authoring flaw, not a power problem."
+   },
+   {
+    "name": "Bone Garden",
+    "reason": "SELF-DEFEATING, and it competes for the wrong resource. The talent makes its own square difficult terrain, the strongest possible reason for an enemy NOT to end its turn there — and ending a turn there is the only way the damage fires. It also spends a Harvested Remain, the same currency as Risen Servant, from a scene-start stock of exactly ONE. Not a never-pick (scene-long area denial on a chokepoint is real, and it is the tree's only green.rank scaling) but the weakest use of a Remain."
+   }
+  ]
+ },
+ "corrections": [
+  {
+   "field": "uniqueOwnership[3] — 'The only persistent per-turn damage aimed at an ENEMY'",
+   "from": "Consuming Decay is the atlas's sole scene-long start-of-turn damage tick against a target; the other ongoing-tick talents (Life's Primal Regeneration and Apex Form, Knowledge's Accumulate) are regeneration or resource gain.",
+   "to": "NOT unique. Afflicted[X] is ongoing damage by the primer's own definition, and two leyline talents inflict it on enemies. The defensible claim is narrower: Consuming Decay is the atlas's only explicitly SCENE-duration, no-test, no-save tick, and the only one that leeches half its damage back.",
+   "reason": "FALSE against the data. Grepped every talent for 'Afflicted': leyline/Black Dark Investiture reads 'the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital]' — same die, same damage type, 1 Investiture instead of 2 — and leyline/Red Afterburn reads 'inflict Afflicted[half [Tier][Die] energy] on the target'. Consuming Decay's own tag list contains 'afflicted' and the profile's own damageAccounting note calls it 'Afflicted in all but name', so the profile contradicted itself. This also demotes topThree entry #2, which is annotated accordingly."
+  },
+  {
+   "field": "uniqueOwnership[4] — 'The only Investiture economy keyed to DEATH'",
+   "from": "every other generator in the atlas (Predatory Patience, Flashpoint, Void Sense, Prognosis, Accumulate, Expose) is paid for by the owner doing something.",
+   "to": "Two of the six also fire on someone else's work — Life's Prognosis ('when a Diagnosed creature takes damage from ANY SOURCE') and Chaos's Void Sense ('takes damage from any source'). What IS unique: Reaper's Harvest needs no prior mark, no attack, no test and no action, and it is the only generator with no 'once per round' limiter.",
+   "reason": "Read the full text of all seven Investiture generators. The six names the profile listed are exactly right and all exist, but the generalisation about them is wrong for two of them. The uncapped/no-limiter point is the one that actually survives verification (Flashpoint, Void Sense and Prognosis all carry 'once per round'; Reaper's Harvest carries nothing)."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction — setup cost",
+   "from": "roughly 3 Actions and 6 Investiture of one-time setup",
+   "reason": "Arithmetic error in both numbers, and they are not a consistent pair. Adding the four persistent sources from the dossier's own cost lines: Bone Garden 1 Action/1 Inv + Consuming Decay 2 Actions/2 Inv + Necrotic Cascade 1 Action/1 Inv + Risen Servant 1 Action/1 Inv = 5 Actions and 5 Investiture. The '6 Investiture' figure only reaches 6 by including Withering Touch's 1, which is not setup, and the '3 Actions' figure is short by two whichever way it is counted. 5 Actions is nearly two full Slow turns, which materially changes the ramp story.",
+   "to": "5 Actions and 5 Investiture of one-time setup, plus 2 Harvested Remains — nearly two entire Slow turns."
+  },
+  {
+   "field": "damageAccounting.repeatability — the ramp, and the missing Remain constraint",
+   "from": "The binding constraint is the RAMP — about 6 Investiture and 3 Actions to deploy, against a pool of ~4 at L1 — not the sustain.",
+   "to": "TWO constraints: 5 Actions / 5 Investiture, AND Harvested Remains — 'You begin each scene with 1 Harvested Remain', cap = tier, so at scene start you hold exactly ONE and can fund exactly ONE of Bone Garden / Risen Servant / Speak with the Fallen before anything has died.",
+   "reason": "The profile modelled the ramp purely as an Investiture problem and never applied Reaper's Harvest's own text. The scene-start stock is ONE Remain regardless of tier, and two of the four persistent damage sources each cost a Remain, so corpses — not Investiture — are the true round-1 rate limiter. This also makes the single-enemy hole worse than the profile stated, and that is reflected in gaps and sustainability."
+  },
+  {
+   "field": "axes.damage_scaling.evidence",
+   "from": "all five sources upgrade twice at L6 (tier 1->2 AND die d6->d8 = 1d6 -> 2d8)",
+   "to": "the tier bump is automatic at L6, but the die bump is BOUGHT: the tree gates only at 'Black 2+; Green 2+', so an L6 character still at rank 2 rolls 2d6, and 2d8 on all five sources requires Black 3 AND, separately, Green 3.",
+   "reason": "Conflates the level gate with the rank gate. Per SYSTEM-PRIMER, L6 raises the rank CAP from 2 to 3 and raises Tier to 2; it does not grant ranks. Death's entries demand only 2+, so nothing in this tree forces rank 3, and Bone Garden keys off green.rank while the other three formulas key off black.rank — two separate purchases. Score left at 4."
+  },
+  {
+   "field": "axes.control.score",
+   "from": "2",
+   "to": "1",
+   "reason": "Double-counting. The entire basis is Bone Garden's difficult terrain (already the whole of terrain_zone), Withering Touch's heal-denial (already the whole of debuff), and Raise Dead's Disoriented applied to the character you just revived — your own side. Reading all nine texts: nothing Stuns, Restrains, Immobilizes, Slows, Frightens, forces a target choice, or removes an enemy Action or Reaction. That is the rubric's 1, 'one incidental talent, or a rider on something else'."
+  },
+  {
+   "field": "axes.terrain_zone.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Necrotic Cascade places nothing. Its text is 'For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage' — a standing trigger rule whose 10 ft area exists only at the instant of a death, already scored under damage_direct. That leaves Bone Garden as the tree's only placed persistent feature, 1 of the atlas's 10 difficult-terrain talents against Green's six-talent cluster engine. The rubric's 3 requires several talents."
+  },
+  {
+   "field": "axes.protection.score",
+   "from": "3",
+   "to": "2",
+   "reason": "One talent. Death Ward is genuinely strong and sits at the top of the 2 band — clearly above the calibration anchor's 'one Reaction that reduces damage once per round' — but the rubric's 3 requires 'several talents, at least one good one', and reading all nine texts there is no damage reduction, resistance, Deflect bonus, interception, redirection or shield anywhere in the tree, and 0 Reactions. The profile's own evidence string conceded 'it is ONE protective talent' while scoring 3."
+  },
+  {
+   "field": "axes.information.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Two talents, and the second is thin. Speak with the Fallen is verified-unique and genuinely good, but Reaper's Harvest's 'You sense each of your active Remains through any obstruction' locates corpses you personally marked — it discovers nothing. The profile's own evidence conceded 'No enemy-intent reading, no scouting, no foreknowledge', which is the description of a 2, not a competency."
+  },
+  {
+   "field": "axes.summons.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Raise Dead was miscounted as a summon. Its text returns 'the remains of a character that died within the last hour' to life — it revives an existing character, it does not create a servant. That leaves Risen Servant as the tree's only summon talent, with an avg 3.5 HP body at Tier 1 and defenses minus 3, against Civilization's six-talent construct subsystem. Not 1 because it is multi-instance and Death is the atlas's second summoner."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "6",
+   "to": "4",
+   "reason": "Definitional inflation. The dossier defines trigger-gated as 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'. Under that definition the count is 4: Reaper's Harvest, Necrotic Cascade (both 'when a character drops to 0 HP'), Bone Garden ('a character that ends its turn in the square') and Death Ward (payoff fires when the warded target would drop to 0). Speak with the Fallen and Raise Dead are gated on a PREREQUISITE (remains of a given age), not on another character's action; Consuming Decay is gated on target STATE at application. The deterministic action-type table caps deity trees at 3, confirming 6 is out of range. The broader 'conditional in some way' count of 6 is preserved in the note."
+  },
+  {
+   "field": "axes.resource_economy.evidence — the cost list",
+   "from": "a tree whose eight non-Passive talents cost 1/1/2/2/2/1/4",
+   "to": "1/1/1/1/2/2/2/4 = 14",
+   "reason": "The profile listed only SEVEN costs for eight talents, summing to 13, dropping one of the 1-Investiture entries — and its own mechanicalKeywords entry gave the correct '8 of 9 … 14 Investiture'. Recounted from the dossier: Withering Touch 1, Bone Garden 1, Necrotic Cascade 1, Risen Servant 1, Consuming Decay 2, Death Ward 2, Speak with the Fallen 2, Raise Dead 4."
+  },
+  {
+   "field": "intentDrift.claims — description-length claim",
+   "from": "lists eight talents (Withering Touch 30, Bone Garden 40, Consuming Decay 48, Speak with the Fallen 48, Raise Dead 57, Reaper's Harvest 61, Death Ward 61, Risen Servant 71)",
+   "to": "all nine, adding Necrotic Cascade at 28 words (in band) and correcting Speak with the Fallen to 47",
+   "reason": "Recounted every description by hand. Eight of nine were within a word of the profile's figures — this claim survives essentially intact — but Necrotic Cascade was silently omitted from a claim asserted over the whole tree, and Speak with the Fallen is 47, not 48."
+  },
+  {
+   "field": "damageAccounting.damageTalents[4].dice + weakTalents 'Risen Servant' + gaps",
+   "from": "[Tier][Die] KEEN per servant per turn (no authored formula — summon-delivered damage; 1d6 -> 2d8)",
+   "to": "same, flagged: the data names NO colour for the die and gives the servant NO attack bonus, so neither its HP nor its damage is resolvable without a ruling",
+   "reason": "Text-vs-claim. Risen Servant carries no ROLL FORMULA line in the dossier and its prose says only '[Tier][Die]' with no skill named, while every other damage talent in the tree pins its die to black.rank or green.rank explicitly. The profile assumed 1d6 -> 2d8 without flagging that this is an assumption. The same gap applies to Attunement Range in a two-colour tree, added to gaps."
+  },
+  {
+   "field": "weakTalents 'Death Ward'",
+   "from": "the entire unwilling-target branch is mechanically inert",
+   "to": "near-dead text: there is one legitimate use (warding an enemy you need alive — a prisoner, a hostage, an NPC who must not die), so the branch is not literally inert, though no ordinary combatant has reason to resist",
+   "reason": "Overstated. The authoring criticism is correct and worth keeping, but 'mechanically inert' is falsified by the obvious keep-this-one-alive case, which is exactly why an unwilling-target clause was written."
+  },
+  {
+   "field": "crossTreeHooks — new entry",
+   "from": "(absent)",
+   "to": "REDUNDANCY WITH ITS OWN GATE COLOUR: leyline/Black Dark Investiture deals [Tier][Die] vital immediately AND applies Afflicted[[Tier][Die] vital] for 1 Investiture and one fewer Action, from a tree this character must already be ranked Black 2+ in.",
+   "reason": "Found while refuting the Consuming Decay uniqueness claim. A Death character necessarily has Black 2+, so this is not a hypothetical cross-tree comparison — it is a talent the same PC can reach, at half the Investiture, that overlaps Consuming Decay's headline effect. It is the single most consequential balance fact the profile missed, and it belongs in the synergy map."
+  },
+  {
+   "field": "crossTreeHooks — Black Draw Mana rider distance",
+   "from": "Draw Mana Weakens enemies in range with no ally within 5 ft",
+   "to": "same, with the doc drift recorded: SYSTEM-PRIMER says 'no ally within 5 ft', the leyline guide's Black identity says 'no allied creature within 10 ft'",
+   "reason": "The profile followed the primer, which is the right call, but the hook's usability turns entirely on the radius and the two sources disagree. Recording rather than resolving, per the primer's own convention."
+  },
+  {
+   "field": "axes.healing.evidence",
+   "from": "(no boundary note)",
+   "to": "adds an axis-boundary note: this axis's definition literally includes restoring Investiture, which would pull Reaper's Harvest in; it is kept under resource_economy to avoid double-counting",
+   "reason": "Not an error in the profile, but the axis definitions overlap and the profile scored silently. Making the choice explicit so a reader cannot read healing 2 as evidence that Investiture regeneration was overlooked. Score unchanged."
+  },
+  {
+   "field": "CHECKED AND LEFT UNCHANGED",
+   "from": "—",
+   "to": "countReal 5; countFalsePositiveMitigation 1; earliestDamageDepth 0 / earliestDamageLevel 1; all five damage talents' depth and earliestLevel values; the four roll formulas and their rank arithmetic (2*rank+2 gives d6 at rank 2, d8 at rank 3; 1d6 at Tier 1, 2d8 at Tier 2 rank 3); every Cost field; the action-type recount (Passive 1 / 1-Action 4 / 2-Action 3 / 3-Action 1 = 11/44/33/11%); the 14-Investiture total; powerByDepth's band membership (2 / 6 / 1); the heal-denial, resurrection and corpse-interrogation uniqueness claims; the drop-to-0 cluster density; zero advantage in the tree; the Black:3 / Green:1 die-sizing split and the single Black-vs-Spiritual test; Consuming Decay's leech arithmetic (1.75 at 1d6, 4.5 at 2d8); Risen Servant HP averages (3.5 / 9); Draw Mana at 1 Inv/Action at Tier 1.",
+   "reason": "All verified against the dossier text, the roll formulas, and greps over data/leyline.json, data/domain.json and data/cosmere.json. Four uniqueness claims were checked by grep and three survived exactly as written; the fourth and fifth are corrected above. The intentDrift verdict DELIVERS stands."
+  },
+  {
+   "field": "axes[buff].score",
+   "from": "1",
+   "to": "0",
+   "reason": "Double-counted Death Ward. The protection axis definition explicitly enumerates 'temp HP' as protection, and Death Ward is already the entire protection score. The buff axis is 'allied bonuses, rerolls, advantage-likes, granting bonuses to rolls' — a scan of all nine Death talent texts returns ZERO occurrences of 'advantage', 'Opportunity', 'focus' or 'plot die', no rerolls, no numeric bonus to any ally roll, and no condition removal. The tree does not do this at all."
+  },
+  {
+   "field": "axes[action_economy].score",
+   "from": "3",
+   "to": "2",
+   "reason": "An atlas-wide sweep for granted/free/extra/additional actions, reactions and strikes returns Fate 4, Warrior 3, Civilization 3, Knowledge 3, Blue 2, Envoy 2, Hunter 2, Scholar 2, and 1 each in Leader, Order, Destruction, Power, Sovereignty — and Death ZERO. Death grants no ally an action (Order's Concord and Fate's Foreknown Strike do), no extra reaction (Envoy's Foresight: 'Gain an additional reaction each turn'), no free Strike (Civilization's Arsenal). Its only claim is Risen Servant, a strictly weaker copy of Civilization's Forge Construct. The old 3 also counted 'one Action becomes a scene-long free source', which is repeatability — already the whole of damage_scaling 4 — not action economy as this axis defines it."
+  },
+  {
+   "field": "axes[summons].evidence",
+   "from": "'Death is the atlas's second summoner'",
+   "to": "Death is THIRD; heroic/Hunter runs a four-talent animal-companion line",
+   "reason": "all-talents.json: heroic/Hunter carries Animal Bond ('use a Free Action to give your companion one or two Actions on your turn'), Protective Bond, Feral Connection ('your animal companion's health increases by 5 x your tier, and their defenses increase by 2') and Hunter's Edge. Civilization has six Construct talents, Hunter four companion talents, Death one. Score unchanged at 2."
+  },
+  {
+   "field": "axes[resource_economy].evidence + uniqueOwnership + topThree[0]",
+   "from": "'the six other Investiture generators in the atlas (Predatory Patience, Flashpoint, Void Sense, Prognosis, Accumulate, Expose)' and 'the only one with no once-per-round limiter'",
+   "to": "NINE generators atlas-wide, and Reaper's Harvest is one of four with no round limiter",
+   "reason": "The census list was incomplete: leyline/Black Predator's Due ('When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture') and leyline/Black Sanguine Reservoir ('store the lost amount as Reserve ... you may spend Reserve as Investiture') were both missed, giving nine, which matches the deterministic census ('Investiture 9 talents / 7 trees'). Predator's Due also needs no mark, no test and no action, and Predatory Patience, Predator's Due and Sovereignty's Expose all lack a once-per-round limiter. What survives: Reaper's Harvest is the only generator needing no prior mark AND no attack/kill/action of your own, and the earliest of the nine (depth 0/L1 vs depth 1/L2). Score unchanged at 3."
+  },
+  {
+   "field": "uniqueOwnership (death-triggered AoE chain)",
+   "from": "listed as an ownership item with no qualifier",
+   "to": "one of TWO, and the stronger",
+   "reason": "leyline/Red Chain Detonation: 'When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.' Same shape as Necrotic Cascade. Death's is better on every term (full die not half, spirit not energy, 10 ft not 5, any character's death not only your own kills, depth 2/L3 not depth 5/L6) — but it is not sole ownership. deity/Destruction's Combustion Chain fires on the same trigger."
+  },
+  {
+   "field": "uniqueOwnership (drop-to-0 cluster)",
+   "from": "'Death 3, Knowledge 2, and exactly 1 each in Bulwark, Illusion, Civilization, Destruction, Fate and Champion'",
+   "to": "Death 3; Civilization / Power / Knowledge 2 each; 1 each in White, Black, Red, Destruction, Fate",
+   "reason": "Recount across all 365 talents. The old list named leyline SPECIALTIES (Bulwark, Illusion, Champion) as if they were trees, omitted deity/Power entirely (Warlord's Advance, Warlord's Fury), and undercounted Civilization (Bonds of Community, Arsenal). No Illusion or Champion talent carries the trigger. Death still leads, so the headline claim survives."
+  },
+  {
+   "field": "uniqueOwnership (Harvested Remain spine)",
+   "from": "'the cleanest homebrew-resource spine in the deity set'",
+   "to": "one of the two or three cleanest",
+   "reason": "deity/Civilization's Combat Construct is generated by one entry (Forge Construct) and consumed or upgraded by FIVE of the remaining eight talents (Tempered Edge, Siege Form, Arsenal, Bastion, Magnum Opus), all unconditional — tighter than Death's four-of-eight with two conditional spenders ('or touch any remains'; 'if one represents the target')."
+  },
+  {
+   "field": "crossTreeHooks (Dark Investiture comparison) + damageAccounting note + topThree[1]",
+   "from": "'for half the Investiture and one fewer Action'",
+   "to": "the SAME 2-Action cost, at half the Investiture, plus an HP cost and a required test",
+   "reason": "all-talents.json and leyline-Black.md line 138: Dark Investiture is '2 Actions | cost: 1 Investiture + Lose HP = Tier', and its text requires a successful 'test Black vs. Spiritual'. Consuming Decay is also 2 Actions and has no test. The action-count claim was simply wrong, and it was load-bearing for the redundancy argument."
+  },
+  {
+   "field": "axes[damage_scaling].evidence",
+   "from": "'the DIE bump (d6->d8) is BOUGHT, not granted' presented as a Death-specific reason to hold the score down",
+   "to": "reframed: that is system-wide; the Death-specific version is the two-colour die split",
+   "reason": "Every [Tier][Die] formula in all 21 trees keys off a skill rank, so it cannot discriminate Death. The real Death-specific cost is that black.rank sizes three formulas and green.rank sizes Bone Garden, so 2d8 everywhere costs six ranks — but the gate audit shows Chaos (blue:3/black:2) and Destruction (red:5/blue:1) carry the same split, so it is a deity tax, not a Death penalty. Score unchanged at 4."
+  },
+  {
+   "field": "axes[protection].evidence",
+   "from": "no cross-tree comparison",
+   "to": "added leyline/White Unbreakable Line as the only comparator, which Death Ward beats outright",
+   "reason": "'Once per round, when an ally adjacent to you would drop to 0 health, spend 3 Investiture and test White with a DC equal to 1/2 of the damage taken. On a success, they drop to 1 health instead.' Death Ward is cheaper, pre-cast, any character in Attunement Range, no test scaling with damage, and adds temp HP — so it is plausibly the best death-negation in the game. Score held at 2 because it is still one talent, but the evidence now supports 'top of the band' with a named comparator instead of an anchor argument."
+  },
+  {
+   "field": "axes[information].evidence",
+   "from": "Reaper's Harvest's through-obstruction sensing presented as a Death rider",
+   "to": "noted that deity/Chaos's Void Sense is the same primitive pointed at living enemies",
+   "reason": "Void Sense: 'You sense the location of every enemy bearing your Omen through any obstruction.' Death senses its own corpses; Chaos senses enemies. The sensing rider adds almost nothing distinctive. Score unchanged at 2."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "no cross-tree formula comparison",
+   "to": "added the recount: Destruction 6, Chaos 5, Order/Red/Death 4, Black/Fate/Power/Knowledge 3",
+   "reason": "A 4 on this axis needs defending against other trees. Death is mid-pack on formula count but top of the atlas on persistence (4 of 5 sources free-repeat every round) and joint-top on Deflect-ignoring share (2 of 5). Score held at 4, now with the comparison that justifies it."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "no cross-tree duplicate-promise check",
+   "to": "added the deity/Power duplicate-promise finding",
+   "reason": "Lens requirement (d). Power's path description promises the same loop — 'they grow with every enemy laid low ... feeds on the kill', signature resource 'Bounty — a tally of the fallen; each enemy slain within your range adds one' — but the measurement records Bounty ABSENT, and Warlord's Fury counts characters reduced BELOW HALF HP, not the slain. The promise is made twice and honoured once, by Death."
+  },
+  {
+   "field": "intentDrift.actuallyIs",
+   "from": "no 'something' test",
+   "to": "added the something test and its answer",
+   "reason": "Lens requirement (e). Death's something — 'deaths in my range are my fuel, turned into free damage that never stops' — is not done better anywhere. But the adjacent competency IS beaten: for a persistent thing dealing free damage every round, Civilization's Construct has better HP, deflect and defenses and five upgrade talents, where Risen Servant stands alone. Death owns the trigger; Civilization owns the engine."
+  },
+  {
+   "field": "intentDrift.claims (action-type drift)",
+   "from": "'No Specials ... which is why the action economy is spend-a-whole-Action-or-do-nothing'",
+   "to": "qualified: the zero-Special part is atlas-wide across all ten deity trees; the Death-specific part is zero Free Actions AND zero Reactions on top",
+   "reason": "The deterministic action-type table states 'DEITY TREES HAVE ZERO SPECIAL-ACTION TALENTS — all ten of them', so charging that to Death alone is a non-finding. The Free+Reaction double zero is the discriminating fact, corroborated by the action-grant sweep returning zero for Death."
+  },
+  {
+   "field": "gaps",
+   "from": "13 items",
+   "to": "14 items — added 'No support for its own summon'",
+   "reason": "Comparative gap the profile missed: nothing in Death upgrades, repairs, heals, commands or protects Risen Servant, against five such talents for Civilization's Construct and three for Hunter's companion. The summon is a one-off, not a subsystem."
+  },
+  {
+   "field": "uniqueOwnership (Consuming Decay / Afflicted)",
+   "from": "two Afflicted sources named",
+   "to": "three",
+   "reason": "deity/Life Adaptive Mutation's Venom Glands option — 'melee hits inflict Afflicted [half [Tier][Die] Vital]' — is a third source of the real condition, granted to an ally. Also added the verified positive: Consuming Decay is the atlas's only scene-duration, no-test, no-save per-turn tick aimed at an enemy (Life's Primal Regeneration and Apex Form are the same shape as ally healing)."
+  },
+  {
+   "field": "NO CHANGE — verified and left standing",
+   "from": "the three sole-ownership claims, the damage accounting, the word counts, the trigger-gated count of 4",
+   "to": "unchanged",
+   "reason": "Re-derived independently: 'returns to life / resurrect / back to life' across 365 talents returns only Raise Dead; question/interrogate/'answers truthfully' returns only Speak with the Fallen; four heal-denial phrasings return only Withering Touch. The nine word counts (61/30/48/40/61/28/71/48/57) match the talent data exactly. The 10 difficult-terrain talents (Green 6, Hunter/Warrior/Civilization/Death 1 each) and 14 temp-HP talents match. Scores for control 1, debuff 1, healing 2, mobility 0, terrain_zone 2, social_influence 0, exploration_utility 3 survive comparative checking unchanged."
+  }
+ ]
+}

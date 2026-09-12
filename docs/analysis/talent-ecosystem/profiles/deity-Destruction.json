@@ -1,0 +1,645 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Destruction",
+ "correctionCount": 33,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Destruction",
+  "oneLineIdentity": "A nine-talent persistent-hazard and area-damage engine: it places no-roll, no-save 10 ft energy detonations on a timer the player controls and paints the map with damaging terrain that spreads, merges and eventually upgrades its own dice — carrying the highest damage-formula count of any tree in the 365 and the most RELIABLE damage in the game (almost nothing in it can miss or be saved against), against a flat [Tier][Die] ceiling, the weakest damage types in the system, a two-talent Prone rider as its only control channel, and no healing, protection, information, social, ally-facing or resource-generating capability whatsoever.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 5,
+    "evidence": "6 of 9 talents carry a machine-readable damage formula — the HIGHEST absolute count of any tree in all 365 talents (re-verified by scanning all-talents.json: Destruction 6, Chaos 5, leyline/Red 4, Order 4, Death 4, Black 3, Fate 3, Power 3, Knowledge 3, everything else fewer) and by far the highest density (6/9 vs. Red's 4/25). Both entries deal damage at L1. THE REAL DIFFERENTIATOR, which the prior evidence buried: Destruction's damage is the most RELIABLE in the game. Set Charge's detonation ('each character within 10 ft takes [Tier][Die] energy damage') has no attack roll and no test; Fault Line's damage is likewise automatic, with the Speed vs. Red test governing only the Prone rider; Cascading Failure and The Unmooring both auto-apply. Compare every other damage deity tree, which gates its payload behind a test: Chaos ('test Blue vs. Cognitive. On success...'), Knowledge ('test Red vs. Physical. On success...'), Power ('Test Black vs. Cognitive'). Only Pyre in the whole tree can miss. Add the formula-invisible layer: 6 of 9 talents CREATE dangerous terrain (Pyre, Set Charge, Pinpoint Charge, Walking Ruin, Combustion Chain, Fault Line), which deals energy damage equal to your tier to characters entering or starting a turn in it (cosmere-canon-reference SKILL.md, 'Dangerous terrain — Destruction-flavored', verified verbatim). Damage is not one facet of this tree; it is the whole tree. Held at 5 on frequency, area, earliness and reliability — NOT on magnitude, which is scored under damage_scaling."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "LOWERED FROM 4. Repeatability is genuinely excellent — Set Charge is 1 Action to place plus a Free Action to detonate, so it delivers an area [Tier][Die] every single round with an Action to spare, and the terrain ticks for free thereafter — and that half of the axis is worth a 4. But the SCALING half is bare baseline and the prior score did not test it comparatively. Every payload in the tree is exactly [Tier][Die] (+INT on two, +STR on one): there is no multiplier, no stack, no escalator anywhere. What real damage scaling looks like in this game: Knowledge's Killing Blow and The Final Study deal '[Tier][Die] Vital damage PER INSIGHT' (a multiplicative stack); Power's Warlord's Fury adds 'damage equal to the number of characters you have reduced below half their maximum HP during this scene'; Sovereignty's whole tree ladders the damage DIE SIZE (7 talents). Destruction has none of that. Second dock: every one of the six formulas is a Deflect-REDUCED type (5 energy, 1 keen — primer: 'Impact, Keen, Energy — reduced by Deflect'; 'Vital, Spirit — ignore Deflect entirely. Materially stronger per die'), while Chaos, Death and Knowledge deal spirit/vital across their whole damage suites; only two clauses here (Pinpoint Charge, The Unmooring) bypass deflect. Third dock: the tree's one genuine escalator, the 'up to your tier Charges' cap, is INERT for the whole of levels 1-5 (Tier 1 = one Charge), exactly the range in which its two chaining talents first become takeable. Fourth: the base terrain tick is FLAT tier — 1 damage at Tier 1 — which does not scale with rank at all until the capstone converts it to [Tier][Die]."
+   },
+   {
+    "axis": "control",
+    "score": 2,
+    "evidence": "LOWERED FROM 3, on canon text the prior read quoted but did not finish. Two Prone appliers, both AREA and both free once owned: Concussive Yield ('each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone') and Fault Line (the same save across a 60 ft line). The prior profile correctly noted Prone carries Slowed — but the SAME canon line ends 'stand up as free action (movement reduced by 5 until start of next turn)' (cosmere-canon-reference, Conditions, SR). So the halved movement and the melee-advantage window both expire on the target's own turn for the cost of a free action and 5 ft. That is not movement suppression; it is a one-turn inconvenience. Comparative calibration across all 21 trees (condition-applier census over all-talents.json): Destruction applies exactly 2 conditions and both are the same one, Prone — the mildest on the list and the only one that denies nothing. Fate applies Restrained + Disoriented from the same number of talents; Power applies Compelled + Weakened; Order applies Disoriented + Weakened; Black applies Weakened from six. The primer is explicit that 'action denial (Stunned, Disoriented, Restrained) is the most valuable category in a 3-action economy' — Destruction has ZERO action or reaction denial. Scene-long dangerous terrain is real soft area denial, but it is already scored at 5 under terrain_zone and must not be counted twice. Rubric: '2 = present but minor; you would not pick this tree for it' — you would pick Fate, Power or Black."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "LOWERED FROM 2, to stop one condition being banked three times. The tree has no numeric penalty, no defence reduction, and no talent anywhere that names disadvantage (0 hits in a full-text scan). Its entire debuff substance is that Prone gives melee attackers advantage against the target — the same clause already credited under control, applied by the same two talents (Concussive Yield, Fault Line), on a save-negates that the target clears with a free action on its own turn. Advantage is BINARY (primer): if any ally already has an advantage source on that attack, Prone's contribution is worth literally zero, and the system over-produces advantage (45 talents / 13 trees). Compare a real debuff tree: leyline/Blue carries 5 impose-disadvantage talents. Rubric '1 = one incidental talent, or a rider on something else' fits. Pinpoint Charge and The Unmooring bypass deflect rather than lowering it, which helps only the user and is not scored here."
+   },
+   {
+    "axis": "protection",
+    "score": 0,
+    "evidence": "Read all 9 talents: no damage reduction, no shield, no temp HP, no resistance, no interception, no redirection. The single Reaction in the tree (Combustion Chain) is offensive. The tree in fact damages its own party — Set Charge, Fault Line, Cascading Failure and The Unmooring all say 'each character', not 'each enemy', and Walking Ruin's trail sits on the ground allies must cross."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Zero heal formulas in the machine-readable count (6 damage, 0 heal — re-verified across all 365) and no talent text restores Health, Focus or Investiture to anyone. Contrast deity/Life (5 heal formulas) and heroic/Scholar (3)."
+   },
+   {
+    "axis": "buff",
+    "score": 0,
+    "evidence": "RETURNED TO 0 (the prior pass raised it to 1 on the Prone melee-advantage clause). Facts, all verified: zero Destruction talents appear in advantage-ledger.md; no talent grants a reroll, a bonus to any roll, temp HP, or a defence bonus; and NO TALENT IN THE TREE TARGETS AN ALLY AT ALL — every one resolves against squares, objects, or 'each character'. The one thing the prior pass credited — allies gaining advantage on melee attacks against a Prone target — is a vulnerability ON THE TARGET, and is booked once, under debuff. Scoring the identical clause under control, debuff AND buff is triple-counting a single free-action-clearable condition. The only stat increase in the tree is Walking Ruin's self +10 ft Speed, scored under mobility. Rubric: '0 = the tree does not do this at all' is literally true for ally-facing effects."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "Set Charge grants a genuinely new free action nobody else has on their own entry — 'You may detonate any of your Charges as a Free Action on your turn' — which converts a 1-Action placement into a same-turn area attack that can also be deferred to a chosen moment, and Pinpoint Charge is a Free Action upgrade rider costing no action at all. Held at 2, not raised: nothing grants an extra Action, an extra Reaction, or acting out of turn; the free action exists only to spend a resource this tree itself created, so it is closer to the second half of Set Charge's own effect than to real action economy; and Cascading Failure actually spends 2 Actions to do what the Free Action already does for nothing. Comparative floor: heroic/Agent carries four Free-Action talents and Fate's Foreknown Strike hands an ALLY a Free Action, which is a strictly larger grant than anything here."
+   },
+   {
+    "axis": "mobility",
+    "score": 1,
+    "evidence": "One talent: Walking Ruin (+10 ft Speed, plus terrain painted along your path). No teleport, no repositioning of self or others, no disengage effect, nothing that moves an ally. Contrast Power's Unstoppable Advance, which grants move-through-enemies plus immunity to Slowed/Immobilized/Prone."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 5,
+    "evidence": "This is the tree, and 5 survives the comparative test. It is the sole PRODUCER of the 'dangerous terrain' keyword in all 365 talents. CORRECTED ARITHMETIC (the prior evidence said '6 creators plus 3 Surefooted' and then called that 11): the keyword's 11 hits across 4 trees are EIGHT Destruction talents plus the three identical copies of Surefooted (Agent/Hunter/Warrior), which MITIGATE dangerous-terrain damage rather than create it. Of the eight, six create (Pyre — 9 squares on a hit, then self-spreading; Set Charge; Pinpoint Charge; Walking Ruin; Combustion Chain; Fault Line) and two manipulate (Cascading Failure merges zones into one contiguous hazard; The Unmooring merges every zone placed all scene AND raises its tick from flat tier to [Tier][Die]). Only Concussive Yield never touches terrain. Post-placement manipulation is the real signature: spreading (Combustion Chain spreads EVERY zone you own 5 ft outward on a kill and adds a 10 ft radius; Pyre creeps one flammable square per turn), merging, mid-scene die upgrade, and one zone that re-centres on and then FOLLOWS a surviving target (Pinpoint Charge). Comparative refutations, re-verified: Death's Bone Garden ([Tier][Die] keen on turn-end), Civilization's Bastion ([Tier][Die] impact on entry, for the scene) and Green's Thorn Field (half [Tier][Die] keen on entry OR turn-start) are all damaging zones with a LARGER per-tick than Destruction's flat tier; Fate's Read the Threads relocates a placed Ordained Ground or Snare up to 10 ft as a Free Action, and Bastion upgrades already-placed Foundations mid-scene, so 'nobody else touches a zone after placement' is false. Held at 5 on volume (8 of 9 talents), persistence (every effect is 'for the scene'), and the spread/merge/upgrade suite, which nothing else in the game has. The nearest rival engine is leyline/Green (Attunement rider + Thorn Field + Spreading Roots + Sudden Growth + Pack Sense + Apex Predator), which would also score high — Destruction wins on density and on the capstone upgrade, not on tick size."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Looked at all 9: no detection, scouting, prediction, intent-reading or hidden-fact talent. Set Charge's declared trigger is pre-commitment, not foreknowledge — contrast Fate's Read the Threads ('You learn the action it intends to take on its next turn and any movement it plans to make'), which is what an information talent looks like."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "No persuasion, command, deception, reputation or interpersonal effect anywhere in the tree. Every talent resolves against squares, objects and hit points."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "Real but narrow demolition utility, from three distinct clauses: Fault Line's 'structures and Constructs along the line take triple damage' is the ONLY 'triple damage' clause in all 365 talents (re-verified by full-text scan for triple/double/twice-the damage — one hit, this one) and is a literal siege/breaching tool; Set Charge places a delayed explosive on an OBJECT with a player-declared trigger, which is a heist/sabotage instrument out of combat; Pyre's fire spreads through flammable squares under GM adjudication. Nothing for travel, crafting, survival, downtime or social problem-solving, so it does not reach 3."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companion, construct, minion or animated ally. A Charge is an inert marker with no HP, no turn and no actions — a resource token, not an entity. Contrast Civilization's Combat Construct and Death's Risen Servant, which have HP, Speed and defenses."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "The tree generates nothing on this axis. It is a pure sink: 6 of 9 talents consume Investiture (Pyre 1, Set Charge 1, Pinpoint Charge +1, Cascading Failure 2, Fault Line 2, The Unmooring 3 — verified against every Cost field) and no talent returns Investiture, Focus or Opportunity, matching resource-economy.js exactly (Destruction 0 regen / 6 costers). DEFLATION CHECK RUN AND CLEARED: Charge is a self-minted token, not one of the three currencies this axis names, and it is spent only inside the tree; there is no hidden rider anywhere returning a resource. Contrast Death's Reaper's Harvest ('you recover 1 Investiture') and leyline/Red's Flashpoint ('regain 1 Investiture') — Destruction has no equivalent and depends entirely on Draw Mana from its two gate colours."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Pyre",
+     "dice": "[Tier][Die] energy — (@tier)d(2 * @skills.red.rank + 2); 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3",
+     "action": "1 Action, 1 Investiture",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "CONDITIONAL: requires a successful ranged attack (60 ft) — the ONLY talent in the tree that can miss. On a hit it also converts the target's space AND each adjacent 5 ft square (9 squares) into dangerous terrain for the scene, which then spreads one flammable square per turn on its own."
+    },
+    {
+     "name": "Set Charge",
+     "dice": "[Tier][Die] energy in a 10 ft radius — (@tier)d(2 * @skills.red.rank + 2)",
+     "action": "1 Action + 1 Investiture to place; detonation is a Free Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": false,
+     "note": "The most reliable damage in the tree and, on a full scan of the deity atlas, the only entry-talent payload that is neither an attack roll nor a test: no attack roll, no save, area. Only gates are placement within Attunement Range and the Charge cap ('up to your tier Charges' = ONE active Charge for the whole of levels 1-5). Leaves dangerous terrain at the detonation point for the scene."
+    },
+    {
+     "name": "Pinpoint Charge",
+     "dice": "+[Tier][Die] + Intellect keen, ignoring the primary target's deflect — (@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+     "action": "Free Action, +1 Investiture (rider on a Charge placement)",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "RIDER / AMPLIFIER, not a fresh source: only fires if a Charge is placed on a character or object and then detonates, and it costs a second Investiture on top of Set Charge's — doubling the price of the tree's engine. Scales off Blue rank, the only formula in the tree that does. Its zone then follows a surviving target for the scene. Structurally the same shape as Fate's Inevitable Snare (Free Action, +1 Investiture upgrade declared at placement)."
+    },
+    {
+     "name": "Cascading Failure",
+     "dice": "+[Tier][Die] energy — (@tier)d(2 * @skills.red.rank + 2)",
+     "action": "2 Actions, 2 Investiture",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "AMPLIFIER ONLY, and structurally dead below level 6. It creates no damage of its own — the detonations are Set Charge's. Its whole payload is the bonus die on 'a character caught in two or more detonations', but the Charge cap is your tier, so at Tier 1 (levels 1-5) you can never have two Charges active and the clause literally cannot fire, despite the talent being takeable at L3. Even at Tier 2 it needs two 10 ft radii overlapping the same character. It also spends 2 Actions to do what Set Charge's Free Action detonation already does for free."
+    },
+    {
+     "name": "Fault Line",
+     "dice": "[Tier][Die] + Strength energy to every character in a 60 ft x 5 ft line — (@tier)d(2 * @skills.red.rank + 2) + @attr.str; TRIPLE damage to structures and Constructs",
+     "action": "2 Actions, 2 Investiture",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": false,
+     "note": "No attack roll on the damage; the Speed vs. Red test only governs the Prone rider. Highest reliable multi-target output in the tree and its best repeatable. Also creates a 60 ft strip of dangerous terrain. Hits allies in the line too."
+    },
+    {
+     "name": "The Unmooring",
+     "dice": "[Tier][Die] + Intellect energy per detonation, 15 ft radius each, ignoring deflect — (@tier)d(2 * @skills.red.rank + 2) + @attr.int; plus the merged zone's tick upgraded from flat tier to [Tier][Die]",
+     "action": "3 Actions, 3 Investiture, once per scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "CAPSTONE, once per scene, and its detonation clause is throttled by the same Charge cap — 'all your active Charges' is ONE Charge at Tier 1 and two at Tier 2. The real payload is the second clause: every dangerous-terrain zone placed all scene merges and starts ticking [Tier][Die] instead of flat tier, for the rest of the scene, at zero further action cost."
+    },
+    {
+     "name": "Combustion Chain",
+     "dice": "no roll formula — damage arrives only through the dangerous terrain it creates: energy equal to your tier per entry or turn-start across a new 10 ft radius plus 5 ft of spread on EVERY zone you own",
+     "action": "Reaction, no resource cost",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "FORMULA-INVISIBLE DAMAGE — a damage source with no damage expression, which a formula-only census misses entirely. Gated on the hardest trigger in the tree: a character must drop to 0 HP inside a zone you created."
+    },
+    {
+     "name": "Walking Ruin",
+     "dice": "no roll formula — damage arrives only through the dangerous terrain it creates: energy equal to your tier per entry or turn-start, along every space you move through, for the scene",
+     "action": "Passive, no resource cost",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "FORMULA-INVISIBLE DAMAGE. Free, permanent for the scene, and the shape of the hazard is your movement path — with +10 ft Speed to draw it faster. Contingent on enemies then occupying that path; the tree owns no forced movement to make them."
+    }
+   ],
+   "countReal": 8,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "SUSTAINED: about 1 [Tier][Die] energy per Action to every character in a 10 ft radius, every round, forever — Set Charge places for 1 Action / 1 Investiture and detonates as a Free Action, so at Tier 2 a whole 3-Action turn can be Draw Mana + two placements + Free-Action detonations (2 x 2d8 area, exactly Investiture-neutral because Draw Mana returns 2 and the Charge cap is 2). At Tier 1 the same loop lands one payload every round but eats two of three Actions (Draw Mana +1, place -1), leaving one Action spare. BEST REPEATABLE MULTI-TARGET: Fault Line, 2 Actions / 2 Investiture for [Tier][Die]+STR to every character in a 60 ft line plus an area Prone save, i.e. roughly 1 [Tier][Die] per Action per target hit, exactly self-funding at Tier 2. BURST CEILING: The Unmooring, after 2 Actions and 2 Investiture of Charge setup, 3 Actions and 3 Investiture for 2 x ([Tier][Die]+INT) deflect-ignoring in two 15 ft radii — about 0.4 [Tier][Die] per Action spent per target, roughly par with a normal Set Charge turn; the capstone is carried by its zone-upgrade clause, not its detonation clause. TRUE PEAK is action-free: after The Unmooring, one merged scene-long zone dealing [Tier][Die] energy to every character entering or starting its turn in it, at 0 Actions per round for the rest of the scene. CEILING CAVEAT ADDED ON REVIEW: none of these numbers exceed one [Tier][Die] per target per payload — the tree has no multiplier anywhere, so its per-target ceiling is permanently below Knowledge's Killing Blow ([Tier][Die] Vital PER INSIGHT) and Power's Warlord's Fury. Destruction buys breadth and reliability, never height.",
+   "repeatability": "High for the entries (Set Charge every round; Pyre every round at 1 Investiture), moderate for the 2-Investiture tier (every other round at Tier 1, every round at Tier 2 with a Draw Mana Action), once per scene for the capstone. The persistent-zone damage repeats every round for free and is the only damage in the tree that does not compete for Actions.",
+   "verdict": "A genuine, unambiguous damage tree — and on the strongest available measure the most damage-saturated tree in the entire 365: its 6 damage formulas are the highest absolute count of any tree in any atlas, in a tree of 9 talents rather than 25 (re-verified by a full per-tree formula count). 8 of 9 talents contribute to damage once formula-invisible persistent-zone ticks are counted (Concussive Yield is the sole exception, and it is a control rider). There is not one talent in the tree that only appears to be damage — 0 mitigation false positives; no talent mentions reducing damage at all, so the known 'deal half [Tier][Die] LESS damage' classifier failure mode cannot occur here. Its damage is broad and RELIABLE rather than tall: almost nothing in the tree can miss or be saved against, which is unique in the deity atlas — but all six formulas are Deflect-reduced types (5 energy, 1 keen) where Chaos, Death and Knowledge deal Deflect-ignoring vital/spirit, only two clauses bypass deflect, every payload is a flat [Tier][Die] with no multiplier, and much of the output is contingent on enemies staying in or crossing its zones. Against a single high-Deflect solo enemy that ignores terrain, this tree is materially weaker than its talent count suggests. Two of the six formula-carriers (Pinpoint Charge, Cascading Failure) are amplifiers rather than sources, which is exactly what the prose classifier reports (SOURCE 3, SRC+AMP 1, AMPLIFY 2)."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 4,
+    "exemplars": "Set Charge, Pyre",
+    "note": "Above the curve for level 1. Set Charge is a 1-Action, 1-Investiture, no-roll, no-save, 10 ft area [Tier][Die] that also leaves a permanent hazard and defers its payoff to a Free Action — most leyline entry talents deal single-target damage on an attack roll, and every other deity entry that deals damage gates it behind an attack or a test. Pyre trades the no-save area for a 60 ft attack roll but lays nine squares of self-spreading hazard on a hit. Both entries independently deliver the fantasy on turn one. Comparative caveat added on review: Fate's Snare is the same 1 Action / 1 Investiture placed marker with the same tier cap and deals [Tier][Die]+Awareness keen AND Restrains — a strictly better single-target payload; Set Charge wins on area and on choosing its own moment."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Fault Line, Walking Ruin (up); Concussive Yield (flat); Cascading Failure, Combustion Chain (down)",
+    "note": "Bimodal. Walking Ruin gives a permanent hazard trail plus +10 ft Speed for nothing, and Fault Line is the tree's best repeatable. Concussive Yield is downgraded from the prior read's 'up': it staples an area save-negates Prone onto a repeatable 1-Action effect at no cost, but Prone is cleared by a free action on the target's own turn, so the rider buys one turn of halved movement and melee advantage rather than the movement lock the tree's zone plan needs. Cascading Failure is a dud whose only payload cannot fire before L6, and Combustion Chain's trigger is the narrowest in the tree."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 4,
+    "exemplars": "The Unmooring",
+    "note": "Correct capstone shape by the guide's own test (a Charge tree's capstone should detonate the Charges) and its zone-damage upgrade is a genuine scene-defining payload, but its headline clause is capped at 1-2 detonations by the tier Charge limit, and 3 Actions + 3 Investiture once per scene buys roughly what one ordinary Set Charge turn buys."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED. The full gameplay loop — place, detonate, scar the ground — is available at level 1 from either entry for 1 Action and 1 Investiture, and the depth-1 riders are cheap increments on it rather than new capabilities. A player who stops at depth 1 (Set Charge + Concussive Yield + Pinpoint Charge) has most of the tree's practical per-round output; the capstone adds a scene-long zone upgrade, not a new tier of turn-by-turn power. The one real back-loaded element is accidental rather than designed: the Charge cap scales with tier, so both chaining talents only become functional at level 6 — three levels after Cascading Failure first becomes takeable and two after the capstone does.",
+  "uniqueOwnership": [
+   "The ONLY source of the mechanical keyword 'dangerous terrain' in all 365 talents. NARROWED FROM THE PRIOR CLAIM, which glossed the keyword as 'a persistent zone that damages, rather than merely slows' and thereby asserted a category Destruction does not own: Death's Bone Garden ('a character that ends its turn in the square takes [Tier][Die] keen damage'), Civilization's Bastion ('when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage', for the scene) and Green's Thorn Field ('your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it') are all persistent damaging zones, and all three tick HARDER than Destruction's flat-tier base. What is genuinely exclusive is the keyword and its rules text (energy damage equal to your tier, entry or turn-start, merges rather than stacks) and the SCALE: 8 of the keyword's 11 hits are Destruction talents (6 create, 2 merge/upgrade); the other 3 are the identical copies of Surefooted in Agent/Hunter/Warrior, which reduce dangerous-terrain damage rather than create it.",
+   "The only tree that SPREADS and MERGES its zones and UPGRADES a zone's damage die mid-scene: Combustion Chain spreads every zone you own on a kill, Pyre creeps a flammable square per turn, Cascading Failure and The Unmooring merge zones into one contiguous hazard, and The Unmooring raises the merged zone's tick from flat tier to [Tier][Die]. Already the narrowed version of an earlier over-claim (that Destruction alone touches a zone after placement — it does not: Fate's Read the Threads relocates a placed Ordained Ground or Snare up to 10 ft as a Free Action, and Civilization's Bastion upgrades already-placed Foundations mid-scene). Relocation is shared with Fate; spreading, merging and mid-scene die upgrade are Destruction's alone. Green's Spreading Roots is the nearest analogue to spreading, and costs Investiture where Combustion Chain does not.",
+   "REFUTED AS WRITTEN, DOWNGRADED TO ONE OF TWO. The prior claim was 'the only player-detonated delayed explosive... Fate's Snare and Hunter's Deadly Trap are enemy-triggered only'. Fate's FOREKNOWN STRIKE says: 'For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character.' That is player-side manual detonation of a placed delayed payload, as a Free Action. So Destruction is ONE OF TWO trees whose placed markers can be fired on demand. What survives as Destruction's own: the manual detonation is free, unconditional, on the PLACER, and shipped on the depth-0 entry itself, where Fate must spend a depth-2 talent and 2 Investiture and can only hand the trigger to an ally standing on a specific square. Fate's Snare also shares Set Charge's token economy near-verbatim ('up to your tier' active, fading/fizzling at end of scene), so the cap structure is not unique either.",
+   "The only 'paint hazard by walking' effect in the game (Walking Ruin) — a hazard zone whose shape is your movement path. Verified against every move-through clause in all 365: Power's Unstoppable Advance damages enemies whose space you move through but leaves nothing behind, and nothing else creates terrain from movement.",
+   "The only 'triple damage' clause in all 365 talents (Fault Line vs. structures and Constructs, verified by a full-text scan for triple/double/twice-the damage, which returns exactly one hit) — the game's only explicit siege rule, and the only clause anywhere written specifically against Civilization's Combat Construct line. Reworded from the prior 'only anti-summon clause in the atlas': Death's Risen Servant is also a summon and nothing in the game targets it either, so the clause is anti-Construct, not anti-summon.",
+   "The largest AREA footprint stated in literal feet in the deity atlas: Fault Line's 60 ft x 5 ft line. Tightened caveat — Civilization's Siege Form also carries a literal 60 ft and Fate carries four 30 ft clauses, but those are RANGES, not footprints; and effects sized by [Size] or Attunement Range are not ft-literal and were not captured by the scan, so this is 'largest area stated in feet', not proven largest in play.",
+   "The highest damage-formula count of any tree in any atlas — 6, in a 9-talent tree, against a 25-talent leyline tree's best of 4 (Red). Re-verified by counting isDamageFormula across all 365.",
+   "ADDED ON REVIEW: the only deity tree whose primary damage requires neither an attack roll nor a test. Set Charge, Fault Line, Cascading Failure and The Unmooring all auto-apply; every other damage-dealing deity tree gates its payload behind 'test [Colour] vs. [Defense]. On success...' or a weapon attack. That reliability, not magnitude, is the tree's real mechanical edge and no prior field named it."
+  ],
+  "gaps": [
+   "No healing of any kind — not Health, Focus, or Investiture, for self or anyone else (0 heal formulas).",
+   "No protection at all: no damage reduction, temp HP, shield, resistance or interception, and no defensive Reaction. A Destruction-only character has nothing to do when an ally is about to die.",
+   "Nothing ally-facing at all. Not one of the nine talents targets, names, or benefits an ally — no reroll, no bonus, no advantage (zero appearances in advantage-ledger.md). The only benefit the party ever gets is second-hand: melee attacks have advantage against a Prone target, and even that is worth zero whenever any other advantage source is already live.",
+   "No damage multiplier or escalator anywhere. Every payload is a flat [Tier][Die]; the tree has no stack, no kill-count, no die-size ladder, so it never out-scales its own level-1 shape. Knowledge (per-Insight), Power (kill-count) and Sovereignty (die size) all do.",
+   "The weakest damage types in the system. All six formulas are Deflect-reduced (5 energy, 1 keen); the primer's ruling is that Vital and Spirit 'ignore Deflect entirely. Materially stronger per die.' Chaos, Death and Knowledge deal spirit/vital across their whole suites — Destruction gets deflect-bypass on exactly two clauses.",
+   "No resource generation — 6 of 9 talents spend Investiture and none returns any, so the character is wholly dependent on Draw Mana from the Blue/Red leylines the tree gates on.",
+   "No forced movement. This is the structural hole: the tree builds the trap and owns no way to push, pull, restrain or immobilise anything into it. Its two area Prone saves supply a turn of Slowed, but the target stands for a free action on its own turn, and nothing puts anyone into a zone in the first place.",
+   "No action denial. Prone is the tree's entire condition suite — no Stunned, Restrained, Immobilized, Disoriented, nothing that strips a Reaction — and Prone is the one condition on the canon list that denies nothing and self-clears free. The primer calls action denial the most valuable category in a 3-action economy.",
+   "No information: no scouting, detection, prediction or intent-reading, so nothing to do in an exploration or investigation scene.",
+   "No social influence whatsoever — a Destruction-only character sits out every negotiation, court scene and interrogation.",
+   "No summons, no companion, no minion.",
+   "No friendly-fire protection. Set Charge, Fault Line, Cascading Failure and The Unmooring all read 'each character', and the scene-long zones sit on the ground the party has to cross — the tree damages its own side and owns nothing that exempts allies.",
+   "Poor answers to a single hardened target: everything is area, and all six formulas are Deflect-reduced. Against one high-Deflect enemy that ignores terrain, only Pinpoint Charge's and the capstone's explicit deflect-bypass clauses get full value.",
+   "The zone tick is the SMALLEST damaging-terrain tick in the game until the capstone. Flat tier is 1 damage at Tier 1 and 2 at Tier 2 — smaller than Green's Thorn Field (half [Tier][Die], avg 1.75 on 1d6, and created free on every Draw Mana), Death's Bone Garden ([Tier][Die] keen) and Civilization's Bastion ([Tier][Die] impact) — and it is fully absorbed by any character carrying Surefooted (reduce dangerous-terrain damage by twice your tier: 2 reduction vs. 1 damage at Tier 1). Destruction's terrain wins on area, persistence and count, not on per-tick size, until The Unmooring fires.",
+   "Nothing at all in an environment where terrain does not persist or does not matter — an aerial fight, a shifting scene, a chase, or a single-round ambush gives most of the tree's value nowhere to land."
+  ],
+  "weakTalents": [
+   {
+    "name": "Cascading Failure",
+    "reason": "The clearest never-pick in the tree, on two counts. (1) OVERCOSTED: it spends 2 Actions and 2 Investiture to detonate Charges that Set Charge already lets you detonate as a Free Action for nothing, so the entire price buys only the zone merge and the bonus die. (2) DEAD CLAUSE: the bonus [Tier][Die] requires 'a character caught in two or more detonations', but Set Charge caps you at 'up to your tier Charges' — one Charge for the whole of levels 1-5. The talent is reachable at L3 and its payload is unreachable until L6, and even then it needs two 10 ft radii overlapping the same character."
+   },
+   {
+    "name": "Combustion Chain",
+    "reason": "Below the curve for a depth-1 deity talent. It burns your one Reaction per round on a trigger you cannot schedule (a character must drop to 0 HP inside a zone you created), and its payoff is more flat-tier terrain — 5 ft of spread on each zone plus a 10 ft radius — with no damage roll, no condition and no effect on any living enemy. It also fights the tree's own gate colour: Red's Attunement Key strips your Reaction until your next turn every time you Draw Mana, which is the Action this Investiture-hungry tree wants to take constantly."
+   },
+   {
+    "name": "Concussive Yield",
+    "reason": "ADDED ON REVIEW — not a never-pick (it is free and it is area), but the prior profile listed it among the tree's efficient winners on a reading of Prone that stopped one clause too early. Canon Prone is 'Lying flat; you are Slowed; melee attacks against you have advantage; can use Brace without cover; STAND UP AS FREE ACTION (movement reduced by 5 until start of next turn)'. So a failed save costs the enemy a free action and 5 ft on its own turn, and the melee-advantage half is worth nothing whenever any other advantage source is live — which the system over-produces (45 advantage talents across 13 trees). It is also the only talent in the tree that never touches dangerous terrain, i.e. the one node that does not contribute to what the tree is actually best at."
+   },
+   {
+    "name": "Pyre",
+    "reason": "The weaker entry on damage, though narrower than a naive read allows. Same Action, same Investiture and same [Tier][Die] energy as Set Charge, but it requires a ranged attack that can miss where Set Charge's detonation has no attack roll and no save, and it hits one target where Set Charge hits a 10 ft radius. It is NOT dominated: on the axis this tree actually wins on — persistent hazard — Pyre is the stronger entry, laying nine squares of dangerous terrain on a hit then spreading a flammable square every turn with no further input, and it has 60 ft range against Set Charge's Attunement Range (30 ft at the rank 2 the gate requires). Its real weaknesses are the miss chance and that it opens the branch that never touches the path's stated signature resource."
+   },
+   {
+    "name": "The Unmooring (partial — capstone undersold, not a never-pick)",
+    "reason": "Flagged against the deity guide's own 'don't undersell the capstones' principle rather than as a bad pick. 3 Actions + 3 Investiture + once per scene buys at most two detonations of [Tier][Die]+INT, roughly what three Free-Action Set Charge detonations across an ordinary turn produce for 3 Investiture and no once-per-scene limit. Its headline sentence resolves to one Charge at Tier 1 and two at Tier 2. Only the clause upgrading every zone from flat tier to [Tier][Die] for the rest of the scene reads as Radiant-tier — measured against Knowledge's The Final Study ([Tier][Die] Vital per Insight) and Chaos's Unravel Everything."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Razkael is 'the siege engineer and pyrotechnician who turns timing into devastation'.",
+     "delivered": "DELIVERS",
+     "evidence": "Set Charge's player-declared trigger plus free manual detonation on the placer's own turn is literally a timing mechanic, and it is near-unique (Fate's Foreknown Strike is the only other manual trigger, and it costs a depth-2 talent, 2 Investiture, and only arms an ally). Fault Line's triple damage to structures and Constructs is the game's only literal siege clause. Pyre supplies the pyrotechnics."
+    },
+    {
+     "claim": "'Nothing he marks survives unbroken.'",
+     "delivered": "PARTIAL",
+     "evidence": "There is no persistent mark or quarry mechanic in the tree. Pinpoint Charge carries a 'quarry' tag but its text is a one-shot detonation rider; the only lingering consequence for a survivor is that its dangerous-terrain zone follows it for the scene. Compare Fate's Hexmark ('for the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source') and Knowledge's Insight stacks."
+    },
+    {
+     "claim": "'Plants delayed Charges with precision and waits.'",
+     "delivered": "DELIVERS",
+     "evidence": "Set Charge (declared trigger, default start of your next turn, alternatives on movement/damage/entry) and Pinpoint Charge (Blue-scaled precision, ignores the primary target's deflect). The Blue/Red split is verified in the roll formulas: Pinpoint Charge alone scales off @skills.blue.rank, every other formula off @skills.red.rank, and both saves are 'Speed vs. your Red'."
+    },
+    {
+     "claim": "Deity guide colour split: 'Blue tests for precision (Pinpoint Charge) and STRUCTURAL TARGETING; Red tests for kinetic riders.'",
+     "delivered": "DRIFTED on half the clause",
+     "evidence": "Blue delivers precision — Pinpoint Charge is the tree's only Blue-scaled formula. But the tree's one and only structural-targeting clause, Fault Line's 'structures and Constructs along the line take triple damage', sizes its die off @skills.red.rank and rolls its save against Red. Half the stated Blue remit is delivered in Red. The gate audit's count (red:1 test, red:5 damage dice, blue:1 damage die) is the same fact seen from the other side."
+    },
+    {
+     "claim": "'Letting detonations chain across the field.'",
+     "delivered": "DRIFTED (below level 6)",
+     "evidence": "Both chaining talents depend on multiple simultaneous detonations, and Set Charge caps active Charges at 'up to your tier' — ONE for the whole of Tier 1 (levels 1-5). Cascading Failure's 'two or more Charges' clause and The Unmooring's 'all your active Charges' are inert for the entire level range at which they are first reachable (L3 and L4). Combustion Chain is a terrain spread, not a detonation chain. Chaining is a Tier-2 feature the path description sells as the core loop, and even at Tier 2 it caps at two."
+    },
+    {
+     "claim": "'Leaving dangerous terrain that keeps burning long after the blast.'",
+     "delivered": "DELIVERS — emphatically, and more than claimed",
+     "evidence": "Six of nine talents CREATE dangerous terrain and two more merge or upgrade it — eight of nine touch it, only Concussive Yield does not. Destruction is the sole producer of the keyword in all 365 talents. Only qualification: the tick is flat tier, the smallest damaging-terrain tick in the game, until the capstone raises it."
+    },
+    {
+     "claim": "'Signature resource: Charge' (path description) vs. the deity guide's TWO resources, 'Charge (Blue-flavored), dangerous terrain (Red-flavored)'.",
+     "delivered": "PARTIAL — the two intent sources disagree; the talents side with the design guide",
+     "evidence": "Charge is generated by exactly one of the two entries and read by four talents — five of nine mention it at all. The Charge-free half is FOUR talents: Pyre, Combustion Chain, Walking Ruin AND Fault Line, i.e. the entire Pyre branch including its tier-3 synthesis node. A player who takes the Pyre entry and its branch never interacts with the path's stated signature resource at any depth. Dangerous terrain is the mechanic that actually spans both branches (eight of nine). Against deity-guide principle 5, Charge scrapes by at 4 of 7 non-entry talents."
+    },
+    {
+     "claim": "LENS-B ADDITION — is this tree's promise ALSO made by another tree's intent file?",
+     "delivered": "YES, twice, and both rivals deliver their half",
+     "evidence": "(1) The placed-marker promise: Fate's intent file promises 'Snare — a single-use trap sprung by the first enemy to enter... cap: tier active (unsprung); duration: scene' — structurally the SAME token contract as Charge (tier cap, scene duration, fizzle/fade, a Free-Action +1 Investiture upgrade rider, a mass-trigger capstone clause, and manual detonation via Foreknown Strike). functional-overlap.js independently ranks Destruction<->Fate 0.779, the highest deity-deity pair printed. Destruction's differentiators are area damage, manual detonation on the entry itself, and the terrain scar; Fate's are Restrained, foreknowledge and ally anchoring. (2) The terrain promise: leyline/Green's intent file promises 'they shape the ground itself... thorns and grasping roots... terrain that favors the pack', and the leyline guide names 'difficult terrain creation... terrain damage' as Green's key mechanic. Green creates terrain FREE on every Draw Mana and, with Thorn Field, ticks harder than Destruction's base. Only the siege/demolition promise is unshared."
+    },
+    {
+     "claim": "Deity guide: two entries that each independently deliver the fantasy on turn one.",
+     "delivered": "DELIVERS",
+     "evidence": "Pyre makes you a pyromancer at L1; Set Charge makes you a demolitionist at L1. Neither is setup for the other, and neither is a strict weaker copy — Set Charge wins on damage reliability and area, Pyre wins on opening hazard footprint (9 squares vs. 1) and range."
+    },
+    {
+     "claim": "Deity guide action-type targets (~25-30% Passive, ~15-20% Special, ~25-35% Action, ~15-25% 2-Action, ~10-15% Free, ~10% Reaction, 3 Actions capstone-only).",
+     "delivered": "PARTIAL",
+     "evidence": "Counted from the dossier: Passive 2/9 (22%), 1 Action 2/9 (22%), 2 Actions 2/9 (22%), Free Action 1/9 (11%), Reaction 1/9 (11%), 3 Actions 1/9 and it IS the capstone. 2 Actions, Free and Reaction hit target; Passive and Action are a few points light. The single real miss is ZERO Specials against a 15-20% target — which every one of the ten deity trees also misses, so it is a system-wide gap rather than a Destruction fault."
+    },
+    {
+     "claim": "Deity guide description-length caps (entries ~30-45 words, tier-3 ~40-55, capstone up to ~70).",
+     "delivered": "DRIFTED on four talents",
+     "evidence": "Word counts re-measured directly off the authored text: Set Charge 101 (2.2x the entry cap), Pinpoint Charge 72 (1.6x), Pyre 50 (over the 45 cap), Fault Line 57 (over the tier-3 cap of ~55). Within band: Cascading Failure 45, The Unmooring 62 (capstone, cap ~70), Combustion Chain 36, Concussive Yield 24, Walking Ruin 17."
+    },
+    {
+     "claim": "Deity guide: 'Deity power is Radiant-tier... don't undersell the capstones', and 'a capstone for a charge-placing tree should detonate the charges'.",
+     "delivered": "PARTIAL",
+     "evidence": "The Unmooring has exactly the right shape but its detonation clause is throttled to 1-2 Charges by the tier cap, and its raw damage for 3 Actions / 3 Investiture / once per scene is roughly one ordinary Set Charge turn. Only the clause upgrading every zone from flat tier to [Tier][Die] for the rest of the scene reads as Radiant-tier."
+    }
+   ],
+   "actuallyIs": "Not a Charge tree — a PERSISTENT-HAZARD AREA-DENIAL tree that happens to use Charges on one of its two branches, and whose real mechanical edge is RELIABILITY rather than power. Its output is a 1-Action, no-roll, no-save area detonation repeated every round plus an ever-growing patch of ground that damages anything standing on it, with a one-turn area Prone as its only control lever and no way to put anyone in the zones. THE 'SOMETHING' TEST: the tree's something is persistent damaging terrain at scale, and no tree does that whole combination better — but each ingredient is beaten elsewhere. Green makes terrain FREE on every Draw Mana and (Thorn Field) ticks harder than Destruction's base; Death's Bone Garden and Civilization's Bastion both tick a full [Tier][Die] where Destruction ticks flat tier; Fate places the same kind of marker and pairs it with Restrained, the forced-hold Destruction cannot supply; Knowledge and Power both out-scale it on raw damage ceiling. Destruction's genuine monopoly is volume plus post-placement manipulation — spread, merge, mid-scene die upgrade — and the fact that it almost never has to roll to hit or let anyone save. The 'chain the detonations' fantasy the path description leads with is mechanically unavailable until level 6 and even then caps at two.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Charge",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Produced by Set Charge (cap: your tier active, fizzle at end of scene); consumed/read by Pinpoint Charge, Concussive Yield, Cascading Failure, The Unmooring. Untouched by Pyre, Combustion Chain, Walking Ruin and Fault Line — the whole Pyre branch. Structurally near-identical to Fate's Snare token contract."
+   },
+   {
+    "keyword": "Pinpoint Charge (Charge subtype)",
+    "role": "PRODUCE and CONSUME",
+    "talents": "Declared at placement for +1 Investiture; resolves on detonation. Same shape as Fate's Inevitable Snare."
+   },
+   {
+    "keyword": "Detonate (Free Action)",
+    "role": "PRODUCE — a free action the system does not otherwise grant",
+    "talents": "Set Charge grants it; Cascading Failure and The Unmooring are the paid mass-detonation versions. NOT unique to the tree: Fate's Foreknown Strike grants an ally a Free Action to trigger an unsprung Snare."
+   },
+   {
+    "keyword": "dangerous terrain",
+    "role": "PRODUCE (and CONSUME — several talents read zones you already own)",
+    "talents": "CREATED by Pyre, Set Charge, Pinpoint Charge, Walking Ruin, Combustion Chain, Fault Line (6 of 9); READ/MODIFIED by Combustion Chain (spread), Cascading Failure (merge), The Unmooring (merge + upgrade tick to [Tier][Die]). Concussive Yield does not touch it. Base tick: energy damage equal to your tier on entry or turn-start; zones merge geographically rather than stacking."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME only — the tree generates none",
+    "talents": "Pyre 1, Set Charge 1, Pinpoint Charge +1, Cascading Failure 2, Fault Line 2, The Unmooring 3 (6 of 9 talents; 0 regen)"
+   },
+   {
+    "keyword": "Prone (carries Slowed and grants melee attackers advantage — and is cleared by a FREE ACTION on the target's turn)",
+    "role": "PRODUCE",
+    "talents": "Concussive Yield (every character in a detonation radius, Speed vs. your Red), Fault Line (every character in the line, same test). The free-action stand-up is why this scores as the tree's only, and weakest, control channel."
+   },
+   {
+    "keyword": "deflect / ignores deflect",
+    "role": "CONSUME (bypasses it)",
+    "talents": "Pinpoint Charge (primary target only), The Unmooring (all detonations). Every other payload in the tree is Deflect-reduced."
+   },
+   {
+    "keyword": "energy damage",
+    "role": "PRODUCE",
+    "talents": "Pyre, Set Charge, Cascading Failure, Fault Line, The Unmooring, and all dangerous-terrain ticks"
+   },
+   {
+    "keyword": "keen damage",
+    "role": "PRODUCE",
+    "talents": "Pinpoint Charge only"
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "Set Charge (placement range); scales 15/30/60/90/120 ft by rank, so 30 ft at the rank 2 the gate requires"
+   },
+   {
+    "keyword": "Tier / [Tier][Die]",
+    "role": "CONSUME — scales the dice, the Charge cap AND the terrain tick",
+    "talents": "all six damage formulas; Set Charge's 'up to your tier Charges'; dangerous terrain's flat-tier tick. There is no multiplier on top of tier anywhere in the tree."
+   },
+   {
+    "keyword": "Red skill rank",
+    "role": "CONSUME",
+    "talents": "Damage die on Pyre, Set Charge, Cascading Failure, Fault Line, The Unmooring (5 of 6 formulas); the save DC on Concussive Yield and Fault Line; gate prereq Red 2+"
+   },
+   {
+    "keyword": "Blue skill rank",
+    "role": "CONSUME",
+    "talents": "Damage die on Pinpoint Charge only; gate prereq Blue 2+. Blue is not a toll booth (it sizes one die) but it carries only one of the two jobs the design guide assigns it."
+   },
+   {
+    "keyword": "Speed (as a tested defence, and as a movement stat)",
+    "role": "CONSUME / PRODUCE",
+    "talents": "Tested by Concussive Yield and Fault Line; increased by +10 ft by Walking Ruin"
+   },
+   {
+    "keyword": "Intellect (@attr.int)",
+    "role": "CONSUME",
+    "talents": "Pinpoint Charge, The Unmooring damage formulas"
+   },
+   {
+    "keyword": "Strength (@attr.str)",
+    "role": "CONSUME",
+    "talents": "Fault Line damage formula"
+   },
+   {
+    "keyword": "structures and Constructs",
+    "role": "CONSUME — the only triple-damage target class in the game",
+    "talents": "Fault Line"
+   },
+   {
+    "keyword": "0 HP / dropping to 0 HP",
+    "role": "CONSUME (trigger)",
+    "talents": "Combustion Chain"
+   },
+   {
+    "keyword": "flammable squares",
+    "role": "CONSUME — GM-adjudicated environment dependency",
+    "talents": "Pyre's per-turn terrain spread"
+   },
+   {
+    "keyword": "Reaction (1 per round cap)",
+    "role": "CONSUME",
+    "talents": "Combustion Chain — the tree's only Reaction, and it conflicts with Red's Attunement Key, which strips your Reaction until your next turn whenever you Draw Mana"
+   },
+   {
+    "keyword": "scene (duration) / once per scene",
+    "role": "CONSUME",
+    "talents": "Every terrain effect lasts the scene; Charges fizzle at end of scene; The Unmooring is once per scene"
+   },
+   {
+    "keyword": "declared trigger",
+    "role": "PRODUCE — a pre-commitment mechanic",
+    "talents": "Set Charge ('when target moves,' 'when target takes damage,' 'when a character enters this square'). Nearest analogue outside the tree is leyline/Blue's Forewarned."
+   }
+  ],
+  "crossTreeHooks": [
+   "The whole tree is gated on Blue 2+ AND Red 2+, so it presupposes investment in two leyline trees and inherits both Attunement Keys — and Red's Key ('gain an advantage on your next Physical test; lose your Reaction until your next turn') directly anti-synergises with Combustion Chain, the tree's only Reaction, in an Investiture-hungry tree that must Draw Mana constantly. Blue's Key does nothing for a tree with no Cognitive tests.",
+   "FORCED MOVEMENT AND HARD CONTROL FROM ANOTHER PATH IS THE TREE'S BIGGEST SEAM. Destruction builds scene-long damaging zones and owns no way to PUT anyone in them or KEEP anyone in them: its two area Prone saves are cleared by a free action on the target's own turn. Any tree supplying Restrained, Immobilized, pull or push converts flat-tier terrain ticks into guaranteed repeating damage. The sharpest named partner is deity/Fate — Snare Restrains on entry, and Read the Threads relocates a placed marker onto a square the target will pass through — which is also the tree Destruction most functionally overlaps (0.779).",
+   "Combustion Chain requires a character to drop to 0 HP inside your terrain — entirely dependent on someone (usually an ally) landing a killing blow in a specific square you placed. It is the tree's one ally-gated talent and the hardest to schedule.",
+   "Green's difficult terrain (Green Leyline Attunement, Spreading Roots, Sudden Growth, Pack Sense, Apex Predator — all verified present) stacks geographically with Destruction's dangerous terrain, and Green's Slowed-on-difficult-terrain is the movement drag Destruction lacks. Green's Thorn Field, Death's Bone Garden and Civilization's Bastion are the game's other damaging zones; canon says Destruction's own zones 'don't stack but merge geographically' and is SILENT about cross-path overlap, so a ruling is owed on whether one square can be both dangerous terrain and a Bone Garden.",
+   "Fault Line's triple damage to structures and Constructs is a written hard counter to Civilization's Combat Construct line (Forge Construct, Siege Form, Magnum Opus — all verified present) — a PvP-shaped hook, and the only clause in the atlas written against another tree's summon.",
+   "The tree wants an unusual attribute spread — Intellect for Pinpoint Charge and The Unmooring, Strength for Fault Line, plus Blue and Red skill ranks — so its damage output depends on build decisions made outside the tree more than most.",
+   "Zero Investiture generation makes Draw Mana uptime, and any external Investiture-regeneration talent (e.g. Red's Flashpoint, 'regain 1 Investiture and gain an advantage on your next Red test'), disproportionately valuable. Flashpoint's own trigger — 'when a Red talent you activate hits two or more characters' — pairs naturally with Destruction's area effects if they count as Red talents, which is a ruling worth making.",
+   "Nothing in the tree exempts allies from its own detonations or its own terrain. An ally with Surefooted (heroic Agent/Hunter/Warrior: 'reduce damage from falling and dangerous terrain by twice your tier') fully absorbs the base flat-tier tick at every tier — 2 reduction vs. 1 damage at Tier 1, 4 vs. 2 at Tier 2 — but is NOT immune after The Unmooring upgrades the merged zone to [Tier][Die]. The same talent is the cheapest counter an enemy could carry against this tree, and it exists in three separate heroic trees."
+  ],
+  "topThree": [
+   "Set Charge — the tree's engine and, on the evidence, the most reliable damage talent in the deity atlas: 1 Action and 1 Investiture for a 10 ft area [Tier][Die] with no attack roll and no save (every other damage-dealing deity tree gates its payload behind a test or an attack), detonated on a Free Action at a moment you choose, leaving permanent hazard ground; it also supports four other talents.",
+   "Fault Line — the best repeatable: 2 Actions / 2 Investiture for [Tier][Die]+Strength to every character in a 60 ft line with no attack roll, plus an area Prone save, plus a 60 ft strip of hazard, plus the game's only triple damage against structures and Constructs. Exactly self-funding at Tier 2 alongside one Draw Mana Action.",
+   "The Unmooring — for its second clause: every dangerous-terrain zone placed all scene merges and starts dealing [Tier][Die] instead of flat tier for the rest of the scene, at zero further action cost. The only genuinely scene-defining effect in the tree, and the only thing that lifts the terrain tick out of Surefooted's absorption range."
+  ],
+  "bottomThree": [
+   "Cascading Failure — pays 2 Actions and 2 Investiture for something Set Charge's Free Action already does, and its sole payload cannot fire at all before level 6 despite the talent being takeable at level 3.",
+   "Combustion Chain — spends the round's only Reaction on an unschedulable trigger (a kill inside your own zone) to produce 5-10 ft more flat-tier terrain, with no damage roll and no condition, and competes for that Reaction with Red's Draw Mana rider.",
+   "Concussive Yield — REPLACES PYRE IN THIS SLOT ON REVIEW. It is free and it is area, but its whole payload is a save-negates Prone that the target clears with a free action on its own turn, and whose melee-advantage half is worth zero whenever any other advantage source is live in a system that over-produces advantage (45 talents / 13 trees). It is also the only node in the tree that never touches dangerous terrain. Pyre is excluded: it is the weaker entry on damage, but its nine-square self-spreading hazard footprint beats Set Charge's single square on the axis the tree actually wins on, and it has instant 60 ft range."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Tier 1 (L1-5, pool ~4 Investiture per the primer's 2 + max(AWA, PRE), Draw Mana returns 1 per Action): about 4 rounds of full-power play from a cold pool using the 1-Investiture entries, then a steady state that still lands one payload every round but spends two of three Actions doing it (Draw Mana +1, Set Charge place -1, detonate free, one Action spare). The 2-Investiture talents are an every-other-round play at this tier. Tier 2 (L6-10, Draw Mana returns 2): the loop CLOSES — a 3-Action turn of Draw Mana + two Set Charge placements with Free-Action detonations is Investiture-neutral and repeats forever, and Fault Line + Draw Mana is likewise exactly self-funding. The capstone turn is the exception: The Unmooring plus the two Charges it wants costs 5 Investiture and 5 Actions across turns (7 Investiture if both Charges are Pinpoint), so it must be banked for. Persistent-zone damage costs nothing and runs indefinitely regardless of the pool, which is what saves the tree in a long fight.",
+   "triggerGatedCount": 1,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 6,
+   "note": "Trigger-gated count held at 1 after re-checking the measurement's own definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'): only Combustion Chain qualifies. Concussive Yield fires when a Charge YOU set detonates and Pinpoint Charge fires when YOU place a Charge — both gated on the owner's own scheduled action — and Cascading Failure is an ordinary 2-Action talent with no trigger at all. Borderline case named on review: a Charge placed with the alternative trigger 'when target moves' or 'when a character enters this square' IS enemy-driven, so Concussive Yield can be trigger-gated at the player's option; it is not counted because the free manual detonation is always available as a fallback. Reactions: 1 of 9, so no internal competition for the 1-per-round cap — but it competes with Red's Attunement Key, which strips your Reaction whenever you Draw Mana, and this tree Draws Mana constantly. Investiture spenders 6 of 9 with zero generation — every point comes from outside the tree via Draw Mana, the single largest constraint on how often its good options are live. The separate structural gate is not a trigger but the Charge cap: Cascading Failure and The Unmooring are both effectively level-6 talents."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.countReal / damageTalents",
+   "from": "countReal: 8, with an array of 7 entries (6 named talents + one pseudo-entry called \"dangerous terrain\")",
+   "to": "countReal: 8, with an array of 8 named talents — the 6 formula-carriers plus Combustion Chain and Walking Ruin promoted from the pseudo-entry",
+   "reason": "ARITHMETIC ERROR. The array literally had 7 elements while countReal claimed 8, so the count and the list disagreed. The fix is also more honest: Combustion Chain ('a 10 ft radius around the dropped character becomes dangerous terrain') and Walking Ruin ('every space you move through becomes dangerous terrain') each create a damage source and carry no roll formula, so a formula-only census misses them entirely. 8 of 9 talents contribute damage; Concussive Yield is the sole exception."
+  },
+  {
+   "field": "axes.damage_direct.evidence",
+   "from": "\"the dangerous terrain created by 8 of the 9 talents\"",
+   "to": "created by 6 of the 9 (Pyre, Set Charge, Pinpoint Charge, Walking Ruin, Combustion Chain, Fault Line); Cascading Failure and The Unmooring only merge/upgrade zones already placed; Concussive Yield touches terrain at all",
+   "reason": "MISCOUNT, and self-contradicting. The profile's own uniqueOwnership bullet said '5 talents create it explicitly' while damage_direct said 8 — both wrong. A full-text pass of the nine cards gives exactly 6 creators. Cascading Failure ('their dangerous terrain zones merge into one contiguous hazard zone') and The Unmooring ('All dangerous terrain you have placed during this scene merges') create nothing; they operate on zones Set Charge's detonations already made."
+  },
+  {
+   "field": "axes.terrain_zone.evidence / uniqueOwnership[0]",
+   "from": "\"Green's Thorn Field is the only comparable effect in the game and it is a static half-[Tier][Die] rider that never merges, moves or spreads.\"",
+   "to": "Thorn Field is not the only comparable zone: deity/Death's Bone Garden and deity/Civilization's Bastion are both scene-long damaging zones, and both tick a FULL [Tier][Die] — larger per tick than Destruction's flat-tier terrain",
+   "reason": "TEXT-VS-CLAIM, refuted against all-talents.json. Bone Garden: 'For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.' Bastion: 'For the scene, each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage.' The profile even named Bone Garden two clauses earlier as a terrain producer and then declared Thorn Field the only comparable one."
+  },
+  {
+   "field": "uniqueOwnership[1] / axes.terrain_zone.evidence",
+   "from": "\"The only tree that manipulates zones AFTER placement… Every other terrain talent in the game places a static square.\"",
+   "to": "Narrowed to: the only tree that SPREADS, MERGES and upgrades a zone's damage die mid-scene. Post-placement manipulation itself is shared",
+   "reason": "TEXT-VS-CLAIM, refuted. Fate's Read the Threads: 'Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through' — a directed relocation of a placed zone, arguably more precise than Pinpoint Charge's automatic follow. Civilization's Bastion upgrades already-placed Foundations mid-scene. Spreading, merging and the mid-scene die upgrade do survive as unique."
+  },
+  {
+   "field": "axes.control.evidence",
+   "from": "\"Prone is the mildest condition on the primer's list - no Stunned, Restrained, Immobilized, Disoriented, or any action/reaction denial anywhere in the tree.\" (and the matching gaps line implying the tree supplies no Slowed)",
+   "to": "Prone CARRIES Slowed and grants melee attackers advantage; the tree therefore does self-supply halved movement, in an area, twice. Score held at 3",
+   "reason": "TEXT-VS-CLAIM against canon. cosmere-canon-reference §Conditions: 'Prone | SR | Lying flat; you are Slowed; melee attacks against you have advantage; can use Brace without cover; stand up as free action (movement reduced by 5 until start of next turn)'. This matters more than usual here: halved movement is exactly what a persistent-zone tree wants, and the profile's crossTreeHooks separately asked another path to supply 'Restrained, Immobilized, pull, push or Slowed' — while the tree supplies Slowed itself. Score held at 3 because there are still only two appliers, it is save-negates, and there is no action denial."
+  },
+  {
+   "field": "axes.debuff.score",
+   "from": "1",
+   "to": "2",
+   "reason": "UNDERSCORED, following from the Prone correction. Prone hands every melee attacker advantage against the target — a vulnerability-like — applied in an AREA by two talents, one of them free and riding the tree's repeatable 1-Action engine. That exceeds the rubric's '1 = one incidental talent, or a rider on something else' and matches '2 = present but minor; you would not pick this tree for it'. Held at 2, not 3: still no numeric penalty, no defence reduction, no disadvantage."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "0",
+   "to": "1",
+   "reason": "UNDERSCORED on a keyword artifact. The evidence ('Destruction appears nowhere in advantage-ledger.md — no talent in the tree names advantage at all') is TRUE — I verified zero Destruction hits in the ledger — but the conclusion does not follow. The advantage arrives via the Prone condition, not via the word, which is precisely the 'value that arrives without the keyword' failure this lens exists to catch. Scored 1 and no higher: entirely condition-mediated, no talent in the tree targets an ally, no rerolls, no bonuses to any roll."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "4",
+   "to": "1",
+   "reason": "MISCOUNT against the metric's own stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Only Combustion Chain qualifies — it is a Reaction and fires when a character drops to 0 HP. Concussive Yield fires 'When a Charge you set detonates' and Pinpoint Charge fires 'When you place a Charge on a character or an object': both gated on the OWNER's own scheduled action, not another character's. Cascading Failure is an ordinary 2-Action talent with no trigger clause at all. The count of 4 would also have put Destruction above the measured deity maximum of 3."
+  },
+  {
+   "field": "intentDrift.claims[description-length caps]",
+   "from": "\"DRIFTED on three talents… Fault Line 57 and The Unmooring 62 are within their bands.\"",
+   "to": "DRIFTED on four talents; Fault Line's 57 words EXCEEDS the tier-3 cap of ~40-55",
+   "reason": "ARITHMETIC/BAND ERROR. The word counts themselves are exactly right — I re-measured all nine off the authored text: Set Charge 101, Pinpoint Charge 72, The Unmooring 62, Fault Line 57, Pyre 50, Cascading Failure 45, Combustion Chain 36, Concussive Yield 24, Walking Ruin 17. But Fault Line is a tier-3 synthesis node (depth 2, prereq 'Walking Ruin or Combustion Chain'), whose guide cap is ~40-55, so 57 is over, not 'within band'."
+  },
+  {
+   "field": "intentDrift.claims[signature resource Charge]",
+   "from": "\"The entire Pyre branch — Pyre, Combustion Chain, Walking Ruin — never touches a Charge\"",
+   "to": "FOUR talents never touch a Charge: Pyre, Combustion Chain, Walking Ruin AND Fault Line — the whole Pyre branch including its tier-3 synthesis node",
+   "reason": "MISCOUNT that understates the profile's own finding. A full-text scan for 'Charge' across the nine returns exactly five talents (Set Charge, Pinpoint Charge, Concussive Yield, Cascading Failure, The Unmooring). Fault Line sits on the Pyre branch (prereq 'Walking Ruin or Combustion Chain') and never mentions a Charge, so a Pyre-line player reaches depth 2 without ever touching the path's stated signature resource."
+  },
+  {
+   "field": "intentDrift.claims (new entry added)",
+   "from": "absent",
+   "to": "New claim tested: the deity guide's colour split — 'Blue tests for precision (Pinpoint Charge) and structural targeting' — DRIFTED on half the clause",
+   "reason": "MISSED INTENT CLAIM. The guide assigns Blue two jobs. Precision is delivered (Pinpoint Charge is the only @skills.blue.rank formula). But the tree's one and only structural-targeting clause — Fault Line's 'structures and Constructs along the line take triple damage' — sizes off @skills.red.rank and tests against Red. Half the stated Blue remit is executed in Red; the gate audit's red:5 / blue:1 damage-die split is the same fact from the other side."
+  },
+  {
+   "field": "weakTalents[Pyre] and bottomThree[Pyre]",
+   "from": "\"its sibling entry dominates it… It costs the same Action and the same Investiture for the same [Tier][Die] energy… Its only genuine advantages are instant 60 ft range and the self-spreading flammable creep.\"",
+   "to": "Not dominated. Pyre lays NINE squares of dangerous terrain on a hit ('the target's space and each adjacent 5 ft square') against Set Charge's single detonation point — a 9x opening footprint on the axis the profile itself calls the tree's spine",
+   "reason": "TEXT-VS-CLAIM / internal inconsistency. The profile's own actuallyIs says the tree is 'a PERSISTENT-HAZARD AREA-DENIAL tree', then judges Pyre purely on damage and omits that it is the tree's largest single-placement hazard footprint. Kept in bottomThree (miss chance, and it opens the Charge-free branch), but the reasoning is corrected."
+  },
+  {
+   "field": "crossTreeHooks[Surefooted]",
+   "from": "\"an ally with Surefooted… is effectively immune to your zones\"",
+   "to": "Fully absorbs the base flat-tier tick at every tier (2 reduction vs. 1 damage at Tier 1, 4 vs. 2 at Tier 2) but is NOT immune after The Unmooring upgrades the merged zone to [Tier][Die]",
+   "reason": "OVERSTATEMENT, corrected by arithmetic. Surefooted reads 'reduce damage from falling and dangerous terrain by twice your tier'. That is total absorption of a flat-tier tick, but the capstone raises the merged zone's tick to [Tier][Die] (1d6 at Tier 1, 2d8 at Tier 2), which twice-your-tier only blunts."
+  },
+  {
+   "field": "axes.damage_direct.evidence and damageAccounting.verdict (strengthened, not corrected)",
+   "from": "\"the most damage-saturated of the deity paths on the evidence\"",
+   "to": "the highest damage-formula count of ANY tree in all 365 talents — 6, in a 9-talent tree, verified by counting formulas per tree (Destruction 6 > Chaos 5 > Death 4 = Order 4 = leyline/Red 4)",
+   "reason": "The claim was true but under-evidenced, so I re-derived it rather than taking it on trust. Destruction beats every 25-talent leyline tree on absolute formula count, which is the strongest single justification for damage_direct 5 and is now stated with the number behind it."
+  },
+  {
+   "field": "axes.damage_scaling.evidence",
+   "from": "\"the headline type is energy (Deflect-reduced, the weakest category) on 5 of the 6 formulas\"",
+   "to": "ALL SIX formulas are Deflect-reduced damage types (5 energy, 1 keen)",
+   "reason": "READING ERROR against the primer. The wording implied the sixth formula (Pinpoint Charge, keen) escapes Deflect by its type. The primer is explicit: 'Impact, Keen, Energy — reduced by Deflect'. Pinpoint Charge bypasses deflect by an explicit CLAUSE, not by its damage type — a distinction that matters because Cascading Failure's keen-adjacent riders get no such clause."
+  },
+  {
+   "field": "axes.exploration_utility / uniqueOwnership[triple damage] / uniqueOwnership[footprint] / uniqueOwnership[dangerous terrain sole producer] / axes.resource_economy / all depth and earliestLevel values",
+   "from": "as written",
+   "to": "unchanged — checked and confirmed",
+   "reason": "NO ERROR FOUND, stated explicitly since this lens must check every claim. Verified: Fault Line is the only 'triple damage' clause in all 365 (full-text scan); a scan of every deity talent for a literal 'N ft radius/long/wide/cone/line' ≥15 ft returns Fault Line's 60 ft alone (caveat about [Size]/Attunement-Range effects now added); Destruction IS the sole producer of dangerous terrain — the keyword's 11 talents / 4 trees are Destruction's 6 creators plus three identical copies of Surefooted, which mitigate it; Investiture costers are exactly 6 with 0 regen, matching every Cost field (1/1/+1/2/2/3); every depth and earliestLevel in damageAccounting and powerByDepth matches the dossier line-for-line (0/L1, 0/L1, 1/L2, 2/L3, 2/L3, 3/L4); the dice claims are correct at Tier 1 rank 2 = 1d6 and Tier 2 rank 3 = 2d8; the action-type census (Passive 2, 1Act 2, 2Act 2, Free 1, Reaction 1, 3Act 1) is right; the Tier-2 self-funding arithmetic (Draw Mana +2 vs. two placements -2, and Fault Line -2 vs. Draw Mana +2) checks out; countFalsePositiveMitigation 0 is correct — no talent in the tree mentions reducing damage, so the known Shield Wall failure mode cannot occur here; and the Cascading Failure 'dead before L6' finding is genuinely correct and is the profile's best original catch."
+  },
+  {
+   "field": "axes[control].score",
+   "from": "3",
+   "to": "2",
+   "reason": "The prior evidence quoted cosmere-canon-reference's Prone entry but stopped one clause early. The full line is 'Lying flat; you are Slowed; melee attacks against you have advantage; can use Brace without cover; stand up as free action (movement reduced by 5 until start of next turn).' The Slowed and the melee-advantage window therefore both expire on the target's own turn for the cost of a FREE ACTION and 5 ft — not the movement suppression the profile claimed 'is precisely what this tree's zone plan wants.' A condition-applier census across all 21 trees puts Destruction at exactly 2 appliers of the SAME, mildest condition, against Fate (Restrained + Disoriented from 2 talents), Power (Compelled + Weakened), Order (Disoriented + Weakened) and Black (Weakened from 6). The tree has zero action or reaction denial, which the primer names as the most valuable control category. Scene-long terrain is already banked at terrain_zone 5 and must not be double-counted here."
+  },
+  {
+   "field": "axes[debuff].score",
+   "from": "2",
+   "to": "1",
+   "reason": "The entire justification for 2 was Prone's melee-advantage clause — the same clause already credited under control, from the same two talents. There is no numeric penalty, no defence reduction, and no talent naming disadvantage (0 hits on a full-text scan of the tree). Advantage is binary per the primer, and the system over-produces it (45 talents / 13 trees), so the clause is worth literally zero whenever any other source is live. Rubric '1 = one incidental talent, or a rider on something else' is the honest fit; compare leyline/Blue's five impose-disadvantage talents for what a 3-4 looks like."
+  },
+  {
+   "field": "axes[buff].score",
+   "from": "1",
+   "to": "0",
+   "reason": "The raise to 1 booked the Prone melee-advantage clause a THIRD time (control + debuff + buff) for a single free-action-clearable condition. Melee-attacks-have-advantage-against-Prone is a vulnerability ON THE TARGET and belongs under debuff, where it is now booked once. Verified facts: zero Destruction talents in advantage-ledger.md; no reroll, roll bonus, temp HP or defence bonus anywhere; and NOT ONE of the nine talents targets an ally at all — every one resolves against squares, objects or 'each character'. '0 = the tree does not do this at all' is literally true of ally-facing effects here."
+  },
+  {
+   "field": "axes[damage_scaling].score",
+   "from": "4",
+   "to": "3",
+   "reason": "The 4 was defended on repeatability (correct, and worth a 4 on that half) but never tested the scaling half comparatively. Every payload in the tree is a flat [Tier][Die] with no multiplier, stack or escalator. Real damage scaling in this game, from all-talents.json: Knowledge's Killing Blow and The Final Study deal '[Tier][Die] Vital damage per Insight'; Power's Warlord's Fury adds 'damage equal to the number of characters you have reduced below half their maximum HP during this scene'; Sovereignty ladders the damage DIE SIZE across 7 talents. Destruction has none. Compounding: all six formulas are Deflect-REDUCED types (5 energy, 1 keen) where Chaos, Death and Knowledge deal Deflect-ignoring vital/spirit that the primer says to 'weigh well above'; the one true escalator (the tier Charge cap) is inert for all of L1-5; and the base terrain tick is flat tier, which does not scale with rank at all until the capstone."
+  },
+  {
+   "field": "uniqueOwnership[2] (player-detonated delayed explosive)",
+   "from": "'The only player-detonated delayed explosive. Fate's Snare … and Hunter's Deadly Trap … are enemy-triggered only'",
+   "to": "'REFUTED AS WRITTEN, DOWNGRADED TO ONE OF TWO' — Fate's Foreknown Strike is the second",
+   "reason": "Direct refutation from text. deity/Fate's Foreknown Strike reads: 'For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character.' That is player-side manual detonation of a placed delayed payload. The profile's stated evidence ('Fate's Snare … enemy-triggered only') is false because Fate carries a separate talent that overrides it. What survives is narrower and now stated: Destruction's manual detonation is free, unconditional, on the placer, and ships on the depth-0 entry, where Fate needs a depth-2 talent, 2 Investiture and an ally on a specific square."
+  },
+  {
+   "field": "uniqueOwnership[0] (dangerous terrain) — the category gloss and the arithmetic",
+   "from": "'The ONLY source of dangerous terrain (a persistent zone that damages, rather than merely slows) in all 365' … 'the keyword's 11 talents / 4 trees are Destruction's 6 creators plus the three identical copies of Surefooted'",
+   "to": "only source of the KEYWORD; the parenthetical category is shared with Bone Garden / Bastion / Thorn Field; and the 11 hits are 8 Destruction talents + 3 Surefooted",
+   "reason": "Two errors. (1) The parenthetical gloss asserts a category Destruction does not own: Death's Bone Garden ('a character that ends its turn in the square takes [Tier][Die] keen damage'), Civilization's Bastion ('when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage') and Green's Thorn Field ('your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it') are all persistent damaging zones — and all three tick HARDER than Destruction's flat tier. The profile's own terrain_zone evidence concedes this, so the uniqueOwnership line contradicts it. (2) Arithmetic: 6 creators + 3 Surefooted is 9, not the 11 the sentence claims. The keyword's 11 hits are EIGHT Destruction talents (6 create, 2 merge/upgrade) plus the 3 Surefooted copies."
+  },
+  {
+   "field": "uniqueOwnership[5] (largest measured footprint)",
+   "from": "'a scan of every deity talent for a literal N ft radius/long/wide/cone/line of 15 ft or more returns Fault Line's 60 ft line alone'",
+   "to": "largest AREA footprint stated in feet; Civilization's Siege Form also carries a literal 60 ft and Fate carries four 30 ft clauses, but those are ranges",
+   "reason": "Re-ran the scan across every deity talent: literal ft values of 15+ appear in Civilization/Forge Construct (25), Siege Form (60), Arsenal (15), Death/Risen Servant (25), Destruction/Pyre (60), Fault Line (60), The Unmooring (15), Fate/Ordained Ground (30), Weave the Thread (30), Foreknown Strike (30), Thread of Inevitability (30), Power/Momentum of Victory (15). 'Returns Fault Line alone' is only true after silently discarding ranges, which the claim did not say it was doing. The finding survives once restated as area-vs-range."
+  },
+  {
+   "field": "uniqueOwnership[4] (triple damage) — the anti-summon clause",
+   "from": "'the only anti-summon clause in the atlas'",
+   "to": "'the only clause anywhere written specifically against Civilization's Combat Construct line' — anti-Construct, not anti-summon",
+   "reason": "Death's Risen Servant is also a summon and nothing in the game targets it either, so 'anti-summon' over-generalises from one target class. The 'triple damage' half of the claim was re-verified and stands: a full-text scan for triple/double/twice-the damage across all 365 returns exactly one hit, Fault Line."
+  },
+  {
+   "field": "uniqueOwnership — new entry added",
+   "from": "(absent)",
+   "to": "'the only deity tree whose primary damage requires neither an attack roll nor a test'",
+   "reason": "SCORE-DEFLATION / MISSED-OWNERSHIP finding. Reading all ten deity trees: Chaos gates every payload behind 'test Blue vs. Cognitive. On success…' or 'test Black vs. Physical'; Knowledge behind 'test Red vs. Physical' or a weapon attack; Power behind 'Test Black vs. Cognitive' or a melee attack; Death behind a melee attack or a Black test. In Destruction, Set Charge, Fault Line, Cascading Failure and The Unmooring ALL auto-apply — only Pyre can miss, and no talent lets a target save against damage. That reliability is the tree's real mechanical edge, was named nowhere in the profile, and is the strongest defence of damage_direct 5, which the prior evidence defended on formula count alone."
+  },
+  {
+   "field": "intentDrift.claims — new claim added (lens B item d)",
+   "from": "(absent)",
+   "to": "'is this tree's promise ALSO made by another tree's intent file?' — YES, twice",
+   "reason": "The lens requires checking whether the promise is shared, and the profile never did. (1) Fate's intent file promises 'Snare — a single-use trap sprung by the first enemy to enter… cap: tier active (unsprung); duration: scene' — structurally the SAME token contract as Charge (tier cap, scene duration, fizzle/fade, a Free-Action +1 Investiture upgrade rider, a mass-trigger capstone clause, and manual detonation via Foreknown Strike). functional-overlap.js independently ranks Destruction<->Fate 0.779, the highest deity-deity pair printed. (2) leyline/Green's intent file promises 'they shape the ground itself… thorns and grasping roots… terrain that favors the pack', and the leyline guide names 'difficult terrain creation… terrain damage' as Green's key mechanic. Only the siege/demolition promise is unshared."
+  },
+  {
+   "field": "intentDrift.actuallyIs — 'the SOMETHING test' added",
+   "from": "(no comparative something-test)",
+   "to": "names the something (persistent damaging terrain at scale) and lists which tree beats each ingredient",
+   "reason": "Lens item (e) was not answered. Answer, from text: no tree does the whole combination better, but Green makes terrain FREE on every Draw Mana and Thorn Field's half-[Tier][Die] tick (avg 1.75 on 1d6) beats Destruction's flat-tier 1; Bone Garden and Bastion both tick a full [Tier][Die]; Fate pairs the same marker shape with Restrained, the forced-hold Destruction cannot supply; Knowledge and Power out-scale it on damage ceiling. Destruction's genuine monopoly is volume plus post-placement manipulation (spread, merge, mid-scene die upgrade) plus no-roll reliability."
+  },
+  {
+   "field": "gaps — Green's Thorn Field added to the per-tick comparison; two new gaps added",
+   "from": "tick compared only to Bone Garden and Bastion; no gap for 'no multiplier' or 'weakest damage types'; 'no direct buffs'",
+   "to": "Thorn Field named (half [Tier][Die], free on Draw Mana); new gaps for the absent damage multiplier and the Deflect-reduced type suite; 'no direct buffs' rewritten as 'nothing ally-facing at all'",
+   "reason": "Thorn Field is the closest comparison of all and was omitted, and it makes the point hardest — Green gets a harder-ticking zone free as a Draw Mana rider while Destruction pays 1-3 Investiture per placement. The two new gaps carry the material the damage_scaling downgrade rests on, which the prior gaps list buried inside a per-axis evidence string. The buff gap was reworded because 'no direct buffs' understates it: not one talent targets an ally at all."
+  },
+  {
+   "field": "weakTalents / bottomThree — Concussive Yield added and promoted into bottomThree, replacing Pyre",
+   "from": "Concussive Yield listed among powerByDepth's efficient winners ('staples an area Prone … at no cost'); Pyre in bottomThree",
+   "to": "Concussive Yield flagged as weak and placed third in bottomThree; Pyre removed from bottomThree with its reasoning kept in weakTalents",
+   "reason": "Follows from the Prone correction: the talent's whole payload is a save-negates condition the target clears with a free action on its own turn, whose melee-advantage half is worth zero against any other live advantage source. It is also the ONLY node in the tree that never touches dangerous terrain — the one talent that does not contribute to what the tree is best at. The profile's own body text already argued Pyre 'is NOT dominated' and beats Set Charge on hazard footprint and range, which is inconsistent with keeping it in bottomThree."
+  },
+  {
+   "field": "powerByDepth[depth 0].note and [depth 1-2].note",
+   "from": "depth-0 note made no comparative check; depth 1-2 listed Concussive Yield as 'up'",
+   "to": "depth-0 note adds Fate's Snare as the strictly better single-target entry payload; depth 1-2 moves Concussive Yield to 'flat' with the Prone reasoning",
+   "reason": "Comparative gap: Fate's Snare is the same 1 Action / 1 Investiture placed marker with the same tier cap and deals [Tier][Die]+Awareness keen AND Restrains until the start of your next turn — a strictly stronger single-target payload than Set Charge's, which the 'probably the strongest deity entry talent' claim never tested. Set Charge still wins on area and on choosing its own moment, and that is now what the note says."
+  },
+  {
+   "field": "oneLineIdentity, damageAccounting.verdict, damageAccounting.peakDamagePerAction, mechanicalKeywords (Prone, Detonate, Tier entries)",
+   "from": "identity led on formula count and 'area Prone/Slowed rider'; verdict did not name reliability; peak figure had no ceiling caveat; keyword entries did not record the free-action stand-up or the missing multiplier",
+   "to": "reliability named as the tree's real edge; flat-[Tier][Die] ceiling caveat added to the peak figure; Prone keyword records the free-action clear; Detonate keyword records that Fate's Foreknown Strike also grants one",
+   "reason": "Consequential rewrites so the prose fields agree with the corrected axes rather than contradicting them. The peak-damage arithmetic itself was re-checked and is correct (Tier 2: Draw Mana +2, two placements -2, both detonated free = Investiture-neutral 3-Action turn), but it needed the ceiling note — no figure in the tree ever exceeds one [Tier][Die] per target per payload, permanently below Knowledge's per-Insight multiplier."
+  },
+  {
+   "field": "sustainability.note",
+   "from": "note asserted the trigger-gated recount without naming the borderline case",
+   "to": "same count (1), with the Charge-alternative-trigger borderline case stated explicitly",
+   "reason": "CHECKED AND UPHELD, not changed: the recount from 4 to 1 is correct under the measurement's own definition (only Combustion Chain is a Reaction and fires on another character's event). But a Charge placed with 'when target moves' / 'when a character enters this square' IS enemy-driven, so Concussive Yield can be trigger-gated at the player's option; the note now says why it still is not counted (the free manual detonation is always available as a fallback)."
+  },
+  {
+   "field": "FIELDS CHECKED AND FOUND CORRECT — no change",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Re-verified and left standing: the 6-damage-formula lead (a per-tree count over all 365 gives Destruction 6, Chaos 5, Red/Order/Death 4 — exactly as claimed); damage_direct 5 and terrain_zone 5 (two 5s is within the 'at most two or three' budget); protection 0, healing 0, information 0, social_influence 0, summons 0, mobility 1, exploration_utility 2, action_economy 2; resource_economy 0 (deflation check run: Charge is not one of the three currencies the axis names, and no rider anywhere returns a resource — matches resource-economy.js at 0 regen / 6 costers); all nine word counts (Set Charge 101, Pinpoint Charge 72, The Unmooring 62, Fault Line 57, Pyre 50, Cascading Failure 45, Combustion Chain 36, Concussive Yield 24, Walking Ruin 17); the action-type tally 2/2/2/1/1/1 and the zero-Specials system-wide miss; the Charge-cap dead-clause finding on Cascading Failure; the Blue-remit-delivered-in-Red colour-split drift; the Walking Ruin 'paint hazard by walking' monopoly (Power's Unstoppable Advance leaves nothing behind); zero Destruction talents in advantage-ledger.md; and the dangerous-terrain rules text (energy damage equal to tier, entry or turn-start, merges rather than stacks) quoted verbatim from cosmere-canon-reference."
+  }
+ ]
+}

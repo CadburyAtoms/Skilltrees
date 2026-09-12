@@ -1,0 +1,590 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Leader",
+ "correctionCount": 32,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Leader",
+  "oneLineIdentity": "The system's uncontested social-leverage tree (12 of 25 talents touch influence/persuasion/deception/command against the next tree's 4), bolted to an ally-amplifier engine - the command die, an upsizable additive die handed to a teammate - that is genuinely unique in FORM but out-delivered in FUNCTION by heroic/Envoy; it deals essentially no damage of its own.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 1,
+    "evidence": "Exactly one damage talent: Mighty (Passive, depth 2, earliest L3) - 'When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.' Flat, no dice, rider on an already-successful hit, and it is boilerplate present VERBATIM in six trees (leyline/Red d3, heroic Agent d2, Envoy d1, Hunter d3, Warrior d1, Leader d2 - re-verified by name match across all 365), so it carries no Leader-specific damage identity, and Leader is not even the shallowest place to buy it. Zero damage roll formulas in the authored overlay (re-verified directly rather than from the dossier header: all 25 Leader entries have damageFormula === '' and isHealFormula false). No summons, no zones, no hazards, no Afflicted, no ongoing-condition damage anywhere in the 25 talents. Two indirect cases named honestly and NOT counted here: Synchronized Assault causes ALLY Strikes (party damage), and Set at Odds makes targets 'hostile to each other', which produces enemy-on-enemy damage the tree never rolls."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 1,
+    "evidence": "Mighty is the only source and it scales linearly (1+Tier: +2 at Tier 1, +3 at Tier 2) while [Tier][Die] grows multiplicatively (1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3). It IS repeatable every round with no cost and no once-per-rest limit, which is why this is 1 and not 0, but +3 flat is roughly a third of one [Tier][Die] unit at Tier 2 and it never becomes a threat. Its 'for each action spent' clause could multiply on a multi-action attack, but Leader supplies no attack talent of any kind, so the multiplier is borrowed from another path."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Tactical Ploy (Action, no cost, depth 0, L1): Deception vs. Cognitive to make the target LOSE ONE REACTION plus a disadvantage - reaction denial at level 1 for free. Imposing Posture (Passive, depth 1, L2): enemies that resist your influence inside weapon reach become Disoriented (no reactions, obscured senses). Set at Odds (2 Actions, variable focus, depth 3, Leadership 3+ so L6 in practice): Leadership vs. highest Spiritual to make a chosen number of targets HOSTILE TO EACH OTHER - re-verified across all 365 as the only mutual-hostility effect in the system. Resolute Stand: Valiant Intervention prevents Reactive Strikes. Baleful multiplies all of it by taxing resistance. Held to 3 rather than 4 because there is no Stun, Restrain, Immobilize or Prone anywhere - compare leyline/Blue's Absolute Stillness (0 Speed and no Reactions), leyline/Green's Grasping Vines (Restrained) or deity/Fate's Snares, which is what a 4 looks like - and the two best pieces (Imposing Posture, Set at Odds) are conditional on an influence attempt or on a contested test that can simply fail."
+   },
+   {
+    "axis": "debuff",
+    "score": 3,
+    "evidence": "Valiant Intervention (Action, 1 focus, depth 0, L1): 'move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies' - a party-wide defensive debuff, widened to Leadership-ranks targets by Resolute Stand. Tactical Ploy: disadvantage on the target's next Cognitive or Spiritual test. Baleful (Passive, depth 2): to resist your influence a character must spend additional focus equal to your tier - a resource tax, shared verbatim with leyline/Blue (d3) and heroic/Agent (d1), 3 trees, re-verified by name match. The binary-advantage rule cuts the other way here: disadvantage-likes cancel a target's advantage 1-for-1, and the census records disadvantage as PRODUCED BY 14 TALENTS AND CONSUMED BY NONE, so a second source is never wasted the way a second advantage is. No numeric defence reduction, no Vulnerability and no Weakened, so not 4."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "The axis is defined as 'damage reduction, shields, temp HP, interception, resistance, damage redirection' and the tree has ZERO of all six - confirmed by scanning all 25 texts and by the cross-tree temp-HP search, which returns no Leader talent. What is actually here: Customary Garb (Passive, depth 1, conditional on Presentable armor) +2 Physical AND Spiritual defenses - real, but duplicated verbatim in heroic/Envoy where it sits at depth 0 (re-verified). Resilient Hero (Reaction, depth 3, Athletics 3+ so L6) - 'Before your health drops to 0, it instead becomes equal to your Athletics modifier', death prevention rather than mitigation. Valiant Intervention + Resolute Stand impose disadvantage on tests against allies (already scored under debuff). Hardy (+1 max health per level) is a larger pool, not mitigation. Against the calibration anchor ('one Reaction that reduces damage once per round scores protection 2'), a conditional defence passive plus a death save is a 2 - and leyline/White, with SIX genuine mitigation talents (Guardian Stance, Interposing Shield, Shared Burden, Devoted Conduit, Shield Wall, Unbreakable Line), is what a 4-5 on this axis looks like."
+   },
+   {
+    "axis": "healing",
+    "score": 1,
+    "evidence": "No Health restoration anywhere in the tree - all 25 entries checked, no talent restores health to self or ally, and the authored overlay carries 0 heal formulas. The only restoration of any resource is Cutthroat Tactics ('if they roll Complication, you recover 1 focus', conditional on an ally choosing to raise the stakes AND rolling a Complication), Combat Coordination's 'if your Strike didn't hit, you also don't spend focus' (a non-spend, not a restore), and Focused Mind's one-time bump of max AND current focus by your tier. That is a 1, and it is really resource_economy wearing the healing label. For contrast inside the same atlas, heroic/Envoy's Galvanize hands an ally a full recovery die of focus at depth 0 and Rallying Shout revives an Unconscious ally."
+   },
+   {
+    "axis": "buff",
+    "score": 4,
+    "evidence": "CORRECTED DOWN from 5. The command-die engine is real and it is the tree's spine: Decisive Command (Key, Action, 1 focus, depth 0, L1 - and GRANTED FREE with the path, verified in scripts/foundry-build.js lines 467-468 and 412) gives an ally within 20 ft a d4 to ADD to one die roll on their next test; Confident, Shrewd and Demonstrative Command each 'Increase the size of your command die' (d4 -> d10 with all three) and let you spend 1 focus to add it to your own rolls; Combat Coordination (Free Action, depth 0) makes the grant cost no action after every Strike and no focus on a miss; Relentless March adds +10 ft and Exhausted/Slowed/Surprised immunity to the same grant; Authority doubles its range and ally count. All five 'command die' hits in the 365 are Leader's, that FORM is unique, and the binary-advantage discount genuinely does not apply. But 5 means 'the reference implementation of this axis' and heroic/Envoy is the better implementation of the same job: Rousing Presence is also a free-with-the-path Key, costs ZERO focus, and lasts UNTIL END OF SCENE (Determined) rather than one die roll; Practical Demonstration is the structural twin of Combat Coordination (Free Action off a hit or a Gain Advantage); and Envoy then layers Devoted Presence (strip Prone/Slowed/Stunned/Surprised), Stalwart Presence (+2 to a defence), Lessons in Patience (+1 focus), Instill Confidence (Focused), Inspired Zeal, Applied Motivation, Galvanize, Sage Counsel, Rallying Shout (revive) and Practiced Oratory (add targets up to ranks in Persuasion, which out-scales Authority's doubling from L6). Magnitude check per the anchor - what one character actually gains in a round: ONE ally, ONE die roll, +2.5 average at base d4, BELOW the ~+3.3 expected value of a single advantage, and three further talent picks are needed to reach d10. Leader is one of the best buff trees in the game (4); it is not the reference one."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4, for two reasons. (1) DOUBLE-COUNT: the previous 4 leaned on 'the denial side' - Tactical Ploy stripping a reaction, Imposing Posture's Disoriented, Resolute Stand denying Reactive Strikes - but the axis definitions put 'action/reaction denial' under CONTROL, where all three are already scored. Removing them leaves only the granting side. (2) NET COUNT: of the three granting talents, only ONE is actually additive. Combat Coordination (Free Action, depth 0, L1) - after you Strike, use Decisive Command WITHOUT SPENDING AN ACTION - is a genuine free extra activation every round from level 1 (the path's free Leadership rank plus a level-1 character's 2 skill ranks clears its Leadership 2+ gate), and it is excellent. Through the Fray spends YOUR Action to give one ally a reaction: net zero for the party. Synchronized Assault (3 Actions, 2 focus, Leadership 3+ so L6) converts 3 of your Actions into up to 3 ally Actions - break-even at Leadership 3, negative below it, and on a failed test it is 3 Actions for ONE ally Strike. Comparators that match or beat this, found by scanning all 365: heroic/Envoy (Practical Demonstration plus Foresight, 'gain an additional reaction each turn', which breaks the primer's hard 1-Reaction cap), heroic/Warrior (four stances at depth 0-1 - Flamestance 'gain an Action to attack or Gain Advantage', Windstance 'Free Action to gain an Action', Vigilant Stance cheapening reactions and making stance-swaps free, Stonestance taxing an enemy an extra Action), heroic/Scholar (Overcharge free Strike, Swift Healer, Turning Point granting an Action to you AND all allies), heroic/Hunter (Exploit Weakness, Backstep, Sidestep's extra Dodge reaction, Animal Bond giving a companion one or two Actions). One genuinely additive talent plus two net-neutral ones is 'a real, usable competency, at least one good one' = 3."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Valiant Intervention moves you 10 ft as part of the Action. Relentless March gives the Decisive Command target +10 ft movement and lets them ignore Slowed (and Exhausted, and Surprised) - a real repeatable ally reposition, though it is L6 in practice via Persuasion 3+. Through the Fray grants an ally an out-of-turn Disengage. Real but incidental - no teleport, no dash, no ignore-difficult-terrain, no self-repositioning tool worth an Action on its own; compare heroic/Hunter and heroic/Agent's Surefooted (+10 movement flat plus fall/hazard reduction) or deity/Fate's Weave the Thread teleport link."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Searched all 25 talents for areas, hazards, difficult terrain, walls, zones or persistent battlefield features. There are none. The only spatial language in the tree is the 20 ft / 40 ft ally range on Decisive Command and Through the Fray, and 'within your weapon's reach' on Imposing Posture."
+   },
+   {
+    "axis": "information",
+    "score": 1,
+    "evidence": "Rumormonger's Scandal expertise + 2 focus to add Opportunity 'when you make a test to spread misinformation or gather rumors' is the only info-gathering effect, and it is a bonus to a test rather than an information grant. Shrewd Command adds the command die to Insight rolls. No detection, no scouting, no foreknowledge, no reading intent, no 'you know X' clause anywhere - deity/Fate's Read the Threads ('you learn the action it intends to take on its next turn') is what a real information talent looks like."
+   },
+   {
+    "axis": "social_influence",
+    "score": 5,
+    "evidence": "A defining pillar, the tree's real subject matter, and the ONE axis where the comparative check STRENGTHENS the profile rather than weakening it. Counting talents whose text touches influence / persuasion / deception / intimidation / command / patronage across all 21 trees: heroic/Leader 12 (Imposing Posture, Resolute Stand, Demonstrative Command, Confident Command, Synchronized Assault, Tactical Ploy, Rumormonger, Well Dressed, Baleful, Set at Odds, Shrewd Command, Grand Deception), then leyline/Blue 4, heroic/Envoy 4, leyline/White 3, leyline/Black 3, heroic/Agent 3, deity/Power 3, and ZERO in eight of the ten deity trees. Three command-die talents feed the social skill groups directly (Confident -> Intimidation/Leadership/Persuasion; Shrewd -> Deception/Insight/Leadership; Demonstrative -> Athletics/Agility/Leadership). Three expertise talents are social leverage (Rumormonger/Scandal, Well Dressed/Fashion, Well Supplied/Military Logistics). Baleful taxes resistance; Imposing Posture punishes a successful resist with Disoriented. The active plays are all social contests: Tactical Ploy (Deception vs. Cognitive), Set at Odds (Leadership vs. highest Spiritual, mass division), Grand Deception (Deception DC 15), Synchronized Assault (Leadership vs. Cognitive). Two talents have narrative social PREREQUISITES - Rumormonger needs 'A patron', Authority needs 'Title granting you command of 5+ people'. QUALIFIED: the one comparator with a bigger single social HAMMER is heroic/Envoy (Calm Appeal pacifies a Disoriented target; Peaceful Solution ends combat outright once all non-minion enemies are pacified) - noted, and it does not displace Leader at 5 on breadth, which is 3:1."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "CORRECTED DOWN from 3. The content is three expertise talents plus one travel rider: Well Supplied (Military Logistics expertise + 2 focus for Opportunity on a requisition test), Rumormonger (Scandal expertise + Opportunity on rumor-gathering), Well Dressed (Fashion expertise), Relentless March (the command target ignores Exhausted and Slowed). Two of the three are Agent's contact-expertise template reskinned (heroic/Agent's High Society Contacts and Underworld Contacts are the identical 'expertise + 2 focus for an Opportunity on a narrow test' shape, and Envoy carries High Society Contacts verbatim too). Judged against the anchor 'you would not pick this tree for it', the comparators are decisive: heroic/Scholar carries EIGHTEEN exploration/downtime/medicine talents (Erudition and Deep Study reassign skills and expertises every long rest; four crafting talents; Field Medicine, Swift Healer, Applied Medicine, Ongoing Care, Resuscitation), and heroic/Hunter has a genuine survival kit (Experienced Trapper forages for a whole party and fashions tools, Deadly Trap, Surefooted, Animal Bond). Three expertises and a march rider is 'present but minor' = 2."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companions, constructs, minions or animated allies. Authority's 'Title granting you command of 5+ people' is a narrative PREREQUISITE, not an entity you control on the board; the allies Synchronized Assault and Decisive Command target are other PCs, not summoned. Contrast heroic/Hunter's animal companion (Animal Bond gives it Actions, Feral Connection scales its HP and defences) and deity/Civilization's Combat Construct."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "Focused Mind (Passive, depth 0) increases MAX and current focus by your tier - the same effect appears in five trees (leyline/Blue and /Black as 'Composed' with 'maximum focus' only; heroic/Envoy 'Composed' and heroic/Scholar 'Clear Mind' carry Leader's exact max-and-current wording; re-verified by name and text match), and Leader sells it shallowest at depth 0. Cutthroat Tactics recovers 1 focus when the command-die ally rolls a Complication. Well Supplied and Rumormonger each spend 2 focus to ADD an Opportunity to a narrow test - Opportunity generation, but paid for in focus. Combat Coordination avoids the Decisive Command focus if the Strike missed. Net, the tree is a heavy focus SINK (11 of 25 talents carry a Cost field, all focus - re-counted directly off the data, matching the census's 'Leader 11') with one conditional 1-focus refund and no in-combat regeneration; heroic paths have no Draw Mana. heroic/Envoy is what a 4 looks like on this axis in the same atlas (Galvanize gives an ally a whole recovery die of focus at depth 0, Applied Motivation adds half your Lore ranks to any focus recovery you cause, Lessons in Patience, Inspired Zeal). Present but minor = 2."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Mighty",
+     "dice": "flat 1 + your Tier (no dice); +2 at Tier 1, +3 at Tier 2. The text names NO damage type - inferring the weapon's own type (and therefore Deflect) is an inference, not something the card says",
+     "action": "Passive rider on a weapon or unarmed hit",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "CONDITIONAL RIDER: fires only on an already-successful hit, and only for a weapon/unarmed attack Leader itself provides no talent for. 'For each action spent' means a multi-action attack multiplies it, but the tree has no multi-action attack. Present verbatim in six trees (leyline/Red d3, heroic Agent d2, Envoy d1, Hunter d3, Warrior d1, Leader d2) - taking it does not make Leader a damage tree, and Envoy and Warrior both sell it one depth cheaper."
+    }
+   ],
+   "countReal": 1,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 2,
+   "earliestDamageLevel": 3,
+   "peakDamagePerAction": "~+3 flat damage per action spent at Tier 2 (Mighty, 1+Tier), riding on a Strike you were making anyway. In [Tier][Die] units that is roughly 0.33 of one unit (Tier 2 rank 3 [Tier][Die] = 2d8, avg 9). The card names no damage type, so whether Deflect applies depends on the weapon. This is the floor of the whole comparison set, contributed by a talent five other trees also have.",
+   "repeatability": "Every round, free, no resource cost, no once-per-rest limit - but only while you are also making weapon attacks with a kit sourced from another path. Zero rounds of damage if Leader is your only tree and you rely on its own talents.",
+   "verdict": "This tree does not deal damage. One talent (Mighty) produces a flat +1+Tier rider on an attack the tree does not supply, first reachable at depth 2 / L3 - which matches the damage-census row for heroic/Leader (SOURCE 0, SRC+AMP 1, earliestL 3). Re-verified directly against all-talents.json rather than trusting the dossier header: all 25 Leader entries carry an empty damageFormula and isHealFormula false. Zero summons, zero zones, zero hazards, zero Afflicted or other ongoing-damage conditions. Checked explicitly for the known false-positive class: this tree has NO 'reduce damage taken' talents at all, so the count of mitigation talents mistakable for damage is 0 - the defensive entries (Hardy, Customary Garb, Resilient Hero) raise max HP, defenses and prevent death without ever using the word damage. TWO adjacent cases named honestly and deliberately not counted: (1) Synchronized Assault (3 Actions, 2 focus, capstone) converts your whole turn into up to Leadership-ranks ALLY Strikes - real party damage, scored under action_economy and buff; (2) Set at Odds makes a chosen number of targets 'hostile to each other', which produces enemy-on-enemy damage the tree never rolls and cannot size - the closest thing in the tree to damage arriving without the word, and it is redirection, not a source."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (7 talents, L1)",
+    "rating": 4,
+    "exemplars": "Decisive Command, Combat Coordination, Tactical Ploy, Focused Mind",
+    "note": "The tree's entire engine is available at level 1, and more cheaply than the depth column suggests: Decisive Command is the Key talent and is GRANTED FREE by the path Item (verified in scripts/foundry-build.js - line 467 sets isKey from specialty === 'Key', 468 records keyUuid, 412 mints a 'Grant Key Talent' add-to-actor / grant-items event on the path, 413 the matching removal), so a level-1 Leader owns it plus their level-1 pick. Decisive Command + Combat Coordination is a free, repeatable, every-round ally bonus die that costs no focus on a miss, and Tactical Ploy is level-1 enemy reaction denial at no cost. Combat Coordination's Leadership 2+ gate clears at L1 because the path grants a free Leadership rank on top of the level's 2 skill ranks - noting the intent file conditions that free rank on Leader being your STARTING path. Nothing later changes what the tree DOES, only how big the die is and how many allies it reaches. Held at 4 rather than 5 because heroic/Envoy's depth-0 shelf is the same shape and cheaper: Rousing Presence is also free with the path and costs zero focus for a scene-long Determined, Practical Demonstration is the same free-action rider, and Customary Garb sits at depth 0 there instead of depth 1."
+   },
+   {
+    "band": "depth 1-2 (12 talents: 5 at depth 1 / L2, 7 at depth 2 / L3)",
+    "rating": 3,
+    "exemplars": "Confident Command, Shrewd Command, Customary Garb, Imposing Posture; dragged down by Well Supplied, Rumormonger, Well Dressed",
+    "note": "The multiplier band - two command-die upsizes and a +2/+2 defence passive are genuinely strong, but half the band is expertise filler on the Agent contacts template (2 focus for an Opportunity on a downtime test) and shared boilerplate (Hardy, Baleful, Well Dressed, Customary Garb are all copies of talents in other trees, re-verified by name match across the 365). One member is mis-dated by the dossier: Relentless March sits at depth 2 with a printed earliest L3, but its Persuasion 3+ prerequisite is unreachable before L6."
+   },
+   {
+    "band": "depth 3+ (6 talents: 5 at depth 3, 1 at depth 4)",
+    "rating": 2,
+    "exemplars": "Authority carries the band alone; Set at Odds and Resilient Hero are real but L6; Demonstrative Command is a third die-upsize; Grand Deception and Synchronized Assault are below curve",
+    "note": "CORRECTED DOWN from 3. Bimodal, and the bad half is worse than the good half is good. Authority is arguably the best talent in the tree - it doubles range AND target count of every ally-facing Leader talent at once, and re-verified across the 365 it is the only whole-path range+target doubler - though it is gated on a GM-granted title rather than a talent. But BOTH of the tree's 3-Action talents live in this band and both are among the worst per-action effects in the heroic atlas, and Demonstrative Command is the third purchase of the identical 'increase the size of your command die' rider. The dating makes it worse: FOUR of these six carry rank-3 skill prerequisites and are therefore L6 talents, not the L4-L5 printed - Resilient Hero (Athletics 3+), Grand Deception (Deception 3+), Set at Odds (Leadership 3+), Synchronized Assault (Leadership 3+); only Authority (title only) and Demonstrative Command (Leadership 2+) are genuinely L4. The fifth rank-3-gated talent in the tree, Relentless March (Persuasion 3+), sits at depth 2 and is NOT in this band. That matters comparatively: L6 is exactly where a leyline character's deep band gets Tier 2 AND rank 3 in one step ([Tier][Die] 1d6 -> 2d8), while Leader's L6 band delivers a bigger granted die, a contested mass-hostility play and a death save. Root cause of the dossier's under-dating, verified directly: every Leader talent's rankGate field in all-talents.json is the empty string - the detector recognises leyline colour gates ('Blue 3+') and not skill-rank gates, so heroic earliest-L values are under-computed wherever a rank 3+ skill prerequisite exists. The same bug under-dates heroic/Scholar's Turning Point (Deduction 3+, printed L4, really L6)."
+   }
+  ],
+  "frontOrBackLoaded": "Strongly FRONT-LOADED, and more so than the depth column shows: the Key talent is free with the path, so the complete gameplay loop - free command die every round after a Strike, at 1 focus, plus no-cost level-1 reaction denial - is live at L1 for a single talent pick. Depth 3+ adds one excellent multiplier (Authority) and two of the worst-value talents in the atlas (Grand Deception, Synchronized Assault, both 3 Actions), and four of its six members are really L6 once the rank-3 skill gates are counted. A Leader who stops at depth 2 has lost very little; a Leader who spends levels 6-10 on the deep band gets the same turn with a bigger die.",
+  "uniqueOwnership": [
+   "THE COMMAND DIE - the only granted, upsizable bonus DIE in all 21 trees. Re-verified by scanning all 365 for 'command die': all five hits (Decisive Command, Confident Command, Shrewd Command, Demonstrative Command, Cutthroat Tactics) are Leader's. CORRECTED SCOPE: the previous claim that it is 'the only way in the system to hand an ally a numeric bonus to a d20 roll' is FALSE and is withdrawn. At least eight other talents in five trees hand an ally a numeric bonus to a roll - leyline/White Shared Conviction ('add your White modifier to their result. This may change the outcome'), leyline/White Bound by Word ('they may use your White modifier in place of their own'), leyline/White Terms of Accord ('you both gain +1 to tests pursuing the objective for the scene'), leyline/Red Battle Fever ('you and allies gain +1 to your next test (max = Rank)') and Feeding Frenzy, leyline/Green Pack Sense ('they add your Green modifier'), heroic/Hunter Pack Hunting ('add your ranks in Survival to your ally's attack or damage roll'), deity/Power Mantle of the Aspirant ('allies in Attunement Range gain +1 to all tests'). What survives is narrower and still real: Leader is the only tree that grants the bonus as a DIE rather than a flat modifier, the only one whose bonus is upsized by buying further talents, and - because it is additive rather than binary - one of the few ally-buffs that never goes to zero when a second source is present.",
+   "The only GRANTED bonus that grows by buying more talents: Confident/Shrewd/Demonstrative Command each 'Increase the size of your command die' (d4 -> d6 -> d8 -> d10), and each also unlocks a different skill group for adding it to your OWN rolls. Qualification: deity/Sovereignty is the atlas's other die-resizing tree - seven of its nine talents step an ally's or an enemy's own DAMAGE die up or down. Leader's claim is the narrower one: it is the only tree that upsizes a die it granted, and the only one whose upsize is bought with talent picks rather than Investiture.",
+   "Authority - re-verified across all 365 as the only talent that doubles both the RANGE and the TARGET COUNT of an entire path's ally-facing talents at once; every other range/target extender modifies one or two NAMED effects (heroic/Envoy's Practiced Oratory adds targets to Rousing Presence and Steadfast Challenge; Leader's own Resolute Stand adds targets to Valiant Intervention). QUALIFIED: Practiced Oratory scales with ranks in Persuasion, so from L6 it adds 3 targets where Authority only doubles 1 into 2 - Authority's BREADTH is unique, its magnitude is not best-in-atlas. It is also gated on a campaign-state prerequisite ('Title granting you command of 5+ people'), not a talent.",
+   "Set at Odds - the only mass 'make them hostile to each other' effect; re-verified by searching 'hostile' across all 365 talents, which returns only this and leyline/White's Voice of Authority, and White's is 'targets an ally with a hostile action', an unrelated disadvantage trigger.",
+   "Resilient Hero - the only free, automatic, inherently SELF death-defiance ('Before your health drops to 0, it instead becomes equal to your Athletics modifier'), and its text carries no once-per-scene limit. The two other death-prevention effects in the atlas both cost and both are aimed outward: leyline/White's Unbreakable Line (Special, 3 Investiture, once per round, an ADJACENT ally, and a test at DC = half the damage taken) and deity/Death's Death Ward (2 Actions, 2 Investiture, a character in Attunement Range, first drop to 0 becomes 1 HP plus temp HP, once - plausibly self-targetable on a willing target, which is why the claim is stated with that qualification rather than flatly)."
+  ],
+  "gaps": [
+   "DAMAGE. A Leader-only character contributes +2 or +3 to a weapon hit and nothing else. Against an enemy the party must kill, they have no play that puts a number on it - no attack talent, no spell, no formula, no vital or spirit damage anywhere.",
+   "HEALING of Health, at all. Nobody gets HP back from this tree. The only restoration is 1 focus on a Complication (Cutthroat Tactics). Its nearest neighbour in the atlas, heroic/Envoy, covers focus recovery AND revival.",
+   "Damage mitigation. There is no damage reduction, no temp HP, no shield, no resistance, no interception and no redirection - all six categories of the protection axis are absent. The tree's whole defensive answer is 'have more max HP and higher defence numbers'.",
+   "ANY area or terrain effect. Nothing creates a zone, hazard, wall or difficult ground; nothing hits multiple enemies with a single effect except Set at Odds (2 Actions, variable focus, Leadership 3+ so L6, contested).",
+   "Investiture and the leyline economy entirely - the tree does not reference Investiture once, so it has no Draw Mana synergy and no in-combat resource regeneration. When focus runs out (~5 rounds of the core loop, ~2-3 of the full stack) the character is reduced to standard actions.",
+   "Detection and scouting. No 'you know X' effect, no sensing, no anti-stealth, no foreknowledge. Against an ambush or a hidden enemy, a Leader has nothing.",
+   "PLAYING SOLO. Nine of 25 talents (Decisive Command, Combat Coordination, Through the Fray, Relentless March, Authority, Synchronized Assault, Cutthroat Tactics, Valiant Intervention, Resolute Stand) do literally nothing without a living ally in range. In a scene where the Leader is separated from the party, roughly a third of the tree is inert.",
+   "The turn where the party needs the Leader to act ALONE and decisively: the only two 'big play' talents are 3-Action, cost most of the focus pool, and either reveal a ruse that changes a detail (Grand Deception) or hand the actual play to somebody else (Synchronized Assault).",
+   "NON-REDUNDANCY WITH ITS OWN RECOMMENDED PARTNERS. The intent file names Warrior and Envoy as Leader's excellent multi-path choices. Checked by name across all 365: Envoy shares Well Dressed, Customary Garb and Mighty (and Composed, which is Focused Mind's effect under another name); Warrior shares Mighty and Hardy. The designer's own build advice therefore points at the two paths that waste the most Leader picks - and Envoy additionally competes for the same ally-amplifier turn."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'Beacons of encouragement and direction, leaders oversee the efforts of others' / 'bolstering fellowship and resolve to carry on'.",
+     "delivered": "DELIVERS - but not exclusively",
+     "evidence": "The most literal claim-to-mechanic match in the tree: Decisive Command hands an ally an encouragement die, Combat Coordination makes it free every round, Relentless March adds movement and strips Exhausted/Slowed/Surprised from the target, Through the Fray grants an ally an out-of-turn action, Authority doubles who it reaches, Synchronized Assault turns encouragement into ally Strikes. COMPARATIVE NOTE ADDED (lens d): this promise is ALSO made by heroic/Envoy's intent file - the Mentor specialty, 'patiently nurture others toward greatness, seeing beyond doubts and deficits to stoke each person's potential' - and Envoy delivers the same job more cheaply (Rousing Presence: 0 focus, scene-long Determined) and more broadly (condition removal, defence, focus recovery, revival, multi-target scaling). The promise is delivered; the identity is shared, and shared with the path Leader's own intent file recommends multi-pathing into."
+    },
+    {
+     "claim": "CHAMPION: 'Inspiring others through unfaltering grit, Champions ferociously charge their foes. Their momentum is magnetic, rallying nearby allies to press on.'",
+     "delivered": "DRIFTED",
+     "evidence": "Champion's seven talents are Combat Coordination, Valiant Intervention, Hardy, Imposing Posture, Mighty, Resolute Stand, Resilient Hero. FOUR of seven are self-facing (Hardy +1 HP/level, Imposing Posture Disoriented in your reach, Mighty +1+tier on your hit, Resilient Hero your own death save); THREE are genuinely ally-facing - Combat Coordination, Valiant Intervention ('disadvantage on tests against your allies') and Resolute Stand, which widens Valiant Intervention to Leadership-ranks targets and stops Reactive Strikes. The drift is that there is no momentum mechanic, no escalation, no charge and no 'magnetic' pull anywhere in the specialty - Valiant Intervention's 10 ft is the only movement it contains, and its ally-facing half is protective (imposing disadvantage on enemies) rather than inspiring. Champion is empirically a personal-durability line with a protective rider, wearing charge-and-momentum flavour. COMPARATIVE NOTE ADDED: the exact fantasy these words describe is implemented in leyline/Red instead - Battle Fever ('each time damage is dealt within Attunement Range, you and allies gain +1 to your next test, max = Rank') and Feeding Frenzy are literally 'momentum is magnetic, rallying nearby allies to press on', and they are free passives."
+    },
+    {
+     "claim": "OFFICER: 'Officers coolly maintain order in utter chaos. They allocate resources and issue commands, orchestrating the march to victory.'",
+     "delivered": "DELIVERS",
+     "evidence": "Resource allocation: Well Supplied (Military Logistics expertise, Opportunity to requisition), Focused Mind (raise the focus pool). Issuing commands: Confident Command and Demonstrative Command (command die upsizes), Authority, Synchronized Assault. The march: Relentless March literally grants +10 ft and ignores Exhausted/Slowed/Surprised. Customary Garb (uniform as armour) fits the officer image. The cleanest delivery in the tree - nine of the 25 talents are Officer."
+    },
+    {
+     "claim": "POLITICO: 'With a penchant for theatrics, Politicos chase favor and prestige while subtly undermining their enemies.'",
+     "delivered": "DELIVERS",
+     "evidence": "Theatrics and prestige: Well Dressed (Fashion expertise, advantage on your first social test while dressed), Rumormonger (Scandal expertise, requires 'A patron'). Subtly undermining: Tactical Ploy (Deception vs. Cognitive, strip a reaction), Baleful (resisting you costs extra focus), Set at Odds (turn a group against each other), Grand Deception, Shrewd Command, Cutthroat Tactics. Delivered - though half of it is reskinned from Agent's contact-expertise template, so it delivers by borrowing. Note the overlap with Envoy's Diplomat specialty ('Stationed abroad, Diplomats are adept at navigating court politics... seek more favorable treatment'), which is the same promise; on talent count Leader wins that contest 12 social talents to 4."
+    },
+    {
+     "claim": "'Leaders can gloriously turn the tides of fate and prevail against superior forces.'",
+     "delivered": "PARTIAL",
+     "evidence": "The tree has no tide-turning big play. Its two 'glorious' 3-Action talents are its worst per-action effects: Grand Deception (3 Actions + 3 focus for a DC 15 test to reveal a ruse that changes a detail) and Synchronized Assault (3 Actions + 2 focus which on a FAILED test yields a single ally Strike). The only genuine 'prevail against superior forces' mechanic is Resilient Hero, a death save. Set at Odds is the closest thing to turning a fight, and it is L6 with a contested test and a per-target focus price."
+    },
+    {
+     "claim": "'The Leader key talent, Decisive Command, UNLOCKS ACCESS to the Leader specialties.'",
+     "delivered": "PARTIAL - true in the build pipeline, not in the prerequisite graph",
+     "evidence": "Decisive Command's specialty field is 'Key', and scripts/foundry-build.js sets isKey = (specialty === 'Key') at line 467, records it as the tree's keyUuid at 468, and mints a 'Grant Key Talent' event on the path Item at 412 (event 'add-to-actor', handler type 'grant-items') plus a matching remove-on-removal at 413. So taking the Leader path AUTOMATICALLY grants Decisive Command without costing a talent pick - every Leader owns the command die from the moment they take the path, and any reading of this as a level-1 trap is wrong. What survives is a narrower, real drift: no talent in the tree lists Decisive Command as a prerequisite, and seven talents sit at depth 0 with no talent prerequisite at all (Combat Coordination, Valiant Intervention, Decisive Command, Focused Mind, Through the Fray, Cutthroat Tactics, Tactical Ploy), so 'unlocks access to the specialties' describes the path grant, not any gate in the node graph. Three talents also reference the command die without requiring it (Combat Coordination, Cutthroat Tactics, Relentless March) - harmless while the Key is auto-granted, but it leaves the dependency invisible on the card."
+    },
+    {
+     "claim": "Build tips: prioritize Presence, Strength, Willpower; useful skills include Athletics, Deception, HEAVY WEAPONRY, INTIMIDATION, Leadership, Persuasion.",
+     "delivered": "PARTIAL / DRIFTED",
+     "evidence": "CORRECTED on Strength, and on which tip the mechanics actually endorse. SKILLS: the tree calls for exactly three as TESTS - Athletics (Valiant Intervention), Deception (Tactical Ploy, Grand Deception) and Leadership (Set at Odds, Synchronized Assault). Persuasion is never a test but IS load-bearing as a prerequisite on three talents (Through the Fray 1+, Well Supplied 2+, Relentless March 3+) and is a command-die target on Confident Command. HEAVY WEAPONRY appears NOWHERE in the 25 talents - no talent mentions a weapon type, weapon trait, or weapon expertise, and Mighty is the only talent that references weapons at all. INTIMIDATION appears exactly once, as a skill Confident Command can add the command die to, never as a test the tree calls for. The tips omit two skills the tree does touch (Insight via Shrewd Command, Agility via Demonstrative Command). ATTRIBUTES: STRENGTH is referenced by ZERO Leader talents - the earlier reading that 'Strength is relevant only through Hardy's HP' was wrong and is withdrawn, because Hardy scales on LEVEL ('+1 max health per level'), not on Strength; STR matters only through the system-wide 10+STR health formula, which is equally true of every path. WILLPOWER is the one tip the mechanics strongly endorse and the profile previously under-sold: focus max = 2 + WIL, and this is an 11-coster tree with no in-combat focus regeneration, so WIL is the tree's real primary. The build advice describes a Warrior-flavoured leader the talent set does not support."
+    },
+    {
+     "claim": "DESIGN-GUIDE-CLAIMS (second intent source): 'No 3-Action talents. Remove or restructure any talent with a 3-Action cost' and 'Passive target ~35%, Special ~25-30%'.",
+     "delivered": "CONFLICT WITH SCOPE, AND BREACHED ON THE NUMBERS",
+     "evidence": "Reported as a disagreement rather than resolved: the design guides are written for LEYLINE and DEITY trees and their benchmark table DERIVES its targets from official heroic paths, so they do not formally bind a heroic path - but on the numbers Leader is the worst offender in the heroic atlas anyway. Action mix re-counted directly off all-talents.json: 8 Passive (32%), 8 Special (32%), 4 Action (16%), 1 Free, 1 Reaction, 1 two-Action, 2 THREE-ACTION (8%, four times the 2% official-heroic rate the guide's own table reports). Agent and Hunter carry one 3-Action talent each; Envoy, Scholar and Warrior carry none. Both of Leader's are also among its weakest talents, which is the guides' point made empirically - and heroic/Scholar's Turning Point does a wider version of Synchronized Assault's effect for 2 Actions (see the crossTreeHooks entry for the qualifications on that comparison)."
+    }
+   ],
+   "actuallyIs": "A social-leverage tree first and an ally-amplifier second - the reverse of the emphasis the previous profile gave it. On the comparative count it owns social influence outright (12 talents against the next tree's 4, with eight of the ten deity trees at zero), and nothing else in the system turns talent picks into out-of-combat leverage over people at that density; that is the answer to the 'something' test. Its buff engine manufactures one genuinely unique FORM - an additive bonus die you hand to a teammate, upsized by further picks and doubled in reach by Authority, which unlike advantage never goes redundant - but the JOB that engine does is done more cheaply and more broadly by heroic/Envoy, whose Key is also free with the path, costs no focus, lasts the whole scene, and is surrounded by condition removal, focus recovery, defence and revival. What it is NOT is the frontline inspirational Champion the intent file leads with: the Champion specialty is mostly a self-durability line with a protective rider, the tree deals no damage of its own, has no healing and none of the six protection mechanics, and its two flagship 3-Action plays are its worst-value talents.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Command die (d4, upsized to d6/d8/d10)",
+    "role": "PRODUCE (sole source in the atlas - all 5 hits are Leader)",
+    "talents": "Decisive Command (grants d4 to an ally within 20 ft, added to one die roll on their next test); Confident Command, Shrewd Command, Demonstrative Command (each increase its size and add it to a skill group of your own rolls); Cutthroat Tactics (trade the roll for Raise the Stakes); Relentless March, Authority, Combat Coordination (riders on the grant)"
+   },
+   {
+    "keyword": "Numeric bonus to an ally's roll (the command die's broader category)",
+    "role": "PRODUCE - one of at least 6 trees, NOT unique",
+    "talents": "Leader's five command-die talents, but also leyline/White Shared Conviction, Bound by Word and Terms of Accord; leyline/Red Battle Fever and Feeding Frenzy; leyline/Green Pack Sense; heroic/Hunter Pack Hunting; deity/Power Mantle of the Aspirant. Leader's distinction is that its bonus is a DIE and is upsized by talent picks, not that it exists at all."
+   },
+   {
+    "keyword": "Focus",
+    "role": "BOTH, heavily net CONSUME - 11 of 25 talents carry a focus Cost field, one refunds",
+    "talents": "CONSUME (re-counted directly off the data, all 11): Decisive Command 1, Valiant Intervention 1, Confident Command 1, Shrewd Command 1, Demonstrative Command 1, Well Supplied 2, Rumormonger 2, Synchronized Assault 2, Grand Deception 3, Resolute Stand Variable (up to ranks in Leadership), Set at Odds Variable (per target). PRODUCE: Focused Mind (max + current +tier), Cutthroat Tactics (recover 1 on a Complication), Combat Coordination (no spend on a missed Strike)"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "PRODUCE (narrow, purchased with focus)",
+    "talents": "Well Supplied (add Opportunity to a requisition test), Rumormonger (add Opportunity to a misinformation/rumor test). Same template as heroic/Agent's High Society Contacts and Underworld Contacts and heroic/Envoy's High Society Contacts. Note: the tree has NO Plot Die manipulation talent - the cross-tree count places all 3 plot-die talents in leyline/Red and heroic/Agent."
+   },
+   {
+    "keyword": "Raise the Stakes",
+    "role": "CONSUME",
+    "talents": "Cutthroat Tactics - the ally raises the stakes instead of rolling your command die. Not unique: leyline/White's Concordant Presence, Guiding Signal and Unity of Purpose all hand allies raise-the-stakes."
+   },
+   {
+    "keyword": "Complication (plot die face)",
+    "role": "CONSUME as a trigger",
+    "talents": "Cutthroat Tactics - you recover 1 focus when the ally rolls one"
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Imposing Posture. REFINED: 14 talents in 11 trees apply Disoriented, and the two influence-linked comparators are MIRROR triggers rather than duplicates - leyline/White's Overwhelming Authority and leyline/Blue's Subtle Suggestion both fire when you SUCCESSFULLY influence a character and cost 1 Investiture, while Imposing Posture fires when an enemy RESISTS your influence inside your weapon's reach and costs nothing. Leader's is the only one that pays out on a FAILED influence attempt."
+   },
+   {
+    "keyword": "Exhausted / Slowed / Surprised",
+    "role": "NEGATE on an ally",
+    "talents": "Relentless March (the Decisive Command target ignores all three). Compare heroic/Envoy's Devoted Presence, which strips Prone, Slowed, Stunned and Surprised from the Rousing Presence target for 1 focus."
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE",
+    "talents": "Valiant Intervention (on tests against your allies), Tactical Ploy (target's next Cognitive or Spiritual test). Worth pricing in the census finding that disadvantage is produced by 14 talents in 9 trees and CONSUMED by none - unlike advantage, a second source is never redundant."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE (thin - one self-buff, plus granting the standard Gain Advantage action)",
+    "talents": "Well Dressed (your first Deception/Leadership/Persuasion test); Through the Fray (ally may Gain Advantage as a reaction). Re-verified against advantage-ledger.md: these are the only two Leader entries in the 48-talent ledger. The thinness is a strength rather than a weakness - the command die is additive and so never collides with a party-mate's advantage."
+   },
+   {
+    "keyword": "Reaction",
+    "role": "BOTH - DENY, GRANT and CONSUME",
+    "talents": "DENY: Tactical Ploy (target loses one reaction), Imposing Posture (Disoriented = no reactions), Resolute Stand (Valiant Intervention prevents Reactive Strikes). GRANT: Through the Fray (ally gets a reaction to Disengage or Gain Advantage). CONSUME: Resilient Hero (the tree's only Reaction-type talent, 1 of 25). Note that no Leader talent gives YOU an extra reaction - heroic/Envoy's Foresight and heroic/Hunter's Sidestep are the atlas's cap-breakers."
+   },
+   {
+    "keyword": "Reactive Strike",
+    "role": "DENY",
+    "talents": "Resolute Stand (Valiant Intervention prevents them)"
+   },
+   {
+    "keyword": "Strike",
+    "role": "CONSUME as a trigger, and GRANT to allies",
+    "talents": "Combat Coordination (after you Strike), Mighty (when you hit), Synchronized Assault (allies gain an Action for an additional Strike against the target)"
+   },
+   {
+    "keyword": "Action grant",
+    "role": "PRODUCE - and Leader is NOT the leader of this category",
+    "talents": "Combat Coordination (free Decisive Command), Synchronized Assault (an Action to each of up to Leadership-ranks allies). Comparators found by scanning all 365: heroic/Scholar Turning Point (an Action to you AND all allies, 2 Actions + 2 focus) and Overcharge (a free Strike); heroic/Envoy Practical Demonstration (free Rousing Presence off a hit or a Gain Advantage) and Foresight ('gain an additional reaction each turn'); heroic/Warrior Flamestance and Windstance (gain an Action) and Stonestance (tax an enemy an extra Action); heroic/Hunter Exploit Weakness, Backstep, Sidestep and Animal Bond (give your companion one or two Actions)."
+   },
+   {
+    "keyword": "Influence / resisting influence",
+    "role": "CONSUME as a trigger and TAX",
+    "talents": "Baleful (resisting costs additional focus equal to your tier), Imposing Posture (resisting in your reach causes Disoriented). Influence is a SYSTEM-BASELINE test, not a Leader-only resource - leyline/White's Disciplined Mind reduces 'the focus cost to resist influence' generally, heroic/Envoy's Calm Appeal taxes resisting Steadfast Challenge by ranks in Discipline, and heroic/Scholar's Keen Insight forces a resist off a Gain Advantage."
+   },
+   {
+    "keyword": "Max health",
+    "role": "PRODUCE",
+    "talents": "Hardy (+1 per level, retroactive) - re-verified present in 7 trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior); Leader and Warrior carry it shallowest, at depth 1."
+   },
+   {
+    "keyword": "Max focus",
+    "role": "PRODUCE",
+    "talents": "Focused Mind (max and current +tier) - re-verified: the same effect in 5 trees (leyline Blue/Black as 'Composed' with maximum-only wording; heroic Envoy 'Composed' and Scholar 'Clear Mind' with Leader's exact max-and-current wording). Leader's is the shallowest of the five, at depth 0."
+   },
+   {
+    "keyword": "Physical / Spiritual / Cognitive defenses",
+    "role": "BOTH - raise your own, test against enemies'",
+    "talents": "RAISE: Customary Garb (+2 Physical and Spiritual, while in Presentable armor). TEST AGAINST: Valiant Intervention (vs. Spiritual), Tactical Ploy (vs. Cognitive), Set at Odds (vs. highest Spiritual), Synchronized Assault (vs. Cognitive)"
+   },
+   {
+    "keyword": "Expertise (Military Logistics, Scandal, Fashion)",
+    "role": "PRODUCE",
+    "talents": "Well Supplied, Rumormonger, Well Dressed"
+   },
+   {
+    "keyword": "Presentable armor / fashionable clothing",
+    "role": "CONSUME (equipment gate)",
+    "talents": "Customary Garb, Well Dressed - both duplicated in heroic/Envoy, and both one depth shallower there"
+   },
+   {
+    "keyword": "Hostile (mutual enemy hostility)",
+    "role": "PRODUCE",
+    "talents": "Set at Odds - the only mutual-hostility effect in the 365"
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME as scaling",
+    "talents": "Focused Mind (+tier focus), Mighty (1+tier damage), Baleful (tier focus tax)"
+   },
+   {
+    "keyword": "Ranks in Leadership",
+    "role": "CONSUME as scaling",
+    "talents": "Resolute Stand (focus up to ranks = extra targets), Set at Odds (focus per target), Synchronized Assault (allies up to your ranks). Note the ranks that matter most are capped at 2 until level 6."
+   },
+   {
+    "keyword": "Athletics modifier",
+    "role": "CONSUME as scaling",
+    "talents": "Resilient Hero (health becomes your Athletics modifier)"
+   },
+   {
+    "keyword": "Narrative station: 'A patron', 'Title granting you command of 5+ people'",
+    "role": "CONSUME (GM/campaign-state prerequisite, not a talent prerequisite)",
+    "talents": "Rumormonger, Authority. Not unique: heroic/Envoy's High Society Contacts requires 'Patron in high society' and Instill Confidence requires 'a companion'."
+   },
+   {
+    "keyword": "Investiture / Draw Mana / Attunement Range",
+    "role": "NEITHER - notable absence",
+    "talents": "Zero of 25 talents reference Investiture, Draw Mana, Attunement Range or any leyline colour. The tree is entirely outside the leyline economy."
+   }
+  ],
+  "crossTreeHooks": [
+   "The whole command-die engine (Decisive Command, Combat Coordination, Confident/Shrewd/Demonstrative Command, Relentless March, Authority, Cutthroat Tactics) is worth zero without an ALLY making rolls. Its value is set by what the rest of the party rolls for, not by anything in this tree.",
+   "Mighty and Combat Coordination both trigger on YOU making a weapon Strike, and Leader supplies no attack talent, no weapon expertise and no weapon traits. Both need an outside attack kit (Warrior, Hunter, Red leyline) to fire at all - Leader is one of the few trees whose damage rider depends entirely on another path.",
+   "THE RECOMMENDED-PARTNER TRAP (added by the comparative pass). The intent file names Warrior and Envoy as Leader's excellent multi-path choices. Checked by name across all 365: Envoy shares Well Dressed, Customary Garb and Mighty with Leader - and Composed, which is Focused Mind's effect under another name - while Warrior shares Mighty and Hardy. So the two partners the designer recommends are precisely the two that make the most Leader picks redundant, and Envoy additionally competes for the same ally-amplifier turn: Practical Demonstration + Rousing Presence is the Combat Coordination + Decisive Command loop with a cheaper Key.",
+   "Synchronized Assault is a pure damage MULTIPLIER for the party's strikers: its output is entirely the allies' Strike damage. Its value is set by the highest-damage allied path at the table, and by Leadership ranks (Leadership 3 is L6+, so before then it moves at most 2 allies).",
+   "Imposing Posture and Baleful trigger on an INFLUENCE effect being resisted, and influence is a SYSTEM-BASELINE mechanic available to every character, not a resource another path must supply - leyline/White's Disciplined Mind reduces 'the focus cost to resist influence' for anyone, and heroic/Envoy's Calm Appeal taxes it too. Leader also generates its own resisted-influence moments through Tactical Ploy and Set at Odds. They are BETTER alongside a dedicated influence path (Envoy, Black leyline domination, Tyrith's Kneel), but they are not near-dead without one.",
+   "Cutthroat Tactics depends on the ally choosing to Raise the Stakes AND on the Plot Die rolling a Complication. That is the same seam as leyline/White's Unity of Purpose, Concordant Presence and Guiding Signal, heroic/Agent's Get 'Em Talking and Risky Behavior, and heroic/Scholar's Overcharge - Leader is a member of the plot-die-sharing cluster while owning zero plot-die-manipulation talents of its own.",
+   "Customary Garb and Well Dressed both gate on Presentable armor - an EQUIPMENT dependency the tree does not grant.",
+   "Confident / Shrewd / Demonstrative Command's self-use clause is only worth a focus if your OTHER paths actually roll Intimidation/Persuasion, Deception/Insight or Athletics/Agility. Their value is set by which second path you take, not by Leader.",
+   "Rumormonger requires 'A patron' and Authority requires 'Title granting you command of 5+ people' - campaign-state prerequisites owned by the GM and EDHA_CAMPAIGN_STATE.md, not by any talent tree. Authority is the tree's best talent and a GM can withhold it.",
+   "Through the Fray hands an ally the Gain Advantage action - worth zero on that half if the ally already has advantage from their own path (binary advantage). The Disengage half retains value regardless because it converts the ally's Action into a reaction.",
+   "Synchronized Assault is out-competed across trees, with the caveats now recorded: heroic/Scholar's Turning Point (2 Actions, 2 Focus) grants an Action to you AND all your allies for any use, where Leader's capstone costs 3 Actions for up to Leadership-ranks allies and only for a Strike against one target. CAVEATS the previous 'strictly wider' claim skipped: Turning Point's Actions arrive 'on your next turns' rather than immediately, it must target 'the enemy leader', it has no failure clause at all where Synchronized Assault has a one-ally floor, and its Deduction 3+ prerequisite makes it an L6 talent too (the dossier prints L4 because of the same empty-rankGate bug). The action-price gap - 3 versus 2 - is what stands unqualified."
+  ],
+  "topThree": [
+   "Decisive Command - the Key talent and the tree's entire reason to exist, and it is FREE with the path (verified in the build script), so it never costs a pick. 1 Action, 1 focus, L1: an ally within 20 ft gets an additive d4 (scaling to d10) on one die roll of their next test. The only granted, upsizable bonus DIE in the atlas, and unlike advantage it never becomes redundant.",
+   "Combat Coordination - Free Action, depth 0, L1: makes Decisive Command cost NO ACTION after every Strike, and no focus if the Strike missed. It converts the tree's 1-Action core loop into a free rider on a turn you were taking anyway - the single largest power step in the tree, available at level 1 because the path's free Leadership rank clears its Leadership 2+ gate. Structurally the same move as heroic/Envoy's Practical Demonstration, with a more forgiving trigger (it fires on a miss, and refunds the focus).",
+   "Authority - Passive, depth 3 (genuinely L4; its only gate is a narrative title): doubles the RANGE and the NUMBER OF ALLIES for every ally-facing Leader talent at once. Decisive Command becomes 2 allies at 40 ft, Through the Fray 2 allies at 40 ft. A whole-tree multiplier with no cost, no action and no test - unique in breadth, though Envoy's Practiced Oratory out-scales it in raw target count from L6."
+  ],
+  "bottomThree": [
+   "Grand Deception - 3 Actions AND 3 focus (an entire turn plus most of the focus pool, at Deception 3+ i.e. L6) for a flat DC 15 test to 'reveal a ruse that changes a detail'. The vaguest text in the tree, the worst action price in the atlas, and an effect a GM would often grant for a 1-Action Deception test.",
+   "Synchronized Assault - the CAPSTONE, 3 Actions + 2 focus, Leadership 3+ (L6), and it can lose. On a success at Leadership 3 you convert 3 of your Actions plus 2 focus into 3 ally Strikes: roughly break-even against Striking three times yourself. On a FAILURE it is 3 Actions and 2 focus for ONE ally Strike. And heroic/Scholar's Turning Point grants an Action to you and every ally for 2 Actions and the same 2 focus.",
+   "Through the Fray - spend YOUR Action so one ally within 20 ft may Disengage or Gain Advantage as a reaction. Across the party that is action-neutral at best (you pay an Action so they save one), with a timing upside; the Gain Advantage half is worth zero if the ally has advantage from any other source, and both are standard actions every character already has (SYSTEM-PRIMER: 'a talent that reproduces a standard action is worth roughly zero'). It only becomes net-positive once Authority doubles it to 2 allies."
+  ],
+  "weakTalents": [
+   {
+    "name": "Through the Fray",
+    "reason": "Reproduces two STANDARD actions (Disengage, Gain Advantage) that every character already has, at the price of a full Action of your own - net action-neutral across the party, not net-positive, until Authority doubles the target count. The Gain Advantage half is worth zero against binary advantage whenever the ally has another source. It competes at depth 0 with talents that are strictly better."
+   },
+   {
+    "name": "Grand Deception",
+    "reason": "OVERCOSTED, badly. 3 Actions + 3 focus (Deception 3+, so L6) for a static DC 15 test whose effect - 'reveal a ruse that changes a detail' - is undefined in scope. Both design guides call 3-Action talents out explicitly ('No 3-Action talents', 'capstones only'), and this is not even the capstone."
+   },
+   {
+    "name": "Synchronized Assault",
+    "reason": "OVERCOSTED capstone. 3 Actions + 2 focus + a contested Leadership test that, on failure, delivers exactly ONE ally Strike. Even on success it converts your 3 Actions into up to 3 ally Actions - a break-even trade dressed as a capstone, strictly worse than break-even below Leadership 3 (i.e. before L6), and out-scoped on action price by heroic/Scholar's 2-Action Turning Point."
+   },
+   {
+    "name": "Well Supplied",
+    "reason": "OVERCOSTED for its slot. 2 focus - close to half a starting focus pool, with no in-combat regeneration in a heroic path - to add an Opportunity to a downtime requisition test. The expertise is the real content and expertises are cheap; this is Agent's contact-expertise template at the same price for a narrower trigger. Not a dead pick, though: it is the only route to Relentless March, which is one of the two connection routes into Confident Command (the other being Customary Garb)."
+   },
+   {
+    "name": "Rumormonger",
+    "reason": "Same template, same 2-focus price, same narrow non-combat trigger, and it additionally requires a narrative prerequisite ('A patron') the player does not control. It is load-bearing only because Baleful, Shrewd Command and Well Dressed all list it as their prerequisite."
+   },
+   {
+    "name": "Well Dressed",
+    "reason": "Grants an advantage on your FIRST Deception/Leadership/Persuasion test, gated on clothing - in a tree that already has three command-die talents adding to exactly those skills, where the command die is strictly better because it is additive rather than binary. It is also a verbatim duplicate of heroic/Envoy's Well Dressed (which sits one depth shallower there), so it is wasted on the Leader/Envoy build the intent file recommends."
+   },
+   {
+    "name": "Cutthroat Tactics",
+    "reason": "Trades the command die's GUARANTEED additive bonus for a Raise the Stakes gamble on the ally's behalf, and the payoff (recover 1 focus) triggers on a Complication - i.e. it pays you for the ally's bad outcome. Below curve as a depth-0 pick when Combat Coordination is on the same shelf; it is load-bearing only as the sole prerequisite of Rumormonger."
+   },
+   {
+    "name": "Mighty",
+    "reason": "Not a never-pick, but it does not belong to this tree in any meaningful sense: shared boilerplate present verbatim in six trees (leyline/Red, heroic Agent/Envoy/Hunter/Warrior/Leader), a flat +1+tier with no dice and no named damage type, and Leader supplies no weapon attack for it to ride on. It is the tree's ONLY damage, it is borrowed, and Envoy and Warrior both sell it one depth cheaper."
+   },
+   {
+    "name": "Demonstrative Command",
+    "reason": "ADDED by the comparative pass. The third purchase of the identical 'Increase the size of your command die. Spend 1 focus to add it to [three skills]' rider, sitting at depth 3 / L4. The die upsize is real, but as a talent pick it does nothing the tree was not already doing, and its self-use group (Athletics/Agility/Leadership) is the least social of the three - filler in the band that should be carrying the tree's payoff."
+   },
+   {
+    "name": "Hardy / Focused Mind / Customary Garb / Baleful (as a group)",
+    "reason": "All four are shared boilerplate copied verbatim from other trees, re-verified by name and text match across all 365: Hardy appears in 7 trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior); Focused Mind's effect appears in 5 (leyline Blue/Black as 'Composed' with maximum-only wording, heroic Envoy 'Composed' and Scholar 'Clear Mind' with Leader's exact max-and-current wording); Customary Garb in 2 (Leader, Envoy); Baleful in 3 (leyline Blue, heroic Agent, Leader). Individually fine picks - and Leader sells three of the four at the shallowest depth in the system - but with Mighty and Well Dressed that means 6 of the tree's 25 talents contribute nothing to its identity, a real content-density problem for a 25-talent path."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "About 5 rounds of the CORE loop, or about 2-3 rounds of the full stack. Focus max = 2 + WIL, plus Focused Mind's +tier, so a WIL-2 Leader has 2+2+1 = 5 focus at Tier 1. The core loop is Decisive Command at 1 focus per round - about 5 rounds, stretched by Combat Coordination's no-spend-on-a-miss (and made action-free by it). The tree's full turn is Decisive Command (1) + a self command-die add via Confident/Shrewd/Demonstrative Command (1) = 2 focus per round, i.e. about 2-3 rounds, before paying for a single standard reaction (Dodge/Aid/Reactive Strike each cost 1 focus too). The big plays are worse: Grand Deception is 3 focus and Synchronized Assault 2, each essentially a scene's budget, and Resolute Stand and Set at Odds each scale their spend with ranks in Leadership and can drain the pool in one activation. Critically, heroic paths have NO Draw Mana equivalent - no in-combat focus regeneration; focus returns only on a rest, and the tree's sole refund (Cutthroat Tactics, 1 focus) requires an ally to Raise the Stakes AND roll a Complication. A strictly worse resource curve than a leyline tree, which converts 1 Action into 1-2 Investiture every round indefinitely - and worse than its own atlas neighbour heroic/Envoy, whose Galvanize, Applied Motivation, Lessons in Patience and Inspired Zeal push focus back into the party. Silver lining: 8 Passives, plus Tactical Ploy and Through the Fray costing no focus at all, plus Combat Coordination as a Free Action, mean the tree still functions at 0 focus - it just stops doing the interesting thing.",
+   "triggerGatedCount": 3,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 11,
+   "note": "Reactions: 1 of 25 (Resilient Hero) - so the 1-Reaction-per-round cap is NOT a constraint here, unusually for a support tree (contrast leyline/White's SEVEN Reactions competing for one slot). Trigger-gated under the census definition (a Reaction, or a talent that fires only when an ally/enemy acts or when you are hit): Resilient Hero (you must be about to drop to 0), Imposing Posture (an enemy must resist your influence), Cutthroat Tactics (an ally must choose Raise the Stakes, and the payout needs a Complication). Through the Fray is NOT trigger-gated - you initiate it with your own Action and nobody else has to act first. My 3 disagrees with the census row's 2 (8%); the extra one is Cutthroat Tactics, whose whole effect is conditioned on an ally's choice, and I record the disagreement rather than deferring. Counting self-triggered riders too (Combat Coordination on your own Strike, Mighty on your own hit, Relentless March and Resolute Stand as riders on other Leader talents) takes the conditional total to 7 of 25. Resource costers: 11 of 25 carry a focus Cost field (re-counted directly off all-talents.json; matches the census's 'Leader 11'), of which 2 spend a VARIABLE amount scaling with Leadership ranks (Resolute Stand, Set at Odds). Action-type mix for the record, re-counted off the data: 8 Passive / 8 Special / 4 Action / 1 Free / 1 Reaction / 1 two-Action / 2 three-Action = 25 - Leader carries the most 3-Action talents of any heroic tree (Agent and Hunter have 1; Envoy, Scholar and Warrior have 0). Engineering note that bears on nothing above: 8 of 25 are unwired (Combat Coordination, Imposing Posture, Resolute Stand, Relentless March, Authority, Cutthroat Tactics, Well Dressed, Baleful) = 32%, the LOWEST unwired rate in the heroic atlas."
+  }
+ },
+ "corrections": [
+  {
+   "field": "intentDrift.claims[5] (Key talent 'unlocks access')",
+   "from": "NOT DELIVERED - structural drift that creates a level-1 trap; 'A level-1 player taking Combat Coordination as their Leader pick gets a blank talent.'",
+   "to": "PARTIAL - true in the build pipeline, not in the prerequisite graph; the level-1 trap is withdrawn",
+   "reason": "THE BIGGEST ERROR IN THE PROFILE. Decisive Command's specialty field is 'Key'. scripts/foundry-build.js:467-468 sets `t.isKey = (t.specialty === \"Key\")` and records tree.keyUuid; :412 mints on the PATH item `{ description:\"Grant Key Talent\", event:\"add-to-actor\", handler:{ type:\"grant-items\", items:[{uuid:tree.keyUuid}] } }` with a matching remove-from-actor. Taking the Leader path therefore AUTO-GRANTS Decisive Command at no talent cost, so Combat Coordination / Cutthroat Tactics / Relentless March can never be blank picks. The narrower real drift survives: no talent lists Decisive Command as a prerequisite, so it gates nothing in the node graph."
+  },
+  {
+   "field": "powerByDepth[2].note (depth 3+ rank-gate correction)",
+   "from": "'five of these six carry rank-3 skill prerequisites (Persuasion 3+, Athletics 3+, Deception 3+, Leadership 3+ x2)... Relentless March, Resilient Hero, Grand Deception, Set at Odds and Synchronized Assault are all L6 talents'",
+   "to": "FOUR of the six (Resilient Hero Athletics 3+, Grand Deception Deception 3+, Set at Odds Leadership 3+, Synchronized Assault Leadership 3+). Relentless March (Persuasion 3+) is the fifth rank-3-gated talent in the tree but sits at DEPTH 2, not in this band; Authority and Demonstrative Command are genuinely L4",
+   "reason": "Dossier lines: 'Relentless March - Passive | depth: 2 | earliest L3 - prereq: Persuasion 3+'. The profile put a depth-2 talent inside its depth-3+ band to reach five. Root cause of the underlying dossier bug confirmed independently: every Leader record in all-talents.json has rankGate=='' — the detector matches leyline colour gates only, so heroic skill-rank-3 prerequisites never raise earliest L."
+  },
+  {
+   "field": "uniqueOwnership[3] (Synchronized Assault)",
+   "from": "'the only talent that grants an extra ACTION TO ALLIES. Agent's Quick Analysis / Fast Talker / Trickster's Hand and Warrior's stance grants are all self-only.'",
+   "to": "Not unique. heroic/Scholar Turning Point (2 Actions, 2 Focus, depth 3): 'On a success, you and your allies gain an Action on your next turns.' Recast as a cross-tree comparison in which Leader's capstone loses",
+   "reason": "Verified in all-talents.json and in advantage-ledger.md line 82. Scholar's grant is wider (all allies, not up to Leadership ranks), unrestricted (any Action, not only a Strike against one target) and one Action cheaper. The claim was falsified by a single search of the same file the profile says it scanned."
+  },
+  {
+   "field": "intentDrift.claims[1] (CHAMPION specialty)",
+   "from": "'Five of seven are purely SELF-facing... Nothing in the specialty rallies an ally except Combat Coordination'",
+   "to": "FOUR of seven are self-facing (Hardy, Imposing Posture, Mighty, Resilient Hero); THREE are ally-facing (Combat Coordination, Valiant Intervention, Resolute Stand). Verdict stays DRIFTED, but on the momentum/charge ground",
+   "reason": "Valiant Intervention's text is 'test Athletics vs. Spiritual to give a target disadvantage on TESTS AGAINST YOUR ALLIES' — ally-facing by definition. Resolute Stand: 'Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention' — it widens an ally-facing effect. The drift verdict is preserved because no talent in the specialty contains momentum, escalation or a charge; Valiant Intervention's 10 ft is its only movement."
+  },
+  {
+   "field": "axes[4] protection.score",
+   "from": "3",
+   "to": "2",
+   "reason": "The axis is defined as 'damage reduction, shields, temp HP, interception, resistance, damage redirection' and the profile's own evidence concedes ZERO of all six ('the tree has ZERO damage reduction, temp HP, shields, resistances, interception or damage redirection'). It then scored 3 anyway, partly on Hardy, which is +1 max health per level — a larger pool, not mitigation, and outside the axis definition. What remains is one armor-conditional +2/+2 passive (Customary Garb, duplicated in Envoy at a shallower depth) and one death-prevention Reaction gated at Athletics 3+ (L6). The calibration anchor puts 'one Reaction that reduces damage once per round' at 2."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "4 (Imposing Posture, Cutthroat Tactics, Through the Fray, Resilient Hero)",
+   "to": "3 (Resilient Hero, Imposing Posture, Cutthroat Tactics)",
+   "reason": "Through the Fray is 'An ally within 20 ft can Disengage or Gain Advantage as a reaction' — an Action YOU take; nobody else has to act first, so it fails the census definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). The remaining disagreement with the census row (which says 2) is Cutthroat Tactics, whose entire effect is conditioned on the ally choosing Raise the Stakes; that disagreement is now recorded in the note instead of being silent."
+  },
+  {
+   "field": "weakTalents[8] (boilerplate group counts)",
+   "from": "'Hardy in 5 trees, Focused Mind = Composed/Clear Mind in 3'; 'roughly 7 of the tree's 25 talents contribute nothing to its identity'",
+   "to": "Hardy in 7 trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior); the Focused Mind effect in 5 trees (leyline Blue/Black 'Composed' maximum-only, heroic Envoy 'Composed' and Scholar 'Clear Mind' with Leader's max-and-current wording); 6 of 25 talents, not 7",
+   "reason": "Counted by name across all-talents.json. The 7-of-25 figure double-counted: the named boilerplate set is Hardy, Focused Mind, Customary Garb, Baleful, Mighty, Well Dressed = 6."
+  },
+  {
+   "field": "crossTreeHooks[3] (influence hook)",
+   "from": "'Imposing Posture and Baleful... Leader supplies few influence effects itself... are near-dead without one [an influence path]'",
+   "to": "Withdrawn. Influence is a system-baseline test available to every character; the two talents are better alongside an influence path but not near-dead without one",
+   "reason": "leyline/White Disciplined Mind: 'You and allies within Attunement Range reduce the focus cost to resist influence by 1' — a generic cost, so resisting influence is baseline play. leyline/Red Frenzied Tempo: 'your Influence tests gain an advantage'. Leader also generates its own resisted-influence moments via Tactical Ploy and Set at Odds."
+  },
+  {
+   "field": "intentDrift.claims[6] (build tips)",
+   "from": "'the tree's actual tested skills are exactly four: Athletics, Deception, Leadership and Persuasion (only as a prerequisite)'",
+   "to": "Three skills are TESTED (Athletics, Deception, Leadership). Persuasion is never a test but is a prerequisite on three talents (Through the Fray 1+, Well Supplied 2+, Relentless March 3+) AND a command-die target on Confident Command. Insight and Agility are also touched and are absent from the tips",
+   "reason": "Listing Persuasion as a 'tested skill' and then saying 'only as a prerequisite' contradicts itself, and misses Confident Command's 'add your command die to your Intimidation, Leadership, or Persuasion d20 rolls'. The Heavy Weaponry and Intimidation findings were checked and stand: neither appears as a test anywhere in the 25."
+  },
+  {
+   "field": "uniqueOwnership[1] (die upsizing) and [5] (self death-defiance)",
+   "from": "'No other tree upsizes a granted die'; 'the only SELF death-defiance in the atlas'",
+   "to": "Both qualified. deity/Sovereignty resizes an ally's or enemy's own DAMAGE die in seven of its nine talents (Exalt, Censure, Investiture of Authority, Decree of Ruin, Sovereign's Balance, Edict of the Fallen, Sovereignty) — Leader's narrower claim is upsizing a die it GRANTED, bought with talent picks not Investiture. deity/Death's Death Ward ('the first time the target would drop to 0 HP it instead drops to 1 HP', a character in Attunement Range, freely on a willing target) is plausibly self-targetable, so Resilient Hero is the only FREE, AUTOMATIC, inherently self one",
+   "reason": "Both surfaced by scanning all-talents.json for 'die size' and for drop-to-0 language. The original absolutes were falsifiable as written; the qualified versions survive."
+  },
+  {
+   "field": "damageAccounting.verdict and damageTalents[0].dice",
+   "from": "one adjacent case named (Synchronized Assault); 'damage type is the weapon's own, so Deflect applies'",
+   "to": "Two adjacent cases named — Set at Odds added; the damage-type line marked as an inference",
+   "reason": "Lens (a) asks for damage arriving without the word. Set at Odds ('Test Leadership vs. their highest Spiritual to make them hostile to each other') produces enemy-on-enemy damage the tree never rolls — redirection, correctly not counted as a source but previously unnamed. Mighty's text is 'deal extra damage equal to 1 + your tier' and names NO damage type, so 'the weapon's own, so Deflect applies' was stated as fact when it is an inference."
+  },
+  {
+   "field": "axes[11] social_influence.evidence and bottomThree/weakTalents (Grand Deception)",
+   "from": "'Grand Deception (Deception DC 15 to change a detail of reality)'",
+   "to": "'Grand Deception (Deception DC 15 to reveal a ruse that changes a detail)'",
+   "reason": "Text-vs-claim. The card reads 'Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.' Nothing about reality-alteration; the vagueness criticism is fair, the paraphrase inflated the effect."
+  },
+  {
+   "field": "bottomThree[2] / weakTalents[0] (Through the Fray)",
+   "from": "'worth literally zero'",
+   "to": "Action-neutral across the party (you pay an Action so the ally saves one) with a timing upside; net-positive only once Authority doubles it to 2 allies; the Gain Advantage half is zero only when the ally already has advantage",
+   "reason": "The primer's 'a talent that reproduces a standard action is worth roughly zero' is about the actor's own action, not a grant to a third party. The talent converts an ally's 1-Action Disengage into a reaction on someone else's turn, which is real timing value, so the absolute was an over-read."
+  },
+  {
+   "field": "powerByDepth[0].note / topThree[1] / frontOrBackLoaded",
+   "from": "no account of how Combat Coordination's Leadership 2+ gate clears at L1",
+   "to": "Added: the path grants a free Leadership rank ('Starting Skill: Leadership. If you choose Leader as your starting path, gain a free skill rank in Leadership') on top of the level's 2 skill ranks",
+   "reason": "Verified in INTENT-heroic-Leader.md. It confirms the dossier's earliest L1 for Combat Coordination rather than leaving it unexplained, and it strengthens (not weakens) the front-loaded finding."
+  },
+  {
+   "field": "weakTalents[3] Well Supplied",
+   "from": "reason omitted its structural role",
+   "to": "Added: it is the only route to Relentless March, one of the two connection groups feeding Confident Command",
+   "reason": "Dossier: Relentless March 'connections: Well Supplied'; Confident Command 'connections: Relentless March, Customary Garb'. A weak-talent verdict that ignores a talent being a graph route is incomplete."
+  },
+  {
+   "field": "CHECKED AND CONFIRMED UNCHANGED",
+   "from": "—",
+   "to": "—",
+   "reason": "Verified against the text and found correct, so left alone: damage count (1 real, 0 false-positive mitigation — no 'deal less damage' text exists anywhere in the tree, and no Leader talent carries a damageFormula in all-talents.json); Mighty's dice (1+Tier = +2 Tier 1 / +3 Tier 2) and its depth 2 / earliest L3; the [Tier][Die] arithmetic (Tier 2 rank 3 = 2d8, avg 9, so ~0.33 units); all 11 Cost fields, hand-counted and matching the census; reactionCount 1 (Resilient Hero is the only Reaction); the depth-band sizes 7 / 12 / 6 and the full depth histogram 7/5/7/5/1 = 25; the action-type mix 8/8/4/1/1/1/2 = 25 and the 8% 3-Action figure; the command-die sole-ownership scan (all 5 hits are Leader); the 'hostile' scan (only Set at Odds and White's Voice of Authority); the focus-pool arithmetic (2+WIL+tier = 5 at WIL 2, Tier 1); and the Champion/Officer/Politico specialty rosters (7/9/8 + 1 Key)."
+  },
+  {
+   "field": "uniqueOwnership[0]",
+   "from": "\"It is the only way in the system to hand an ally a numeric bonus to a d20 roll.\"",
+   "to": "Withdrawn. Leader is the only source of a granted, UPSIZABLE bonus DIE; it is one of at least six trees that hand an ally a numeric bonus to a roll.",
+   "reason": "LENS A, the biggest error in the profile. Searching all 365 for bonus-granting language returns eight counterexamples in five other trees: leyline/White Shared Conviction ('spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome'), leyline/White Bound by Word ('they may use your White modifier in place of their own'), leyline/White Terms of Accord ('you both gain +1 to tests pursuing the objective for the scene'), leyline/Red Battle Fever ('you and allies gain +1 to your next test (max = Rank)'), leyline/Red Feeding Frenzy, leyline/Green Pack Sense ('they add your Green modifier'), heroic/Hunter Pack Hunting ('spend 1 focus to add your ranks in Survival to your ally's attack or damage roll'), deity/Power Mantle of the Aspirant ('allies in Attunement Range gain +1 to all tests'). Red's Battle Fever is party-wide, stacking and free."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "5",
+   "to": "4",
+   "reason": "LENS B, score inflation. 5 means 'reference implementation of this axis' and heroic/Envoy is the better implementation of the same job: Rousing Presence is also a free-with-the-path Key but costs ZERO focus and lasts 'until end of scene' (Determined) rather than one die roll; Practical Demonstration ('When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action') is the structural twin of Combat Coordination; and Envoy adds Devoted Presence, Stalwart Presence, Lessons in Patience, Instill Confidence, Inspired Zeal, Applied Motivation, Galvanize, Sage Counsel, Rallying Shout (revival) and Practiced Oratory (targets up to ranks in Persuasion, out-scaling Authority's doubling). Magnitude check per the stated anchor: Leader delivers ONE ally, ONE die roll, +2.5 average at base d4 - below a single advantage's ~+3.3 expected value - and needs three more picks to reach d10."
+  },
+  {
+   "field": "axes.action_economy.score",
+   "from": "4",
+   "to": "3",
+   "reason": "LENS B. Two problems. (1) The 4 was propped up by 'the denial side' (Tactical Ploy, Imposing Posture, Resolute Stand), but the axis definitions place 'action/reaction denial' under CONTROL, where the profile already scored those same three talents - a double count. (2) Of the three remaining granting talents only Combat Coordination is net additive; Through the Fray converts your Action into an ally's reaction (net zero) and Synchronized Assault converts 3 of your Actions into at most 3 ally Actions (break-even at best, and ONE ally Strike on a failed test). Cross-tree comparators that match or beat it: heroic/Envoy Foresight ('gain an additional reaction each turn' - breaks the primer's hard 1-Reaction cap) plus Practical Demonstration; heroic/Warrior Flamestance/Windstance (gain an Action) and Stonestance (enemies 'must spend an additional Action'); heroic/Scholar Overcharge + Turning Point; heroic/Hunter Sidestep + Animal Bond."
+  },
+  {
+   "field": "axes.exploration_utility.score",
+   "from": "3",
+   "to": "2",
+   "reason": "LENS B. The whole content is three expertise talents plus one travel rider, and two of the three are Agent's contact-expertise template reskinned (Agent's High Society Contacts and Underworld Contacts are the identical 'expertise + 2 focus to add Opportunity to a narrow test' shape). Against the anchor 'you would not pick this tree for it': heroic/Scholar carries eighteen exploration/downtime/medicine talents (Erudition and Deep Study reassign skills and expertises each long rest, four crafting talents, Field Medicine through Resuscitation), and heroic/Hunter has Experienced Trapper ('you easily forage for characters up to your ranks in Survival... fashion natural tools'), Deadly Trap, Surefooted, Animal Bond."
+  },
+  {
+   "field": "powerByDepth[2].rating",
+   "from": "3",
+   "to": "2",
+   "reason": "LENS B. Of the six depth-3+ talents, Authority alone is excellent; Demonstrative Command is the third purchase of the same command-die upsize rider; Grand Deception and Synchronized Assault are the two worst per-action effects in the heroic atlas; and four of the six (Resilient Hero, Grand Deception, Set at Odds, Synchronized Assault) are gated on a rank-3 skill, i.e. L6. Comparatively, L6 is exactly where a leyline tree's deep band gains Tier 2 AND rank 3 at once ([Tier][Die] 1d6 -> 2d8) - Leader's L6 band delivers a bigger granted die, one contested mass-hostility play and a death save."
+  },
+  {
+   "field": "oneLineIdentity / intentDrift.actuallyIs",
+   "from": "\"A focus-fuelled ally-amplifier... taxes and misdirects enemies through Deception/Leadership/Athletics contests\"",
+   "to": "Social-leverage tree FIRST, ally-amplifier second.",
+   "reason": "LENS E, the 'something' test. Counting talents touching influence/persuasion/deception/intimidation/command/patronage across all 21 trees gives Leader 12, then leyline/Blue 4, heroic/Envoy 4, White 3, Black 3, Agent 3, Power 3, and ZERO in eight of ten deity trees - a 3:1 lead and Leader's genuinely uncontested territory. The ally-amplifier half, which the old identity led with, is precisely the half another tree (Envoy) does better. Reordering the identity puts the defensible claim first."
+  },
+  {
+   "field": "intentDrift.claims[0] (encouragement/bolstering)",
+   "from": "\"DELIVERS\" with no comparative check",
+   "to": "\"DELIVERS - but not exclusively\", naming heroic/Envoy's Mentor specialty as the same promise",
+   "reason": "LENS D explicitly asks whether another tree's intent file makes the same promise. Envoy's Mentor specialty says 'patiently nurture others toward greatness... stoke each person's potential' - the same claim - and Envoy's mechanics deliver it more cheaply. Compounding it, Leader's own intent file names Envoy as an excellent multi-path choice."
+  },
+  {
+   "field": "intentDrift.claims[1] (Champion momentum)",
+   "from": "drift asserted without naming where the fantasy IS implemented",
+   "to": "Added: the charge/momentum fantasy is implemented in leyline/Red",
+   "reason": "LENS D/E. Red's Battle Fever ('each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank)') and Feeding Frenzy are literally 'their momentum is magnetic, rallying nearby allies to press on' - free passives at depth 1-2. Naming the tree that owns the fantasy makes the drift finding actionable instead of merely negative."
+  },
+  {
+   "field": "intentDrift.claims[6] (build tips) - Strength",
+   "from": "\"Strength is relevant only through Hardy's HP.\"",
+   "to": "Withdrawn: ZERO Leader talents reference Strength; Hardy scales on LEVEL, not Strength.",
+   "reason": "Text check. Hardy reads 'Gain +1 max health per level (including previous levels)' - no attribute term appears. STR reaches a Leader only through the system-wide 10+STR health formula, which is equally true of all 21 trees, so it is not a Leader-specific tip. Added in its place the tip the mechanics DO endorse and the profile under-sold: WILLPOWER, because focus max = 2 + WIL and this is an 11-coster tree with zero in-combat focus regeneration."
+  },
+  {
+   "field": "crossTreeHooks (new entry) + gaps (new entry)",
+   "from": "(absent)",
+   "to": "\"THE RECOMMENDED-PARTNER TRAP\" - Envoy shares 3 talents by name plus Composed/Focused Mind by effect; Warrior shares 2",
+   "reason": "LENS B/D deflation check. Name-matching all 365 shows Envoy duplicates Well Dressed, Customary Garb and Mighty (and Composed = Focused Mind's exact effect text) while Warrior duplicates Mighty and Hardy - and the intent file names precisely those two as the excellent multi-path choices. The old profile only noted the Envoy overlap in passing under Customary Garb; it is a systemic finding about the designer's own build advice."
+  },
+  {
+   "field": "crossTreeHooks (Turning Point comparison) + intentDrift design-guide claim",
+   "from": "\"heroic/Scholar's Turning Point does a strictly wider version of Synchronized Assault's effect for 2 Actions\"",
+   "to": "Qualified: wider and cheaper in actions, but delayed, target-gated, failure-clause-less, and also L6",
+   "reason": "Reading Turning Point's full text - 'Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns' (prereq Contingency; Deduction 3+) - shows the Actions arrive NEXT turn, it requires an 'enemy leader' target, and it states no failure clause where Synchronized Assault has a one-ally floor. It is also L6, not the printed L4, for the same rankGate reason. The 3-Actions-vs-2 gap survives unqualified; 'strictly wider' did not."
+  },
+  {
+   "field": "mechanicalKeywords - Disoriented entry",
+   "from": "\"leyline/White Overwhelming Authority and leyline/Blue Subtle Suggestion both apply Disoriented off an influence result too.\"",
+   "to": "Refined: those two fire on a SUCCESSFUL influence (1 Investiture each); Imposing Posture fires on a RESISTED one, for free",
+   "reason": "Text check. Overwhelming Authority and Subtle Suggestion both read 'When you successfully influence a character... The target also becomes Disoriented'; Imposing Posture reads 'After an enemy resists your influence while in your weapon's reach, they are Disoriented.' They are mirror triggers, not near-duplicates - Leader's is the only Disoriented source in the system that pays out on a FAILED influence attempt, which slightly strengthens rather than weakens the tree."
+  },
+  {
+   "field": "uniqueOwnership[2] (Authority)",
+   "from": "\"Every other range/target extender in the atlas modifies one named effect.\"",
+   "to": "Qualified: heroic/Envoy Practiced Oratory extends TWO named effects and out-scales Authority's magnitude from L6",
+   "reason": "LENS A. Practiced Oratory reads 'When you use Rousing Presence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets' - two named effects, and at Persuasion 3 it adds three targets where Authority merely doubles one into two. Authority's BREADTH (a whole path at once) is still unique; its magnitude is not."
+  },
+  {
+   "field": "crossTreeHooks - influence hook, Tyrith reference",
+   "from": "\"Tyrith's Compelled\"",
+   "to": "\"Tyrith's Kneel\"",
+   "reason": "Name check against the data: deity/Power's social-control talents are Kneel, Warlord's Advance and Absolute Authority. 'Compelled' is a condition named in the deity guide's prose for Tyrith, not a talent in the 365, so citing it as a talent was wrong."
+  },
+  {
+   "field": "weakTalents (new entry)",
+   "from": "(absent)",
+   "to": "Demonstrative Command added",
+   "reason": "LENS B deflation of the deep band. It is the third identical 'Increase the size of your command die. Spend 1 focus to add your command die to [three skills]' talent, at depth 3 / L4, and its self-use group (Athletics/Agility/Leadership) is the least useful of the three in a tree whose axis-5 strength is social. Naming it is what justifies the powerByDepth downgrade."
+  },
+  {
+   "field": "CHECKED AND LEFT UNCHANGED",
+   "from": "damage_direct 1, damage_scaling 1, control 3, debuff 3, protection 2, healing 1, mobility 2, terrain_zone 0, information 1, social_influence 5, summons 0, resource_economy 2; damageAccounting; sustainability counts; the Decisive-Command-is-free finding; the rankGate root cause",
+   "to": "same",
+   "reason": "All re-verified against the source rather than trusting the profile. Re-ran the counts directly off all-talents.json: 25 Leader talents, action mix 8 Passive / 8 Special / 4 Action / 1 Free / 1 Reaction / 1 two-Action / 2 three-Action, 11 focus costers, ZERO damageFormula and zero heal formulas, every rankGate field the empty string (confirming the earliest-L under-count), 8 unwired. Confirmed in scripts/foundry-build.js that line 467 sets isKey from specialty === 'Key' and line 412 mints the 'Grant Key Talent' grant-items event, so Decisive Command really is free with the path. Confirmed 'command die' returns 5 hits, all Leader; 'hostile' returns only Set at Odds and Voice of Authority; Mighty in 6 trees, Hardy in 7, Baleful in 3, Customary Garb and Well Dressed in 2 (Envoy shallower on both), Composed/Clear Mind/Focused Mind effect in 5. Confirmed the two Leader entries in advantage-ledger.md. The trigger-gated 3-vs-census-2 disagreement is correct under the census's own stated definition and stands."
+  }
+ ]
+}

@@ -1,0 +1,660 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "leyline/White",
+ "correctionCount": 39,
+ "profile": {
+  "atlas": "leyline",
+  "tree": "White",
+  "oneLineIdentity": "A 25-talent party-defence aura battery: it reduces, redirects and pre-empts damage aimed at OTHER characters, tops the party up by 1-2 HP every time it refuels, hands allies flat numeric bonuses and extra plot dice, and deals essentially no damage of its own — and 22 of its 25 talents are inert without a second body in position (21 of those specifically need a FRIENDLY one).",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 1,
+    "evidence": "Exactly ONE damage talent in 25: Retributive Guard (Reaction, 1 Investiture, depth 1, L2) — 'deal [Tier][Die] spirit damage to the attacker' on a successful White test vs Spiritual, only when an ally ADJACENT to you takes damage from an enemy in Attunement Range. Both independent streams agree at 1 (prose census SOURCE=1; one authored damage formula, one heal formula). No summon, hazard, zone, Afflicted or ongoing-damage source anywhere. Spirit type is premium (ignores Deflect), which is why this is a 1 and not a 0, but it is one conditional rider on someone else's misfortune. Comparative check: leyline/Blue and heroic/Scholar are the true 0s; White sits with them at the bottom, one rung up."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 1,
+    "evidence": "Retributive Guard's formula `(@tier)d(2*@skills.white.rank+2)` scales from 1d4 (its own prereq is only White 1+) through 1d6 at rank 2 to 2d8 at L6 rank 3, so the die keeps pace on paper. But volume never grows: it is the tree's ONLY damage source at every depth, it costs the one Reaction per round that six other White Reactions also want, and it needs an enemy to hit an ADJACENT ally AND a successful contested test. No depth-3/4 talent adds damage at all — the deep band is Shield Wall, Unbreakable Line, Mending Aura, Unyielding Accord, i.e. more defence. This is not a damage plan that scales."
+   },
+   {
+    "axis": "control",
+    "score": 2,
+    "evidence": "Two Disoriented applications, both keyed to Influence rather than to combat generally: Counterpoint (Reaction, depth 1 — negate an enemy's successful influence on an ally AND Disorient them, on a successful White test) and Overwhelming Authority (Special, depth 2 — Disoriented rider when YOU successfully influence; verified word-for-word against leyline/Blue's Subtle Suggestion, same action, same 1 Investiture, same depth 2, same earliest L3). Disoriented is genuine action denial (no Reactions per the primer). Nothing restrains, immobilises, stuns, or forces a target choice. Comparative: heroic/Leader gets the same Disoriented-on-resisted-influence effect passively and free (Imposing Posture, depth 1, L2), and Blue owns White's only influence-offence rider outright. Present but narrow."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Voice of Authority (Reaction, 1 Inv, depth 4, L6): impose disadvantage when an enemy targets an ally with a hostile action — the only pure debuff. Disoriented from Counterpoint / Overwhelming Authority adds the primer's 'obscured senses' clause. No defence reduction, no vulnerability, no Weakened/Exhausted application anywhere. Comparative anchor for why this is not a 3: heroic/Leader's Valiant Intervention (Action, 1 focus, depth 0, L1) gives a target disadvantage on tests against ALL your allies with no per-instance trigger, and Resolute Stand multi-targets it — the same effect four levels earlier and without spending the Reaction slot. Blue carries five disadvantage talents to White's one."
+   },
+   {
+    "axis": "protection",
+    "score": 5,
+    "evidence": "CHECKED AGAINST THE OTHER TWENTY TREES AND IT SURVIVES. EIGHT talents (not nine: Disciplined Mind is a focus-cost discount, not damage mitigation): Guardian Stance (∞, free, depth 0 — you and an adjacent ally both gain +1 Deflect), Interposing Shield (Reaction, 1 Inv — move 10 ft and reduce that damage by half [Die]), Devoted Conduit (∞, free — half [Tier][Die] reduction on damage intended for another), Shared Burden (Reaction, 2 Inv — take half in their place), Shield Wall (∞, free — attacks against your 2+ adjacent allies deal half [Tier][Die] less), Unbreakable Line (Special, 3 Inv, L6 — an adjacent ally drops to 1 instead of 0), Hardy, Unyielding Accord (+1 Cognitive and Spiritual defence). A mitigation-phrase grep of all 365 talents returns four ally-facing competitors and no rival platform: deity/Order (Covenant +1 all defences, Bear Witness temp HP per round, Shoulder the Oath free half-damage redirect) is better PER TALENT but spends 1 Action + 1 Investiture per ally and caps at tier active Covenants; deity/Life's Lifeline is one scene-long single-target redirect for 2 Inv; deity/Fate's Bulwark Ground needs Ordained Ground placed first; heroic/Warrior's Stonestance taxes enemies an Action instead of reducing damage. White is the only tree whose ally mitigation is FREE, PERMANENT, UNTRIGGERED and MULTI-TARGET. A defining pillar; 5 stands, and it is the tree's only 5."
+   },
+   {
+    "axis": "healing",
+    "score": 2,
+    "evidence": "Only two heal talents and both are tiny. White Leyline Attunement (free Key): every Draw Mana heals visible allies for your Tier — 1 HP each for the whole of L1-5, 2 at L6+, against a starting Health of 10+STR. Mending Aura (Special, Opportunity + 1 Inv per the authored override, depth 4, L5) rolls floor([Tier][Die]/2) = avg 1.5 HP per ally at Tier 1 rank 2, 4.5 at Tier 2 rank 3. Neither heals the White mage. Beacon of Stability removes a condition, not Health/Focus/Investiture. Comparative: leyline/Green's Verdant Mend restores [Tier][Die] + Green modifier at depth 0 for the same 1 Investiture — one Green entry talent out-heals White's entire tree; deity/Life's Life Surge does [Tier][Die] + Awareness with overflow into temp HP. The colour boundary is respected exactly, and respecting it costs White the score."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "Recounted as what a character actually gains once in a round. White is the only leyline colour with ZERO advantage-granting talents (verified against advantage-ledger.md: White appears there only inside a deity/Civilization talent that sizes off White ranks; Blue 4, Black 2, Red 5, Green 6), and its buffs are FLAT NUMBERS and MODIFIER SUBSTITUTION, which stack where binary advantage cannot. But five candidates do not sum to five: Terms of Accord and Bound by Word are gated on the SAME accord (one active per creature); Unyielding Accord is already counted under protection; Guiding Signal / Concordant Presence / Unity of Purpose all grant 'raise the stakes', binary per test — three talents, one unit. What is left round-to-round is Shared Conviction and Collective Resolve. A real several-talent competency — a 3 — and explicitly NOT 'one of the better options in the game', because heroic/Leader hands an ally a d4 command die for 1 focus at depth 0 (Decisive Command), grows that die three separate times, and doubles its range and target count (Authority)."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "RAISED from 1 on the lens-c check for riders. Nothing grants a new action, an extra action, or an extra Reaction, so it cannot go above 2. Under-counted before: (a) Ordered Advance hands allies within 10 ft half their Speed of free movement; (b) TWO talents deliver their whole effect for an Opportunity rather than an Action (Collective Resolve, Mending Aura — party-wide Determined and party-wide healing at zero action cost); (c) six talents (24%) are Specials riding an action already being taken, and Beacon of Stability stacks a second talent onto the Draw Mana Action a White mage was spending anyway — the only such double-up in the leyline atlas. Against that, Unity of Purpose is action-economy NEGATIVE: two allies each spend a Reaction and 1 focus on Aid to produce one plot die. Comparative ceiling: heroic/Leader grants an ally a reaction at depth 0 (Through the Fray) and grants multiple allies whole Actions (Synchronized Assault); that is a 4. White is a 2."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Interposing Shield (Reaction, depth 1): move up to 10 feet toward the ally as part of the interception — the tree's only self-movement. Ordered Advance (2 Actions, depth 3, Leadership 2+, no White rank gate): allies within 10 ft may move half their Speed without provoking when you move. Neither is a teleport or dash, and — corrected on the cross-tree check — Ordered Advance is not unique and is strictly dominated by leyline/Green's Pack Pressure (1 Action instead of 2, 15 ft instead of 10, includes YOU, no 'when you move' condition, and a [Tier][Die] damage rider). Minor but real."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "No areas, hazards, difficult ground, walls or persistent features. Every White 'area' effect (Shield Wall, Mending Aura, Unyielding Accord, the Attunement rider) is an aura anchored to the caster or to adjacency, not a placed feature. Nothing persists in a square after the White mage moves. Shield Wall's name is a formation, not a wall. For contrast in the same atlas, Green's free Key creates difficult terrain on every Draw Mana."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "No detection, scouting, foreknowledge, prediction, intent-reading or hidden-fact knowledge. Guiding Signal 'designates a character' but conveys nothing about it — it only tags them so the next ally testing against them raises the stakes. A true 0, not a deflation: heroic/Agent's Get 'Em Talking (learn a target's motivation) is what a 1-2 looks like and White has no analogue."
+   },
+   {
+    "axis": "social_influence",
+    "score": 2,
+    "evidence": "The Accord specialty is overwhelmingly ANTI-influence defence, not offence: Counterpoint, Disciplined Mind, Unyielding Accord. The only offensive social talent is Overwhelming Authority, a rider that does nothing to help you SUCCEED at influencing and is near-verbatim leyline/Blue's Subtle Suggestion. Terms of Accord is a genuine out-of-combat pact tool (its text says 'a character', not 'an ally', so it can be struck with a neutral or hostile party) and Leadership 2+ gates two deep talents. But a White mage is not better at persuading anyone than a character with no talents at all, and three separate trees (Blue, Agent, Leader) carry Baleful — the talent that actually taxes a target's resistance."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "DOWNGRADED from 3 on the comparative check. White has a coherent group-skill-challenge package — Terms of Accord, Bound by Word (turns the party's worst roller into your roller), Shared Conviction, Unity of Purpose, Concordant Presence, Beacon of Stability. But every one is a MULTIPLIER on a roll the party was already making: the tree unlocks no capability, grants no expertise, and has zero travel, crafting, survival, downtime-project or information content, so there is no scene it lets the party attempt that they could not attempt without it. Against the trees that actually score here — heroic/Leader (Well Supplied grants Military Logistics expertise; Rumormonger grants Scandal expertise), heroic/Envoy and heroic/Agent (High Society Contacts, Well Dressed, Customary Garb), heroic/Hunter and Green — White is 'present but minor; you would not pick this tree for it'."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companions, constructs, minions or animated allies. White's 'allies' are the other PCs — the tree has no ability to create a body. deity/Civilization's Combat Construct and deity/Death's Risen Servant are what a non-zero score looks like; the White mage gated into Civilization at White 2+ gets constructs from the DEITY tree, never from their colour."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 3,
+    "evidence": "White generates Opportunity, which the design guide names as its key mechanic. Three talents force a plot die that would not otherwise be rolled — Guiding Signal, Concordant Presence, Unity of Purpose — and Pillar of Order protects the downside by turning an ally's Complication into a blank. Collective Resolve grants party-wide Determined, converting the party's next FAILURES into Opportunities; the tree then spends what it makes. Held at 3, not 4: probabilistic, generated for ALLIES rather than the mage, three mutually redundant generators, 'raise the stakes' is not White-exclusive (heroic/Agent has two at depth 0, heroic/Leader's Cutthroat Tactics, heroic/Scholar's Overcharge, deity/Fate), and it generates ZERO Investiture and ZERO Focus in a tree with 15 Investiture costers (0 bonus regen, against Black's 2 and Red's 2)."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Retributive Guard",
+     "dice": "[Tier][Die] spirit — Foundry rolls `(@tier)d(2 * @skills.white.rank + 2)` type=spirit. Its own prereq is White 1+, so the honest range is 1d4 (Tier 1, rank 1), 1d6 (Tier 1, rank 2 — the L2-5 ceiling), 2d8 (Tier 2, rank 3 — the L6+ ceiling)",
+     "action": "Reaction, 1 Investiture",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "Triple-gated: (a) an ally ADJACENT TO YOU must take damage, (b) from an enemy within Attunement Range, (c) you must succeed on a White test vs the attacker's Spiritual defence. Costs your single Reaction, which six other White Reactions also compete for. Spirit damage IGNORES DEFLECT, so per-die it is worth materially more than an impact/keen/energy die of the same size — the one place White punches above its weight, and still reactive punishment, never initiated offence. At 33 words the card also breaches the guide's 25-word cap."
+    }
+   ],
+   "countReal": 1,
+   "countFalsePositiveMitigation": 4,
+   "earliestDamageDepth": 1,
+   "earliestDamageLevel": 2,
+   "peakDamagePerAction": "Undefined per Action, because White never spends an Action on damage — its sole source is a Reaction. Per ROUND at the deepest reachable point (L6+, Tier 2, White rank 3): 2d8 spirit (avg 9, Deflect-ignoring) ONCE per round, and only in rounds where an enemy attacks an ally standing adjacent to you and your White test succeeds. Expected output is well under that: multiply by the hit-the-right-ally rate and the test success rate, then subtract every round you spend the Reaction on Interposing Shield, Shared Conviction, Voice of Authority or Shared Burden instead — which you usually should. For L1-5 the figure is 1d6 at White rank 2, and 1d4 at the stated White 1+ minimum. In Action-spent terms the tree's damage-per-Action is exactly zero.",
+   "repeatability": "Once per round at absolute best, and only when an enemy chooses to attack an adjacent ally. It shares the hard 1-Reaction-per-round cap with six other White Reactions, so its true frequency is 'the rounds where hurting the attacker is worth more than protecting the ally' — rarely.",
+   "verdict": "White is a NON-DAMAGE tree, unambiguously. One of 25 talents deals damage, it is a Reaction, it is contested, and it fires only in response to an enemy hitting someone else. Both independent evidence streams agree at one. FOUR further talents are damage MITIGATION or REDIRECTION and are correctly excluded — Interposing Shield, Devoted Conduit, Shared Burden and Shield Wall — exactly the census's MITIG=4. Unbreakable Line and Guardian Stance are near-misses of a different kind: Unbreakable Line contains 'damage' only as a DC term, and Guardian Stance's +1 Deflect mitigates without using the word. No summons, zones, hazards, Afflicted, or ongoing-condition damage. Cross-tree sanity check: White, leyline/Blue and heroic/Scholar are the three lowest-damage trees in the system, and only White has any damage at all of the three."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 3,
+    "exemplars": "Guardian Stance, White Leyline Attunement (free Key), Terms of Accord, Guiding Signal, Pillar of Order",
+    "note": "Five talents. Immediately functional and unusually cheap: Guardian Stance is a permanent, free, no-action +1 Deflect for TWO characters at level 1, and the free Key makes every refuel a (1 HP) party heal. Terms of Accord's +1 for a whole scene is strong for a 1-Investiture Special, though at 34 words it is the tree's second-longest card. Dragged down by Guiding Signal (a full Action and 1 Investiture for one ally's plot die — heroic/Agent's Watchful Eye manipulates an ally's plot die at the same depth for FREE) and by Pillar of Order being a structural anomaly — a depth-0 node gated behind White 3+, unreachable until L6 despite requiring no prior talent."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Interposing Shield, Retributive Guard, Devoted Conduit, Counterpoint, Concordant Presence, Beacon of Stability, Disciplined Mind, Shared Burden, Overwhelming Authority, Unity of Purpose",
+    "note": "The tree's fattest band — exactly 10 talents (5 at depth 1, 5 at depth 2) — and where its whole identity is already assembled: interception, retribution, condition scrubbing, anti-influence. Interposing Shield is the best rate in the band. But it is also where the Reaction pile-up starts: four of these ten are Reactions competing for one slot, Shared Burden costs double for a worse version of Interposing Shield, and Overwhelming Authority is a near-verbatim reprint of a Blue talent at the same depth, cost and earliest level. Competent, not exciting."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 4,
+    "exemplars": "Shield Wall, Unbreakable Line, Shared Conviction, Collective Resolve, Bound by Word, Mending Aura",
+    "note": "Ten talents (6 at depth 3, 4 at depth 4) and the strongest band: Shield Wall is a free permanent party-wide flat reduction; Unbreakable Line denies a death outright; Shared Conviction rewrites a failed test; Collective Resolve hands the whole party Determined. No single capstone — power arrives as four or five parallel depth-3/4 nodes. Four talents sit behind the White 3+ / L6 wall alongside the die upgrade, but only TWO of those four are strong (Voice of Authority, Unbreakable Line). Pillar of Order is a weak pick despite its depth-0 position, and Hardy is worse than it looks on the cross-tree check — a generic filler talent that seven trees share verbatim, with White's copy the LATEST and most expensive instance in the system (White 3+ / L6, against L2 in heroic/Leader and heroic/Warrior and L3 in leyline/Black, leyline/Green, heroic/Agent and heroic/Hunter)."
+   }
+  ],
+  "frontOrBackLoaded": "Mildly BACK-LOADED, with a flat middle. The depth-0 entries are unusually generous for their cost (free permanent Deflect, free party heal on every refuel), so the tree is never dead at level 1 — but the ratio of effect to talent barely moves through depths 1-2, then jumps at depth 3-4 where the free always-on party auras (Shield Wall, Unyielding Accord) and the outcome-rewriting talents (Unbreakable Line, Shared Conviction, Collective Resolve) live. Because four talents sit behind White 3+, the power curve has a hard step at L6 coinciding with the [Tier][Die] jump from 1d6 to 2d8, making L5→L6 the single largest jump in this tree — though one of those four L6 talents (Hardy) is a talent other trees hand out at L2.",
+  "uniqueOwnership": [
+   "The only Draw Mana rider that pays the PARTY, and the only refuel Action with a second talent riding it. CONFIRMED by a grep of all 365 talents for 'Draw Mana': exactly six hits — the five leyline Keys plus White's Beacon of Stability. All five Keys are free riders, so 'the only tree whose refuel is productive' would be over-claimed (Black Weakens isolated enemies, Green creates difficult terrain, Blue and Red buy an advantage, Red paying its Reaction for it). What is genuinely White's alone: its rider is the only one that hands ALLIES a resource rather than buffing the mage or hitting the board, and Beacon of Stability is the system's only second talent riding the same Draw Mana Action.",
+   "The only tree whose ally damage mitigation is FREE, PERMANENT, UNTRIGGERED and MULTI-TARGET — but not the only tree with ally mitigation, and not the best per talent. The phrasings 'reduce that damage', 'deal … less damage' and 'take half that damage in their place' appear in leyline-White.md and nowhere else, so the wording is unique; the MECHANIC is not. Four cross-tree competitors: deity/Order's Shoulder the Oath (Reaction, depth 1, L2, NO Investiture) does Shared Burden's and Interposing Shield's jobs at once and adds temp HP to both parties, and Order's Covenant grants +1 to ALL defences where Unyielding Accord grants +1 to two; deity/Life's Lifeline redirects half a creature's damage as Spirit for a whole scene and heals them when it fires; deity/Fate's Bulwark Ground gives temp HP and denies advantage to attackers on Ordained Ground; heroic/Warrior's Stonestance taxes enemies an extra Action to attack your allies at depth 0. Fourteen talents across nine trees grant temporary HP, which is ally mitigation by another name. White's claim is BREADTH and UPKEEP-FREEDOM.",
+   "The only death-denial that saves SOMEONE ELSE reactively. 'Drop to 1 health' appears only in leyline-White.md, but the effect does not: deity/Death's Death Ward (2 Actions, 2 Inv) gives a chosen character 'the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP' for the scene — no per-instance test, temp HP on top; heroic/Leader's Resilient Hero is a genuine Reaction death-denial (depth 3, L4, no cost) but SELF-ONLY, so 'the only reactive one' needed that qualifier. Unbreakable Line's real distinction is that it needs no pre-cast and no chosen target.",
+   "CORRECTED — NOT the only tree that hands an ally your skill modifier. leyline/Green's Pack Sense (Special, 1 Investiture, depth 2, L3): 'When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result' — Shared Conviction's mechanic one depth shallower, one resource cheaper, and proactive rather than failure-triggered. What survives: White is the only tree with modifier SUBSTITUTION rather than addition — Bound by Word's 'in place of their own' appears in no other dossier, and it is permanent, free and untriggered (heroic/Scholar's Overwhelm with Details substitutes only for YOURSELF).",
+   "CORRECTED — NOT the only tree that edits an ally's plot die. heroic/Agent's Watchful Eye (Reaction, NO cost, depth 0, L1): 'Use Opportunist on the plot die of a willing ally within 20 ft', where Opportunist is 'Once per round, you can reroll your plot die' — a free level-1 reroll of any ally's plot die, strictly more flexible than Pillar of Order's Complication-to-blank and five levels earlier. 'Blank face' is unique phrasing; ally-plot-die intervention is not, and White owns the worse and later implementation. Measurement note: the census's 'Plot Die 3 talents / 2 trees (Red and Agent ONLY)' misses Pillar of Order, which manipulates a plot die without using the words.",
+   "The only MULTI-TALENT anti-Influence package. 'Resist influence' appears in no other dossier, and Counterpoint, Disciplined Mind and Unyielding Accord together make White the system's most complete answer to mental attack. The only cross-tree competitor is leyline/Blue's Anticipate (Reaction, 1 Inv, L6) — one talent against White's three. Tested against every 'influence' hit in all 365 talents: the other nine are all influence OFFENCE (Baleful in three trees, Ghostly Walls, Subtle Suggestion, Frenzied Tempo, Imposing Posture, Keen Insight).",
+   "CORRECTED — NOT the only formation-movement tool, and White owns the worst version. Ordered Advance (2 Actions, 1 Inv, depth 3, L4) is dominated outright by leyline/Green's Pack Pressure (1 Action, 1 Inv, same depth and level): 'You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes' plus a [Tier][Die] damage rider — half the action cost, wider radius, includes the caster, no 'when you move' precondition. leyline/Blue's Phantom Step (Passive, free, depth 2) gives every ally an extra [Size] ft without provoking, permanently. Seven talents across four leyline trees carry provoke-denial.",
+   "Party-wide Determined, with one qualifier. Collective Resolve is the only source granting Determined to everyone in range at once. heroic/Envoy is the only other tree that touches the condition, and Rousing Presence (Action, NO cost, depth 0, L1) grants one ally Determined UNTIL END OF SCENE with two follow-ups (Instill Confidence, Inspired Zeal). White's is broader; Envoy's is earlier, free, longer-lasting and better supported."
+  ],
+  "gaps": [
+   "SOLO OPERATION — the defining gap. 22 of 25 talents need a SECOND BODY, and 21 of those need a FRIENDLY one; the earlier '22 … friendly' contradicted the profile's own note that Terms of Accord says 'a character', not 'an ally'. THREE work with nobody at all: Hardy, Overwhelming Authority, and Disciplined Mind (whose 'You and allies…' clause covers the You). A White mage separated from the party has those three, one of which (Hardy) is a generic other trees hand out at L2 while two are among the tree's weakest picks. No other tree is this dependent on party proximity.",
+   "KILLING ANYTHING. With one contested Reaction as its entire offence, a White mage cannot end an encounter, break an object, threaten a fleeing enemy, or contribute to a damage race. Against a single tough enemy not attacking an adjacent ally, the whole Bulwark half is switched off.",
+   "KNOWING ANYTHING. Zero information talents: no scouting, detection, tracking, lie-detection or foreknowledge. In a mystery or an ambush setup the White player has nothing to offer but Bound by Word.",
+   "AFFECTING THE MAP. No terrain, zones, hazards, walls or forced enemy movement. White cannot separate enemies, deny ground, or block a corridor. Its 'wall' is a metaphor — and Green, in the same atlas, creates difficult terrain for free on every refuel.",
+   "RANGED / OUT-OF-POSITION PLAY. Most of the Bulwark half requires ADJACENCY: Guardian Stance, Retributive Guard, Shared Burden, Shield Wall and Unbreakable Line all say 'adjacent'; Interposing Shield and Ordered Advance want 10 feet. A spread-out party turns off the tree's strongest passives. Compare heroic/Leader's Authority, which doubles the range and ally count of everything — White has no such lever.",
+   "STARTING ANYTHING. ALL SEVEN Reactions are triggered by another creature acting. Add Unbreakable Line, Concordant Presence, Unity of Purpose, Devoted Conduit, Bound by Word and Overwhelming Authority and thirteen talents cannot fire on their own initiative. White never sets the tempo; it can only answer.",
+   "CONDITION REMOVAL AT SPEED and INJURY REMOVAL. Beacon of Stability strips ONE condition and only on Draw Mana; the design guide forbids White from removing Injuries. Against a condition-stacking enemy White cannot keep up.",
+   "SELF-SUSTAIN. Neither heal targets the caster. A White mage cannot restore a point of their own Health, Focus or Investiture beyond standard Draw Mana. Green's Verdant Mend touches 'a character' and can self-target; deity/Life's Life Surge says 'May self-target' explicitly.",
+   "SUMMONING or otherwise adding bodies. The tree's value multiplies by the number of allies present and it cannot increase that number.",
+   "GRANTING ACTIONS. Nothing in 25 talents gives anyone an extra Action or Reaction. This is the specific hole heroic/Leader fills (Through the Fray grants an ally a reaction at depth 0; Synchronized Assault grants allies whole Actions), and it is why White reads as a marshal who cannot command anyone to do anything."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'the institutional hand on the battlefield — marshals, wardens, and oathkeepers who bend the chaos of a fight into formation. Where they stand, lines hold.'",
+     "delivered": "DELIVERS",
+     "evidence": "'Where they stand, lines hold' literally describes Shield Wall, Guardian Stance, Unyielding Accord and Unbreakable Line. The adjacency requirement running through all four MAKES the formation mechanically real. The cleanest intent-to-mechanic match in the tree."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'They draw their power from unity rather than self. A White mage rarely wins alone.'",
+     "delivered": "DELIVERS — over-delivers, to the point of being a design risk",
+     "evidence": "22 of 25 talents are inert without a second body present, 21 of them specifically an ally. Only Hardy, Disciplined Mind's self-clause and Overwhelming Authority function alone. The designer wrote 'rarely wins alone'; the talent set implements 'cannot act alone'."
+    },
+    {
+     "claim": "SPECIALTY — Coordination: 'guiding signals, shared resolve, and aura healing that keeps a formation moving as a body.'",
+     "delivered": "PARTIAL — and the same promise is made, and better kept, by heroic/Leader",
+     "evidence": "Aura healing lands nominally but at 1-2 HP and avg 1.5-4.5 HP it is the thinnest possible implementation. 'Moving as a body' lands once (Ordered Advance) and Green's Pack Pressure does it for half the actions and a wider radius. 'Guiding signals' and 'shared resolve' land as three plot-die talents that collapse into one because raising the stakes is binary, plus Collective Resolve. NEW COMPARATIVE FINDING (lens d): heroic/Leader's intent file makes this exact promise — 'bolstering fellowship and resolve', 'rallying nearby allies to press on', 'allocate resources and issue commands, orchestrating the march to victory' — and delivers it harder and earlier: Decisive Command (depth 0, 1 focus, a d4 command die an ally ADDS to a roll, upgraded three separate times), Through the Fray (depth 0, grants an ally a reaction), Cutthroat Tactics (depth 0), Valiant Intervention (depth 0), Relentless March, Authority (doubles range and ally count), Synchronized Assault (allies gain Actions). Leader pays in Focus, which every character has and Focused Mind grows, where White pays Investiture it cannot regenerate. MEASUREMENT NOTE: functional-overlap.js scores White↔Leader at 0.269 (rank 161 of 210) — correct about function verbs, misleading about ROLE, which is what a player choosing a support character actually picks between."
+    },
+    {
+     "claim": "SPECIALTY — Bulwark: 'interposing shields, retributive guard, and shield walls that turn a line into a wall.'",
+     "delivered": "DELIVERS",
+     "evidence": "Literally: Interposing Shield, Retributive Guard, Shield Wall all present with the promised effects, joined by Guardian Stance, Devoted Conduit, Shared Burden, Hardy and Unbreakable Line. Eight of 25 talents, and the system's only free-and-permanent ally-mitigation suite. This specialty is the tree, and it survives the cross-tree check as White's genuine 'something'."
+    },
+    {
+     "claim": "SPECIALTY — Accord: 'Authority made binding — terms, oaths, and disciplined will that compel enemies and steel allies against Influence.'",
+     "delivered": "PARTIAL — 'steel allies against Influence' delivers; 'compel enemies' does not",
+     "evidence": "Steeling allies is fully implemented (Disciplined Mind, Counterpoint, Unyielding Accord — Blue's Anticipate is the only other ally influence-defence talent in 365). Binding terms is a cooperative buff, not a binding: Terms of Accord requires the other party to VERBALLY AGREE and Bound by Word only benefits ALLIES. No talent binds an unwilling enemy, no oath an enemy can break, no punishment for violation. 'Compel enemies' reduces to Overwhelming Authority's Disoriented rider — which needs an influence contest the tree does not help you win, and is a reprint of a Blue talent. deity/Order's intent file claims White's whole Accord paragraph almost sentence for sentence: 'declares Edicts that punish the first forbidden act and swears Covenants that fortify sworn allies. To break his law is to be struck by it; to keep it is to be shielded.' Order is gated Blue 2+ / White 2+, so the enemy-binding half of White's identity is sold back to the White mage as a deity purchase."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Key mechanic: Plot Die integration. White rewards coordinated group action.'",
+     "delivered": "PARTIAL",
+     "evidence": "Four talents touch the plot die and two spend Opportunity, so the loop exists. But 'key mechanic' overstates it on the cross-tree check: 6 of 25 talents, three mutually redundant generators, none generating for the White mage, and every piece done elsewhere — heroic/Agent has Risky Behavior, Opportunist and Watchful Eye all at depth 0, heroic/Leader has Cutthroat Tactics at depth 0, heroic/Scholar has Overcharge, leyline/Red has Reckless Momentum, deity/Fate uses the phrase. The actual spine of the tree by talent count and power is flat damage mitigation, which the guide mentions only in passing."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Cannot: Remove Injuries (that's Green). White heals shallowly.'",
+     "delivered": "DELIVERS",
+     "evidence": "Colour boundary respected exactly and then some. Only heals are Tier HP on Draw Mana and floor([Tier][Die]/2) AoE. Beacon of Stability removes a CONDITION, never an Injury. No self-heal, no regeneration — 'shallow' is implemented so literally that healing scores 2, and Green's single depth-0 Verdant Mend out-heals the entire White tree."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Costs favor: Free passives, Investiture for active heals/buffs, Opportunity for bonus coordination effects.'",
+     "delivered": "DELIVERS on the letter, and reveals the drift",
+     "evidence": "10 free passives, 15 Investiture-costing talents (thirteen at 1, one at 2, one at 3), 2 Opportunity spends (both coordination effects). Exactly as specified. But 'free passives' at 40% breaches the guide's own principle 4 ('Eliminate Passives above 35%')."
+    },
+    {
+     "claim": "DESIGN GUIDE — action-type targets: ~35% Passive, ~25-30% Special, ~15% Action, ~8% 2-Action, ~5-8% Free, ~5-8% Reaction, 0% 3-Action.",
+     "delivered": "DRIFTED — badly, on two lines",
+     "evidence": "Hand-counted and matching the deterministic census exactly: Passive 10 = 40%; Special 6 = 24% (the only close line); Action 1 = 4% (target 15%); 2-Action 1 = 4% (target 8%); Free 0 = 0% (target 5-8%); 3-Action 0 (the one clean pass); REACTION 7 = 28% against a target of 5-8% — a three-and-a-half to five-fold overshoot, the highest Reaction share of any of the 21 trees. The system caps Reactions at ONE per round, so 28% of the talent budget sits in a slot that can fire once."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Description target: 20-25 words.'",
+     "delivered": "DRIFTED on 20% of the tree",
+     "evidence": "Five of 25 cards breach the 25-word cap: Unbreakable Line 39, Counterpoint 35, Terms of Accord 34, Retributive Guard 33, Shared Conviction 31. Every breach has the same shape — trigger + spend + test + result. Concordant Presence and Bound by Word sit exactly on the line."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Respect color identity boundaries. Talents must not bleed across color lines.'",
+     "delivered": "BREACHED TWICE, both near-verbatim — and the second is new",
+     "evidence": "(1) Overwhelming Authority is 0.95 token-similar to leyline/Blue's Subtle Suggestion — same Special action type, same 1 Investiture, same depth 2, same earliest L3. Two colours selling one talent. (2) NEW ON THE CROSS-TREE PASS: White's Hardy is character-for-character identical to leyline/Green's and to the heroic copies — SEVEN trees ship it (White, Black, Green, Agent, Hunter, Leader, Warrior). Context that keeps this honest: cross-tree duplication is systemic (Mighty in six trees, Collected in five, Baleful/Surefooted/Composed in three each), mostly heroic generics. What is specific to White is that it pays the WORST price for the shared talent — White 3+ and level 6 for what Warrior and Leader get at level 2 with no rank gate."
+    },
+    {
+     "claim": "DESIGN GUIDE — 'Leyline mages are mortal… comparable to Heroic path characters, human-scale.'",
+     "delivered": "DELIVERS — arguably under-delivers",
+     "evidence": "Nothing exceeds human scale; the most 'magical' effects are a half-die of damage reduction and a 1-HP death save. Measured against the stated leyline↔heroic parity target, White sits BELOW parity on the support role specifically: heroic/Leader reaches further (Authority), acts more (grants reactions and Actions), pays in a resource it regenerates and grows (Focus), and starts at depth 0, while White pays Investiture it has zero bonus regen for and gates its best pieces behind rank 3."
+    },
+    {
+     "claim": "WHERE THE TWO INTENT SOURCES DISAGREE (reported, not resolved)",
+     "delivered": "Recorded",
+     "evidence": "(1) The path description promises enemies 'bound to terms they cannot break'; the design guide's White entry lists only 'Cooperative tests, Assist bonuses, anti-Influence defense, condition removal'. The TALENTS side with the design guide, so the path description over-promises. (2) The guide names Plot Die integration as the KEY mechanic; the path description never mentions the plot die, Opportunity or luck at all. The talents sit between them: the plot-die loop is 6 of 25, redundant internally, and out-implemented at depth 0 by heroic/Agent, while damage mitigation is 8 talents and the system's only free-permanent such suite. Neither intent source names the thing the tree is actually best at."
+    }
+   ],
+   "actuallyIs": "An always-on ally-damage-mitigation platform with a plot-die side economy and the system's most complete anti-Influence package — a reactive party bodyguard, not a marshal who commands. It has no offensive compulsion, no map control, no information, no self-sustain, no damage and no way to grant anyone an action, and its healing is 1-2 HP a tick. The 'binding enemies to terms' half of the stated identity is entirely absent and lives in deity/Order, whose intent file makes White's Accord promise almost verbatim while charging a Blue 2+ / White 2+ toll. The Coordination half is a weaker, later, Investiture-priced version of what heroic/Leader does with Focus from level 1. The tree is also structurally mis-shaped against its own design guide: 28% of its talents are Reactions competing for one slot per round, and all seven wait on another creature to act first.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME (heavily); PRODUCE only via standard Draw Mana — no bonus regen anywhere (0 regen / 15 costers, against Black 2 and Red 2)",
+    "talents": "Consumed by 15 of 25 — THIRTEEN at 1, ONE at 2 (Shared Burden), ONE at 3 (Unbreakable Line)"
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "CONSUME (as a trigger) — White's rider is the only one that pays the party, and the only refuel Action a second talent rides",
+    "talents": "White Leyline Attunement; Beacon of Stability. Verified: a grep of all 365 talents for 'Draw Mana' returns exactly six — the five Keys plus Beacon of Stability."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME — the tree's default targeting envelope (15/30/60/90/120 ft by rank)",
+    "talents": "15 talents, incl. Terms of Accord, Guiding Signal, Pillar of Order, the Key, Counterpoint, Disciplined Mind, Retributive Guard, Concordant Presence, Devoted Conduit, Beacon of Stability, Bound by Word, Collective Resolve, Shared Conviction, Unyielding Accord, Voice of Authority"
+   },
+   {
+    "keyword": "Adjacency (adjacent ally)",
+    "role": "CONSUME — the stricter and more important of White's two range keywords",
+    "talents": "Guardian Stance, Retributive Guard, Shared Burden, Shield Wall (2+ adjacent), Unbreakable Line, Unyielding Accord; Interposing Shield and Ordered Advance use within 10 ft"
+   },
+   {
+    "keyword": "plot die / raise the stakes",
+    "role": "PRODUCE and EDIT — neither role is White's alone",
+    "talents": "PRODUCE: Guiding Signal, Concordant Presence, Unity of Purpose (mutually redundant). EDIT: Pillar of Order (Complication → blank face). 'Raise the stakes' is shared with heroic/Agent (Risky Behavior, Get 'Em Talking), heroic/Leader (Cutthroat Tactics), heroic/Scholar (Overcharge) and deity/Fate; ally-plot-die EDITING is shared with heroic/Agent's Watchful Eye (free, depth 0, L1, rerolls any face)."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "BOTH — produced indirectly via raise-the-stakes and Determined; consumed as a cost",
+    "talents": "PRODUCE: Guiding Signal, Concordant Presence, Unity of Purpose, Collective Resolve. CONSUME: Collective Resolve, Mending Aura. White is the single largest contributor to the system-wide 9 producers across 5 trees."
+   },
+   {
+    "keyword": "Complication",
+    "role": "CONSUME (removes one) — and creates the risk of them by forcing plot dice",
+    "talents": "Pillar of Order"
+   },
+   {
+    "keyword": "Determined (condition)",
+    "role": "PRODUCE, party-wide",
+    "talents": "Collective Resolve. Only heroic/Envoy otherwise touches Determined; its Rousing Presence grants it to ONE ally for the scene at depth 0 with no resource cost, backed by Instill Confidence and Inspired Zeal."
+   },
+   {
+    "keyword": "Disoriented (condition)",
+    "role": "PRODUCE",
+    "talents": "Counterpoint; Overwhelming Authority (near-verbatim leyline/Blue's Subtle Suggestion). Fourteen talents across eleven trees apply Disoriented; heroic/Leader's Imposing Posture applies it passively and free."
+   },
+   {
+    "keyword": "Deflect",
+    "role": "PRODUCE (grants it) — and BYPASS (its own damage ignores it)",
+    "talents": "Guardian Stance (+1 to you and an adjacent ally); Retributive Guard's spirit damage ignores Deflect. Fourteen talents across seven trees name Deflect; White's is the only free permanent grant that also covers an ally."
+   },
+   {
+    "keyword": "spirit damage",
+    "role": "PRODUCE — the tree's only damage type and only damage talent",
+    "talents": "Retributive Guard, [Tier][Die] spirit, Deflect-ignoring"
+   },
+   {
+    "keyword": "Focus",
+    "role": "CONSUME, and REDUCE THE COST OF — never generates it",
+    "talents": "CONSUME: Shared Conviction (2 focus + 1 Inv). COST-REDUCE: Disciplined Mind. Cross-tree dependency: the 'minimum 1' clause makes Disciplined Mind null UNLESS an enemy inflates the cost, and the only things that do are the three copies of Baleful (leyline/Blue, heroic/Agent, heroic/Leader)."
+   },
+   {
+    "keyword": "Influence / resist influence",
+    "role": "BOTH — defends against it (its strongest niche) and rides on its own success once",
+    "talents": "DEFEND: Counterpoint, Disciplined Mind, Unyielding Accord. RIDE: Overwhelming Authority. The only ally-facing competitor in 365 talents is leyline/Blue's Anticipate; the offence side (Baleful ×3, Ghostly Walls, Subtle Suggestion, Frenzied Tempo, Imposing Posture, Keen Insight) is owned entirely by other trees."
+   },
+   {
+    "keyword": "Accord (a declared shared objective, one per creature)",
+    "role": "PRODUCE and CONSUME — White's own soft token and only bespoke resource",
+    "talents": "PRODUCE: Terms of Accord (with 'a character' — not necessarily an ally). CONSUME: Bound by Word. Only TWO talents interact with it — an under-built economy, conspicuously thinner than every named deity token (Insight 9, Omen 8, Ordained Ground 7, Edict 5, Harvested Remain 5)."
+   },
+   {
+    "keyword": "Aid (the standard reaction)",
+    "role": "CONSUME — keys off allies spending their own Reactions and focus",
+    "talents": "Unity of Purpose. Compare deity/Order's Covenant, which GRANTS Aid at Attunement Range instead of taxing it."
+   },
+   {
+    "keyword": "Reaction (the 1-per-round slot)",
+    "role": "CONSUME, at 28% of the tree — its most contested internal resource, and every one of the seven waits on another creature",
+    "talents": "Pillar of Order, Counterpoint, Interposing Shield, Retributive Guard, Shared Burden, Shared Conviction, Voice of Authority"
+   },
+   {
+    "keyword": "provoking Reactions (Reactive Strike denial)",
+    "role": "CONSUME — lets allies ignore it",
+    "talents": "Ordered Advance — the most expensive of seven such talents across four leyline trees, strictly dominated by Green's Pack Pressure and undercut by Blue's free passive Phantom Step."
+   },
+   {
+    "keyword": "skill-modifier hand-off",
+    "role": "PRODUCE — substitution is White's alone; addition is not",
+    "talents": "SUBSTITUTE: Bound by Word ('in place of their own' — passive, free, permanent, unique phrasing in all 365). ADD: Shared Conviction (Reaction, 2 focus + 1 Inv, on a failure) — the same shape as leyline/Green's Pack Sense (Special, 1 Inv, depth 2), which is cheaper and proactive. heroic/Scholar's Overwhelm with Details substitutes only for itself."
+   },
+   {
+    "keyword": "[Tier][Die] / half [Die] / half [Tier][Die]",
+    "role": "CONSUME — the scaling notation White uses for mitigation, healing and its single damage line",
+    "talents": "Retributive Guard (damage); Interposing Shield half [Die]; Devoted Conduit, Shield Wall half [Tier][Die] (mitigation); Mending Aura half [Tier][Die] (heal)"
+   },
+   {
+    "keyword": "[Size]",
+    "role": "CONSUME — area sizing (2.5/5/10/15/20 ft by rank)",
+    "talents": "Mending Aura"
+   },
+   {
+    "keyword": "Condition (generic, removal)",
+    "role": "CONSUME (strips one)",
+    "talents": "Beacon of Stability — one condition, one ally, on Draw Mana, 1 Inv. Explicitly NOT Injuries (Green's boundary)."
+   },
+   {
+    "keyword": "Cognitive defence / Spiritual defence",
+    "role": "PRODUCE (raises allies') and TEST AGAINST",
+    "talents": "Unyielding Accord (+1 Cog and Spi); Retributive Guard tests White vs Spiritual. deity/Order's Covenant grants +1 to ALL defences for a comparable price."
+   },
+   {
+    "keyword": "maximum Health",
+    "role": "PRODUCE (raises own) — the tree's only wholly self-contained talent, and not White content",
+    "talents": "Hardy — shared verbatim by SEVEN trees; White's copy is the latest and most gated instance (White 3+ / L6 vs L2 in heroic/Leader and heroic/Warrior, L3 in leyline/Black, leyline/Green, heroic/Agent, heroic/Hunter)."
+   },
+   {
+    "keyword": "Leadership (skill rank gate)",
+    "role": "CONSUME — non-White prerequisite",
+    "talents": "Ordered Advance (Leadership 2+ and NO White rank requirement), Unyielding Accord (White 2+; Leadership 2+)"
+   },
+   {
+    "keyword": "Strength (attribute gate)",
+    "role": "CONSUME — the tree's only attribute prerequisite",
+    "talents": "Shared Burden (Strength 3+; White 2+)"
+   },
+   {
+    "keyword": "White rank gate (White 1+/2+/3+)",
+    "role": "CONSUME — pacing gate; White 3+ = level 6. Also the currency four deity trees charge and none reward",
+    "talents": "White 3+ on Pillar of Order (a depth-0 node), Hardy, Voice of Authority, Unbreakable Line. Outside the tree: Order, Civilization, Fate and Sovereignty all gate on White; no deity talent tests White (verified — 'test White' returns three hits, all inside leyline/White); only Order (Bear Witness, Shoulder the Oath) and Civilization (Bonds of Community) size anything off White ranks."
+   }
+  ],
+  "weakTalents": [
+   {
+    "name": "Shared Burden",
+    "reason": "OVERCOSTED and strictly outclassed by a talent one depth shallower. 2 Investiture — the tree's only 2-cost — plus a Reaction, to move half an adjacent ally's damage ONTO YOU. Interposing Shield, at depth 1 and 1 Investiture, reduces the damage by half [Die] AND repositions you 10 feet AND leaves the remainder where it was. It also carries the tree's only attribute gate (Strength 3+). Outside the atlas: deity/Order's Shoulder the Oath does the same split for ZERO Investiture, reduces the ally's remainder by your White ranks, and hands both of you temporary HP."
+   },
+   {
+    "name": "Ordered Advance",
+    "reason": "NEW ON THE CROSS-TREE PASS — strictly dominated inside its own atlas. Two Actions (two thirds of a Slow turn) plus 1 Investiture, and only 'this round, when you move', to give allies within 10 ft half their Speed without provoking. leyline/Green's Pack Pressure is ONE Action and 1 Investiture at the same depth 3 / L4, covers 15 ft, includes you, has no movement precondition, and adds [Tier][Die] extra damage on Strikes. leyline/Blue's Phantom Step is a free passive that gives every ally an extra [Size] ft without provoking, forever."
+   },
+   {
+    "name": "Unity of Purpose",
+    "reason": "The worst effect-per-table-cost in the tree, and arguably action-economy negative. TWO allies must each spend their once-per-round Reaction and 1 focus on Aid against the same test; the payoff is one plot die, frequently blank. It is also the third talent granting 'raise the stakes', which does not stack with the other two, and one of only three cards with no wiring at all (events=0 effects=0)."
+   },
+   {
+    "name": "Guiding Signal",
+    "reason": "Below the curve for a full Action. 1 Action plus 1 Investiture buys ONE ally ONE plot die on ONE test this round. Gain Advantage costs the same 1 Action, needs no resource, and reliably converts a d20 into keep-highest-of-two. Concordant Presence (depth 1) delivers the identical payload passively and free. Cross-tree: heroic/Agent's Risky Behavior raises the stakes for 1 focus as a Special at depth 0, and heroic/Leader's Decisive Command buys an ally a guaranteed +d4 for 1 focus at depth 0."
+   },
+   {
+    "name": "Pillar of Order",
+    "reason": "Three problems. Structurally a depth-0 node gated behind White 3+, so it cannot be taken until L6 despite requiring no prior talent — an entry node no entering character can enter with. Mechanically, converting an ally's Complication to a blank ALSO deletes that face's bonus, so it can turn a passed test into a failed one, and it competes for the reaction slot with three better cards. Comparatively, heroic/Agent's Watchful Eye rerolls a willing ally's plot die entirely, as a Reaction, for NO resource, at depth 0 / L1."
+   },
+   {
+    "name": "Hardy",
+    "reason": "NEW ON THE CROSS-TREE PASS — not weak in effect, weak in PRICE, and not White content. The identical +1 max Health per level appears in seven trees; leyline/Black and leyline/Green take it at depth 2 / L3, heroic/Agent and heroic/Hunter at L3, and heroic/Leader and heroic/Warrior at depth 1 / L2 with no rank gate at all. White alone charges White 3+ and makes the player wait until level 6, spending one of only four L6-legal picks on a generic filler talent."
+   },
+   {
+    "name": "Disciplined Mind",
+    "reason": "Null against most tables. 'Reduce the focus cost to resist influence by 1 (minimum 1)' does nothing if the base cost is 1 — the minimum clause eats the benefit, and the card never states the base. On the cross-tree pass the only things that raise that cost are the three copies of Baleful (leyline/Blue, heroic/Agent, heroic/Leader: 'a character must spend additional focus equal to your tier'), so the talent's value is set entirely by which cards the GM's NPCs took. Wiring is events=0 effects=0. (It is, however, one of the three talents that function with no ally present.)"
+   },
+   {
+    "name": "Overwhelming Authority",
+    "reason": "A poor depth-2 node AND a colour-boundary breach. 0.95 token-identical to leyline/Blue's Subtle Suggestion — same Special action type, same 1 Investiture, same depth 2, same earliest L3 — against the leyline guide's principle 7. On its own terms it is a rider requiring an influence success White gives you no help achieving, and heroic/Leader's Imposing Posture inflicts Disoriented on a resisted influence passively and free."
+   },
+   {
+    "name": "Concordant Presence / Guiding Signal / Unity of Purpose (as a set)",
+    "reason": "Redundancy, not individual weakness. All three produce 'raise the stakes', binary per test exactly the way advantage is. Three talent picks buy one unit of value — three levels spent on the mechanic White is supposedly built around, in a system where heroic/Agent gets two plot-die talents and an ally-facing reroll at depth 0."
+   }
+  ],
+  "topThree": [
+   "Guardian Stance — depth 0, no action, no cost, permanent: +1 Deflect to you AND an adjacent ally. Two characters get a permanent defence upgrade for a level-1 pick with no ongoing price, in a 12-word card. Fourteen talents across seven trees name Deflect and none of the others grants it free, permanently, to an ally. It sets the adjacency logic the whole Bulwark half runs on.",
+   "Shield Wall — depth 3, earliest L4, no action, no cost, permanent: every attack against any of your 2+ adjacent allies deals half [Tier][Die] less damage (avg ~1.5 per attack at Tier 1 rank 2, ~4.5 at Tier 2 rank 3, party-wide). Checked against all 365 talents: no other mitigation effect in the system is simultaneously free, permanent, untriggered and multi-target. This is what White is.",
+   "Unbreakable Line — depth 4, L6, Special, 3 Investiture: once per round, an adjacent ally who would drop to 0 drops to 1 instead, on a White test at DC = half the damage. The only death-denial in the system that saves someone ELSE without being pre-cast (deity/Death's Death Ward is the pre-cast version and otherwise stronger; heroic/Leader's Resilient Hero is a free Reaction but self-only), and the tree's only effect that changes an outcome nothing else could change. At the L6 where it first becomes legal it costs about 1.5 Draw Mana Actions to replace."
+  ],
+  "bottomThree": [
+   "Ordered Advance — 2 Actions and 1 Investiture, conditional on your own movement, when leyline/Green's Pack Pressure does more of it for ONE Action at the same depth and level and adds a damage rider, and leyline/Blue's Phantom Step does a version of it for free, permanently, as a passive. The tree's only 2-Action card and its most clearly dominated one.",
+   "Unity of Purpose — burns two allies' Reactions and 2 of their focus (via Aid) to produce one plot die that is often blank, is the third redundant copy of a binary mechanic, and ships with no wiring on the document at all.",
+   "Shared Burden — 2 Investiture and a Reaction to move half an adjacent ally's damage onto yourself, plus a Strength 3+ gate, when Interposing Shield at depth 1 and 1 Investiture reduces the damage outright and repositions you — and when deity/Order's Shoulder the Oath does the same split for free with temp HP attached. Strictly dominated at double the price. (Runners-up: Overwhelming Authority, a reprint of a Blue card; and Guiding Signal, a paid Action for what Concordant Presence gives free one depth deeper.)"
+  ],
+  "crossTreeHooks": [
+   "Every ally-facing talent (21 of 25 need a friendly body, 22 need a body of some kind) is a hook by construction — White's output is a multiplier on what the rest of the party is already doing and it produces nothing on its own. Its power scales with party size and with how much damage the party is taking.",
+   "Counterpoint, Disciplined Mind, Unyielding Accord and Overwhelming Authority all depend on the INFLUENCE subsystem being used at the table. Sharper than that: Disciplined Mind's 'minimum 1' clause makes it literally null unless an enemy owns Baleful (leyline/Blue, heroic/Agent or heroic/Leader) — one White talent's entire value is set by which cards the GM's NPCs took.",
+   "Guiding Signal, Concordant Presence and Unity of Purpose only pay off if ALLIES have things to do with a plot die and with Opportunity — worth far more beside Red, Black's Predatory Insight, and heroic/Scholar's Opportunity spends than beside another defensive character.",
+   "Pillar of Order needs an ally to actually ROLL a plot die. White partly solves this for itself, and a party containing a heroic/Agent solves it better (Risky Behavior, Watchful Eye) while also making Pillar of Order redundant.",
+   "Collective Resolve grants Determined — worth most to allies who fail often and have Opportunity spends, i.e. Red and Black. The one real Determined synergy in the system belongs to heroic/Envoy, whose Inspired Zeal refunds focus to other allies when an ally USES Determined: a White + Envoy party turns Collective Resolve's party-wide grant into a party-wide focus engine, which is White's single best cross-tree combination.",
+   "Retributive Guard, Interposing Shield, Shared Burden, Devoted Conduit and Voice of Authority all require an ENEMY to attack an ALLY rather than you. A White mage who becomes the primary threat turns off their own kit. heroic/Warrior's Stonestance is the ideal partner: it forces enemies to spend an extra Action to attack allies who aren't in Stonestance, i.e. it aims the attacks White is built to intercept.",
+   "Unbreakable Line leaves the saved ally at 1 with no follow-up: White's own healing is far too shallow to stabilise them. It needs Green's deep healing or deity/Life — and deity/Death's Death Ward does the same save pre-emptively AND hands out [Tier][Die] + Presence temporary HP.",
+   "Bound by Word hands allies YOUR White modifier — its value is set by how bad the party's own modifiers are and whether the table runs group skill challenges. A hook into the campaign's non-combat structure more than into another tree.",
+   "Beacon of Stability strips one CONDITION but explicitly cannot touch Injuries — a designed handoff to Green and deity/Life.",
+   "Shield Wall, Guardian Stance, Unyielding Accord and Unbreakable Line all require ADJACENCY, which ANTI-synergises with Black (whose Key rewards enemies having no ally within 5 ft) and with any stealth or skirmish build.",
+   "White is NOT the atlas's most-used deity partner colour. Every one of the five colours gates exactly four deity trees (20 slots / 5): White with Order, Civilization, Fate, Sovereignty; Black with Chaos, Death, Power, Sovereignty; Blue with Chaos, Order, Destruction, Life; Red with Civilization, Destruction, Power, Knowledge; Green with Death, Fate, Life, Knowledge. What IS true, verified by grepping 'test White' across all 365 talents (three hits, all inside leyline/White): not one of White's four deity partners ever calls for a White skill test. The guide's promises ('White tests for elevate' in Sovereignty, 'White tests for ordained-ground bulwark effects' in Fate, 'White tests for community-buff effects' in Civilization) are unimplemented in all three.",
+   "LIKELY CLASSIFIER BUGS, reported per the brief. (a) The toll-booth measure checks only skill tests and damage-die sizing, so it misses White ranks used to size NON-damage effects: deity/Order's Shoulder the Oath and Bear Witness both scale off 'your ranks in White', and deity/Civilization's Bonds of Community grants 'temporary HP equal to your White'. Order and Civilization are NOT pure toll booths; Fate and Sovereignty are. (b) The keyword count 'Plot Die 3 talents / 2 trees (leyline/Red and heroic/Agent ONLY)' misses leyline/White's Pillar of Order, which changes a rolled plot-die face without using the words — the true figure is 4 talents / 3 trees, and it matters because the guide names Plot Die integration as White's key mechanic. (c) functional-overlap.js scores White↔Leader at 0.269 (rank 161 of 210); correct about function verbs, misleading about role, since heroic/Leader is the closest competitor for White's entire Coordination specialty.",
+   "The enemy-binding fantasy White's own path description promises is implemented in deity/Order (Tessavain) — Edict, Sealed Edict, Covenant, Final Decree — not in White. Order's intent file restates White's Accord paragraph almost sentence for sentence, and Order is gated on White 2+, so the White mage is charged twice for the same fantasy.",
+   "THE 'SOMETHING' TEST, settled. White's something is FREE PERMANENT ALLY DAMAGE MITIGATION, and no other tree does that better — deity/Order is stronger per talent but needs an Action and an Investiture per ally to arm and caps at tier Covenants, deity/Life's Lifeline is single-target and scene-bound, heroic/Warrior redirects attention rather than damage. Its second claimed something, Coordination, IS done better elsewhere: heroic/Leader out-delivers it on buff (a stacking command die from depth 0, upgraded three times, doubled in range by Authority), on action economy (grants allies reactions and whole Actions, which White never does), on cost (Focus, which regenerates, versus Investiture, which White has zero bonus regen for) and on timing (depth 0 versus depth 3-4)."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Structurally the BEST-sustaining leyline tree. Investiture ~4 at L1 (2 + max(AWA,PRE)); 15 of 25 talents spend it, thirteen at 1. Four rounds of unrestricted output, then the refuel question — and White's refuel is the only one that pays the party: Draw Mana returns Tier Investiture AND heals every visible ally for Tier (free Key), AND can carry a condition strip (Beacon of Stability). A White mage on a Slow turn can spend 1 Action on Draw Mana, 1 Action on anything, and still hold their Reaction for a 1-Investiture Bulwark trigger — indefinitely, at exactly break-even, with no tempo tax. Practical answer: 4 rounds at full throttle, then INDEFINITE at ~1 Investiture-talent plus 1 Reaction per round from L1, ~2 per round at Tier 2. The only real strain is Unbreakable Line at 3 Investiture — which is NOT 'three-quarters of the L1 pool', because White 3+ makes it unreachable before L6 — and Shared Burden at 2. The binding constraint is NOT Investiture; it is the 1-Reaction-per-round cap. Cross-tree caveat: this is sustainability at a very low output level. White never generates Investiture beyond the baseline (0 bonus regen against Black's 2 and Red's 2) and never generates Focus, so 'sustains forever' means 'sustains a 1-Investiture defensive rider forever', not 'sustains pressure' — heroic/Leader sustains its whole kit on Focus, a resource it also grows.",
+   "triggerGatedCount": 13,
+   "reactionCount": 7,
+   "resourceCostersOutOfTree": 15,
+   "note": "Reactions: 7 of 25 (28%) against a design-guide target of 5-8% — the most consequential structural finding, and the highest Reaction share of any of the 21 trees. All seven compete for ONE slot per round, so a White mage owning all of them uses at most one per round and holds six dead cards. Trigger-gated: 13 — the 7 Reactions plus Concordant Presence, Unity of Purpose, Devoted Conduit, Unbreakable Line, Bound by Word and Overwhelming Authority, matching the deterministic census (13 / 52%) exactly; always-on positional auras and self-triggered Specials are a different constraint, measured separately as the 21-of-25 ally requirement. Resource spends: 15 spend Investiture (thirteen at 1, one at 2, one at 3), 1 spends Focus (Shared Conviction, 2), 2 spend Opportunity. Zero Investiture regen and zero Focus regen anywhere. Data notes: Interposing Shield's card text contains no spend phrase but its cost field and wiring both say 1 Investiture — a prose/cost drift worth a card fix; Mending Aura's base text omits the 1 Investiture the authored override adds; Collective Resolve's base text has a typo ('gran') the override corrects; exactly three cards carry no automation at all (Disciplined Mind, Unity of Purpose, Bound by Word) — the 12% unwired figure."
+  }
+ },
+ "corrections": [
+  {
+   "field": "sustainability.note (Investiture cost breakdown)",
+   "from": "15 spend Investiture (twelve at 1, two at 2, one at 3)",
+   "to": "15 spend Investiture (thirteen at 1, one at 2 — Shared Burden — one at 3 — Unbreakable Line)",
+   "reason": "Counted the cost fields myself. Shared Burden is the ONLY 2-Investiture talent in the tree and Unbreakable Line the only 3; the other thirteen are 1 (Terms of Accord, Guiding Signal, Pillar of Order, Counterpoint, Interposing Shield, Retributive Guard, Overwhelming Authority, Beacon of Stability, Collective Resolve, Ordered Advance, Shared Conviction, Voice of Authority, Mending Aura). The profile's own mechanicalKeywords Investiture row already enumerated thirteen 1-costs, so the note contradicted its own table."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "20",
+   "to": "13",
+   "reason": "Applying the brief's own definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'): 7 Reactions + Concordant Presence ('When an ally… succeeds on a test'), Unity of Purpose ('When two or more allies aid'), Devoted Conduit ('When an ally… takes damage intended for another'), Unbreakable Line ('when an ally adjacent to you would drop to 0'), Bound by Word ('When an ally… acts in pursuit') and Overwhelming Authority ('When you successfully influence') = 13, which is exactly the deterministic action-type census (White 13 / 52%). The 20 was reached by counting always-on positional auras (Shield Wall, Guardian Stance, Unyielding Accord, Disciplined Mind) and self-triggered Specials (Terms of Accord, Beacon of Stability, Ordered Advance, Mending Aura, Collective Resolve, Guiding Signal) as trigger-gated; positioning and 'costs your own Action' are different constraints and are already measured by the ally-dependency count."
+  },
+  {
+   "field": "gaps[0] / intentDrift 'rarely wins alone' / crossTreeHooks[0] — ally dependency",
+   "from": "23 of 25 talents require an ally; solo, a White mage 'has Hardy (+1 HP/level) and nothing else'",
+   "to": "22 of 25; solo a White mage has Hardy, Disciplined Mind and Overwhelming Authority",
+   "reason": "TEXT-VS-CLAIM. Disciplined Mind reads 'YOU and allies within Attunement Range reduce the focus cost to resist influence by 1 (minimum 1)' — the 'You' clause functions with nobody else present, so it does not belong in the ally-dependent list. Overwhelming Authority ('When you successfully influence a character…') was already correctly excluded. The profile listed Disciplined Mind inside the 23 while simultaneously describing it elsewhere as a self-and-allies passive."
+  },
+  {
+   "field": "gaps — 'STARTING ANYTHING'",
+   "from": "Six of the seven Reactions… are triggered by someone ELSE acting",
+   "to": "ALL SEVEN Reactions are triggered by another creature acting",
+   "reason": "Read each Reaction's trigger clause: Pillar of Order (an ally rolls a Complication), Counterpoint (an enemy influences an ally), Interposing Shield / Retributive Guard / Shared Burden (an ally takes damage), Shared Conviction (an ally would fail a test), Voice of Authority (an enemy targets an ally). There is no self-initiated Reaction in the tree, so 'six of seven' understates the finding the profile was making."
+  },
+  {
+   "field": "damageAccounting.countFalsePositiveMitigation",
+   "from": "5 (incl. Unbreakable Line)",
+   "to": "4",
+   "reason": "Aligns with the deterministic census (White MITIG=4). The four genuine mitigation false-positives are Interposing Shield, Devoted Conduit, Shared Burden and Shield Wall. Unbreakable Line contains 'damage' only as a DC term — 'a DC equal to 1/2 of the damage taken' — and reduces nothing; it is recorded in the verdict as a word-containing near-miss alongside Guardian Stance (which mitigates without the word), rather than counted as mitigation."
+  },
+  {
+   "field": "damageAccounting.damageTalents[0].dice / peakDamagePerAction",
+   "from": "'1d6 at L2-5 (Tier 1, rank 2)'",
+   "to": "1d4 at rank 1, 1d6 at rank 2 (the L2-5 ceiling), 2d8 at Tier 2 rank 3",
+   "reason": "DICE ERROR. Retributive Guard's own prerequisite is White 1+, and its formula is (@tier)d(2*@skills.white.rank+2). A character who takes it at its stated minimum at L2 rolls 1d4, not 1d6; 1d6 requires rank 2. The primer's '[Tier][Die] at Tier 1 rank 2 = 1d6' is the ceiling for L1-5, not the value at the talent's earliest legal level."
+  },
+  {
+   "field": "axes.healing.score",
+   "from": "3",
+   "to": "2",
+   "reason": "ARITHMETIC. Only two heal talents exist and both are trivially small: the Key restores Health 'equal to your tier' = literally 1 HP per ally for the whole of L1-5, 2 at L6+, against 10+STR starting Health; Mending Aura's own authored formula is floor(((@tier)d(2*rank+2))/2) = avg 1.5 HP per ally at Tier 1 rank 2, 4.5 at Tier 2 rank 3. Neither targets the caster ('allies'/'each ally'). Two talents delivering 1-2 HP is the rubric's 2 ('present but minor; you would not pick this tree for it'), not 3 ('several talents, at least one good one')."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "4",
+   "to": "3",
+   "reason": "RECOUNT of what a character gains once in a round, per the brief's binary-value calibration. Terms of Accord and Bound by Word are gated on the SAME active accord (one per creature, requires a verbal agreement on an objective) — one gate, not two effects; Unyielding Accord's +1 Cog/Spi is already scored under protection (the profile counted it twice); Guiding Signal / Concordant Presence / Unity of Purpose collapse to one unit by the profile's own redundancy argument. What remains round-to-round is Shared Conviction (Reaction + 2 focus + 1 Inv, one test) and Collective Resolve (Opportunity + 1 Inv). That is a 3 ('a real, usable competency'), not 4 ('one of the better options in the game')."
+  },
+  {
+   "field": "axes.protection.evidence",
+   "from": "nine talents (incl. Disciplined Mind)",
+   "to": "eight talents",
+   "reason": "Disciplined Mind reduces the focus cost to resist influence; it mitigates no damage and grants no defence. The profile itself rates it 'possibly a null talent' in weakTalents. Score held at 5 — the eight remaining, four of them free permanent auras, still make it the leyline atlas's reference implementation."
+  },
+  {
+   "field": "uniqueOwnership[0] — 'the ONLY tree whose refuel is productive'",
+   "from": "White is the only colour that pays no tempo tax to refill Investiture; the other three get a self-buff or a terrain effect at best",
+   "to": "the only Draw Mana rider that pays the PARTY, and the only refuel Action a second talent rides",
+   "reason": "All five leyline Keys are free, always-active Draw Mana riders (primer's table): Black Weakens every isolated enemy in Attunement Range, Green creates difficult terrain, Blue and Red buy an advantage. Only Red pays a tax (loses its Reaction). 'Only productive refuel' is therefore false; what is genuinely unique is that White's rider heals allies rather than buffing the mage, and that Beacon of Stability is the only second talent in the atlas riding the same Draw Mana Action (grep 'When you Draw Mana' → 6 hits: five Keys + Beacon of Stability)."
+  },
+  {
+   "field": "uniqueOwnership[1] — 'The ONLY source of ally damage mitigation as a mechanic… no competitor in the atlas'",
+   "from": "Interposing Shield, Devoted Conduit, Shared Burden and Shield Wall have no competitor in the atlas",
+   "to": "the only LEYLINE tree with ally damage mitigation; the mechanic exists elsewhere",
+   "reason": "FALSE as stated, and the profile claimed to have cross-checked all 20 other dossiers. deity/Order's **Shoulder the Oath** (Reaction, depth 1, L2, NO Investiture cost): 'you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White. Both you and that ally gain temporary HP equal to your ranks in White' — Shared Burden's job and Interposing Shield's job in one free Reaction with temp HP on top. Fourteen talents across nine trees also grant temporary HP, which is ally mitigation by another name. Only the PHRASINGS are unique."
+  },
+  {
+   "field": "uniqueOwnership[2] — 'the atlas's only death-denial for someone other than yourself'",
+   "from": "No other dossier contains the phrase 'drop to 1 health'. This is the atlas's only death-denial for someone other than yourself",
+   "to": "the only LEYLINE death-denial for an ally, and the only REACTIVE one",
+   "reason": "FALSE as stated. deity/Death's **Death Ward** (2 Actions, 2 Inv, depth 1): 'For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP' — cast on any character in Attunement Range, no per-instance test, temp HP on top. heroic/Leader has the self-only version ('Before your health drops to 0, it instead becomes equal to your Athletics modifier'). Unbreakable Line's real distinction is that it needs no pre-cast."
+  },
+  {
+   "field": "uniqueOwnership[5] — 'The ONLY anti-Influence defence suite… a whole threat category the other 20 trees have no defence against'",
+   "from": "the other 20 trees have no defence against influence",
+   "to": "the only MULTI-TALENT anti-influence package; Blue has a single-talent equivalent",
+   "reason": "FALSE as stated. leyline/Blue's **Anticipate** (Reaction, 1 Inv, depth 3, L6): 'When you or an ally in your Telepathic Network would be targeted by an influence effect, spend 1 Investiture to give that character an advantage on their resistance test.' Blue has one; White has three (Counterpoint, Disciplined Mind, Unyielding Accord), which is still the strongest package in the atlas."
+  },
+  {
+   "field": "crossTreeHooks — 'White is the atlas's most-used deity partner colour — four of ten deity trees pair with it'",
+   "from": "White is the atlas's most-used deity partner colour",
+   "to": "every one of the five colours gates exactly four deity trees; the real finding is the toll booths",
+   "reason": "FALSE SUPERLATIVE, checkable by arithmetic from the deity-gate-audit table: 10 trees x 2 gates = 20 slots / 5 colours = 4 each (White: Order, Civilization, Fate, Sovereignty; Black: Chaos, Death, Power, Sovereignty; Blue: Chaos, Order, Destruction, Life; Red: Civilization, Destruction, Power, Knowledge; Green: Death, Fate, Life, Knowledge). Replaced with the sharper true finding: none of White's four partners ever calls for a White skill test, and the guide's promises for Sovereignty/Fate/Civilization ('White tests for elevate' etc.) are unimplemented."
+  },
+  {
+   "field": "crossTreeHooks — NEW ROW (classifier bug)",
+   "from": "(absent)",
+   "to": "the toll-booth measure misses White ranks used to size NON-damage effects; Order and Civilization are not pure toll booths, Fate and Sovereignty are",
+   "reason": "The brief asked for a suspected third classifier bug. The toll-booth test checks only skill tests and damage-die sizing. deity/Order's Shoulder the Oath reduces damage and grants temp HP 'equal to your ranks in White', its Covenant aura grants temp HP the same way each round, and deity/Civilization's Foundations payoff grants 'temporary HP equal to your White'. In deity-Fate.md and deity-Sovereignty.md the word 'White' appears only inside prerequisite lines — those two are the genuine toll booths."
+  },
+  {
+   "field": "intentDrift — NEW CLAIM ROW (colour-boundary breach)",
+   "from": "(absent)",
+   "to": "White's Overwhelming Authority is near-verbatim leyline/Blue's Subtle Suggestion",
+   "reason": "NEW FINDING against design-guide principle 7 ('talents must not bleed across color lines'). White: 'When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.' Blue (Subtle Suggestion): identical but for 'you may spend'. Same Special action type, same 1 Investiture, same depth 2, same earliest L3. Folded into weakTalents, bottomThree, control and social_influence evidence as well."
+  },
+  {
+   "field": "intentDrift — description-length row",
+   "from": "'Most cards are inside the cap… Unbreakable Line (~40 words), Counterpoint (~38) and Shared Conviction (~36) all breach it. Not severe.'",
+   "to": "Five of 25 breach: Unbreakable Line 39, Counterpoint 35, Terms of Accord 34, Retributive Guard 33, Shared Conviction 31 — 20% of the tree",
+   "reason": "Recounted every TEXT field word by word. Two of the three named counts were wrong (Counterpoint 35 not 38; Shared Conviction 31 not 36) and two breaches were missed entirely (Terms of Accord 34, Retributive Guard 33). Concordant Presence and Bound by Word sit exactly on the 25-word line."
+  },
+  {
+   "field": "powerByDepth[2].note",
+   "from": "four of the tree's best (Hardy, Voice of Authority, Unbreakable Line, Pillar of Order) sit behind the White 3+ / L6 wall",
+   "to": "four talents sit behind the White 3+ / L6 wall — Hardy, Voice of Authority and Unbreakable Line (strong) plus Pillar of Order, which is a weak pick",
+   "reason": "INTERNAL CONTRADICTION. The same profile's weakTalents entry rates Pillar of Order as a bad node (deletes the Complication face's bonus, competes with three better Reactions, unreachable at its own depth 0). It cannot also be one of 'the tree's best'. Also added the band sizes (depth 3 = 6 talents, depth 4 = 4) which the profile never stated; depth counts verified as 5/5/5/6/4 = 25."
+  },
+  {
+   "field": "topThree[2] / sustainability.roundsOfGoodOptions — Unbreakable Line's price",
+   "from": "The 3-Investiture price is near the whole L1 pool / three-quarters of the L1 pool",
+   "to": "at the L6 where it first becomes legal, roughly 1.5 Draw Mana Actions to replace",
+   "reason": "CATEGORY ERROR. Unbreakable Line requires White 3+, which the primer's rank-cap table puts at level 6; it can never be paid out of an L1 pool. At L6 the pool is larger (2 + max(AWA,PRE), with attribute points at 3 and 6) and Draw Mana returns Tier = 2 per Action."
+  },
+  {
+   "field": "powerByDepth[1].exemplars",
+   "from": "seven talents listed for a band the note calls 10",
+   "to": "all ten listed (added Shared Burden, Overwhelming Authority, Unity of Purpose)",
+   "reason": "The '10 talents' figure is correct (depth 1: Counterpoint, Disciplined Mind, Interposing Shield, Retributive Guard, Concordant Presence; depth 2: Overwhelming Authority, Devoted Conduit, Shared Burden, Beacon of Stability, Unity of Purpose) but the exemplar list named only seven, silently omitting the three that most support the band's 'competent, not exciting' rating."
+  },
+  {
+   "field": "axes.debuff.evidence",
+   "from": "Disoriented… also carries Perception disadvantage",
+   "to": "Disoriented adds the primer's 'obscured senses' clause",
+   "reason": "TEXT-VS-CLAIM. Neither Counterpoint nor Overwhelming Authority names Perception, and the primer's condition list says 'Disoriented (no reactions, obscured senses)'. Score unchanged at 2."
+  },
+  {
+   "field": "gaps — NEW ROW (self-sustain)",
+   "from": "(absent; 'No self-heal' was buried in the healing axis)",
+   "to": "SELF-SUSTAIN listed as a gap in its own right",
+   "reason": "Both heal talents target 'allies' / 'each ally' and neither includes the caster; the tree also generates zero Investiture and zero Focus. A tree whose entire identity is keeping people alive cannot restore a single point of its own anything — that belongs in the gap list, not as a clause inside an axis."
+  },
+  {
+   "field": "sustainability.note / weakTalents — wiring",
+   "from": "(only Disciplined Mind's events=0 effects=0 was mentioned)",
+   "to": "exactly three cards are unwired: Disciplined Mind, Unity of Purpose, Bound by Word",
+   "reason": "Read the wiring lines for all 25. Three carry events=0 AND effects=0, which is the 12% unwired figure the census reports for White. Hardy and Unyielding Accord read events=0 but effects=1, i.e. they ARE wired — counting them as unwired would have inflated the figure to 20%."
+  },
+  {
+   "field": "uniqueOwnership[3] — 'The ONLY tree that hands an ally YOUR skill modifier'",
+   "from": "The ONLY tree that hands an ally YOUR skill modifier. Bound by Word does it passively and permanently... The nearest competitor substitutes a modifier only for YOURSELF (heroic/Scholar).",
+   "to": "NOT the only tree that hands an ally your modifier — leyline/Green's Pack Sense does it one depth shallower and one resource cheaper. What survives is only modifier SUBSTITUTION (Bound by Word's 'in place of their own').",
+   "reason": "REFUTED by text. leyline/Green Pack Sense (Special, 1 Investiture, depth 2, L3): 'When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.' That is Shared Conviction's exact mechanic (Reaction, 2 focus AND 1 Investiture, depth 3, L4), cheaper and proactive rather than failure-triggered. Only the substitution phrasing survives the cross-tree search."
+  },
+  {
+   "field": "uniqueOwnership[4] — 'The ONLY tree that edits an ally's plot die result'",
+   "from": "The ONLY tree that edits an ally's plot die result. Pillar of Order converts an ally's rolled Complication to a blank face; 'blank face' appears nowhere else in the atlas.",
+   "to": "NOT the only tree that edits an ally's plot die — heroic/Agent's Watchful Eye rerolls a willing ally's plot die for free at depth 0 / L1, and White owns the worse and later implementation.",
+   "reason": "REFUTED by text. heroic/Agent Watchful Eye (Reaction, NO cost, depth 0, L1): 'Use Opportunist on the plot die of a willing ally within 20 ft'; Opportunist: 'Once per round, you can reroll your plot die.' A free level-1 reroll of ANY face beats a level-6, 1-Investiture Complication-to-blank conversion. Also flagged the consequent measurement bug: the census's 'Plot Die 3 talents / 2 trees (Red and Agent ONLY)' misses Pillar of Order, which manipulates a plot-die face without using the words."
+  },
+  {
+   "field": "uniqueOwnership[6] — 'The ONLY formation-movement tool'",
+   "from": "The ONLY formation-movement tool: Ordered Advance's 'allies may move half their Speed without provoking Reactions' is unique phrasing in the atlas — the only way to move a whole line at once without eating Reactive Strikes.",
+   "to": "NOT unique, and White owns the worst version — dominated by leyline/Green's Pack Pressure and undercut by leyline/Blue's Phantom Step.",
+   "reason": "REFUTED by text. leyline/Green Pack Pressure (1 Action, 1 Inv, depth 3, L4): 'You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes' PLUS a [Tier][Die] damage rider — half Ordered Advance's action cost (2 Actions), wider radius, includes the caster, no 'when you move' precondition. leyline/Blue Phantom Step (Passive, free, depth 2) gives every ally an extra [Size] ft without provoking, permanently. Seven talents across four leyline trees carry provoke-denial."
+  },
+  {
+   "field": "uniqueOwnership[2] — death denial",
+   "from": "The only LEYLINE death-denial for someone other than yourself, and the only REACTIVE one.",
+   "to": "The only death-denial that saves SOMEONE ELSE reactively — heroic/Leader's Resilient Hero is a genuine free Reaction death-denial but self-only.",
+   "reason": "Qualifier was missing. heroic/Leader Resilient Hero (Reaction, no cost, depth 3, L4): 'Before your health drops to 0, it instead becomes equal to your Athletics modifier.' 'The only reactive one' is false unqualified."
+  },
+  {
+   "field": "uniqueOwnership[7] — party-wide Determined",
+   "from": "Only heroic/Envoy otherwise touches Determined at all, and White is the only source that grants it to everyone in range at once.",
+   "to": "Same claim, plus the qualifier that Envoy's version is earlier, free, scene-long and better supported.",
+   "reason": "heroic/Envoy Rousing Presence (Action, NO cost, depth 0, L1): 'An ally becomes Determined until end of scene', backed by Instill Confidence and Inspired Zeal. White's Collective Resolve costs Opportunity + 1 Investiture at depth 3. Breadth is White's; every other axis of the comparison is Envoy's."
+  },
+  {
+   "field": "axes.exploration_utility",
+   "from": "3",
+   "to": "2",
+   "reason": "SCORE INFLATION on the comparative check. Every White out-of-combat talent is a multiplier on a roll the party already makes; the tree grants no expertise, unlocks no capability and has zero travel/craft/survival/downtime content. The trees that actually score here have unlocks — heroic/Leader (Well Supplied grants Military Logistics expertise; Rumormonger grants Scandal expertise), heroic/Envoy and heroic/Agent (High Society Contacts, Well Dressed, Customary Garb). By the rubric that is 'present but minor; you would not pick this tree for it' = 2."
+  },
+  {
+   "field": "axes.action_economy",
+   "from": "1",
+   "to": "2",
+   "reason": "SCORE DEFLATION (lens c — riders). Under-counted: two talents deliver their whole effect for an Opportunity instead of an Action (Collective Resolve, Mending Aura), six talents (24%) are Specials riding an action already being taken, and Beacon of Stability stacks a second talent onto the Draw Mana Action — the only such double-up in the leyline atlas. Still capped at 2 because nothing grants a new action or reaction, against heroic/Leader's Through the Fray (grants an ally a reaction, depth 0) and Synchronized Assault (grants allies Actions)."
+  },
+  {
+   "field": "axes.protection",
+   "from": "5",
+   "to": "5 (unchanged — checked and confirmed)",
+   "reason": "Tested for inflation against all 20 other trees and it survives. A mitigation-phrase grep of all 365 talents returns four ally-facing competitors (deity/Order Covenant + Bear Witness + Shoulder the Oath, deity/Life Lifeline, deity/Fate Bulwark Ground, heroic/Warrior Stonestance), all of which need setup, upkeep, a placed resource or a per-target spend. White is the only tree whose ally mitigation is simultaneously free, permanent, untriggered and multi-target (Guardian Stance + Shield Wall + Devoted Conduit). Evidence rewritten to name the competitors rather than assert exclusivity."
+  },
+  {
+   "field": "weakTalents / bottomThree — Ordered Advance",
+   "from": "absent from both lists; cited in axes.mobility and uniqueOwnership as a unique tool",
+   "to": "added to weakTalents and promoted into bottomThree as the tree's most clearly dominated card",
+   "reason": "Cross-tree comparison shows strict domination: Green's Pack Pressure is the same effect at the same depth and level for one Action instead of two, 15 ft instead of 10, includes the caster, has no movement precondition, and adds damage."
+  },
+  {
+   "field": "weakTalents — Hardy (new entry) and powerByDepth['depth 3+']",
+   "from": "Hardy listed among 'the tree's best' L6 talents / treated as a strong self-contained pick",
+   "to": "Hardy added to weakTalents on price, and the depth-3+ note corrected to say only two of the four White-3+ talents are strong",
+   "reason": "NEW COMPARATIVE FINDING. Hardy is shipped verbatim by SEVEN trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior). White's copy is the latest and most gated instance in the system — White 3+ / L6, against depth 1 / L2 with no rank gate in heroic/Leader and heroic/Warrior and L3 in the other four. White spends one of only four L6-legal picks on a generic other trees hand out at level 2."
+  },
+  {
+   "field": "intentDrift — colour-boundary claim",
+   "from": "BREACHED once, near-verbatim (Overwhelming Authority = Blue's Subtle Suggestion)",
+   "to": "BREACHED TWICE (adds Hardy, identical to Green's), with the honest context that cross-tree duplication is systemic",
+   "reason": "A token-similarity sweep of all 365 descriptions returns Overwhelming Authority ↔ Subtle Suggestion at 0.95 and White Hardy ↔ Green Hardy at 1.00, plus systemic duplicates (Mighty in six trees, Collected in five, Baleful/Surefooted/Composed in three each). Reporting only the first breach overstated how unusual White's is; reporting neither would have missed the second."
+  },
+  {
+   "field": "intentDrift — Coordination specialty claim",
+   "from": "PARTIAL, judged only against White's own talents",
+   "to": "PARTIAL, and the same promise is made by heroic/Leader's intent file and better kept there",
+   "reason": "Lens (d) requires checking whether another tree's intent file makes the same promise. heroic/Leader's path description says 'bolstering fellowship and resolve', 'rallying nearby allies to press on', 'allocate resources and issue commands, orchestrating the march to victory'. Leader delivers it from depth 0 with Decisive Command (a stacking d4 command die for 1 focus, upgraded three times), Through the Fray, Cutthroat Tactics, Valiant Intervention, Authority (doubles range and ally count) and Synchronized Assault — earlier, cheaper, in a resource that regenerates."
+  },
+  {
+   "field": "crossTreeHooks — 'the something test' and classifier bugs",
+   "from": "no explicit 'something' verdict; one suspected classifier bug (toll booths)",
+   "to": "explicit verdict — White's something is free permanent ally mitigation and survives; its Coordination half is out-competed by heroic/Leader — plus three reported measurement caveats",
+   "reason": "Required by lens (e). Also added two measurement caveats to the one already present: the plot-die keyword count misses Pillar of Order (4 talents / 3 trees, not 3 / 2), and the functional-overlap cosine White↔Leader 0.269 measures function verbs, not role, so it hides the single most relevant cross-tree competitor."
+  },
+  {
+   "field": "gaps[0] and oneLineIdentity — solo-operation count",
+   "from": "22 of 25 talents inert without a second FRIENDLY body",
+   "to": "22 need a second body; 21 of those need a FRIENDLY one",
+   "reason": "Internal contradiction in the profile under test: it listed Terms of Accord among the ally-dependent 22 while elsewhere arguing (correctly) that its text says 'a character', not 'an ally', so an accord can be struck with a neutral or hostile party. Split the count so both statements can be true."
+  },
+  {
+   "field": "weakTalents — Disciplined Mind",
+   "from": "Possibly a null talent … the minimum clause eats the benefit",
+   "to": "Null against most tables, with the cross-tree condition that makes it non-null named",
+   "reason": "Comparative sharpening: the only talents in all 365 that raise the focus cost of resisting influence are the three copies of Baleful (leyline/Blue, heroic/Agent, heroic/Leader — 'a character must spend additional focus equal to your tier'). Disciplined Mind's entire value is therefore set by which cards the GM's NPCs happen to own."
+  },
+  {
+   "field": "axes.debuff / axes.control / axes.buff evidence",
+   "from": "judged against White's own talents only",
+   "to": "same scores, evidence now anchored to the competing talent in another tree",
+   "reason": "Scores were correct but undefended comparatively. Added: heroic/Leader's Valiant Intervention (depth 0, 1 focus) does Voice of Authority's job four levels earlier without the Reaction slot; Imposing Posture applies Disoriented passively and free; Decisive Command's stacking command die is why buff stays at 3 and not 4."
+  }
+ ]
+}

@@ -1,0 +1,593 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Scholar",
+ "correctionCount": 37,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Scholar",
+  "oneLineIdentity": "A 25-talent non-combat support kit that rewrites its own character sheet (six reassignable Erudition skill ranks plus seven expertises), owns the atlas's only fabrial-crafting economy, is one of the two best non-deity healers (leyline/Green heals deeper and closes Injuries; Scholar heals cheaper and as a Free Action), and holds one of only two party-wide Action grants in the game — while dealing literally no damage at any depth (verified: zero of its 25 talents contain the word 'damage').",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 0,
+    "evidence": "VERIFIED ZERO by three independent checks. (1) Machine-readable formulas: '0 damage, 3 heal' — the only roll objects on any Scholar talent are Field Medicine, Swift Healer and Applied Medicine, all `type: heal`. (2) A full-text scan of all 25 Scholar talents across generator prose, authored description and authored body returns ZERO occurrences of the word 'damage' (re-run against all-talents.json for this review, confirmed empty). (3) The damage census scores heroic/Scholar SOURCE 0 / AMPLIFY 0 / MITIG 0. The one offensive-adjacent talent, Overcharge, grants an extra instance of the STANDARD Strike action, so every die belongs to the weapon and none to the talent; that is action economy, not a damage source. Anatomical Insight applies Exhausted[-half Medicine], a numeric penalty, not damage and not Afflicted. No summon, hazard, zone, redirect or ongoing tick anywhere in the tree."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 0,
+    "evidence": "Forced to 0 by the rubric ('Score 0 if damage_direct is 0'), and correct on the merits: no Scholar talent adds a damage die, a damage rider, a die-size step, or any [Tier][Die] expression. Overcharge's extra Strike scales with the weapon and the character's attribute, not with any Scholar talent, and it is triple-gated (once per turn, requires an in-progress fabrial attack, requires an Opportunity the Plot Die must supply)."
+   },
+   {
+    "axis": "control",
+    "score": 1,
+    "evidence": "One instance, and it is a rider. Strategize: 'You can spend 2 focus to also prevent the target from using reactions against that ally' — genuine reaction denial, but it protects exactly one ally against exactly one target, costs 2 focus on top of the 1-Action Gain Advantage it rides on, and denies a Reaction the enemy might not have spent anyway. Nothing else in the 25 restrains, stuns, immobilises, knocks prone, or removes an enemy Action. Compare heroic/Warrior's Stonestance, which makes enemies 'spend an additional Action to attack your allies' — the same family of effect, done better, in another tree."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Anatomical Insight (Special, depth 1, 1 focus OR Opportunity): 'When you hit with an unarmed attack ... make the target Exhausted [-half your ranks in Medicine]' — a repeatable cumulative numeric penalty, but it rides on an unarmed hit the tree gives you no help landing. Keen Insight (Passive, depth 3): 'After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test.' Two talents, both riders on something else, and the functional classifier scores Scholar impose_disadvantage 1/25 against Blue's 5/25. You would not choose Scholar to debuff."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Two passive defence bumps and nothing else. Know Your Moment (Passive, depth 1): 'Your defenses increase by 2 from the start of each round until you take your turn' — free and always-on, but it evaporates the moment you act, so it rewards Slow turns. Collected (Passive, depth 1): 'Increase your Cognitive and Spiritual defenses by 2', permanent. Zero damage reduction, zero temp HP, zero shields, zero interception, zero resistance, zero redirection — the tree raises to-hit numbers, it never absorbs a hit. The previous profile also counted Contingency here; removing a Complication from an ally's test is a Plot Die fix, not protection, and it is excluded from this score. Both qualifying talents are SELF-ONLY, so the Scholar cannot protect anyone else at all. Held at 2."
+   },
+   {
+    "axis": "healing",
+    "score": 4,
+    "evidence": "A genuine strength and one of the top three healing trees, but NOT 'the best non-deity healing in the atlas' — that claim does not survive comparison, and is corrected here. Heal formulas across all 365: deity/Life 5, heroic/Scholar 3, leyline/Green 2, leyline/White 1, all others 0 — but formula count is the wrong measure, because Green's healing rides on amplifier talents that carry no formula. Counted by TALENT, leyline/Green fields six healing talents (Mender's Instinct, a Reaction restoring [Tier][Die]; Verdant Mend, [Tier][Die] + Green modifier; Resurgent Growth, an ongoing tier+mod regen rider; Natural Recovery, removes Afflicted/Disoriented/Stunned/Weakened; Reknit Form, removes temporary AND permanent Injuries; Vital Surge, temp HP) against Scholar's five (Field Medicine, Swift Healer, Applied Medicine, Ongoing Care, Resuscitation), and Green's per-cast magnitude is a [Tier][Die] roll where Scholar's is a flat skill-rank addition to the PATIENT's recovery die. Where Scholar genuinely wins is action economy and price: Swift Healer makes the heal a Free Action costing 1 focus and no Investiture, so it does not compete with Draw Mana's 50%-uptime tax, and Resuscitation revives. Held at 4, not 5, because deity/Life and leyline/Green both out-heal it per cast, the heal is bounded by the patient's recovery die rather than generating HP freely, it is strictly single-target, and Field Medicine specifies a 'concious character' — a downed ally is untouchable until Resuscitation, which is effectively an L6 talent (Medicine 3+)."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Advantage is binary, and only 3 of the 25 talents name it (advantage-ledger.md lines 77/79/81: Strategize, Keen Insight, Turning Point — and Keen Insight actually IMPOSES disadvantage while Turning Point's advantage is on its own test). Strategize (depth 0) 'grant that advantage to an ally instead' is a transfer, net zero units for the party, though it does relocate an advantage from a skill you are good at onto the ally who needs it. Contingency erases a Complication from an ally's test — a real, if unschedulable, save. Overwhelm with Details (2 focus) substitutes your Lore modifier onto another cognitive or spiritual test, a genuine numeric buff to yourself. What an ally actually gains in a round is one advantage they could largely have got from the standard Aid Reaction anyway. For scale, heroic/Leader fields four command-die talents that add a rolled die to an ally's d20 and heroic/Envoy fields the whole Rousing Presence suite — that is what a 4 on this axis looks like."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "LOWERED from 4 on comparison with the other twenty trees. Scholar's three real effects are Turning Point (2 Actions, 2 focus, depth 3, Deduction 3+ so effectively L6): on a successful Deduction test vs the enemy leader's Cognitive, 'you and your allies gain an Action on your NEXT turns'; Swift Healer (Free Action, depth 1), which permanently converts the tree's 1-Action heal into a Free Action; and Overcharge, which converts an Opportunity into a Free-Action Strike once per turn. That is a real competency — but 'one of the better options in the game for this' is not supported. heroic/Agent alone fields THREE Free-Action talents that each read 'Spend 2 focus to gain 2 actions' for a whole category of test (Quick Analysis, Fast Talker, Trickster's Hand): more raw Actions, repeatable every round, no rank-3 gate. heroic/Hunter grants an ADDITIONAL Reaction (Sidestep — a genuinely new resource against a hard 1-per-round cap), a free Gain Advantage (Exploit Weakness), a free Disengage (Backstep) and a Free Action to give a companion one or two Actions (Animal Bond). heroic/Warrior's three stances each grant an Action. Scholar's distinction is narrow and real — Turning Point is party-wide, which only one other talent in 365 is, and with a four-person party nets +2 Actions — but it arrives a round late, is contested, costs two thirds of a Slow turn, and lands at L6. That is a 3."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "All 25 talents read: no movement, no teleport, no repositioning, no difficult-terrain ignoring, no speed change, no disengage effect. The functional classifier agrees (self_move 0/25, forced_move 0/25). The tree does not touch position at all."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "No areas, hazards, difficult terrain, walls, traps or persistent battlefield features in any of the 25 talents; the functional classifier scores zone 0/25. The only distance in the tree is Contingency's 20 ft targeting range."
+   },
+   {
+    "axis": "information",
+    "score": 2,
+    "evidence": "Held at 2, and flagged as the tree's most contestable score. A corpus-wide scan for detection language (learn / detect / sense / reveal / 'intends to take' / hidden / scout) returns twenty talents spread across leyline/White, Blue, Black, Green, heroic/Agent, Hunter, Leader and six deity trees — and NOT ONE Scholar talent. Scholar has no perception, no scouting, no foreknowledge, no reading intent; leyline/Blue's Read Intent, heroic/Hunter's Sharp Eye and deity/Fate's Read the Threads are what this axis actually looks like. What Scholar sells is the QUALITY of ordinary knowledge rolls: Erudition (a cultural/utility expertise plus a rank in two non-invested cognitive skills, reassignable after a long rest with library access), Deep Study (+1 expertise, +2 skills), Mind and Body and Emotional Intelligence (widening Erudition to Physical and Spiritual), Deep Contemplation (reassign 2 mid-adventure), and Overwhelm with Details (substitute the Lore modifier onto another cognitive or spiritual test). 'Knowing a hidden fact' via a Lore test is inside the axis definition and Scholar is the best tree in the game at that roll — but it owns zero detection MECHANICS, which is why this is 2 and not 3."
+   },
+   {
+    "axis": "social_influence",
+    "score": 1,
+    "evidence": "The functional classifier scores Scholar social 1/25 (against Blue's 4, and heroic/Envoy's entire Rousing Presence suite). There is no talent that persuades, commands, compels, deceives, or touches reputation. The two touches are both incidental or riders: Emotional Intelligence ('You can now choose Spiritual skills with Erudition') can hand you a reassignable rank in a social skill, and Keen Insight's 'the target must resist your influence' is a rider on the standard Gain Advantage action that names no test, no skill, no DC and no defense. That is exactly the rubric's definition of 1 — 'one incidental talent, or a rider on something else'."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 5,
+    "evidence": "The tree's defining pillar and the reference implementation, and the only axis at 5. VERIFIED by full-corpus text search: 'fabrial' appears in exactly five talents out of 365, and all five are Scholar — Efficient Engineer (crafting expertise + a free fabrial, Opportunity range on crafting +2, material cost halved), Prized Acquisition (Fabrial Crafting expertise + a reusable special gem that crafts a fabrial of your tier), Fine Handiwork (advanced features cost one upgrade instead of two), Inventive Design (the Prized Acquisition fabrial can carry an effect one tier above what you are crafting), Experimental Tinkering (crafting time halved, Opportunity range +1, reconfigure the gem's fabrial every long rest). A separate corpus scan for craft/forge/invent OUTSIDE Scholar returns only deity/Civilization's Forge Construct and Tempered Edge, which build a Combat Construct creature — not an item economy. Layered on that: the Erudition chain's SIX reassignable skill ranks are the only skill-rewriting mechanic in 365 talents, and Ongoing Care is a rest-time injury-condition treatment. Nearest rivals are heroic/Hunter (Experienced Trapper: forage for N characters, fashion natural tools) and heroic/Agent (five expertises, contacts, disguise); neither has a crafting economy or a reassignable sheet."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "All 25 talents read: no companion, construct, minion or animated ally. The fabrial granted by Efficient Engineer and Prized Acquisition is an item, not a creature; the intent file's 'a companion to mentor' is listed under REWARDS, not as a talent. Contrast heroic/Hunter's animal companion (Animal Bond, Feral Connection, Hunter's Edge) and deity/Civilization's Combat Construct, which is what a real score on this axis looks like."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "RAISED from 1 — the deflation was against the census's own data. `resource-economy.json`'s Opportunity PRODUCER list names heroic/Scholar explicitly: Efficient Engineer and Experimental Tinkering, TWO of the nine Opportunity producers in the whole atlas, tying heroic/Agent, heroic/Leader and heroic/Warrior for the most in any single tree (5 producer trees total). Add Clear Mind (Passive, depth 1): 'Increase your max and current focus by your tier' — a permanent cap raise AND a one-time top-up. Three talents that generate a listed currency is more than the rubric's 1 ('one incidental talent, or a rider on something else'). Held at 2 and not 3 because of two real limits the census does not show: both Opportunity expanders are worded 'When crafting', so neither produces an Opportunity in combat (unlike heroic/Warrior's Signature Weapon and Bloodstance, which do), and Scholar is correctly ABSENT from the focus-regen list (Black 2, Envoy 2, Hunter 1, Leader 1) while carrying 7 focus costers — a cap raise is not regeneration. Zero Investiture generated or spent, no Draw Mana interaction, no mid-encounter focus recovery."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Overcharge",
+     "dice": "none — the talent contributes no dice and no [Tier][Die] expression; all dice belong to the fabrial/weapon",
+     "action": "Special (grants a Free Action Strike)",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "LISTED FOR COMPLETENESS AND EXCLUDED FROM THE COUNT. It grants an extra instance of Strike, a STANDARD action every character already has — action economy, not damage creation. Triple-conditional: (a) once per turn, (b) requires a fabrial attack already in progress to raise the stakes on, (c) requires spending an Opportunity the Plot Die must supply. The dossier prints earliest L2, but the prerequisite is 'Prized Acquisition; Crafting 3+' and rank 3 is unreachable before level 6 (skill rank cap 2 through L5), so the true earliest level is 6. Note this understatement is a system-wide dossier artifact affecting 36 heroic talents, not a Scholar-specific one — see frontOrBackLoaded."
+    },
+    {
+     "name": "Anatomical Insight",
+     "dice": "none — applies Exhausted[-half your ranks in Medicine]",
+     "action": "Special",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "LISTED FOR COMPLETENESS AND EXCLUDED FROM THE COUNT. Exhausted is a cumulative numeric penalty, not ongoing damage; it is not Afflicted. It rides on an unarmed attack that must already have hit, and costs 1 focus or an Opportunity per application. Prereq is Field Medicine only (no rank-3 gate), so L2 is correct here."
+    }
+   ],
+   "countReal": 0,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 0,
+   "peakDamagePerAction": "Zero. At every depth, at every tier, the Scholar's own talents add exactly zero damage dice. The ceiling on the tree's contribution to the damage line is one extra Strike per turn from Overcharge (effectively L6), paid for with an Opportunity — a bonus instance of an action every character already has, dealing the fabrial's dice. No spirit or vital damage, no AoE, no Afflicted tick, no scaling rider, no die-size step.",
+   "repeatability": "Not applicable — there is nothing to repeat. Overcharge is once per turn and Opportunity-gated, so even the extra Strike fires in a minority of rounds; every other round the Scholar's offensive output is exactly what a character with no talents at all could do.",
+   "verdict": "ZERO-DAMAGE TREE, confirmed by three independent streams and re-verified against all-talents.json for this review. (1) Machine-readable formulas: 0 damage, 3 heal across 25 talents — the only roll objects present are `type: heal`. (2) Full-text scan: the word 'damage' does not appear in ANY of the 25 talents' generator prose, authored description, or authored body; the filter returns an empty list. (3) The damage census scores SOURCE 0 / SRC+AMP 0 / AMPLIFY 0 / MITIG 0, and the system primer names heroic/Scholar as one of the three trees where both measurement streams agree at zero (with leyline/Blue and deity/Sovereignty). countReal is 0 and there are ZERO mitigation false positives, because with the word 'damage' entirely absent there is nothing a classifier could mistake for offence. The Scholar contributes to a fight through two self-only defence passives, healing, one debuff rider, and one party-wide Action — never through the damage line."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (7 talents: Efficient Engineer, Prized Acquisition, Erudition, Mind and Body, Strategize, Emotional Intelligence, Field Medicine)",
+    "rating": 2,
+    "exemplars": "Field Medicine is the only entry with real combat value (1 Action + 1 focus + a Medicine DC 15 test to add Medicine ranks to an ally's recovery die). Erudition and Emotional Intelligence are near-identical 'gain an expertise and more Erudition skills' talents with no in-combat effect — but Mind and Body is NOT purely out-of-combat: it grants a WEAPON expertise, a genuine combat benefit. Efficient Engineer and Prized Acquisition are pure crafting infrastructure. Strategize is a genuine Special but transfers rather than creates advantage.",
+    "note": "Enormously broad out of combat, close to inert in a fight — four of the seven entries (Efficient Engineer, Prized Acquisition, Erudition, Emotional Intelligence) do essentially nothing on a battlefield. For contrast, heroic/Warrior's depth-0 Flamestance grants an Action at L1."
+   },
+   {
+    "band": "depth 1-2 (15 talents: 9 at depth 1, 6 at depth 2)",
+    "rating": 3,
+    "exemplars": "Swift Healer (Free Action healing, the tree's best action-economy conversion), Clear Mind (+tier max and current focus), Know Your Moment (+2 all defenses until you act), Collected (+2 Cognitive/Spiritual defense), Resuscitation (revive the recently dead), Applied Medicine (healing adds Lore ranks on top of Medicine ranks). Dragged down by Deep Contemplation (2 Actions to reassign skills) and Contingency (a Reaction and 2 focus to erase one Complication).",
+    "note": "This is where the tree acquires its actual numbers; the Surgeon branch in particular becomes genuinely good here. But four of these 15 (Overcharge, Contingency, Ongoing Care, Resuscitation) carry rank-3 skill gates, so they are really level-6 talents, not the L2-L3 the dossier prints."
+   },
+   {
+    "band": "depth 3+ (3 talents: Overwhelm with Details, Keen Insight, Turning Point)",
+    "rating": 4,
+    "exemplars": "Turning Point alone sets this rating — one of only two party-wide Action grants in all 365 talents. Overwhelm with Details (2 focus, Lore modifier on any cognitive/spiritual test) is a strong utility capstone. Keen Insight is the weak one: a disadvantage rider on the standard Gain Advantage action, naming no test, no skill and no DC.",
+    "note": "Only 3 of 25 talents sit at depth 3+ (verified from the data), so the tree is shallow but its tip is sharp. All three carry Lore 3+ or Deduction 3+ gates, so the tip lands at L6 rather than the printed L4."
+   }
+  ],
+  "frontOrBackLoaded": "BACK-LOADED, more so than the depth numbers show — but NOT distinctively so, which is a correction to the previous profile. The depth model puts the whole tree at L1-L4 (max depth 3), while SIX talents carry rank-3 skill prerequisites — Overcharge (Crafting 3+), Contingency (Lore 3+), Ongoing Care (Lore 3+), Resuscitation (Medicine 3+), Overwhelm with Details (Lore 3+), Turning Point (Deduction 3+) — and rank 3 is unreachable before level 6, because the skill rank cap is 2 through level 5. So Overcharge is L2→L6; Contingency, Ongoing Care and Resuscitation L3→L6; Overwhelm with Details and Turning Point L4→L6. The dossier's 'earliest L' column applies the rank gate only to leyline-COLOUR ranks, not to ordinary skill ranks. COMPARATIVE CORRECTION: the previous profile framed this as Scholar uniquely having a level-6 discontinuity 'contrary to the structural assumption that only leyline trees do'. A corpus count of heroic talents carrying a rank-3+ prerequisite gives Agent 7, Envoy 6, Hunter 6, Leader 5, Scholar 6, Warrior 6 — 36 system-wide, with Scholar exactly at the median. Every heroic tree has the same L6 discontinuity and the dossier understates all 36 rows equally (heroic/Leader's Synchronized Assault prints L5 on a Leadership 3+ gate; heroic/Envoy's Rallying Shout prints L4 on a Leadership 3+ gate). What IS Scholar-specific is WHICH talents land there: its single best talent (Turning Point), its revival talent (Resuscitation), and the whole tip of its Artifabrian branch.",
+  "uniqueOwnership": [
+   "STANDS — the ONLY source of fabrial crafting in the entire 365-talent atlas. Verified by full-corpus text search: 'fabrial' appears in exactly five talents and all five are Scholar (Efficient Engineer, Prized Acquisition, Inventive Design, Overcharge, Experimental Tinkering). A separate scan for craft/forge/invent outside Scholar returns only deity/Civilization's Forge Construct and Tempered Edge, which build a Combat Construct creature, not items. Nothing else in the atlas halves material cost, halves crafting time, discounts advanced features, or grants a reusable crafting gem.",
+   "STANDS — the only tree that REWRITES THE CHARACTER SHEET. A corpus scan for skill-rank granting or reassignment language returns FIVE talents and all five are Scholar: Erudition (a rank in 2 non-invested cognitive skills) + Deep Study (+2) + Mind and Body (+1) + Emotional Intelligence (+1) = SIX reassignable ranks spanning all three attribute categories, reassignable after a long rest with library access, and Deep Contemplation reassigns two of them mid-adventure for 2 Actions. No other tree in 365 grants or reassigns a skill rank at all.",
+   "SOFTENED — the only tree with a RECONFIGURABLE persistent item. Prized Acquisition's special gem is reusable, Inventive Design pushes its effect one tier above your crafting tier, and Experimental Tinkering re-specs it every long rest. But persistent-asset upgrading is NOT unique: heroic/Warrior's Shard Training adds Shardplate charges and Shardblade expertise, and heroic/Hunter's Feral Connection upgrades an animal companion (+5×tier HP, +2 defenses). What is unique is that Scholar's asset can be CHANGED INTO A DIFFERENT THING on a long rest — an item-slot equivalent of a spell-preparation system.",
+   "DOWNGRADED from 'the only' to ONE OF TWO — the talents that fix an ALLY'S Complication. Verified: exactly five Complication-touching talents exist in the atlas (leyline/White's Pillar of Order, heroic/Agent's Sure Outcome and Double Down, heroic/Leader's Cutthroat Tactics, Scholar's Contingency), matching the census line 'Complication 5 talents / 4 trees'. Agent's two act on the Agent's OWN Opportunist reroll; Leader's Cutthroat Tactics merely pays out 1 focus when an ally rolls one. Only Pillar of Order (an ally's Complication → a blank face, Reaction, 1 Investiture, White 3+) and Contingency (remove it outright, Reaction, 2 focus, Lore 3+) fix someone else's roll. Contingency remains the only focus-priced one.",
+   "STANDS — the most expertise-granting tree in the atlas. Verified by corpus count of every talent whose text contains 'expertise': SEVEN of Scholar's 25 grant one (Erudition, Efficient Engineer, Prized Acquisition, Deep Study, Mind and Body, Emotional Intelligence, Ongoing Care), against Agent 5, Envoy 3, Leader 3, Warrior 3, Hunter 2, leyline/Blue 1 (Telepathic Network SHARES expertise rather than granting it), and zero in every deity tree. Deep Contemplation is NOT an eighth — it reassigns expertises, it does not grant them. Of the seven, only two (Erudition's and Deep Study's) are Erudition-granted and therefore reassignable; the weapon, Diagnosis, Fabrial Crafting, Mental Health Care and Armor/Equipment/Weapon Crafting expertises are permanent.",
+   "STANDS — healing denominated in SKILL RANKS rather than dice, verified across all eleven heal formulas in the atlas. Scholar's three are the only `@skills.<x>.rank` heals (Field Medicine and Swift Healer `@skills.med.rank`, Applied Medicine `@skills.lor.rank`); every other heal formula in 365 is [Tier][Die]-shaped — leyline/White's Mending Aura `floor((@tier)d(2*@skills.white.rank+2)/2)`, leyline/Green's two `(@tier)d(2*@skills.green.rank+2)` variants, and all five deity/Life formulas. Scholar's heals therefore do not scale on the tier multiplier at all; they climb one point at a time with skill investment.",
+   "STANDS, WITH A NEAR-MISS NAMED — revival is one of three. Verified across the corpus: heroic/Envoy's Rallying Shout (Rousing Presence revives an Unconscious ally, recovery die + Leadership ranks), deity/Death's Raise Dead (3 Actions, 4 Investiture, returns to life with 1 HP and an additional injury), and Scholar's Resuscitation (3 focus on a Field Medicine, revives Unconscious or recently dead). The fourth to name is leyline/White's Unbreakable Line, which PREVENTS a drop to 0 ('they drop to 1 health instead') rather than reversing one. Resuscitation is the only revival that is a skill-based medical procedure priced in focus rather than an Investiture-fuelled deity power or a shout.",
+   "CORRECTED — one of exactly TWO party-wide Action grants in 365, but 'the cheaper and less restricted of the two' is only half true. Turning Point (2 Actions + 2 focus, unrestricted Action) vs heroic/Leader's Synchronized Assault (3 Actions + 2 focus, Strike-only, capped at 'allies up to your ranks in Leadership'). Turning Point costs one Action less and its Action is unrestricted — but Synchronized Assault's grant is IMMEDIATE ('gain an Action for an additional Strike against the target') where Turning Point's is delayed a full round ('gain an Action on your NEXT turns'), and Synchronized Assault has a failure clause that still grants one ally an Action where Turning Point on a failure gives nothing at all. Both are effectively L6 (Deduction 3+ / Leadership 3+). Neither is strictly better than the other."
+  ],
+  "gaps": [
+   "DAMAGE — entirely, and verifiably: not one of the 25 talents contains the word 'damage'. A Scholar-only character contributes nothing to the damage line beyond a plain Strike anyone can make. In any round where the answer is 'kill it faster', this player has no button.",
+   "POSITION — no movement, no teleport, no forced movement, no disengage, no terrain interaction, no ignoring difficult terrain (self_move 0/25, forced_move 0/25). A Scholar in the wrong place walks like everyone else.",
+   "AREA EFFECTS — nothing in the tree touches more than one target except Turning Point's party-wide Action grant. No AoE damage, no AoE heal, no AoE buff, no aura, no zone. leyline/White's Mending Aura is what a party healer's AoE looks like; Scholar has no analogue.",
+   "IN-COMBAT CONDITION REMOVAL — the tree removes conditions only during a rest (Ongoing Care) or on a plot-die Complication (Contingency). An ally who is Stunned, Restrained or Prone mid-fight cannot be helped by a Scholar. leyline/Green's Natural Recovery, deity/Life's Surgical Precision and heroic/Envoy's Devoted Presence all remove conditions as a rider on a support action; Scholar's healing carries no such rider.",
+   "HARD CONTROL — no stun, no restrain, no immobilise, no prone, no forced target choice. In a 3-Action economy this tree removes zero enemy Actions; the single control effect (Strategize's rider) denies one Reaction to one enemy against one ally.",
+   "PROTECTING AN ALLY FROM A HIT — no interception, no damage reduction, no shield, no temp HP, no redirection, and both defence passives are self-only. The Scholar can heal the damage afterwards but cannot stop it, and because Field Medicine names a 'concious character' cannot heal a downed ally at all until Resuscitation (effectively L6).",
+   "INVESTITURE — the tree neither spends nor generates Investiture and has no Draw Mana rider, so a pure Scholar sits entirely outside the leyline economy and gains nothing from being attuned.",
+   "MID-COMBAT RESOURCE RECOVERY — focus refills only on rests, and Clear Mind raises the cap without refilling it mid-fight. The resource census confirms Scholar is absent from the focus-regen list (Black 2, Envoy 2, Hunter 1, Leader 1) while carrying 7 focus costers. Once the pool is gone the Scholar has no way to restart the engine mid-encounter.",
+   "SCOUTING AND DETECTION — despite being the knowledge path, a corpus-wide scan for detection language returns twenty talents across fourteen trees and NOT ONE Scholar talent: no perception, no seeing hidden, no tracking, no foreknowledge, no reading a creature's next action. leyline/Blue's Read Intent, heroic/Hunter's Sharp Eye and deity/Fate's Read the Threads all belong to other trees. The information the tree gives is bookish, retrospective, and rolled with ordinary skills."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Artifabrian: 'Combining science, engineering, and artistry, Artifabrians use polestones and metal casings to construct fabrials that perform precise functions.'",
+     "delivered": "PARTIAL — the tree builds a crafting ECONOMY, not a fabrial. Five talents make fabrials cheaper (Efficient Engineer halves material cost), faster (Experimental Tinkering halves crafting time), better (Fine Handiwork discounts advanced features, Inventive Design grants tier+1 effects) and reconfigurable. But NOT ONE talent says what a fabrial actually DOES. The intent file itself admits it: 'Available in the Stormlight Handbook.' The specialty's payoff lives outside the tree, and its deepest node (Overwhelm with Details) is not a crafting talent at all.",
+     "evidence": "Efficient Engineer, Prized Acquisition, Fine Handiwork, Inventive Design, Experimental Tinkering, Overcharge, Overwhelm with Details"
+    },
+    {
+     "claim": "Strategist: 'Always three steps ahead, Strategists know timing is everything and make it work to their benefit.'",
+     "delivered": "DELIVERS — the specialty that best matches its promise, and explicitly about turn timing. Know Your Moment gives +2 defenses from the start of each round UNTIL YOU TAKE YOUR TURN, mechanically rewarding acting late; Turning Point grants an advantage specifically 'if you took a slow turn' and then hands the party an extra Action; Contingency is a pre-emptive save on an ally's roll; Keen Insight and Strategize both key off having set something up first. Diluted by three of its eight talents that are timing-neutral: Clear Mind (flat +focus), Deep Contemplation (a re-spec) and Mind and Body (a weapon expertise plus an Erudition skill). COMPARATIVE NOTE: leyline/Blue's intent file makes the adjacent foresight/probability promise and heroic/Warrior's makes a tactics one, but neither builds on the Slow/Fast turn split — no other tree in 365 keys off it — so this promise is genuinely Scholar's.",
+     "evidence": "Know Your Moment, Turning Point, Contingency, Strategize, Keen Insight; diluted by Clear Mind, Deep Contemplation, Mind and Body"
+    },
+    {
+     "claim": "Surgeon: 'Qualified Surgeons apply their knowledge and empathy to heal the unwell and save lives.'",
+     "delivered": "DELIVERS, and is the tree's most complete promise — but not an exclusive one (see the next row). All three of the tree's heal formulas live here. Field Medicine heals with Medicine ranks; Swift Healer makes it a Free Action and adds Medicine ranks again; Applied Medicine adds Lore ranks on top; Ongoing Care treats injury conditions during a rest; Resuscitation literally 'saves lives' by reviving the Unconscious or the recently dead. 'Empathy' is delivered via Emotional Intelligence's Diagnosis expertise and Ongoing Care's Mental Health Care expertise. Caveat: Field Medicine specifies a 'concious character', so until Resuscitation (effectively L6) the Surgeon cannot touch a downed ally.",
+     "evidence": "Field Medicine, Swift Healer, Applied Medicine, Ongoing Care, Resuscitation, Emotional Intelligence"
+    },
+    {
+     "claim": "DUPLICATE-PROMISE CHECK (lens B(d)): is the Surgeon promise also made by another tree's intent file?",
+     "delivered": "YES, TWICE, AND BOTH RIVALS DELIVER MORE. deity/Life's intent file uses the same word: 'Her blessed are SURGEONS and shapers who do not merely close wounds but improve the body they mend… knitting flesh with riders no leyline mender can match' — backed by five heal formulas to Scholar's three. leyline/Green's intent claims 'Wardens, MENDERS and pack-leaders' and 'Deep mending — the only leyline healing that closes Injuries', backed by six healing talents including condition removal and injury removal. Scholar's Surgeon lane is the third-best implementation of a promise three trees make. NO CONFLICT on the Injury boundary, though: Green's intent claims exclusive rights to closing Injuries, and Scholar's Ongoing Care removes 'one condition caused by their injury', not the injury itself — the colour boundary holds.",
+     "evidence": "INTENT-deity-Life.md lines 9/11; INTENT-leyline-Green.md lines 6/15; Ongoing Care text; heal-formula census deity/Life 5 vs Scholar 3 vs Green 2; healing-talent count Green 6 vs Scholar 5"
+    },
+    {
+     "claim": "'Not all Scholars occupy themselves with bettering society—some instead pursue tools of destruction. Military Scholars often devise new instruments of war and calculate how to best pressure enemy forces.'",
+     "delivered": "DRIFTED, completely. The tree contains ZERO damage talents and ZERO instruments of war — the word 'damage' does not appear in any of the 25 talents' text in any of its three sources. The only two offensive touches are Overcharge (an extra Strike with a fabrial the tree never defines) and Anatomical Insight (Exhausted on an unarmed hit). No siege engine, no weapon design, no trap, no bombard, no enemy-force pressure mechanic. For comparison, heroic/Hunter's Experienced Trapper (Deadly Traps at 2d8) and deity/Destruction's whole Charge suite are what 'instruments of war' looks like when a tree means it. A player who read this paragraph and picked Scholar to be a military engineer has picked a healer with a workshop.",
+     "evidence": "Full-text scan of all 25 talents: zero occurrences of 'damage'; formula census 0 damage / 3 heal; only Overcharge and Anatomical Insight are offensive at all"
+    },
+    {
+     "claim": "'The Scholar key talent, Erudition, unlocks access to the Scholar specialties.'",
+     "delivered": "NOT DELIVERED AS WIRED. Verified against the data: Erudition is depth 0 with prerequisite '—' and `connections: []`, and no talent in the tree lists Erudition in its `prerequisites` or its `connections`. All six other depth-0 talents (Efficient Engineer, Prized Acquisition, Mind and Body, Strategize, Emotional Intelligence, Field Medicine) are reachable at level 1 without ever taking Erudition. The claimed gateway is not a gate — it is a seventh entry node that four other talents (Mind and Body, Emotional Intelligence, Deep Study, Deep Contemplation) merely reference by name in their prose, plus Strategize, whose trigger requires 'an Erudition skill' to function. Under iron rule 7, connections ARE the managed prerequisites, so the prose and the graph disagree.",
+     "evidence": "Erudition (depth 0, prereq '—', connections []); six other depth-0 talents with no Erudition prereq or connection"
+    },
+    {
+     "claim": "'Attributes: prioritize Intellect above all else... Skills: Crafting, Deduction, Lore, and Medicine.'",
+     "delivered": "DELIVERS. Every skill prerequisite in the tree is drawn from exactly that list: Crafting (1/2/3), Deduction (1/2/3), Lore (2/2/3/3/3), Medicine (1/2/3). Recounted talent by talent from the data and confirmed at 14 rank gates, all four skills, no exceptions — build advice and prerequisite graph are in perfect agreement.",
+     "evidence": "Efficient Engineer (Crafting 1+), Strategize (Deduction 1+), Field Medicine (Medicine 1+), Inventive Design (Crafting 2+), Know Your Moment (Deduction 2+), Swift Healer (Medicine 2+), Deep Contemplation (Lore 2+), Applied Medicine (Lore 2+), Overcharge (Crafting 3+), Contingency (Lore 3+), Ongoing Care (Lore 3+), Resuscitation (Medicine 3+), Overwhelm with Details (Lore 3+), Turning Point (Deduction 3+)"
+    },
+    {
+     "claim": "DESIGN-GUIDE DISAGREEMENT (reported, not resolved): DESIGN-GUIDE-CLAIMS.md carries ONLY leyline and deity standards and states NO key mechanic for any heroic path, so this tree has no stated key mechanic to test. Its only heroic-applicable data is the observed official Heroic action-type distribution (34% Passive / 30% Special / 14% Action / 8% 2-Action / 7% Free / 5% Reaction / 2% 3-Action) and the 20-25 word description cap.",
+     "delivered": "MEASURED against those numbers, recounted programmatically from the data: Scholar runs 40% Passive (10/25), 40% Special (10/25), 4% Action (1/25 — Field Medicine alone), 8% 2-Action (2/25), 4% Free (1/25), 4% Reaction (1/25), 0% 3-Action. Passives run 6 points over the Heroic norm (and over the guide's 'eliminate Passives above 35%' rule, which is written for leyline but is the only stated threshold); Specials run 10 points over; the Action slot is catastrophically under-filled at ONE talent against a 14% benchmark, which is the structural reason the tree feels inert in combat. It passes the 0% 3-Action rule. On the 25-word cap, re-run programmatically: FIVE descriptions exceed it — Turning Point 35, Strategize 31, Experimental Tinkering 29, Efficient Engineer 28, Prized Acquisition 27 — while Overcharge (24) and Anatomical Insight (22) are WITHIN it. Also confirmed by re-count: 17 of 25 talents ship with events=0 AND effects=0, exactly the 68%-unwired census figure (an engineering fact, not a design one).",
+     "evidence": "Action-type census across all 25 talents (Special 10, Passive 10, 2 Actions 2, Reaction 1, Action 1, Free Action 1); per-talent word counts; the wiring fields in all-talents.json"
+    }
+   ],
+   "actuallyIs": "Empirically the Scholar is a CRAFTING-AND-CLINIC path: an out-of-combat problem solver that manufactures gear, re-specs its own skill list on demand, keeps the party alive between and after fights, and contributes to combat through two self-only defence passives plus one very good level-6 tempo play. The three specialties are exactly the same size — Artifabrian 8, Strategist 8, Surgeon 8, plus the Key — and Artifabrian reaches depth 3 while Surgeon is the shallowest at depth 2. Only Strategist is a COMBAT specialty: Artifabrian is a crafting economy that barely exists on a battlefield, and Surgeon is a clinic that operates mostly between rounds and between fights. The 'military Scholar' promised in the path prose has no talents at all. THE 'SOMETHING' TEST: Scholar's something is out-of-combat problem-solving through manufactured gear and a rewritable skill list — and nothing else in 365 talents competes. The crafting economy is exclusive (5/5 fabrial talents), the skill-rewriting is exclusive (5/5 rank-granting talents), and the expertise count leads the field (7 vs Agent 5). Its second-best claim, healing, IS beaten — by deity/Life outright and arguably by leyline/Green. Recorded alongside this: functional-overlap ranks heroic/Envoy<->Scholar at 0.826, 6th of 210 pairs and Scholar's nearest neighbour; what separates them is precisely the crafting-and-sheet layer, since Envoy out-performs Scholar on social influence, party buffing and revival breadth while sharing the heal/support/expertise vocabulary.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Focus",
+    "role": "BOTH — consumed by 7 talents, capacity raised once, never regenerated",
+    "talents": "CONSUME (7, matching the census figure 'Scholar 7' and its named list): Strategize (2), Field Medicine (1), Anatomical Insight (1 focus OR Opportunity), Contingency (2), Resuscitation (3), Overwhelm with Details (2), Turning Point (2). PRODUCE: Clear Mind only — 'increase your max and current focus by your tier', a cap raise plus a one-time top-up, NOT regen (the census's focus-regen list is Black 2, Envoy 2, Hunter 1, Leader 1; Scholar is absent)."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "BOTH — spent as a cost by 2 talents, and its trigger range widened by 2 (crafting only)",
+    "talents": "CONSUME: Overcharge (spend Opportunity to Strike as a Free Action), Anatomical Insight (1 focus OR Opportunity) — both named in resource-economy.json's Opportunity consumer list. PRODUCE: Efficient Engineer (+2 Opportunity range when crafting), Experimental Tinkering (+1 when crafting) — both named in the producer list, tying Agent, Leader and Warrior for the most of any tree, but both crafting-only, so neither produces an Opportunity in combat."
+   },
+   {
+    "keyword": "Erudition (the tree's own named skill/expertise pool)",
+    "role": "BOTH — the tree's spine: produced by four talents (six ranks total), consumed by two. UNIQUE: the only skill-rank pool in 365 talents.",
+    "talents": "PRODUCE: Erudition (expertise + a rank in 2 non-invested cognitive skills), Deep Study (+1 expertise, +2 skills), Mind and Body (+1 skill, unlocks Physical), Emotional Intelligence (+1 skill, unlocks Spiritual) = SIX reassignable ranks and TWO reassignable expertises. CONSUME/MANIPULATE: Deep Contemplation (reassign up to 2), Strategize ('Gain Advantage using an Erudition skill')."
+   },
+   {
+    "keyword": "Fabrial",
+    "role": "BOTH — granted, crafted, upgraded, reconfigured, attacked with. EXCLUSIVE to this tree: verified as exactly 5 of the 365 talents, all Scholar.",
+    "talents": "PRODUCE: Efficient Engineer, Prized Acquisition. CONSUME/MODIFY: Inventive Design, Experimental Tinkering, Overcharge."
+   },
+   {
+    "keyword": "Special gem (reusable crafting reagent)",
+    "role": "PRODUCE",
+    "talents": "Prized Acquisition ('You can reuse this gem for new fabrials'); modified by Inventive Design and Experimental Tinkering."
+   },
+   {
+    "keyword": "Expertise",
+    "role": "PRODUCE — seven talents, the most of any tree in the atlas (Agent 5 is second; every deity tree is 0)",
+    "talents": "Erudition (cultural or utility), Efficient Engineer (Armor/Equipment/Weapon Crafting), Prized Acquisition (Fabrial Crafting), Deep Study (cultural or utility), Mind and Body (weapon), Emotional Intelligence (Diagnosis), Ongoing Care (Mental Health Care). Deep Contemplation is NOT an eighth producer — it reassigns Erudition-granted expertises, of which there are two."
+   },
+   {
+    "keyword": "Recovery die",
+    "role": "CONSUME/AUGMENT — the tree's healing rides on the PATIENT's recovery die, a resource the Scholar cannot replenish",
+    "talents": "Field Medicine ('add your ranks in Medicine to their recovery die'); amplified by Swift Healer and Applied Medicine. Verified as one of only three recovery-die talents in the atlas (the others are heroic/Envoy's Galvanize, which converts the die into FOCUS rather than health, and Envoy's Rallying Shout)."
+   },
+   {
+    "keyword": "Exhausted[-X]",
+    "role": "PRODUCE",
+    "talents": "Anatomical Insight (Exhausted[-half your ranks in Medicine] on an unarmed hit, for 1 focus or an Opportunity)."
+   },
+   {
+    "keyword": "Complication (Plot Die)",
+    "role": "CONSUME/REMOVE",
+    "talents": "Contingency (remove Complication from an ally's test within 20 ft) — one of exactly five Complication talents across four trees, and one of TWO that act on an ALLY's roll (the other being leyline/White's Pillar of Order)."
+   },
+   {
+    "keyword": "Raise the Stakes",
+    "role": "CONSUME",
+    "talents": "Overcharge ('raise the stakes on a fabrial attack'). NOT exclusive — shared with heroic/Agent's Risky Behavior and heroic/Leader's Cutthroat Tactics."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "BOTH — transferred rather than created; only 3 of 25 talents name it",
+    "talents": "Strategize (grant your advantage to an ally instead), Turning Point (advantage on its own Deduction test if you took a Slow turn), Keen Insight (rides on Gain Advantage, but its output is disadvantage, not advantage). Confirmed against advantage-ledger.md lines 77/79/81."
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE",
+    "talents": "Keen Insight (target resists your influence or gains a disadvantage on its next test) — 1 of 25, against Blue's 5."
+   },
+   {
+    "keyword": "Reaction denial",
+    "role": "PRODUCE",
+    "talents": "Strategize (spend 2 focus to prevent the target using reactions against that ally)."
+   },
+   {
+    "keyword": "Defenses (Physical / Cognitive / Spiritual)",
+    "role": "PRODUCE (buff SELF only — neither talent can be pointed at an ally)",
+    "talents": "Know Your Moment (+2 all defenses from round start until you act), Collected (+2 Cognitive and Spiritual, permanent)."
+   },
+   {
+    "keyword": "Injury / conditions caused by injury",
+    "role": "CONSUME/REMOVE",
+    "talents": "Ongoing Care (Medicine DC 10 during a rest to remove one condition caused by an ally's injury). The colour boundary holds: removing an INJURY itself is leyline/Green's Reknit Form, and Scholar does not."
+   },
+   {
+    "keyword": "Unconscious / recently died",
+    "role": "CONSUME/REVERSE",
+    "talents": "Resuscitation (spend 3 focus when using Field Medicine to revive) — one of only three revival talents in 365, alongside heroic/Envoy's Rallying Shout and deity/Death's Raise Dead; leyline/White's Unbreakable Line is the near-miss that prevents rather than reverses."
+   },
+   {
+    "keyword": "Granted Action (party-wide)",
+    "role": "PRODUCE",
+    "talents": "Turning Point ('you and your allies gain an Action on your NEXT turns') — one of only two party-wide Action grants in the atlas, the other being heroic/Leader's Synchronized Assault (3 Actions, Strike-only, Leadership-capped, but IMMEDIATE and with a failure clause)."
+   },
+   {
+    "keyword": "Slow turn / Fast turn",
+    "role": "CONSUME (as a condition on payoff)",
+    "talents": "Turning Point (advantage if you took a Slow turn); Know Your Moment implicitly rewards acting late in the round. This is the tree's genuine mechanical signature — no other tree in 365 keys off the Slow/Fast split."
+   },
+   {
+    "keyword": "Crafting sub-economy: material cost, crafting time, upgrades, advanced features, crafting tier",
+    "role": "CONSUME/DISCOUNT",
+    "talents": "Efficient Engineer (material cost halved), Fine Handiwork (advanced features cost one upgrade instead of two), Experimental Tinkering (crafting time halved), Inventive Design (effect one tier higher). Exclusive to this tree."
+   },
+   {
+    "keyword": "Skill ranks as the heal/debuff denominator (Medicine rank, Lore rank)",
+    "role": "CONSUME — the tree's numbers scale on skill ranks, not [Tier][Die]",
+    "talents": "Field Medicine (@skills.med.rank), Swift Healer (@skills.med.rank), Applied Medicine (@skills.lor.rank), Anatomical Insight (half Medicine ranks), Overwhelm with Details (Lore modifier substitution). Verified unique: all eight other heal formulas in the atlas are (@tier)d(...) shaped."
+   },
+   {
+    "keyword": "Skill-rank gates: Crafting, Deduction, Lore, Medicine",
+    "role": "CONSUME (prerequisites) — 14 rank gates, six of them rank 3 and therefore level 6",
+    "talents": "Crafting 1/2/3 (Efficient Engineer, Inventive Design, Overcharge), Deduction 1/2/3 (Strategize, Know Your Moment, Turning Point), Lore 2/2/3/3/3 (Deep Contemplation, Applied Medicine, Contingency, Ongoing Care, Overwhelm with Details), Medicine 1/2/3 (Field Medicine, Swift Healer, Resuscitation). Six rank-3 gates is the MEDIAN for a heroic tree (Agent 7, Envoy 6, Hunter 6, Leader 5, Scholar 6, Warrior 6)."
+   }
+  ],
+  "crossTreeHooks": [
+   "Strategize, Contingency, Turning Point, Field Medicine, Swift Healer, Applied Medicine, Ongoing Care, Resuscitation — EIGHT talents (32% of the tree) do nothing unless there is another character to point them at. A solo Scholar loses a third of its kit.",
+   "Overcharge depends on a FABRIAL ATTACK, and no talent in this tree or any other defines what a fabrial attack is or does — verified by corpus scan: 'fabrial' appears in five talents, all Scholar, none of which give a fabrial a damage die. The intent file explicitly defers it to the Stormlight Handbook. Its entire value is imported from outside the atlas.",
+   "Anatomical Insight requires you to HIT with an unarmed attack, and the Scholar tree grants no attack bonus, no unarmed damage and no accuracy help. It is written for a multi-path character carrying heroic/Warrior's or heroic/Hunter's Combat Training, or a Physical leyline path.",
+   "Contingency requires a COMPLICATION to have been rolled on an ally's Plot Die — an event no Scholar talent can cause. The partners that make it fire are heroic/Agent's Sure Outcome and Double Down and heroic/Leader's Cutthroat Tactics; note that despite the leyline guide's claim that Plot Die manipulation is Blue's capstone identity, Plot Die talents exist only in leyline/Red and heroic/Agent, so the natural partner is Agent, not Blue.",
+   "Turning Point requires an identifiable ENEMY LEADER in the encounter and a party large enough that +1 Action each beats the 2 Actions you spent — with a four-person party the net is +2 Actions, arriving one round late. It hooks on encounter design rather than on another tree.",
+   "Keen Insight and Strategize both trigger 'after you Gain Advantage', so they want a tree that generates advantage cheaply — heroic/Hunter's Exploit Weakness ('Gain Advantage on your quarry without spending an action', a Free Action) or heroic/Warrior's stances would make both fire every round instead of costing an Action each time.",
+   "Field Medicine spends the PATIENT'S recovery die, an external resource the Scholar cannot replenish. Verified: the only other recovery-die talents in all 365 are heroic/Envoy's Galvanize (an ally rolls their recovery die and recovers that much focus) and Envoy's Rallying Shout, so Envoy is the one genuine partner here — which is also why functional-overlap ranks Envoy<->Scholar 6th of 210 pairs at 0.826.",
+   "Clear Mind's expanded focus pool is a cross-path enabler: a flat +tier focus that any focus-hungry path benefits from — and by the census the hungriest are heroic/Agent (12 costers) and heroic/Leader (11), both hungrier than Scholar's own 7.",
+   "The whole Erudition chain is a cross-tree hook by construction: six reassignable ranks in non-invested cognitive, physical and spiritual skills exist to plug the skill holes of whatever OTHER path the character took — which is exactly why the intent file names Agent and Envoy as the multi-path partners."
+  ],
+  "topThree": [
+   "Turning Point — one of only two party-wide extra-Action grants in all 365 talents (the other is heroic/Leader's Synchronized Assault: 3 Actions, Strike-only, Leadership-capped, but immediate and with a failure clause where Turning Point has none). At 2 Actions + 2 focus for an unrestricted Action to you and every ally, it is the single strongest thing this tree does, though the grant arrives on your NEXT turns and it lands at L6, not the printed L4.",
+   "Swift Healer — turns the tree's 1-Action heal into a permanent Free Action AND adds Medicine ranks on top; free-action healing that costs no Investiture and only 1 focus is a rare and quietly excellent effect. It is what keeps Scholar competitive with leyline/Green as a party healer despite healing far less per cast, because it never competes with Draw Mana for Actions.",
+   "Efficient Engineer — the entry that opens the atlas's only crafting economy (a free fabrial, halved material cost, +2 Opportunity range on crafting tests) and defines what makes this tree unlike any other in 365 talents."
+  ],
+  "bottomThree": [
+   "Deep Contemplation — 2 combat Actions to re-spec skills; a downtime effect priced as two thirds of a Slow turn, taken almost entirely as a prerequisite tax for Keen Insight.",
+   "Contingency — a Reaction plus 2 focus, actually gated at Lore 3+ (level 6, not the printed L3), to erase one Plot Die Complication you cannot schedule, while competing with Dodge, Aid and Reactive Strike for your one Reaction.",
+   "Keen Insight — a depth-3 payoff that names no test, no DC and no defense, ships with zero events and zero effects, and rides on a standard action every character already has."
+  ],
+  "weakTalents": [
+   {
+    "name": "Deep Contemplation",
+    "reason": "2 Actions — two thirds of a Slow turn, the whole of a Fast turn — to reassign 2 skills and expertises from Erudition. This is a downtime effect wearing a combat action cost; nobody spends two combat Actions to re-spec. It exists chiefly as a prerequisite tax on the road to Keen Insight, and its action type is simply wrong for what it does (it should be a rest activity or a Special). OVERCOSTED."
+   },
+   {
+    "name": "Contingency",
+    "reason": "A Reaction plus 2 focus to remove one Complication from an ally's test within 20 ft. It competes for the single Reaction per round against the universal Dodge, Aid and Reactive Strike; a Complication is a Plot Die outcome you cannot schedule; 2 focus is half a low-WIL Scholar's entire pool; and it is gated behind Lore 3+, i.e. level 6, not the depth-2/L3 the dossier prints. COMPARISON CORRECTED: leyline/White's Pillar of Order does a similar job (an ally's Complication → a blank face) for 1 Investiture — but it is ALSO a Reaction, is ALSO gated at L6 (White 3+), and its Investiture competes with Draw Mana's 1-Action-per-Investiture tax, so it is not the strictly cheaper option the previous profile implied. Contingency is still OVERCOSTED on its own terms; the White comparison is a wash."
+   },
+   {
+    "name": "Keen Insight",
+    "reason": "OVERPROMISES WHAT THE IMPLEMENTATION CAN DELIVER. 'The target must resist your influence' names no test, no skill, no DC and no defense, and the talent ships with events=0 effects=0 — there is nothing on the document for Foundry to run, so at the table it is GM adjudication, not a mechanic. It also rides on the standard Gain Advantage action every character already has, and at depth 3 (behind Deep Contemplation) it is a thin payoff for a three-talent chain."
+   },
+   {
+    "name": "Strategize",
+    "reason": "NET-ZERO ADVANTAGE and near-duplicate of a standard action. 'Grant that advantage to an ally instead' takes the advantage off you and puts it on them — because advantage is binary and non-stacking, the party gains zero units; it is a transfer, and you paid a 1-Action Gain Advantage to make it. Every character can already Aid an ally as a Reaction for 1 focus. Only the reaction-denial rider is new value, priced at 2 focus for one enemy's one Reaction. It also runs 31 words against the 25-word description cap (re-counted programmatically)."
+   },
+   {
+    "name": "Mind and Body / Emotional Intelligence / Deep Study (plus the Key, Erudition)",
+    "reason": "FOUR TALENTS THAT ARE NEARLY THE SAME TALENT. All four read 'gain an expertise and more Erudition skills', differing mainly in which skill category they unlock — 16% of the tree (4/25) spent widening one mechanic. The differentiation is thinner than it looks but not nil: Mind and Body's expertise is a WEAPON expertise, a real combat benefit the other three do not offer, and Emotional Intelligence unlocks the Spiritual category that carries the social skills. Erudition is the Key and unavoidable; the other three are largely taken for their prerequisite position rather than their effect. MITIGATING COMPARATIVE NOTE: this repetition is what BUYS the tree its skill-rewriting identity, which no other tree in 365 talents has at any node count — redundancy in service of the tree's only exclusive mechanic, not pure filler."
+   },
+   {
+    "name": "Overcharge",
+    "reason": "Not weak in effect, but mis-gated and over-conditioned for its depth. It is a depth-1 talent printed at earliest L2 while actually requiring Crafting 3+ (level 6), it demands you already be attacking with a fabrial the atlas never defines, and it further demands an Opportunity — three gates on a single extra Strike, once per turn. The previous profile's comparison to heroic/Warrior's Windstance was overstated: Windstance costs a full Action to enter and its Free-Action-to-Action conversion is itself conditional ('While you can reach multiple enemies'). Warrior's Flamestance is the cleaner indictment — it also costs an Action to enter but grants its Action at depth 0 / L1 behind only an Intimidation 1+ gate."
+   },
+   {
+    "name": "Overwhelm with Details",
+    "reason": "Not underpowered, but MIS-FILED: it is the Artifabrian branch's deepest node (verified from the data: depth 3, prereq Experimental Tinkering, specialty Artifabrian) and has nothing whatsoever to do with fabrials or crafting — it spends 2 focus to substitute your Lore modifier on a cognitive or spiritual test. The crafting branch's capstone is a Strategist effect wearing an Artifabrian label, so the Artifabrian specialty never pays off its own investment inside the tree."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "About 2 rounds of premium plays per encounter at Tier 1, 3 at Tier 2. A Scholar built as the intent advises (Intellect first, then Presence) is likely WIL 1-2, giving Focus 3-4 (Focus = 2 + WIL); Clear Mind adds +tier, so 4-5 at Tier 1 and 5-6 at Tier 2. The good buttons cost 2 focus each (Turning Point, Contingency, Strategize's rider, Overwhelm with Details) or 3 (Resuscitation), so the pool buys roughly two big plays, or four to five Field Medicine/Swift Healer heals at 1 focus, and then the Scholar is making ordinary Strikes for the rest of the fight. Critically, focus refills only on RESTS — the tree has no mid-combat recovery, no Investiture engine and no Draw Mana interaction, so unlike a leyline path it cannot spend an Action to refuel. Clear Mind raises the ceiling but never refills the tank mid-fight. COMPARATIVE NOTE: this is not a Scholar-specific failing — every heroic tree runs on focus, only Envoy, Hunter and Leader carry any focus regen at all (2/1/1), and Agent (12 costers) and Leader (11) are hungrier than Scholar's 7. The one genuinely sustainable option is Swift Healer plus Applied Medicine at 1 focus a cast, bounded mainly by the patients' recovery dice.",
+   "triggerGatedCount": 2,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 7,
+   "note": "Counted against the stated definition of trigger-gated (a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit): exactly TWO qualify — Contingency (the tree's only Reaction) and Anatomical Insight ('When you hit with an unarmed attack'). This matches the deterministic census (Scholar 2 trigger-gated, 8%, joint-lowest in the atlas with Agent and Leader). The broader conditional set is real but belongs in prose, not in this number — Strategize and Keen Insight fire after YOU Gain Advantage; Field Medicine, Swift Healer, Applied Medicine and Resuscitation need a wounded, unconscious or dead ally; Ongoing Care needs a rest; Overcharge needs an in-progress fabrial attack plus an Opportunity; Turning Point needs an identifiable enemy leader. With only 1 Reaction in the tree, the 1-Reaction-per-round cap is not an internal constraint (contrast leyline/White's SEVEN Reactions competing for one slot) — but Contingency still competes with the universal Dodge, Aid and Reactive Strike, which are usually better. SEVEN talents spend focus: re-counted from the Cost fields, and resource-economy.json independently names the same seven (Overwhelm with Details, Strategize, Contingency, Turning Point, Field Medicine, Anatomical Insight, Resuscitation). Against that, exactly one talent raises the cap and none restores focus, so the tree is a net resource sink."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.countReal",
+   "from": "1",
+   "to": "0",
+   "reason": "INTERNAL CONTRADICTION resolved against the text. The profile counted Overcharge as one real damage talent while its own evidence said 'the talent contributes no dice of its own' and its own verdict said 'This is a ZERO-DAMAGE tree'. Overcharge reads 'spend Opportunity to Strike with that fabrial as a Free Action' — it grants an extra instance of Strike, a STANDARD action every character already has (SYSTEM-PRIMER: 'A talent that reproduces a standard action is worth roughly zero'). All dice belong to the fabrial. I additionally verified by full-corpus scan that the word 'damage' appears in ZERO of the 25 Scholar talents in any of the three text sources (generator prose, authoredDescription, authoredBody), and that the only damage objects on Scholar talents are Field Medicine / Swift Healer / Applied Medicine, all type:heal."
+  },
+  {
+   "field": "axes.damage_direct.score",
+   "from": "1",
+   "to": "0",
+   "reason": "Same finding. The rubric's 0 is 'the tree does not do this at all', and three independent streams agree at zero (formula census 0 damage/3 heal; damage-census SOURCE 0/AMPLIFY 0/MITIG 0; my own word-scan finding zero occurrences of 'damage'). The score of 1 was contradicted by the profile's own evidence string."
+  },
+  {
+   "field": "axes.damage_scaling.score",
+   "from": "1",
+   "to": "0",
+   "reason": "Mandated by the rubric ('Score 0 if damage_direct is 0') and true on the merits — no Scholar talent adds a die, a rider, a die-size step, or any [Tier][Die] expression."
+  },
+  {
+   "field": "damageAccounting.earliestDamageDepth / earliestDamageLevel",
+   "from": "1 / 6",
+   "to": "(removed)",
+   "reason": "Meaningless once countReal is 0; the dossier prints '-' in the earliestL column for the zero-damage trees (Blue, Scholar, Sovereignty)."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "11",
+   "to": "2",
+   "reason": "MISCOUNT against the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Only Contingency (the tree's sole Reaction) and Anatomical Insight ('When you hit with an unarmed attack') qualify — 2, exactly matching the deterministic census row 'heroic/Scholar ... 2  8%'. The profile's 11 counted 'needs a wounded ally', 'needs a rest', 'needs an enemy leader' and 'after you Gain Advantage', which is situationality, not trigger-gating; it inflated a cross-tree comparison metric five-fold. The broader conditional set is retained in the note."
+  },
+  {
+   "field": "sustainability.resourceCostersOutOfTree (and the 'eight talents spend focus' phrasing in the note and in axes.resource_economy)",
+   "from": "8",
+   "to": "7",
+   "reason": "ARITHMETIC ERROR. Counting Cost fields in the dossier: Strategize 2 Focus, Field Medicine 1 Focus, Anatomical Insight 1 Focus or Opportunity, Contingency 2 Focus, Resuscitation 3 Focus, Overwhelm with Details 2 Focus, Turning Point 2 Focus = SEVEN. The deterministic census independently says 'Scholar 7', and the profile's OWN mechanicalKeywords Focus entry lists exactly seven consumers — so the field contradicted its own evidence."
+  },
+  {
+   "field": "axes.information.score",
+   "from": "3",
+   "to": "2",
+   "reason": "INFLATED, and contradicted by the profile's own closing sentence ('No scouting, no detection, no foreknowledge, no reading intent before it happens'). The functional classifier scores Scholar detect_info 0/25. Everything the profile cited (Erudition chain, Overwhelm with Details) is 'be better at a roll anyone can already attempt', i.e. skill breadth — which is already credited at exploration_utility 5. Rubric 2 = 'present but minor'."
+  },
+  {
+   "field": "axes.social_influence.score",
+   "from": "2",
+   "to": "1",
+   "reason": "INFLATED. Classifier: Scholar social 1/25 (Blue 4). No talent persuades, commands, compels, deceives, or touches reputation; the two touches are Emotional Intelligence (incidental — it unlocks a skill CATEGORY that happens to contain social skills) and Keen Insight's unresolved 'resist your influence' (a rider on a standard action). Rubric 1 = 'one incidental talent, or a rider on something else' — an exact match."
+  },
+  {
+   "field": "axes.resource_economy.score",
+   "from": "2",
+   "to": "1",
+   "reason": "INFLATED. The resource-economy census enumerates every tree with Focus regen (Black 2, Envoy 2, Hunter 1, Leader 1) and Scholar is NOT on it — it appears only as a coster (7). Clear Mind is a cap raise plus a one-time top-up, not regeneration; Efficient Engineer's +2 and Experimental Tinkering's +1 Opportunity range are explicitly 'When crafting', so they never produce a resource in combat. One incidental generator = 1."
+  },
+  {
+   "field": "axes.healing.evidence",
+   "from": "'Held to 4, not 5, because ... leyline Green and Black each carry more heal-tagged talents.'",
+   "to": "Held to 4 because deity/Life carries more heal formulas, the heal is bounded by the patient's recovery die, it is single-target, and Field Medicine cannot touch an unconscious ally until Resuscitation.",
+   "reason": "UNSUPPORTED AND MISLEADING CROSS-TREE CLAIM. I counted heal formulas across all 365 talents: deity/Life 5, heroic/Scholar 3, leyline/Green 2, leyline/White 1, leyline/Black 0 — Black has NONE and Green has fewer than Scholar. (Green and Black do carry more heal-ADJACENT text, but those are mostly self-heal riders off HP sacrifice.) Also added the real limiter the profile missed: Field Medicine says 'heal a concious character', so a downed ally is untreatable until Resuscitation."
+  },
+  {
+   "field": "intentDrift.claims[6].delivered — the 25-word-cap violation list",
+   "from": "'Efficient Engineer ~34 words, Turning Point ~38, Overcharge ~26, Anatomical Insight ~26'",
+   "to": "Turning Point 35, Strategize 31, Experimental Tinkering 29, Efficient Engineer 28, Prized Acquisition 27 exceed the cap; Overcharge (24) and Anatomical Insight (22) do NOT.",
+   "reason": "WORD-COUNT ERRORS IN BOTH DIRECTIONS, recounted mechanically over every description. Two named 'violations' are actually within the cap (Overcharge 24, Anatomical Insight 22), two counts were inflated (Efficient Engineer 28 not ~34, Turning Point 35 not ~38), and three real violations were missed (Strategize 31, Experimental Tinkering 29, Prized Acquisition 27). Five talents exceed the cap, not four."
+  },
+  {
+   "field": "uniqueOwnership — expertise-granting count",
+   "from": "'eight of its 25 talents grant an expertise (… Deep Contemplation …) — more than any other tree'",
+   "to": "SEVEN grant an expertise (Erudition, Efficient Engineer, Prized Acquisition, Deep Study, Mind and Body, Emotional Intelligence, Ongoing Care); the superlative is VERIFIED (Agent 5, Envoy/Hunter/Leader/Warrior 3 each, leyline and deity 0).",
+   "reason": "MISCOUNT. Deep Contemplation's text is 'Reassign up to 2 skills and expertises from Erudition' — it reassigns, it does not grant, and its tags do not include gain_expertise. I verified the superlative by corpus count rather than leaving it as an unsupported claim."
+  },
+  {
+   "field": "uniqueOwnership / axes.information — reassignable skill ranks",
+   "from": "'up to five reassignable skill ranks'",
+   "to": "six",
+   "reason": "ARITHMETIC ERROR. Erudition 'a rank in two non-invested cognitive skills' (2) + Deep Study 'two additional non-invested cognitive skills' (+2) + Mind and Body 'an additional skill from Erudition' (+1) + Emotional Intelligence 'an additional skill from Erudtition' (+1) = 6."
+  },
+  {
+   "field": "uniqueOwnership — 'multiple expertises, all reassignable'",
+   "from": "all Erudition expertises reassignable",
+   "to": "only two of the seven (Erudition's and Deep Study's) are Erudition-granted and therefore reassignable",
+   "reason": "TEXT-VS-CLAIM. The weapon expertise (Mind and Body), Diagnosis (Emotional Intelligence), Fabrial Crafting (Prized Acquisition), Mental Health Care (Ongoing Care) and Armor/Equipment/Weapon Crafting (Efficient Engineer) are flat permanent grants, not part of the Erudition pool that Deep Contemplation reassigns."
+  },
+  {
+   "field": "intentDrift.actuallyIs — specialty sizes",
+   "from": "'only Strategist is a combat specialty, and it is the smallest and latest of the three'",
+   "to": "All three specialties are exactly 8 talents (Artifabrian 8, Strategist 8, Surgeon 8, plus the Key Erudition = 25). Strategist is neither smallest nor latest — Artifabrian also reaches depth 3, and Surgeon is the shallowest at depth 2.",
+   "reason": "FACTUAL ERROR, verified by counting the Specialty field across all 25 talents. The surviving true claim (only Strategist is a COMBAT specialty) is retained."
+  },
+  {
+   "field": "powerByDepth[0].exemplars",
+   "from": "'Erudition, Mind and Body and Emotional Intelligence are three near-identical … passives with no in-combat effect at all'",
+   "to": "Mind and Body is not purely out-of-combat — it grants a WEAPON expertise, a genuine combat benefit",
+   "reason": "TEXT-VS-CLAIM. Mind and Body's text opens 'Gain a weapon expertise.' The band's headline count of four inert entries is still right, but the four are Efficient Engineer, Prized Acquisition, Erudition and Emotional Intelligence, not the three named. Same correction applied to the weakTalents 'four talents that are the same talent' entry."
+  },
+  {
+   "field": "weakTalents — Overcharge, the Windstance comparison",
+   "from": "'Compare Warrior's Windstance, which grants an Action for a Free Action with no resource cost.'",
+   "to": "Windstance costs a full Action to ENTER, and its Free-Action-to-Action conversion is itself conditional ('While you can reach multiple enemies')",
+   "reason": "TEXT-VS-CLAIM, checked against the corpus. Windstance reads: 'Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.' It is still the better deal, but not the unconditional free lunch the comparison implied."
+  },
+  {
+   "field": "powerByDepth[1].note",
+   "from": "'three of these 15 (Contingency, Ongoing Care, Resuscitation) carry rank-3 skill gates'",
+   "to": "four — Overcharge (Crafting 3+) belongs in the depth-1-2 band too",
+   "reason": "OMISSION consistent with the profile's own frontOrBackLoaded finding, which correctly lists Overcharge among the six rank-3 talents. Overcharge is depth 1, so it falls in this band."
+  },
+  {
+   "field": "action_economy / topThree — Turning Point's uniqueness",
+   "from": "asserted as 'one of the largest action-economy swings available anywhere' without cross-tree evidence",
+   "to": "VERIFIED: exactly two party-wide Action grants exist in 365 talents; the other, Leader's Synchronized Assault, costs 3 Actions + 2 focus, is capped at 'allies up to your ranks in Leadership', and restricts the granted Action to a Strike",
+   "reason": "Not an error — an unsupported superlative that I checked and can now substantiate, which also justifies holding the axis at 4 rather than raising or lowering it."
+  },
+  {
+   "field": "crossTreeHooks — Contingency's Plot Die partners",
+   "from": "'Trees that manipulate the Plot Die (Blue leyline, deity Chaos, Agent's Sure Outcome / Double Down, Leader's Cutthroat Tactics)'",
+   "to": "Blue and deity/Chaos removed; Plot Die talents exist only in leyline/Red and heroic/Agent",
+   "reason": "CONTRADICTS THE SUPPLIED MEASUREMENT, which states 'Plot Die 3 talents / 2 trees (leyline/Red and heroic/Agent ONLY)' and explicitly flags that Blue has ZERO plot-die talents despite the design guide's claim. Naming Blue and Chaos as the reliable enablers is exactly the design-guide myth the measurement exists to refute."
+  },
+  {
+   "field": "NO CORRECTION NEEDED — claims I checked and confirmed",
+   "from": "(various)",
+   "to": "(unchanged)",
+   "reason": "Verified against text/corpus and left standing: the six rank-3 gates and the L2→L6 / L3→L6 / L4→L6 understatement (dossier header says 'rank 3+ needs L6' yet its earliestL column did not apply it to skill ranks); the 14 rank gates all drawn from Crafting/Deduction/Lore/Medicine (recounted, exactly 14); the Erudition-is-not-a-gate finding (no talent lists Erudition in prerequisites or connections); 17 of 25 talents at events=0 AND effects=0 (recounted, = the 68% unwired figure); the action-type census 10/10/1/2/0/1/1; the depth distribution 7 / 9 / 6 / 3; fabrial exclusivity (exactly 5 talents in 365, all Scholar); Complication 5 talents / 4 trees; the three recovery-die talents (Scholar's Field Medicine + Envoy's Galvanize and Rallying Shout); the three revival talents (Envoy's Rallying Shout, deity/Death's Raise Dead 'returns to life with 1 HP and one additional injury', Scholar's Resuscitation — my first regex missed Raise Dead, the profile was right); Hunter's Exploit Weakness quoted accurately; countFalsePositiveMitigation = 0 (no mitigation language exists to misread); Focus = 2 + WIL arithmetic in roundsOfGoodOptions; reactionCount = 1; the 32% cross-tree-hook figure (8/25); the 16% figure (4/25)."
+  },
+  {
+   "field": "axes[action_economy].score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION (lens B(b)). The rubric's 4 means 'one of the better options in the game for this', and the corpus does not support it. heroic/Agent fields THREE Free-Action talents that each read 'Spend 2 focus to gain 2 actions' for a whole category of test (Quick Analysis, Fast Talker, Trickster's Hand) — more raw Actions, repeatable, no rank-3 gate. heroic/Hunter grants an ADDITIONAL Reaction (Sidestep, 'Gain an additional reaction to Dodge'), a free Gain Advantage (Exploit Weakness, 'Gain Advantage on your quarry without spending an action'), a free Disengage (Backstep) and a Free Action to give a companion one or two Actions (Animal Bond). heroic/Warrior's Flamestance/Windstance each 'gain an Action'. Scholar's Turning Point is genuinely rare (party-wide) but arrives on 'your NEXT turns', is contested, costs 2 of 3 Actions, and gates at Deduction 3+ = L6."
+  },
+  {
+   "field": "axes[resource_economy].score",
+   "from": "1",
+   "to": "2",
+   "reason": "SCORE DEFLATION (lens B(c)) against the census's own data. resource-economy.json's Opportunity PRODUCER map names heroic/Scholar explicitly — {'heroic/Scholar': ['Efficient Engineer','Experimental Tinkering']} — two of the nine producers atlas-wide, tying Agent, Leader and Warrior for the most in any single tree. With Clear Mind's 'Increase your max and current focus by your tier' that is three currency-generating talents, more than the rubric's 1 ('one incidental talent'). Held to 2, not 3, because both Opportunity expanders are worded 'When crafting' so neither fires in combat, and Scholar is correctly absent from the focus-regen list."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'carries the best non-deity healing in the atlas'",
+   "to": "'one of the two best non-deity healers (leyline/Green heals deeper and closes Injuries; Scholar heals cheaper and as a Free Action)'",
+   "reason": "UNIQUE-OWNERSHIP CLAIM FAILS (lens B(a)). The claim rested on heal-FORMULA count (Scholar 3 > Green 2), which is the wrong measure because Green's healing rides on amplifiers that carry no formula. By talent: leyline/Green fields six (Mender's Instinct 'restore [Tier][Die] health' as a Reaction; Verdant Mend '[Tier][Die] + your Green modifier'; Resurgent Growth ongoing 'tier + Green modifier'; Natural Recovery 'remove one condition… Afflicted, Disoriented, Stunned, or Weakened'; Reknit Form 'remove one temporary injury, or… a permanent injury'; Vital Surge temp HP) against Scholar's five, and Green's per-cast magnitude is a die roll where Scholar's is a flat skill-rank addition to the patient's own recovery die."
+  },
+  {
+   "field": "axes[healing].evidence",
+   "from": "'The best non-deity healing in the atlas, VERIFIED by counting heal formulas…'",
+   "to": "talent-by-talent comparison with leyline/Green and deity/Life, with Scholar's win located in action economy and price rather than magnitude",
+   "reason": "Same finding as above, stated on the axis. Score kept at 4 — third-best of 21 trees is still 'a strength' — but the evidence no longer rests on a metric that under-counts Green."
+  },
+  {
+   "field": "axes[protection].evidence",
+   "from": "listed 'Contingency (Reaction, 2 focus) removes a Complication from an ally's test' as protection evidence",
+   "to": "Contingency explicitly excluded; only Know Your Moment and Collected count, and both are flagged SELF-ONLY",
+   "reason": "Category error. Removing a Complication from a Plot Die is not 'damage reduction, shields, temp HP, interception, resistance, damage redirection'. Score unchanged at 2, but the evidence now supports it honestly, and the self-only limitation (neither defence passive can be pointed at an ally) is a real comparative weakness against leyline/White."
+  },
+  {
+   "field": "uniqueOwnership — Complication removal",
+   "from": "'The only talent that removes a Complication from someone ELSE'S roll (Contingency)'",
+   "to": "'One of TWO… and the only focus-priced one'",
+   "reason": "Lens B(a). The profile's own evidence listed leyline/White's Pillar of Order, which acts on an ally's roll — 'When an ally within Attunement Range rolls a Complication, spend 1 Investiture to change it to a blank face' — and then still claimed 'the only'. Changing it to a blank face IS removing it from the test. Corpus-verified: exactly five Complication talents, and only these two touch an ally's roll (Agent's Sure Outcome and Double Down act on the Agent's own Opportunist reroll; Leader's Cutthroat Tactics only pays 1 focus when an ally rolls one)."
+  },
+  {
+   "field": "uniqueOwnership — party-wide Action grant",
+   "from": "'Turning Point's grant is unrestricted and costs one Action less' (framed as strictly better than Synchronized Assault)",
+   "to": "'Neither is strictly better' — Synchronized Assault's grant is IMMEDIATE and has a failure clause; Turning Point's is delayed and all-or-nothing",
+   "reason": "Lens B(a)/B(b). Read against the text: Synchronized Assault gives 'allies… gain an Action for an additional Strike against the target' with 'On failure, only one ally gains an Action', while Turning Point gives 'an Action on your NEXT turns' with no failure clause at all. Both are effectively L6 (Leadership 3+ / Deduction 3+). The count of two stands; the ranking between them does not."
+  },
+  {
+   "field": "uniqueOwnership — reconfigurable persistent item",
+   "from": "'The only tree with a reconfigurable persistent ITEM' (implying persistent assets are unique)",
+   "to": "softened, naming heroic/Warrior's Shard Training and heroic/Hunter's Feral Connection as persistent-asset upgraders; only the RECONFIGURABILITY is unique",
+   "reason": "Lens B(a). Shard Training ('Your Shardplate has 2 additional charges') and Feral Connection ('Your animal companion's health increases by 5 x your tier') both upgrade a persistent asset across scenes. What no other tree does is change the asset into a different thing on a long rest (Experimental Tinkering)."
+  },
+  {
+   "field": "uniqueOwnership — revival",
+   "from": "'only three talents in 365 return a character from Unconscious-or-dead' (no near-miss named)",
+   "to": "same count, with leyline/White's Unbreakable Line named as the fourth, near-miss case",
+   "reason": "Lens B(a) completeness. Unbreakable Line reads 'when an ally adjacent to you would drop to 0 health… On a success, they drop to 1 health instead' — prevention, not reversal, so the count of three is right, but a checker reading the corpus will hit it and needs it disposed of explicitly."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "'this heroic path DOES have a level-6 discontinuity, contrary to the structural assumption that only leyline trees do'",
+   "to": "the L6 discontinuity is real but SYSTEM-WIDE, not Scholar-specific: heroic rank-3+ prereq counts are Agent 7, Envoy 6, Hunter 6, Leader 5, Scholar 6, Warrior 6 (36 talents), and Scholar sits at the median",
+   "reason": "Lens B(a)/B(d) — a claim that only comparison can settle, and it does not survive. The dossier's earliest-L understates all 36 heroic rows equally (heroic/Leader's Synchronized Assault prints L5 on Leadership 3+; heroic/Envoy's Rallying Shout prints L4 on Leadership 3+). The six-talent finding itself is correct and kept; the framing as a Scholar peculiarity is removed. What IS Scholar-specific is which talents land at L6: Turning Point, Resuscitation, and the whole Artifabrian tip."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "no duplicate-promise row",
+   "to": "new row: the Surgeon promise is ALSO made by deity/Life and leyline/Green, and both deliver more",
+   "reason": "Lens B(d) requires checking whether another tree's intent file makes the same promise. INTENT-deity-Life.md: 'Her blessed are surgeons and shapers who do not merely close wounds but improve the body they mend… knitting flesh with riders no leyline mender can match' (5 heal formulas). INTENT-leyline-Green.md: 'Wardens, menders and pack-leaders' / 'Deep mending — the only leyline healing that closes Injuries' (6 healing talents). Scholar's Surgeon lane is the third implementation of a three-tree promise. The row also clears the Injury colour boundary: Ongoing Care removes 'one condition caused by their injury', not the injury, so Green's exclusivity holds."
+  },
+  {
+   "field": "intentDrift.actuallyIs",
+   "from": "no 'something' test, no overlap finding",
+   "to": "adds the explicit 'something' verdict (crafting + rewritable sheet, uncontested; healing, contested and beaten) and the functional-overlap finding (Envoy<->Scholar 0.826, 6th of 210, Scholar's nearest neighbour)",
+   "reason": "Lens B(e) requires naming the tree's something and checking whether another tree does it better. Scholar's crafting economy (5/5 fabrial talents), skill-rewriting (5/5 rank-granting talents) and expertise count (7 vs Agent 5) are all corpus-verified uncontested; its second claim, healing, is beaten by deity/Life and arguably by leyline/Green. The Envoy adjacency matters because Envoy shares the heal/support/expertise/revival vocabulary and beats Scholar on social and buffing — the crafting-and-sheet layer is what keeps the two trees distinct."
+  },
+  {
+   "field": "weakTalents[Contingency].reason",
+   "from": "'Leyline/White's Pillar of Order does the same job… for 1 Investiture' (used as an indictment)",
+   "to": "the comparison is a wash — Pillar of Order is also a Reaction, is also L6 (White 3+), and its Investiture competes with Draw Mana's 1-Action-per-Investiture tax",
+   "reason": "Lens B(a)/B(b). The original comparison read Pillar of Order's cost without its gate or its economy. Contingency stays on the weak list on its own terms (unschedulable trigger, half a low-WIL pool, competes with Dodge/Aid/Reactive Strike, mis-printed level), but not because White does it cheaper."
+  },
+  {
+   "field": "weakTalents[Overcharge].reason",
+   "from": "heroic/Warrior's Windstance cited as the better deal",
+   "to": "heroic/Warrior's Flamestance substituted as the cleaner comparison",
+   "reason": "The profile already conceded Windstance is conditional ('While you can reach multiple enemies') and Action-costed to enter, which weakens it as a foil. Flamestance is the sharper one: it also enters for an Action but grants its Action at depth 0 / L1 behind only Intimidation 1+, against Overcharge's depth 1 / effective L6 / Crafting 3+ / fabrial / Opportunity triple gate."
+  },
+  {
+   "field": "mechanicalKeywords[Raise the Stakes]",
+   "from": "listed with no scope note",
+   "to": "flagged NOT exclusive — shared with heroic/Agent's Risky Behavior and heroic/Leader's Cutthroat Tactics",
+   "reason": "Lens B(a). A keyword list adjacent to seven exclusivity claims invites the reader to assume exclusivity; corpus check shows this one is shared."
+  },
+  {
+   "field": "multiple (uniqueOwnership, mechanicalKeywords, gaps, axes evidence)",
+   "from": "claims asserted from the dossier",
+   "to": "each re-verified against all-talents.json and labelled STANDS / SOFTENED / DOWNGRADED / CORRECTED",
+   "reason": "Everything lens B covers was re-run: fabrial 5/5 Scholar (STANDS); skill-rank granting 5/5 Scholar (STANDS); expertise counts Scholar 7 > Agent 5 > Envoy/Leader/Warrior 3 > Hunter 2 > Blue 1 > deity 0 (STANDS, with Blue's Telepathic Network noted as sharing rather than granting); the three @skills.<x>.rank heal formulas as the only rank-denominated heals of eleven (STANDS); recovery-die talents = Field Medicine, Galvanize, Rallying Shout (STANDS); zero occurrences of 'damage' in all 25 talents, re-run and empty (STANDS); action census 10 Special / 10 Passive / 2 two-Action / 1 each Action, Free, Reaction (STANDS); five over-length descriptions Turning Point 35, Strategize 31, Experimental Tinkering 29, Efficient Engineer 28, Prized Acquisition 27 (STANDS); 17/25 unwired (STANDS); specialty sizes 8/8/8 + Key (STANDS); Erudition gates nothing — prereq '—', connections [] and no talent references it in either field (STANDS); 20 detection-language talents across 14 trees with zero Scholar entries (STANDS, and now cited on the information axis and the scouting gap)."
+  }
+ ]
+}

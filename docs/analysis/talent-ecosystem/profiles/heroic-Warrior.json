@@ -1,0 +1,749 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Warrior",
+ "correctionCount": 42,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Warrior",
+  "oneLineIdentity": "The heroic atlas's damage-and-durability chassis: seven (inferred) mutually-exclusive combat stances, free permanent damage riders and Brace-sharing protection, whose one designed combo strips a target's Focus with a weapon and then executes it with a Deflect-ignoring strike - but whose two big formulas are both rank-3 gated to level 6 and both provably flat across the entire L1-L10 window, and three of whose cited talents (Combat Training, Surefooted, Hardy) are shared stock printed verbatim in other heroic trees.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 4,
+    "evidence": "Eight talents put HP damage on the table under their own text. Two carry formulas: Devastating Blow (2 Actions, melee weapon attack vs. Physical + 2d8) and Wit's End (2 Actions + 1 focus, melee weapon vs. Cognitive + 4d6, ignores deflect, can't graze). Mighty is a free Passive adding (1 + tier) damage per Action spent to every weapon/unarmed hit. Meteoric Leap is an unarmed multi-target attack with damage doubled. Feinting Strike is a full melee weapon attack vs. Cognitive. Shard Training makes every Shardblade Strike graze additional targets up to your ranks in the skill used. Combat Training gives a free graze once per round. Swift Strikes makes a Strike for 1 Action + 1 focus. Flamestance and Windstance grant an ACTION to attack - the damage is the standard Strike, so they are action economy, not damage. COMPARATIVE SUPPORT FOR 4 (lens B): against all 43 damage formulas in the corpus, Wit's End's 4d6 (avg 14) is the largest flat dice bonus - every leyline and deity damage formula is (@tier)d(2*rank+2), i.e. 2d8 (avg 9) at Tier 2 rank 3, and only leyline/Black's Withering Ray doubles the tier multiplier. Wit's End also ignores Deflect, which the primer prices well above an Impact die, and it sits on TOP of weapon damage. Within the heroic atlas Warrior is unambiguously the best damage tree (Hunter's biggest formula is Fatal Thrust 4d4, avg 10; Scholar has none; Envoy, Leader and Agent one apiece). COUNTER, recorded not resolved: only TWO Warrior talents add dice of their own against leyline/Red's eight prose damage sources, every line is melee, and all three big payloads are L6. 4 survives on payload size and on being free; it is not a 5, which belongs to trees that can also do it at range (Red, Black, Knowledge). TIER-1 CAVEAT: at L1-L5 the tree's talent damage is Mighty (+2/Action), Feinting Strike, Combat Training's free graze and Shard Training's splash."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Repeatability is best-in-class and scaling is worst-in-class. Mighty and Devastating Blow cost NO resource and repeat every round forever; Shard Training's graze-splash rides every Strike free. But both authored formulas are tier-invariant across the whole L1-L10 window: Devastating Blow is (2 + max(@tier - 2, 0))d8 = 2d8 at tier 1 AND tier 2 (max(-1,0)=0 and max(0,0)=0); Wit's End is (4 + max((@tier - 2) * 2, 0))d6 = 4d6 at tier 1 AND tier 2. COMPARATIVE (lens B): every other damage formula in the corpus is (@tier)d(2*rank+2), which goes 1d6 (Tier 1 rank 2) -> 2d8 (Tier 2 rank 3), a 2.6x step at L6. Warrior's talent damage steps by roughly 1.1x (Mighty +2 -> +3, Shard Training's graze count 2 -> 3). Warrior is therefore the ONLY damage tree in the atlas whose formulas sit out the L6 discontinuity the primer describes. 3 is the honest average of a maxed repeatability score and a bottom-of-corpus pace-keeping score."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Stonestance: 'enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance'. A grep of all 365 talents for 'additional Action'/'extra Action' returns exactly one hit - this one; the only other 'spend an additional' hits are Investiture surcharges (deity/Order's Sealed Edict, deity/Destruction's Pinpoint Charge, deity/Fate's Inevitable Snare). Feinting Strike strips the target's Reaction on a hit. Meteoric Leap knocks 'weaker targets' Prone (a comparison the text never defines). Shattering Blow pushes each damaged target 5 ft and depletes an armor charge. Vinestance pushes an attacker on a successful Athletics test. CORRECTED FRAMING (lens B): the prior draft called this 'the primer's highest-value category'. The primer's highest-value category is action DENIAL (Stunned, Disoriented, Restrained), and Warrior does none of it - leyline/Black's Hollow Command flatly denies a target ALL actions on its next turn for 1 Investiture, heroic/Agent's Cheap Shot applies Stunned (two fewer actions) for 1 focus, and 14 talents across 11 trees apply Disoriented. Warrior owns the TAXATION form; it does not own the category. No Stun, Restrain, Immobilize or Slow anywhere, forced movement is 5 ft, everything is reach-range."
+   },
+   {
+    "axis": "debuff",
+    "score": 3,
+    "evidence": "Focus stripping is the tree's genuine debuff pillar. Feinting Strike removes focus equal to your Intimidation ranks - 2 at tier 1, 3 at tier 2, against a pool of 2+WIL (~4-5) - plus the target's Reaction. CORRECTED (lens B): the prior draft called it 'the largest single-hit focus strip in the 365 talents' flatly. A full-corpus grep finds only four enemy-facing focus attackers: leyline/Red's Shatter Focus (loses 1, Reaction), leyline/Black's Whispered Doubt (spends 1 additional per spend), Warrior's Feinting Strike, and Warrior's own Vinestance (1d4). Feinting Strike is the largest DETERMINISTIC and largest expected-value strip (3 fixed at Tier 2 vs Vinestance's 1d4, avg 2.5) - but Vinestance's maximum roll of 4 exceeds it, and Vinestance is in the same tree. Cross-tree the claim holds: nothing outside Warrior strips more than 1. Defensive Position and Formation Drills impose disadvantage on attacks against you and against Bracing allies, though the tri-state finding below makes that headline near-inert. Bloodstance is a self-debuff (-2 to all three defenses). No numeric defence reduction or vulnerability against enemies."
+   },
+   {
+    "axis": "protection",
+    "score": 4,
+    "evidence": "The load-bearing set is six: Stonestance (+1 deflect, plus the enemy action tax on attacks against allies), Vinestance (+1 Physical and Cognitive defense), Precise Parry (Reaction, 1 focus, turn a hit into a graze), Surefooted (reduce falling and dangerous-terrain damage by twice your tier), Hardy (+1 max Health per level, retroactive), and Defensive Position's ally clause ('allies can Brace behind your shield') propagated by Formation Drills to allies within 10 ft. Not the reference implementation, for three reasons: (a) Defensive Position's HEADLINE - 'two disadvantages instead of one' - is worth almost nothing under the shipped tri-state (d20.number = 2 with kl regardless of source count); (b) Wary is anti-Surprise and Vigilant Stance is a 1-focus discount on Dodge and Reactive Strike - neither reduces damage; (c) LENS B: two of the six are not Warrior content at all - Surefooted is printed verbatim in heroic/Agent and heroic/Hunter, and Hardy is printed verbatim in SEVEN trees (leyline White, Black, Green; heroic Agent, Hunter, Leader, Warrior). leyline/White holds the 5 (Guardian Stance, Interposing Shield, Shared Burden, Devoted Conduit, Retributive Guard, Unbreakable Line - the corpus's densest mitigation set, at range, plus the Bulwark specialty). Warrior's genuine unshared contribution is the Brace package, which is a 4."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Verified by grep of all 25 talent texts plus the dossier header: 0 heal formulas, and the words heal/regain/restore/recover appear nowhere in the tree. No talent restores Health, Focus or Investiture to anyone. Hardy raises MAXIMUM health and Wary reduces involuntary focus LOSS - neither restores a spent point. By contrast heroic/Scholar carries three heal formulas and deity/Life five, so this 0 is a genuine floor and not a scoring artefact."
+   },
+   {
+    "axis": "buff",
+    "score": 1,
+    "evidence": "CORRECTED DOWN from 2 (lens B, score inflation). Exactly five talents name advantage, confirmed against advantage-ledger.md lines 83-92: Flamestance (Intimidation), Ironstance (Insight), Windstance (Agility), Meteoric Leap (in Shardplate), Cautious Advance (2 Actions to Brace or Gain Advantage - a CONSUMER of the standard Gain Advantage action, not a producer). So four producers, all SELF-ONLY, all riders on something else, and three of the four (Flamestance/Ironstance/Windstance) are mutually exclusive stances. Because advantage is binary, what a Warrior actually gains in a round, once, is one advantage on one NON-ATTACK skill. Not one attack roll in the tree is advantaged by a Warrior talent. Zero talents grant an ALLY an advantage, a reroll, or any numeric bonus to a roll - which is what the axis is for. COMPARATIVE: leyline/Blue's Anticipate grants an ALLY advantage on a resistance test, leyline/Green's Pack Hunter grants you AND an ally advantage on an attack, leyline/Red's Reckless Gambit grants advantage to any character in Attunement Range, deity/Order's Lawkeeper's Eye grants YOU AND ALL ALLIES advantage on attacks against a bound character. Against those, Warrior's suite is the rubric's 1: 'a rider on something else'. The two ally-facing Warrior talents (Defensive Position, Formation Drills) hand allies a DEFENSIVE permission, not a roll bonus, and are scored under protection."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "Flamestance grants a genuinely new Action to attack or Gain Advantage, but only when exactly one enemy is in reach and NO allies are. Windstance grants an Action to attack or Disengage via a Free Action, but only while you can reach multiple enemies. Ironstance grants a Reactive Strike when you are grazed or missed - which still costs 1 focus and still consumes your single Reaction. All three are STANCES and therefore mutually exclusive, so a Warrior holds at most ONE grant at a time, and only when geometry cooperates. Cautious Advance spends 2 of 3 Actions to hand back 2 restricted Actions; Swift Strikes spends 1 Action + 1 focus for the Strike everyone has. Genuine wins: Vigilant Stance removing the 1-Action tax on switching stances, and Stonestance taxing the ENEMY an Action. COMPARATIVE (lens B) - Warrior tops a raw count of action-granting talents (5) but loses on quality: heroic/Agent's Quick Analysis and Trickster's Hand each grant 2 Actions for 2 focus with no geometry condition; heroic/Leader's Synchronized Assault grants an extra Strike Action to allies up to your ranks in Leadership; heroic/Scholar's Turning Point grants YOU AND ALL ALLIES an Action on their next turns; heroic/Hunter's Sidestep grants an ADDITIONAL REACTION, the only talent found in the 365 that breaks the primer's hard 1-Reaction cap. A real, usable competency - not one of the better options in the game. 3 confirmed."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Read against the free Move action (full movement, 1 Action) every character has, three of the five candidate talents move you LESS than a Move: Wit's End moves 'half your movement', Cautious Advance 'up to half your movement' for 2 Actions, Meteoric Leap leaps 'a quarter of your movement'. All three are bundled into an attack, so they are attack riders, not repositioning. The real content is Surefooted (permanent +10 movement) and Windstance's conditional Action to Disengage. LENS B: Surefooted is not Warrior content - the identical text ships in heroic/Agent and heroic/Hunter, and a corpus grep for movement/speed increases returns only those three Surefooted copies plus deity/Destruction's Walking Ruin (+10 ft). +10 is the atlas's standard shared bump and confers no comparative edge. No teleport, no flight, no vertical movement, nothing that repositions you out of melee at range."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 1,
+    "evidence": "The tree creates no terrain, hazards, walls or persistent features. Stonestance is the only zone-shaped effect and it is a personal aura anchored to your reach, not a battlefield feature. Every other terrain reference is CONSUMPTION: Cautious Advance ignores difficult terrain and Surefooted reduces damage from dangerous terrain. Comparators that earn 3+: leyline/Green (difficult-terrain engine), leyline/Blue (Ghostly Walls, Phantom Barricade), deity/Fate (Ordained Ground, 7 talents), deity/Destruction (dangerous terrain, Walking Ruin)."
+   },
+   {
+    "axis": "information",
+    "score": 1,
+    "evidence": "Ironstance grants an advantage on Insight (reading intent) and Wary prevents being Surprised while you have focus; Practiced Kata's scene-start clause also keys off Surprised. That is the entire suite. Checked for the lens-c 'hides inside a rider' failure: no Warrior talent reveals an enemy's intent, HP, position or plan, unlike deity/Order's Lawkeeper's Eye ('you learn the bound character's intended action on its next turn'), deity/Life's Vital Diagnosis, deity/Knowledge's Studied Mark or heroic/Hunter's tracking suite. 1 stands."
+   },
+   {
+    "axis": "social_influence",
+    "score": 2,
+    "evidence": "Practiced Kata is a deliberate social hook - it explicitly lets you use stances 'in conversation and endeavors' and costs 1 focus to enter a stance mid-scene, which makes Flamestance's Intimidation advantage a real social tool. Combat Training grants Military Life expertise. Only Feinting Strike scales on Intimidation ('loses focus equal to your ranks in Intimidation'); Wit's End merely has an Intimidation 3+ PREREQUISITE and nothing in its effect reads Intimidation. The tree is intimidation-and-reading only: no Persuasion, no Leadership, no Deception, no reputation or command mechanic in 25 talents - while heroic/Envoy, heroic/Leader and heroic/Agent all ship contact networks, influence effects and pacification, and leyline/Blue carries four social talents to Warrior's two. 2 = 'present but minor; you would not pick this tree for it', which is exactly right."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "Expertises are the main lever: Combat Training (a weapon, an armor, Military Life), Shard Training (Shardblade plus one of Grandbow/Shardblade/Warhammer), Signature Weapon (a weapon expertise). Surefooted's +10 movement and falling-damage reduction are travel-relevant; Practiced Kata extends stances into endeavors; Wary makes you un-Surprisable while you hold focus. LENS B: a corpus count of expertise-granting talents puts Warrior at 3 against heroic/Scholar's 8 and heroic/Agent's 5, and Warrior's three are all weapons/armor/Military Life - the narrowest expertise set of any granting tree. No travel, crafting, survival, or downtime mechanic. 2 stands."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Checked all 25 talent texts: no companion, construct, minion, animated ally or persistent entity. A corpus grep for companion/construct/servant/summon returns heroic/Hunter (4 talents), deity/Civilization (6) and deity/Death's Risen Servant - and nothing in Warrior. Formation Drills buffs allies who already exist."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "Two talents genuinely PRODUCE a resource, and it is Opportunity: Bloodstance expands your Opportunity range by 2 for attacks and physical tests, Signature Weapon by 1 on a chosen weapon expertise. VERIFIED against resource-economy.json: Opportunity has 9 producers across 5 trees - heroic/Agent (2, both social contacts), heroic/Envoy (1, social contact), heroic/Leader (2, supply and rumor), heroic/Scholar (2, both crafting-scoped), heroic/Warrior (2). So Warrior is one of five producers and the ONLY tree whose Opportunity-range expansion applies to COMBAT rolls - a narrower and more defensible claim than the prior draft's. Everything else is cost REDUCTION, not generation: Vigilant Stance (-1 focus on Dodge and Reactive Strike), Combat Training (one free graze per round), Wary (reduce involuntary focus loss by Discipline ranks). No talent generates Focus or Investiture, the tree spends focus in 7 of 25 talents, and the same file confirms ZERO Opportunity consumers in the tree - it is a net consumer that makes a currency it cannot itself spend."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Shard Training",
+     "dice": "weapon (Shardblade) Strike, grazing additional targets up to your ranks in the skill used",
+     "action": "Special (passive rider on every Shardblade Strike)",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "The tree's earliest damage. Conditional on a GM-granted Shardblade - the prerequisite is 'Access to a Shardblade and Shardplate', which is loot, not a talent. Scales with skill rank, so this is one of only two damage lines in the tree that grows at L6."
+    },
+    {
+     "name": "Combat Training",
+     "dice": "one free graze per round (partial weapon damage on what would be a miss)",
+     "action": "Special",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Only converts a miss into a graze; small, but free and every round, and it saves the focus a graze normally costs. LENS B: printed byte-identically in heroic/Hunter ('Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.') - shared heroic stock, not Warrior identity."
+    },
+    {
+     "name": "Mighty",
+     "dice": "+ (1 + tier) per Action spent on the attack; +2 at tier 1, +3 at tier 2 (so +6 on a 2-Action attack)",
+     "action": "Passive rider",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "Rider - only on a hit. But it costs nothing, has no cap and no once-per-round limit, repeats every round forever, and rewards the tree's 2-Action attacks. This is the tree's damage FLOOR and its best damage talent, and the only one available before L6 that does more than convert a miss. Verified unique across the 365: no other talent pays out per Action spent on a single attack."
+    },
+    {
+     "name": "Feinting Strike",
+     "dice": "weapon dice (melee weapon attack vs. Cognitive)",
+     "action": "Action + 2 focus",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": false,
+     "note": "Damage is unconditional (it is a weapon attack); the payload riders are on-hit - strips the target's Reaction and focus equal to your Intimidation ranks, half as much on a graze. The setup half of the tree's only real combo, and the only real attack talent available before L6."
+    },
+    {
+     "name": "Devastating Blow",
+     "dice": "weapon + 2d8. FORMULA (2 + max(@tier - 2, 0))d8, type=null",
+     "action": "2 Actions",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": false,
+     "note": "earliestLevel 2 -> 6: the prose prereq is 'Combat Training; Athletics 3+' and the primer's rank cap is 2 through L5, so rank 3 is impossible before level 6; the dossier's earliest-L column did not gate it because its rankGate field is empty (all 25 Warrior rows are). Free, repeatable every round, no resource cost - the tree's reliable big swing. Formula is FLAT: max(@tier-2,0) is 0 at tier 1 AND tier 2, so this is 2d8 from L6 to L10."
+    },
+    {
+     "name": "Swift Strikes",
+     "dice": "one weapon Strike",
+     "action": "Action + 1 focus",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "As costed this is the Strike every character already has, with a 1-focus surcharge attached. It only adds damage if 'a second Strike' means it bundles with a Strike in the same Action - the text and the wiring (no events, no effects, no formula) do not say so."
+    },
+    {
+     "name": "Wit's End",
+     "dice": "weapon + 4d6, IGNORES DEFLECT, cannot graze. FORMULA (4 + max((@tier - 2) * 2, 0))d6, type=null",
+     "action": "2 Actions + 1 focus (includes a half move)",
+     "depth": 2,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "earliestLevel 3 -> 6 (prose prereq 'Feinting Strike; Intimidation 3+'). Hard-gated in play too: the target must be at 0 focus. LENS B: 4d6 (avg 14) is the largest flat damage-dice bonus in the whole 43-formula table, and only three talents in the corpus ignore Deflect (this, deity/Civilization's Tempered Edge, deity/Destruction's The Unmooring). Also FLAT across tier 1 and tier 2 (both 4d6)."
+    },
+    {
+     "name": "Meteoric Leap",
+     "dice": "unarmed attack vs. Physical against MULTIPLE targets with damage DOUBLED (Mighty's +6 at tier 2 is damage, so it doubles too)",
+     "action": "2 Actions + 2 focus",
+     "depth": 4,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "depth 3 -> 4 and earliestLevel 4 -> 6. Its parent Bloodstance's prose prereq ANDs TWO talents ('Shard Training; Mighty; Athletics 2+'), and Mighty itself requires Stonestance, so Bloodstance's true prior-talent count is 3 (Shard Training, Stonestance, Mighty) and Meteoric Leap's is 4 - the dossier printed 2/3 because it read the connections array as an OR-group. Athletics 3+ then pushes it to L6. Highest raw output in the tree because it is AoE and multiplicative, but unarmed base damage is low, it needs several targets to beat Wit's End, the Prone rider only lands on 'weaker' targets (undefined), it costs 2 of a ~5 focus pool, and it is gated behind Bloodstance's -2 to all three defences."
+    },
+    {
+     "name": "Flamestance (action grant, NOT counted in countReal)",
+     "dice": "grants one Action to attack or Gain Advantage per round; the damage is the standard Strike",
+     "action": "Action to enter; the granted Action recurs each round",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Not counted in countReal. The talent adds no damage of its own - it hands you an Action, and the Strike you spend it on is the one every character already has. Scored under action_economy. Requires exactly one enemy in reach and NO allies in reach, which anti-synergises with Stonestance and Formation Drills inside its own tree."
+    },
+    {
+     "name": "Windstance (action grant, NOT counted in countReal)",
+     "dice": "grants one Action to attack or Disengage per round via a Free Action; the damage is the standard Strike",
+     "action": "Action to enter; Free Action to convert each round",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "Not counted in countReal, same reason as Flamestance. Requires being able to reach multiple enemies - the multi-enemy mirror of Flamestance's duel clause, and mutually exclusive with it because both are stances."
+    },
+    {
+     "name": "Vinestance (non-HP, NOT counted in countReal)",
+     "dice": "1d4 FOCUS loss + push (not Health damage)",
+     "action": "Action to enter; Reaction + Athletics test per trigger",
+     "depth": 2,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "earliestLevel 3 -> 6 (prose prereq 'Feinting Strike; Athletics 3+'). Listed for completeness and flagged as resource damage, not HP damage. Counted under debuff. Note its 1d4 can exceed Feinting Strike's fixed strip on a good roll, which qualifies the 'largest strip' claim."
+    }
+   ],
+   "countReal": 8,
+   "countFalsePositiveMitigation": 4,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "Sustained, free, indefinitely: a weapon Strike + Mighty's (1+tier), i.e. roughly 1-1.3 [Tier][Die] per Action at tier 2 (primer: at Tier 2 rank 3, [Tier][Die] = 2d8, avg 9), with no resource spend at all. Reliable big swing (L6+): Devastating Blow, 2 Actions for weapon + 2d8 (avg 9) + Mighty +6 = 15 + weapon over 2 Actions, about 0.85 [Tier][Die] per Action, still free. Single-target peak (L6+): Wit's End, 2 Actions + 1 focus for weapon + 4d6 (avg 14) Deflect-IGNORING + Mighty +6 = ~25-28 over 2 Actions, ~1.4-1.5 [Tier][Die] per Action, and the Deflect-ignoring portion is worth materially more than that number suggests. AoE peak (L6+): Meteoric Leap, 2 Actions + 2 focus, doubled unarmed damage across N targets - against 3 targets roughly 3 x 2 x (unarmed + 6) ~ 60 total, about 3+ [Tier][Die] per Action spread across the field, once or twice per fight. TIER-1 REALITY CHECK: at L1-L5 none of the three peaks exist. The whole L1-L5 ceiling is Feinting Strike or a Strike, plus Mighty's +2 per Action. CROSS-TREE ANCHOR (lens B): leyline/Red's Searing Bolt is 2d8 energy at range for 1 Action + 1 Investiture, and the primer's Draw Mana math caps a 1-Investiture-per-Action kit at ~50% uptime at Tier 1 and ~67% at Tier 2. Warrior's floor has 100% uptime forever. That, not the peak, is the comparative story.",
+   "repeatability": "Two tiers. The free tier - Mighty, Devastating Blow, Shard Training's graze-splash, Combat Training's free graze, Flamestance/Windstance's granted attack Actions - costs nothing and repeats EVERY round for the whole adventuring day. The premium tier - Wit's End (1), Meteoric Leap (2), Shattering Blow (2), Swift Strikes (1), Feinting Strike (2) - all spend focus from a pool of 2+WIL (~4-5), so the Feinting Strike -> Wit's End combo plus one Precise Parry consumes the entire pool. Roughly 2-3 premium plays per rest, unlimited baseline. Vigilant Stance's -1 discount applies only to Dodge and Reactive Strike, not to talents. LENS B CALIBRATION: a cost-field census across all 21 trees puts Warrior at 18/25 free-cost talents (72%) - high against every leyline tree (36-60%) and every deity tree (0-33%), but NOT unusual within its own atlas: heroic/Hunter is 21/25 (84%) and heroic/Scholar is also 18/25. What is genuinely unusual is being that resource-free WHILE carrying the heroic atlas's largest damage payloads; Hunter and Scholar buy their freedom with smaller ones.",
+   "verdict": "A broad, weapon-anchored damage tree that is unusually RESOURCE-FREE for a damage tree, unusually FLAT, and materially LATER than the dossier's depth column implies. EIGHT talents put HP damage on the table under their own text (Flamestance and Windstance grant an Action, and the Strike they buy is the standard one - counting an action grant as a damage source is the 'rider on an existing attack' failure the brief warns about). Four more only mention the word: Surefooted reduces falling/dangerous-terrain damage; Precise Parry converts a hit to a graze; Stonestance raises Deflect; Shattering Blow says 'each target you damage' but its own effect is push + armor-charge depletion. It can deal damage from depth 0 at level 1, and its floor - a Strike plus Mighty - never runs out. But (a) both authored formulas are provably tier-invariant across L1-L10 (max(@tier-2,0) and max((@tier-2)*2,0) are both 0 at tier 1 and tier 2), making Warrior the only damage tree in the atlas that sits out the L6 discontinuity every leyline formula enjoys; and (b) Devastating Blow, Wit's End and Meteoric Leap all carry rank-3 prose gates, so all three are LEVEL 6, not L2/L3/L4 as the dossier's rankGate-less column reports. Everything is melee or within reach: there is no ranged damage line at all, the clearest gap against leyline/Red, leyline/Black and deity/Knowledge. The one designed combo - Feinting Strike strips focus, Wit's End executes a 0-focus target for Deflect-ignoring 4d6 - is its most distinctive damage identity, needs two talents plus 3 focus plus 3 Actions to fire, and does not exist until level 6."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (7 talents)",
+    "rating": 4,
+    "exemplars": "Stonestance, Shard Training, Combat Training, Flamestance",
+    "note": "Strong, and SIX of the seven are cost-free (only Practiced Kata carries a cost, 1 Focus; Shard Training is free but needs GM-granted equipment). Stonestance delivers +1 deflect AND the corpus's only enemy action tax at level 1; Shard Training grants two expertises, two extra Shardplate charges and an AoE graze rider on every Strike; Combat Training grants three expertises plus a free graze per round. CORRECTED (lens B): the prior draft called the band 'unusually wide - seven entry points'. It is not unusual - ALL SIX heroic trees have exactly 7 depth-0 talents (Agent, Envoy, Hunter, Leader, Scholar, Warrior). Seven entries is the heroic atlas's standard shape, so the width is not a Warrior finding; the entry QUALITY still is. Vigilant Stance is the weakest entry despite being the nominal Key."
+   },
+   {
+    "band": "depth 1-2 (15 talents)",
+    "rating": 4,
+    "exemplars": "Mighty, Devastating Blow, Defensive Position + Formation Drills, Feinting Strike -> Wit's End",
+    "note": "Band size 16 -> 15: Bloodstance moves to depth 3 because its prose prereq ANDs Shard Training AND Mighty (which itself requires Stonestance), so its true prior-talent count is 3. The tree's substance lives here: the free permanent damage rider, the free 2-Action big swing, the entire ally-protection package, and the focus-strip execute combo. It is also where the never-picks sit (Swift Strikes, Signature Weapon) and where the flat formulas are introduced. PACING: this band is NOT open at L2-L3. Devastating Blow (depth 1), Wit's End (depth 2), Vinestance (depth 2) and Wary (depth 2) all carry rank-3 gates and are level 6, so the depth-1/2 band is only half-available before L6."
+   },
+   {
+    "band": "depth 3+ (3 talents)",
+    "rating": 3,
+    "exemplars": "Bloodstance, Precise Parry, Meteoric Leap (true depth 4)",
+    "note": "Band size 2 -> 3. Thin and not a capstone. Meteoric Leap is a real AoE payload but demands Bloodstance's -2 to all three defences from a tree otherwise built around not being hit; Precise Parry is precisely the primer's '1 Reaction reducing damage once per round' anchor - a 2, not a 4; Bloodstance itself buys Opportunity range the tree cannot spend at the price of every defence. All three are rank-3 or chain-gated to roughly L6. The tree stops rather than culminating - and LENS B: no heroic tree has a designated capstone the way the deity guide prescribes one 3-Action capstone per tree, so the absence of a culminating node is a shared heroic-atlas property, not a Warrior-only defect."
+   }
+  ],
+  "frontOrBackLoaded": "SPLIT. DURABILITY, UTILITY AND ACTION ECONOMY are front-loaded hard: seven of 25 talents are depth 0 (the heroic-atlas standard), six of them cost-free, and three of the tree's best per-Action lines (Stonestance's +1 deflect plus enemy action tax, Shard Training's graze splash, Combat Training's free graze and expertises) are available at level 1 for nothing. DAMAGE is back-loaded: six talents carry '<skill> 3+' prose prerequisites (Devastating Blow, Vinestance, Wit's End, Wary, Meteoric Leap, Precise Parry) which the dossier's earliest-L column did NOT gate - all 25 rows have an empty rankGate field - and under the primer's rank cap (max rank 2 through L5) all six are actually LEVEL 6. That includes both damage formulas and the AoE payload, so a Warrior's talent damage before L6 is Mighty's +2 per Action, Feinting Strike, and two graze riders. Consequently the brief's structural claim that heroic trees are fully reachable by ~L4-L5 is FALSE for this tree: heroic paths carry no leyline-COLOUR rank gate, but Warrior gates six talents on ordinary skill rank 3, which is a level-6 wall. And SCALING is flat rather than rising: both formulas are tier-invariant across tier 1 and tier 2, so a Warrior's talent-derived output at L10 is nearly identical to L6 - the opposite of leyline trees, which the primer says go discontinuous at L6 when the die and the tier multiplier both step. LENS B CAVEAT worth handing to the cross-tree pass: because the rankGate column is empty on all 25 Warrior rows, the same may be true of the other five heroic trees, in which case the ungated rank-3 prose prerequisite is an atlas-wide measurement bug rather than a Warrior-specific pacing finding - the finding about THIS tree (six talents are really L6) is verified either way.",
+  "uniqueOwnership": [
+   "THE STANCE SYSTEM. Seven named combat modes (Vigilant, Flame, Iron, Stone, Wind, Vine, Blood), each a 1-Action mode switch, with a hub talent (Vigilant Stance) whose entire job is making the switch a Free Action and a second talent (Practiced Kata) that carries stances into conversation and endeavors. VERIFIED by a corpus grep for 'stance': 14 hits, 8 of them Warrior. None of the other six is a mode - leyline/White ships a talent literally NAMED Guardian Stance ('While an ally is adjacent to you, you both gain +1 Deflect'), which is a Passive; deity/Chaos's Unweaving names 'stance' only as something it can strip; the rest are incidental prose. The MECHANIC is unique to Warrior; the word is not. LARGEST UNRESOLVED READING IN THIS TREE: MUTUAL EXCLUSIVITY IS NEVER STATED. No stance's text says you can hold only one. It is inferred from 'Enter <X> Stance' plus Vigilant Stance's 'you can enter other stances as a Free Action'. Every buff and action_economy judgment here assumes exclusivity; if stances stack, both axes rise and Flamestance + Windstance stop contradicting each other.",
+   "THE ONLY SHARD-EQUIPMENT TREE. VERIFIED by grep of all 365: Shard Training, Shattering Blow, Meteoric Leap and Precise Parry are the only talents that reference Shardblades, Shardplate or armor charges - and Shattering Blow is the only talent anywhere that DEPLETES an enemy's armor charge. Sharpened by lens B: heroic/Hunter's and heroic/Leader's INTENT files both list a Shardblade or Shardplate among recommended rewards and neither tree contains a single talent that uses one, so Warrior's mechanical ownership is real even where the fiction is shared across three paths.",
+   "THE ONLY BRACE TREE. VERIFIED by grep: Cautious Advance, Defensive Position and Formation Drills are three of the four talents in the atlas that touch the Brace action (heroic/Hunter's Backstep - 'Brace if you enter cover or obscured area' - is the fourth), and Warrior is the only tree that upgrades Brace and then SHARES that upgrade with allies within 10 ft. This is the tree's cleanest unshared contribution to protection.",
+   "ENEMY ACTION TAXATION. VERIFIED by grep of all 365 talents: Stonestance is the ONLY talent that makes an enemy pay ACTION currency ('enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance'). The only other 'spend an additional' hits are Investiture surcharges (deity/Order's Sealed Edict, deity/Destruction's Pinpoint Charge, deity/Fate's Inevitable Snare). It arrives at depth 0 / level 1. QUALIFIER (lens B): unique FORM, not unique FUNCTION. Removing enemy actions is done harder elsewhere - leyline/Black's Hollow Command denies a target ALL actions on its next turn for 1 Investiture, and heroic/Agent's Cheap Shot applies Stunned (two fewer actions) for 1 focus.",
+   "THE PHYSICAL FOCUS-STRIP EXECUTE. VERIFIED by cross-atlas grep: only four talents in the 365 attack an enemy's focus - leyline/Red's Shatter Focus (1, Reaction), leyline/Black's Whispered Doubt (+1 per spend), and Warrior's own Feinting Strike and Vinestance. Feinting Strike is the largest deterministic strip (Intimidation ranks: 2 at tier 1, 3 at tier 2, against a 2+WIL pool). Wit's End is the only DAMAGE payload in the atlas gated on a 0-focus target. CORRECTED (lens B): the prior draft said Puppeteer was the only other 0-focus consumer - there are three, and two are leyline/Black (Puppeteer chooses an action of a 0-focus target; Predatory Insight 'regain 1 focus when any character reaches 0 focus'). So Warrior owns the WEAPON route to 0 focus and the damage payoff, while leyline/Black owns the fuller 0-focus ECONOMY (drain via Whispered Doubt, punish via Coercive Pressure, reward via Predatory Insight, cash via Puppeteer). Shared territory, not sole ownership.",
+   "FREE, PERMANENT, UNCAPPED DAMAGE SCALING BY ACTIONS SPENT. Mighty adds (1 + tier) per Action spent to every weapon or unarmed hit, Passive, no cost, no once-per-round limit. VERIFIED unique across the 365: it is the only talent that pays you for spending MORE Actions on one attack, which is what makes the tree's 2-Action attacks viable and is why Devastating Blow and Wit's End are worth their action cost.",
+   "WITHDRAWN - 'COMPLETE INDEPENDENCE FROM INVESTITURE' IS NOT A WARRIOR PROPERTY. The prior draft claimed the Warrior is 'the atlas's only fully non-magical combat engine'. FALSE. A corpus grep for 'Investiture' returns 144 talents across 15 trees and ZERO in heroic/Agent, heroic/Envoy, heroic/Leader, heroic/Scholar AND heroic/Warrior; only heroic/Hunter mentions it at all, once (Sharp Eye). Five of the six heroic trees are equally Investiture-free, exactly as the resource census states ('every heroic tree 0 regen / 0 costers - heroic runs on Focus, not Investiture'). Investiture independence is an ATLAS property. It is kept below as a gap (Draw Mana and every Attunement rider are inert for a Warrior) but it confers no unique ownership."
+  ],
+  "gaps": [
+   "NO HEALING OF ANY KIND. Not Health, not Focus, not Investiture, not self, not allies. Zero heal formulas, and the words heal/regain/restore/recover appear nowhere in the tree. A Warrior-only party recovers only via the universal recovery die - and unlike heroic/Scholar (three heal formulas) it cannot even patch itself between fights.",
+   "NO RANGED OPTION AT ALL. Every damage line specifies melee, unarmed, or 'within your reach'. Shard Training can grant Grandbow expertise, and then no talent in the tree supports it. A Warrior facing a flying enemy, a caster at 60 ft, or anything behind a chasm has Move and nothing else - where leyline/Red, leyline/Black and every deity damage tree work at Attunement Range (15-120 ft by rank).",
+   "NO INVESTITURE INTERACTION. The Warrior cannot participate in the leyline economy in either direction - Draw Mana returns them nothing, no talent spends Investiture, and no talent gives Investiture to a party member who could. (Shared with four other heroic trees; see uniqueOwnership.)",
+   "NOTHING TO SPEND OPPORTUNITY ON. Bloodstance and Signature Weapon expand your Opportunity range and resource-economy.json confirms the tree contains zero Opportunity consumers. It generates a resource it cannot use.",
+   "NO DETECTION, SCOUTING OR FOREKNOWLEDGE. Cannot find a hidden enemy, scout a route, read a trap, or learn a hidden fact. An Insight advantage from Ironstance is the entire information kit.",
+   "NO PERSUASION, LEADERSHIP OR COMMAND. Despite the path text promising 'political sway', the tree contains no Persuasion, no Leadership, no Deception, no reputation and no ally-commanding mechanic. Its social range is Intimidation and reading a face.",
+   "NO SUMMONS, CONSTRUCTS OR COMPANIONS.",
+   "NO TERRAIN, ZONES, HAZARDS OR WALLS. The tree only consumes terrain (ignoring difficult ground, reducing dangerous-terrain damage); it creates none.",
+   "NO CONDITION REMOVAL AND NO ANTI-INFLUENCE DEFENCE. Wary's immunity to Surprised while holding focus is the only defensive rider against a status effect. Nothing removes Injuries, Exhaustion, Stunned, Restrained or a charm - compare leyline/Green's Natural Recovery, heroic/Envoy's Devoted Presence, deity/Life's Surgical Precision.",
+   "NO EXPLORATION, TRAVEL, CRAFTING OR DOWNTIME MECHANIC beyond a handful of expertises and +10 movement.",
+   "NO TALENT DAMAGE GROWTH BEFORE LEVEL 6, AND NONE AFTER. Both authored formulas are tier-invariant across the whole L1-L10 window, and all three of the tree's large damage talents are rank-3 gated to L6 - so the damage curve is a step at L6 caused by ACCESS, not by scaling, and is flat on either side of it. This makes Warrior the only damage tree in the corpus that does not benefit from the L6 die-and-tier step.",
+   "THREE OF ITS 25 TALENTS ARE SHARED HEROIC STOCK, NOT WARRIOR CONTENT (lens B). Combat Training is byte-identical in heroic/Hunter; Surefooted is byte-identical in heroic/Agent and heroic/Hunter; Hardy is byte-identical in seven trees (leyline White/Black/Green, heroic Agent/Hunter/Leader/Warrior). Three of the 25 slots therefore contribute nothing to the tree's identity, and two of them (Combat Training, Surefooted) were cited by the prior draft as Warrior strengths.",
+   "SITTING ON HANDS: an enemy that stays out of reach; an ally dying of Injuries; a locked door or a puzzle; a court negotiation that needs charm rather than threat; any scene where the party's problem is knowing something rather than hitting something."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Warriors are 'tough, resilient' and 'stay alive in a deadly world'.",
+     "delivered": "DELIVERS - and it is the tree's strongest axis, though not the atlas's reference implementation.",
+     "evidence": "Hardy (+1 max Health per level), Stonestance (+1 deflect), Vinestance (+1 Physical and Cognitive defence), Defensive Position's ally-Brace clause, Formation Drills, Precise Parry, Surefooted, Wary, Vigilant Stance's reaction discount. Nine of 25 talents are defensively oriented, though only six actually reduce or avoid damage, Defensive Position's headline number is inert under the shipped tri-state, and two of the six (Surefooted, Hardy) are talents other heroic trees print verbatim. leyline/White does the same job better and at range."
+    },
+    {
+     "claim": "Warriors are 'skilled at inflicting harm'.",
+     "delivered": "DELIVERS in breadth, PARTIAL in growth, and LATE in access.",
+     "evidence": "Eight damage talents including Mighty, Devastating Blow, Wit's End, Meteoric Leap and Feinting Strike, and Wit's End's 4d6 is the largest flat damage-dice bonus in the corpus. But both authored formulas are provably tier-invariant across L1-L10, so the harm does not escalate with experience the way the prose ('those who survive long enough to become seasoned fighters') implies - and Devastating Blow, Wit's End and Meteoric Leap are all rank-3 gated to level 6, so a L1-L5 Warrior's talent damage is Mighty's +2 per Action plus Feinting Strike."
+    },
+    {
+     "claim": "'Can handle themself in any dangerous martial situation, whether a formal duel, an alleyway scuffle, or a terrifying clash of armies.'",
+     "delivered": "DELIVERS - the most literal, most impressive intent-to-mechanic mapping in the tree.",
+     "evidence": "Formal duel: Flamestance pays out only when exactly one enemy is in reach and no allies are. Alleyway scuffle / outnumbered: Windstance pays out while you can reach multiple enemies, and Meteoric Leap is multi-target. Clash of armies: Cautious Advance, Defensive Position and Formation Drills are literally unit drill, and Stonestance protects the line. Three distinct battlefield geometries, each with its own mechanical trigger. Caveat: Flamestance and Windstance are both stances, so the character can only be configured for ONE geometry at a time - which is arguably the point, and is what makes Vigilant Stance's Free-Action swap matter."
+    },
+    {
+     "claim": "DUELIST: 'contend for glory and political sway, wielding their weapons with brutal grace.'",
+     "delivered": "PARTIAL - the brutal grace is fully there; the political sway is very nearly absent, AND the promise is duplicated by a tree that keeps it.",
+     "evidence": "Weapon craft delivered by Flamestance, Ironstance, Vinestance, Signature Weapon, Feinting Strike, Wit's End, Surefooted. 'Political sway' is delivered by exactly one talent, Practiced Kata (stances in conversation and endeavors), plus Flamestance's Intimidation advantage. No Persuasion, no Leadership, no reputation, no court or duelling-society mechanic - and Leadership and Persuasion are both in the path's own recommended-skills list while appearing in ZERO talents. LENS B (is this promise also made elsewhere?): YES - heroic/Leader's intent makes it and delivers it. Leader's Politico specialty 'chase[s] favor and prestige while subtly undermining their enemies', its opening prose is about 'power and influence', its Champion specialty covers the martial charge, and its recommended skills are Athletics, Deception, Heavy Weaponry, Intimidation, Leadership, Persuasion - Warrior's list plus Deception. Leader then ships Rumormonger, Well Supplied, Well Dressed, Imposing Posture, Decisive Command and Synchronized Assault to back it. The socially-influential martial elite is a promise two heroic paths make and only one keeps."
+    },
+    {
+     "claim": "SHARDBEARER: 'wield these arms and armor of ancient provenance to dominate the battlefield with mythic might.' Flagged in the intent text as 'Available in the Stormlight Handbook.'",
+     "delivered": "PARTIAL, and structurally odd - but less hostage to loot than the prior draft claimed.",
+     "evidence": "The specialty is 8 talents (Shard Training, Stonestance, Windstance, Mighty, Shattering Blow, Bloodstance, Precise Parry, Meteoric Leap) and is mechanically strong. (a) The intent text flags the specialty as external content while the data ships all eight. (b) CORRECTED: the prior draft said 'a third of the tree is hostage to loot'. Walking the prereq chain, only SIX talents sit behind Shard Training's 'Access to a Shardblade and Shardplate' gate (Shard Training, Windstance, Shattering Blow, Precise Parry, Bloodstance, Meteoric Leap). Stonestance is depth 0 with NO prerequisite and Mighty requires only Stonestance - so a shardless Warrior keeps the tree's two best talents. Note also that only Shard Training's own text needs YOUR gear; Shattering Blow depletes the ENEMY's armor charge, Precise Parry's Shardblade clause is about the attacker's weapon, and Meteoric Leap's is a conditional advantage. (c) LENS B: 'nothing else in the atlas does this' is FALSE - heroic/Hunter's Animal Bond ('Animal companion') gates a four-talent chain (Animal Bond, Protective Bond, Feral Connection, Hunter's Edge) on a GM-granted asset, heroic/Agent's Underworld Contacts requires a 'Patron or follower in criminal underworld', and heroic/Envoy's Instill Confidence requires 'a companion'. Warrior's is the LARGEST such dependency, not the only one."
+    },
+    {
+     "claim": "SOLDIER: 'master the tactics needed to fight effectively in units and stay alive.'",
+     "delivered": "DELIVERS cleanly.",
+     "evidence": "Formation Drills is literal unit tactics (allies within 10 ft who Brace gain the benefits of your Defensive Position). Cautious Advance is drill movement, Combat Training is professional competence including Military Life expertise, Hardy and Wary are staying alive, Devastating Blow and Swift Strikes are the line-infantry damage. Caveat (lens B): two of those seven (Combat Training, Hardy) are talents other heroic trees print verbatim, so the specialty is thinner in original content than its eight slots suggest."
+    },
+    {
+     "claim": "'Skills: Athletics, Light Weaponry, Heavy Weaponry, Intimidation, Leadership, Persuasion.'",
+     "delivered": "DRIFTED - falsifiable and false.",
+     "evidence": "Counted line by line off the 25 prereq rows, the tree's actual skill gates are Athletics 6 (Ironstance, Defensive Position, Devastating Blow, Vinestance, Bloodstance, Meteoric Leap; Precise Parry also TESTS it), Intimidation 3 (Flamestance 1+, Feinting Strike 2+, Wit's End 3+), Discipline 3 (Cautious Advance 1+, Formation Drills 2+, Wary 3+), Perception 3 (Windstance 1+, Shattering Blow 2+, Precise Parry 3+), plus Insight and Agility as advantage riders and Light/Heavy Weaponry in Precise Parry only. Discipline and Perception are load-bearing gates on six talents between them and appear nowhere in the recommended list; Leadership and Persuasion are recommended and appear in no talent at all."
+    },
+    {
+     "claim": "'The Warrior key talent, Vigilant Stance, unlocks access to the Warrior specialties.'",
+     "delivered": "DRIFTED - untrue in the shipped data, but ATLAS-WIDE, not a Warrior defect.",
+     "evidence": "Vigilant Stance has connections: [] and is not named as a prerequisite by any of the other 24 talents (verified against every prereq line). All six remaining depth-0 entries are takeable at L1 without it. CORRECTED (lens B): the prior draft called this 'flatly untrue in the shipped data' as though it were a Warrior authoring error. Checking all six heroic trees, EVERY Key talent has ZERO dependents - Agent/Opportunist 0, Envoy/Rousing Presence 0, Hunter/Seek Quarry 0, Leader/Decisive Command 0, Scholar/Erudition 0, Warrior/Vigilant Stance 0 - and every one of the six trees has exactly 7 depth-0 talents. The 'Key unlocks the specialties' sentence is unmodelled in the data for the whole heroic atlas: one data-model decision, not six independent drifts. It remains a real prose-vs-mechanics gap; it is not evidence about Warrior specifically."
+    },
+    {
+     "claim": "'Starting Skill: Athletics.'",
+     "delivered": "DELIVERS - consistent with the data.",
+     "evidence": "Athletics is the tree's most common gate (Ironstance, Defensive Position, Devastating Blow, Vinestance, Bloodstance, Meteoric Leap) and Precise Parry tests it. Note the free rank does not solve the L6 wall: four of those six gates want Athletics 3+, which the rank cap forbids before level 6."
+    },
+    {
+     "claim": "DESIGN-GUIDE CLAIM (second intent source): the leyline guide's benchmark table says official HEROIC paths run 34% Passive / 30% Special / 14% Action / 8% 2-Action / 7% Free / 5% Reaction / 2% 3-Action.",
+     "delivered": "DISAGREES with the shipped tree - recorded, not resolved.",
+     "evidence": "Warrior as shipped is 28% Passive (7), 16% Special (4), 36% Action (9), 16% 2-Action (4), 0% Free Action (0), 4% Reaction (1), 0% 3-Action - counted directly off the 25 rows and matching the brief's normalised table exactly. Action is 2.5x the stated heroic benchmark, 2-Action is 2x it, Special is roughly half of it, and Free Action is absent entirely, in a tree that is itself one of the six official heroic paths the benchmark was supposedly derived from. LENS B: Warrior is the outlier within its own atlas too - it is the only heroic tree with ZERO Free Actions (Agent 4, Envoy 2, Hunter 2, Leader 1, Scholar 1), it has the atlas's highest 1-Action count (9 vs 1-4) and its lowest Special share (16% vs 28-40%). Either the benchmark table or this reproduction of the path is wrong. Note also that DESIGN-GUIDE-CLAIMS.md carries standards for LEYLINE and DEITY trees only - it states no key mechanic, cost curve or action-type target for heroic paths, so this tree has no design standard of its own to be measured against."
+    }
+   ],
+   "actuallyIs": "A non-magical, melee-only combat chassis whose real innovation is a seven-mode stance system and whose real strength is free, permanent durability and free, permanent damage riders rather than escalating power. It is the heroic atlas's damage tree and its best Brace-sharing martial, with one designed combo (strip focus, then execute) and two structural dependencies: six of its eight Shardbearer talents need a Shardblade the GM has to hand you, and six talents - including both damage formulas and the AoE payload - are walled off behind skill rank 3, i.e. level 6. What it is NOT is the socially influential duellist of glory and political sway the path text promises: that half of the fantasy is one talent wide, and heroic/Leader's intent promises the same thing while actually shipping the influence talents. Nor is it, before level 6, the damage dealer the same text promises. Three of its 25 slots (Combat Training, Surefooted, Hardy) are shared heroic stock printed verbatim in other trees, so its original content is 22 talents, not 25.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Stance (Vigilant, Flame, Iron, Stone, Wind, Vine, Blood)",
+    "role": "PRODUCE - the tree defines the mechanic and is its only user; a corpus grep for 'stance' returns 14 talents, 8 of them Warrior, and none of the other six is a mode you enter (leyline/White's Guardian Stance is a Passive; deity/Chaos's Unweaving names 'stance' only as something it strips). No talent text anywhere states that stances are mutually exclusive",
+    "talents": "Vigilant Stance, Flamestance, Ironstance, Stonestance, Windstance, Vinestance, Bloodstance, Practiced Kata"
+   },
+   {
+    "keyword": "Focus",
+    "role": "BOTH - consumes heavily (7 of 25 talents), discounts, preserves, and STRIPS from enemies; never generates. The corpus's Focus regen sits in leyline/Black (2), heroic/Envoy (2), heroic/Hunter (1) and heroic/Leader (1) - none of it here",
+    "talents": "Practiced Kata (1), Feinting Strike (2), Wit's End (1), Shattering Blow (2), Precise Parry (1), Meteoric Leap (2), Swift Strikes (1); Vigilant Stance discount on Dodge/Reactive Strike; Combat Training free graze; Wary loss reduction; Feinting Strike and Vinestance strip enemy focus"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "PRODUCE only - expands Opportunity range; resource-economy.json confirms the tree contains no Opportunity consumer. One of five producer trees, and the only one whose production applies to COMBAT rolls (Scholar's two are crafting-scoped; Agent's, Envoy's and Leader's are social contacts and supply)",
+    "talents": "Bloodstance (+2 range on attacks and physical tests), Signature Weapon (+1 range on one weapon expertise)"
+   },
+   {
+    "keyword": "Investiture",
+    "role": "NEITHER - zero of 25 talents mention Investiture or Attunement, so Draw Mana and every Attunement rider are inert. NOT distinctive (corrected): heroic/Agent, Envoy, Leader and Scholar are equally Investiture-free; only heroic/Hunter mentions it at all, once (Sharp Eye)",
+    "talents": "none"
+   },
+   {
+    "keyword": "Reaction",
+    "role": "BOTH - exactly ONE talent is typed Reaction, but THREE cash in the 1-per-round cap; also discounted, and DENIED to enemies. Note heroic/Hunter's Sidestep is the only talent in the 365 that GRANTS an additional reaction, and it requires light armor - so Warrior competes for its single slot and cannot widen it",
+    "talents": "Precise Parry (typed Reaction, 1 focus), Vinestance (spends your Reaction), Ironstance (grants a Reactive Strike, itself a reaction costing 1 focus), Vigilant Stance (-1 focus on Dodge and Reactive Strike), Feinting Strike (target loses Reaction)"
+   },
+   {
+    "keyword": "Brace (standard action)",
+    "role": "CONSUME and UPGRADE - the atlas's only Brace-modifying tree (verified: only heroic/Hunter's Backstep touches Brace outside it)",
+    "talents": "Cautious Advance, Defensive Position, Formation Drills"
+   },
+   {
+    "keyword": "Dodge (reaction)",
+    "role": "CONSUME - discounted",
+    "talents": "Vigilant Stance"
+   },
+   {
+    "keyword": "Reactive Strike (reaction)",
+    "role": "BOTH - discounted and granted a new trigger",
+    "talents": "Vigilant Stance, Ironstance"
+   },
+   {
+    "keyword": "Gain Advantage (standard action)",
+    "role": "CONSUME - grants Actions to perform an action every character already has",
+    "talents": "Flamestance, Cautious Advance"
+   },
+   {
+    "keyword": "Disengage (standard action)",
+    "role": "CONSUME - grants an Action to perform it",
+    "talents": "Windstance"
+   },
+   {
+    "keyword": "Graze",
+    "role": "BOTH - produces free grazes, spreads grazes to extra targets, converts hits into grazes, and forbids grazing. The densest graze suite in the corpus (7 of the 10 graze-naming talents are Warrior's), though Combat Training itself is shared verbatim with heroic/Hunter",
+    "talents": "Combat Training (free graze/round), Shard Training (graze extra targets = ranks in the skill used), Precise Parry (hit -> graze), Wit's End (cannot graze), Ironstance (triggers on being grazed), Vinestance (triggers on being grazed), Feinting Strike (half focus strip on a graze)"
+   },
+   {
+    "keyword": "Deflect",
+    "role": "BOTH - raises own, and ignores the enemy's. Only three talents in the 365 ignore Deflect: Wit's End, deity/Civilization's Tempered Edge, deity/Destruction's The Unmooring",
+    "talents": "Stonestance (+1 deflect), Wit's End (ignores deflect)"
+   },
+   {
+    "keyword": "Expertise (weapon, armor, Military Life, Shardblade, Grandbow, Warhammer)",
+    "role": "PRODUCE - six expertise grants across three talents; comparatively narrow (heroic/Scholar grants across 8 talents, heroic/Agent across 5) and all of Warrior's are martial",
+    "talents": "Shard Training (Shardblade + one of Grandbow/Shardblade/Warhammer), Combat Training (a weapon, an armor, Military Life), Signature Weapon (a weapon)"
+   },
+   {
+    "keyword": "Shardblade / Shardplate / armor charges",
+    "role": "BOTH - requires them as an out-of-tree prerequisite, adds charges, and DEPLETES an enemy's. Verified sole owner in the 365",
+    "talents": "Shard Training (prereq + 2 extra charges + graze splash), Shattering Blow (deplete 1 enemy armor charge), Meteoric Leap (advantage in Shardplate), Precise Parry (Shardblade exception clause)"
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE - self only, non-attack skills only, and only one at a time because three of the four producers are mutually exclusive stances. Cautious Advance is a CONSUMER (it grants Actions to use the standard Gain Advantage action), not a producer. No Warrior talent advantages an attack roll and none grants an ally anything",
+    "talents": "Flamestance (Intimidation), Ironstance (Insight), Windstance (Agility), Meteoric Leap (in Shardplate); Cautious Advance consumes - confirmed against advantage-ledger.md lines 83-92, exactly five Warrior entries"
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE - imposed on attackers, and self-imposed in one clause; the tri-state implementation makes the 'two disadvantages' headline near-inert",
+    "talents": "Defensive Position (two on attacks against you), Formation Drills (shared to Bracing allies within 10 ft), Precise Parry (self-disadvantage if unarmed vs a non-Shardblade)"
+   },
+   {
+    "keyword": "Prone",
+    "role": "PRODUCE",
+    "talents": "Meteoric Leap (on 'weaker targets' - the text never defines the comparison)"
+   },
+   {
+    "keyword": "Surprised",
+    "role": "DENY",
+    "talents": "Wary (cannot be Surprised while you have focus), Practiced Kata (start each scene in Vigilant Stance unless Surprised)"
+   },
+   {
+    "keyword": "Push / forced movement",
+    "role": "PRODUCE",
+    "talents": "Shattering Blow (5 ft on each damaged target), Vinestance (push attacker on a successful Athletics test)"
+   },
+   {
+    "keyword": "Difficult terrain",
+    "role": "CONSUME / ignore - never produces",
+    "talents": "Cautious Advance"
+   },
+   {
+    "keyword": "Dangerous terrain and falling damage",
+    "role": "CONSUME / mitigate - text shared verbatim with heroic/Agent and heroic/Hunter",
+    "talents": "Surefooted (reduce by twice your tier)"
+   },
+   {
+    "keyword": "Physical / Cognitive / Spiritual defence",
+    "role": "BOTH - raises two, lowers all three",
+    "talents": "Vinestance (+1 Physical and Cognitive), Bloodstance (-2 all three)"
+   },
+   {
+    "keyword": "Attack vs. Cognitive defence (a martial attack against a mental defence)",
+    "role": "PRODUCE - unusual for a weapon tree",
+    "talents": "Feinting Strike, Wit's End (Vinestance also tests Athletics vs. Cognitive)"
+   },
+   {
+    "keyword": "Maximum Health",
+    "role": "PRODUCE - raises the cap, does not heal. CORRECTED: an identically-worded Hardy ships in SEVEN trees, not two - leyline/White, leyline/Black, leyline/Green, heroic/Agent, heroic/Hunter, heroic/Leader and heroic/Warrior. It is shared stock and carries no Warrior identity",
+    "talents": "Hardy (+1 per level, including previous levels)"
+   },
+   {
+    "keyword": "Movement speed",
+    "role": "PRODUCE - +10, the corpus standard. Surefooted's identical text is in heroic/Agent and heroic/Hunter, and the only other movement bump in the 365 is deity/Destruction's Walking Ruin (+10 ft)",
+    "talents": "Surefooted (+10)"
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME - scaling input, and the weakest in the corpus",
+    "talents": "Mighty (1 + tier per Action spent), Surefooted (twice your tier), and both damage formulas - which are tier-INVARIANT across tier 1 and tier 2 and therefore across the entire L1-L10 window, unlike every (@tier)d(2*rank+2) formula elsewhere"
+   },
+   {
+    "keyword": "Skill ranks as gates and scaling: Athletics, Intimidation, Discipline, Perception, Light Weaponry, Heavy Weaponry, Insight, Agility, Military Life",
+    "role": "CONSUME - and this is the tree's real pacing mechanism",
+    "talents": "Athletics gates 6 and Precise Parry tests it; Intimidation gates 3 (Flamestance 1+, Feinting Strike 2+, Wit's End 3+) and scales Feinting Strike's focus strip; Discipline gates 3 (Cautious Advance 1+, Formation Drills 2+, Wary 3+) and scales Wary's loss reduction; Perception gates 3 (Windstance 1+, Shattering Blow 2+, Precise Parry 3+); Shard Training's graze splash scales on the ranks in the skill used. SIX of these gates demand rank 3+, which the primer's rank cap makes impossible before level 6."
+   },
+   {
+    "keyword": "0 Focus (the depleted-target state)",
+    "role": "BOTH - creates it and cashes it in. THREE talents in the 365 key off a 0-focus target: Wit's End, leyline/Black's Puppeteer and leyline/Black's Predatory Insight. Warrior is the only tree that reaches the state with a WEAPON and cashes it for damage; leyline/Black runs the fuller economy",
+    "talents": "Feinting Strike (creates - the largest deterministic strip in the corpus), Wit's End (requires)"
+   }
+  ],
+  "crossTreeHooks": [
+   "Shard Training's prerequisite is 'Access to a Shardblade and Shardplate' - a GM-granted reward, not a talent - and six of the tree's talents sit behind it (Shard Training, Windstance, Shattering Blow, Precise Parry, Bloodstance, Meteoric Leap). CORRECTED: Stonestance and Mighty are NOT behind it, so a shardless Warrior keeps the tree's two best talents. And it is not unique: heroic/Hunter's Animal Bond gates a four-talent chain on 'Animal companion', heroic/Agent's Underworld Contacts requires a 'Patron or follower in criminal underworld', heroic/Envoy's Instill Confidence requires 'a companion'. Warrior's is the largest such dependency in the atlas, not the only one.",
+   "Wit's End requires a target at 0 focus. Warrior can make that state itself with Feinting Strike, but leyline/Black runs the corpus's fullest 0-focus economy - Whispered Doubt makes every enemy focus spend cost 1 more, Coercive Pressure punishes any focus loss with disadvantage, Predatory Insight regains focus when any character reaches 0, and Puppeteer chooses an action of a 0-focus target. The strongest seam is the reverse direction: Feinting Strike is the biggest deterministic focus strip in the corpus and the best enabler for Puppeteer that exists. Both halves are level-6 talents (Wit's End needs Intimidation 3+, Puppeteer needs Black 3+), so it is a Tier-2 partnership only.",
+   "Bloodstance and Signature Weapon expand Opportunity range in a tree with zero Opportunity consumers. Verified against resource-economy.json: Opportunity has 9 producers in 5 trees and 17 consumers in 9; Warrior's two are the only COMBAT-scoped range expansions (Scholar's two are crafting-only). Their value only materialises in a character who also holds an Opportunity-SPENDING path - leyline/Black's Predatory Insight, leyline/Red's Reckless Momentum / Afterburn / Reckless Gambit, leyline/Green's Sudden Growth / Natural Recovery, leyline/White's Mending Aura / Collective Resolve. This is the single clearest unfinished seam in the tree.",
+   "Stonestance is worthless solo and worthless in an all-Warrior party: its clause taxes enemies attacking 'your allies who aren't in Stonestance', so it needs allies who are NOT running the same stance.",
+   "Defensive Position and Formation Drills require allies to choose the Brace action. They are dead value unless the party is willing to spend Actions defensively - a coordination cost paid outside the tree - and what they deliver is mostly the ally-Brace permission, since the 'two disadvantages' half is inert under the shipped tri-state.",
+   "Flamestance's bonus Action requires NO allies in reach, which anti-synergises with Stonestance, Formation Drills, and with any clustering partner (leyline/Green's cluster engine, and leyline/White's Guardian Stance, which requires an ADJACENT ally). The tree contains its own internal contradiction here, and it collides with White's entry talent directly.",
+   "Ironstance, Vinestance and Precise Parry all trigger on an enemy attacking YOU. Any partner path that supplies taunt, aggro or forced target selection multiplies all three at once - and without one, they are hostage to enemy target choice. They also all compete for the same single Reaction, and the corpus's only reaction-cap breaker is heroic/Hunter's Sidestep, which requires armor with deflect under 2 and is therefore closed to an armored Warrior.",
+   "The tree spends only Focus (max 2+WIL) and generates none. Any partner path that restores or discounts Focus roughly doubles the number of premium plays a Warrior gets per rest; the corpus's Focus regen is leyline/Black 2, heroic/Envoy 2, heroic/Hunter 1, heroic/Leader 1, so those four are the natural partners. Correspondingly, a Warrior gains nothing from a partner that generates Investiture.",
+   "Meteoric Leap's Prone rider fires only on 'weaker targets', a comparison the tree never defines - resolution depends on the GM or on a strength/size mechanic outside these talents.",
+   "SIX talents are walled behind skill rank 3 (Athletics, Intimidation, Discipline, Perception). A Warrior sharing skill investment with a second path that wants different skills reaches those six later still, or never - the deepest cross-path tension in the tree, and one the path's own recommended-skills list (which names Leadership and Persuasion, neither of which gates anything) actively misleads about. Note the intent file recommends Leader and Hunter as multi-path partners: Leader wants Leadership/Persuasion/Deception and Hunter wants Agility/Perception/Stealth/Survival, so only Hunter's Perception overlaps a real Warrior gate."
+  ],
+  "topThree": [
+   "Mighty - Passive, depth 1, level 2, zero cost, no once-per-round limit: (1 + tier) extra damage per Action spent on every weapon or unarmed hit, forever. Verified unique in the 365 - nothing else pays you for spending more Actions on one attack. It is what makes the tree's 2-Action attacks pay, it is the whole reason the damage floor never runs dry, it is the ONLY meaningful damage talent available before level 6, and it sits OUTSIDE the Shardblade gate.",
+   "Wit's End - the execute. Weapon + 4d6 that ignores Deflect and cannot graze, against a target the tree's own Feinting Strike can drop to 0 focus. Cross-corpus, 4d6 is the largest flat damage-dice bonus among all 43 damage formulas and only three talents in the game ignore Deflect. The only complete, designed two-talent engine in the tree and its clearest identity - discounted only by needing Intimidation 3+, which makes it a level-6 talent, not the level-3 one the dossier reports.",
+   "Stonestance - depth 0, level 1, free: +1 deflect AND every enemy in your reach must spend an additional Action to attack an ally not in Stonestance. A grep of all 365 confirms it is the only enemy ACTION tax in the game, it costs nothing, it protects the party rather than the self, and it sits outside the Shardblade gate. Qualifier (lens B): taxing an Action is not denying one - leyline/Black's Hollow Command and heroic/Agent's Cheap Shot both deny harder. Stonestance wins on being free, permanent, party-facing and available at level 1."
+  ],
+  "bottomThree": [
+   "Swift Strikes - 1 Action + 1 focus to make the Strike every character already has, at depth 2. The primer's own 'reproduces a standard action' zero, with a surcharge.",
+   "Signature Weapon - a weapon expertise plus +1 Opportunity range, in a tree verified to contain nothing to spend Opportunity on, sitting at the same depth as Mighty.",
+   "Cautious Advance - 2 of your 3 Actions to get back 2 Actions restricted to Brace or Gain Advantage (a net-zero action trade), plus a HALF move where the free Move action gives a full one, and where the binary-advantage rule means two Gain Advantages pay out one advantage. Justified only as the gate to Defensive Position."
+  ],
+  "weakTalents": [
+   {
+    "name": "Swift Strikes",
+    "reason": "NEVER-PICK as written. 1 Action + 1 focus to 'make a second Strike with the same weapon' is the Strike action every character already has, with a focus surcharge bolted on. The primer is explicit that a talent reproducing a standard action is worth roughly zero; this one is worth less than zero unless the intent is that it bundles into another Strike's Action, which the text and the wiring (no events, no effects, no formula) do not say. At depth 2 / L3 it is well below the curve."
+   },
+   {
+    "name": "Cautious Advance",
+    "reason": "OVERCOSTED. It consumes 2 of your 3 Actions to hand back 2 Actions restricted to Brace or Gain Advantage - a net-zero action trade. Because advantage is binary (d20.number = 2 with kh; a second source contributes nothing), spending both on Gain Advantage yields ONE advantage; two Braces do not stack either. Realistic yield for an entire turn: a half move ignoring difficult terrain, one Brace and one advantage - and the half move is WORSE than the free Move action's full movement. Its actual justification is that it is the prerequisite for Defensive Position."
+   },
+   {
+    "name": "Defensive Position",
+    "reason": "PROMISE THE IMPLEMENTATION CANNOT DELIVER. 'The Brace action adds two disadvantages to attacks against you, instead of one' reads as double disadvantage, but the system implements advantage/disadvantage as a tri-state (d20.number = 2 with kl regardless of how many sources), so the second disadvantage contributes nothing except as a buffer that survives one attacker advantage. This is the exact class of bug the primer warns about. The talent is still good - the 'allies can Brace behind your shield' clause and Formation Drills carry it, and that Brace package is the tree's only unshared protection contribution - but its headline number is fiction."
+   },
+   {
+    "name": "Vigilant Stance",
+    "reason": "THE KEY TALENT THAT GATES NOTHING. Verified against all 25 prereq lines: Vigilant Stance has connections: [] and is named as a prerequisite by NONE of the other 24 talents, so all six other depth-0 entries are reachable without it, contradicting the path text's claim that it 'unlocks access to the Warrior specialties'. LENS B QUALIFIER: this is true of all six heroic Key talents (Opportunist, Rousing Presence, Seek Quarry, Decisive Command, Erudition, Vigilant Stance all have zero dependents), so the gating failure is an atlas-wide data-model decision, not a Warrior authoring error. What IS Warrior-specific is the talent's own weakness: 1 Action for a 1-focus discount on two reactions plus a Free-Action stance switch that is inert until you own a second stance (L2 at the earliest). Weakest of the seven entries."
+   },
+   {
+    "name": "Signature Weapon",
+    "reason": "BELOW CURVE FOR DEPTH 1. A weapon expertise plus +1 Opportunity range on one weapon, in a tree verified to contain zero Opportunity consumers. Its entire value is exported to whatever other path the character happens to have. Compare Mighty at the same depth, which adds free damage to every hit forever."
+   },
+   {
+    "name": "Bloodstance",
+    "reason": "OVERCOSTED AND SELF-DEFEATING, AND DEEPER THAN THE DOSSIER SAYS. -2 to Physical, Cognitive AND Spiritual defences is a savage price in a tree whose other talents exist to make you hard to hit, and it buys Opportunity range the tree cannot spend. It is also the mandatory gate to Meteoric Leap, so the tree forces its tank to become glass to reach its only AoE payload - and because its prose prereq ANDs Shard Training AND Mighty (which requires Stonestance), it costs three prior talents, not the two the dossier's depth column implies."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Two-tier, and generous at the bottom. Baseline: INDEFINITE. Mighty, Devastating Blow, Hardy, Surefooted, Wary, Defensive Position, Formation Drills, Signature Weapon, Shard Training, Combat Training and all seven stances cost no resource at all (a stance costs only the Action to enter, and Vigilant Stance makes switching Free), so a Warrior runs at roughly 80% of peak for an entire adventuring day without spending anything. Premium: 2-3 rounds. Every premium play spends focus from a pool of 2+WIL (~4-5 typical): the signature combo alone is Feinting Strike (2) + Wit's End (1) = 3 focus and 3 Actions, and one Precise Parry (1) or one Meteoric Leap (2) empties the rest. Vigilant Stance's -1 discount applies only to Dodge and Reactive Strike, NOT to talents, so it does not extend the premium tier - though Combat Training's free graze per round does save the focus a graze would otherwise cost. Zero Investiture is spent anywhere, so Draw Mana - the primer's central sustain lever - is irrelevant to this tree in both directions. COMPARATIVE (lens B): a cost-field census puts Warrior at 18/25 (72%) free-cost talents, against leyline 36-60% and deity 0-33% - but heroic/Hunter is 84% and heroic/Scholar is also 72%, so resource-freedom is a heroic-atlas trait, not a Warrior one. Warrior's distinction is being that free while carrying the atlas's largest damage payloads.",
+   "triggerGatedCount": 6,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 7,
+   "note": "REACTION COUNT 1 for cross-tree comparability. Exactly ONE talent is TYPED Reaction (Precise Parry, 1/25 = 4%), which is the figure the brief's action-type table and the primer's 'White's SEVEN Reactions' anchor both use. The real bottleneck, invisible in that column, is that THREE talents cash in the single Reaction per round: Precise Parry, Vinestance's push-and-drain rider, and Ironstance's granted Reactive Strike (which also costs 1 focus) - and Vigilant Stance exists to subsidise a fourth claimant, the standard Dodge. A player who buys all three uses at most one per round, so the second and third purchases are mode-switching insurance rather than added throughput; the tree half-solves its own problem by accident, because Ironstance and Vinestance are mutually exclusive STANCES. LENS B: the corpus's only reaction-cap breaker is heroic/Hunter's Sidestep, which requires armor with deflect under 2 and is therefore closed to an armored Warrior, so the cap is genuinely hard here. TRIGGER-GATED COUNT: I make it 6 (Ironstance, Vinestance, Precise Parry, Wary, Defensive Position, Formation Drills) against the deterministic classifier's 4. The two extra are Defensive Position and Formation Drills, whose benefit exists only 'on attacks against you' / against a Bracing ally - literally the brief's 'fires when you are hit' - but which additionally require a self-spent Brace action first, presumably why the classifier excluded them; read strictly as 'someone else must act first', the number is 4. RESOURCE COSTERS: verified 7 of 25 by counting Cost fields (Practiced Kata 1, Feinting Strike 2, Wit's End 1, Shattering Blow 2, Swift Strikes 1, Meteoric Leap 2, Precise Parry 1), matching the brief's census exactly, and the resource is ALWAYS Focus. PACING: six talents carry '<skill> 3+' prose prerequisites (Devastating Blow, Vinestance, Wit's End, Wary, Meteoric Leap, Precise Parry) that the dossier's earliest-L column did not gate - all 25 rows have an empty rankGate field - so under the rank cap of 2 through L5 those six are level 6, not L2-L4."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.damageTalents[Meteoric Leap].depth / powerByDepth bands",
+   "from": "depth 3; bands 'depth 0 (7)', 'depth 1-2 (16)', 'depth 3+ (2)'",
+   "to": "depth 4; bands 'depth 0 (7)', 'depth 1-2 (15)', 'depth 3+ (3)'",
+   "reason": "DOSSIER DEPTH BUG the profile inherited. Bloodstance's prose prereq is 'Shard Training; Mighty; Athletics 2+' — semicolon-separated groups are ANDed, so BOTH talents are required, and Mighty's own prereq is Stonestance. Bloodstance's true prior-talent count is therefore 3 (Shard Training, Stonestance, Mighty), not 2, and Meteoric Leap's is 4, not 3. The dossier printed 2/3 because it read the connections array [Shard Training, Mighty] as an OR-group. Bloodstance moves out of the 1-2 band into 3+."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Devastating Blow].earliestLevel",
+   "from": "2",
+   "to": "6",
+   "reason": "The profile diagnosed this correctly in its own note ('Real earliest level is 6') and then left the NUMBER at 2. Prose prereq is 'Combat Training; Athletics 3+'; SYSTEM-PRIMER's tier/rank-cap table (Tier 1 = L1-5, max rank 2) makes rank 3 impossible before level 6."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Wit's End].earliestLevel",
+   "from": "3",
+   "to": "6",
+   "reason": "Same self-contradiction. Prose prereq 'Feinting Strike; Intimidation 3+' → rank 3 → L6. This also makes the tree's one designed combo a Tier-2-only play, which the profile's topThree did not say."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Meteoric Leap].earliestLevel",
+   "from": "4",
+   "to": "6",
+   "reason": "Prose prereq 'Bloodstance; Athletics 3+' → rank 3 → L6 (and depth 4 by talent count would put it at L5 even without the rank gate)."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Vinestance].earliestLevel",
+   "from": "3",
+   "to": "6",
+   "reason": "Prose prereq 'Feinting Strike; Athletics 3+' → rank 3 → L6."
+  },
+  {
+   "field": "damageAccounting.countReal",
+   "from": "10",
+   "to": "8",
+   "reason": "INFLATED COUNT — the brief's named failure mode. Flamestance ('gain an Action to attack or Gain Advantage') and Windstance ('use Free Action to gain an Action to Disengage or attack') add no damage of their own; they hand you an Action, and the Strike bought with it is the standard action every character already has. Counting an action grant as a damage source is 'a rider on an existing attack counted as a new damage source'. Both stay in the array flagged as action-economy vehicles and excluded from the count."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "5",
+   "to": "4",
+   "reason": "The profile cited nine talents but its OWN weakTalents entry proves two of them are hollow: Defensive Position's headline 'two disadvantages instead of one' is worth almost nothing under the shipped tri-state (`d20.number = 2; kl` regardless of source count, SYSTEM-PRIMER), and Formation Drills propagates that same near-inert benefit. Two more of the nine do not reduce damage at all — Wary is anti-Surprised, Vigilant Stance is a 1-focus discount on Dodge/Reactive Strike. Six real damage-protection talents is a 4; the rubric's 5 ('the reference implementation') belongs to leyline/White (4 mitigation talents, 7 Reactions, the Bulwark specialty)."
+  },
+  {
+   "field": "axes[action_economy].score",
+   "from": "4",
+   "to": "3",
+   "reason": "All three genuine grants (Flamestance, Windstance, Ironstance) are STANCES, so by the profile's own mutual-exclusivity reading a Warrior holds at most ONE at a time — and each is geometry-gated (exactly one enemy and no allies in reach / multiple enemies in reach / being grazed or missed). Ironstance's Reactive Strike additionally costs 1 focus and consumes the single Reaction. The two non-stance entries are net-zero or worse (Cautious Advance is 2 Actions for 2 restricted Actions; Swift Strikes is 1 Action + 1 focus for the standard Strike). That is a competency, not 'one of the better options in the game'."
+  },
+  {
+   "field": "axes[mobility].score and evidence",
+   "from": "3; 'Surefooted is a permanent +10 movement (a large fraction of base speed)'",
+   "to": "2; comparison to base speed removed",
+   "reason": "Three of the five cited talents move you LESS than the free 1-Action Move every character has: Wit's End and Cautious Advance move 'half your movement', Meteoric Leap leaps 'a quarter of your movement' — all bundled into an attack, so they are attack riders, not repositioning. Real mobility is Surefooted's +10 and Windstance's conditional Disengage Action. Separately, SYSTEM-PRIMER states no base movement value, so 'a large fraction of base speed' is an unsupported claim."
+  },
+  {
+   "field": "axes[buff].evidence",
+   "from": "'four of the five are stance riders'",
+   "to": "'three of the five are stance riders'",
+   "reason": "MISCOUNT. Of the five advantage sources (Flamestance, Ironstance, Windstance, Meteoric Leap, Cautious Advance), only three are stances. Meteoric Leap is a 2-Action unarmed attack and Cautious Advance is a 2-Action move-and-drill."
+  },
+  {
+   "field": "axes[buff].evidence",
+   "from": "'Zero talents grant an ally a bonus, a reroll or an advantage.'",
+   "to": "'No talent grants an ALLY an advantage, a reroll, or a numeric bonus to a roll; two talents do hand allies a defensive benefit.'",
+   "reason": "FALSE AS WRITTEN. Defensive Position: 'allies can Brace behind your shield.' Formation Drills: 'Allies within 10 ft who Brace gain the benefits of your Defensive Position.' Both grant an ally a bonus."
+  },
+  {
+   "field": "axes[social_influence].evidence",
+   "from": "'Feinting Strike and Wit's End scale on Intimidation ranks'",
+   "to": "'Only Feinting Strike scales on Intimidation; Wit's End merely gates on Intimidation 3+'",
+   "reason": "TEXT-VS-CLAIM. Wit's End's full text is 'Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.' Nothing in the effect reads Intimidation; it is a prerequisite only."
+  },
+  {
+   "field": "axes[debuff].evidence",
+   "from": "cited 'Precise Parry downgrades an incoming hit' as debuff evidence",
+   "to": "removed",
+   "reason": "Category error — turning a hit into a graze is damage mitigation, already counted under protection. Score unchanged at 3; the focus-strip pillar carries it."
+  },
+  {
+   "field": "uniqueOwnership[stance system]",
+   "from": "'a text scan for stance outside this tree returns only deity/Chaos's Unweaving'",
+   "to": "corrected: leyline/White ships a talent literally NAMED Guardian Stance",
+   "reason": "FALSIFIED BY GREP. leyline-White.md line 19: '## Guardian Stance — While an ally is adjacent to you, you both gain +1 Deflect.' It is a Passive, not a mode, so the MECHANIC is still unique to Warrior — but the scan claim as written is false."
+  },
+  {
+   "field": "uniqueOwnership[stance system]",
+   "from": "asserted mutual exclusivity as fact",
+   "to": "flagged as an inference the text never states",
+   "reason": "No stance's text says you may hold only one. It is inferred from 'Enter <X> Stance' plus Vigilant Stance's 'you can enter other stances as a Free Action'. This is load-bearing: buff and action_economy both assume it, and if stances stack both rise a full point and the Flamestance/Windstance contradiction disappears."
+  },
+  {
+   "field": "sustainability.reactionCount",
+   "from": "3",
+   "to": "1",
+   "reason": "Cross-tree comparability. Exactly one talent is TYPED Reaction (Precise Parry) — the same convention the brief's action-type table and the primer's 'White's SEVEN Reactions' anchor use. The three-claimants-for-one-slot insight (Precise Parry, Vinestance, Ironstance's Reactive Strike, plus Vigilant Stance subsidising Dodge) is preserved verbatim in the note."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "6, unexplained",
+   "to": "6, with the disagreement against the deterministic classifier's 4 stated and named",
+   "reason": "The brief's classifier says 4 for Warrior; the profile said 6 without reconciling. Text supports 6 under the brief's literal definition ('fires when you are hit') — Defensive Position and Formation Drills only pay out on attacks against a Bracing character — but both additionally need a self-spent Brace first, which is presumably the classifier's exclusion. Recorded both readings rather than silently picking one."
+  },
+  {
+   "field": "powerByDepth[depth 0].note",
+   "from": "'five of them immediately usable at L1 with zero resource cost'",
+   "to": "'SIX of them cost-free'",
+   "reason": "MISCOUNT against the Cost fields. Of the seven depth-0 talents only Practiced Kata carries a cost (1 Focus). Flamestance, Vigilant Stance, Shard Training, Stonestance, Cautious Advance and Combat Training are all cost-undefined — six, not five (Shard Training is free but needs GM-granted equipment)."
+  },
+  {
+   "field": "powerByDepth[depth 1-2].note",
+   "from": "no mention of the L6 wall",
+   "to": "added: four of the band's talents are rank-3 gated to L6",
+   "reason": "The profile put this finding only in frontOrBackLoaded. Devastating Blow (depth 1), Wit's End, Vinestance and Wary (depth 2) are all L6, so the band is only half-available before level 6 — that is a powerByDepth fact, not a footnote."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "'FRONT-LOADED, hard.'",
+   "to": "'SPLIT' — front-loaded in durability/utility/action economy, back-loaded in damage, flat in scaling",
+   "reason": "The headline contradicted the profile's own closing caveat. Six talents (including BOTH damage formulas and the AoE payload) are level 6. Durability and action economy are genuinely front-loaded; damage is not."
+  },
+  {
+   "field": "mechanicalKeywords[skill ranks].talents",
+   "from": "'Intimidation gates 2 … Discipline gates 2 … Perception gates 2'",
+   "to": "'Intimidation gates 3 … Discipline gates 3 … Perception gates 3'",
+   "reason": "OFF-BY-ONE, and internally inconsistent with the profile's own intentDrift row, which correctly says (3)/(3)/(3). Intimidation: Flamestance 1+, Feinting Strike 2+, Wit's End 3+. Discipline: Cautious Advance 1+, Formation Drills 2+, Wary 3+. Perception: Windstance 1+, Shattering Blow 2+, Precise Parry 3+."
+  },
+  {
+   "field": "axes[damage_direct].evidence and damageAccounting.verdict",
+   "from": "'Ten talents add HP damage'",
+   "to": "'Eight talents put HP damage on the table under their own text', plus an added Tier-1 caveat",
+   "reason": "Same inflation as countReal. Also added the missing observation that at L1-L5 the tree's entire talent damage is Mighty (+2/Action), Feinting Strike, and two graze riders — the profile scored the axis on a kit that does not exist until level 6."
+  },
+  {
+   "field": "crossTreeHooks[Flamestance anti-synergy]",
+   "from": "generic 'White's formation coordination'",
+   "to": "named leyline/White's Guardian Stance, which requires an ADJACENT ally",
+   "reason": "Sharpened with the verified text found by grep — Flamestance's 'no allies in reach' clause collides directly with White's depth-0 entry, which is a concrete cross-tree finding rather than a gesture."
+  },
+  {
+   "field": "mechanicalKeywords[Maximum Health]",
+   "from": "presented as a Warrior mechanic without caveat",
+   "to": "noted that leyline/Black ships an identically-named, identically-worded Hardy",
+   "reason": "Verified in passing: leyline-Black.md line 106 '## Hardy — Gain +1 maximum HP per level, including previous levels.' Not a claim the profile made, but it is a duplicate talent across two atlases and worth recording."
+  },
+  {
+   "field": "VERIFIED-CORRECT (no change made)",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Claims I attacked and could not break, with the check used: (1) 'leyline/Red Shatter Focus' — leyline-Red.md line 110 is a real talent of that name, and deity/Chaos has a different one, so the citation stands. (2) 'Feinting Strike is the largest single-hit focus strip in the atlas' — grep of all 21 dossiers: Red's Shatter Focus strips 1; Blue, Agent, Leader and Envoy only make RESISTING cost more focus; Black's Puppeteer requires 0 focus rather than causing it. (3) 'Stonestance is the only enemy action tax' — the only 'additional Action' hit in the whole corpus. (4) 'the only Brace tree, Hunter's Backstep is the fourth talent' — exact. (5) 'the only Shard-equipment tree; Shattering Blow is the only armor-charge depleter' — exact. (6) 'Opportunity-range expansion shared only with heroic/Scholar' — exact (Scholar's two are crafting-scoped). (7) 'Vigilant Stance is named as a prerequisite by no other talent' — checked against all 25 prereq lines; true, and the path text's 'unlocks access to the Warrior specialties' is false. (8) 'zero Investiture, zero healing, zero Opportunity spenders' — greps return nothing. (9) Both damage formulas are tier-invariant: max(@tier-2,0) = 0 at tier 1 and 2; max((@tier-2)*2,0) = 0 at tier 1 and 2. (10) Action-type percentages (28/16/36/16/0/4/0) recounted off the 25 rows and match the brief's table exactly. (11) '[Tier][Die] = 2d8 avg 9 at tier 2' matches the primer. (12) Mighty +6 on a 2-Action attack at tier 2 = (1+2)x2, correct. (13) Cost-field count of 7 focus-spenders matches the brief's census exactly. (14) DESIGN-GUIDE-CLAIMS.md does indeed carry no heroic standard."
+  },
+  {
+   "field": "uniqueOwnership[6] (\"COMPLETE INDEPENDENCE FROM INVESTITURE\")",
+   "from": "COMPLETE INDEPENDENCE FROM INVESTITURE. VERIFIED: a grep for 'Investiture' and 'Attunement' across all 25 Warrior talent texts returns ZERO hits. The Warrior is the atlas's only fully non-magical combat engine.",
+   "to": "WITHDRAWN as a uniqueness claim; retained as a gap. Investiture independence is an ATLAS property, not a Warrior one.",
+   "reason": "Lens B (a): searching all 365 talents for 'Investiture' returns 144 hits across 15 trees and ZERO in heroic/Agent, heroic/Envoy, heroic/Leader, heroic/Scholar AND heroic/Warrior. Only heroic/Hunter mentions it, once (Sharp Eye: '...spend 1 Investiture...'). Five of the six heroic trees are equally non-magical, exactly as the supplied census states ('every heroic tree 0 regen / 0 costers - heroic runs on Focus, not Investiture'). The claim was false as written."
+  },
+  {
+   "field": "axes[6].score (buff)",
+   "from": "2",
+   "to": "1",
+   "reason": "Lens B (b), score inflation. advantage-ledger.md lines 83-92 give Warrior exactly five entries; one (Cautious Advance) is a CONSUMER of the standard Gain Advantage action, leaving four producers - all self-only, all riders, all on NON-ATTACK skills (Intimidation, Insight, Agility, Shardplate), and three of the four mutually exclusive stances. Under the binary-advantage rule a Warrior gains one advantage on one non-attack skill in a round. No Warrior talent advantages an attack roll and none grants an ally a roll bonus. Compare actual buff trees: leyline/Blue's Anticipate grants an ALLY advantage on a resistance test, leyline/Green's Pack Hunter grants you AND an ally advantage on an attack, leyline/Red's Reckless Gambit grants advantage to any character in range, deity/Order's Lawkeeper's Eye grants 'you and your allies... advantage on attack tests against that character'. Warrior's suite is the rubric's 1 ('a rider on something else')."
+  },
+  {
+   "field": "intentDrift.claims[7] (Vigilant Stance 'unlocks access to the Warrior specialties') and weakTalents[3]",
+   "from": "DRIFTED - flatly untrue in the shipped data. [presented as a Warrior authoring error]",
+   "to": "DRIFTED - untrue in the shipped data, but ATLAS-WIDE, not a Warrior defect.",
+   "reason": "Lens B (d). Checking every heroic tree's Key talent against every prereq line: Agent/Opportunist 0 dependents, Envoy/Rousing Presence 0, Hunter/Seek Quarry 0, Leader/Decisive Command 0, Scholar/Erudition 0, Warrior/Vigilant Stance 0 - and all six trees have exactly 7 depth-0 talents. The 'Key unlocks the specialties' sentence is unmodelled for the whole heroic atlas: one data-model decision, not six independent drifts. It is not evidence about Warrior."
+  },
+  {
+   "field": "crossTreeHooks[0] and intentDrift.claims[4] (Shardbearer)",
+   "from": "A third of the tree is therefore hostage to loot the character may never receive, which no other tree in the atlas does. ... This is the largest external dependency in the tree and nothing else in the atlas does it.",
+   "to": "SIX talents (not eight) sit behind the equipment gate; Stonestance and Mighty are outside it. And three other heroic talents carry GM-granted-asset prerequisites - it is the largest such dependency, not the only one.",
+   "reason": "Two errors. (1) Walking the shipped prereq rows: Stonestance is depth 0 with prereq 'undefined' and Mighty's prereq is 'Stonestance' alone, so neither needs Shard Training - a shardless Warrior keeps the two talents the profile itself ranks best. Behind the gate: Shard Training, Windstance, Shattering Blow, Precise Parry, Bloodstance, Meteoric Leap = 6 of 8 Shardbearer talents. (2) Lens B (a): a prerequisite scan of all 365 finds heroic/Hunter's Animal Bond ('Animal companion'), which gates a four-talent chain (Animal Bond -> Protective Bond -> Feral Connection, plus Hunter's Edge); heroic/Agent's Underworld Contacts ('Patron or follower in criminal underworld'); heroic/Envoy's Instill Confidence ('a companion')."
+  },
+  {
+   "field": "mechanicalKeywords[\"Maximum Health\"] (Hardy)",
+   "from": "Note leyline/Black ships an identically-named, identically-worded Hardy, so this talent is not unique to Warrior.",
+   "to": "An identically-worded Hardy ships in SEVEN trees - leyline/White, leyline/Black, leyline/Green, heroic/Agent, heroic/Hunter, heroic/Leader, heroic/Warrior.",
+   "reason": "Lens B (a): a corpus scan for 'max health'/'maximum health' returns all seven. The prior draft undercounted by five trees; Hardy carries no Warrior identity at all."
+  },
+  {
+   "field": "gaps (new entry) / damageAccounting.damageTalents[Combat Training] / axes[protection,mobility].evidence",
+   "from": "[absent - Combat Training and Surefooted were cited as Warrior strengths]",
+   "to": "THREE OF ITS 25 TALENTS ARE SHARED HEROIC STOCK: Combat Training is byte-identical in heroic/Hunter; Surefooted is byte-identical in heroic/Agent and heroic/Hunter; Hardy in seven trees.",
+   "reason": "Lens B (a). Verbatim comparison: heroic/Hunter's Combat Training reads 'Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.' - identical to Warrior's. Surefooted reads 'Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.' in Agent, Hunter and Warrior. The tree's original content is 22 talents, and two shared ones were being counted as strengths (powerByDepth depth-0 exemplar; protection; mobility)."
+  },
+  {
+   "field": "axes[2].evidence (control) and uniqueOwnership[3] / topThree[2] (Stonestance)",
+   "from": "Enemy action taxation is the primer's highest-value category and a cross-atlas grep confirms this is the only talent in 365 that does it.",
+   "to": "Unique FORM, not unique FUNCTION. The primer's highest-value category is action DENIAL, and Warrior does none of it.",
+   "reason": "Lens B (a)/(e). The 'additional Action' grep genuinely returns only Stonestance, so the taxation form is unique and that stands. But the primer names Stunned/Disoriented/Restrained as the high-value category, and leyline/Black's Hollow Command ('On a success, the target cannot take actions on its next turn') denies ALL actions for 1 Investiture, heroic/Agent's Cheap Shot applies Stunned for 1 focus, and 14 talents across 11 trees apply Disoriented. Warrior does not own the category it was credited with."
+  },
+  {
+   "field": "uniqueOwnership[4] / mechanicalKeywords[\"0 Focus\"] (focus-strip execute)",
+   "from": "leyline/Black's Puppeteer is the only other 0-focus payload... Feinting Strike is the largest single-hit focus strip in the 365 talents.",
+   "to": "Three talents key off a 0-focus target (Wit's End, Puppeteer, and leyline/Black's Predatory Insight); leyline/Black owns the fuller 0-focus ECONOMY while Warrior owns the weapon route and the damage payoff. Feinting Strike is the largest DETERMINISTIC / expected-value strip, not flatly the largest.",
+   "reason": "Lens B (a)+(e). Predatory Insight reads 'Regain 1 focus when any character reaches 0 focus' - a third 0-focus consumer the prior draft missed, and Black also supplies Whispered Doubt (every enemy focus spend costs 1 more) and Coercive Pressure (any focus loss imposes disadvantage), i.e. a four-talent loop against Warrior's two. Separately, Warrior's own Vinestance strips 1d4, whose maximum (4) exceeds Feinting Strike's fixed 3 at Tier 2, so 'largest single-hit' needed the deterministic/expected qualifier."
+  },
+  {
+   "field": "powerByDepth[0].note (depth 0 band)",
+   "from": "Unusually strong and unusually wide - seven entry points",
+   "to": "Strong; the width is NOT unusual - all six heroic trees have exactly 7 depth-0 talents.",
+   "reason": "Lens B (a). Counting depth-0 rows per heroic tree: Agent 7, Envoy 7, Hunter 7, Leader 7, Scholar 7, Warrior 7. Seven entries is the heroic atlas's standard shape, so it cannot be a Warrior finding; the entry QUALITY still is."
+  },
+  {
+   "field": "intentDrift.claims[3] (DUELIST 'political sway')",
+   "from": "PARTIAL - the brutal grace is fully there; the political sway is very nearly absent.",
+   "to": "PARTIAL - and the promise is duplicated by heroic/Leader, whose intent makes the same claim and whose talents keep it.",
+   "reason": "Lens B (d) explicitly asks whether another tree's intent file makes the same promise. INTENT-heroic-Leader.md opens on 'an unquenchable thirst for power and influence', its Politico specialty is 'chase favor and prestige while subtly undermining their enemies', its Champion specialty covers the martial charge, and its recommended skills are Athletics, Deception, Heavy Weaponry, Intimidation, Leadership, Persuasion - Warrior's list plus Deception. Leader ships Rumormonger, Well Supplied, Well Dressed, Imposing Posture and Synchronized Assault to back it; Warrior ships one talent (Practiced Kata)."
+  },
+  {
+   "field": "axes[7].evidence (action_economy)",
+   "from": "[no cross-tree comparison]",
+   "to": "Added the comparative case: Warrior tops the raw count of action-granting talents (5) but loses on quality.",
+   "reason": "Lens B (b). heroic/Agent's Quick Analysis and Trickster's Hand each grant 2 Actions for 2 focus with no geometry condition; heroic/Leader's Synchronized Assault grants an extra Strike Action to 'allies up to your ranks in Leadership'; heroic/Scholar's Turning Point grants 'you and your allies... an Action on your next turns'; heroic/Hunter's Sidestep grants 'an additional reaction to Dodge' - the only talent in the 365 that breaks the primer's hard 1-Reaction cap. Score 3 confirmed, not raised."
+  },
+  {
+   "field": "axes[8].evidence (mobility) and mechanicalKeywords[\"Movement speed\"]",
+   "from": "The real mobility content is Surefooted (permanent +10 movement...)",
+   "to": "Surefooted is shared stock; +10 is the corpus standard and confers no comparative edge.",
+   "reason": "Lens B (a). A corpus scan for movement/speed increases returns exactly four talents: the three identical Surefooted copies (Agent, Hunter, Warrior) and deity/Destruction's Walking Ruin ('Your Speed increases by 10 ft')."
+  },
+  {
+   "field": "axes[0].evidence, axes[1].evidence, damageAccounting.peakDamagePerAction (damage)",
+   "from": "[no formula-table comparison]",
+   "to": "Added the cross-corpus formula comparison supporting 4 for damage_direct and 3 for damage_scaling.",
+   "reason": "Lens B (b) requires a 4 to be defensible against other trees. Reading all 43 damage formulas: every leyline and deity formula is (@tier)d(2*rank+2) = 2d8 (avg 9) at Tier 2 rank 3, so Wit's End's 4d6 (avg 14, Deflect-ignoring, on top of weapon damage) is the largest flat dice bonus in the corpus and only three talents in the game ignore Deflect. That defends 4. The same table defends the scaling penalty: those formulas step 1d6 -> 2d8 (2.6x) at L6 while Warrior's step 0x, making Warrior the only damage tree that sits out the L6 discontinuity."
+  },
+  {
+   "field": "damageAccounting.repeatability / sustainability.roundsOfGoodOptions",
+   "from": "unusually RESOURCE-FREE ... this is unusual and is the tree's real strength",
+   "to": "72% free-cost is high against leyline (36-60%) and deity (0-33%) but NOT unusual in its own atlas - heroic/Hunter is 84% and heroic/Scholar is also 72%.",
+   "reason": "Lens B (b). Cost-field census across all 21 trees. The distinctive claim is narrower and survives: Warrior is resource-free WHILE carrying the heroic atlas's largest damage payloads; Hunter and Scholar buy their freedom with smaller ones."
+  },
+  {
+   "field": "powerByDepth[2].note (depth 3+)",
+   "from": "The tree stops rather than culminating.",
+   "to": "Kept, with the atlas qualifier added: no heroic tree has a designated capstone.",
+   "reason": "Lens B. The deity guide prescribes one 3-Action capstone per deity tree; the action-type table shows every heroic tree has 0-2 3-Action talents and Warrior has none, so the missing culmination is a shared heroic-atlas property rather than a Warrior-only defect."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "[stated the empty-rankGate finding as Warrior-specific]",
+   "to": "Added a lens-B caveat: the empty rankGate column may be atlas-wide, in which case the measurement bug is not Warrior-specific (the finding that six Warrior talents are really L6 holds either way).",
+   "reason": "Lens B (d)/(e) discipline: all 25 Warrior rows have rankGate = \"\" while carrying '<skill> 3+' prose prerequisites, which is a dossier-derivation gap, not necessarily a Warrior authoring gap. Flagged for the cross-tree pass rather than asserted."
+  },
+  {
+   "field": "axes[11].evidence (social_influence), axes[12].evidence (exploration_utility), axes[10].evidence (information), axes[13].evidence (summons), axes[9].evidence (terrain_zone), axes[14].evidence (resource_economy)",
+   "from": "[within-tree evidence only]",
+   "to": "Score unchanged in every case; comparative anchors added.",
+   "reason": "Lens B (c), deflation check on the axes that hide in riders. resource_economy 2 verified against resource-economy.json (Warrior is one of five Opportunity-producing trees and the only one whose range expansion applies to COMBAT rolls - Scholar's two are crafting-scoped, Agent/Envoy/Leader's are social contacts; zero consumers in-tree). information 1 verified - nothing in Warrior reveals intent, HP, position or a hidden fact, unlike deity/Order's Lawkeeper's Eye or deity/Life's Vital Diagnosis. summons 0 verified against the companion/construct scan (Hunter 4, Civilization 6, Death 1, Warrior 0). exploration_utility 2 held with the expertise count (Scholar 8, Agent 5, Warrior 3, all martial). No deflation found."
+  }
+ ]
+}

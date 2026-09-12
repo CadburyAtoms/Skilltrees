@@ -1,0 +1,697 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "leyline/Green",
+ "correctionCount": 42,
+ "profile": {
+  "atlas": "leyline",
+  "tree": "Green",
+  "oneLineIdentity": "The mortal-tier reference for two things at once — deep single-target restoration (six healing modes, and the ONLY removal of Injuries in all 365 talents) and a self-renewing difficult-terrain zone that rebuilds itself free on every Draw Mana — plus a focus-fire 'pack' package that buffs the party rather than clustering enemies, while creating almost no damage of its own. Out-scaled on healing by deity/Life and on zones by deity/Destruction, but unbeaten at both among the eleven leyline+heroic trees the design guide actually benchmarks it against.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 2,
+    "evidence": "One creator and two attack riders. Thorn Field (depth 2, L3, passive) makes your difficult terrain deal HALF [Tier][Die] keen to characters that 'enter or start their turn in it' — the only talent in the tree that creates damage which would not otherwise exist. Coordinated Hunt (depth 2, L3, passive) adds flat bonus damage equal to the number of different attackers, 'maximum = Rank'. Pack Pressure (depth 3, L4, 1 Action + 1 Inv) makes a qualifying Strike 'deal an extra [Tier][Die] damage'. ZERO damage roll formulas across all 25 talents (dossier header: '0 damage, 2 heal'). From L6 the tree CAN reach a chosen target — Sudden Growth ('create difficult terrain within [Size] of a character you can sense') plus Thorn Field delivers half [Tier][Die] keen to anyone you can sense, resolving when they start their turn in it. COMPARATIVE (checker B): Thorn Field is the WEAKEST terrain damage in the system. deity/Death's Bone Garden deals a FULL [Tier][Die] keen on a 10 ft square at L2; deity/Civilization's Bastion a full [Tier][Die] impact plus an Agility test; deity/Destruction's Pyre a full [Tier][Die] energy that spreads every turn; and heroic/Hunter's Deadly Trap — depth 0, level 1, NO resource cost — rolls 2d4 and leaves the target Immobilized in newly-created difficult terrain. Green pays two talents and an Investiture stream for less than Hunter's first talent."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 2,
+    "evidence": "Thorn Field and Pack Pressure scale on [Tier][Die] and jump at L6 (1d6 -> 2d8), and Thorn Field repeats every round for free once the zone exists. But Thorn Field is HALF the die, rounded down per the primer: E[floor(1d6/2)] = 1.5 at Tier 1 rank 2, E[floor(2d8/2)] = 4.25 at Tier 2 rank 3. It is keen, so Deflect reduces it. Coordinated Hunt caps at Rank (2 then 3), is flat rather than dice, and does not scale with tier at all. Repeatable, but structurally capped far below a damage tree — and below the deity zone trees, whose terrain scales on the FULL die and (Destruction) grows in area every round as well."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Three control actives, all CONTESTED and all Investiture-costed: Grasping Vines (depth 1, L2, 1 Action + 1 Inv) 'test Green vs. Physical defense... On a success, the target becomes Restrained', maintained only by spending 1 Investiture at the start of every turn; Territorial Instinct (Reaction, 1 Inv) 'test Green vs. Survival to reduce its movement to 0' — and it sits in the single Reaction slot behind Mender's Instinct; Drive the Prey (depth 4, L6, 2 Actions + 2 Inv) 'Test Green vs. Survival' for Slowed plus forced movement. Free difficult terrain is NOT scored here (that is terrain_zone; scoring it twice is how the 4 was reached). Net: one excellent condition (Restrained) at L2, two movement-only riders, zero action or reaction denial anywhere in the 25. COMPARATIVE: leyline/Blue fields more movement denial (Ghostly Walls sets movement to 0 for 2 Inv, Redirect Momentum pushes or shortens a move, Absolute Stillness adds disadvantage and no-Reactions to anything at 0 Speed) and is the better control tree overall — but Restrained (movement 0 AND disadvantage on everything but escape) is the strongest single condition any leyline movement-denier applies, and Green gets it at level 2."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "Almost nothing numeric and nothing standalone. Natural Order (2 Actions + 2 Inv) denies enemies 'illusions, magical concealment, or advantage gained from deception' — benefit-denial, not a penalty. No defence reduction, no vulnerability. The tree's only disadvantage-like effect is carried by the Restrained condition Grasping Vines applies ('disadvantage on everything but escape'), and that value is scored under control. COMPARATIVE: the deterministic census shows 14 talents across 9 trees imposing disadvantage, and Green is not a producer by name; leyline/Blue alone carries five. Green does not compete on this axis at all."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Four narrow pieces, none of them damage reduction: Hardy ('+1 maximum health per level, including previous levels' — +6 max HP at L6, +10 at L10), Collected ('Increase your Cognitive and Spiritual defenses by 2'), Packmate's Warning (Reaction, +2 defence to an ally only against 'an attack they can't see'), Vital Surge (Temp HP equal to HALF [Tier][Die], only riding on a heal to someone below half health). No resistance, no shields, no interception, no redirection, no flat damage reduction. COMPARATIVE: two of those four are not Green talents in any meaningful sense — Hardy appears verbatim in SEVEN trees (White, Black, Green, Agent, Hunter, Leader, Warrior) and Collected in FIVE (Blue, Green, Agent, Envoy, Scholar). Strip the shared stat-sticks and Green's protection is one narrow Reaction and a temp-HP rider. Green mitigates nothing — it repairs afterwards."
+   },
+   {
+    "axis": "healing",
+    "score": 5,
+    "evidence": "The defining pillar: six of the eight Restoration nodes heal, two with machine-readable heal formulas. Verdant Mend (L1, '[Tier][Die] + your Green modifier', formula-confirmed), Mender's Instinct (Reaction auto-triage when an ally 'drops to half health or below', [Tier][Die], formula-confirmed), Resurgent Growth (a second tick of 'your tier + your Green modifier' next turn), Natural Recovery (Special, Opportunity: removes Afflicted, Disoriented, Stunned or Weakened from the heal target), Vital Surge (Temp HP rider), and Reknit Form — 2 Investiture for a temporary injury, 3 for a permanent one. COMPARATIVE, and this is the correction: Green is NOT alone at 5. deity/Life spends SEVEN of its nine talents on healing and beats Green per talent almost everywhere — Life Surge heals [Tier][Die] + Awareness at Attunement Range, may self-target, and converts overheal into temp HP, all at L1, against Green's touch-range Verdant Mend; Surgical Precision heals [Tier][Die] x 2 AND removes a condition in one 1-Investiture talent, which Green needs Verdant Mend + Natural Recovery + an Opportunity to approximate; Primal Regeneration and Apex Form grant scene-long regeneration Green has no answer to; Prognosis even returns 1 Investiture per round. Green holds the 5 on three grounds: it fields more distinct healing MODES than any other tree (direct, reactive-on-threshold, delayed second tick, condition scrub, temp HP, Injury), it holds the system's only Injury removal, and deity/Life is a two-colour rank-2+ gated nine-talent Radiant-tier module that the primer says is INTENDED to out-power leyline per talent. Among the eleven leyline+heroic trees the guide actually benchmarks Green against, nothing is close: White heals shallowly by design and heroic/Scholar's Field Medicine line only adds ranks to a recovery die."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "Three genuinely additive buffs, and two of the three are late. Pack Sense (Special, 1 Inv): an ally 'add[s] your Green modifier to the result' of an attack test against a target in your difficult terrain — a flat additive granted to another character. Its prereq is Survival 3+, so it is a LEVEL 6 talent, not the L3 the dossier prints. Coordinated Hunt (L3, free) pays every focus-firing attacker. Pack Pressure (L4, 1 Action + 1 Inv) gives +[Tier][Die] to Strikes by you and every ally adjacent to the same character. The other five buff talents (Pack Hunter, Scent the Weak, Apex Predator, Predator's Instinct, Primal Awareness) all produce ADVANTAGE, which is binary and non-stacking, so they are worth roughly one unit between them in any given round. COMPARATIVE: leyline/White out-buffs Green and is the reason this is a 3 and not a 4 — Shared Conviction adds the White modifier to a FAILING ally test (any test, retroactively, so it is never wasted), Collective Resolve grants Determined to every ally in Attunement Range for an Opportunity + 1 Inv, and Unyielding Accord passively gives allies +1 Cognitive and Spiritual. deity/Knowledge's The Pack pays every ally bonus Vital damage on every attack against the marked target, scaling to 5 Insight. Green's package is real but neither the broadest nor the biggest."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "Pack Pressure lets 'you and each ally within 15 feet... Move up to half their movement rate without provoking Reactive Strikes' — a granted partial movement for the group. Drive the Prey creates Reactive Strike openings for allies, but they still spend their own single Reaction and focus, so it enables rather than grants. Seven Specials (Pack Hunter, Scent the Weak, Natural Recovery, Pack Sense, Spreading Roots, Sudden Growth, Vital Surge) ride existing actions, which is action-efficient. But zero Free Actions, zero extra actions, zero extra reactions — and three Reactions compete for the single Reaction per round. COMPARATIVE: Green owns nothing here. Its one granted group move is duplicated by leyline/White's Ordered Advance ('allies within 10 ft may move half their Speed without provoking Reactions') and by leyline/Blue's Phantom Step (an ally moving may go an extra [Size] without provoking). And Blue's Forewarned literally grants a SECOND Reaction — 'you gain 1 Reaction' — free, passive, at depth 0 and level 1, which is the thing Green most needs and cannot supply for itself given three competing Reactions."
+   },
+   {
+    "axis": "mobility",
+    "score": 1,
+    "evidence": "Exactly one talent: Pack Pressure's half-Move for you and allies within 15 ft without provoking — and that effect is not even Green's own, appearing in near-identical wording as leyline/White's Ordered Advance. Nothing else moves the Green character. No teleport, no speed increase (contrast deity/Destruction's Walking Ruin, which adds 10 ft of Speed as a rider on its terrain generator, and the heroic Surefooted's +10) and — a real own-goal — no way to ignore your own difficult terrain, which the tree generates on every Draw Mana. heroic/Warrior's Cautious Advance ignores difficult terrain at depth 0; Green cannot."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 4,
+    "evidence": "DOWNGRADED FROM 5 BY THE COMPARATIVE PASS. Green's subsystem is complete and genuinely its own: Green Leyline Attunement creates difficult terrain within [Size] on EVERY Draw Mana, free, always active, granted with the path; Spreading Roots (Special, 1 Inv) expands it [Size]; Sudden Growth (Special, Opportunity + 1 Inv, L6) places it 'within [Size] of a character you can sense'; Thorn Field converts it into a damage zone; Pack Sense and Apex Predator are payoffs for the zone existing. Six of 25 talents (24%) touch the difficult-terrain object. But two deity trees run deeper and harder zone subsystems, so Green is not the reference implementation. deity/Destruction: SIX of nine talents are zone talents — Pyre (dangerous terrain that spreads to an adjacent square every turn), Walking Ruin (Passive, no cost: 'every space you move through becomes dangerous terrain'), Combustion Chain (every zone spreads 5 ft when a character dies in one), Cascading Failure (zones MERGE into one contiguous hazard), Fault Line (a 60 ft line of dangerous terrain), The Unmooring (all zones merge). deity/Fate: SEVEN of nine touch Ordained Ground or Snares, and its squares grant +1 to all defences, temp HP, advantage-denial and Aid at 30 ft. Green's base product, meanwhile, is difficult terrain — a movement tax that does literally nothing until Thorn Field arrives at L3, and then at half a Deflect-reduced die. 4 = 'a strength; one of the better options in the game', which is exactly right: Green is the zone tree of the leyline atlas and the only tree whose zone regenerates as a side effect of the resource action every leyline character already takes."
+   },
+   {
+    "axis": "information",
+    "score": 3,
+    "evidence": "Four talents, two of which hand over a hidden fact with no test. Scent the Weak: 'You know which creature within Attunement Range has the lowest HP.' Predator's Instinct: 'You can sense fear in characters within 30 feet without testing', plus advantage tracking the injured. Primal Awareness: cannot be Surprised outdoors, advantage on Perception to detect or track. Natural Order strips magical concealment for the scene. COMPARATIVE: on a census of talents that say 'you know / you learn / sense without testing', Green ties heroic/Agent for the most in the system (3 each). But the axis's higher registers belong elsewhere and Green reaches none of them — leyline/Blue owns foreknowledge and prediction (Forewarned declares a character and an action and pays a Reaction if right; Read Intent has the GM reveal the intended action; Probable Outcome re-chooses fast/slow after everyone declares), deity/Fate's Read the Threads reveals both the intended action AND the planned movement, and deity/Knowledge's Studied Mark reads exact HP, conditions and two defences. Green's information is battlefield and wilderness sensing only: no foreknowledge, no prediction, no reading intent. A real competency, not a strength."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Read all 25 talents. Nothing persuades, commands, deceives, intimidates, or provides out-of-combat leverage over people. Predator's Instinct SENSES fear (detection, not influence); Natural Order DENIES advantage gained from deception (defence, not influence). Green has no social surface at all — one of only two leyline trees with nothing on this axis, against Blue's four social talents and heroic/Envoy's whole identity."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 3,
+    "evidence": "Primal Awareness ('can't be Surprised while outdoors', advantage on Perception to detect or track) and Predator's Instinct (track the injured, sense fear) are wilderness/travel tools. Reknit Form removing a PERMANENT injury for 3 Investiture is a campaign-level downtime capability nothing else in the SYSTEM provides. Verdant Mend plus Natural Recovery is out-of-combat healing and condition scrubbing. Natural Order is a scene-long anti-illusion field. COMPARATIVE: heroic/Hunter and heroic/Scholar are the exploration trees and both are broader — Hunter's Tracker material carries an animal companion, concealed traps and provisioning; Scholar carries crafting, fabrials, Lore and rest-time care (Ongoing Care removes a condition caused by an injury during a rest, the nearest thing in the system to Reknit Form). Green is solid but narrow: no crafting, no travel speed, no survival supply, no environmental problem-solving beyond terrain."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Read all 25. No companion, construct, minion, spirit, animal or animated ally anywhere. The 'pack' language is entirely metaphor — every pack talent (Pack Hunter, Coordinated Hunt, Pack Sense, Pack Pressure, Packmate's Warning) requires REAL party members and produces nothing on its own. Worth stating comparatively because the trees Green shares flavour with DO summon: heroic/Hunter has an animal companion (Feral Connection), deity/Civilization builds Combat Constructs, deity/Death raises servants from Harvested Remains. Green's wild-and-pack fantasy is the one that never puts a creature on the board."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "Read all 25 looking for 'regain', 'recover', or any gain of Investiture/focus/Opportunity. Nothing — matching the deterministic census (Green 0 regen / 13 Investiture costers, and zero Focus interaction of any kind). Worse, it CONSUMES Opportunity in two places (Natural Recovery, Sudden Growth) with no in-tree producer. Green Leyline Attunement rides Draw Mana but converts the Action into terrain, not into resource. COMPARATIVE: Investiture regen exists in only 9 talents across 7 trees, so a 0 is common — but Green is the tree that most needs it, because Grasping Vines' per-turn upkeep alone eats a Tier-1 character's entire Draw Mana income, and because the two trees that share Green's colours DO have it (deity/Knowledge's Accumulate and deity/Life's Prognosis each return 1 Investiture per round). Within leyline, Black and Red have 2 regen talents each; White, Blue and Green have none."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Thorn Field",
+     "dice": "half [Tier][Die] keen — E[floor(1d6/2)] = 1.5 at T1 rank 2; E[floor(2d8/2)] = 4.25 at T2 rank 3",
+     "action": "Passive (∞) — no action once the terrain exists",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "ZONE damage, and the ONLY talent in the tree that creates damage which would not otherwise exist. Requires your difficult terrain (free via Draw Mana) AND a character to 'enter or start their turn in it'. Keen, so Deflect reduces it. COMPARATIVE: this is the weakest terrain damage in the system — deity/Death's Bone Garden deals a FULL [Tier][Die] keen on a 10 ft square at L2, deity/Destruction's Pyre a full [Tier][Die] energy that spreads, deity/Civilization's Bastion a full [Tier][Die] impact plus a knock-down test. Green's compensation is that its zone costs nothing and refreshes forever."
+    },
+    {
+     "name": "Coordinated Hunt",
+     "dice": "flat bonus damage = number of different attackers that targeted it this round, 'maximum = Rank' (2 at T1, 3 at T2)",
+     "action": "Passive (∞) — rider on attacks",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "AMPLIFIER, not a creator, and doubly conditional: it needs you AND at least one ally to both make attack tests against the same character in the same round, and it only pays out on attacks that already resolve. Flat, not dice; does not scale with tier, only with the rank cap and the number of attackers. COMPARATIVE: deity/Knowledge's The Pack does the same job far harder — bonus VITAL damage (ignores Deflect) equal to your Insight count, up to 5, to every ally in Attunement Range on every attack against the marked creature, with no adjacency requirement."
+    },
+    {
+     "name": "Pack Pressure",
+     "dice": "+[Tier][Die] (1d6 at T1, 2d8 at T2) on each qualifying Strike",
+     "action": "1 Action + 1 Investiture",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "AMPLIFIER on Strikes by you or an ally ADJACENT TO THE SAME CHARACTER, until the start of your next turn. Largest raw number in the tree, but most of it is damage the PARTY deals; a Green mage with no melee allies gets only their own Strike out of it. Its group half-Move half is duplicated by leyline/White's Ordered Advance."
+    },
+    {
+     "name": "Sudden Growth",
+     "dice": "no damage of its own — it is the DELIVERY VECTOR for Thorn Field's half [Tier][Die] keen against a chosen target",
+     "action": "Special + Opportunity + 1 Investiture",
+     "depth": 3,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "'Create difficult terrain within [Size] of a character you can sense.' With Thorn Field owned, this puts the damage zone onto a target of your choosing at any range you can sense — that enemy takes half [Tier][Die] keen when it starts its next turn in it. Excluded from countReal because it creates no damage itself, but it refutes any flat claim that Green can never damage a chosen target."
+    },
+    {
+     "name": "Drive the Prey",
+     "dice": "no damage of its own — 'Allies may make Reactive Strikes against it if it moves within their reach'",
+     "action": "2 Actions + 2 Investiture",
+     "depth": 4,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "ENABLER, not damage this tree deals. Listed so the accounting is exhaustive; excluded from countReal. Allies must have their single Reaction and 1 focus free, and reach on the forced path."
+    }
+   ],
+   "countReal": 3,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 2,
+   "earliestDamageLevel": 3,
+   "peakDamagePerAction": "Levels 1-5: zero damage against a chosen target, at every depth. From L6, Sudden Growth (Special + Opportunity + 1 Inv) plus Thorn Field delivers half [Tier][Die] keen (~4.25 avg) onto anything you can sense, resolving when that character starts its turn. Best sustained figure: one Action of Draw Mana refreshes the Thorn Field zone, which then ticks ~0.5 [Tier][Die] keen per enemy per round for free — with three enemies clustered in it, ~1.5 [Tier][Die] per round off a single Action, but entirely dependent on enemies choosing to stand in terrain that is difficult for them. Best single-Action swing: Pack Pressure at 1 Action + 1 Inv adds +[Tier][Die] (2d8 at Tier 2) to every Strike by the Green mage and each adjacent ally until their next turn — potentially 3-4x [Tier][Die] in a round, but that is party damage, not Green's.",
+   "repeatability": "Structurally unlimited and action-free at the low end: Thorn Field is a passive on a persistent zone and Coordinated Hunt is a passive rider, so both fire every round at zero cost forever. The action-costing layer (Pack Pressure 1 Inv, Spreading Roots 1 Inv, Sudden Growth 1 Inv + Opportunity) throttles at exactly one 1-Investiture play per Draw Mana at Tier 1 and two at Tier 2, because the tree generates no Investiture.",
+   "verdict": "Green is a NON-DAMAGE tree wearing one damage zone and two attack riders. Zero of 25 talents carry a damage roll formula (both formulas in the tree are type=heal). Of the three offensive talents the census counts, exactly ONE — Thorn Field — creates damage that would not otherwise exist; Coordinated Hunt and Pack Pressure are amplifiers that only pay out on an attack somebody was already making. Green cannot open a fight with damage, cannot finish one, and at depth 0-1 (levels 1-2) deals none whatsoever. From L6, Sudden Growth + Thorn Field is a genuine (if delayed by a round) way to put damage on a chosen target at sensing range. COMPARATIVE FRAME: each of Green's three damage pieces is out-done by a single talent elsewhere — Thorn Field by deity/Death's Bone Garden, Coordinated Hunt by deity/Knowledge's The Pack, and the whole terrain-damage-plus-lockdown package by heroic/Hunter's Deadly Trap at depth 0 and level 1 for no resource at all. FALSE POSITIVES: exactly ZERO talents mention damage without dealing it, which is itself the finding — it means the tree contains no damage reduction, resistance, or mitigation of any kind either. Green's only answer to incoming damage is to heal it afterwards."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 (4 talents)",
+    "rating": 3,
+    "exemplars": "Verdant Mend, Green Leyline Attunement, Pack Hunter, Primal Awareness",
+    "note": "A genuinely useful L1: Verdant Mend is a full [Tier][Die] + Green-mod heal for 1 Action / 1 Inv, and the Attunement rider hands out free difficult terrain on every Draw Mana with no talent spend at all. Dragged down by Pack Hunter (1 Investiture for a binary advantage, gated on the mage walking into melee adjacency) and Primal Awareness (narrow, GM-dependent, and filed under Territory despite being pure Instinct flavour). Comparative check on the entry band: deity/Life's Life Surge out-heals Verdant Mend on every axis (Attunement Range instead of touch, +Awareness instead of +Green mod, self-targetable, overheal converts to temp HP) — but it sits behind a two-colour rank-2+ gate, so at actual level 1 Verdant Mend is the best heal available in the game."
+   },
+   {
+    "band": "depth 1-2 (12 talents)",
+    "rating": 4,
+    "exemplars": "Grasping Vines, Thorn Field, Mender's Instinct, Coordinated Hunt, Scent the Weak; Natural Recovery and Pack Sense sit in this band but are LEVEL 6 talents",
+    "note": "The tree's peak. Grasping Vines puts Restrained — the best condition category in a 3-Action economy, and the strongest condition any leyline movement-denier applies — on the board at L2 for 1 Action + 1 Inv (on a contested Green vs. Physical test, with 1 Inv/turn upkeep); Thorn Field turns the free Attunement terrain into a permanent damage engine at L3; Mender's Instinct automates triage at L2 and is the ONLY Reaction in all 365 talents that heals on a threshold. BUT the dossier's 'earliest L3' for Natural Recovery (prereq Medicine 3+) and Pack Sense (prereq Survival 3+) is wrong: the skill-rank cap is 2 until level 6, so BOTH are level-6 talents. The dossier's rankGate column only tracks the COLOUR skill, which is why it under-reports these two by three levels."
+   },
+   {
+    "band": "depth 3+ (9 talents)",
+    "rating": 3,
+    "exemplars": "Reknit Form, Pack Pressure, Sudden Growth, Vital Surge, Apex Predator (good-to-fair); Collected, Packmate's Warning, Natural Order, Drive the Prey (weak)",
+    "note": "Uneven and expensive. Reknit Form is a true capstone (the only Injury removal in the SYSTEM, not merely the atlas), Pack Pressure is the tree's biggest number, and Sudden Growth is the only zone placement anywhere keyed to 'a character you can sense'. Apex Predator's text is 'gain an advantage on ALL Physical tests' for as long as three enemies stand in your terrain — a standing state rather than a one-shot, so it does not simply reproduce the Gain Advantage action. The genuinely weak end is Collected (an inert stat stick that appears verbatim in FIVE trees and carries no Green identity by construction), Packmate's Warning (narrowest trigger in the tree, in the contested Reaction slot), and the two 2-Action + 2-Investiture talents (Natural Order, Drive the Prey), the latter of which is worse than depth-1 Grasping Vines."
+   }
+  ],
+  "uniqueOwnership": [
+   "GENUINELY UNIQUE, AND UNDERSTATED BY THE PREVIOUS PROFILE: Reknit Form is the only removal of Injuries in ALL 365 TALENTS — not merely in the leyline atlas. Searching all 21 trees for 'injur' returns six hits and only this one removes anything: heroic/Scholar's Ongoing Care removes 'one condition caused by their injury' during a rest (the condition, not the injury), deity/Death's Raise Dead ADDS an injury, and the rest merely reference injured targets. The leyline guide states it as a colour boundary ('Green heals deeply (and removes Injuries); White heals shallowly (and cannot remove Injuries)') — and the design held across the whole system, not just the atlas.",
+   "GENUINELY UNIQUE: Mender's Instinct is the only Reaction in the system that HEALS on a threshold — 'When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them' — with no action on the Green player's turn and no need to notice. The nearest neighbours are different mechanics: leyline/White's Unbreakable Line (Special, 3 Investiture, sets an ally to 1 health instead of 0 — prevention, not healing) and deity/Order's Shoulder the Oath (Reaction, takes half the damage yourself — redirection, not healing).",
+   "GENUINELY UNIQUE, but narrower than claimed: Sudden Growth is the only zone placement in the system keyed to 'a character you can sense' rather than to a square within a stated range. That targeting clause is the exclusive part, NOT hazard-zone-at-range — deity/Death's Bone Garden places difficult terrain plus a FULL [Tier][Die] keen tick on a 10 ft square in Attunement Range for 1 Action, and deity/Destruction's Pyre lays spreading dangerous terrain at 60 ft; both hit harder and neither costs an Opportunity.",
+   "CORRECTED — NOT UNIQUE: 'the only free, always-on persistent-zone generator' is false. deity/Destruction's Walking Ruin is a Passive with a blank Cost field — 'For the scene, every space you move through becomes dangerous terrain' — and its terrain DAMAGES where Green's merely slows. What survives is narrower and still real: Green's is the only zone generator bolted onto the resource action itself, so it refreshes every time a leyline character does the thing they were already going to do, from level 1, with no talent spent — where Walking Ruin costs a talent, sits at depth 1 behind Pyre, and requires you to keep moving.",
+   "CORRECTED — ONE OF TWO: Pack Sense's grant of a flat additive number to an ally's roll ('they add your Green modifier to the result') is shared with leyline/White's Shared Conviction ('When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result'). White's is strictly broader — any test, not just attacks; retroactive after a failure, so it is never wasted on a roll that would have succeeded anyway. Green's is cheaper (1 Investiture, a Special rather than the contested Reaction slot) but conditioned on the target standing in your terrain and gated at Survival 3+, i.e. level 6. Still worth materially more than a fifth advantage source, but not rare.",
+   "CORRECTED — NOT UNIQUE, AND GREEN'S IS THE WORST OF THE THREE: 'condition scrubbing bolted onto healing' also exists as leyline/White's Beacon of Stability (Special, 1 Investiture, depth 2, L3 — 'When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range') and deity/Life's Surgical Precision (1 Investiture, heals [Tier][Die] x 2 AND removes a condition in one talent). White's removes ANY condition, at range, without needing to heal anyone, three levels earlier, and pays in Investiture rather than an Opportunity Green cannot generate. Green's Natural Recovery is limited to four named conditions, requires a Green heal to be happening, requires an Opportunity, and is a level-6 talent via Medicine 3+.",
+   "CORRECTED — NOT UNIQUE: Coordinated Hunt is not 'the only talent that pays the whole party, per attack, for converging on one enemy'. deity/Knowledge — whose gate colours are Red + GREEN, and whose intent file makes the same pack promise — does it twice and harder: Pack Share (1 Investiture, scene) gives every ally in Attunement Range bonus Vital damage equal to your Tier on attacks against the marked creature, and The Pack (2 Investiture, scene, L3) scales that to your Insight count, up to 5. Both use Vital damage, which ignores Deflect, and neither requires adjacency. What survives: Coordinated Hunt is the only FREE, always-on version, the only one in the eleven mortal-tier trees, and the only one that pays for the number of ATTACKERS rather than for a mark the caster placed."
+  ],
+  "gaps": [
+   "Cannot damage a chosen target on your own turn, at any level, and cannot do it at all before level 6. No Green talent makes an attack or a damage test. The one exception: from L6, Sudden Growth places difficult terrain 'within [Size] of a character you can sense', and with Thorn Field owned that target takes half [Tier][Die] keen when it starts its next turn — delayed, small, Deflect-reduced, and costing an Opportunity you cannot generate. Before L6, against a single ranged or flying enemy that never enters your terrain and that no ally is adjacent to, a Green-only character has no offensive option but a mundane Strike.",
+   "No damage mitigation of any kind — zero resistance, zero damage reduction, zero shields, zero interception. Green's entire defensive answer is post-hoc healing plus flat defence numbers (Collected +2 Cog/Spi, Hardy +1 max HP/level), and BOTH of those are shared generic talents (Hardy in 7 trees, Collected in 5) rather than anything Green built. Burst damage that kills an ally outright routes around the whole Restoration specialty.",
+   "Generates no resources. Zero Investiture, Focus or Opportunity production across 25 talents, while 13 spend Investiture and 2 spend Opportunity. Green is a pure resource sink, hard-capped by Draw Mana's Tier-per-Action rate — and unlike Black (Predator's Due, Sanguine Reservoir) and Red, it has no in-colour relief.",
+   "No Focus interaction at all — Green neither spends, generates, strips, nor cares about focus.",
+   "Zero social influence. Any parley, interrogation, court scene, negotiation or reputation problem and the Green player sits on their hands.",
+   "No summons, in the tree whose flavour most invites them. Every 'pack' talent needs live party members; solo, or with a party spread across the battlefield, Pack Hunter, Coordinated Hunt, Pack Sense, Pack Pressure, Packmate's Warning and Drive the Prey's Reactive-Strike half all go dark at once — 6 of 25 talents switched off by party positioning. heroic/Hunter, deity/Civilization and deity/Death all put an actual creature on the board; Green never does.",
+   "No mobility for the caster beyond one half-Move that another tree also has, and no way to ignore your own difficult terrain — which heroic/Warrior's Cautious Advance does at depth 0 — so the tree's core zone equally penalises the melee allies its pack talents depend on being adjacent to enemies.",
+   "No action or reaction denial except through movement. Nothing in the tree applies Stunned, Disoriented or Surprised; Green can take an enemy's movement but never their Action. Restrained's rider does impose disadvantage, which is the tree's only disadvantage-like effect.",
+   "No stealth, no illusion, no concealment of its own (it only strips the enemy's), no reach beyond Attunement Range, and no vertical answer.",
+   "No Plot Die manipulation and no reroll — Green consumes Opportunity twice but has no say in whether one appears. Note the system-wide asymmetry this sits inside: only leyline/Red and heroic/Agent carry Plot Die talents at all.",
+   "A third of the tree is level-6 gated. Eight of 25 talents (Reknit Form, Apex Predator, Sudden Growth, Drive the Prey, Natural Order, Vital Surge, plus Pack Sense and Natural Recovery via Survival 3+ / Medicine 3+) cannot be taken before L6 — two more than the dossier's own earliest-L column shows, because that column applies the rank-3 gate only to the colour skill."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Territory: 'Owning the ground — grasping vines, thorn fields, and spreading roots that turn the battlefield into a snare.'",
+     "delivered": "DELIVERS — fully, and it is the tree's strongest specialty within the mortal-tier trees",
+     "evidence": "Green Leyline Attunement (free difficult terrain on every Draw Mana), Spreading Roots (expand [Size]), Sudden Growth (remote placement), Thorn Field (half [Tier][Die] keen zone damage), Pack Sense and Apex Predator (zone payoffs) — SIX talents touch the difficult-terrain object, not seven. Two named in the promise are NOT terrain talents at all: Grasping Vines and Territorial Instinct never mention difficult terrain (they are territory-flavoured contested control), and the eight-node Territory specialty also holds Primal Awareness, a sensory passive with no terrain content. COMPARATIVE: the same promise is made by deity/Destruction's and deity/Fate's intent files, and both deliver a denser zone subsystem (6 of 9 and 7 of 9 talents respectively) than Green's 6 of 25."
+    },
+    {
+     "claim": "Restoration: 'Deep mending — the only leyline healing that closes Injuries, regrowing allies back into the fight.'",
+     "delivered": "DELIVERS — and the Injury claim is true more broadly than it is written",
+     "evidence": "Reknit Form removes a temporary injury (2 Inv) or a permanent injury (3 Inv), and it is the only Injury removal in all 365 talents, not just the leyline atlas. Supported by Verdant Mend ([Tier][Die] + Green mod, formula-confirmed heal), Mender's Instinct (Reaction heal, formula-confirmed), Resurgent Growth (second tick), Natural Recovery (condition scrub, L6 via Medicine 3+), Vital Surge (temp HP). Two caveats: two of the eight Restoration nodes — Hardy and Collected — do no restoring at all and are generic talents shared with six and four other trees; and 'deep mending' is out-delivered per talent by deity/Life (Life Surge, Surgical Precision, Overgrowth, Primal Regeneration, Apex Form), whose intent file makes the same promise from the Green + Blue gate."
+    },
+    {
+     "claim": "Instinct: 'coordinated hunts, scenting the weak, and warnings that move the whole group as one body.'",
+     "delivered": "PARTIAL",
+     "evidence": "Coordinated Hunt and Scent the Weak exist verbatim and work. But 'warnings that move the whole group as one body' is delivered by exactly ONE talent (Pack Pressure's half-Move for allies within 15 ft) — and even that is not Green's own, appearing near-verbatim as leyline/White's Ordered Advance. Packmate's Warning — the talent whose name promises the warning — moves nobody and only grants +2 defence against an unseen attack. The eight Instinct nodes are Pack Hunter, Predator's Instinct, Coordinated Hunt, Scent the Weak, Pack Pressure, Packmate's Warning, Drive the Prey and Natural Order — of which three (Pack Hunter, Predator's Instinct, Scent the Weak) are advantage producers that, because advantage is binary, largely cancel one another. Note also that the dossier files Primal Awareness under TERRITORY, not Instinct."
+    },
+    {
+     "claim": "COMPARATIVE — the pack promise is not Green's alone: deity/Knowledge's intent file makes it too ('To study a thing is to learn how to kill it, and to share that study with the pack… the whole pack profits from what one hunter learns'), and heroic/Hunter's Tracker specialty claims the wilderness-and-traps half.",
+     "delivered": "DRIFTED — the promise is delivered better by the trees that borrow it",
+     "evidence": "deity/Knowledge is gated on Red 2+/GREEN 2+ and names its talents Pack Share and The Pack; both pay every ally in Attunement Range bonus VITAL damage on every attack against the marked creature (Tier, then Insight count up to 5), which is Coordinated Hunt's job done at range, ignoring Deflect, and scaling. heroic/Hunter's Deadly Trap — depth 0, level 1, no resource cost — rolls 2d4, Immobilizes the target and creates difficult terrain in one talent, which is Grasping Vines plus Thorn Field for free and five levels earlier. Green's Instinct specialty and its terrain-damage theme are therefore shared identity, not owned identity; what Green keeps entirely to itself is the Restoration half."
+    },
+    {
+     "claim": "DESIGN GUIDE key mechanic: 'Difficult terrain + adjacency bonuses reward enemies being together. Green's cluster engine mirrors Black's isolation engine.'",
+     "delivered": "DRIFTED — the sharpest disagreement in this profile, and it is between the two intent sources",
+     "evidence": "The difficult-terrain half is fully built. The 'reward enemies being together' half is not. Exactly ONE talent in 25 keys on multiple ENEMIES (Apex Predator: 'three or more enemies... within your difficult terrain'). Pack Hunter, Coordinated Hunt and Pack Pressure all key on multiple ALLIES adjacent to one enemy — party focus-fire, not enemy clustering. There is no 'an enemy has an ally within N ft' trigger anywhere in Green, so it does not mirror Black's isolation trigger — and Black's side of the mirror IS built (its Attunement rider Weakens enemies with 'no ally within 5 ft', and Unnerving Approach pushes an enemy's ally away specifically to create Isolation). The mirror is one-sided. Reported rather than resolved: the path description says only 'Where Black isolates, Green clusters', which is true if 'clusters' means the party — the two sources disagree about who is being clustered."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'terrain damage' and 'anti-artifice' as Green themes.",
+     "delivered": "PARTIAL — both delivered, each by exactly one talent",
+     "evidence": "Terrain damage = Thorn Field, alone, at HALF [Tier][Die] keen — the weakest terrain damage in the system (Bone Garden, Bastion and Pyre all deal a full die). Anti-artifice = Natural Order (illusions, magical concealment, deception-derived advantage), alone, at 2 Actions + 2 Investiture, with Primal Awareness's anti-Surprise as a thin second. Neither theme has enough talents to be a pillar, and neither is best-in-system."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Costs favor Investiture for healing and terrain, free passives for pack bonuses.'",
+     "delivered": "DELIVERS on the letter, but the guide's own Opportunity rule is broken",
+     "evidence": "13 Investiture-costing talents, and they are the healing and terrain ones as promised (Verdant Mend, Mender's Instinct, Vital Surge, Reknit Form on the heal side; Grasping Vines, Territorial Instinct, Pack Sense, Spreading Roots, Sudden Growth on the terrain side). Two pack bonuses are free passives as promised (Coordinated Hunt, Predator's Instinct), but Pack Hunter and Pack Pressure are pack talents that DO charge 1 Investiture each. However the same guide assigns Opportunity thematically to RED and WHITE, and Green nevertheless spends Opportunity twice — Natural Recovery and Sudden Growth — while generating none: an off-colour cost that makes two talents dependent on the Plot Die."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets: ~35% Passive, 25-30% Special, ~15% Action, ~8% 2-Action, 5-8% Free, 5-8% Reaction, 0% 3-Action.",
+     "delivered": "PARTIAL — hits four targets, misses three",
+     "evidence": "Recounted by hand across all 25 and it matches the deterministic table exactly. Passive 9/25 = 36% (target ~35, HIT: Attunement, Primal Awareness, Predator's Instinct, Resurgent Growth, Coordinated Hunt, Hardy, Thorn Field, Collected, Apex Predator). Special 7/25 = 28% (target 25-30, HIT — counting Scent the Weak's ★). 1 Action 3/25 = 12% (target ~15, near). 2 Actions 3/25 = 12% (target ~8, OVER — Reknit Form, Drive the Prey, Natural Order). Free Action 0/25 (target 5-8%, MISSED entirely). Reaction 3/25 = 12% (target 5-8%, DOUBLE — and this one bites, because the 1-Reaction-per-round cap makes Mender's Instinct, Territorial Instinct and Packmate's Warning compete). 3 Actions 0/25 (target 0%, HIT). Comparative context: leyline/White is the worse offender at seven Reactions and 52% trigger-gated, so Green's Reaction overrun is real but not the atlas's worst."
+    },
+    {
+     "claim": "DESIGN GUIDE: cap descriptions at 20-25 words; add skill-rank gates on 3rd-node-and-beyond talents.",
+     "delivered": "MISSES on length; DELIVERS on gates, but two gates misfire",
+     "evidence": "Machine-counted word by word from the description field: TEN of 25 exceed 25 words — Pack Pressure 45 (not the ~51 previously claimed), Coordinated Hunt 39, Drive the Prey 40, Resurgent Growth 36, Grasping Vines 35, Pack Sense 28, Predator's Instinct 28, Pack Hunter 28, Territorial Instinct 26, Natural Recovery 26. Natural Order is 22 words — inside the target, and a false positive in the earlier profile. On gates: Green 2+/3+, Survival 2+/3+ and Medicine 2+/3+ are properly distributed onto the deeper nodes, but Survival 3+ on Pack Sense and Medicine 3+ on Natural Recovery are SECOND-node talents carrying a level-6 gate, which is what makes the dossier's earliest-L column understate them by three levels."
+    }
+   ],
+   "actuallyIs": "A zone-control and party-restoration support tree. Green owns the ground and repairs the party; the 'pack' half is not an enemy-clustering engine at all but a focus-fire buff package that rewards the PARTY converging on one target, and the design guide's stated mirror-of-Black cluster mechanic does not exist in the talents. Comparatively, the Restoration half is what Green actually owns — the pack half is shared with deity/Knowledge and heroic/Hunter, both of which deliver it harder.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME only — zero production",
+    "talents": "13 of 25 spend it (hand-counted, matches the census's 0 regen / 13 costers): Pack Hunter, Verdant Mend, Mender's Instinct, Grasping Vines (+1/turn upkeep), Territorial Instinct, Pack Sense, Spreading Roots, Sudden Growth, Pack Pressure, Vital Surge, Drive the Prey (2), Natural Order (2), Reknit Form (2-3)"
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "RIDES",
+    "talents": "Green Leyline Attunement bolts the tree's terrain generator onto the Draw Mana action — the only zone generator in the system tied to the resource action rather than to a talent activation"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "CONSUME only — no in-tree producer",
+    "talents": "Natural Recovery, Sudden Growth. System-wide the census is 9 producers / 17 consumers across 5 and 9 trees, and the guide assigns Opportunity to Red and White, so Green's two consumers are off-colour"
+   },
+   {
+    "keyword": "Difficult terrain",
+    "role": "BOTH — the tree's core object",
+    "talents": "PRODUCE: Green Leyline Attunement, Spreading Roots, Sudden Growth. CONSUME: Thorn Field, Pack Sense, Apex Predator, Spreading Roots (trigger). NOT terrain talents despite the Territory specialty: Grasping Vines, Territorial Instinct, Primal Awareness. Cross-tree: difficult terrain is also created by heroic/Hunter (Deadly Trap), deity/Death (Bone Garden) and deity/Civilization (Bastion); dangerous terrain — the damaging kind — belongs to deity/Destruction"
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "SCOPE keyword",
+    "talents": "Green Leyline Attunement, Mender's Instinct, Resurgent Growth, Grasping Vines, Territorial Instinct, Scent the Weak, Natural Order"
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "SCALING notation",
+    "talents": "Verdant Mend, Mender's Instinct, Thorn Field (half), Pack Pressure, Vital Surge (half). Resurgent Growth uses bare 'your tier + your Green modifier', not the die. Green is the only tree that sizes its terrain damage at HALF the die"
+   },
+   {
+    "keyword": "[Size]",
+    "role": "SCALING notation for zone radius",
+    "talents": "Green Leyline Attunement, Spreading Roots, Sudden Growth"
+   },
+   {
+    "keyword": "Green modifier",
+    "role": "CONSUME — skill modifier as an additive bonus",
+    "talents": "Verdant Mend, Resurgent Growth, Pack Sense (granted to an ALLY's attack test result — one of exactly two talents in the system that hand an ally a flat additive number; the other is leyline/White's Shared Conviction)"
+   },
+   {
+    "keyword": "Rank",
+    "role": "CONSUME — used as a cap, not a die",
+    "talents": "Coordinated Hunt ('maximum = Rank')"
+   },
+   {
+    "keyword": "Restrained",
+    "role": "PRODUCE (on a contested test)",
+    "talents": "Grasping Vines — carries the condition's own 'disadvantage on everything but escape', the tree's only disadvantage-like effect, and the strongest condition any leyline movement-denier applies"
+   },
+   {
+    "keyword": "Slowed",
+    "role": "PRODUCE (on a contested test)",
+    "talents": "Drive the Prey"
+   },
+   {
+    "keyword": "Surprised",
+    "role": "DENY (self-immunity, outdoors)",
+    "talents": "Primal Awareness"
+   },
+   {
+    "keyword": "Afflicted / Disoriented / Stunned / Weakened",
+    "role": "REMOVE (none of the four is applied anywhere in Green)",
+    "talents": "Natural Recovery — one per Opportunity spent. Not unique: leyline/White's Beacon of Stability removes ANY condition for 1 Investiture at L3, and deity/Life's Surgical Precision folds a removal into a double heal"
+   },
+   {
+    "keyword": "Injury (temporary and permanent)",
+    "role": "REMOVE, and DETECT",
+    "talents": "REMOVE: Reknit Form — the only source in all 365 talents. DETECT: Predator's Instinct"
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE, and DENY",
+    "talents": "PRODUCE (5, verified against advantage-ledger.md): Pack Hunter (self + ally, next attack test), Primal Awareness (Perception to detect/track), Predator's Instinct (track/locate the injured), Scent the Weak (first test each round vs. the lowest-HP target), Apex Predator (ALL Physical tests while three enemies stand in your terrain — a standing state, not a one-shot). DENY: Natural Order (advantage gained from deception). System-wide advantage is OVER-PRODUCED (45 talents / 13 trees produce, 7 / 5 consume), so a fifth in-tree producer is worth close to nothing"
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCE",
+    "talents": "Vital Surge (half [Tier][Die]) — the smallest temp-HP grant among the 14 talents in 9 trees that produce it (compare deity/Sovereignty's Sovereign's Favor at a full [Tier][Die] and deity/Power's Investiture of Command at [Tier][Die] to three allies)"
+   },
+   {
+    "keyword": "Health / maximum health",
+    "role": "RESTORE and RAISE",
+    "talents": "Verdant Mend, Mender's Instinct, Resurgent Growth (restore); Hardy (+1 max per level, retroactive — +6 at L6, +10 at L10, and shared with six other trees)"
+   },
+   {
+    "keyword": "Half health threshold",
+    "role": "CONSUME as a trigger",
+    "talents": "Mender's Instinct, Predator's Instinct, Vital Surge"
+   },
+   {
+    "keyword": "Keen damage",
+    "role": "PRODUCE (Deflect-reduced type)",
+    "talents": "Thorn Field — the tree's only named damage type, and Deflect-reduced where the comparable deity payloads (Knowledge's Insight damage, Death's curses) use Deflect-ignoring Vital"
+   },
+   {
+    "keyword": "Reactive Strike",
+    "role": "GRANT to allies, and AVOID",
+    "talents": "GRANT: Drive the Prey. AVOID: Pack Pressure (group half-Move without provoking) — the same avoidance leyline/White's Ordered Advance and leyline/Blue's Phantom Step provide"
+   },
+   {
+    "keyword": "Disengage",
+    "role": "CONSUME as a trigger",
+    "talents": "Territorial Instinct"
+   },
+   {
+    "keyword": "Adjacency",
+    "role": "CONSUME as a trigger — ALLY adjacency, never enemy clustering",
+    "talents": "Pack Hunter, Coordinated Hunt, Pack Pressure"
+   },
+   {
+    "keyword": "Contested test (test Green vs. X)",
+    "role": "GATE on every control effect",
+    "talents": "Grasping Vines (vs. Physical), Territorial Instinct (vs. Survival), Drive the Prey (vs. Survival) — all three of Green's control talents can simply fail"
+   },
+   {
+    "keyword": "Cognitive / Spiritual defense",
+    "role": "RAISE (self)",
+    "talents": "Collected (+2 each) — a generic talent that appears verbatim in five trees"
+   },
+   {
+    "keyword": "Illusions / magical concealment",
+    "role": "DENY",
+    "talents": "Natural Order — and the illusions it denies are largely leyline/Blue's (Phantom Double, Holographic Illusion, Living Image, Phantom Barricade), making it the clearest anti-colour talent in the atlas"
+   },
+   {
+    "keyword": "Fear",
+    "role": "DETECT",
+    "talents": "Predator's Instinct ('sense fear in characters within 30 feet without testing')"
+   },
+   {
+    "keyword": "Movement rate",
+    "role": "GRANT (partial) and REDUCE TO 0",
+    "talents": "GRANT: Pack Pressure (half Move to self + allies within 15 ft). REDUCE TO 0: Territorial Instinct; also Restrained via Grasping Vines"
+   },
+   {
+    "keyword": "Skill-rank prerequisites",
+    "role": "GATE",
+    "talents": "Medicine 2+ (Verdant Mend), Medicine 3+ (Natural Recovery -> L6); Survival 2+ (Predator's Instinct, Territorial Instinct), Survival 3+ (Pack Sense -> L6, Drive the Prey); Green 1+/2+/3+ throughout. Primal Awareness's prereq is Green 1+ — it merely mentions Perception tests, it does not gate on the skill"
+   }
+  ],
+  "crossTreeHooks": [
+   "EIGHT of 25 talents strictly require another character to exist, be positioned, or act: Pack Hunter, Coordinated Hunt, Pack Sense, Pack Pressure, Packmate's Warning, Mender's Instinct, Resurgent Growth, and Drive the Prey's Reactive-Strike half. (Verdant Mend, Vital Surge and Natural Recovery all say 'a character' or 'the target' and work on yourself.) Solo, the six pack talents go dark at once.",
+   "deity/Knowledge (Gnothis) is Green's designed upgrade path and its designed rival: it gates on Red 2+/Green 2+, Pack Share requires Green 3+, and its Pack Share / The Pack do Coordinated Hunt's job in Deflect-ignoring Vital damage at Attunement Range with no adjacency requirement. A Green character who wants the pack fantasy fully realised has to leave the tree to get it — and Knowledge's Accumulate returns 1 Investiture per round, the exact thing Green's economy lacks.",
+   "Natural Recovery and Sudden Growth CONSUME Opportunity and Green generates none — they want a partner path that produces Opportunity (the design guide assigns Opportunity to Red and White) or they idle waiting on the Plot Die.",
+   "Natural Recovery's value is set entirely outside Green: it scrubs Afflicted, Disoriented, Stunned and Weakened, none of which Green applies. Its worth depends on the enemy roster — and leyline/White's Beacon of Stability does the same job better, so a White partner makes it redundant rather than complementary.",
+   "The five advantage producers (Primal Awareness, Predator's Instinct, Pack Hunter, Scent the Weak, Apex Predator) are ANTI-synergistic with any other advantage-granting path — Blue's Attunement rider, Red's Attunement rider, White's coordination. The system produces advantage in 45 talents across 13 trees and consumes it in 7, so overlap is the default case, not the exception. They also partly cancel INSIDE the tree: while Apex Predator is live it already covers every Physical test that Pack Hunter and Scent the Weak would buy.",
+   "Thorn Field deals KEEN damage, which Deflect reduces. Any path that strips Deflect, applies vulnerability, or pins enemies in place multiplies Green's only real damage source — and any path that supplies Vital or Spirit damage (Black, Knowledge, Power) simply does the job Green cannot.",
+   "Pack Sense hands a numeric to-hit bonus to an ALLY's attack test, so its value scales with the party's damage output rather than Green's — it is a force multiplier for whoever the real striker is. Its only peer, leyline/White's Shared Conviction, works on any test, so a White+Green party has the failing-roll case covered twice over.",
+   "Coordinated Hunt and Pack Pressure both pay out in proportion to how many party members can reach and attack ONE target — they reward a melee-heavy party and pay almost nothing to a ranged/skirmish party.",
+   "Green's own difficult terrain penalises the party's melee allies, whom Green's pack talents simultaneously need adjacent to enemies. The missing partner is any path that ignores difficult terrain (heroic/Warrior's Cautious Advance) or grants ally movement (leyline/White's Ordered Advance, leyline/Blue's Phantom Step); Green cannot supply it itself.",
+   "Reknit Form's Injury removal is only valuable if something in the campaign applies Injuries — its worth is set by the GM and by whichever adversary deals them. Nothing else in 365 talents competes for the slot, so the ceiling on this ability is entirely a campaign-design question.",
+   "Grasping Vines' 1-Investiture-per-turn upkeep alone consumes a Tier-1 character's entire Draw Mana income, so any path that generates Investiture converts directly and near-linearly into Green uptime. The system has only 9 such talents in 7 trees — leyline/Black's Predator's Due and Sanguine Reservoir, deity/Knowledge's Accumulate and deity/Life's Prognosis are the ones a Green character can realistically reach."
+  ],
+  "topThree": [
+   "Reknit Form — the only removal of temporary AND permanent Injuries in ALL 365 TALENTS, not merely in the leyline atlas, and a capability the design guide reserves to Green by name. Campaign-level rather than combat-level, and nothing else replicates it at any price. 2 Actions, 2-3 Investiture, level 6. Promoted to first place by the comparative pass: it is the only thing in the tree that no other tree can do at all.",
+   "Grasping Vines — depth 1, level 2, 1 Action + 1 Investiture, 'test Green vs. Physical defense... On a success, the target becomes Restrained', maintainable indefinitely. Movement/action denial is the most valuable category in a 3-Action economy, and Restrained is the strongest condition any leyline movement-denier applies (Blue's Ghostly Walls sets movement to 0 for 2 Investiture but adds no disadvantage until Absolute Stillness, a depth-5 talent). Two caveats: it is a contested test that can fail outright, and 'Spend 1 Investiture at the start of your turn to maintain the vines' costs a Tier-1 character their entire Draw Mana income every round it stays up.",
+   "Mender's Instinct — the only Reaction in the system that heals on a threshold: an ally crosses half health and [Tier][Die] arrives without the Green player spending an action or even noticing. Formula-confirmed in the authored overlay. Promoted over Thorn Field on the comparative pass, because Thorn Field's half-die is the weakest terrain damage in the system while this has no peer at all — White's Unbreakable Line prevents a drop rather than healing, and Order's Shoulder the Oath redirects damage rather than restoring it."
+  ],
+  "bottomThree": [
+   "Packmate's Warning — a Reaction competing for the hard 1-per-round cap against Mender's Instinct and Territorial Instinct plus the universal Dodge/Aid/Reactive Strike, triggering only when 'an ally within 10 ft is targeted by an attack they can't see', for +2 defence. The narrowest trigger in the tree, on its most contested action type; Mender's Instinct wins that slot almost every round.",
+   "Collected — an inert +2 Cognitive/Spiritual stat stick at depth 3 that is not a Green talent in any meaningful sense: the identical talent appears in leyline/Blue, heroic/Agent, heroic/Envoy and heroic/Scholar. It interacts with nothing else in Green, scales with nothing, and at that depth it competes with Reknit Form and Pack Pressure and loses.",
+   "Pack Hunter — 1 Investiture (a real resource in a tree that generates none) for a binary advantage on one attack each for you and one ally, and only after the mage spends movement getting adjacent to an enemy an ally is already adjacent to. Redundant with Scent the Weak and, from L6, wholly subsumed by Apex Predator while that is live, so a Green character owning several of them frequently pays 1 Investiture for literally zero. (Primal Awareness, previously listed here, is displaced: it is thin and GM-dependent but at least free, whereas Collected costs a depth-3 pick for nothing Green-specific.)"
+  ],
+  "weakTalents": [
+   {
+    "name": "Packmate's Warning",
+    "reason": "Narrowest trigger in the tree on its most contested action type — a Reaction for +2 defence, only against an attack an ally within 10 ft 'can't see', competing for the single Reaction slot with Mender's Instinct's auto-triage heal."
+   },
+   {
+    "name": "Collected",
+    "reason": "A flat, passive, inert +2 Cognitive and Spiritual defence at depth 3, appearing verbatim in FIVE trees (Blue, Green, Agent, Envoy, Scholar). It is a system-wide filler talent, not Green content: no interaction with any other Green talent, no scaling, and no colour identity by construction."
+   },
+   {
+    "name": "Pack Hunter",
+    "reason": "Overcosted and self-redundant: 1 Investiture for two binary advantages, gated on the mage walking into melee adjacency, in a tree with zero Investiture regeneration and four other advantage producers — in a system where advantage is already over-produced 45 talents to 7 consumers."
+   },
+   {
+    "name": "Primal Awareness",
+    "reason": "Narrow, GM-dependent, partly duplicated by Predator's Instinct, and filed in the Territory specialty despite having no terrain content. The overlap with Predator's Instinct is real but partial: Predator's Instinct covers any test to track the injured, Primal Awareness covers any Perception test to detect or track anything, and only Primal Awareness gives the anti-Surprise clause."
+   },
+   {
+    "name": "Hardy",
+    "reason": "Off-identity rather than null, and not Green's at all — the identical talent appears in SEVEN trees (White, Black, Green, Agent, Hunter, Leader, Warrior). Its text is '+1 maximum health per level, including previous levels', i.e. +6 max HP at level 6 and +10 at level 10, a real ~20-25% effective-HP increase, free and permanent. It belongs on this list for identity drift — a shared stat stick shelved in the Restoration specialty, which does no restoring — not for being worthless."
+   },
+   {
+    "name": "Drive the Prey",
+    "reason": "Overcosted and strictly outclassed by a talent three depths shallower. 2 Actions + 2 Investiture at level 6 buys Slowed plus forced movement on a contested test; Grasping Vines at depth 1 and level 2 buys RESTRAINED (movement 0 AND disadvantage on everything but escape) on a contested test for 1 Action and 1 Investiture. A deep talent should not be worse than the shallow one it grows out of."
+   },
+   {
+    "name": "Natural Order",
+    "reason": "Overcosted and campaign-contingent: 2 Actions plus 2 Investiture — the guide's 'big play' price band — for a scene-long anti-illusion/anti-concealment/anti-deception field. Against an enemy roster with no illusionists it is a dead talent, and in practice the illusions it counters are leyline/Blue's, so its value is set by whether the GM fields a Blue-flavoured opponent. NOT a description-length offender: at 22 words it is inside the guide's 20-25 target."
+   },
+   {
+    "name": "Apex Predator",
+    "reason": "The text is 'gain an advantage on ALL Physical tests' while the condition holds — a standing state, not a one-shot, so it is not merely a reprint of the Gain Advantage action. The real problems are that a support caster makes few Physical tests, that it needs THREE OR MORE enemies simultaneously inside terrain they are penalised for entering, that it is level-6 gated, and that advantage is binary so it deletes the value of Pack Hunter and Scent the Weak while it is live."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED ON IDENTITY, BUT LESS SO THAN THE DOSSIER'S EARLIEST-L COLUMN IMPLIES. The tree's most efficient talent (Grasping Vines, Restrained at level 2 for 1 Action + 1 Inv) and its whole damage engine (Thorn Field, level 3) are legal by depth 2. But EIGHT of 25 talents are level-6 gated once the rank cap is applied to every skill and not just Green — Reknit Form, Apex Predator, Sudden Growth, Drive the Prey, Natural Order, Vital Surge, plus Pack Sense (Survival 3+) and Natural Recovery (Medicine 3+), the last two of which the dossier prints as L3. So the L6 step buys bigger dice AND two genuinely new capabilities: condition scrubbing and the numeric ally-attack buff. Corrected reading: an excellent level 2-4, a real second wave at level 6, and a depth-3+ band that still contains two shared stat sticks and two overpriced 2-Action talents. Comparative note: the L6 discontinuity is a leyline-wide structural property rather than a Green flaw — heroic trees carry no colour rank gate and are fully reachable by ~L4-L5, which is the structural reason a heroic character out-paces a leyline one across levels 3-5.",
+  "sustainability": {
+   "roundsOfGoodOptions": "Tier 1 (levels 1-5): about 4 rounds of full-power play off the starting pool, then a hard floor at 50% uptime. The pool is ~4 Investiture (2 + max(AWA,PRE)) and Draw Mana returns exactly 1 per Action at Tier 1, so after the opening pool a Green character alternates Draw-Mana / spend forever. The load-bearing detail is Grasping Vines' upkeep — 'Spend 1 Investiture at the start of your turn to maintain the vines' — which by itself consumes a Tier-1 character's entire Draw Mana income, leaving the other two Actions of a Slow turn free only for things that cost no Investiture (Strike, Move, Gain Advantage, Aid). What Green cannot do at Tier 1 is hold the vines AND cast a second Investiture talent in the same round. Tier 2 (levels 6-10): Draw Mana returns 2, so vine upkeep plus one 1-Investiture Special per round is sustainable indefinitely, and the 2-Investiture talents (Drive the Prey, Natural Order, Reknit Form) become a once-per-two-rounds play. The saving grace at every tier is the free layer — nine passives, of which Thorn Field's zone tick and Coordinated Hunt's rider keep producing value on rounds where Green does nothing but Draw Mana — so the floor is genuinely non-zero even at an empty pool. Comparative: this floor is the same one White and Blue face (all three are 0 regen against 13-15 costers); Black and Red each have 2 regen talents, and Green's only out-of-tree relief is deity/Knowledge's Accumulate or deity/Life's Prognosis.",
+   "triggerGatedCount": 7,
+   "reactionCount": 3,
+   "resourceCostersOutOfTree": 2,
+   "note": "Reactions: 3 of 25 (12%) — Mender's Instinct, Territorial Instinct, Packmate's Warning — double the design guide's 5-8% target, and the 1-Reaction-per-round cap makes them compete with each other AND with the universal Dodge / Aid / Reactive Strike. In practice Mender's Instinct wins every round it can fire, which leaves Packmate's Warning near-dead. Comparatively this is the second-worst Reaction crowding in the atlas: leyline/White carries SEVEN Reactions and 52% trigger-gated talents, so Green's problem is real but White's is worse — and note that leyline/Blue's Forewarned actually grants an extra Reaction, the relief Green has no access to. TRIGGER-GATED = 7 on the metric's own definition (a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit): Mender's Instinct, Territorial Instinct, Packmate's Warning, Coordinated Hunt, Pack Sense, Spreading Roots and Thorn Field = 28%, exactly what the deterministic action-type table reports for Green, and mid-pack against Black's 24% and White's 52%. Resource costers with no in-tree producer: 2, meaning the two Opportunity consumers (Natural Recovery, Sudden Growth) against zero Opportunity generation — Investiture is excluded because Draw Mana, though not a talent, is the colour's own economy and is free to every leyline character. On the wider reading the number is 14 distinct talents (13 Investiture costers plus Natural Recovery), against zero producers of either resource."
+  }
+ },
+ "corrections": [
+  {
+   "field": "powerByDepth[1].note + frontOrBackLoaded + gaps + axes.buff.evidence",
+   "from": "Pack Sense and Natural Recovery treated as level-3 talents ('Everything Green is famous for is legal by level 3')",
+   "to": "Both are LEVEL 6 talents; eight of 25 Green talents are L6-gated, not six",
+   "reason": "DOSSIER BUG, TEXT WINS. Pack Sense's prereq is 'Survival 3+' and Natural Recovery's is 'Green 2+; Medicine 3+'. SYSTEM-PRIMER: 'Tier 1 = levels 1-5, max skill rank 2; Tier 2 = levels 6-10, max skill rank 3.' The cap applies to EVERY skill, so any '3+' prereq is a level-6 gate. The dossier's earliest-L column applies the rank-3 rule only to the colour skill (it correctly gives L6 to every Green 3+ talent) and prints L3 for these two. This is the third classifier bug the brief predicted."
+  },
+  {
+   "field": "axes.control.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Inflated by double-counting and by stating contested effects as automatic. The evidence for 4 cited 'Green Leyline Attunement generates free difficult terrain... Spreading Roots expands it, Sudden Growth places it remotely' — that is the terrain_zone axis, already scored 5. Stripped of it, control is three talents that ALL require a contested test that can fail ('test Green vs. Physical defense', 'test Green vs. Survival' x2), all cost Investiture in a tree with no Investiture regen, one of them (Territorial Instinct) occupies the single Reaction slot behind Mender's Instinct, and none denies an Action. Rubric 3 = 'a real, usable competency; several talents, at least one good one' — that is exactly Green."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Five of the eight buff talents are advantage producers, which the primer says are binary and non-stacking — the profile concedes this and then scores as if the three additive buffs alone reached 'one of the better options in the game'. Two of those three (Pack Pressure L4, Pack Sense L6-after-correction) are not available for the first three-to-five levels. Three additive buffs, one free, is a 3."
+  },
+  {
+   "field": "axes.damage_scaling.evidence + damageAccounting.damageTalents[0].dice",
+   "from": "Thorn Field 'T2 rank3 = half 2d8, avg 4.5'",
+   "to": "E[floor(2d8/2)] = 4.25",
+   "reason": "SYSTEM-PRIMER: 'half [Die] rounds down.' E[floor(2d8/2)] = (9 - 0.5)/2 = 4.25, not 4.5. (The Tier-1 figure of 1.5 for floor(1d6/2) was correct.)"
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction + gaps[0] + damageAccounting.verdict",
+   "from": "'Own damage against a chosen target: 0 [Tier][Die], at every depth and every level' / 'Cannot damage a chosen target, ever... a single ranged or flying enemy that never enters your terrain'",
+   "to": "True through Tier 1 only; from L6, Sudden Growth + Thorn Field delivers half [Tier][Die] keen to a chosen target at sensing range",
+   "reason": "MISSED DAMAGE PATH. Sudden Growth: 'Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.' Thorn Field: 'Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.' Together they put the damage zone on a target of your choosing regardless of where it stands, resolving at the start of that character's turn. The absolute claim is refuted; the delayed, small, Deflect-reduced, Opportunity-gated character of it is preserved."
+  },
+  {
+   "field": "damageAccounting.damageTalents",
+   "from": "4 entries (Thorn Field, Coordinated Hunt, Pack Pressure, Drive the Prey)",
+   "to": "5 entries — Sudden Growth added as an uncounted delivery vector",
+   "reason": "Exhaustiveness. It creates no damage itself (so it stays out of countReal) but it is the only way Green aims Thorn Field, which the accounting must show."
+  },
+  {
+   "field": "damageAccounting.verdict",
+   "from": "'three damage riders... All three real sources are indirect'",
+   "to": "'one damage zone and two attack riders... exactly ONE creates damage that would not otherwise exist'",
+   "reason": "countReal 3 matches the census's offensive(src)=3, but Coordinated Hunt ('each attack deals bonus damage') and Pack Pressure ('that Strike deals an extra [Tier][Die] damage') are riders on an attack somebody was already making — the brief's own failure mode (a) — so the split is stated explicitly rather than left implied. countReal kept at 3 for cross-tree comparability; countFalsePositiveMitigation 0 re-verified (only three talents in the tree contain the word 'damage' at all, and all three deal it)."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "15",
+   "to": "7",
+   "reason": "MISCOUNT AGAINST THE STATED DEFINITION. The metric is 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit': Mender's Instinct, Territorial Instinct, Packmate's Warning, Coordinated Hunt, Pack Sense, Spreading Roots, Thorn Field = 7 — exactly the deterministic table's Green row (7, 28%). The previous 15 used 'cannot be used at will', which is not comparable across the other twenty profiles, and even that reading yields only 13-14."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "'at levels 2-5 Green can maintain a Restrain OR do anything else, not both'",
+   "to": "Maintaining the vines consumes the whole Investiture income; the other two Actions of a Slow turn remain free for anything that costs no Investiture",
+   "reason": "Arithmetic overstatement. Draw Mana returns 1 Inv per Action at Tier 1 and the upkeep is 1 Inv per turn, so one Action funds the upkeep and TWO Actions remain (Strike, Move, Gain Advantage, Aid, Disengage all cost no Investiture). What is actually blocked is a second Investiture spend in the same round."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "'the free layer: 9 passives plus Thorn Field's zone tick and Coordinated Hunt's rider'",
+   "to": "'nine passives, of which Thorn Field's zone tick and Coordinated Hunt's rider...'",
+   "reason": "Double count. Thorn Field and Coordinated Hunt are two OF the nine passives, not additions to them (hand-counted passives: Attunement, Primal Awareness, Predator's Instinct, Resurgent Growth, Coordinated Hunt, Hardy, Thorn Field, Collected, Apex Predator)."
+  },
+  {
+   "field": "weakTalents[Apex Predator] + bottomThree + powerByDepth[2].note",
+   "from": "'it delivers ONE binary advantage on Physical tests... a rank-gated deep talent should not reproduce a standard action'",
+   "to": "'gain an advantage on ALL Physical tests' is a standing state while the condition holds; criticism re-grounded on the demanding trigger and the caster's low Physical-test volume",
+   "reason": "TEXT-VS-CLAIM. The talent reads 'While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests' — not one test, and not a one-shot. The Gain-Advantage comparison (1 Action, one test) therefore does not hold, and the talent is removed from bottomThree."
+  },
+  {
+   "field": "bottomThree",
+   "from": "Hardy, Apex Predator, Packmate's Warning",
+   "to": "Packmate's Warning, Primal Awareness, Pack Hunter",
+   "reason": "Two of the three placements rested on misreadings. Apex Predator: see above. Hardy: the text is '+1 maximum health per level, INCLUDING PREVIOUS LEVELS', i.e. +6 max HP at L6 and +10 at L10 against a base of 10 + STR — a real ~20-25% effective-HP increase, so 'no scaling' is wrong and it is not a bottom-three talent (it stays in weakTalents for identity drift). Promoted in their place: Primal Awareness (already on the profile's own weak list) and Pack Hunter (1 Investiture, in a zero-regen tree, for a binary advantage that Apex Predator later subsumes entirely)."
+  },
+  {
+   "field": "weakTalents[Natural Order]",
+   "from": "'2 Actions plus 2 Investiture... ~30 words'",
+   "to": "Same cost criticism, but explicitly NOT a length offender — 22 words",
+   "reason": "WORD-COUNT FALSE POSITIVE. Counted verbatim: 'Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.' = 22 words, inside the guide's 20-25 target."
+  },
+  {
+   "field": "intentDrift.claims[description length]",
+   "from": "'Roughly seven of 25 run well past 25 words' (list including Natural Order)",
+   "to": "TEN of 25 exceed 25 words; Natural Order removed and Pack Hunter (28), Pack Sense (28), Natural Recovery (26), Territorial Instinct (26) added",
+   "reason": "Recounted every description word by word. The tree misses the length target harder than reported, and the one talent accused loudest was inside it."
+  },
+  {
+   "field": "intentDrift.claims[Territory]",
+   "from": "'Seven of 25 talents build and cash the zone' (listing Grasping Vines and Territorial Instinct)",
+   "to": "SIX talents touch the difficult-terrain object; Grasping Vines and Territorial Instinct do not, Pack Sense does",
+   "reason": "TEXT-VS-CLAIM. Grasping Vines ('the target becomes Restrained') and Territorial Instinct ('reduce its movement to 0') never mention difficult terrain. Pack Sense ('a character in your difficult terrain') was omitted from the list despite being a zone payoff."
+  },
+  {
+   "field": "intentDrift.claims[Instinct]",
+   "from": "'Much of the Instinct specialty (Primal Awareness, Predator's Instinct, Scent the Weak, Pack Hunter)'",
+   "to": "Primal Awareness removed — the dossier files it under TERRITORY; the eight Instinct nodes listed correctly",
+   "reason": "SPECIALTY MISATTRIBUTION. Dossier line: 'Primal Awareness — specialty: Territory'. Noted separately as a real filing drift (a sensory passive in the terrain specialty), rather than silently re-labelled."
+  },
+  {
+   "field": "intentDrift.claims[costs]",
+   "from": "'9 free passives carrying the pack bonuses (Coordinated Hunt, Predator's Instinct, Primal Awareness)'",
+   "to": "Two pack bonuses are free passives (Coordinated Hunt, Predator's Instinct); Pack Hunter and Pack Pressure are pack talents that charge 1 Investiture each",
+   "reason": "Conflated the tree's nine passives (most of which are healing/defence/sensing, not pack) with the pack package, and again listed Primal Awareness — a Territory node — as a pack bonus."
+  },
+  {
+   "field": "crossTreeHooks[0]",
+   "from": "'ELEVEN of 25 talents require another character to exist'",
+   "to": "'EIGHT of 25 strictly require another character'",
+   "reason": "MISCOUNT. Verdant Mend ('touch a character'), Vital Surge ('restore health to a character below half health') and Natural Recovery ('remove one condition from the target') all work on yourself; only Mender's Instinct and Resurgent Growth say 'ally'. Removing the three self-targetable heals leaves eight."
+  },
+  {
+   "field": "axes.debuff.evidence",
+   "from": "'no imposed disadvantage anywhere in the 25'",
+   "to": "Restrained's own rider imposes disadvantage; score unchanged because it is scored under control",
+   "reason": "TEXT-VS-CLAIM against the primer's condition list: 'Restrained (movement 0, disadvantage on everything but escape)', applied by Grasping Vines."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'the deepest healing in the system'",
+   "to": "'the deepest healing in the LEYLINE atlas'",
+   "reason": "Scope overreach. The design-guide boundary the claim rests on ('Green heals deeply... White heals shallowly') compares Green only to White inside the leyline atlas; the profile's own uniqueOwnership entry scopes it correctly, so the headline was inconsistent with its own evidence. Also softened 'locks single enemies down' to reflect that all three control talents are contested tests."
+  },
+  {
+   "field": "topThree[Grasping Vines]",
+   "from": "'maintainable indefinitely. The best action-economy trade in the tree'",
+   "to": "Same pick, with the contested test and the 1 Inv/turn upkeep stated",
+   "reason": "The entry omitted both costs that decide whether it is actually the best trade: the effect only lands 'On a success' of Green vs. Physical, and 'Spend 1 Investiture at the start of your turn to maintain the vines' is a Tier-1 character's entire Draw Mana income."
+  },
+  {
+   "field": "mechanicalKeywords[Skills]",
+   "from": "'Perception (Primal Awareness)' listed as a prerequisite skill",
+   "to": "Primal Awareness's prereq is Green 1+; it only mentions Perception tests",
+   "reason": "Dossier line: 'Primal Awareness — prereq: Green 1+'. Also added a 'Contested test' keyword row, since three talents gate their entire effect on 'test Green vs. X' and no keyword row captured it."
+  },
+  {
+   "field": "CHECKED, NO CHANGE: action-type counts, Investiture coster count, Reaction count, depth-band sizes, advantage-producer count, Attunement Range list, [Tier][Die] list, countFalsePositiveMitigation, earliestDamageDepth/Level",
+   "from": "(as written)",
+   "to": "(as written)",
+   "reason": "Independently recounted from the dossier and all confirmed: Passive 9 / Special 7 / 1-Action 3 / 2-Action 3 / Reaction 3 / Free 0 / 3-Action 0 = 25; 13 Investiture costers and 2 Opportunity costers; 3 Reactions; depth bands 4 / 12 / 9; 5 advantage producers + 1 denial (cross-checked against advantage-ledger.md); 7 Attunement Range talents; 5 [Tier][Die] talents; zero talents that mention damage without dealing it; Thorn Field and Coordinated Hunt both depth 2 / earliest L3. Dice and Cost fields for Verdant Mend, Mender's Instinct, Vital Surge, Reknit Form, Coordinated Hunt's 'maximum = Rank' and Pack Pressure's +[Tier][Die] all match the text at Tier 1 rank 2 = 1d6."
+  },
+  {
+   "field": "axes[terrain_zone].score",
+   "from": "5",
+   "to": "4",
+   "reason": "Score inflation on the comparative field. The rubric's 5 is 'the reference implementation of this axis' and Green is not it. deity/Destruction runs zone mechanics in SIX of its nine talents — Pyre ('the target's space and each adjacent 5 ft square become dangerous terrain… At the end of each of your turns, the dangerous terrain spreads'), Walking Ruin ('every space you move through becomes dangerous terrain'), Combustion Chain ('each of your dangerous terrain zones spreads 5 ft outward'), Cascading Failure ('their dangerous terrain zones merge into one contiguous hazard zone'), Fault Line ('The line becomes dangerous terrain for the scene'), The Unmooring ('All dangerous terrain you have placed during this scene merg[es]') — and its terrain damages on the FULL die. deity/Fate touches Ordained Ground or Snares in SEVEN of nine. Green's own product is difficult terrain, a movement tax that does nothing at all until Thorn Field at L3, then half a Deflect-reduced die. 4 ('one of the better options in the game') is the accurate band; Green remains the zone tree of the leyline atlas."
+  },
+  {
+   "field": "uniqueOwnership[2] — 'The only free, always-on persistent-zone GENERATOR'",
+   "from": "stated as exclusive",
+   "to": "CORRECTED — NOT UNIQUE; one of two, narrowed to 'the only zone generator bolted onto the resource action'",
+   "reason": "Refuted by text. deity/Destruction's Walking Ruin is action=Passive with an EMPTY Cost field: 'For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.' That is free, always-on, persistent zone generation, and it produces the damaging terrain type rather than merely difficult terrain. What survives is that Green's generator rides Draw Mana — an action every leyline character already takes — rather than costing a talent pick at depth 1 behind a prerequisite."
+  },
+  {
+   "field": "uniqueOwnership[3] — 'Sudden Growth is the only talent in the atlas that puts a hazard zone on a target at sensing range'",
+   "from": "stated as exclusive for hazard-zone-at-range",
+   "to": "narrowed to 'the only zone placement in the system keyed to a character you can SENSE rather than a square in range'",
+   "reason": "Over-broad as written. deity/Death's Bone Garden places difficult terrain plus a FULL [Tier][Die] keen tick on 'a 10 ft square in Attunement Range' for 1 Action + 1 Investiture at L2, and deity/Destruction's Pyre lays spreading dangerous terrain at 60 ft on a hit. Both put a hazard zone at range, hit harder than Sudden Growth's half-die delivery, and neither costs an Opportunity. Only the 'a character you can sense' targeting clause is exclusive."
+  },
+  {
+   "field": "uniqueOwnership[4] — Pack Sense's numeric ally bonus described as 'rare'",
+   "from": "'Granting another character a flat additive to-hit number… is rare'",
+   "to": "CORRECTED — ONE OF TWO, and the other is broader",
+   "reason": "leyline/White's Shared Conviction: 'When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome.' Same mechanic (a flat additive to an ally's roll), applied to ANY test rather than only attacks, and applied retroactively after a failure so it is never spent on a roll that would have succeeded. Green's is cheaper and on a Special rather than the contested Reaction slot, but it is not rare in the system."
+  },
+  {
+   "field": "uniqueOwnership[5] — Coordinated Hunt as 'the only talent that pays the whole party, per attack, for converging on one enemy'",
+   "from": "stated as exclusive",
+   "to": "CORRECTED — NOT UNIQUE; narrowed to 'the only FREE, always-on version and the only one in the eleven mortal-tier trees'",
+   "reason": "Refuted twice over by deity/Knowledge, whose gate colours are Red + GREEN. Pack Share: 'allies in Attunement Range… deal bonus Vital damage equal to your Tier on attacks against it.' The Pack: 'allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight.' Both pay the whole party per attack for converging on one target, in Deflect-ignoring Vital damage, at Attunement Range with no adjacency requirement, and The Pack scales to 5 Insight against Coordinated Hunt's cap of Rank (2-3)."
+  },
+  {
+   "field": "uniqueOwnership[7] — 'Condition scrubbing bolted onto healing'",
+   "from": "listed as a unique Green capability",
+   "to": "CORRECTED — NOT UNIQUE, and Green's version is the most restricted of the three",
+   "reason": "leyline/White's Beacon of Stability (Special, 1 Investiture, depth 2, L3): 'When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range' — ANY condition, at range, three levels earlier, with no heal required and no Opportunity. deity/Life's Surgical Precision folds a condition removal into a heal of [Tier][Die] x 2 for one Investiture. Green's Natural Recovery is limited to four named conditions, requires a Green heal to already be happening, costs an Opportunity Green cannot generate, and is level 6 via Medicine 3+."
+  },
+  {
+   "field": "uniqueOwnership[0] — Injury removal scoped to 'the leyline atlas'",
+   "from": "'The ONLY removal of Injuries in the leyline atlas'",
+   "to": "'the only removal of Injuries in ALL 365 TALENTS'",
+   "reason": "Correction in the tree's favour, and the only one. A search of all 21 trees for 'injur' returns six hits; only Reknit Form removes an injury. heroic/Scholar's Ongoing Care removes 'one condition caused by their injury' during a rest (the condition, not the injury); deity/Death's Raise Dead ADDS 'one additional injury'; the remaining three merely reference injured targets. The profile understated its own strongest finding."
+  },
+  {
+   "field": "axes[healing].evidence",
+   "from": "'Deepest healing in the leyline atlas by a clear margin.' — implying Green is alone at 5",
+   "to": "5 retained, but with deity/Life named as the tree that beats it per talent and the reason the 5 still stands stated explicitly",
+   "reason": "Lens (b) demands a 5 be defensible against the other twenty trees, and this one was asserted without them. deity/Life spends SEVEN of nine talents on healing and out-does Green nearly everywhere: Life Surge heals '[Tier][Die] + Awareness HP' at Attunement Range, may self-target, and converts overheal to temp HP at L1 against Green's touch-range Verdant Mend; Surgical Precision 'heal[s] [Tier][Die] x 2 and remove[s] one condition' in one talent; Primal Regeneration and Apex Form give scene-long regeneration Green cannot match; Prognosis returns Investiture. The 5 survives on healing MODES (six distinct), the sole Injury removal, and the primer's statement that deity trees are intended to out-power leyline per talent — not on being unbeaten."
+  },
+  {
+   "field": "axes[buff].evidence",
+   "from": "Pack Sense described as granting a bonus 'which is rare'",
+   "to": "rarity claim removed; White named as the tree that out-buffs Green and the reason the score is 3 rather than 4",
+   "reason": "Same Shared Conviction refutation as above, plus the comparative case for holding 3: White fields Shared Conviction, Collective Resolve ('grant allies within Attunement Range Determined') and Unyielding Accord ('Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses'), and deity/Knowledge's The Pack pays every ally per attack. The score was already right; the evidence was not."
+  },
+  {
+   "field": "axes[action_economy].evidence",
+   "from": "Pack Pressure's granted group move presented as Green's own",
+   "to": "annotated as duplicated by two other leyline trees, and Blue's Forewarned named as the extra-Reaction grant Green lacks",
+   "reason": "leyline/White's Ordered Advance: 'allies within 10 ft may move half their Speed without provoking Reactions' — the same effect for 1 Investiture. leyline/Blue's Phantom Step: 'When an ally within Attunement Range moves, they may move an additional [Size] feet without provoking Reactions.' And leyline/Blue's Forewarned (Passive, no cost, depth 0, L1) ends 'you gain 1 Reaction' — an actual extra action-economy grant, which is precisely what Green, carrying three competing Reactions, cannot supply itself. Score stays 2; Green owns nothing on this axis."
+  },
+  {
+   "field": "axes[protection].evidence and weakTalents[Hardy]/[Collected]",
+   "from": "Hardy and Collected treated as Green talents with identity drift",
+   "to": "identified as system-wide shared filler: Hardy appears verbatim in SEVEN trees, Collected in FIVE",
+   "reason": "Duplicate-name census over all 365 talents: Hardy = leyline/White, leyline/Black, leyline/Green, heroic/Agent, heroic/Hunter, heroic/Leader, heroic/Warrior; Collected = leyline/Blue, leyline/Green, heroic/Agent, heroic/Envoy, heroic/Scholar. They cannot carry Green identity because they are not Green content, which sharpens both the protection evidence and the Restoration-specialty drift finding."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "eight claims, none testing whether another tree makes the same promise",
+   "to": "a ninth claim row added: deity/Knowledge's and heroic/Hunter's intent files make Green's pack and wilderness promises and deliver them harder",
+   "reason": "Lens (d) explicitly asks whether the promise is also made elsewhere. deity/Knowledge's intent: 'To study a thing is to learn how to kill it, and to share that study with the pack… the whole pack profits from what one hunter learns' — from a Red+GREEN gate, delivered by Pack Share and The Pack. heroic/Hunter's Tracker specialty claims traps, terrain and an animal companion, and its Deadly Trap (depth 0, L1, no resource cost) does 'roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain' — Grasping Vines plus Thorn Field in one free level-1 talent."
+  },
+  {
+   "field": "damageAccounting (Thorn Field note, verdict) and axes[damage_direct].evidence",
+   "from": "Thorn Field's half-die presented without a comparison class",
+   "to": "identified as the weakest terrain damage in the system, with the four talents that beat it named",
+   "reason": "deity/Death's Bone Garden: full '[Tier][Die] keen damage from grasping bone' on a 10 ft square at L2. deity/Civilization's Bastion: '[Tier][Die] impact damage and tests Agility vs. your Red'. deity/Destruction's Pyre: '[Tier][Die] energy damage' plus spreading dangerous terrain. heroic/Hunter's Deadly Trap: 2d4 plus Immobilized plus difficult terrain, at depth 0 and no cost. Green's is half a die and Deflect-reduced."
+  },
+  {
+   "field": "intentDrift claim on description length — Pack Pressure word count",
+   "from": "'Pack Pressure ~51' words",
+   "to": "45 words",
+   "reason": "Machine-counted from the description field across all 25 Green talents. The set of ten offenders was right, and Natural Order at 22 words (inside the 20-25 target) was correctly identified as a false positive; only the Pack Pressure figure was off, and by enough to matter to a claim that is itself about counting."
+  },
+  {
+   "field": "topThree",
+   "from": "Grasping Vines / Reknit Form / Thorn Field",
+   "to": "Reknit Form (first) / Grasping Vines / Mender's Instinct",
+   "reason": "Re-ranked on the comparative test rather than in-tree impressiveness. Reknit Form is the only capability in Green that NO other tree has at any price (verified across 365 talents), so it leads. Thorn Field drops off because it is the weakest instance of its own effect class in the system, while Mender's Instinct is the only threshold-triggered healing Reaction anywhere — White's Unbreakable Line prevents a drop to 0 rather than healing, and deity/Order's Shoulder the Oath redirects damage rather than restoring it."
+  },
+  {
+   "field": "bottomThree",
+   "from": "Packmate's Warning / Primal Awareness / Pack Hunter",
+   "to": "Packmate's Warning / Collected / Pack Hunter",
+   "reason": "Collected displaces Primal Awareness on comparative grounds: it is a depth-3 pick spent on a talent that appears identically in five trees, interacts with nothing in Green, and scales with nothing, while Primal Awareness is at least free and carries a clause (anti-Surprise outdoors) nothing else in the tree has."
+  },
+  {
+   "field": "crossTreeHooks",
+   "from": "ten hooks, none naming a specific partner talent",
+   "to": "eleven hooks, with deity/Knowledge named as Green's designed upgrade path and rival, and the four reachable Investiture-regen talents named",
+   "reason": "The hooks were generic where the data is specific: deity/Knowledge gates on Red 2+/Green 2+ with Pack Share requiring Green 3+, so the tree that best completes Green's pack fantasy is a designed continuation of it; and the only Investiture regen a Green character can realistically reach is leyline/Black's Predator's Due and Sanguine Reservoir, deity/Knowledge's Accumulate and deity/Life's Prognosis (9 producers in 7 trees system-wide)."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'…carries the deepest healing in the LEYLINE atlas — including the only removal of Injuries — while creating almost no damage of its own.'",
+   "to": "reframed as the mortal-tier reference for healing and zones, with the two deity trees that out-scale it named",
+   "reason": "The 'something' test (lens e). Green's something is deep restoration plus a self-renewing zone; deity/Life beats it on healing, deity/Destruction on zones, and deity/Knowledge on the pack payoff — but among the eleven leyline+heroic trees the design guide actually benchmarks leyline against ('Leyline mages are mortal. Comparable to Heroic path characters'), Green is unbeaten at both and holds the system's sole Injury removal. That is the accurate, checkable version of the identity."
+  },
+  {
+   "field": "axes[control], [damage_scaling], [debuff], [information], [mobility], [exploration_utility], [social_influence], [summons], [resource_economy], [damage_direct] scores",
+   "from": "3 / 2 / 1 / 3 / 1 / 3 / 0 / 0 / 0 / 2",
+   "to": "UNCHANGED",
+   "reason": "Checked each against the other twenty trees and found no inflation or deflation. control 3 survives because Blue fields more denial but Restrained is the strongest condition any leyline movement-denier applies. information 3 survives because Green ties heroic/Agent for the most no-test hidden-fact talents in the system while reaching none of Blue's or Fate's foreknowledge register. resource_economy 0 is textually confirmed (0 of 9 system-wide producers). summons 0 and social_influence 0 are confirmed by full reads. Only the evidence strings were strengthened with named comparators."
+  }
+ ]
+}
