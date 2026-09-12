@@ -13,6 +13,13 @@ The open questions are filed as rulings **R-95 … R-111** in `EDHA_RULINGS.md` 
 added 2026-09-12 from the cross-cut's problem ledger), not as checklist rows, because they ask Ben
 to *decide*, not to *look*.
 
+**An independent critique of the seventeen rulings is in `CRITIQUE.md`** (2026-09-12): each
+ruling re-derived from the talent text, the engine and the system source, with a verdict —
+11 HOLD, 4 WEAKENED (R-96, R-98, R-106's sub-count, R-111), 2 WRONG on a load-bearing claim
+(R-105, R-110). Where it corrects this document, the correction is a ⚠️ note in place, marked
+*Critique*, and the ruling's default in `EDHA_RULINGS.md` changed on three (R-105, R-110, R-111).
+Precedence: the critique's ⚠️ notes over the paragraphs they follow.
+
 ## How to run it
 
 ```
@@ -147,6 +154,18 @@ heroic flattens for the rest of the tier while leyline keeps climbing with rank.
 
 The mismatch is real but it is **not** the front-loaded-heroic/back-loaded-leyline story the first
 draft of this document told. It is: leyline ahead early, both spike at 6, leyline pulls away after.
+
+> ⚠️ **Critique, 2026-09-12 — "leyline ahead early" is withdrawn** (`CRITIQUE.md`, R-105). The
+> tables above compare heroic *riders* to leyline *spells* without the rider's base: every hit in
+> cosmere-rpg adds the roller's skill modifier to the damage roll (`index.js:6845–6848`, `mod` =
+> rank + attribute), and a heroic talent sits on top of the weapon's own die. Per Action at levels
+> 1–5 (mod 4, a d6–d8 weapon): a Strike with `Mighty` ≈ 9.5–10.5, free and unlimited;
+> `Withering Ray` ≈ 11 at ~1.5 HP a cast; `Searing Bolt` ≈ 7.5 for 1 Investiture. Black is at
+> parity with a heroic Strike turn and Red is behind it; `Withering Ray`'s real edge is ignoring
+> Deflect. At level 6 Black pulls ahead per Action (≈ 23 for one Action against `Devastating
+> Blow`'s ≈ 22.5 for two), and the formulas are flat as stated — but `Mighty` and the weapon die
+> grow with the character, which is why R-105's default moved from a tier step to (c) accept and
+> document.
 
 ### Reachability by level 5 — heroic and leyline are at parity
 
@@ -393,6 +412,14 @@ damage-rider path was not: it goes through `Roll.replaceFormulaData`, which does
 So the rider very likely delivers nothing. **Whether the damage roll errors or silently adds zero
 needs a live table — this is a 🤖 bench row.**
 
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-95). The code predicts the first outcome, and
+> worse: Foundry 13's `replaceFormulaData` renders an Object value as a rune-wrapped JSON string,
+> the rider path (`03-where-an-effect-lives.js:198–211`) hands it on as the resolved term, and the
+> Strike's whole damage formula then cannot parse — so the **entire Strike's damage roll fails**
+> whenever the 20 ft trigger is met. And the walk rate is a table, not `20 + 5·SPD`:
+> `MOVEMENT_RATES = [20, 25, 30, 40, 60, 80]` by `ceil(SPD / 2)` (`index.js:8539–8542`), so SPD 2
+> is 25 and SPD 3–4 is 30. Same order of magnitude; the design question is unchanged.
+
 And separately, if it *did* resolve: walk rate is `20 + 5·SPD` = **30 at SPD 2**, 40 with
 `Surefooted`. Every other damage rider in the game is worth 1–4:
 
@@ -465,6 +492,12 @@ worthless, and a player who owns both pays two Investiture for one disadvantage.
 > additive penalties are the biggest balance risk the review found. **R-98** is narrowed to the one
 > real pair, with a default of re-aiming `False Premise`.
 
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-98). The narrowing is right; the "used by no
+> talent" half of the objection is not. The summing `edha-next-test-mod` formula channel is carried
+> by **seven player talents** today — `Pack Hunting`, the four `Command` talents, `Tactical Ploy`
+> (a −1d4 penalty) and `Overwhelm with Details` — so it is proven on player cards. What survives
+> of the objection is the design preference against uncapped additive penalties.
+
 ### 4. The real diagnosis: White has two talents in twenty-five it can spend an Action on
 
 This arrived last, from the cross-cut pass, and it is the best number in the review. Counting only
@@ -483,6 +516,22 @@ their own turn* (`agency-census.js`):
 | every deity tree | 5–8 | **9** | 56–89% |
 
 By atlas: leyline **18%**, heroic **25%**, deity **72%**.
+
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-96). This count is true of *standalone* Actions
+> and wrong as a count of what a player chooses on their turn. The leyline guide's own definition
+> of a Special is a play that rides an action you were already taking
+> (`leyline-revision-guide/SKILL.md:28`), and its first revision principle converts Actions into
+> Specials — so a Special riding your own Draw Mana or influence test is chosen on your turn, and
+> the census penalises a tree for obeying the guide. Counting every self-initiated play (Actions,
+> self-initiated Free Actions, and Specials that ride your own action or spend an Opportunity):
+> White **7** of 25, Black 8, Scholar 9, Blue / Envoy / Green 10, Red 11, Hunter 12, Leader and
+> Warrior 14, Agent 15. White is still last — by one talent, not eleven. Its seven: two standalone
+> (`Guiding Signal`, `Ordered Advance`), three riders (`Beacon of Stability` on Draw Mana,
+> `Overwhelming Authority` on your influence test, `Terms of Accord`), two plot-die-gated
+> (`Collective Resolve`, `Mending Aura`). Draw Mana itself — a self-initiated Action that heals
+> every visible ally for Tier — is excluded by both counts. The conclusion (no damage; the minimal
+> set) survives; the "hostage" framing below should be read as "five of White's seven plays are
+> riders or gated on the plot die".
 
 **This reframes the whole review.** What the two PCs experience is not "I deal zero damage" — a
 Blue player who `Counterspell`s an enemy's talent has visibly done something, and a White player
@@ -537,6 +586,13 @@ Life is the tree Sovereignty is often mistaken for and is *not* a problem: it al
 formulas, but it has the five largest heal formulas in the game. The distinction that matters is
 **independent effect**, not damage.
 
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-97). "No independent effect" overstates it:
+> `Sovereign's Favor` grants `[Tier][Die]` temp HP on every `Exalt` with no roll (3.5 at Tier 1,
+> 9 at Tier 2), which the problem ledger's dropped item 9 had already noted. A blind rescore on
+> the same rubric still gives **13** — the verdict stands. And a Decree zone, if built (R-97 a),
+> must not be a third designate-a-square: `Lay Foundation` and `Ordained Ground` are already the
+> same Free Action.
+
 ### 6. Ten of twenty-one trees can never damage two enemies with one play
 
 Read from the text of all 365 talents (problem ledger rank 2, re-checked by hand): **ten trees have
@@ -558,6 +614,12 @@ turns the fight into a queue.
 > full-text read adds Green's `Thorn Field` and Knowledge's `Death Mark`, which take those two trees
 > off the zero list, and Death's `Bone Garden` and Civilization's `Bastion`, in trees already
 > counted. → **R-106**
+
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-106). The ten-tree zero list is confirmed by a
+> full-text read. "Only three have a repeatable play before level 6" undercounts: Destruction's
+> `Fault Line` (L3), `Pyre` (L1) and `Cascading Failure` (L3), Death's `Bone Garden` (L2),
+> Civilization's `Bastion` (L3) and Power's `Unstoppable Advance` (L2) are also repeatable below
+> level 6. None sits in a tree the party holds, so the party conclusion is unchanged.
 
 ### 7. Temp HP has two writers, and they give opposite answers
 
@@ -609,6 +671,13 @@ A player reads something false on their own sheet. `Defensive Position`'s other 
 worth more than it looks: canon Brace needs cover, and "allies can Brace behind your shield" waives
 that for them. → **R-110**
 
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-110). "Worth nothing" is withdrawn. Both talents
+> are manual, so the table plays the *printed* rule, and SR p.18 cancels advantages and
+> disadvantages one-for-one: two advantages against one disadvantage still rolls with advantage,
+> one does not. The second grant is insurance against a disadvantage — a common case. The card is
+> not false; it describes something the engine's fold cannot represent, and the engine is not
+> involved. R-110's default moved from "reword to one" to "keep the cards, add the cancel line".
+
 ### 11. `Withering Ray` is the only doubled-tier damage formula in the game
 
 Of 43 damage formulas, one doubles the tier: `Withering Ray`,
@@ -620,6 +689,13 @@ so nothing limits it to once a turn. Red's `Searing Bolt`, at the same depth, is
 Investiture for `[Tier][Die]` energy that Deflect reduces. The only other doubled-tier formula is a
 heal (Life's `Surgical Precision`). The defence survives: paying in blood is Black's written
 identity, and the HP cost is a real throttle. → **R-111**
+
+> ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`, R-111). The arithmetic holds; the "three casts a
+> turn" framing does not. Every character can Strike three times, and with the `+ mod` every hit
+> receives the two turns are the same size — `Withering Ray` ×3 ≈ 33 vital versus Spiritual for
+> ~4.5 HP of a ~12 HP level-1 pool; Strike ×3 with `Mighty` ≈ 31 versus Physical, minus Deflect
+> three times, free. Once per turn would put Black's signature below a Strike turn; R-111's
+> default moved to (b), keep it and document it as the ceiling.
 
 ## What a White + Blue party lacks
 
@@ -699,6 +775,10 @@ talent data.
    three of heroic's big damage talents (`Devastating Blow`, `Wit's End`, `Fatal Thrust`) are
    gated behind an off-colour `Skill 3+`, i.e. **level 6**. Both sides spike at 6; after that
    heroic is flat for the rest of the tier and leyline keeps climbing with rank.
+   ⚠️ *Critique, 2026-09-12: "leyline is ahead early" is withdrawn — the comparison omitted the
+   Strike's own die and the `+ mod` every hit receives. Per Action before level 6 the atlases are
+   at parity (a Strike with `Mighty` ≈ 10 against `Withering Ray` ≈ 11 at an HP cost); Black
+   pulls ahead per Action only from level 6. See the note under "Heroic damage is flat" and R-105.*
 3. **Deity parity.** Not close. Sovereignty is last by a wide margin — no damage, no independent
    effect, and a signature resource that was never built. Life is low-damage but legitimate.
    Chaos, Order, Death, Destruction and Knowledge are strong. The two-colour gate is priced
