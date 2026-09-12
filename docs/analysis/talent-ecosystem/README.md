@@ -9,8 +9,9 @@ Scope ruled by Ben: **the 365 talents only.** Adversaries, PC build ladders and 
 talents are explicitly out. Ben also ruled that **adding damage to Blue and/or White is on the
 table** — the no-damage identity is not fixed. **Nothing here changes a talent.** The deliverable
 is a diagnosis plus ranked recommendations; no design decision is committed without Ben's yes.
-The open questions are filed as rulings **R-95 … R-105** in `EDHA_RULINGS.md`, not as checklist
-rows, because they ask Ben to *decide*, not to *look*.
+The open questions are filed as rulings **R-95 … R-111** in `EDHA_RULINGS.md` (R-106 … R-111
+added 2026-09-12 from the cross-cut's problem ledger), not as checklist rows, because they ask Ben
+to *decide*, not to *look*.
 
 ## How to run it
 
@@ -535,6 +536,90 @@ Insight — up to `5d6` vital, ignoring Deflect — for 1 Action and 2 Investitu
 Life is the tree Sovereignty is often mistaken for and is *not* a problem: it also has no damage
 formulas, but it has the five largest heal formulas in the game. The distinction that matters is
 **independent effect**, not damage.
+
+### 6. Ten of twenty-one trees can never damage two enemies with one play
+
+Read from the text of all 365 talents (problem ledger rank 2, re-checked by hand): **ten trees have
+no talent that damages more than one enemy at any level** — leyline Blue and White; heroic Agent,
+Envoy, Hunter, Leader and Scholar; deity Fate, Life and Sovereignty. heroic/Warrior has one, at
+level 6 (`Meteoric Leap`, unarmed, behind `Athletics 3+`), so the heroic atlas has no group answer
+before level 6. The other ten trees have at least one, but most wait on a kill, a death, a
+Foundation, a capstone or the tier cap (finding 9); before level 6 only three have a repeatable
+play — Destruction's `Set Charge` (L1), Red's `Flame Surge` (L2) and Green's `Thorn Field` (L3).
+Black's one area talent is built backwards: `Spoils of Isolation` hits "each Weakened character",
+and both of Black's Weakened sources need the target to stand apart from its allies, so it does
+most against a spread-out group and nothing against a clump.
+
+For the party this review was commissioned about, that is the finding: if White and Blue sit beside
+heroic paths, nobody at the table can answer four enemies before level 6, and a group on the map
+turns the fight into a queue.
+
+> **The count.** The ledger's headline said fourteen trees and its own list named twelve at zero. A
+> full-text read adds Green's `Thorn Field` and Knowledge's `Death Mark`, which take those two trees
+> off the zero list, and Death's `Bone Garden` and Civilization's `Bastion`, in trees already
+> counted. → **R-106**
+
+### 7. Temp HP has two writers, and they give opposite answers
+
+`edhaGrantTempHpCross` keeps the higher of the held and incoming pool (a tie keeps the incumbent —
+R-36); `edhaWriteTempHp` replaces it unconditionally. Every cross-actor grant uses the first. Three
+talents reach the second — `Life Surge` and `Overgrowth` through heal overflow, `Spoils of
+Isolation` through its own damage total — so an ally holding 6 from `Final Decree` who is healed 3
+past full by `Life Surge` ends up holding 3. The engine header states both rules seven lines apart
+(`28-temporary-hp.js:6` and `:13`). Until the writers agree, any Temp HP figure summed over rounds —
+including this review's own `Bear Witness` and Sovereignty arithmetic — depends on which talent
+landed last. → **R-107**, and checklist row **ECO-1** to observe it live.
+
+### 8. The deity atlas has no Specials
+
+Not one of ninety deity talents is a Special — 65 cost one or more Actions, the rest are 13
+Passives, 7 Free Actions and 5 Reactions — against the deity guide's ~15–20% Special target and the
+primer's note that a Special is worth materially more than an Action of the same effect size. The
+leyline atlas was given the same kind of target and hit it (27 of 125, 22%). The one narrow fix on
+the table does not survive a data check: the identity option set would retype six deity "riders"
+under the guide's Principle 10, but four are already Passives, `Sealed Edict` is already a Free
+Action and `Withering Touch` is its own melee attack, so the conversion changes nothing. A broad
+conversion is what the defence advocate's surviving objection warns against: it makes deity trees
+more action-efficient, and the deity-vs-leyline gap is the one the primer says to watch. → **R-108**
+
+### 9. "Up to your tier" is one, for all of levels 1–5
+
+Six deity trees cap their signature resource at "up to your tier": Chaos's Omens, Order's Edicts and
+Covenants, Civilization's Foundations, Destruction's Charges, Fate's Ordained Ground and Snares, and
+Death's Risen Servants. Tier is 1 until level 6, so for the whole span this campaign is in:
+
+* Civilization's `Trade Routes` ("choose two of your active Foundations", depth 1, level 2) **cannot
+  be cast**;
+* Chaos's `Cascade Collapse` and `Unravel Everything` detonate "all your Omens" — one — and
+  `Spreading Omen` is dominated by its own entry;
+* Destruction's `Cascading Failure` needs two Charges, and Order's `Lawkeeper's Eye` and `Final
+  Decree` run off a single Edict.
+
+`Forge Construct` is the outlier the other way: "You may sustain one active Construct", a flat 1
+that never scales. The defence survives here too — the cap is part of what makes level 6 a step, and
+Knowledge, whose Insight cap is a flat 5, is the strongest damage tree in the game. → **R-109**
+
+### 10. Two cards promise a second advantage the rules cannot give
+
+`Fatal Thrust` (Hunter, level 6): "gain two advantages if the weapon is Discreet". `Defensive
+Position` (Warrior, level 2): "The Brace action adds two disadvantages to attacks against you,
+instead of one". Advantage and disadvantage are one binary state, so the second is worth nothing —
+and neither talent carries an event or an effect, so nothing in the engine "folds them away" either.
+A player reads something false on their own sheet. `Defensive Position`'s other clause is real and
+worth more than it looks: canon Brace needs cover, and "allies can Brace behind your shield" waives
+that for them. → **R-110**
+
+### 11. `Withering Ray` is the only doubled-tier damage formula in the game
+
+Of 43 damage formulas, one doubles the tier: `Withering Ray`,
+`(2 * @tier)d(2 * @skills.black.rank + 2)` — **2d6 (avg 7) at level 1 with Black 2, 4d8 (avg 18) at
+Tier 2 with Black 3** — for 1 Action at depth 0, as a ranged Black attack against Spiritual, dealing
+vital damage that ignores Deflect. It costs no Investiture: the price is half a Black die of health
+(about 1.5 HP at Tier 1, 2 at Tier 2), and its wired rules are that cost and a single-target gate,
+so nothing limits it to once a turn. Red's `Searing Bolt`, at the same depth, is 1 Action and 1
+Investiture for `[Tier][Die]` energy that Deflect reduces. The only other doubled-tier formula is a
+heal (Life's `Surgical Precision`). The defence survives: paying in blood is Black's written
+identity, and the HP cost is a real throttle. → **R-111**
 
 ## Determinable defects — these need a fix, not a decision
 

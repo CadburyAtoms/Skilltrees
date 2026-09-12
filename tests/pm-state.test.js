@@ -309,7 +309,7 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings finds the 11 ecosystem-review rulings open in the real EDHA_RULINGS.md", () => {
+test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings open in the real EDHA_RULINGS.md", () => {
   // item 83 (2026-09-07 21:51 ET): Ben answered R-56 in chat, verbatim "Cosmere ladder for
   // everyone", reversing his own 2026-09-06 (a). R-56 was the SOLE open ruling left in the doc
   // (item 95 had closed R-90 and R-91), so with its ANSWERED (final) marker recorded and the entry
@@ -329,8 +329,11 @@ test("build-dashboard: parseOpenRulings finds the 11 ecosystem-review rulings op
   // said it would, and the three shape loops below — which have been vacuous since item 83 — go
   // LIVE for the first time: every one of the eleven must parse an `ask` that ends in a question
   // mark and a `default` with the bold markers stripped. That is the point of keeping them.
+  //
+  // 2026-09-12: six more (R-106 … R-111) filed from the same review's problem ledger, so the list
+  // grows to seventeen and the same three shape loops hold every one of them to that contract.
   const ECOSYSTEM_RULINGS = ["R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102",
-    "R-103", "R-104", "R-105"];
+    "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

@@ -808,6 +808,38 @@ cover that direction and must NOT regress.)*
   ⚠️ Confirm in the same window that **Raise Dead still returns a withered creature to 1 HP** — that
   hit rides `edhaApplyBurstResults`, which stays ungated on purpose.
 
+## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
+
+*(Both rows OBSERVE behaviour that is already deployed — no fix has been made for either. Record
+what happens, read off the flag or the card's own formula node; whether it is right is the ruling's
+call, in `EDHA_RULINGS.md`.)*
+
+- [ ] 🤖 **ECO-1 — which Temp HP writer wins on a live table (R-107).** The code says the two
+  writers disagree: heal overflow overwrites (`03-where-an-effect-lives.js:882` →
+  `edhaWriteTempHp`), every cross-actor grant keeps the higher (`edhaGrantTempHpCross`). Take
+  `Bench Ally — One` at **full HP**, seed it with `edha.setTempHp(ally, 30, "bench seed")`, and read
+  `flags.edha-content.tempHp` — **30 / "bench seed"**. Have `Bench — Life` cast **Life Surge** on it.
+  **Expect the flag to DROP** to the overflow — the whole `[Tier][Die] + Awareness` roll, which stays
+  under 30 even at Tier 2 with every colour at rank 3 — labelled "Life Surge", with the chat line
+  *"Life Surge overflow: Bench Ally — One gains N Temp HP"*. **Control, same ally:** re-seed 30, then
+  land a smaller grant through the keep-higher writer — `Bench — Order`'s `Bear Witness` round-start
+  grant, driven as bench run 39 drove it for R-36 (a Covenant on the ally, rounds advanced in a bench
+  combat) — and **expect 30 / "bench seed" to survive**. Record both flag readings verbatim. Optional
+  third case: `Bench — Black` seeded with 30 casts `Spoils of Isolation` over a Weakened dummy — expect
+  its own pool replaced by the damage total.
+- [ ] 🤖 **ECO-2 — does `Momentum's Edge` error, or silently add nothing (R-95).** The PC talent has
+  carried `bonusFormula: "@movement.walk.rate"` since 2026-06-15 (`d0c8080`), and
+  `movement.walk.rate` is a DerivedValueField object, not a number. (Brandram's adversary version is
+  a different formula — `2d4`, ruling 113 — and its row was retired on evidence at bench run 19; that
+  proves nothing about this one.) Use run 19's drive: step a bench combat onto `Bench — Red`'s turn so
+  `_edhaTurnStartPos` is stamped, displace the token **exactly 20 ft** toward a hostile dummy (1200 px
+  on the Playtest Map), and Strike in melee. Read the damage card's own `.dice-formula` node ~2 s after
+  it lands (the method note under "Damage-rider formula bars" above). **Record which it is:** (1) the
+  roll errors, or the formula shows `[object Object]` / `NaN`; (2) the formula carries no
+  Momentum's Edge term, or a `+ 0`; (3) a term of +25 to +30 — which would mean the reference resolves
+  after all and R-95's implementation half is wrong. **Control:** re-stamp at rest, 0 ft moved — no
+  rider in any case.
+
 ---
 
 # BENCH — White (leyline)
