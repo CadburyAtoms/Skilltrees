@@ -621,6 +621,46 @@ Investiture for `[Tier][Die]` energy that Deflect reduces. The only other double
 heal (Life's `Surgical Precision`). The defence survives: paying in blood is Black's written
 identity, and the HP cost is a real throttle. → **R-111**
 
+## What a White + Blue party lacks
+
+Two of the players this review was commissioned about hold leyline White and leyline Blue. The rest
+of the party decides how much of what follows matters, and PC build ladders are outside the review's
+fence, so this is **what the pair brings on its own, and which trees fill each gap** — conditional on
+the other PCs, not a verdict on the party. The numbers come from this review's censuses: the
+action-type census (`agency-census.js`), the damage and mitigation census, finding 6's multi-enemy
+read, and the capability matrix above.
+
+| | White | Blue | the pair |
+|---|---|---|---|
+| **talents you can spend an Action on** | 2 — `Guiding Signal` (L1), `Ordered Advance` (L4) | 5 — `Phantom Double` (L1), `Telepathic Network` (L2), `Phantom Barricade` (L2), `Read Intent` (L4), `Ghostly Walls` (L6) | **7 of 50**; three are scene setup, and Blue's two repeatable plays arrive at L4 and L6 |
+| **damage** | 1 — `Retributive Guard`, a Reaction that waits for an enemy to hit an adjacent ally | 0 | **one single-target Reaction** |
+| **damage to more than one enemy** | 0 | 0 | **none, at any level** |
+| **damage mitigation** | 4 — `Interposing Shield`, `Shared Burden`, `Devoted Conduit`, `Shield Wall` | 0 — its protection is disadvantage and illusion, not a smaller number | White's, the game's only protection 5 |
+| **healing** | light — the Attunement Key heals allies in range for tier on each Draw Mana; `Mending Aura`; `Unbreakable Line` can turn an adjacent ally's drop to 0 into 1 HP | 0 | light |
+| **bonus Investiture** | 0, against 15 talents that spend it | 0, against 16 | **none**, against 31 |
+
+**Where the pair is strong** on the capability matrix (0–5, the higher of the two): protection 5,
+debuff 4, information 4, control 3, buff 3, action economy 3, exploration 3 — a support-and-control
+pair with real depth. **Where it is thin:** damage 1, damage scaling 1, summons 1, and healing,
+mobility, terrain and social influence at 2.
+
+**Which trees fill each gap, if another PC holds them** (matrix scores):
+
+* **Damage:** Red, Knowledge and Destruction (5); Black, Warrior, Civilization, Death and Chaos (4).
+  Among heroic paths only Warrior reaches 4; Hunter is 3.
+* **A group answer before level 6:** only Destruction (`Set Charge`, L1), Red (`Flame Surge`, L2)
+  and Green (`Thorn Field`, L3). **If the other PCs are all heroic, the party has none until level
+  6** — Warrior's `Meteoric Leap` — which is R-106.
+* **Healing:** Green and Life (5), Scholar (4).
+* **Social influence:** Leader (5), Agent (4).
+* **Mobility:** no tree in the game scores above 2, so no companion fills it.
+
+What this says about the question that started the review: the pair's gaps are **agency and group
+answers**, not a damage count. A heroic Warrior beside them covers single-target damage and leaves
+both gaps open, because agency is each player's own turn and the Warrior's group answer is at level
+6. That is the ground **R-96** (no damage; the minimal-change set) and **R-106** (build encounters
+around the group gap) stand on.
+
 ## Determinable defects — these need a fix, not a decision
 
 Nothing here is a design question. Each is checkable, each is wrong, and none is in the rulings
