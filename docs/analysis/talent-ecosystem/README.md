@@ -382,8 +382,20 @@ And separately, if it *did* resolve: walk rate is `20 + 5·SPD` = **30 at SPD 2*
 | `Predatory Patience`, `Prognosis` | `1d6` | 3.5 |
 | **`Momentum's Edge`** | **`@movement.walk.rate`** | **30** |
 
-The card says "damage equal to your Speed", and the system's own lang file calls the SPD attribute
-"Speed". `@attr.spd` is both the natural reading and the in-family magnitude. **R-95.**
+> ⚠️ **Correction.** An earlier draft of this section read: *"the system's own lang file calls the
+> SPD attribute "Speed". `@attr.spd` is both the natural reading and the in-family magnitude."*
+> That was wrong, and the cross-cut's verification pass caught it. Every one of the eleven uses of
+> "Speed" across all 365 talents means a movement rate in feet or a tested skill — decisively,
+> Red's own `Unstoppable`, "move up to half your Speed" — and Speed is never a flat damage adder
+> anywhere in the corpus (those are Awareness, Intellect, Strength, Willpower and Presence). The
+> card and the engine mean the same thing; there is no wording to clarify.
+
+So `Momentum's Edge` is two problems, not one: an **implementation** bug (the reference does not
+resolve, so the talent probably does nothing today) and a separate **design** question (+25–30
+flat on a free depth-2 Passive, if it did resolve). Rewording fixes neither. **R-95**'s recommended
+default is to fix the resolution *and* retune the payload to `[Tier][Die]` — in family with
+`Kindle` and `Predatory Patience`, scaling with tier and rank, and keeping the charge fantasy the
+20-ft trigger already encodes.
 
 `formula-audit.js` makes this class re-runnable; it is otherwise clean across all 365 talents.
 
