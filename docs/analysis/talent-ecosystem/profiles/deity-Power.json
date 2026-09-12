@@ -1,0 +1,664 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Power",
+ "correctionCount": 35,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Power",
+  "oneLineIdentity": "A melee Investiture-burner that buys, one Action and one Investiture at a time, either a single enemy's turn (Compelled, then dictated) or a stack of additive riders on a weapon Strike, backed by one unreducible spirit-damage engine and a scene-long defence/party-buff capstone, with no ranged option, no healing, no Reactions and no resource generation whatsoever - and whose domination half is out-denied, at level 1 and for less Investiture, by Hollow Command in leyline/Black, one of the two colours this tree charges you rank 2 for.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 3,
+    "evidence": "6 of 9 talents add damage to an enemy, but only FOUR initiate a damage event and only two of those need no weapon attack. Warlord's Advance (depth 0, L1): 1 Action, 1 Investiture, melee weapon attack + additional [Tier][Die], formula `(@tier)d(2 * @skills.red.rank + 2)` type=impact. Unstoppable Advance (depth 1, L2): [Tier][Die] impact to each enemy whose space you move through - no attack test. Momentum of Victory (depth 1, L2): a whole free melee Strike + `@tier` impact. Crown of Thorns (depth 1, L2): spirit damage equal to your Presence whenever a Black/Red talent of yours TESTS against a Cognitive defence - no weapon, no attack, no success required. Warlord's Fury (depth 2, L3) and Mantle of the Aspirant (depth 3, L4) create no damage event of their own: they are pure amplifiers on melee attacks made elsewhere. Not 4, because the tree has no ranged damage, no real AoE (only the line Unstoppable Advance walks), and at Tier 1 the raw numbers are 1d6 plus small flat adds; the census puts Power at 4 offensive sources against Knowledge 7, Chaos 5 and Death 5. Not 2, because two of its damage sources are NOT gated on an already-successful attack. CENSUS DISAGREEMENT, flagged per instruction: damage-census.js reports Power earliestL = 2, but Warlord's Advance is depth 0 / earliest L1, carries an authored roll formula and makes a melee attack. The census's earliestL appears to be computed from the pure-SOURCE bucket only (Power scores SOURCE 1, SRC+AMP 3), so it under-reports Power by one level. The text wins: damage at L1."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Split. The two [Tier][Die] sources (Warlord's Advance, Unstoppable Advance) scale on BOTH axes at once: `(@tier)d(2 * @skills.red.rank + 2)` is 1d6 at Tier 1 rank 2 and 2d8 at Tier 2 rank 3, and Warlord's Advance is repeatable every round for 1 Action + 1 Investiture with no cooldown and no trigger. Against that, half the tree's damage is flat and badly capped: Warlord's Fury tops out at tier x 2 (+2 across the whole of levels 1-5), Mantle adds a flat +tier spirit, Momentum of Victory adds a flat `@tier`, and Crown of Thorns keys off the Presence attribute and does not scale with tier at all. COMPARATIVE: this is not the corpus's escalation engine and does not come close. deity/Knowledge's Predatory Strike deals '[Tier][Die] per Insight on the target' with Insight capped at 5 and generated free by a Passive (Accumulate, which also refunds 1 Investiture per round) - a MULTIPLIER on dice, uncapped by tier, against Power's flat +2. Repeatability is good; the ceiling is low because the flat escalators cap. The real limiter is fuel, not frequency - see sustainability."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "CORRECTED DOWN from 4 on comparative evidence. Only 2 of 9 talents, and while both are distinctive, neither is the corpus's best action denial. Kneel (depth 0, L1, 1 Action, 1 Investiture): test Black vs. Cognitive, target is Compelled until the start of your next turn and must spend its NEXT ACTION - one of three - moving toward you or doing nothing, i.e. about a third of an enemy turn. Absolute Authority (depth 1, L2, 2 Actions, 2 Investiture): on a success you choose the target's action on its next turn; note the text says 'the target's action', singular, so this reads as one action redirected rather than a whole turn seized. It also requires an already-Compelled/Frightened/Weakened target, so the real play is Kneel then Absolute Authority - 3 Actions and 3 Investiture across two turns (a level-1 character's entire pool) to control one enemy action. THE REFUTATION: leyline/Black's Hollow Command (2 Actions, 1 Investiture, depth 0, EARLIEST L1) reads 'the target cannot take actions on its next turn' - a whole enemy turn denied, at level 1, for one third the Investiture and no setup chain - and it sits in Black, a colour this tree already forces you to rank to 2+. heroic/Agent's Cheap Shot (1 Action, 1 focus, depth 0, L1) applies Stunned, which the primer prices at two fewer actions plus the reaction. deity/Fate sustains up to tier Snares that Restrain (movement 0, disadvantage on everything). Power is the most DISTINCTIVE control tree in the corpus, not one of the better ones: 'Compelled' is grep-verified exclusive to it (3 hits across 365: Kneel, Absolute Authority, and Death's Risen Servant which is merely immune), and dictating rather than denying is a real quality edge. But breadth is thin - no Stun, no Restrain, no Immobilise, no reaction denial, no AoE, no zone - and both tests hit Cognitive, so one high-Cognitive or mindless enemy switches the whole half off. That is a 3."
+   },
+   {
+    "axis": "debuff",
+    "score": 1,
+    "evidence": "One incidental rider: Absolute Authority's FAILURE clause applies Weakened until the end of the target's next turn. Nothing else. No defence reduction, no vulnerability, no imposed disadvantage, no Exhausted, no numeric penalty anywhere in the tree. Compelled is action denial (scored under control), not a numeric penalty. COMPARATIVE: leyline/Black produces Weakened on six separate talents including its free Attunement Key, and deity/Sovereignty steps an enemy's damage die DOWN on four talents - that is what a 3+ on this axis looks like. Power CONSUMES Weakened and Frightened as target requirements far more than it produces them."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "Held at 2 after re-checking the field. Four talents touch defence but NOT ONE reduces damage. Mantle of the Aspirant (depth 3, L4, once per scene) is the anchor: +2 to all defenses for the scene, plus redirection of up to your tier of incoming damage to willing allies - party-net-zero, it moves the damage onto your friends rather than removing it. Investiture of Command (depth 2, L3) gives up to 3 allies [Tier][Die] temporary HP and costs you unreducible spirit damage equal to your tier. Unstoppable Advance (depth 1, L2) grants SELF-immunity to Slowed, Immobilized and Prone until the end of your NEXT turn. Warlord's Advance grants temporary HP equal to your tier, but only on a kill. No damage reduction, no resistance, no shields, no interception, no Reaction to blunt a blow. COMPARATIVE COUNT of talents carrying temp HP / Deflect / damage-reduction / half-damage language: deity/Life 5, deity/Civilization 4, deity/Order 3, deity/Power 2, and leyline/White carries the Reaction-based mitigation suite (Shared Burden, Guardian Stance, Shield Wall) plus 4 census MITIG hits. This is a borderline 2/3 - four of nine talents do touch defensive value and temp HP is explicitly in the axis - but against that field you would not pick Power for protection, which is the definition of a 2."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Checked all 9 talents and all roll formulas: the tree has 3 damage formulas and 0 heal formulas, and no prose restores Health, Focus or Investiture to anyone. Temporary HP (Warlord's Advance, Investiture of Command) is not healing and is scored under protection. The tree's only interactions with its owner's Health are negative - Investiture of Command deals you unreducible spirit damage equal to your tier, and Mantle's redirection moves your damage onto allies rather than removing it."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "Scored for what a character actually gains in one round, since advantage is binary. Mantle of the Aspirant is the real value: allies in Attunement Range gain +1 to ALL TESTS for the scene - a numeric bonus that, unlike advantage, is never redundant with an ally's existing advantage sources, and it is party-wide, unconditional and scene-long. Investiture of Command grants up to 3 allies an advantage on their next attack test plus [Tier][Die] temp HP. Kneel installs a standing self-advantage on attack tests against any Compelled, Frightened or Weakened target in Attunement Range (the clause carries no duration and is not gated on the spend, so it reads as a permanent property of owning the talent; an alternative reading confines it to the activation, and the card does not settle it). Warlord's Advance grants a self-advantage on Presence tests against a survivor. COMPARATIVE, correcting the profile's uniqueness overclaim: '+1 to all tests' is the only literal grep hit, but Power is NOT the only party-wide numeric test bonus and arguably not the best one - leyline/Red's Battle Fever (Passive, NO cost, depth 1 L2) gives you and every ally in range +1 to your next test each time damage is dealt in range, stacking to a maximum equal to your Rank, and Feeding Frenzy repeats the shape; leyline/White's Terms of Accord (Special, 1 Investiture, depth 0 L1) gives +1 to objective tests for the scene. Red's is free, passive and larger; Mantle's is broader and unconditional. Also: only 2 of Power's 4 advantage/bonus talents point at ALLIES at all; the other two are self-buffs, and the advantage ledger puts Power at 3 advantage talents against leyline/Green 6 and heroic/Agent 6. Discounted from 4 on that basis."
+   },
+   {
+    "axis": "action_economy",
+    "score": 2,
+    "evidence": "One real talent: Momentum of Victory (depth 1, L2) is a Free Action giving a 15 ft move plus an entire extra melee Strike - a genuinely NEW action, not a reprint of a standard one - but it costs 1 Investiture AND an Opportunity, so it is hostage to the Plot Die and cannot be scheduled. Warlord's Advance grants a free 10 ft move on a kill. That is the whole list: no extra Actions per turn, no extra Reactions, no acting out of turn, no Special-action riders at all (0 of 9 talents are Specials, against a deity-guide target of 15-20%). COMPARATIVE: a corpus scan for free/extra Strikes, actions and reactions puts deity/Fate at 4 talents, deity/Civilization, deity/Knowledge and heroic/Warrior at 3, and Power at 2 - and one of Power's two is a passive 10 ft move. Enemy action denial from Kneel and Absolute Authority is scored under control, not here."
+   },
+   {
+    "axis": "mobility",
+    "score": 2,
+    "evidence": "Three talents carry movement, all of it short and melee-closer flavoured. Unstoppable Advance is the only mobility-primary one: you may move through enemy spaces and cannot be Slowed, Immobilized or knocked Prone, and the duration runs to the end of your NEXT turn, so one Action covers two turns of movement. 'Move through enemy spaces' is grep-unique in the corpus. Momentum of Victory bundles a 15 ft move into its free Strike. Warlord's Advance gives a 10 ft free move, but only on a kill. No teleport, no flight, no speed increase, no repositioning of allies - note by contrast that deity/Destruction's Walking Ruin is a free Passive that raises Speed by 10 ft for the scene."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Read all 9 talents looking for areas, hazards, difficult ground, walls or persistent battlefield features: there are none. Attunement Range is used purely as a targeting radius (Kneel, Absolute Authority, Investiture of Command, Mantle) and as an aura radius for the ally buff - it creates nothing on the map. Unstoppable Advance moves you THROUGH enemy spaces but leaves nothing behind, which is precisely the difference from deity/Destruction's Walking Ruin (Passive, no cost, depth 1 L2: 'every space you move through becomes dangerous terrain'). Note for contrast that Civilization, Fate and Order all place +1-to-defenses squares or auras; Power places nothing."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Nothing. No detection, no scouting, no foreknowledge, no prediction, no reading intent, no revealed hidden facts. The closest thing is Absolute Authority letting you choose an enemy's action, which is control rather than knowledge - you are not learning what it would have done. Contrast deity/Knowledge's Studied Mark, whose entry literally reads a target's current HP, conditions and two defences for 1 Investiture. A Power character contributes zero to a mystery, a stealth approach, or a scouting problem."
+   },
+   {
+    "axis": "social_influence",
+    "score": 1,
+    "evidence": "One incidental rider, and it is combat-gated: Warlord's Advance grants an advantage on Presence tests to intimidate, command or lead against a target that SURVIVED your attack, and only until the start of your next turn. Kneel's Compelled and Absolute Authority's action dictation are combat conditions with round-scale durations, not out-of-combat leverage. Striking for a domination-themed path: the tree cannot persuade, cannot deceive, has no reputation or command mechanic outside a weapon swing."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 0,
+    "evidence": "Read all 9: no travel, no crafting, no survival, no downtime mechanic, no non-combat problem solving. Every talent is priced in Actions or Free Actions within a turn structure and every duration is 'until the start of your next turn', 'until the end of its next turn', or 'for the scene'. Unstoppable Advance's condition immunities are combat conditions."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companions, constructs, minions or animated allies anywhere in the tree. Absolute Authority's dictated action is the closest analogue - a one-action puppet - but it commands an existing enemy rather than creating an entity, and it is scored under control."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 0,
+    "evidence": "The tree generates nothing. All 9 of 9 talents SPEND Investiture (1/1/2/2/1/1/2/2/3 = 15 Investiture to install the whole tree once) and Momentum of Victory additionally consumes an Opportunity. Confirmed against the corpus census: Power is 0 bonus-regen / 9 costers - Order, Civilization, Destruction and Fate are also 0-regen but spend across only 6-7 talents, and Chaos, Death, Life, Knowledge and Sovereignty each carry 1 regen talent, so Power is the only deity tree where EVERY talent is a coster and none refunds. No Investiture recovery, no Focus recovery, no Opportunity generation, no cost reduction. Contrast deity/Knowledge's Accumulate, which recovers 1 Investiture per round for free while also building its escalator. Power is entirely dependent on the leyline Draw Mana action for fuel."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Warlord's Advance",
+     "dice": "[Tier][Die] impact, formula `(@tier)d(2 * @skills.red.rank + 2)` = 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3, ON TOP of the weapon's own damage",
+     "action": "1 Action, 1 Investiture",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "INITIATES the damage event (it makes the attack) but the extra dice are gated: 'On a hit'. The kill riders (temp HP equal to tier, 10 ft free move) and the social rider are mutually exclusive - the social one fires only if the target SURVIVES. Prose gives no damage type; the authored roll formula says type=impact, so it is Deflect-reducible. Marginal value over a plain 1-Action Strike, which every character already has for free, is +1d6 plus the riders for 1 Investiture. The tree's only every-round, correctly-scaling damage talent. At 71 words it is the longest card in the tree."
+    },
+    {
+     "name": "Unstoppable Advance",
+     "dice": "[Tier][Die] impact per enemy passed through, formula `(@tier)d(2 * @skills.red.rank + 2)` = 1d6 each at Tier 1 rank 2",
+     "action": "1 Action, 1 Investiture (then Move actions to deliver it)",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "INITIATES damage with NO attack test and NO weapon - not a rider on a Strike. Conditional on geometry: damage lands only on enemies whose SPACE you move through. Duration runs 'until the end of your NEXT turn', so one Action buys the remaining 2 Actions of this Slow turn plus all 3 of the next - up to five Moves. The text sets no once-per-enemy limit. The tree's only multi-target damage. COMPARATIVE: deity/Destruction's Walking Ruin is the same shape done cheaper - a Passive with NO cost that turns every space you move through into dangerous terrain for the scene AND raises your Speed by 10 ft. Unstoppable's edge is that it passes through enemy-OCCUPIED squares and grants condition immunity; its damage-trail role is not unique and not the best."
+    },
+    {
+     "name": "Momentum of Victory",
+     "dice": "a full free melee Strike (weapon dice) + `@tier` flat impact, formula `@tier`",
+     "action": "Free Action, 1 Investiture AND an Opportunity",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "INITIATES damage (it makes a free Strike). HARD-GATED ON THE PLOT DIE: it costs an Opportunity, which the tree cannot generate, so it may never fire in a given fight. When it does fire it is the tree's best value - an entire extra Strike for no Action - but it cannot be planned around. The roll formula covers only the flat `@tier` rider; the Strike itself rolls the character's weapon."
+    },
+    {
+     "name": "Crown of Thorns",
+     "dice": "spirit damage equal to your Presence attribute, no dice, explicitly 'cannot be reduced', and spirit ignores Deflect on top of that",
+     "action": "2 Actions, 2 Investiture to install; then free for the rest of the scene",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "INITIATES damage with no weapon and no attack. Read the trigger precisely: 'when one of your Black or Red talents TESTS against a character's Cognitive' - it does NOT say on a success, so it fires on a failed Kneel or a failed Absolute Authority too. In-tree feeders are Kneel and Absolute Authority. A corpus grep for Black-or-Red-vs-Cognitive tests returns exactly five talents - CONFIRMED against all-talents.json: those two, leyline/Black's Double Dip, and Sovereignty's Censure and Decree of Ruin (no talent anywhere tests RED vs. Cognitive). Since Black 2+ is a gate requirement anyway, Double Dip is the one realistic out-of-tree feeder; the Sovereignty pair belongs to a rival deity path. Weakness: keyed to the Presence attribute, so it does NOT scale with tier at all, and Presence rises only at levels 3/6/9."
+    },
+    {
+     "name": "Warlord's Fury",
+     "dice": "flat additional melee damage equal to characters reduced below half max HP THIS SCENE, HARD CAP tier x 2 (so +2 through levels 1-5, +4 at levels 6-10)",
+     "action": "2 Actions, 2 Investiture to install; then free for the rest of the scene",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "PURE AMPLIFIER - it creates no damage event, it adds to melee attacks made by other talents or by the standard Strike. Read the tally clause exactly: 'the number of characters you have reduced below half their maximum HP DURING THIS SCENE' - it counts the whole scene retroactively, so it does NOT start at zero on install. It CAN be installed and used on the same Slow turn (2 Actions to install leaves 1 Action to Strike); only a 2-Action Fast turn blocks that. Still the tree's weakest damage contribution, but not for the reasons usually given."
+    },
+    {
+     "name": "Mantle of the Aspirant",
+     "dice": "additional SPIRIT damage equal to your tier on every melee attack for the scene (+1 at Tier 1, +2 at Tier 2)",
+     "action": "3 Actions, 3 Investiture, once per scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "PURE AMPLIFIER for damage purposes - it creates no damage event, it rides every melee attack including the free Strike from Momentum of Victory. Spirit, so it ignores Deflect; the text does NOT say 'cannot be reduced' (only Crown of Thorns and Investiture of Command carry that literal phrase, and they are the ONLY two in all 365 talents). Its real value is the defensive and party-buff half. Costs an entire Slow turn to install."
+    }
+   ],
+   "countReal": 4,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "At the deepest reachable point (L6-10, Tier 2, Red rank 3, so [Tier][Die] = 2d8 and tier = 2) with the full scene-long stack installed (Crown of Thorns + Warlord's Fury + Mantle - a stack UNREACHABLE before level 6), ONE Action of Warlord's Advance delivers: weapon dice + 2d8 impact + 4 flat (Fury at its tier x 2 cap) + 2 spirit (Mantle). That is about 1x [Tier][Die] plus roughly 6 flat plus the weapon, i.e. ~2-2.5 [Tier][Die]-equivalents per Action, of which 2 points ignore Deflect. If the Plot Die produces an Opportunity, Momentum of Victory adds a second full Strike + 2 + 4 + 2 spirit for NO Action. The AoE ceiling is a different shape: Unstoppable Advance for 1 Action, then two Moves through 3 enemies this turn and up to three more Moves next turn - 6d8 impact spread across three bodies this turn alone, but zero Strikes while you do it. Crown of Thorns adds a guaranteed Presence in unreducible spirit every time you spend an Action on Kneel or two on Absolute Authority, hit or miss. UNCOUNTED VECTOR: Absolute Authority's dictated action can be an attack on the target's own allies - the text bars only forcing it to harm ITSELF. REACHABILITY: owning all three scene installs requires Kneel, Crown of Thorns, Warlord's Advance, one of Momentum/Unstoppable, Warlord's Fury and Mantle = 6 talents, so the full stack is a LEVEL 6 build by construction. There is no Tier 1 configuration of this tree that reaches its advertised ceiling. COMPARATIVE CEILING CHECK added by this review: deity/Knowledge's Predatory Strike at 5 Insight delivers [Tier][Die] per Insight (5d6 at Tier 1, 10d8 at Tier 2) for the same 1 Action / 1 Investiture, and vital ignores Deflect - so Power's peak is nowhere near the deity atlas's peak.",
+   "repeatability": "The per-Action source is repeatable EVERY round: Warlord's Advance is 1 Action + 1 Investiture with no cooldown, no once-per-anything, and no trigger. The gate is fuel, not frequency - the tree generates zero Investiture, so at Tier 1 a 3-Action Slow turn is Draw Mana (1 Action for 1 Investiture) + Warlord's Advance (1 Action) + one spare Action, i.e. exactly one talent use per round, indefinitely; at Tier 2 one Draw funds two 1-Investiture talents in the same turn. The scene-long amplifiers are one-time installs costing 7 Investiture and 7 Actions combined - more than a level-1 character's pool and more than two whole Slow turns - and in any case cannot all be OWNED before level 6. Momentum of Victory is the only genuinely unschedulable piece.",
+   "verdict": "A real melee damage tree, but narrower than the talent count suggests: SIX talents add damage, only FOUR create a damage event, and only TWO of those four (Unstoppable Advance, Crown of Thorns) need neither a weapon nor a successful attack. Warlord's Fury and Mantle of the Aspirant are pure amplifiers and should not be counted as sources - both independent evidence streams agree: the authored overlay carries exactly 3 damage formulas (Warlord's Advance, Momentum of Victory, Unstoppable Advance), and the prose census finds 4 offensive sources plus 1 pure amplifier. The valuable half is the two spirit talents (Crown of Thorns, Mantle), because they bypass Deflect and Crown of Thorns fires even on a failed test - though Deflect-bypassing damage is NOT scarce in this corpus (deity/Knowledge carries 7 vital-damage talents, leyline/Black 5, deity/Order 4 spirit), so this is a strength, not a differentiator. The scaling half ([Tier][Die] keyed off Red rank) is correct and repeatable; the advertised escalator (Warlord's Fury) is a flat +2 through level 5. ZERO false positives: Mantle's redirection and Unstoppable Advance's condition immunities are mitigation clauses on talents that genuinely add damage in their own text, and Investiture of Command's self-damage is correctly excluded as a cost. One vector no classifier can see: Absolute Authority can dictate that an enemy attack its own allies. One census disagreement recorded above: earliestL should be 1, not 2."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries (Kneel, Warlord's Advance)",
+    "rating": 4,
+    "exemplars": "Kneel; Warlord's Advance",
+    "note": "Both entries are complete fantasies on turn one and both are efficiently priced at 1 Action + 1 Investiture, exactly as the deity guide's principle 1 demands. Kneel removes about a third of an enemy turn AND installs a standing advantage clause; because Compelled lasts until the START of your next turn and Kneel costs only 1 of a 3-Action Slow turn, you can Kneel and then attack with that advantage in the SAME turn. Warlord's Advance is a Strike plus [Tier][Die] plus a kill payoff plus a social rider. Very strong for level 1 - the tree is at its most efficient here. COMPARATIVE CAVEAT added by this review: leyline/Black's Hollow Command is also depth 0 / L1 and denies a FULL enemy turn for 1 Investiture, so Kneel is not even the best level-1 domination card inside its own gate colour."
+   },
+   {
+    "band": "depth 1-2 (Absolute Authority, Crown of Thorns, Momentum of Victory, Unstoppable Advance, Investiture of Command, Warlord's Fury)",
+    "rating": 3,
+    "exemplars": "Absolute Authority (the standout - dictate an enemy's action, with a Weakened floor on failure); Crown of Thorns (unreducible spirit on every Black/Red-vs-Cognitive test, win or lose); against Warlord's Fury and Investiture of Command, both over-costed",
+    "note": "Two excellent talents carried by four expensive ones. Depth 1 holds four (Absolute Authority, Crown of Thorns, Momentum of Victory, Unstoppable Advance); depth 2 holds two (Investiture of Command, Warlord's Fury). The band's problem is the action tax: four of these six cost 2 Actions, which in a 3-Action Slow turn leaves exactly one Action to use them with. Absolute Authority is worth it; Warlord's Fury (+2 flat at Tier 1) and Investiture of Command (3 x 1d6 temp HP plus three possibly-redundant advantages, plus unreducible self spirit damage) are not."
+   },
+   {
+    "band": "depth 3+ (Mantle of the Aspirant)",
+    "rating": 4,
+    "exemplars": "Mantle of the Aspirant",
+    "note": "A genuine capstone that pays four ways at once and all scene-long: +2 to all defenses, +tier spirit on every melee attack, a party-wide +1 to all tests, and damage redirection. 3 Actions, 3 Investiture, once per scene is the right price and is the one legitimate 3-Action slot the deity guide allows. At 59 words it is comfortably INSIDE the guide's ~70-word capstone cap. It does not, however, pay off what the tree spent the mid-tier building: it never touches the kill tally and never reads Compelled - the guide's own listed pitfall. And its party buff is not the corpus's largest: leyline/Red's Battle Fever grants allies up to +Rank on their next test as a free Passive."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED on efficiency, but NOT on ceiling. The two depth-0 entries deliver the most power per Action and per Investiture in the tree and are live at level 1, so a two-talent Power dip is unusually good. But the tree's two highest-ceiling talents are Absolute Authority (depth 1) and Mantle (depth 3), so a player who stops at the entries has the best RATE and roughly half the tree's practical ceiling. The depth 1-2 band is where the 2-Action tax bites (4 of 6 talents) and where both weakest talents sit; the capstone then recovers to entry-level quality. A structural fact that compounds this: the tree's advertised full stack (Crown of Thorns + Warlord's Fury + Mantle) cannot be OWNED before level 6, so Tier 1 Power is always a partial build.",
+  "uniqueOwnership": [
+   "CONFIRMED: the only source of the Compelled condition in the game - grep over all 365 talents returns exactly three hits for 'Compelled': Kneel and Absolute Authority (which create and consume it) and deity/Death's Risen Servant (which is merely immune to it). Power owns this condition outright.",
+   "DOWNGRADED from 'the only talent that dictates an enemy's action'. Absolute Authority is ONE OF TWO dictate-an-action effects: leyline/Black's Puppeteer (Reaction, 2 focus + 1 Investiture, depth 4, earliest L6) reads 'When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.' Absolute Authority is the cheaper and earlier of the two (depth 1, L2) and needs no 0-focus target; Puppeteer is a Reaction and needs no Compelled/Frightened/Weakened prerequisite. Note also that Power's version says 'the target's action' (singular), so the two may be the same size. And neither is the corpus's biggest denial: leyline/Black's Hollow Command (depth 0, L1, 1 Investiture) simply removes the enemy's whole next turn.",
+   "DOWNGRADED from 'the only damage-redirection effect in the corpus'. Mantle is the only talent that pushes YOUR damage OUTWARD onto allies, but it is not the corpus's only damage transfer: leyline/White's Shared Burden (Reaction, 2 Investiture, depth 2, L3) reads 'When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place' - the same mechanic pointed the party-positive direction. The claim that 'redirect' is the sole grep hit is also false: leyline/Blue's Redirect Momentum matches the string (it is a forced-movement talent, not damage). Mantle's redirection remains party-net-zero either way.",
+   "NARROWED from 'the only party-wide +1 to ALL TESTS'. Unique in the literal wording - 'to all tests' is a single grep hit - but not the only party-wide numeric test bonus and not the largest: leyline/Red's Battle Fever (Passive, NO cost, depth 1, L2) gives you and allies in Attunement Range +1 to your next test each time damage is dealt in range, up to a maximum equal to your Rank; leyline/Red's Feeding Frenzy repeats the shape; leyline/White's Terms of Accord (Special, 1 Investiture, depth 0, L1) grants +1 to objective-pursuing tests for the scene. Six talents in the corpus grant '+X to all defenses' (Order's Covenant, Civilization's Lay Foundation / Bastion / Magnum Opus, Fate's Ordained Ground, and Mantle itself). Mantle's genuine edge: a flat numeric bonus on EVERY test, unconditional, scene-long, which no advantage source makes redundant.",
+   "PARTLY REFUTED. 'Move through enemy spaces' is grep-unique to Unstoppable Advance, but 'the only one that charges enemies damage for standing in your path' is false: deity/Destruction's Walking Ruin (Passive, NO cost, depth 1, L2) makes 'every space you move through' dangerous terrain for the scene and adds 10 ft of Speed - a free, permanent, better version of the same mobile-damage-trail role. Unstoppable Advance's real ownership is passing through OCCUPIED squares plus the Slowed/Immobilized/Prone immunity.",
+   "CORRECTED COUNT. Crown of Thorns is the only damage engine that fires on a FAILED test - the trigger reads 'tests', not 'succeeds' - and that stands. But the corpus figure was wrong: exactly FOUR talents in 365 carry an unreducible clause, not five - Power's two, which ARE the only two literal 'cannot be reduced' hits (Crown of Thorns, Investiture of Command), plus heroic/Warrior's Wit's End and deity/Destruction's The Unmooring ('ignores deflect'). Separately, do not over-price the spirit type: Deflect-bypassing damage is common (deity/Knowledge 7 vital talents, leyline/Black 5, deity/Order 4 spirit, deity/Chaos 3).",
+   "NARROWED. Warlord's Fury is the only escalator keyed to a KILL TALLY, and no other talent reads that tally - but it is not the corpus's escalating-stack mechanic. deity/Knowledge's Insight is: generated by an entry AND by a free Passive (Accumulate, which also refunds 1 Investiture per round), spent by four talents, capped at 5 rather than at tier x 2, multiplying DICE ([Tier][Die] per Insight) rather than adding flat points - and it reads kills too (Hunter's Discipline transfers half a slain target's stacks to a new target as a Free Action). Power's ownership here is nominal.",
+   "ADDED, and it is the tree's real 'something': Power is the only tree that TAKES an enemy's turn and SPENDS it. Every other control effect in the corpus subtracts (Stunned, Restrained, Disoriented, Hollow Command's blanket denial); Absolute Authority converts denial into a positive action you choose, and the text bars only self-harm, so pointing the enemy at its own allies is legal. Puppeteer is the only comparable effect and it is depth 4 / L6 / Reaction / 0-focus-gated. Nothing else in 365 talents does this at level 2."
+  ],
+  "gaps": [
+   "No ranged option whatsoever. Every damage talent needs melee reach or a melee weapon attack. And the two non-damage plays are shorter-ranged than usually assumed: Attunement Range is 30 ft at rank 2, the cap for the whole of levels 1-5, so a Tier 1 Power character at 60 ft has NO legal play at all - Kneel and Absolute Authority are both out of range until rank 3 at level 6.",
+   "No healing of any kind - no Health, no Focus, no Investiture restored to anyone, ever. Downed ally, drained ally, Injury: the tree sits on its hands.",
+   "No resource generation. 15 Investiture to install the whole tree, zero returned; the census puts Power at 0 regen / 9 costers - the only deity tree where every single talent spends and none refunds. Without a leyline path's Draw Mana this tree simply stops working after three or four rounds.",
+   "Zero Reactions. Nothing in the tree happens on an enemy's or an ally's turn - a Power character is inert for two-thirds of the round cycle. No interception, no punish, no counter.",
+   "Zero Passives and zero Specials. Every one of the 9 talents costs both an action type and Investiture; nothing at all works for free, against deity-guide targets of ~25-30% Passive and ~15-20% Special. (The Special miss is atlas-wide - all ten deity trees are at 0% - but the 0% Passive puts Power at the deity floor.)",
+   "No information tools at all. No detection, tracking, scouting, foreknowledge, or lie-sensing. A mystery scene, an ambush, or a hidden-enemy fight offers this tree nothing.",
+   "No exploration, travel, survival, crafting or downtime utility. Every talent's duration is measured in turns or scenes.",
+   "No terrain, zones, hazards or area denial - the tree cannot shape the map at all, only walk across it, which is conspicuous when Civilization, Fate and Order all place +1-to-defenses squares and Destruction lays a free dangerous-terrain trail.",
+   "No summons, companions or constructs.",
+   "Both control talents test Black vs. Cognitive, so a high-Cognitive enemy, a mindless enemy, or an enemy immune to mental effects turns off half the tree - and there is no alternate test line to fall back on. It also takes Crown of Thorns' in-tree feeders with it.",
+   "Almost no social leverage despite the domination theme: one advantage on Presence tests, and only against an enemy you have already hit with a weapon and failed to kill. Out of combat, the disciple of the god of domination cannot intimidate a guard, command a crowd, or extract a confession.",
+   "FRIGHTENED IS A DEAD REFERENCE CORPUS-WIDE, not merely a tree gap. Grep over all 365 talents returns exactly three hits for 'Frightened': Kneel and Absolute Authority (both CONSUME it) and deity/Death's Risen Servant (immune to it). NO Edha talent in any of the 21 trees produces Frightened. So one third of Absolute Authority's target-state list and one third of Kneel's advantage clause is unreachable by any character in the system. Weakened is the importable one, and its supplier is the free Black Attunement Key.",
+   "No AoE beyond the narrow line Unstoppable Advance walks. Against four spread-out enemies the tree can affect exactly one of them per Action.",
+   "The tree's own advertised endgame is unreachable at Tier 1: owning all three scene-long installs takes six talents, i.e. level 6, at which point you are Tier 2 anyway."
+  ],
+  "weakTalents": [
+   {
+    "name": "Investiture of Command",
+    "reason": "The tree's worst talent on a corrected reading. 2 Actions (two-thirds of a Slow turn) + 2 Investiture + unreducible spirit damage to yourself, in exchange for [Tier][Die] (1d6 at Tier 1) temp HP each to three allies and an advantage on their next attack. Per the primer, advantage is binary: any ally who already has advantage from a Gain Advantage action, a Blue rider, a Green pack talent or their own path gains literally nothing from the second half. You pay HP for a buff that may be worth zero to the allies most likely to be attacking, and it is the only talent in the tree that damages its owner for no offensive return. COMPARATIVE: deity/Sovereignty's Sovereign's Favor delivers the same [Tier][Die] temp HP as a FREE Passive rider on a 1-Action talent."
+   },
+   {
+    "name": "Warlord's Fury",
+    "reason": "The tree's signature escalator, and weak - but weaker for different reasons than usually stated. 2 Actions + 2 Investiture at depth 2 buys a FLAT bonus capped at tier x 2, i.e. +2 for the entire level 1-5 range, and no other talent reads the tally. Two commonly repeated criticisms are WRONG against the text and are corrected here: (1) the tally does NOT start at zero on install - it reads 'characters you have reduced below half their maximum HP during this scene', counting the whole scene retroactively; (2) it CAN be installed and used on the same Slow turn, since 2 Actions to install leaves 1 Action to Strike. Nor is it 'strictly worse' than Warlord's Advance - the two STACK, and over a long scene a free +2 on every melee attack is more Investiture-efficient than paying 1 Investiture per 1d6. The real charge is comparative: deity/Knowledge buys an uncapped dice MULTIPLIER for the same slot, so a 2-Investiture depth-2 talent whose Tier 1 payload is +2 flat is undersized for a Radiant-tier atlas."
+   },
+   {
+    "name": "Momentum of Victory",
+    "reason": "Not weak in effect - it is the best value in the tree when it fires - but its COST LINE is the problem, and it is the tree's only action-economy talent. Requiring 1 Investiture AND an Opportunity means the tree's entire tempo package is hostage to the Plot Die, and the tree generates no Opportunity of its own. A talent you may go a whole combat without ever legally using should not be the only source of a mechanic in a 9-talent tree."
+   },
+   {
+    "name": "Kneel (the advantage clause specifically)",
+    "reason": "Thinner than its wording suggests, though NOT for the timing reason usually given - correcting that here: the clause has no duration and is not gated on the spend, so it reads as a standing property, and because Kneel costs 1 of a 3-Action Slow turn while Compelled lasts until the START of your next turn, you can Kneel and cash the advantage in the SAME turn. The real thinness is supply: it keys off Compelled, Frightened or Weakened; Frightened is produced by NO talent in the entire 365-talent corpus, Weakened is a cross-tree import from the Black leyline Attunement Key, and the tree's only in-house source of any of the three IS Kneel itself. It also collides with the primer's binary-advantage rule any round an ally has already granted you advantage."
+   },
+   {
+    "name": "OVERCOSTED, structural: the tree's action-type distribution",
+    "reason": "Four of nine talents cost 2 Actions and one costs 3, so 5/9 (56%) of the tree costs two-thirds or more of a Slow turn. The deity guide's own target is 15-25% at 2 Actions with 3 Actions reserved for the capstone; this tree runs 44% at 2 Actions. Worse, three of those are scene-long INSTALLS (Crown of Thorns 2 Actions, Warlord's Fury 2 Actions, Mantle 3 Actions) totalling 7 Actions and 7 Investiture before the tree runs at full strength - more than two whole Slow turns, more Investiture than a level-1 character's entire pool, and unownable together before level 6. The guide also targets ~25-30% Passive and ~15-20% Special; this tree has 0 of each. COMPARATIVE FAIRNESS: 0% Special is an ATLAS-WIDE failure - all ten deity trees have zero Specials - so that row is not Power's fault; the 0% Passive, 0% Reaction and 44% 2-Action figures are."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'His blessed do not persuade; they compel.'",
+     "delivered": "DELIVERS",
+     "evidence": "Literally true in the mechanics. Kneel applies Compelled - grep-confirmed exclusive to this tree - and Absolute Authority dictates the target's action. The tree contains no persuasion, deception or negotiation mechanic at all; the single social clause (Warlord's Advance's advantage on Presence tests to intimidate, command or lead) is gated on having just hit the person with a weapon and failed to kill them. The talents are more committed to this line than the flavour text is."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'forces foes to kneel - Compelled, Weakened, made to serve - then exploits the broken'",
+     "delivered": "PARTIAL",
+     "evidence": "Compelled: yes, Kneel. 'Made to serve': yes, Absolute Authority. 'Exploits the broken': yes and cleanly - Kneel's advantage clause and Absolute Authority's target requirement both key off Compelled/Frightened/Weakened, and the timing works inside a single Slow turn. But WEAKENED is not something this tree can apply on purpose: the only in-tree source is Absolute Authority's FAILURE clause. The reliable Weakened source is the Black leyline Attunement Key ('enemies you can see within Attunement Range with no ally within 5 feet become Weakened'), which belongs to the gate colour, not to Tyrith - and leyline/Black produces Weakened on six separate talents. And Frightened, named as an exploit trigger by BOTH of Power's control talents, is produced by NO talent anywhere in the 365-talent corpus."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'they grow with every enemy laid low... Each death builds toward a warlord's fury no single rival can withstand.'",
+     "delivered": "DRIFTED",
+     "evidence": "Exactly ONE talent of nine reads a kill tally: Warlord's Fury. Its bonus is flat, it caps at tier x 2 (+2 through level 5, +4 through level 10), it counts characters reduced below HALF max HP rather than 'laid low', and it feeds nothing else. Warlord's Advance's kill rider (temp HP equal to tier, 10 ft move) is a one-shot payoff, not an escalator. There is no state in this tree a rival could fail to withstand: maximum accumulated growth across an entire scene is +2 damage at Tier 1, and the talent is not reachable until level 3. COMPARATIVE (lens d): this promise is ALSO made by two other intent files and delivered better by both. deity/Knowledge promises 'an accumulating mark of study... each stack sharpens the damage' and ships Insight - generated by an entry plus a free Passive, spent by four talents, multiplying dice. leyline/Red promises mages who 'grow stronger the worse the fight becomes' with a whole Momentum specialty, and ships Battle Fever and Feeding Frenzy as free Passives. Red is one of Power's own two gate colours, so a Power character is buying the better version of their own fantasy on the side."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'Signature resource: Bounty - a tally of the fallen; each enemy slain within your range adds one, escalating your dominating talents toward a warlord's fury.'",
+     "delivered": "DRIFTED - hardest failure in the profile",
+     "evidence": "The word 'Bounty' appears ZERO times across all 365 talents - re-verified by grep against all-talents.json for this review. There is no token, no visible tally, no talent that spends it, and no generator other than the incidental clause inside Warlord's Fury itself. Critically, it does not escalate the DOMINATING talents: Kneel, Absolute Authority and Crown of Thorns never read the tally; only a melee-damage amplifier does. Nor does it count 'each enemy slain within your range': it counts characters reduced below half max HP, anywhere, plus an increment on a kill. This violates the deity guide's Principle 5 verbatim ('If a deity introduces a resource token, it should be generated by an entry and spent by most of the rest of the tree...') - here it is generated by no entry and spent by exactly one talent, itself."
+    },
+    {
+     "claim": "DEITY GUIDE, Tyrith entry: 'Homebrew resource: Kill-count counter that scales Warlord's Fury.' - THE TWO INTENT SOURCES DISAGREE WITH EACH OTHER.",
+     "delivered": "DELIVERS (against the guide) - and the guide contradicts its own Principle 5",
+     "evidence": "This is the finding the Bounty row alone conceals, and it is new in this review. The DESIGN GUIDE does not promise a tree-wide token: it promises exactly 'a kill-count counter that scales Warlord's Fury', and that is precisely what shipped - one counter, scaling one talent. The PATH DESCRIPTION is the source that inflated it into 'Bounty... escalating your dominating talents'. Two consequences. (1) Power's headline drift is a DOCUMENTATION conflict as much as a build failure, and the cheap fix is the path description, not the tree. (2) The guide is inconsistent with itself: its Principle 5 demands a resource 'generated by an entry and spent by most of the rest of the tree', while its own Tyrith line prescribes a counter read by one talent. The guide's Tyrith gameplay loop ('Kneel -> exploit dominated target -> kill -> Momentum chain -> Mantle') IS delivered end to end, but it crosses both branches, so walking it requires all six of Kneel, Absolute Authority, Warlord's Advance, Momentum of Victory, Warlord's Fury and Mantle - a level-6 build."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Two entry nodes, both requiring [Color1] 2+; [Color2] 2+... each should independently deliver the deity's player-fantasy on turn one.'",
+     "delivered": "DELIVERS",
+     "evidence": "Kneel (Black 2+; Red 2+, depth 0, no connections) is a complete domination fantasy in one talent; Warlord's Advance (Black 2+; Red 2+, depth 0, no connections) is a complete conqueror fantasy in one talent. Neither is a setup talent, both are 1 Action / 1 Investiture, and the two branches genuinely diverge (Kneel -> Absolute Authority / Crown of Thorns; Warlord's Advance -> Momentum of Victory / Unstoppable Advance) before converging at depth 2 (Investiture of Command, Warlord's Fury) and again at the depth-3 capstone, reachable from either. Textbook execution of the prescribed 2 + 4 + 2 + 1 shape."
+    },
+    {
+     "claim": "DESIGN GUIDE, Tyrith colour split: 'Black tests for Compelled / Weakened / control; Red tests rare - most Red talents are weapon attacks or kinetic riders that don't need a contested test.'",
+     "delivered": "DELIVERS, exactly",
+     "evidence": "The tree contains precisely two tests and both are Black vs. Cognitive (Kneel, Absolute Authority; the data's skill field reads 'black' on exactly those two and is empty on the other seven), and a corpus scan confirms no talent anywhere tests Red vs. Cognitive. The Red half is entirely untested riders on melee weapon attacks, and the roll formulas confirm the split mechanically: both [Tier][Die] formulas read `(@tier)d(2 * @skills.red.rank + 2)`, so Red sets the damage die while Black sets the control test. Worth noting against the gate audit's toll-booth finding: Power is one of the few deity trees where BOTH gate colours do mechanical work - Black tested twice, Red sizing the damage die - and it is correctly absent from the toll-booth list (Order, Civilization, Fate, Knowledge, Sovereignty)."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets for deity trees: ~25-30% Passive, ~15-20% Special, ~25-35% Action, ~15-25% 2 Actions, ~10-15% Free Action, ~10% Reaction, 3 Actions capstone-only.",
+     "delivered": "MISSED on four of seven rows",
+     "evidence": "Recounted from the data: 1 Action x3 (33%, on target); 2 Actions x4 (44% against a 15-25% target - nearly double); Free Action x1 (11%, on target); 3 Actions x1 and it IS the capstone (on target). But Passive 0% against ~25-30%, Special 0% against ~15-20%, and Reaction 0% against ~10%. COMPARATIVE CONTEXT added by this review: the 0% Special is universal - all ten deity trees have zero Specials - so that row is an atlas-wide standards failure, not evidence about Power. The 0% Passive and 0% Reaction put Power at the deity floor (the atlas runs 0-3 Passives and 0-1 Reactions per tree), and the 44% 2-Action figure is the tree's own. Every single talent costs both an action type and Investiture."
+    },
+    {
+     "claim": "DESIGN GUIDE description length: entries ~30-45 words, tier-3 synthesis ~40-55, capstone up to ~70.",
+     "delivered": "PARTIAL - and it is the atlas norm, not a Power fault",
+     "evidence": "Recounted word by word and verified programmatically against all-talents.json: Kneel 61, Warlord's Advance 71, Crown of Thorns 33, Absolute Authority 53, Momentum of Victory 33, Unstoppable Advance 36, Investiture of Command 39, Warlord's Fury 59, Mantle of the Aspirant 59. Four overrun their band; the capstone at 59 sits comfortably UNDER the ~70 cap. COMPARATIVE CORRECTION: Power's mean description is 49.3 words, which is the DEITY MEDIAN - Fate runs 61.8 (max 93), Order 56.6 (max 82), Destruction 51.6 (max 101), while Civilization and Death also sit at exactly 49.3. Power's 71-word entry is not even the atlas's longest card. The overrun is real against the guide but it is a corpus-wide standards failure, and singling Power out for it would be a mis-attribution."
+    },
+    {
+     "claim": "DESIGN GUIDE Principle 9: 'Deity power is Radiant-tier... Don't undersell the capstones.'",
+     "delivered": "PARTIAL",
+     "evidence": "Mantle of the Aspirant is not undersold - four simultaneous scene-long effects is a proper capstone. But it does not pay off what the tree built, which is the guide's own listed pitfall ('A capstone for an insight-stacking tree should consume the stacks for a massive payload... A capstone that just buffs the player's defenses for the scene doesn't honor what the tree has been building'). Mantle never touches the kill tally, never interacts with Compelled, and roughly half of it IS a defence buff for the scene. Separately, several MID-tier talents ARE undersold against Principle 9 and against the deity atlas itself: Warlord's Fury's entire Tier 1 payload is +2 flat damage for 2 Actions and 2 Investiture, in an atlas where Knowledge's same-slot talents multiply dice."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "Empirically this is an Investiture-hungry melee package with two distinctive single-target domination effects bolted onto the front of it - not the snowballing conqueror the path description sells. The domination half (Kneel, Absolute Authority, Crown of Thorns) is precise, owns Compelled outright, and delivers its claim exactly; the escalation half is the drift. 'Bounty', the path description's declared signature resource, does not exist as a mechanic - though the DESIGN GUIDE only ever promised 'a kill-count counter that scales Warlord's Fury', which shipped, so the drift is as much a documentation conflict as a build failure. Two comparative facts temper any 'best in corpus' language: leyline/Black - one of the two colours this tree charges you rank 2 for - already denies a full enemy turn at level 1 (Hollow Command) and already dictates an enemy action (Puppeteer); and the escalating-kill fantasy is delivered better by deity/Knowledge's Insight and by leyline/Red's free momentum passives. What survives as genuinely Power's own is narrow but real: it is the only tree that takes an enemy's turn and SPENDS it. Strip the flavour and what remains is: dominate one enemy per Action with Black-vs-Cognitive tests inside a 30-ft radius, add flat and [Tier][Die] riders to a weapon Strike, install up to three expensive scene-long amplifiers you cannot all own before level 6, and never once act on someone else's turn."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME only - never produced",
+    "talents": "All 9. Kneel 1, Warlord's Advance 1, Absolute Authority 2, Crown of Thorns 2, Momentum of Victory 1, Unstoppable Advance 1, Investiture of Command 2, Warlord's Fury 2, Mantle of the Aspirant 3 = 15 total to install the tree. The only deity tree at 9 costers / 0 regen."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "CONSUME only - the tree generates none",
+    "talents": "Momentum of Victory (1 Investiture, Opportunity)"
+   },
+   {
+    "keyword": "Compelled",
+    "role": "PRODUCE and CONSUME - tree-exclusive in the corpus (grep-verified, 3 hits in 365)",
+    "talents": "Kneel produces it and also consumes it (the standing advantage clause); Absolute Authority consumes it as a target requirement. The only other corpus hit is deity/Death's Risen Servant, which is immune to it."
+   },
+   {
+    "keyword": "Weakened",
+    "role": "CONSUME primarily; PRODUCE only on a failure",
+    "talents": "Consumed as an exploit trigger by Kneel's advantage clause and as a target requirement by Absolute Authority; produced only by Absolute Authority's FAILURE clause. The corpus's Weakened engine is leyline/Black (6 talents, including the free Attunement Key)."
+   },
+   {
+    "keyword": "Frightened",
+    "role": "CONSUME only - and NO talent in the entire corpus produces it",
+    "talents": "Kneel's advantage clause; Absolute Authority's target requirement. Grep over all 365 talents returns three hits for 'Frightened': these two consumers and deity/Death's Risen Servant (immune). This is a dead reference system-wide, not just a tree gap."
+   },
+   {
+    "keyword": "advantage (binary, per the primer)",
+    "role": "PRODUCE",
+    "talents": "Kneel (self, on attacks vs. Compelled/Frightened/Weakened - no duration and not gated on the spend, so it reads as a standing clause); Warlord's Advance (self, on Presence tests vs. a survivor, until the start of your next turn); Investiture of Command (up to 3 allies, next attack test). 3 talents - the advantage ledger's third-highest deity count, against leyline/Green 6 and heroic/Agent 6."
+   },
+   {
+    "keyword": "temporary HP",
+    "role": "PRODUCE",
+    "talents": "Warlord's Advance (equal to tier, self, on a kill); Investiture of Command ([Tier][Die] to up to 3 allies). Corpus-wide temp HP sits in 14 talents across 9 trees, so this is common, not distinctive."
+   },
+   {
+    "keyword": "spirit damage",
+    "role": "PRODUCE - ignores Deflect, but NOT scarce in the corpus",
+    "talents": "Crown of Thorns (equal to Presence, explicitly 'cannot be reduced'); Mantle of the Aspirant (equal to tier, every melee attack - spirit, but NOT flagged unreducible); Investiture of Command (equal to tier, unreducible, dealt TO YOURSELF as a cost). deity/Order carries 4 spirit talents, Chaos 3, Power 3; Deflect-bypassing vital damage adds Knowledge 7 and leyline/Black 5."
+   },
+   {
+    "keyword": "impact damage",
+    "role": "PRODUCE",
+    "talents": "Warlord's Advance, Momentum of Victory, Unstoppable Advance - exactly the tree's 3 authored roll formulas, all type=impact and therefore Deflect-reducible"
+   },
+   {
+    "keyword": "[Tier][Die] / rank die",
+    "role": "CONSUME as scaling notation",
+    "talents": "Warlord's Advance and Unstoppable Advance for damage; Investiture of Command for temp HP. Formula `(@tier)d(2 * @skills.red.rank + 2)` - the die is set by RED rank, so 1d6 at Tier 1 rank 2 and 2d8 at Tier 2 rank 3."
+   },
+   {
+    "keyword": "Tier (as a flat magnitude)",
+    "role": "CONSUME",
+    "talents": "Warlord's Advance (temp HP), Momentum of Victory (bonus damage, formula `@tier`), Investiture of Command (self spirit damage), Warlord's Fury (the tier x 2 cap), Mantle of the Aspirant (spirit damage and the redirection amount)"
+   },
+   {
+    "keyword": "Presence (attribute)",
+    "role": "CONSUME as a damage magnitude - unique in this tree, and does not scale with tier",
+    "talents": "Crown of Thorns (spirit damage equal to your Presence). Presence also sets the Investiture pool (2 + max(AWA, PRE)), so it is doubly load-bearing here; attribute points land only at levels 3/6/9."
+   },
+   {
+    "keyword": "Black skill",
+    "role": "CONSUME - the tree's only test skill",
+    "talents": "Kneel and Absolute Authority (data skill field = 'black'; the other seven have an empty skill field); Crown of Thorns triggers off 'your Black or Red talents' testing vs. Cognitive"
+   },
+   {
+    "keyword": "Red skill rank",
+    "role": "CONSUME - sets the damage die size",
+    "talents": "Warlord's Advance, Unstoppable Advance (`2 * @skills.red.rank + 2`). Both gate colours therefore do real mechanical work in this tree - it is correctly absent from the gate audit's toll-booth list."
+   },
+   {
+    "keyword": "Cognitive defense",
+    "role": "CONSUME - the sole defence this tree attacks",
+    "talents": "Kneel, Absolute Authority (test Black vs. Cognitive); Crown of Thorns keys its damage trigger to any Black/Red test against Cognitive. Corpus-wide exactly five talents test Black-or-Red vs. Cognitive (verified against all-talents.json): those two, leyline/Black's Double Dip, and Sovereignty's Censure and Decree of Ruin. No talent anywhere tests RED vs. Cognitive."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME as targeting radius and aura radius - 30 ft for the whole of Tier 1 (rank 2), 60 ft only from rank 3 at level 6",
+    "talents": "Kneel, Absolute Authority, Investiture of Command, Mantle of the Aspirant"
+   },
+   {
+    "keyword": "Slowed / Immobilized / Prone",
+    "role": "CONSUME as self-immunities only - never applied to enemies",
+    "talents": "Unstoppable Advance (until the end of your NEXT turn, so it covers two turns)"
+   },
+   {
+    "keyword": "reduced to 0 HP (kill trigger)",
+    "role": "CONSUME as a trigger",
+    "talents": "Warlord's Advance (temp HP + free move); Warlord's Fury (bonus increment of 1, still capped)"
+   },
+   {
+    "keyword": "'below half max HP' tally - the unnamed 'Bounty'",
+    "role": "PRODUCE and CONSUME entirely inside one talent",
+    "talents": "Warlord's Fury only. It counts the WHOLE scene retroactively, not from the moment of install. The name 'Bounty' appears nowhere in the talent data (grep-verified, 0 hits in 365). Only two other talents in the corpus read a 'below half' state at all (leyline/Green's Predator's Instinct, deity/Death's Consuming Decay), and neither reads a tally."
+   },
+   {
+    "keyword": "melee weapon attack",
+    "role": "CONSUME - the delivery vehicle for 4 of the 6 damage-touching talents",
+    "talents": "Warlord's Advance, Momentum of Victory, Warlord's Fury, Mantle of the Aspirant. Crown of Thorns and Unstoppable Advance are the two that need no weapon."
+   },
+   {
+    "keyword": "defenses (+2 to all)",
+    "role": "PRODUCE",
+    "talents": "Mantle of the Aspirant (self only). Six corpus talents grant '+X to all defenses'; Civilization's Bastion and Magnum Opus also grant +2."
+   },
+   {
+    "keyword": "+1 to all tests (numeric, non-advantage party aura)",
+    "role": "PRODUCE",
+    "talents": "Mantle of the Aspirant - the only literal 'all tests' hit, but not the only party-wide numeric test bonus: leyline/Red's Battle Fever and Feeding Frenzy grant allies up to +Rank on their next test for free, and leyline/White's Terms of Accord grants +1 for the scene on objective tests."
+   },
+   {
+    "keyword": "damage transfer between characters",
+    "role": "PRODUCE - party-net-zero, and one of two in the corpus",
+    "talents": "Mantle of the Aspirant (moves up to your tier of YOUR damage onto willing allies). The other is leyline/White's Shared Burden (Reaction, 2 Investiture): 'take half that damage in their place' - the same mechanic pointed inward. Mantle is the only one that points outward."
+   },
+   {
+    "keyword": "cannot be reduced",
+    "role": "PRODUCE - the only two literal hits in 365 sit in this tree",
+    "talents": "Crown of Thorns (to the enemy); Investiture of Command (to yourself). Two further talents achieve the same with 'ignores deflect' (heroic/Warrior's Wit's End, deity/Destruction's The Unmooring), so the corpus total is 4, not 5."
+   },
+   {
+    "keyword": "once per scene",
+    "role": "CONSUME as a limiter",
+    "talents": "Mantle of the Aspirant"
+   },
+   {
+    "keyword": "scene duration",
+    "role": "CONSUME - three scene-long installs, unownable together before level 6",
+    "talents": "Crown of Thorns, Warlord's Fury, Mantle of the Aspirant"
+   },
+   {
+    "keyword": "Reaction",
+    "role": "NEITHER - the tree contains zero Reactions",
+    "talents": "none (0 of 9), against a deity-guide target of ~10%"
+   },
+   {
+    "keyword": "Passive / Special",
+    "role": "NEITHER - zero of each",
+    "talents": "none (0 of 9 Passive, 0 of 9 Special). The Special miss is atlas-wide (all ten deity trees are at 0%); the 0% Passive puts Power at the deity floor (the range is 0-3)."
+   }
+  ],
+  "crossTreeHooks": [
+   "Frightened - Kneel's advantage clause and Absolute Authority's target requirement both key off it, and it is produced by NO talent in the 365-talent corpus. This is not an importable seam: it is a dead reference until some tree gains a fear source.",
+   "Weakened - the real seam, and the natural supplier is the BLACK LEYLINE ATTUNEMENT KEY: 'When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.' The Key is FREE and granted with the path, and Black 2+ is already a gate requirement, so the intended combo is Draw Mana (fuel) -> isolated enemies Weakened -> Absolute Authority is legal and Kneel's advantage clause is live. leyline/Black supplies Weakened on six talents in total. The tree is designed around a hook it does not own. (Doc drift worth noting: the talent data and the system primer say 5 ft, the leyline design guide says 10 ft.)",
+   "LEYLINE/BLACK'S OWN DOMINATION SUITE - the comparison a Power player will actually face, and new in this review. Hollow Command (2 Actions, 1 Investiture, depth 0, L1) denies an enemy's ENTIRE next turn; Puppeteer (Reaction, 2 focus + 1 Investiture, depth 4, L6) chooses one of a 0-focus enemy's actions; Extract Thought denies Reactions; Siphoned Will refunds focus off Hollow Command. Because Black 2+ is compulsory for this tree, these are not exotic imports - they are the alternative use of the same talent slots, and on raw denial they beat Kneel. Power's counter-argument is that its version needs no Deception/focus infrastructure and pairs with Crown of Thorns.",
+   "Crown of Thorns' out-of-tree feeders - the trigger reads 'one of your Black or Red talents tests against a character's Cognitive', broader than the two in-tree tests. Verified: exactly five Black-or-Red-vs-Cognitive tests exist in 365 talents - Kneel, Absolute Authority, leyline/Black's Double Dip, and Sovereignty's Censure and Decree of Ruin. Since Black 2+ is already required, Double Dip is the one realistic import (the Sovereignty pair belongs to a rival deity path), turning Crown of Thorns from a two-feeder into a three-feeder engine.",
+   "Draw Mana / any Investiture regeneration - structural dependency. 15 Investiture to install the tree, zero generated; Power is the only deity tree where all 9 talents cost and none refunds. At Tier 1 the tree runs one talent per turn purely on the leyline Draw Mana action, and any bonus-regen talent from another path is worth more to a Power character than a second Power talent.",
+   "Opportunity generation / Plot Die manipulation - Momentum of Victory, the tree's only action-economy talent, consumes an Opportunity the tree cannot produce. The corpus census shows Opportunity produced by 9 talents across 5 trees; one of those is what makes this talent schedulable.",
+   "Willing allies standing inside 30 ft - Mantle's damage redirection needs bodies that can absorb tier damage, and the aura radius at Tier 1 is only 30 ft. Good value only alongside a healer or a damage-reduction path, since the redirect is party-net-zero. Note leyline/White's Shared Burden is the same mechanic pointed the other way, so a White ally can absorb half of what Mantle pushed out.",
+   "Allies WITHOUT an existing advantage source - Investiture of Command's advantage half is worth zero to any ally already carrying advantage (binary, per the primer). Its value is inversely proportional to how many advantage-granting paths the party has, which is an unusual and probably unintended anti-synergy in a corpus where 45 talents across 13 trees produce advantage.",
+   "A melee weapon and an attack profile - the entire Red half is rider damage on a Strike. The tree supplies no weapon, no accuracy bonus, no reach and no attack-test buff; its damage output is bounded by an attack profile bought elsewhere.",
+   "Red skill ranks - the damage die literally reads `2 * @skills.red.rank + 2`, so this tree's damage is purchased with leyline skill ranks rather than with talents in the tree. Ranking Red is a bigger damage upgrade than any depth-2 talent here - and leyline/Red also sells the momentum escalation (Battle Fever, Feeding Frenzy, free Passives) that Power's path description promises but does not ship.",
+   "Presence attribute investment - Crown of Thorns' entire output is an attribute, so an attribute-boosting or Presence-focused build outside the tree sets this talent's power level; Presence also feeds the Investiture pool the whole tree runs on. Attribute points land only at levels 3/6/9.",
+   "Low-Cognitive or mentally vulnerable enemies - both tests hit Cognitive, so an ally who can lower Cognitive, impose disadvantage, or strip Focus roughly doubles this tree's reliability; conversely a Cognitive-heavy encounter shuts half of it down, takes Crown of Thorns' in-tree feeders with it, and the tree has no fallback line.",
+   "Anything that acts on an enemy's turn - with 0 Reactions, a Power character never competes for the 1-Reaction-per-round cap. That makes them an unusually good carrier for a Reaction imported from any other path, which is a real (if accidental) cross-tree hook in the tree's favour."
+  ],
+  "topThree": [
+   "Absolute Authority - the corpus's most VALUABLE single-target control effect, because it converts denial into use: on a success you choose the target's action, and since the text bars only forcing it to harm ITSELF, turning it on its own allies is legal. Weakened is the floor on a failure, so it never fully whiffs, and it is live at depth 1 / level 2. CORRECTED FRAMING: it is NOT the corpus's strongest denial - leyline/Black's Hollow Command removes an enemy's whole next turn at level 1 for 1 Investiture, and Puppeteer also dictates an action - and the text's singular 'the target's action' reads as one action rather than a seized turn. It is the tree's true ceiling nonetheless, and the only such effect available before level 6.",
+   "Kneel - an entry that for 1 Action and 1 Investiture at level 1 denies roughly a third of an enemy turn, drags the target toward you, and installs a standing advantage clause you can cash in the SAME turn (1 Action to Kneel leaves 2 in a Slow turn, and Compelled runs until the start of your next turn). Best power-per-cost in the tree, the node the whole Black branch hangs from, and the sole source of a corpus-exclusive condition.",
+   "Mantle of the Aspirant - a capstone that pays four ways at once and all scene-long: +2 to all defenses, +tier spirit on every melee attack, a party-wide +1 to all tests (the only literal 'all tests' bonus in the corpus, and a numeric buff no advantage source makes redundant), and outward damage redirection that only leyline/White's Shared Burden otherwise resembles. Under the guide's word cap at 59 words. Its flaw is that it pays off none of the tree's own accumulated state."
+  ],
+  "bottomThree": [
+   "Investiture of Command - 2 Actions, 2 Investiture and unreducible self spirit damage for 1d6 temp HP each to three allies plus three advantages worth literally nothing to any ally who already has advantage. The only talent in the tree that damages its owner for no offensive return, and it pays HP for a buff that may be a no-op. deity/Sovereignty's Sovereign's Favor gives the same [Tier][Die] temp HP as a free Passive rider.",
+   "Warlord's Fury - 2 Actions and 2 Investiture at depth 2 for a flat bonus capped at +2 through level 5, and it is the tree's advertised signature mechanic read by no other talent. Better than usually claimed on two counts of text (the tally counts the whole scene retroactively; it CAN be installed and used on the same Slow turn) and it stacks with rather than competes against Warlord's Advance - but a +2 Tier 1 payload at 2 Investiture is undersized for a Radiant-tier atlas in which deity/Knowledge's equivalent slot multiplies dice per stack.",
+   "Momentum of Victory - the highest-value effect in the tree and the lowest reliability. A free melee Strike plus 15 ft of movement for a Free Action is excellent; requiring an Opportunity the tree cannot generate means it may legally never fire in a given combat, and it is nonetheless the tree's ONLY action-economy talent. (Retained over Unstoppable Advance in this slot: on a correct reading Unstoppable's immunity and move-through run until the end of your NEXT turn, giving up to five Moves of multi-target damage for 1 Action - fair value, even though deity/Destruction's Walking Ruin does the damage-trail job as a free Passive.)"
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "At Tier 1 (levels 1-5, pool 2 + max(AWA,PRE), so ~4 at level 1 and ~6 by level 5 once the level-3 attribute points land): about 2-3 rounds of full-strength play, then indefinite half-strength. The good 1-Investiture options (Kneel, Warlord's Advance, Unstoppable Advance) drain a starting pool of ~4 in three to four uses; after that, because Draw Mana returns only 1 Investiture per Action at Tier 1, a 3-Action Slow turn becomes Draw Mana (1 Action) + one talent (1 Action) + one spare Action - exactly one talent per round, indefinitely. The 2-Investiture options are two-round purchases. The three scene-long installs cost 7 Investiture and 7 Actions between them - more than the level-1 pool and more than two whole Slow turns - and, more decisively, CANNOT ALL BE OWNED before level 6: reaching Crown of Thorns, Warlord's Fury and Mantle requires six talents. The advertised full stack is a Tier 2 build by construction, not merely by budget. At Tier 2 Draw Mana returns 2 per Action, so one Draw funds two 1-Investiture talents in the same turn and the tree becomes a genuine every-round engine.",
+   "triggerGatedCount": 0,
+   "reactionCount": 0,
+   "resourceCostersOutOfTree": 9,
+   "note": "9 of 9 talents spend Investiture (0 Passive, 0 Special, 0 free), and 0 of 9 generate any resource - the most one-directional economy in the atlas, and the only deity tree with no refunding talent at all. REACTIONS: 0 of 9, against the deity guide's ~10% target. This cuts both ways: the tree never acts on an enemy's or ally's turn, so a Power character is inert for two-thirds of the round cycle and has no punish, counter or interception - but it also places zero competition on the 1-Reaction-per-round cap, making a Power character an unusually clean carrier for a Reaction imported from another path. TRIGGER-GATED: 0 of 9 under the stated definition (a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit). Two cases are commonly miscounted: Momentum of Victory needs an Opportunity, which is a RESOURCE gate on the Plot Die, not a trigger on someone else's action; and Absolute Authority needs a Compelled/Frightened/Weakened target, which is a target-STATE prerequisite you create yourself. The nearest thing to a true trigger is a rider, not a talent: Mantle's 'When you take damage, you may redirect...' clause, sitting on a talent you activate for 3 Actions. CONDITIONALITY is the real story and is a separate count: 6 of 9 talents are conditional on something (Warlord's Advance 'on a hit'; Unstoppable Advance on walking through enemy spaces; Momentum on an Opportunity; Crown of Thorns on making a Black/Red-vs-Cognitive test; Warlord's Fury and Mantle on making melee attacks). ACTION TAX, the real sustainability limit: 4 talents cost 2 Actions and 1 costs 3, so 5 of 9 consume two-thirds or more of a Slow turn - the tree runs out of Actions before it runs out of Investiture."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.countReal",
+   "from": "6",
+   "to": "4",
+   "reason": "RIDER-COUNTED-AS-SOURCE. Warlord's Fury ('For the scene, your melee attacks deal additional damage equal to the number of characters...') and Mantle of the Aspirant ('your melee attacks deal additional spirit damage equal to your tier') create no damage event of their own - they amplify attacks made by other talents or by the standard Strike every character already has. Only four talents initiate damage: Warlord's Advance (makes the attack), Momentum of Victory (makes a free Strike), Unstoppable Advance (movement-triggered, no attack), Crown of Thorns (test-triggered, no attack). Both independent streams agree: 3 authored roll formulas, and damage-census offensive(src)=4 for deity/Power. The 6-item damageTalents list is retained (all six do add damage) with each entry now labelled INITIATES or PURE AMPLIFIER."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "2",
+   "to": "0",
+   "reason": "COUNTED AGAINST THE WRONG DEFINITION. The stated definition is 'a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit.' Power has zero Reactions and no talent that fires only on another character's action. Momentum of Victory's Opportunity requirement is a resource gate on the Plot Die, not another character acting; Absolute Authority's 'choose a Compelled, Frightened, or Weakened character' is a target-STATE prerequisite you create yourself with Kneel. The only clause matching the definition is a rider inside Mantle ('When you take damage, you may redirect...'), on a talent you activate for 3 Actions. Conditionality (6 of 9) is recorded separately in the note so nothing is lost."
+  },
+  {
+   "field": "axes[protection].score",
+   "score_change": true,
+   "from": "3",
+   "to": "2",
+   "reason": "INFLATED. Read against the rubric's own calibration ('a tree with one Reaction that reduces damage once per round scores protection 2'): Power has NO damage reduction, no resistance, no shields, no interception of hits aimed at allies, and no Reaction at all. What it has is one once-per-scene depth-3 capstone (+2 defenses, plus a redirect that is party-net-zero because it moves damage onto allies rather than removing it), temp HP on two talents (one of them kill-gated), and self-only condition immunity. 'You would not pick this tree for it' is the definition of a 2."
+  },
+  {
+   "field": "weakTalents[Warlord's Fury].reason",
+   "from": "'The tally starts at zero when you install it'",
+   "to": "The tally counts the WHOLE scene retroactively",
+   "reason": "TEXT-VS-CLAIM. Warlord's Fury reads 'additional damage equal to the number of characters you have reduced below half their maximum HP DURING THIS SCENE'. It counts from the start of the scene, not from the moment of install, so installing it after already bloodying two enemies pays the full Tier 1 cap immediately. The claim appeared in both the damageTalents note and weakTalents and was corrected in both."
+  },
+  {
+   "field": "weakTalents[Warlord's Fury].reason",
+   "from": "'It also cannot be installed and used on the same turn.'",
+   "to": "It CAN be installed and used on the same Slow turn",
+   "reason": "ARITHMETIC. A Slow turn is 3 Actions (SYSTEM-PRIMER §Action economy). Warlord's Fury costs 2 Actions to install, leaving 1 Action for a Strike that the bonus applies to. Only a 2-Action Fast turn blocks it. The same check exonerates Crown of Thorns (2 Actions to install + 1 Action Kneel = triggers the same turn)."
+  },
+  {
+   "field": "weakTalents[Warlord's Fury].reason",
+   "from": "'Strictly worse than the depth-0 Warlord's Advance it is meant to escalate'",
+   "to": "They stack, and Fury is more Investiture-efficient over a long scene",
+   "reason": "TEXT-VS-CLAIM. Warlord's Advance's [Tier][Die] is separate additional damage on its own attack; Warlord's Fury applies to 'your melee attacks', including that one. They are not competitors. Over five melee attacks in a scene, Fury costs 2 Investiture total for +10, while Warlord's Advance costs 5 Investiture for ~+17.5 - so Fury is the cheaper per point. The valid charge is that +2 flat is an undersized Tier 1 payload for a 2-Investiture depth-2 talent, not that it is strictly dominated."
+  },
+  {
+   "field": "weakTalents[Kneel]",
+   "from": "'the advantage lands on next turn's attack, and Compelled expires at the start of your next turn - the timing barely works'",
+   "to": "The advantage is cashable in the SAME turn; the real weakness is supply",
+   "reason": "TEXT-VS-CLAIM, and internally contradictory with the profile's own buff axis. Kneel is 1 Action of a 3-Action Slow turn and Compelled lasts 'until the start of your next turn', so Kneel + Strike in the same turn is legal with two Actions to spare. Also, the advantage clause carries no duration and is not gated on the spend - it is a standing passive property of owning Kneel, which the buff axis stated correctly and weakTalents contradicted."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "'6 of 9 talents deal damage, but every one is a RIDER, never a standalone attack'",
+   "to": "Four initiate damage; two of those (Unstoppable Advance, Crown of Thorns) need no attack at all",
+   "reason": "TEXT-VS-CLAIM, and self-contradictory (the profile's own Crown of Thorns note called it 'the tree's only damage that needs no weapon'). Unstoppable Advance deals [Tier][Die] to 'each enemy whose space you move through' with no attack test; Crown of Thorns fires on any Black/Red test vs. Cognitive, hit or miss. If the original claim were true the calibration anchor ('a damage rider that only fires on an already-successful attack scores 1-2') would have forced the score down; the corrected reading is what supports keeping damage_direct at 3."
+  },
+  {
+   "field": "gaps[ranged]",
+   "from": "'A Power-only character at 60 ft has exactly two legal plays (Kneel and Absolute Authority)'",
+   "to": "At 60 ft a Tier 1 Power character has NO legal play",
+   "reason": "RANGE ARITHMETIC. Attunement Range is 15/30/60/90/120 ft by rank (SYSTEM-PRIMER §Scaling notation) and the rank cap is 2 for the whole of levels 1-5, so Attunement Range is 30 ft through Tier 1 and reaches 60 ft only at rank 3 / level 6. Kneel and Absolute Authority are out of range at 60 ft for the entire level band this review covers. The 30-ft figure now also appears in the Attunement Range keyword and the Mantle-aura cross-tree hook."
+  },
+  {
+   "field": "damageTalents[Unstoppable Advance].note / axes[mobility] / bottomThree",
+   "from": "'you must spend your remaining Actions Moving... your whole remaining turn'",
+   "to": "Duration is 'until the end of your NEXT turn' - up to five Moves across two turns",
+   "reason": "DURATION MISREAD. The text reads 'Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces.' One Action buys the remaining 2 Actions of this Slow turn PLUS all 3 of the next, and the text sets no once-per-enemy limit. This materially raises the talent's value and is why it was removed from bottomThree."
+  },
+  {
+   "field": "bottomThree[3]",
+   "from": "Unstoppable Advance",
+   "to": "Momentum of Victory",
+   "reason": "CONSEQUENCE OF THE DURATION CORRECTION. With two turns of move-through damage plus immunity to three conditions for 1 Action and 1 Investiture, Unstoppable Advance is fair value, not bottom-tier. Momentum of Victory takes the slot: it consumes an Opportunity the tree provably cannot generate (resource-economy census: Power produces 0 Opportunity) while being the tree's only action-economy talent, so it can legally never fire in a combat. It was already flagged in weakTalents; bottomThree now agrees with it."
+  },
+  {
+   "field": "intentDrift[description length].evidence",
+   "from": "'Kneel runs ~66 words and Warlord's Advance ~68... Mantle of the Aspirant at ~70 sits right on the capstone cap'",
+   "to": "Kneel 61, Warlord's Advance 71, Absolute Authority 53, Warlord's Fury 59 overrun; Mantle is 59, comfortably UNDER the ~70 cap",
+   "reason": "WORD COUNTS RECOUNTED from the data file. The capstone claim was the material error - Mantle is 59 words, well inside the guide's cap, so 'sits right on the cap' overstated the drift. Two overruns the original missed were added (Absolute Authority 53 and Warlord's Fury 59 against a 30-45 tier-2 target), and the five talents that are inside the targets are now named."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions / peakDamagePerAction",
+   "from": "'at levels 1-5 you can afford at most two of the three in a fight'",
+   "to": "You cannot OWN all three scene installs before level 6 at all",
+   "reason": "DEPTH/LEVEL ERROR against the dossier's prerequisite graph. Owning Crown of Thorns + Warlord's Fury + Mantle requires Kneel, Crown of Thorns, Warlord's Advance, one of Momentum/Unstoppable, Warlord's Fury and Mantle = six talents at 1 talent per level, i.e. level 6. The constraint is structural, not budgetary - the tree's advertised ceiling is a Tier 2 configuration by construction. Also corrected the pool figure: 2 + max(AWA,PRE) is ~4 at level 1 but ~6 by level 5 once the level-3 attribute points land, so the original flat '~4 for all of Tier 1' understated it."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'two unreducible spirit-damage sources'",
+   "to": "one explicitly unreducible spirit engine plus a Deflect-ignoring spirit rider",
+   "reason": "TEXT-VS-CLAIM. Only Crown of Thorns says 'This damage cannot be reduced' (and Investiture of Command, for its self-damage). Mantle's spirit damage is Deflect-ignoring by damage type per the primer, but the text does not flag it unreducible. Corpus grep: only five talents in 365 carry a 'cannot be reduced' clause."
+  },
+  {
+   "field": "uniqueOwnership[+1 to all tests]",
+   "from": "'The only party-wide +1 to ALL tests... the rare party buff that is never made redundant'",
+   "to": "Unique in the TESTS wording specifically; three other deity talents grant +1 to all DEFENSES",
+   "reason": "OVERBROAD CLAIM, verified by grep. '+1 to all' returns four talents: Mantle plus Order's Covenant, Civilization's Lay Foundation and Fate's Ordained Ground - but those three read 'defenses', not 'tests'. The uniqueness survives, narrowed to the correct axis; 'a numeric party buff' is not itself unique to Power."
+  },
+  {
+   "field": "crossTreeHooks",
+   "from": "(absent)",
+   "to": "Added: Crown of Thorns' out-of-tree feeders",
+   "reason": "MISSED HOOK. Crown of Thorns triggers on 'one of your Black or Red talents' testing vs. Cognitive - broader than the two in-tree tests the profile assumed. A corpus grep finds five Black-or-Red-vs-Cognitive tests in 365 talents: Kneel, Absolute Authority, leyline/Black's Double Dip, and Sovereignty's Censure and Decree of Ruin. Since Black 2+ is already a gate requirement, Double Dip is a realistic import that makes Crown of Thorns a three-feeder engine."
+  },
+  {
+   "field": "axes[control].evidence / damageAccounting.verdict",
+   "from": "(absent)",
+   "to": "Added: Absolute Authority can direct an enemy to attack its own allies",
+   "reason": "DAMAGE THAT ARRIVES WITHOUT THE WORD. The text bars only forcing the target 'to directly harm itself', so dictating an attack on its allies is legal. No prose classifier and no roll formula can see this, and the original profile did not name it. Recorded as an uncounted indirect damage vector rather than added to countReal."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "'A player who takes only Kneel and Warlord's Advance has ~70% of the tree's practical combat value'",
+   "to": "Best RATE from the entries; roughly half the ceiling sits at depth 1+",
+   "reason": "INTERNALLY INCONSISTENT. The same profile ranks Absolute Authority (depth 1) as the tree's strongest talent and Mantle (depth 3) third; two of the three top talents therefore sit outside the entries, which cannot leave the entries at 70% of value. The efficiency claim (best power per Action and per Investiture) survives and is kept; the value figure does not."
+  },
+  {
+   "field": "gaps / mechanicalKeywords",
+   "from": "(Passive/Special absent from gaps)",
+   "to": "Added a 'Zero Passives and zero Specials' gap row and a Passive/Special keyword row",
+   "reason": "COMPLETENESS. The 0%/0% finding was present in weakTalents and intentDrift but missing from the gap list, where it is the tree's single most distinctive structural deficit: 9 of 9 talents cost both an action type and Investiture, so nothing in this tree ever works for free."
+  },
+  {
+   "field": "(verified, unchanged)",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "CHECKED AND CORRECT, no change made: Investiture total 1+1+2+2+1+1+2+2+3 = 15; action-type split 3x 1-Action / 4x 2-Action / 1 Free / 1 3-Action = 33%/44%/11%/11% and 5 of 9 at two-thirds-or-more of a Slow turn; reactionCount 0; resourceCostersOutOfTree 9 (matches the census's 0 regen / 9 costers); every depth and earliestLevel in damageAccounting and powerByDepth matches the dossier (0/L1, 1/L2, 1/L2, 1/L2, 2/L3, 3/L4) and the powerByDepth band membership is 2 / 6 / 1; the dice claims all check out - `(@tier)d(2 * @skills.red.rank + 2)` = 1d6 at Tier 1 rank 2 and 2d8 at Tier 2 rank 3, Fury's tier x 2 cap = +2 / +4, Mantle's +tier spirit = +1 / +2, Momentum's `@tier`; countFalsePositiveMitigation genuinely is 0 (Mantle's redirect and Unstoppable's immunities sit on talents that add damage elsewhere in their own text, and Investiture of Command's self spirit damage was correctly excluded); 'Bounty' 0 hits in 365, 'Compelled' 3 hits, 'redirect' 1 hit, 'through enemy spaces' 1 hit - all re-verified by grep this pass; and the axis scores for damage_direct, damage_scaling, control, debuff, healing, buff, action_economy, mobility, terrain_zone, information, social_influence, exploration_utility, summons and resource_economy were each re-derived and left as scored."
+  },
+  {
+   "field": "axes[control].score",
+   "from": "4",
+   "to": "3",
+   "reason": "Score inflation, refuted by two corpus talents the profile never checked. leyline/Black's Hollow Command (2 Actions, 1 Investiture, depth 0, earliest L1): 'the target cannot take actions on its next turn' — a WHOLE enemy turn denied at level 1 for one third the Investiture of Power's Kneel→Absolute Authority chain (3 Actions + 3 Investiture across two turns, for one action controlled). heroic/Agent's Cheap Shot (1 Action, 1 focus, depth 0, L1) applies Stunned = two fewer actions plus the reaction, per the primer. deity/Fate sustains up to tier Snares that Restrain. Power has only 2 of 9 control talents, both testing the same defence, with no AoE/zone/reaction-denial. 4 means 'one of the better options in the game'; a party wanting control picks Fate, Black or Agent. Power is the most DISTINCTIVE, not one of the better ones. Also noted: Absolute Authority's text says 'the target's ACTION' (singular), so it may be one action, not a seized turn."
+  },
+  {
+   "field": "uniqueOwnership[2] — 'only talent that DICTATES an enemy's action... verified unique by grep'",
+   "from": "the corpus's only dictate-an-action effect",
+   "to": "one of TWO dictate-an-action effects",
+   "reason": "REFUTED by text. leyline/Black's Puppeteer (Reaction, 2 focus + 1 Investiture, depth 4, L6): 'When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.' The profile's grep evidently searched only for its own phrasing. Absolute Authority keeps the earlier/cheaper crown (depth 1, L2, no 0-focus gate), and the added uniqueOwnership entry reframes the real ownership as 'takes an enemy's turn and SPENDS it' rather than 'the only one'."
+  },
+  {
+   "field": "uniqueOwnership[3] — 'the sole grep hit for redirect across all 365 talents'",
+   "from": "only damage-redirection effect; sole grep hit for 'redirect'",
+   "to": "only OUTWARD damage transfer; not the sole 'redirect' hit and not the corpus's only damage transfer",
+   "reason": "Both halves false. leyline/Blue's Redirect Momentum is a second grep hit for 'redirect' (forced movement, not damage). leyline/White's Shared Burden (Reaction, 2 Investiture, depth 2, L3) is the corpus's other damage-transfer talent: 'When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place' — the same mechanic pointed the party-positive direction, which sharpens rather than blunts the profile's own 'party-net-zero' criticism of Mantle."
+  },
+  {
+   "field": "uniqueOwnership[4] and axes[buff].evidence — 'the only party-wide +1 to ALL TESTS... a numeric party buff no advantage source makes redundant'",
+   "from": "corpus-unique party buff, presented as best-in-class",
+   "to": "unique in the literal wording only; NOT the only or largest party-wide numeric test bonus",
+   "reason": "Comparative deflation of other trees. leyline/Red's Battle Fever (Passive, NO cost, depth 1, L2): 'Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank)' — free, passive, party-wide, and up to +2 at Tier 1 / +3 at rank 3. Feeding Frenzy repeats it. leyline/White's Terms of Accord (Special, 1 Investiture, depth 0, L1) gives +1 for the scene. Mantle's real edge is breadth and unconditionality, not existence. Also corrected the sub-count: SIX corpus talents say '+X to all defenses', not three, and Civilization's Bastion/Magnum Opus grant +2."
+  },
+  {
+   "field": "uniqueOwnership[5] — 'the only one that charges enemies damage for standing in your path'",
+   "from": "unique mobile damage-trail",
+   "to": "PARTLY REFUTED — 'move through enemy spaces' is unique, the damage trail is not",
+   "reason": "deity/Destruction's Walking Ruin (Passive, NO cost, depth 1, L2): 'For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.' A free, scene-long, speed-boosting version of the same role, against Unstoppable Advance's 1 Action + 1 Investiture. Also fed into axes[mobility] and axes[terrain_zone] evidence."
+  },
+  {
+   "field": "uniqueOwnership[6] — 'Only five talents in the whole corpus carry a cannot-be-reduced clause, and two of them are in this tree'",
+   "from": "5 corpus hits",
+   "to": "4 corpus hits; Power's two are the ONLY literal 'cannot be reduced' hits",
+   "reason": "Miscount. Grep across all-talents.json for 'cannot be reduced | can't be reduced | ignores Deflect | unreducible' returns exactly four: Crown of Thorns and Investiture of Command (Power, literal phrase), heroic/Warrior's Wit's End and deity/Destruction's The Unmooring ('ignores deflect'). Separately added the temper that Deflect-bypassing damage is NOT scarce — Knowledge 7 vital, Black 5 vital, Order 4 spirit, Chaos 3 — so 'the premium damage type' overstates the differentiation in damageAccounting.verdict."
+  },
+  {
+   "field": "uniqueOwnership[7] — 'the only kill-count escalator'",
+   "from": "unique escalator (nominal)",
+   "to": "only KILL-TALLY escalator; deity/Knowledge's Insight is the corpus's escalating-stack mechanic and also reads kills",
+   "reason": "Intent-drift lens (d)/(e). Knowledge's Insight is generated by an entry AND by a free Passive (Accumulate, which also refunds 1 Investiture/round), spent by four talents, capped at 5 rather than tier x 2, and multiplies DICE ([Tier][Die] per Insight) instead of adding flat points; Hunter's Discipline explicitly transfers half a slain target's stacks. Fed into axes[damage_scaling], peakDamagePerAction, weakTalents[Warlord's Fury] and bottomThree."
+  },
+  {
+   "field": "intentDrift.claims — NEW claim added (the two intent sources disagree)",
+   "from": "absent",
+   "to": "'DEITY GUIDE, Tyrith entry: Homebrew resource: Kill-count counter that scales Warlord's Fury' — DELIVERS",
+   "reason": "The profile tested the path description's 'Bounty' promise and judged the hardest drift in the tree, but never tested the SECOND intent source, which the brief names as a separate standard. The deity guide's own Tyrith line promises exactly a counter scaling one talent — which shipped verbatim. So the drift is a documentation conflict between path-description and guide, the cheap fix is the prose, and the guide contradicts its own Principle 5. The guide's stated gameplay loop is also delivered end to end (at a six-talent, level-6 cost)."
+  },
+  {
+   "field": "gaps / mechanicalKeywords[Frightened] / weakTalents[Kneel]",
+   "from": "'no way to produce Frightened' (framed as a tree gap)",
+   "to": "Frightened is a DEAD REFERENCE corpus-wide — no talent in any of the 21 trees produces it",
+   "reason": "Comparative check strengthens the finding well past what the profile claimed. Grep for 'Frightened' across all 365 talents returns exactly three hits: Kneel and Absolute Authority (both consumers) and deity/Death's Risen Servant (immune). It is not an importable cross-tree hook at all, so the crossTreeHooks entry that treated it as a seam was wrong."
+  },
+  {
+   "field": "intentDrift.claims[description length].evidence",
+   "from": "presented as a Power-specific fault ('the guide's stated symptom of a talent doing too much')",
+   "to": "real against the guide, but the atlas norm — Power's 49.3-word mean is the deity MEDIAN",
+   "reason": "Comparative context missing. Computed mean/max words per deity tree: Fate 61.8/93, Order 56.6/82, Destruction 51.6/101, Civilization 49.3/75, Death 49.3/71, Power 49.3/71, Knowledge 46.8, Sovereignty 44.0, Life 43.6, Chaos 39.1. Power's longest card (71) is not the atlas's longest. The nine per-talent word counts the profile gave were verified exactly correct."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets] and weakTalents[action-type distribution]",
+   "from": "0% Special charged against Power",
+   "to": "0% Special is an atlas-wide failure (all ten deity trees); the 0% Passive, 0% Reaction and 44% 2-Action figures are Power's own",
+   "reason": "Comparative fairness. The measurement block states every deity tree has zero Special-action talents, so attributing that row to Power mis-attributes a standards failure. The remaining rows survive and are sharpened by naming the deity ranges (0-3 Passives, 0-1 Reactions per tree)."
+  },
+  {
+   "field": "axes[damage_direct].evidence",
+   "from": "no mention of the census disagreement",
+   "to": "census earliestL=2 flagged as under-reporting; the text gives damage at L1",
+   "reason": "The brief requires that any disagreement between the deterministic measurements and the talent text be stated. damage-census.js lists Power earliestL 2, but Warlord's Advance is depth 0 / L1, carries an authored roll formula and makes a melee attack. The likely cause is that earliestL is computed from the pure-SOURCE bucket (Power: SOURCE 1, SRC+AMP 3). The profile's own earliestDamageLevel of 1 was right but the conflict was left unrecorded."
+  },
+  {
+   "field": "axes[protection].score",
+   "from": "2 (already corrected down by the profile)",
+   "to": "2 — AFFIRMED, with the comparative evidence the profile lacked",
+   "reason": "Checked rather than accepted. Corpus count of talents carrying temp HP / Deflect / damage-reduction / half-damage language: Life 5, Civilization 4, Order 3, Power 2, plus White's Reaction mitigation suite. Held at 2 and the borderline stated explicitly, since 4 of Power's 9 talents do touch defensive value and temp HP is named in the axis definition."
+  },
+  {
+   "field": "axes[buff].score, axes[damage_direct].score, axes[damage_scaling].score, axes[action_economy].score, axes[mobility].score, axes[debuff].score, and all six zeros",
+   "from": "3 / 3 / 3 / 2 / 2 / 1 / 0s",
+   "to": "unchanged",
+   "reason": "Checked and found sound. buff 3: verified against the advantage ledger (Power 3 advantage talents vs Green 6, Agent 6) and Red/White's cheaper party bonuses — the discount from 4 was already correct, only the uniqueness evidence needed fixing. action_economy 2: corpus scan for free/extra Strikes and actions puts Fate at 4, Civilization/Knowledge/Warrior at 3, Power at 2. damage_direct/scaling 3: consistent with the census (Power 4 offensive src vs Knowledge 7). The six zeros (healing, terrain_zone, information, exploration_utility, summons, resource_economy) were each re-verified by reading all nine talents and by the resource census (Power 0 regen / 9 costers) — no hidden riders found. debuff 1 confirmed: Weakened-on-failure is the tree's only numeric-penalty output."
+  },
+  {
+   "field": "topThree[0] — 'The strongest single-target control effect the corpus offers'",
+   "from": "strongest in corpus",
+   "to": "the most VALUABLE (converts denial into use), explicitly not the strongest denial",
+   "reason": "Same refutation as the control score: Hollow Command denies a whole turn at L1 for 1 Investiture. Absolute Authority's distinctive value is that you get to spend the stolen action, including pointing the enemy at its own allies — which is why it stays in the top three."
+  }
+ ]
+}

@@ -1,0 +1,633 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "heroic/Envoy",
+ "correctionCount": 37,
+ "profile": {
+  "atlas": "heroic",
+  "tree": "Envoy",
+  "oneLineIdentity": "The party's focus-and-Opportunity battery: a Free-Action, unlimited, zero-cost delivery of a ONE-SHOT Determined (canon: on a failed test add an Opportunity, condition then ends) whose stacked Special riders turn each delivery into +focus, a four-condition scrub, a defence bump or a revive — plus the corpus's only talk-your-way-out-of-a-fight chain — with one flat damage rider, zero movement, zero terrain and zero information. The delivery architecture is NOT unique: heroic/Leader runs the same Key + free-action-delivery + payload-rewrite + multi-target pattern with an outcome-changing payload.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 1,
+    "evidence": "Exactly one talent deals damage: Mighty (Passive, depth 1, L2) — 'When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.' A rider on an already-successful attack, flat rather than dice, inheriting the weapon's damage type (Deflect applies). COMPARATIVE CORRECTION: Mighty is not Envoy content — the identical string appears in SIX trees (leyline/Red, heroic/Agent, Hunter, Leader, Warrior, Envoy), so it is shared library filler. Verified: no Envoy talent carries a damage object or damageFormula in all-talents.json (0 roll formulas), matching the census's 0 SOURCE. No other talent in the 25 deals damage of any kind — no Afflicted, hazard, zone, summon or ongoing condition damage. Steadfast Challenge, Calm Appeal and Peaceful Solution all resolve enemies WITHOUT damaging them."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 1,
+    "evidence": "Mighty scales +1 per Tier (2 at Tier 1, 3 at Tier 2) per action spent. Linear in Tier where the benchmark [Tier][Die] is 1d6 (avg 3.5) at Tier 1 rank 2 and 2d8 (avg 9) at Tier 2 rank 3, so its relative contribution SHRINKS with tier. Repeatable every round at no cost — the most reliable damage in the review and the smallest. Guiding Oration's ally advantage is damage-adjacent at best and, per the primer, worth literally zero when the ally already has advantage."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "A real single-branch chain: Steadfast Challenge (Action, 1 focus, depth 0/L1 — Discipline vs. Spiritual; on success Disoriented, which per the primer denies reactions and obscures senses), Calm Appeal (depth 2/L3 — converts the Disorient into pacified and taxes resistance by your Discipline ranks of focus), Peaceful Solution (depth 3, Discipline 3+ so L6 — if ALL non-minion enemies are pacified, combat ends), Practiced Oratory (depth 3, Persuasion 3+ so L6 — focus per extra target). A 365-talent scan for 'pacif' returns exactly two talents, both Envoy's; 'end combat' exactly one. HELD AT 3 on comparative grounds: one branch, single-target until L6, contested test, and 'pacified' is defined nowhere in the corpus so its control value is unquantifiable in scope. Per-instance, leyline/Black (Hollow Command then Puppeteer, 'choose one of its actions on that turn') and deity/Power (Kneel then Absolute Authority) are strictly harder control."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "Steadfast Challenge is the tree's only state penalty — the target 'gain[s] a disadvantage on tests against you' (corpus: 14 disadvantage producers, 0 consumers). Calm Appeal adds a resource tax: 'Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline' — the same design shape as the corpus-wide Baleful (leyline/Blue, heroic/Agent, heroic/Leader), so not distinctive. Two talents, one branch, no defence reduction, no vulnerability, no Weakened/Exhausted."
+   },
+   {
+    "axis": "protection",
+    "score": 3,
+    "evidence": "Four talents, cheap and mostly permanent — three raise DEFENCES (avoidance) rather than mitigating damage. Collected (Passive, depth 0/L1) +2 Cognitive and Spiritual; Customary Garb (Passive, depth 0/L1) +2 Physical and Spiritual while wearing Presentable armor or appropriate clothing — the pair covers all three defences by level 2 for two picks and no cost. Stalwart Presence (Special, 1 focus, depth 2/L3) grants an ally +2 to one defence. Withering Retort (Reaction, depth 1/L2, Discipline 2+) is the ONLY true damage reduction: '+deflect by your ranks in Discipline'. COMPARATIVE: neither passive is Envoy-original — Collected's exact text is in five trees, Customary Garb's in two — but Envoy is the ONLY tree holding both. Above the one-Reaction anchor because of always-on coverage; below 4 because there is no temp HP (14 talents in 9 trees have it; none Envoy's), no interception, no resistance, no redirection."
+   },
+   {
+    "axis": "healing",
+    "score": 3,
+    "evidence": "SCORED ON THE AXIS AS WRITTEN — it counts Health, Focus OR Investiture. On HEALTH alone Envoy is a 1: only Rallying Shout (Passive, depth 3, Leadership 3+ so L6) revives an Unconscious ally and at 0 health restores 'recovery die + your ranks in Leadership'. NOT the corpus's only revive — heroic/Scholar's Resuscitation also revives (and covers 'one who died recently') beside Field Medicine and Swift Healer, so Scholar is the better heroic healer by a distance. Rallying Shout does nothing for an ally at 1 HP. Focus restoration carries the score: Galvanize, Applied Motivation, Lessons in Patience, Inspired Zeal. Held to 3 so the tree is not mistaken for a Health healer, and because the same four talents carry resource_economy."
+   },
+   {
+    "axis": "buff",
+    "score": 4,
+    "evidence": "DOWNGRADED FROM 5. (1) PAYLOAD: canon Determined is 'When you fail a test, may add an Opportunity to the result; condition then ends' (cosmere-canon-reference Conditions table) — a ONE-SHOT token, failure-gated, that does not change the outcome. leyline/White's Shared Conviction ('add your White modifier to their result. This may change the outcome') is strictly stronger fail-insurance, and heroic/Leader's Decisive Command adds a d4+ die BEFORE the roll resolves. (2) ARCHITECTURE IS NOT UNIQUE: heroic/Leader runs the identical pattern — Key (Decisive Command) + free-action delivery (Combat Coordination, which also refunds the focus on a miss) + payload rewrites (Relentless March, Cutthroat Tactics, three command-die enlargers) + multi-target (Authority doubles range AND ally count, free and passive) + Action-granting (Synchronized Assault). (3) THE 12-TALENT COUNT WAS INFLATED: Rallying Shout is a heal, Lessons in Patience is focus, Devoted Presence is a cleanse, and Guiding Oration and Well Dressed are advantage grants the primer discounts to about zero (corpus over-produces advantage 45:7). (4) SATURATION CEILING: Determined ends when used and an ally holds one, so after 3-4 free deliveries the party is saturated. Still a 4: Rousing Presence + Practical Demonstration is an unlimited every-round delivery from LEVEL 1, and no other tree stacks five distinct Special riders (condition scrub, +2 defence, +1 focus, Focused-instead, revive) onto one delivery."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "DOWNGRADED FROM 4. Real: Foresight (Passive, depth 3) 'Gain an additional reaction each turn' — one of exactly 2 extra-reaction talents in 365 and the unconditional one (Hunter's Sidestep is Dodge-only and forfeits deflect-2+ armor); it breaks the primer's hard 1-Reaction cap. Practical Demonstration (Free Action, depth 0/L1, no cost) converts the 1-Action Key into a Free Action. Sound Advice acts off-turn; Sage Counsel rides Aid; Practiced Oratory compresses targets; three Specials ride actions already taken. Why not 4: the tree grants NO extra main Action to anyone, and four trees do it better — heroic/Agent buys itself 2 Actions three ways (Quick Analysis, Fast Talker, Trickster's Hand) with 4 Free-Action talents to Envoy's 2; heroic/Leader grants allies an Action (Synchronized Assault) and a free reaction (Through the Fray) and has its own free-action Key delivery; heroic/Scholar's Turning Point grants the party an Action. Foresight is triple-gated: depth 3, Discipline 3+ (L6), and a prerequisite demanding 'a companion' the tree cannot grant."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "Read all 25. Not one references movement, speed, teleport, repositioning, standing up, or a Move action. Contrast the near-twin heroic/Leader, which moves itself (Valiant Intervention) and its allies (Relentless March) — the same architecture, with mobility."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Read all 25. No areas, radii, hazards, difficult terrain, walls or persistent features. Practiced Oratory adds TARGETS, not an area; Guiding Oration's 'within 10 ft of your target' is a proximity check on an existing effect."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Read all 25. No detection, scouting, prediction, intent-reading or hidden-fact revelation. Foresight is a misnomer — its full text is 'Gain an additional reaction each turn'. The three expertises are social/downtime competencies, scored elsewhere. Deflation check: no Envoy talent learns, detects or reveals anything, where heroic/Agent (Get 'Em Talking, Close the Case), heroic/Hunter (Sharp Eye) and deity/Fate (Read the Threads) all do."
+   },
+   {
+    "axis": "social_influence",
+    "score": 3,
+    "evidence": "DOWNGRADED FROM 4. Content: Well Dressed, High Society Contacts, Lessons in Patience (expertise), Steadfast Challenge, Calm Appeal + Peaceful Solution (the corpus's only pacify and only non-violent end of combat, verified across 365), Practiced Oratory. Why not 4: (a) TWO of four social nodes are other paths' talents — High Society Contacts is character-identical to heroic/Agent's, Well Dressed differs from heroic/Leader's by one word; (b) ZERO numeric bonuses to its own social tests, where heroic/Leader adds a command die to Persuasion, Intimidation, Deception, Insight and Leadership rolls plus Set at Odds, Grand Deception, Rumormonger, Well Supplied and Baleful, and heroic/Agent carries seven-plus social talents; (c) the pacify win-condition is combat-scoped and a level-6 pick. A 4 is defensible on the unique end-combat chain alone; 3 is the discriminating score against two named betters."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "Three granted expertises (Fashion, High Society, Motivational Speech) plus the focus cluster as an out-of-combat battery between rests and Rousing Presence's scene duration. Minor: no travel, crafting, survival, environmental problem solving, or downtime mechanic beyond the patron requirement. Far behind heroic/Scholar (Erudition grants expertises AND two reassignable skill ranks; Field Medicine) and heroic/Hunter."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Read all 25. No companion, construct, minion or animated ally. Instill Confidence REQUIRES 'a companion' but grants none — a cross-tree dependency, the opposite of a summon."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 5,
+    "evidence": "HELD AT 5, evidence proven, census CORRECTED. A full-text scan of all 365 returns EIGHT focus-restoring talents and FOUR are Envoy's (Galvanize, Applied Motivation, Lessons in Patience, Inspired Zeal); the other four (leyline/Black Siphoned Will and Predatory Insight, heroic/Hunter Cold Eyes, heroic/Leader Cutthroat Tactics) refuel their OWNER only, so Envoy is the corpus's only party-facing focus source and holds twice as many focus talents as any other tree. THE CENSUS UNDER-COUNTS ENVOY and I read the script to prove it: resource-economy.js:35's produce pattern (regain|recover|restore|gain|gains|grant|grants) with word boundaries cannot match Galvanize's 'recovers that much focus' (plural verb outside the alternation) or Lessons in Patience's shipped typo 'recoveres 1 focus' — exactly the two it reports missing as 'Envoy 2'. THE ENGINE: Practical Demonstration (free, every round, from L1) into Rousing Presence into Lessons in Patience (+1 focus) plus Applied Motivation (+half Lore ranks) is an unlimited zero-cost focus faucet, against a pool of 2+WIL where Dodge, Aid and Reactive Strike each cost 1. SECOND CURRENCY the profile missed: Determined itself adds an Opportunity to a failed test, so the same free delivery seeds a currency 17 talents across 9 trees consume. Plus Composed (+tier max and current), Instill Confidence (Focused), High Society Contacts (an Opportunity). Caveat: all four restorers target other characters; Composed is the only self-refuel."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Mighty",
+     "dice": "no dice — flat (1 + Tier) PER ACTION SPENT: +2 per action at Tier 1 (L1-5), +3 at Tier 2 (L6-10). No damage object and no ROLL FORMULA on the document (all-talents.json: damage null, damageFormula empty).",
+     "action": "Passive (rider on a weapon or unarmed attack)",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "CONDITIONAL RIDER: fires only on a hit with a weapon or unarmed attack, which the tree gives you no help landing. Inherits the weapon's damage type, so Deflect applies — there is no spirit or vital damage anywhere in Envoy. 'For each action spent' multiplies: a 1-Action Strike gets +2 at Tier 1, a borrowed 2-Action attack +4. COMPARATIVE CORRECTION: this is shared library content, appearing with identical text in SIX trees (leyline/Red, heroic/Agent, Hunter, Leader, Warrior, Envoy), so it says nothing about Envoy's identity and is not evidence of offensive design intent."
+    }
+   ],
+   "countReal": 1,
+   "countFalsePositiveMitigation": 1,
+   "earliestDamageDepth": 1,
+   "earliestDamageLevel": 2,
+   "peakDamagePerAction": "At the deepest reachable point the tree still adds only +3 flat per attacking action (Tier 2). Normalised, one [Tier][Die] is 1d6 (avg 3.5) at Tier 1 rank 2 and 2d8 (avg 9) at Tier 2 rank 3, so Mighty is roughly 0.57 [Tier][Die] at Tier 1 and 0.33 at Tier 2 — its relative contribution SHRINKS as tier rises. Per ATTACK the ceiling is higher because 'for each action spent' multiplies: a borrowed 2-Action attack yields +4 (Tier 1) or +6 (Tier 2), still under one [Tier][Die] at Tier 2. Deflect applies to all of it. No talent adds a die of damage, and none damages a target the Envoy did not personally hit.",
+   "repeatability": "Unlimited. Mighty is a Passive with no cost, cooldown or once-per-rest clause, so it fires on every hit of every round forever — simultaneously the most reliable and the smallest damage source of any tree likely in this review.",
+   "verdict": "Envoy is a NON-DAMAGE tree, confirmed by two independent streams — the prose classifier scores 0 SOURCE / 1 SRC+AMP, and zero of the 25 talents carry a damage formula. One talent contributes damage; it is a flat +2/+3 per action rider on an attack the tree does not help you land; it is available from L2; and it is a six-tree shared talent rather than Envoy content. Nothing deals damage through a summon, hazard, zone or ongoing condition — Steadfast Challenge, Calm Appeal and Peaceful Solution are explicitly non-damaging resolutions. MITIGATION FALSE POSITIVE: exactly ONE talent could be misread as damage while reducing it — Withering Retort. Three further talents raise DEFENCES (Collected, Customary Garb, Stalwart Presence); those are avoidance, not mitigation, which is why the census scores Envoy MITIG 0. Near-miss: Rallying Shout's 'recovery die + your ranks in Leadership' is a HEAL."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 — 7 talents, all L1 (Rousing Presence, Steadfast Challenge, Collected, Customary Garb, Galvanize, Practical Demonstration, Sound Advice)",
+    "rating": 4,
+    "exemplars": "Practical Demonstration + Rousing Presence; Steadfast Challenge; Collected and Customary Garb",
+    "note": "Unusually strong entry band, and stronger than the pick-count suggests because the Key is granted with the path (all 11 Keys in the corpus sit outside the prerequisite graph), so a level-1 Envoy holds Rousing Presence plus one chosen talent. Practical Demonstration turns the Key into a free every-round delivery and is the whole engine; Steadfast Challenge is a genuine L1 Disorient plus blanket disadvantage for 1 focus; Collected and Customary Garb hand out +2 across all three defences for two picks and no cost (Envoy is the only tree holding both). Only Galvanize is weak. Every heroic tree has exactly 7 depth-0 talents, so the band SIZE is not distinctive — the quality is."
+   },
+   {
+    "band": "depth 1-2 — 12 talents (depth 1 at L2: Well Dressed, Withering Retort, Applied Motivation, Composed, Devoted Presence, Lessons in Patience, Mighty; depth 2 at L3: Calm Appeal, High Society Contacts, Stalwart Presence, Guiding Oration, Instill Confidence)",
+    "rating": 3,
+    "exemplars": "Devoted Presence and Lessons in Patience (the good ones); Guiding Oration and Well Dressed (the bad ones)",
+    "note": "The sag, and where the shared-library content clusters: Mighty, Well Dressed, High Society Contacts and Composed are all reprints of other trees' talents (Mighty in six trees; Composed's exact text as Leader's Focused Mind and Scholar's Clear Mind). Devoted Presence's four-condition scrub, Lessons in Patience's free +1 focus per delivery and Instill Confidence's Focused swap are real. Guiding Oration (a frequently-null advantage) and Well Dressed (a once-per-scene advantage, also Leader's) are below the curve. Composed is small but not broken — its live text reads 'Increase your max and current focus by your tier' (verified: description and authoredBody identical in all-talents.json)."
+   },
+   {
+    "band": "depth 3+ — 6 talents, ALL gated at L6 (Peaceful Solution, Practiced Oratory, Inspired Zeal, Sage Counsel, Foresight, Rallying Shout)",
+    "rating": 4,
+    "exemplars": "Foresight (extra Reaction every turn), Rallying Shout (raise the fallen), Peaceful Solution (the corpus's only end-combat)",
+    "note": "The payoffs are genuinely distinctive, though Sage Counsel is a dud and Peaceful Solution almost never fires. CONFIRMED TOOLING BUG, and it is SYSTEM-WIDE, not Envoy-specific: all six carry a rank-3 skill prerequisite (Discipline 3+ x3, Persuasion 3+, Lore 3+, Leadership 3+) and every Envoy row has an EMPTY rankGate field because that field populates only for leyline COLOUR gates — so the dossier's 'earliest L4' understates the band by two levels here and equally in Agent, Leader, Scholar, Hunter and Warrior. COMPARATIVE: Envoy has the largest all-L6 deep band in the heroic atlas — 6 of 6 depth-3+ talents rank-3-gated, against Leader 4 of 6, Agent 3 of 3, Scholar 2 of 3, Warrior 2 of 2, Hunter 1 of 3. Foresight is additionally locked behind Instill Confidence's 'a companion'."
+   }
+  ],
+  "frontOrBackLoaded": "Front-loaded engine, back-loaded payoff, with the payoff further away than the dossier says and further away than any other heroic tree's. Envoy is at roughly 80% functional strength by level 2 (the path-granted Key + Practical Demonstration + a defence passive), sags through a middle band of small riders and shared-library reprints at L2-L3, then spikes at depth 3 with effects almost nothing else in the game has — but that spike is a LEVEL 6 event, because all six of its depth-3 talents carry a rank-3 skill gate (the highest proportion in the heroic atlas; Hunter's deep band is mostly L4). None of those gates is recorded in the dossier's rankGate field, which only populates for leyline colours.",
+  "uniqueOwnership": [
+   "SURVIVES CROSS-TREE CHECK — the ONLY tree in the 365-talent corpus that can end a combat without violence: Peaceful Solution ('If all non-minion enemies are pacified, you ase tensions and end combat'), and the only source of 'pacified' at all (Calm Appeal). Scans of all 365 find 'pacif' in exactly two talents and 'end combat' in exactly one, all Envoy's; scans for surrender/flee/retreat/truce/stand down/morale return nothing comparable (deity/Power's Kneel and Absolute Authority compel, they do not end a fight).",
+   "SURVIVES, AND IS UNDERSTATED BY THE DETERMINISTIC CENSUS — the party focus battery. Four of the corpus's EIGHT focus-restoring talents are Envoy's, twice any other tree, and they are the only four that restore focus to OTHER characters; the other four (Black's Siphoned Will and Predatory Insight, Hunter's Cold Eyes, Leader's Cutthroat Tactics) refuel their owner only. resource-economy.js reports 'Envoy 2' because its produce regex misses the plural verb 'recovers' (Galvanize) and the shipped typo 'recoveres' (Lessons in Patience).",
+   "SURVIVES with a correction to what the buff IS — the Determined tree: Rousing Presence, Instill Confidence and Inspired Zeal are 3 of the corpus's 4 talents naming Determined, and Envoy both PRODUCES it (Rousing Presence; the sole other producer is leyline/White's Collective Resolve) and pays off when an ally SPENDS it (Inspired Zeal). But the canon payload is modest and one-shot — 'When you fail a test, may add an Opportunity to the result; condition then ends' — so this is an Opportunity faucet gated on failure, not a persistent buff. Instill Confidence does not produce Determined; it replaces it with Focused.",
+   "SURVIVES — the only unconditional extra Reaction in the game: Foresight. A corpus scan returns exactly two extra-reaction talents; the other, heroic/Hunter's Sidestep, is Dodge-only and forfeits armor with deflect 2+. It breaks the primer's hard 1-Reaction cap with no trigger and no cost — but only from level 6, and only through a prerequisite demanding an out-of-tree companion.",
+   "REFUTED — 'the only free-action delivery loop for a Key talent'. It is one of TWO: heroic/Leader's Combat Coordination reads 'After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus' — the same loop on Leader's Key, with a focus refund Envoy's version lacks. Practical Demonstration's edge is trigger breadth (a hit OR any Gain Advantage, so it works without a weapon); Leader's fires on any Strike, hit or miss.",
+   "REFUTED — 'the only buff whose PAYLOAD is rewritten by stacked Specials'. heroic/Leader does the same to Decisive Command: Relentless March adds movement and Exhausted/Slowed/Surprised immunity, Cutthroat Tactics changes how the die is used, three command-die talents enlarge it, and Authority doubles its range AND ally count for free where Envoy's Practiced Oratory charges focus per target at L6. heroic/Hunter's Seek Quarry has nine consumers, the largest such loop in the corpus. The defensible residue: Envoy stacks the most SIMULTANEOUS riders on one delivery.",
+   "NOT UNIQUE, and the profile's list of reprints was too short: SIX of Envoy's 25 talents are shared library content — Collected (identical text in leyline/Blue, leyline/Green, heroic/Agent, heroic/Scholar), Mighty (identical in leyline/Red, heroic/Agent, Hunter, Leader, Warrior), Customary Garb (identical in heroic/Leader), High Society Contacts (identical in heroic/Agent), Composed (identical text to Leader's Focused Mind and Scholar's Clear Mind), Well Dressed (Leader's differs by one word: 'Gain a Fashion expertise'). Reviving the Unconscious is likewise shared with heroic/Scholar's Resuscitation.",
+   "NOT A DEFECT, contrary to a tempting structural reading: Rousing Presence's connections [] and zero dependents is a CORPUS-WIDE convention — all eleven Keys (five leyline Attunements plus Opportunist, Rousing Presence, Seek Quarry, Decisive Command, Erudition, Vigilant Stance) have connections [] and no talent anywhere lists them as a prerequisite, because the Key is granted with the path rather than bought.",
+   "MINOR BUT REAL — Envoy is the only tree in the corpus holding BOTH Collected and Customary Garb, so it is the only one that can buy +2 to all three defences with two zero-cost depth-0 passives by level 2."
+  ],
+  "gaps": [
+   "Movement. Zero. No Move, reposition, teleport, forced movement or escape from Restrained — where its architectural twin heroic/Leader moves itself (Valiant Intervention) and its allies (Relentless March).",
+   "Terrain and area control. No zones, hazards, difficult ground or persistent features. Cannot shape a battlefield.",
+   "Information. No detection, scouting, foreknowledge or intent-reading. Against an ambush, an invisible enemy or a mystery the tree contributes nothing — despite owning a talent called Foresight.",
+   "Damage. One flat +2-per-action rider, and that rider is a six-tree shared talent. Against a target the party must kill on a clock, the Envoy's own contribution is negligible.",
+   "Opportunity CONSUMPTION. The engine's real output — a Determined that turns a failed test into an Opportunity — is a currency Envoy cannot spend: no Envoy talent consumes an Opportunity, so the payoff lands only if a partner tree does (17 consumers across 9 trees).",
+   "Non-social, non-mindful enemies. SOFTENED from the profile under test: mechanically Steadfast Challenge only needs a Spiritual defence, which every creature has, so it is a GM-ruling risk rather than a certainty. What genuinely requires a pacifiable enemy is Calm Appeal and Peaceful Solution, and with them the Diplomat branch's payoff (the specialty is 8 of 25, verified). Collected, Well Dressed and High Society Contacts function regardless.",
+   "Health healing before someone drops. Rallying Shout only works on an Unconscious or 0-HP ally, and it is a level-6 pick. An ally at 1 HP gets nothing; no mid-fight top-up, no temp HP (14 talents in 9 trees have it; none Envoy's), no Injury removal.",
+   "Investiture. Zero interaction — the tree neither generates nor spends it, so it gives a leyline or deity partner nothing and gets nothing from Draw Mana.",
+   "AoE. Every effect is single-target unless you pay focus per extra target (Practiced Oratory, depth 3, L6) — where heroic/Leader's Authority doubles ally counts for free and passively.",
+   "Playing alone. Twelve of twenty-five talents require someone else — Rousing Presence, Sound Advice, Galvanize, Devoted Presence, Stalwart Presence, Instill Confidence, Inspired Zeal, Sage Counsel, Rallying Shout, Guiding Oration, Lessons in Patience, Applied Motivation — and Practical Demonstration is dead alongside them, making thirteen. The remaining TWELVE work solo (corrected from the profile's 'eleven': Steadfast Challenge, Collected, Customary Garb, Well Dressed, Withering Retort, Composed, Mighty, Calm Appeal, High Society Contacts, Peaceful Solution, Practiced Oratory, Foresight), so a solo Envoy is a Disorient/pacify duellist with two defence passives, a deflect Reaction, an extra Reaction and +2 damage.",
+   "Refuelling ITSELF. All four restorers name an ally or your target. Eight talents spend focus and the only self-help in 25 talents is Composed's one-off '+tier max and current' — a talent whose text is shared with two other heroic trees."
+  ],
+  "weakTalents": [
+   {
+    "name": "Composed",
+    "reason": "Increase your max AND current focus by your tier — +1 at Tier 1 — for a whole pick at depth 1. Below the curve, but not as bad as a misread of the authored overlay suggests: the live text (description and authoredBody identical in all-talents.json) keeps the 'and current' clause, so it fills the point it creates, and it is the only self-refuel in 25 talents. Not original content — the identical string is heroic/Leader's Focused Mind and heroic/Scholar's Clear Mind, and leyline/Blue and Black carry the same NAME with the weaker 'maximum focus' text."
+   },
+   {
+    "name": "Galvanize",
+    "reason": "OVERCOSTED. 2 Actions — a full Fast turn — to give ONE ally a recovery die of focus against a pool capped at 2+WIL. The tree's only 2-Action talent and its worst action rate, and the mandatory gateway into the Faithful branch (Applied Motivation and Composed both list it as prerequisite)."
+   },
+   {
+    "name": "Guiding Oration",
+    "reason": "A depth-2 Passive whose entire payload is an advantage for an ally on their next test against your target. Advantage is BINARY and a second source on the same roll is worth literally zero; the corpus carries 45 producers across 13 trees against 7 consumers, and the ally can Gain Advantage themselves for 1 Action. Frequently null — it exists mainly as the connection between Mighty and Rallying Shout."
+   },
+   {
+    "name": "Well Dressed",
+    "reason": "An advantage on your FIRST Deception, Leadership or Persuasion test, conditional on clothing — once per scene, in one of three skills, redundant with the standard Gain Advantage action. The Fashion expertise is the only durable content. Not Envoy-original: heroic/Leader carries the same talent, differing by a single word ('Gain a Fashion expertise')."
+   },
+   {
+    "name": "Sage Counsel",
+    "reason": "OVERCOSTED AND REDUNDANT. Depth 3 behind Lore 3+ — a level-6 pick — to spend 1 focus, on top of Aid's own focus and your single Reaction, to deliver Rousing Presence. Sound Advice already does that at DEPTH 0, level 1, for one focus and one Reaction. A deep node reprinting an entry node at double the price; the only difference is timing. Comparative: heroic/Leader's equivalent deep delivery node, Authority, doubles range and ally count for free."
+   },
+   {
+    "name": "Withering Retort",
+    "reason": "Spends the tree's scarcest slot — your one Reaction, competing with Sound Advice — to add Discipline ranks (1-2 before level 6) of Deflect to a single attack. The attached Steadfast Challenge saves it from never-pick status, but nothing waives Steadfast Challenge's own 1-focus cost: this is a delivery conversion, not a free rider. It stops competing for the Reaction only once you have Foresight, itself a level-6 pick."
+   },
+   {
+    "name": "High Society Contacts",
+    "reason": "Costs 2 focus — the primer's 'significant' tier and half a starting pool — to add an Opportunity to a test that must be a high-society interaction, in a talent that also demands you already hold a 'Patron in high society' reward. Three simultaneous conditions for one Plot Die nudge, and the talent is character-for-character identical to heroic/Agent's (Agent also carries the parallel Underworld Contacts, Leader the parallel Well Supplied and Rumormonger — library content, not Envoy design)."
+   },
+   {
+    "name": "Peaceful Solution",
+    "reason": "Not weak in effect (it is corpus-unique) but almost certainly a never-fires talent as written. Its trigger requires ALL non-minion enemies to be pacified, and pacifying each costs a successful Steadfast Challenge plus Calm Appeal's focus, one at a time, while they are attacking you. At depth 3 with Discipline 3+ it is a level-6 pick demanding a whole encounter's setup."
+   },
+   {
+    "name": "Calm Appeal",
+    "reason": "Action-type dishonesty rather than weakness: typed Passive yet carrying a 1-Focus cost and an active spend decision. No standard in DESIGN-GUIDE-CLAIMS.md addresses Passive-versus-spend directly — the nearest is the DEITY guide's Principle 10, about Action versus Reaction — so this is a reading, not a cited violation. At 27 words it is also the tree's longest card against a 20-25 word leyline target. CORRECTED FRAMING: 'pacified' is not a talent-invented condition to blame on this tree — Envoy is an official Cosmere path (its description links Compendium.cosmere-rpg.heroic-paths UUIDs and six of its talents are identical to other paths'), so the state is presumably defined in the published rules, which are outside this review's scope; within the 365-talent corpus it appears here and nowhere else, so its strength cannot be priced."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "Envoys further their organisation's reach 'through precise rhetoric, patient attendance, and ceaseless fervor'.",
+     "delivered": "DELIVERS",
+     "evidence": "Steadfast Challenge, Well Dressed, High Society Contacts, Practiced Oratory, Calm Appeal, Peaceful Solution and Rousing Presence are all rhetoric-shaped. Nothing resolves a problem by force; the single damage talent (Mighty) is a six-tree library import bolted to the Mentor branch."
+    },
+    {
+     "claim": "Diplomat — 'adept at navigating court politics... use what they learn about their host countries to seek more favorable treatment'.",
+     "delivered": "PARTIAL / MISLABELLED",
+     "evidence": "The Diplomat specialty is 8 talents (verified) and its main chain is the tree's COMBAT CONTROL branch: Steadfast Challenge into Withering Retort into Calm Appeal into Peaceful Solution, a Disorient/deflect/pacify chain fought at initiative. Only Well Dressed and High Society Contacts are court politics, both are other paths' talents, and neither 'learns about a host country' — there is no information mechanic anywhere in the tree."
+    },
+    {
+     "claim": "Faithful — 'worship of the divine permeates their entire lives... demonstrating their convictions to others through word or deed.'",
+     "delivered": "DRIFTED",
+     "evidence": "The Faithful specialty contains ZERO divine, religious or devotional mechanics. Its EIGHT talents are Customary Garb (dress-based defence, also Leader's), Galvanize / Applied Motivation / Inspired Zeal (the focus battery), Composed (also Leader's and Scholar's), Devoted Presence and Stalwart Presence (Rousing Presence riders) and Sage Counsel (an Aid rider). Nothing tests, invokes or interacts with a deity, oath, rite or tenet — notable in a system with ten dedicated deity trees to borrow from. Faithful is empirically the focus-economy-and-support-riders branch."
+    },
+    {
+     "claim": "Mentor — 'devote themselves to their wards... patiently nurture others toward greatness'.",
+     "delivered": "PARTIAL",
+     "evidence": "Sound Advice, Lessons in Patience, Instill Confidence, Guiding Oration and Rallying Shout fit — five of eight. But the same specialty houses the tree's two most self-serving talents, Mighty (+damage when YOU hit) and Foresight (an extra Reaction for YOU), and they sit on the branch's main chain (Practical Demonstration into Mighty into Guiding Oration into Rallying Shout), so a player pursuing the ward fantasy is routed through personal-power nodes — one of which is library filler — to reach it."
+    },
+    {
+     "claim": "'The Envoy key talent, Rousing Presence, unlocks access to the Envoy specialties.'",
+     "delivered": "NOT MODELLED IN THE GRAPH — but a corpus-wide convention, NOT an Envoy defect",
+     "evidence": "CORRECTED FROM THE PROFILE UNDER TEST. Rousing Presence has connections [] and prerequisites 'undefined', and no talent lists it as a prerequisite — but all ELEVEN Keys in the corpus are identical: the five leyline Attunements plus Opportunist, Rousing Presence, Seek Quarry, Decisive Command, Erudition and Vigilant Stance all have connections [] and zero dependents. The Key is granted with the path rather than bought, so modelling it as a prerequisite would be wrong. The residual Envoy-specific observation is narrower: nine talents' rules text depends on Rousing Presence, so a multi-path character who dips into Envoy WITHOUT taking the path can legally buy Practical Demonstration or Sound Advice at depth 0 and get nothing."
+    },
+    {
+     "claim": "CROSS-INTENT CHECK (lens d): is this tree's promise also made elsewhere? YES — heroic/Leader.",
+     "delivered": "SHARED PROMISE, and Leader delivers more of it",
+     "evidence": "Leader's path description promises 'bolstering fellowship and resolve to carry on' (Envoy's ally-support promise) and a Politico specialty that 'chase[s] favor and prestige while subtly undermining their enemies' (Envoy's Diplomat court-politics promise). Leader delivers the court-politics half with more tools (Rumormonger, Grand Deception, Set at Odds, Well Supplied, plus command dice on Deception/Persuasion/Intimidation rolls) while Envoy's Diplomat branch delivers combat control instead, and Leader delivers the ally-bolstering half with the same architecture and an outcome-changing payload. The two paths share four talents outright and name each other as recommended multi-path partners, so the overlap is designed. Corroborating measurement the profile ignored: functional-overlap.js puts Envoy in the corpus's highest-similarity cluster (Red-Envoy 0.877, rank 2 of 210; Black-Envoy 0.867, rank 4; Envoy-Scholar 0.826) — its FUNCTION vector is not distinctive; what separates it is the pacify chain and the focus faucet, neither of which that metric weights."
+    },
+    {
+     "claim": "'Attributes. It's usually a good idea to prioritize Presence and Willpower.'",
+     "delivered": "DELIVERS, but Presence only indirectly",
+     "evidence": "Willpower is directly served: it sets the focus pool the tree feeds (2+WIL) and the recovery die both Galvanize and Rallying Shout roll. Presence is never named by a talent — the only test is Discipline vs. Spiritual and the scalars are Discipline, Lore, Leadership and Persuasion — but Leadership and Persuasion gate FOUR talents and scale two, and those are canonically Presence-linked social skills. The skill-to-attribute map is not in SYSTEM-PRIMER.md, so this cannot be settled in scope; the cosmere-rpg system's own skill table would settle it. Presence's one primer-stated role, the Investiture pool, is worth nothing here — the tree touches Investiture zero times."
+    },
+    {
+     "claim": "'Skills. Discipline is essential... other useful skills include Deception, Leadership, Lore, and Persuasion.'",
+     "delivered": "DELIVERS (except Deception)",
+     "evidence": "Discipline gates NINE talents (1+ x1, 2+ x5, 3+ x3) and scales THREE (Withering Retort's deflect, Calm Appeal's focus tax, Inspired Zeal's target count), and the path grants a free Discipline rank. Leadership gates three and scales Rallying Shout's heal. Lore gates two and scales Applied Motivation. Persuasion gates and scales Practiced Oratory. Deception is referenced by exactly one talent (Well Dressed) and gates nothing — the weakest of the five, and notable because heroic/Leader and heroic/Agent both build real Deception mechanics."
+    },
+    {
+     "claim": "'Rewards. When choosing rewards, you can't go wrong with influential patrons.'",
+     "delivered": "DELIVERS — and it is load-bearing, not flavour",
+     "evidence": "High Society Contacts lists 'Patron in high society' as a hard prerequisite alongside Well Dressed. That is a Reward granted at the table, not a talent, so the Diplomat social branch (and Practiced Oratory beyond it) cannot be reached by talent spend alone — but the path description explicitly instructs the player to buy that reward, so it is a designed dependency, not an unplanned dead end. It is the only place in the tree where a GM decision can hard-block a chain."
+    },
+    {
+     "claim": "DESIGN GUIDE — action-type distribution.",
+     "delivered": "NO HEROIC STANDARD EXISTS; against the observed official baseline, one overrun",
+     "evidence": "Hand-counted and matching the deterministic table exactly: Passive 10 (40%), Special 8 (32%), Action 2 (8%), 2 Actions 1 (4%), Free Action 2 (8%), Reaction 2 (8%), 3 Actions 0. SOURCING: DESIGN-GUIDE-CLAIMS.md contains ONLY the leyline and deity standards; its 'Heroic %' column is a DESCRIPTIVE measurement of 374 official Cosmere talents, not a target, and Revision Principles 2 and 4 are stated for leyline trees. Envoy is an official Cosmere heroic path — its description links Compendium.cosmere-rpg.heroic-paths UUIDs, and six of its talents are identical to other paths' — so no Edha design standard governs it. Against the descriptive baseline: Special, Free and 3-Action land on it, Passive runs 6 points hot and Action 6 points cold. The Reaction overshoot (8% vs 5%) is defensible, because Foresight exists specifically to relieve the primer's 1-Reaction cap."
+    },
+    {
+     "claim": "DESIGN GUIDE — description length target 20-25 words, one core effect per talent.",
+     "delivered": "DELIVERS (against a leyline target that does not formally bind this tree)",
+     "evidence": "Envoy runs shorter than target. Word-counted from the live text, exactly TWO cards exceed 25: Calm Appeal 27 (two effects) and Rallying Shout 26; next are Steadfast Challenge 23, Mighty 22, Guiding Oration 22, Well Dressed 21, Practiced Oratory 21. No talent is overdesigned. Data-quality note: five shipped cards carry typos — 'Prsentable'/'Spriritual' (Customary Garb), 'recoveres' (Lessons in Patience), 'you ase tensions' (Peaceful Solution), 'Rousing Resence' (Practiced Oratory), 'Unconcious' (Rallying Shout) — and one is load-bearing beyond cosmetics: 'recoveres' is why resource-economy.js cannot see Lessons in Patience as a focus producer."
+    }
+   ],
+   "actuallyIs": "A party focus-and-Opportunity battery with a bolt-on pacification chain, built on an architecture it shares with heroic/Leader. The three specialty labels are close to arbitrary: Diplomat is combat control, Faithful is the resource economy with no faith in it, and Mentor is a mixed ally-support-plus-personal-power branch containing the tree's two most generic imports.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Focus",
+    "role": "BOTH — and the tree's spine",
+    "talents": "CONSUMES (8 of 25, against the Cost field): Steadfast Challenge 1, Sound Advice 1, Devoted Presence 1, Calm Appeal 1, Stalwart Presence 1, Sage Counsel 1, High Society Contacts 2, Practiced Oratory variable. PRODUCES (4): Galvanize, Applied Motivation, Lessons in Patience, Inspired Zeal — all four for OTHER characters, and the deterministic census sees only two of them (regex misses 'recovers' and the typo 'recoveres'). EXPANDS POOL: Composed (text shared with Leader's Focused Mind and Scholar's Clear Mind). DISCOUNTS: Instill Confidence (Focused, on an ally)."
+   },
+   {
+    "keyword": "Determined (condition)",
+    "role": "BOTH — produces and pays off; canon payload smaller than the tree's volume suggests",
+    "talents": "CANON DEFINITION (cosmere-canon-reference Conditions table): 'When you fail a test, may add an Opportunity to the result; condition then ends.' One-shot, failure-gated, does not change the outcome. PRODUCES: Rousing Presence only. CONSUMES: Inspired Zeal. REPLACES: Instill Confidence offers Focused INSTEAD. Envoy owns 3 of the corpus's 4 talents naming Determined; the fourth and only other producer is leyline/White's Collective Resolve, which costs an Opportunity plus 1 Investiture but hits every ally in Attunement Range at once."
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "PRODUCES — directly and, via Determined, indirectly",
+    "talents": "DIRECT: High Society Contacts — text identical to heroic/Agent's, same shape as Agent's Underworld Contacts and Leader's Well Supplied and Rumormonger (5 talents across 3 trees with that phrasing). INDIRECT AND LARGER: every Determined becomes an Opportunity on the holder's next failed test, so the free every-round engine is a party Opportunity faucet. The tree CONSUMES no Opportunity — the 17 consumers across 9 trees are all somebody else's."
+   },
+   {
+    "keyword": "Focused (condition)",
+    "role": "PRODUCES",
+    "talents": "Instill Confidence. Note the trade: Focused (all focus costs 1 less, persistent) versus Determined (one Opportunity on one failure) is usually the better payload for a focus-hungry ally."
+   },
+   {
+    "keyword": "Disoriented (condition)",
+    "role": "PRODUCES",
+    "talents": "Steadfast Challenge; Calm Appeal keys off it. 14 talents across 11 trees produce Disoriented, so the condition is common — Envoy's distinction is the chain hanging off it, not the condition."
+   },
+   {
+    "keyword": "pacified / pacify (undefined state)",
+    "role": "BOTH — Envoy is its ONLY user in the corpus",
+    "talents": "PRODUCES: Calm Appeal. CONSUMES: Peaceful Solution. Not among the 14 canon conditions and not defined by any of the 365 talents. Envoy did not invent it — this is an official Cosmere path — but nothing in scope prices it, and both talents sit in the tree's 68% unwired share, so it is also a wiring risk."
+   },
+   {
+    "keyword": "advantage",
+    "role": "BOTH",
+    "talents": "PRODUCES: Well Dressed, Guiding Oration. CONSUMES AS A TRIGGER: Practical Demonstration and Guiding Oration fire off the standard Gain Advantage action. Three Envoy entries in the advantage ledger. Discounted per the primer — advantage is binary and the corpus over-produces it 45:7."
+   },
+   {
+    "keyword": "disadvantage",
+    "role": "PRODUCES",
+    "talents": "Steadfast Challenge. The corpus has 14 disadvantage producers and 0 consumers."
+   },
+   {
+    "keyword": "recovery die",
+    "role": "CONSUMES (rolls someone else's)",
+    "talents": "Galvanize (ally rolls theirs for focus), Rallying Shout (recovery die + Leadership ranks as health). Per the primer the die is the WIL ladder, d4 at WIL 0-1 up to d10 at 6-7."
+   },
+   {
+    "keyword": "Deflect",
+    "role": "PRODUCES / increases",
+    "talents": "Withering Retort — the tree's only damage mitigation, against 14 Deflect talents across 7 trees."
+   },
+   {
+    "keyword": "Defenses — Physical / Cognitive / Spiritual",
+    "role": "BOTH",
+    "talents": "INCREASES: Collected (+2 Cog/Spi — shared with four other trees), Customary Garb (+2 Phy/Spi, conditional on armor or clothing — shared with Leader), Stalwart Presence (+2 to one of an ally's). TESTS AGAINST: Steadfast Challenge (vs. Spiritual). Envoy is the only tree holding both generic defence passives."
+   },
+   {
+    "keyword": "Reaction (the 1-per-round slot)",
+    "role": "BOTH",
+    "talents": "PRODUCES: Foresight (from level 6) — one of two extra-reaction talents in 365 and the only unconditional one. CONSUMES: Sound Advice, Withering Retort — and Sage Counsel indirectly via Aid, making three claimants on one slot."
+   },
+   {
+    "keyword": "expertise",
+    "role": "PRODUCES",
+    "talents": "Well Dressed (Fashion), High Society Contacts (High Society), Lessons in Patience (Motivational Speech). Two of the three arrive on talents copied from Leader and Agent."
+   },
+   {
+    "keyword": "Prone / Slowed / Stunned / Surprised",
+    "role": "REMOVES",
+    "talents": "Devoted Presence (scrubs all four for 1 focus). Compare heroic/Leader's Relentless March, which makes its target IGNORE Exhausted, Slowed and Surprised — the same rider slot, prophylactic instead of curative."
+   },
+   {
+    "keyword": "Unconscious",
+    "role": "REMOVES / revives",
+    "talents": "Rallying Shout. NOT unique: heroic/Scholar's Resuscitation also revives an Unconscious character (and one recently dead)."
+   },
+   {
+    "keyword": "Health",
+    "role": "PRODUCES (narrowly)",
+    "talents": "Rallying Shout only, only at 0 health, and only from level 6."
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUMES as a scalar",
+    "talents": "Mighty (extra damage = 1 + tier per action spent), Composed (+tier max and current focus)."
+   },
+   {
+    "keyword": "Presentable armor / appropriate clothing (equipment state)",
+    "role": "CONSUMES / gates",
+    "talents": "Customary Garb, Well Dressed. An equipment dependency, not a talent one."
+   },
+   {
+    "keyword": "Patron in high society (reward / background)",
+    "role": "CONSUMES / gates",
+    "talents": "High Society Contacts — a prerequisite the tree cannot grant, though the path description's Rewards line directs the player to buy it."
+   },
+   {
+    "keyword": "a companion (entity)",
+    "role": "CONSUMES / gates",
+    "talents": "Instill Confidence — a prerequisite the tree cannot grant; blocks the whole Foresight chain without an outside summon."
+   },
+   {
+    "keyword": "minion (creature category)",
+    "role": "CONSUMES",
+    "talents": "Peaceful Solution (only non-minion enemies must be pacified)."
+   },
+   {
+    "keyword": "Aid (standard Reaction)",
+    "role": "CONSUMES / rides",
+    "talents": "Sage Counsel."
+   },
+   {
+    "keyword": "Gain Advantage (standard Action)",
+    "role": "CONSUMES / rides",
+    "talents": "Practical Demonstration, Guiding Oration."
+   },
+   {
+    "keyword": "Skill ranks — Discipline, Lore, Leadership, Persuasion",
+    "role": "CONSUMES as scalars and as gates",
+    "talents": "Discipline: 9 gates (1+ x1, 2+ x5, 3+ x3) and 3 scalars. Lore: 2 gates + 1 scalar. Leadership: 3 gates + 1 scalar. Persuasion: 1 gate + 1 scalar. The six 3+ gates are what makes the whole depth-3 band a level-6 band — and all six of Envoy's deep talents carry one, the highest proportion in the heroic atlas."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "NEITHER — absent",
+    "talents": "Zero interactions across all 25 talents. Envoy neither generates nor spends Investiture, so it is inert with respect to Draw Mana and the entire leyline/deity economy."
+   }
+  ],
+  "crossTreeHooks": [
+   "heroic/Leader is the architectural twin and the designed partner — each path description names the other as a recommended multi-path. But four talents are shared outright (Customary Garb, Mighty, Well Dressed near-verbatim, Composed = Leader's Focused Mind), and both trees run Key + free-action delivery + payload rewrites + multi-target, so an Envoy/Leader build buys far less new content than 50 talents implies. They differ in payload: Leader's command die can change a roll's outcome and its riders add movement; Envoy's Determined only pays out on a failure and its riders add focus, cleanse and revive.",
+   "Instill Confidence requires 'a companion' — Envoy summons nothing. The whole Mentor deep chain (Instill Confidence into Foresight) is locked behind an outside summon source (Hunter's animal companion, Civilization's Combat Construct, Death's Risen Servant, or a GM-granted NPC).",
+   "High Society Contacts requires 'a Patron in high society' — a Reward granted at the table. The Diplomat social branch's payoff nodes cannot be reached by talent spend alone, though the path description's Rewards advice points straight at it.",
+   "Practical Demonstration and Mighty both key off 'when you hit with an attack'. Envoy supplies no accuracy, attack talent or damage dice, so the engine's uptime is inherited from a weapon tree (Warrior stances, Hunter). On a pure talker it still fires off Gain Advantage — the one place Envoy's delivery beats Leader's Strike-gated Combat Coordination.",
+   "THE OPPORTUNITY SEAM, missed by the profile under test: every Determined Envoy hands out becomes an Opportunity on that ally's next failed test, and Envoy consumes none. That makes it a feeder for the 17 Opportunity consumers across 9 trees — heroic/Agent (Opportunist, Sure Outcome, Double Down), heroic/Scholar (Overcharge, Anatomical Insight), leyline/Black (Predatory Insight), leyline/White (Collective Resolve) — and worth much less beside a party with nothing to spend Opportunities on.",
+   "Inspired Zeal only pays out when an ALLY uses Determined — i.e. when an ally fails a test. Its value is set by the party's failure rate, which the Envoy cannot influence, and it can be pre-empted by leyline/White's Collective Resolve.",
+   "Guiding Oration's advantage collides with 44 other advantage producers across 13 trees and with the standard Gain Advantage action. Its worth is entirely a function of whether the ally already had advantage — a seam that runs NEGATIVE next to Blue, Red, Green, Agent, Hunter, Scholar or Warrior.",
+   "The focus battery is a pure force multiplier on OTHER trees' focus costs — 52 focus consumers against 8 producers, and Envoy's four are the only ones paying out to someone else. Its best partners by focus burn are heroic/Agent (12 costers, 0 producers) and heroic/Leader (11). Beside an Investiture-driven leyline or deity build it does almost nothing.",
+   "Devoted Presence's value is entirely reactive to enemy control: it scrubs Prone, Slowed, Stunned and Surprised that someone ELSE applied. Worthless against enemies that do not apply conditions.",
+   "Sage Counsel rides the standard Aid Reaction, so it needs an ally actively rolling a test while you hold your Reaction — and it competes with Sound Advice and Withering Retort for the same slot until Foresight lands at level 6.",
+   "Foresight's extra Reaction is worth most in a multi-path build carrying more Reactions than Envoy's two — on Envoy alone it just lets Sound Advice and Withering Retort coexist in one round.",
+   "Well Dressed and Customary Garb both gate on Presentable armor — an equipment-slot dependency competing with armor a frontline build would rather wear. And because six of Envoy's 25 talents are shared library content, a multi-path build spanning Leader, Agent or Scholar gets no new content from up to a quarter of Envoy's tree."
+  ],
+  "topThree": [
+   "Practical Demonstration — Free Action, no cost, depth 0, level 1: converts the 1-Action Key into a free every-round delivery on any hit or Gain Advantage. Its real value is not the Determined but what the riders bolt onto it — with Lessons in Patience it is an unlimited, zero-cost +1 focus per round into the party, plus half your Lore ranks via Applied Motivation. Not unique in kind: heroic/Leader's Combat Coordination does the same for Decisive Command and refunds the focus on a miss.",
+   "Foresight — an additional Reaction every turn, unconditional Passive, one of only two extra-reaction effects in 365 talents and the only one with no condition attached. It breaks the primer's hard 1-Reaction cap. Discounted from first place because it is a level-6 pick (Discipline 3+) behind a prerequisite demanding an out-of-tree companion.",
+   "Steadfast Challenge — 1 Action, 1 focus, depth 0, level 1: Disoriented (no reactions, obscured senses) plus a blanket disadvantage on everything the target does against you, on a Discipline vs. Spiritual test. Real action denial at the entry band, and the root of the corpus's only pacify chain."
+  ],
+  "bottomThree": [
+   "Galvanize — 2 Actions to hand one ally a recovery die of focus against a pool capped at 2+WIL. The tree's only 2-Action talent and its worst action rate, and a mandatory gateway into the Faithful branch.",
+   "Sage Counsel — depth 3 behind Lore 3+ (level 6) to spend 1 focus plus Aid's own focus plus your Reaction to deliver Rousing Presence, which Sound Advice already does at depth 0, level 1, for one focus. A deep node reprinting an entry node at double price.",
+   "Well Dressed — a once-per-scene advantage in one of three social skills, conditional on clothing, redundant with the Gain Advantage action every character already has, and not original to the path (heroic/Leader carries it with a one-word difference). The Fashion expertise is the only durable content."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "TWO SEPARATE ANSWERS, and the split is the tree's defining economic fact. (a) The BASELINE loop is INFINITE: Practical Demonstration + Rousing Presence costs nothing and rides an attack or a Gain Advantage you were making anyway, and Mighty, Collected, Customary Garb, Composed, Applied Motivation, Lessons in Patience, Guiding Oration, Foresight and Rallying Shout are all free Passives — a genuine strength no leyline tree can match given Draw Mana's 1-Action-for-1-Investiture rate at Tier 1. CEILING ADDED ON REVIEW: Determined is one-shot and an ally holds one at a time, so after roughly 3-4 free deliveries the party is saturated and the loop's continuing value is the RIDERS (+1 focus, +half Lore, the condition scrub, the defence bump), not the condition — which is why this tree scores higher on resource_economy than on buff. (b) The PREMIUM loop is short: at WIL 2 the focus pool is 4, and the good delivery (Rousing Presence + Devoted Presence + Stalwart Presence, or Steadfast Challenge + Calm Appeal) costs 2 focus per round while Dodge, Aid and Reactive Strike each cost 1 more. Roughly 2 rounds of premium play, 3 at WIL 4. The catch: all four restorers target other characters, so the party focus battery cannot recharge itself; Composed's one-off '+tier max and current' is the only self-help in 25 talents.",
+   "triggerGatedCount": 4,
+   "reactionCount": 2,
+   "resourceCostersOutOfTree": 0,
+   "note": "Reactions: 2 of 25 (Sound Advice, Withering Retort) — matches the deterministic table. Under the hard 1-Reaction cap those two compete directly, and Sage Counsel's Aid makes three claimants on one slot; Foresight (depth 3, level 6) grants a second Reaction each turn, so this is the rare tree that supplies its own answer to the cap. TRIGGER-GATED on another creature acting or on being hit — 4 of 25, matching the deterministic count: Sound Advice, Withering Retort, Inspired Zeal, Sage Counsel. Two further talents are STATE-gated and must not be counted here: Devoted Presence and Rallying Shout both fire on YOUR Rousing Presence. A further 5 are self-gated conditionals you control (Practical Demonstration, Mighty, Guiding Oration, Calm Appeal, Peaceful Solution). Resource costs are FOCUS ONLY — 8 of 25 spend focus — so the tree imposes no out-of-tree resource dependency, but equally offers a leyline or deity partner no Investiture interaction at all."
+  }
+ },
+ "corrections": [
+  {
+   "field": "weakTalents[Composed].reason / bottomThree[0] / powerByDepth[depth 1-2].note",
+   "from": "\"the authored override (which wins) drops the original's 'and current' clause, so taking it does not even fill the point it creates\"",
+   "to": "The live text KEEPS 'and current': 'Increase your max and current focus by your tier.' It does fill the point it creates, and is the Envoy's only self-refuel.",
+   "reason": "REVERSED READING. all-talents.json for Composed: description = 'Increase your max and current focus by your tier.' and authoredBody = the identical string. The brief's own divergence note lists Composed as authored 'increase your max AND CURRENT focus' vs. generator 'increase your maximum focus', and instructs that the AUTHORED text wins — so the authored text is the one WITH 'and current'. The profile inverted the direction of the divergence and then built a bottomThree entry on the inversion."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "6",
+   "to": "4",
+   "reason": "MISCOUNT against the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Qualifying: Sound Advice (Reaction), Withering Retort (Reaction), Inspired Zeal ('When an ally uses Determined'), Sage Counsel ('When you Aid a character'). The profile also counted Devoted Presence and Rallying Shout, but both fire on YOUR OWN Rousing Presence — 'When you use Rousing Presence, spend 1 focus to remove...' and 'Rousing Presence can revive an Unconcious ally' — and are state-gated, not trigger-gated. The corrected count of 4 also matches the deterministic action-type table (heroic/Envoy trigger-gated 4, 16%)."
+  },
+  {
+   "field": "axes[resource_economy].evidence / uniqueOwnership[focus battery] / crossTreeHooks[focus battery]",
+   "from": "\"A full-text scan of all 365 talents finds SIX focus-generating talents in the entire game, and FOUR are Envoy's... The others are heroic/Hunter's Cold Eyes and heroic/Leader's Cutthroat Tactics\" / \"No other tree has more than one\"",
+   "to": "EIGHT focus-restoring talents corpus-wide; four are Envoy's; leyline/Black holds two (Siphoned Will, Predatory Insight); Hunter and Leader one each. Envoy's four are the only ones that restore focus to another character.",
+   "reason": "INTERNALLY INCONSISTENT ARITHMETIC. The profile took the census total (6) and combined it with a hand-count of Envoy (4) that the same census scored as 2 — you cannot use both numbers at once. A direct scan of all-talents.json returns: leyline/Black Siphoned Will ('regain focus equal to your tier'), leyline/Black Predatory Insight ('Regain 1 focus when any character reaches 0 focus'), Envoy Galvanize / Applied Motivation / Lessons in Patience / Inspired Zeal, heroic/Hunter Cold Eyes, heroic/Leader Cutthroat Tactics = 8. 'No other tree has more than one' is false (Black has two). The genuine, defensible claim — Envoy holds twice as many as any other tree and is the only party-facing source — survives; the corpus totals do not."
+  },
+  {
+   "field": "axes[healing].evidence / uniqueOwnership[the only revive] / mechanicalKeywords[Unconscious]",
+   "from": "\"The only revive-from-Unconscious effect in the corpus\" / \"A corpus-wide text scan finds no other talent that touches the Unconscious state\"",
+   "to": "NOT unique. heroic/Scholar's Resuscitation: 'Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently.'",
+   "reason": "TEXT-VS-CLAIM, falsified by scan. A scan of all 365 descriptions for /Unconc?ious/ returns exactly two talents: Envoy's Rallying Shout and Scholar's Resuscitation. Scholar's reaches further (it also covers the recently dead). The claim was asserted as a corpus-wide scan result and the scan contradicts it."
+  },
+  {
+   "field": "axes[protection].evidence / weakTalents[Withering Retort].reason",
+   "from": "\"(and fires Steadfast Challenge free)\" / \"the free Steadfast Challenge attached\"",
+   "to": "The Reaction lets you USE Steadfast Challenge before an attack; nothing in the text waives Steadfast Challenge's own 1-focus cost. It is a delivery conversion, not a free rider.",
+   "reason": "TEXT-VS-CLAIM. Withering Retort reads in full: 'Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.' There is no cost waiver anywhere in the string, and Steadfast Challenge's Cost field is 1 Focus. The word 'free' was added by the profile."
+  },
+  {
+   "field": "intentDrift[Skills claim].evidence",
+   "from": "\"Discipline gates eight talents and scales four (Withering Retort's deflect, Calm Appeal's focus tax, Inspired Zeal's target count, Foresight's gate)\"",
+   "to": "Discipline gates NINE talents and scales THREE.",
+   "reason": "DOUBLE MISCOUNT. Nine prerequisites string-match Discipline: Steadfast Challenge 1+, Withering Retort 2+, Applied Motivation 2+, Lessons in Patience 2+, Calm Appeal 2+, Stalwart Presence 2+, Inspired Zeal 3+, Peaceful Solution 3+, Foresight 3+. And Foresight was counted in the scalars list while being described as 'Foresight's gate' — a gate is not a scalar; Foresight's text ('Gain an additional reaction each turn') contains no Discipline term at all."
+  },
+  {
+   "field": "intentDrift[Faithful claim].evidence / gaps[non-social enemies]",
+   "from": "\"Its seven talents are...\" (followed by eight names) / \"the entire Diplomat branch (7 of 25 talents) is dead weight\"",
+   "to": "Faithful is EIGHT talents; Diplomat is EIGHT talents; and against a mindless enemy only about five talents go dark, not eight.",
+   "reason": "MISCOUNT. Specialty tally from all-talents.json: Key 1, Diplomat 8, Faithful 8, Mentor 8 = 25. The Faithful sentence said 'seven' while listing eight names. Also, calling the whole Diplomat branch dead weight against a mindless enemy overstates it: Collected (+2 defences), Well Dressed and High Society Contacts (out-of-combat social) all keep working; only Steadfast Challenge, Withering Retort, Calm Appeal, Peaceful Solution and half of Practiced Oratory go dark."
+  },
+  {
+   "field": "intentDrift[description length claim].evidence",
+   "from": "\"Only Calm Appeal (~32 words, two effects) and Practiced Oratory (~26) exceed the cap\"",
+   "to": "Exactly two exceed 25: Calm Appeal at 27 and Rallying Shout at 26. Practiced Oratory is 21 and does NOT exceed.",
+   "reason": "DICE/COUNT ERROR, both directions. Word-counted from the live text: Calm Appeal 27 (the profile inflated it to ~32), Rallying Shout 26 (missed entirely), Practiced Oratory 21 (falsely flagged). Only two cards exceed the target and one of them is not the one named."
+  },
+  {
+   "field": "weakTalents[Calm Appeal].reason",
+   "from": "\"The design guide's own Principle 10 says a talent whose effect triggers on a spend is not a Passive\"",
+   "to": "No standard in DESIGN-GUIDE-CLAIMS.md addresses Passive-versus-spend. The nearest rule is the DEITY guide's Principle 10 'Action-type honesty', which is about Action versus Reaction.",
+   "reason": "MISQUOTED CITATION. DESIGN-GUIDE-CLAIMS.md, deity guide PART 3 Principle 10 reads: 'A talent whose effect triggers on another character's action is a Reaction (⟲), not an Action (▶)... If you find yourself writing \"use Reaction to …\" inside a ▶ talent, the talent should be ⟲.' It says nothing about Passives or spends, and it is a deity-tree principle. The Calm Appeal observation is fine as a reading; the citation supporting it was fabricated."
+  },
+  {
+   "field": "intentDrift[action-type claim].claim + evidence",
+   "from": "\"DESIGN GUIDE — action-type distribution (Heroic benchmark: Passive 34%, Special 30%...)\" treated as a target, with '40% against the guide's explicit eliminate Passives above 35%'",
+   "to": "The 34/30/14/8/7/5/2 row is the leyline guide's DESCRIPTIVE measurement of 374 official Cosmere talents, not a target for these trees. The TARGET column is leyline-only, and Principles 2 (20-25 words) and 4 (eliminate Passives above 35%) are leyline revision principles. Envoy is an official Cosmere heroic path (its description links Compendium.cosmere-rpg.heroic-paths UUIDs), so no Edha standard governs it.",
+   "reason": "MIS-SOURCED STANDARD. DESIGN-GUIDE-CLAIMS.md PART 2 header: 'Based on analysis of 374 official talents across 6 Heroic paths and 9 Radiant paths', with columns 'Heroic % | Radiant % | TARGET Leyline %'. The Heroic column is an observation of what already exists, the TARGET column is prescriptive and is leyline's. The profile also, in the same field, correctly observed that the file 'carries only the LEYLINE and DEITY standards' — which contradicts its own framing three sentences earlier. The percentage arithmetic itself (10/8/2/1/2/2 = 40/32/8/4/8/8%) is correct and was verified by hand against the dossier."
+  },
+  {
+   "field": "mechanicalKeywords[Determined] / axes[buff].evidence",
+   "from": "\"PRODUCES: Rousing Presence (until end of scene), Instill Confidence (offers Focused as the alternative)\"",
+   "to": "PRODUCES: Rousing Presence only. Instill Confidence REPLACES Determined with Focused and produces no Determined.",
+   "reason": "TEXT-VS-CLAIM. Instill Confidence reads 'Rousing Presence can make an ally Focused instead of Determined' — 'instead of' is a substitution, not a production. Only 2 of the corpus's 4 Determined-naming talents produce it: Rousing Presence and leyline/White's Collective Resolve. The count '3 of 4 Determined talents' is correct as a naming count and is retained."
+  },
+  {
+   "field": "gaps[playing alone]",
+   "from": "\"Ten of twenty-five talents say 'an ally' or 'your target'... A solo Envoy has a Disorient, two defence passives and +2 damage.\"",
+   "to": "Twelve of twenty-five require another character (adding Lessons in Patience 'your target' and Applied Motivation 'a character'), and Practical Demonstration is dead with them. The remaining eleven work solo.",
+   "reason": "MISCOUNT in both directions. The ally-dependent list omitted Lessons in Patience and Applied Motivation, understating the dependency at 10. Simultaneously the closing sentence understated what survives: a solo Envoy keeps Collected, Customary Garb, Steadfast Challenge, Withering Retort, Well Dressed, High Society Contacts, Calm Appeal, Peaceful Solution, Composed, Mighty and Foresight — eleven talents, including the whole Diplomat pacify chain — not four."
+  },
+  {
+   "field": "damageAccounting.countFalsePositiveMitigation",
+   "from": "4 (Withering Retort, Collected, Customary Garb, Stalwart Presence)",
+   "to": "1 (Withering Retort only)",
+   "reason": "CATEGORY ERROR. Only Withering Retort mitigates damage ('increase your deflect against the attack'). Collected, Customary Garb and Stalwart Presence raise DEFENCES, which changes hit frequency, not damage taken per hit — they are avoidance, not mitigation, and belong under neither the damage nor the mitigation heading. This is also why the deterministic census scores heroic/Envoy MITIG 0 while the profile said 4; the correct answer is 1, and the three defence talents are now named separately in the verdict."
+  },
+  {
+   "field": "intentDrift[Attributes claim]",
+   "from": "\"PARTIAL — Willpower yes, Presence no\" / \"Presence is barely touched\"",
+   "to": "\"DELIVERS, but Presence only indirectly\" — Leadership and Persuasion, canonically Presence-linked social skills, gate FOUR talents and scale two; the skill-to-attribute map is outside the primer, so this cannot be settled in scope.",
+   "reason": "UNSUPPORTED FLAT DENIAL. The profile argued 'Presence no' from the fact that no talent names Presence, while its own next claim credits Leadership with three gates plus a scalar and Persuasion with a gate plus a scalar. Those are the path description's own Presence-flavoured skills. SYSTEM-PRIMER.md does not publish the skill-to-attribute table, so the honest verdict is indirect-delivery plus a named thing that would settle it (the cosmere-rpg system's skill table), not a denial."
+  },
+  {
+   "field": "crossTreeHooks / weakTalents / axes[social_influence] — new finding",
+   "from": "(absent) Well Dressed and High Society Contacts were treated throughout as Envoy identity content",
+   "to": "Both are verbatim reprints of other heroic paths' talents: Well Dressed is identical to heroic/Leader's (there at depth 2/L3), High Society Contacts identical to heroic/Agent's.",
+   "reason": "TEXT-VS-CLAIM omission found by corpus scan. The advantage ledger prints heroic/Leader — Well Dressed with the same string as Envoy's, and the Opportunity scan returns heroic/Agent — High Society Contacts with the same string. Two of Envoy's 25 picks are not original to the path, which weakens the social_influence case and the uniqueness framing."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction / damageTalents[Mighty].note",
+   "from": "Treated 'for each action spent' only as a note that a 1-Action Strike gets +2",
+   "to": "Named the ceiling explicitly: the clause is a multiplier, so a borrowed 2-Action attack yields +4 at Tier 1 and +6 at Tier 2 — still under one [Tier][Die] at Tier 2.",
+   "reason": "INCOMPLETE ACCOUNTING, not an error. The per-action normalisation (+2/3.5 = 0.57 [Tier][Die] at Tier 1; +3/9 = 0.33 at Tier 2) was re-derived and is arithmetically correct against the primer's [Tier][Die] = 1d6 at Tier 1 rank 2 and 2d8 at Tier 2 rank 3. But the field is a peak claim and the multiplier clause raises the per-attack peak, so the ceiling is now stated."
+  },
+  {
+   "field": "powerByDepth[depth 3+] / frontOrBackLoaded — VERIFIED, NOT CORRECTED",
+   "from": "(profile's claim that the dossier's L4 for the depth-3 band should be L6)",
+   "to": "Confirmed and strengthened with the mechanism.",
+   "reason": "I attempted to refute this and could not. All six depth-3 talents carry a rank-3 skill prerequisite (Peaceful Solution / Inspired Zeal / Foresight Discipline 3+, Practiced Oratory Persuasion 3+, Sage Counsel Lore 3+, Rallying Shout Leadership 3+), the primer's rank-cap table caps skill rank at 2 through level 5, and every one of the 25 Envoy rows in all-talents.json carries an EMPTY rankGate field — so the dossier's generator populates rankGate only for leyline COLOUR gates and its earliest-L column understates this band by two levels. The dossier's own header ('rank 3+ needs L6') contradicts its own output. The profile was right; I added the field-level evidence."
+  },
+  {
+   "field": "axes — scores",
+   "from": "1/1/3/2/3/3/5/4/0/0/0/4/2/0/5",
+   "to": "unchanged",
+   "reason": "No score survived a change under this lens. I re-derived every count the scores rest on: 1 damage talent (0 damage formulas, verified in all-talents.json), 12 buff talents (hand-listed), 8 focus costers, 2 Reactions, 4 focus producers, 3 advantage-ledger entries, 0 movement/zone/information/summon references across all 25 texts. The evidence strings under damage_direct, protection, healing, buff, action_economy, social_influence and resource_economy were corrected for factual errors listed above, but none of those errors moved a score by a full point. The scores I would most expect a taste-lens checker to challenge are protection 3 (three of the four talents are defence increases, not mitigation, which brushes the 'one Reaction once per round scores 2' anchor) and resource_economy 5 (Envoy holds 4 of 8 corpus focus producers rather than 4 of 6) — both are flagged here rather than silently altered, because Lens A is arithmetic, not taste."
+  },
+  {
+   "field": "axes[buff].score",
+   "from": "5",
+   "to": "4",
+   "reason": "Two independent refutations. (1) PAYLOAD: the canon definition of Determined is 'When you fail a test, may add an Opportunity to the result; condition then ends' (.claude/skills/cosmere-canon-reference/SKILL.md:162). It is a ONE-SHOT token that fires only on a FAILURE and does not change the outcome — the profile called it a 'persistent Determined' and 'scene-long fail insurance', which is wrong on persistence and overstates the payload. leyline/White's Shared Conviction ('add your White modifier to their result. This may change the outcome') is strictly stronger fail-insurance, and heroic/Leader's Decisive Command adds a die BEFORE the roll resolves. (2) The '12 of 25 talents' count double-counts: Rallying Shout is scored under healing, Lessons in Patience under resource_economy, Devoted Presence is a cleanse, and Guiding Oration + Well Dressed are advantage grants the primer discounts to zero. 5 is reserved for a reference implementation, and Envoy is not it."
+  },
+  {
+   "field": "axes[action_economy].score",
+   "from": "4",
+   "to": "3",
+   "reason": "Comparative deflation with named betters. The profile itself concedes 'no talent grants an extra main Action', yet scored 4. heroic/Agent buys itself 2 Actions three separate ways (Quick Analysis, Fast Talker, Trickster's Hand) and has 4 Free-Action talents to Envoy's 2; heroic/Leader grants ALLIES an Action (Synchronized Assault) plus an ally a free reaction (Through the Fray) plus its own free-action Key delivery (Combat Coordination); heroic/Scholar's Turning Point grants 'you and your allies an Action'. With four trees ahead of it, Envoy is not 'one of the better options in the game' (4) but 'a real, usable competency' (3)."
+  },
+  {
+   "field": "axes[social_influence].score",
+   "from": "4",
+   "to": "3",
+   "reason": "Comparative deflation. Two of the four social nodes are other paths' talents (High Society Contacts is character-identical to heroic/Agent's; Well Dressed differs from heroic/Leader's by one word, 'Gain a Fashion expertise'), and the tree carries ZERO numeric bonus to its own social tests, where heroic/Leader adds a command die to Persuasion, Intimidation, Deception, Insight and Leadership rolls (Confident/Shrewd/Demonstrative Command) on top of Set at Odds, Grand Deception, Rumormonger, Well Supplied and Baleful, and heroic/Agent carries seven-plus social talents. Envoy's unique end-combat chain is combat-scoped and a level-6 pick."
+  },
+  {
+   "field": "uniqueOwnership — 'the only free-action delivery loop for a Key talent'",
+   "from": "claimed unique",
+   "to": "REFUTED — one of two",
+   "reason": "heroic/Leader's Combat Coordination: 'After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.' Decisive Command is Leader's Key (specialty: Key, verified in all-talents.json). That is the same loop with a focus refund Envoy's version lacks."
+  },
+  {
+   "field": "uniqueOwnership — 'the only buff whose PAYLOAD is rewritten by stacked Specials'",
+   "from": "claimed unique",
+   "to": "REFUTED",
+   "reason": "heroic/Leader rewrites Decisive Command's payload with Relentless March (+10 ft and ignore Exhausted/Slowed/Surprised), Cutthroat Tactics, and three command-die enlargers, and multi-targets it with Authority (doubles range AND ally count, free and passive — better than Envoy's focus-per-target Practiced Oratory at L6). heroic/Hunter's Seek Quarry has nine consumers, the largest such loop in the corpus. Retained the defensible residue: Envoy stacks the most SIMULTANEOUS riders on one delivery."
+  },
+  {
+   "field": "intentDrift — the Key claim ('Rousing Presence unlocks the specialties')",
+   "from": "'NOT DELIVERED IN DATA — structural finding'; 'Per iron rule 7 connections are managed prerequisites, so the Key's stated gating role is simply absent from the tree graph'",
+   "to": "'NOT MODELLED IN THE GRAPH — a corpus-wide convention, NOT an Envoy defect'",
+   "reason": "I checked all eleven Keys in all-talents.json: the five leyline Attunements plus Opportunist, Rousing Presence, Seek Quarry, Decisive Command, Erudition and Vigilant Stance ALL have connections [] and zero dependents anywhere in the corpus. The Key is granted with the path rather than bought, so modelling it as a prerequisite would be wrong. The profile inflated a universal data-model convention into an Envoy-specific structural failure. The residual true observation is narrower and is kept: a multi-path character who dips into Envoy without taking the path can buy Practical Demonstration or Sound Advice at depth 0 and get nothing."
+  },
+  {
+   "field": "uniqueOwnership / weakTalents — the shared-talent count",
+   "from": "'two Envoy talents are verbatim reprints of other heroic paths' talents — Well Dressed (Leader) and High Society Contacts (Agent)'",
+   "to": "SIX of 25 are shared library content",
+   "reason": "Normalised-text diff across all 365 talents: Collected is text-identical in leyline/Blue, leyline/Green, heroic/Agent and heroic/Scholar; Mighty is text-identical in leyline/Red, heroic/Agent, Hunter, Leader and Warrior (six trees total); Customary Garb is text-identical in heroic/Leader; High Society Contacts is text-identical in heroic/Agent; Composed's text is identical to heroic/Leader's Focused Mind and heroic/Scholar's Clear Mind. Well Dressed is NOT verbatim — Leader's reads 'Gain a Fashion expertise', a one-word difference, so 'word-for-word' was also wrong."
+  },
+  {
+   "field": "axes[damage_direct].evidence and damageAccounting.damageTalents[Mighty].note",
+   "from": "treated Mighty as Envoy content",
+   "to": "flagged as six-tree shared library filler",
+   "reason": "Same diff: Mighty's exact string is in leyline/Red, heroic/Agent, Hunter, Leader, Warrior and Envoy. The score stays 1, but the profile's damage section read as if the tree had chosen to include a damage rider; it did not — this is a shared talent and is not evidence of Envoy's design intent."
+  },
+  {
+   "field": "axes[resource_economy].evidence",
+   "from": "asserted 8 corpus focus restorers with 4 Envoy's, without explaining the census's contradicting 'Envoy 2'",
+   "to": "same counts, now PROVEN plus the classifier bug located in source",
+   "reason": "I read docs/analysis/talent-ecosystem/resource-economy.js:35. The produce pattern is the alternation (regain|recover|restore|gain|gains|grant|grants) with word boundaries, then up to 40 non-terminator characters, then 'focus'. It cannot match Galvanize's 'recovers that much focus' (plural verb, outside the alternation) or Lessons in Patience's shipped typo 'recoveres 1 focus'. That is exactly the 2 talents by which the census under-reports Envoy, and it is the third classifier bug the brief predicted. Score held at 5."
+  },
+  {
+   "field": "axes[resource_economy].evidence and crossTreeHooks",
+   "from": "omitted",
+   "to": "added the Determined→Opportunity seam",
+   "reason": "SCORE-DEFLATION check (lens c): the profile treated Determined purely as a buff. Per canon it makes the holder add an Opportunity to a failed test, so Envoy's free every-round delivery is also an indirect Opportunity faucet into a currency 17 talents across 9 trees consume and Envoy consumes none of. This strengthens resource_economy and is a real cross-tree hook the profile missed."
+  },
+  {
+   "field": "gaps — 'Playing alone'",
+   "from": "'The remaining eleven do work solo'",
+   "to": "'The remaining TWELVE work solo'",
+   "reason": "Arithmetic error. The profile lists 12 ally-dependent talents plus Practical Demonstration = 13; 25 − 13 = 12, not 11. Enumerated the twelve: Steadfast Challenge, Collected, Customary Garb, Well Dressed, Withering Retort, Composed, Mighty, Calm Appeal, High Society Contacts, Peaceful Solution, Practiced Oratory, Foresight."
+  },
+  {
+   "field": "gaps — 'Non-social, non-mindful enemies'",
+   "from": "'five talents go dark — Steadfast Challenge, Withering Retort, Calm Appeal, Peaceful Solution and half of Practiced Oratory'",
+   "to": "softened: only the pacify half is certain; Steadfast Challenge is a GM-ruling risk",
+   "reason": "Overreach against the text. Steadfast Challenge tests Discipline vs. Spiritual, and every creature has a Spiritual defence, so nothing in the rules stops it working on a construct — the objection is thematic, i.e. a GM ruling. What genuinely requires a pacifiable enemy is Calm Appeal and Peaceful Solution. Withering Retort only needs Steadfast Challenge, so it does not go dark either."
+  },
+  {
+   "field": "weakTalents[Calm Appeal].reason and mechanicalKeywords['pacified']",
+   "from": "'Envoy invents it and defines it nowhere in mechanical terms'",
+   "to": "'Envoy did not invent it — this is an official Cosmere path; it is undefined WITHIN the 365-talent corpus, and out of scope to price'",
+   "reason": "The profile's own intentDrift section establishes that Envoy is an official Cosmere path (its description links Compendium.cosmere-rpg.heroic-paths UUIDs) and six of its talents are byte-identical to other official paths'. Blaming this tree for inventing an undefined state contradicts that. The primer's scope fence also forbids reaching into the system compendium to settle it."
+  },
+  {
+   "field": "powerByDepth[depth 3+].note and frontOrBackLoaded",
+   "from": "the L6 finding stated as if Envoy-specific",
+   "to": "kept the finding, added that the rankGate gap is system-wide and added the comparative",
+   "reason": "Verified across all six heroic trees: every one has rank-3 prerequisites that the empty rankGate field fails to record, so the dossier's 'earliest L' understates Agent, Leader, Scholar, Hunter and Warrior too. The genuinely comparative fact, which the profile did not have, is that Envoy has the LARGEST all-L6 deep band in the heroic atlas: 6 of 6 depth-3+ talents rank-3-gated, vs Leader 4/6, Agent 3/3, Scholar 2/3, Warrior 2/2, Hunter 1/3."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "no cross-intent check",
+   "to": "added a heroic/Leader shared-promise claim, plus the functional-overlap datum",
+   "reason": "Lens (d) requires asking whether another tree's intent makes the same promise. heroic/Leader's description promises 'bolstering fellowship and resolve' and a Politico who 'chase[s] favor and prestige while subtly undermining their enemies' — Envoy's ally-support and court-politics promises — and Leader delivers both with more mechanics. The two paths name each other as recommended multi-paths and share four talents, so the overlap is designed. Also added the measurement the profile ignored: functional-overlap.js places Envoy at rank 2 of 210 for similarity (Red↔Envoy 0.877) and rank 4 (Black↔Envoy 0.867), i.e. its function vector is NOT distinctive."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'A cost-free, infinitely repeatable buff engine that delivers a persistent Determined...'",
+   "to": "rewritten around the corrected payload, the saturation ceiling, and the Leader parallel",
+   "reason": "'Persistent' is factually wrong (the condition ends when used), and the line implied architectural uniqueness that heroic/Leader refutes. The corrected line leads with the axis that actually survives comparison (resource generation) and keeps the one genuinely unique element (the pacify/end-combat chain)."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "no ceiling on the 'infinite' baseline loop",
+   "to": "added the Determined saturation ceiling",
+   "reason": "Determined is one-shot and an ally holds one at a time, so after roughly 3-4 free deliveries the party is saturated and the loop's continuing value is the riders (+1 focus, +half Lore, the scrub, the defence bump) rather than the condition. This is why the corrected profile scores resource_economy above buff."
+  },
+  {
+   "field": "axes[healing].evidence, axes[protection].evidence, axes[control].evidence, axes[debuff].evidence",
+   "from": "scores 3/3/3/2 with tree-local evidence only",
+   "to": "scores unchanged, evidence made comparative",
+   "reason": "Checked and held. healing: axis text counts Focus, so 3 stands, but noted Health-alone would be 1 and that heroic/Scholar (Field Medicine + Swift Healer + Resuscitation) is the better heroic healer. protection: Collected is a five-tree generic and Customary Garb a two-tree generic, but Envoy is the ONLY tree holding both — added. control: held at 3, with leyline/Black (Puppeteer) and deity/Power (Absolute Authority) named as strictly harder control. debuff: Calm Appeal's focus tax is the same shape as the corpus-wide Baleful, so it is not distinctive."
+  },
+  {
+   "field": "claims verified and left standing",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Checked against all 365 talents and NOT changed, because they survive: (1) pacify/end-combat is corpus-unique — 'pacif' returns exactly 2 talents and 'end combat' exactly 1, all Envoy's, and scans for surrender/flee/retreat/truce/morale return no equivalent; (2) Foresight is one of exactly 2 extra-reaction talents and the only unconditional one (Hunter's Sidestep is Dodge-only and forfeits deflect-2+ armor); (3) 4 of the corpus's 8 focus restorers are Envoy's and are the only party-facing ones; (4) Determined is named by 4 talents, 3 Envoy's, with only 2 producers (Rousing Presence, White's Collective Resolve); (5) revive is shared with Scholar's Resuscitation, correctly flagged as NOT unique; (6) the action-type counts (10/8/2/1/2/2/0) and the 8 focus-costers, 4 trigger-gated and 2 Reactions all reconcile by hand; (7) exactly two cards exceed 25 words (Calm Appeal 27, Rallying Shout 26) and Practiced Oratory is 21; (8) Diplomat is 8 of 25; (9) Composed's live text does keep 'and current' (description and authoredBody identical in all-talents.json); (10) all six depth-3 talents carry rank-3 gates and every Envoy rankGate field is empty."
+  }
+ ]
+}

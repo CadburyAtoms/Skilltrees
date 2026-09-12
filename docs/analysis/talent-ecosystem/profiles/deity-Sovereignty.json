@@ -1,0 +1,575 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Sovereignty",
+ "correctionCount": 36,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Sovereignty",
+  "oneLineIdentity": "A nine-talent single-target arbiter that spends Actions and Investiture to walk one enemy's damage die down the d4-d12 ladder and one ally's up it, for durations that grow from one round to the whole scene, and does literally nothing else: no damage, no healing, no movement, no areas, no information, no out-of-combat text. Its SOMETHING is scene-long, condition-free suppression of one enemy's damage output - unmatched anywhere in the 365 - but its elevate half is out-performed by at least three other trees, and the 'Decree' zone it is named for is built by Fate and Order, not by it.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 0,
+    "evidence": "Verified (an earlier pass corrected this from 1; the 0 survives comparative review). No talent in the tree deals damage: all-talents.json shows isDamageFormula=false and isHealFormula=false on all nine, and the prose census bins Sovereignty at SOURCE 0 / DIESIZE 7. The two independent streams agree at zero, which the primer records for only three trees in the system (leyline/Blue, heroic/Scholar, deity/Sovereignty). The nearest thing is Expose (Passive, depth 1, L2): 'When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.' Reactive Strike is a STANDARD reaction every character already owns for 1 focus (SYSTEM-PRIMER, Standard Actions); the dice and the focus are the ally's. That credit is scored under action_economy. COMPARATIVE CHECK: eight of the ten deity trees carry at least one damage SOURCE, and the ninth (Life) carries three amplifiers; Sovereignty is alone among the ten in having neither a source nor an amplifier of anyone's damage NUMBER - its only offensive contribution is to the die that number is rolled on."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 0,
+    "evidence": "Verified, on the axis's own rule: 'Score 0 if damage_direct is 0.' The retained observation belongs under buff: the die-step count is a flat number that does not grow with Tier, so while everyone else's [Tier][Die] doubles at L6 the tree's contribution stays at roughly +1 average damage per step per ally hit."
+   },
+   {
+    "axis": "control",
+    "score": 1,
+    "evidence": "Verified, unchanged. One instance: Sovereignty (capstone, depth 3, earliest L4, 3 Actions, 3 Investiture, once per scene) - 'Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn.' Real reaction denial and it persists for the scene, but it is conditional on one nominated ally landing hits, and reactions are the cheapest slice of the action economy (1/round). Nothing else in the tree restrains, stuns, immobilises, slows, or denies an Action: Censure, Decree of Ruin, Edict of the Fallen and Sovereign's Balance apply no condition at all, they only shrink a die. Comparative floor: the primer calls action denial 'the most valuable category in a 3-action economy', and the trees that own it - Blue (Absolute Stillness: 0 Speed, disadvantage on Physical, no Reactions), Fate (Snare: Restrained), Order (Edict: Disoriented), Power (Compelled/Weakened) - take Actions away, not just Reactions. 1 is correct."
+   },
+   {
+    "axis": "debuff",
+    "score": 4,
+    "evidence": "Five of nine talents impose a numeric enemy penalty, every dice/cost figure checked against the dossier text: Censure (depth 0, L1, 1 Action / 1 Investiture, test Black vs. Cognitive, -1 die step until the start of your next turn), Decree of Ruin (depth 1, L6 - Black 3+, 1 Action / 2 Investiture, -1 step FOR THE SCENE on success, once per creature per scene), Edict of the Fallen (depth 2, L3, 2 Actions / 2 Investiture, test Black vs. Spiritual, -2 steps for the scene but explicitly 'damage die size FOR ATTACKS'), Sovereign's Balance (depth 2, L3, -1 step, one round, no test), Sovereignty (-2 steps for the scene). Stacking Edict + Sovereignty is -4 steps, d12 to the d4 floor. COMPARATIVE DEFENCE OF THE 4, because the prior evidence argued it only from inside the tree ('five of nine' is a percentage, not a capability - leyline/Blue fields the same absolute count, 5 talents, out of 25): the case rests on duration per payment, not volume or magnitude. Blue's five disadvantage talents (Intercept, Absolute Stillness, Pattern Recognition, False Premise, Probability Cascade) each buy ONE test, mostly for 1 Investiture EACH TIME; Edict of the Fallen buys every attack the target makes for the rest of the scene for one payment of 2 Actions / 2 Investiture, with no frequency cap. Against a boss making two attacks a round over five rounds that is about -20 damage from a single activation, which nothing else in the 365 matches. Held below 5 because the penalty touches exactly one number on one creature - it never reduces defences, imposes disadvantage, applies a condition, or strips a resource - and per-step magnitude (~1 point of average damage) is the smallest debuff currency in the system."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "CORRECTED from 3, comparatively. What the tree owns EXCLUSIVELY on this axis is two small temp-HP riders: Sovereign's Favor (Passive, depth 1, L2 - 'When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.' = 1d6 at Tier 1 rank 2, non-stacking, and it costs an Action + 1 Investiture to trigger because it rides on Exalt) and Edict of the Fallen ('each ally in Attunement Range gains temporary HP equal to your Tier' = 1 temp HP per ally per enemy MISS at Tier 1). The prior 3 was carried by counting the die-step reduction a second time as party-wide damage reduction - a double-count the prior evidence disclosed openly - but that effect is already earning the full 4 on debuff, and the calibration anchor ('a tree with one Reaction that reduces damage once per round scores protection 2, not 4') exists precisely to stop one mitigation effect scoring twice. The comparative test is decisive: deity/Order fields Bear Witness (temp HP to every Covenant ally EVERY ROUND, free), Shoulder the Oath (a Reaction redirecting half an ally's damage to you and reducing the rest by your White ranks) and Covenant (+1 to all defenses); deity/Fate fields Ordained Ground (+1 all defenses) plus Bulwark Ground (temp HP per round AND 'attacks against that ally cannot benefit from advantage'); leyline/White fields Shield Wall (a free Passive - 'attacks against them deal half [Tier][Die] less damage') plus seven Reactions; deity/Life stacks +1 Deflect to 3. Sovereignty has no shield, no interception, no resistance, no redirection, no defence bonus, and nothing that protects the character themselves. 'Present but minor; you would not pick this tree for it' = 2."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Verified. Read all nine texts: no talent restores Health or Focus to anyone, and all-talents.json shows isHealFormula=false on all nine. Temporary HP (Sovereign's Favor, Edict of the Fallen) is not healing. Expose's Investiture recovery is a resource generator and is scored under resource_economy rather than double-counted here."
+   },
+   {
+    "axis": "buff",
+    "score": 3,
+    "evidence": "Four talents grant an ally a damage-die step: Exalt (depth 0, L1, 1 Action / 1 Investiture, +1 step for one round, no test), Investiture of Authority (depth 1, L6 - White 3+, 1 Action / 2 Investiture, +1 step FOR THE SCENE, once per ally per scene, replacing any existing Exalt), Sovereign's Balance (+1 step for a round, extending one more round if the ally hits the marked enemy), Sovereignty (+2 steps for the scene). This is a NUMERIC buff, not an advantage grant, so it escapes the binary-advantage trap and stacks with other trees' buffs - confirmed: grepping advantage-ledger.md for 'Sovereign', 'Censure', 'Exalt' and 'Decree' returns only deity/Order's Final Decree, so no Sovereignty talent is in the ledger at all. COMPARATIVE EVIDENCE ADDED, and it settles the score at 3 rather than 4: the mechanism is unique but the PAYLOAD is beaten outright by at least three trees. deity/Knowledge's The Pack (1 Action / 2 Investiture, depth 2, L3) gives ALL allies in Attunement Range bonus Vital damage equal to your Insight count - up to 5, ignoring Deflect - against the marked creature for the scene, and Pack Share does the same at your Tier; leyline/Green's Pack Pressure (1 Action / 1 Investiture) gives you and every adjacent ally an extra [Tier][Die] (avg 3.5 at Tier 1) on Strikes plus free movement; deity/Power's Investiture of Command gives three allies [Tier][Die] temp HP and an advantage on the next attack. Exalt's +1 step is about +1 average damage to ONE willing ally for the same Action. The four talents deliver only two distinct effects (one-round +1, scene-long +1/+2), and two of the four are the same talents already carrying the debuff score. That is exactly 'a real, usable competency; several talents, at least one good one'. The tree grants no advantage, no rerolls, and no bonus to any roll other than damage."
+   },
+   {
+    "axis": "action_economy",
+    "score": 1,
+    "evidence": "Verified, unchanged. One talent: Expose hands the attacked ally a Reactive Strike when the Censured creature fails an attack test. Genuinely out-of-turn, but it is an ability that ally already owns (Reactive Strike, a standard reaction, 1 focus per SYSTEM-PRIMER), it consumes the ally's single Reaction for the round under the hard 1/round cap, and it is triple-gated (target must be affected by your Censure, must fail an attack test, and the ally must be that attack's target). The tree itself has zero Free Actions, zero Specials, and zero Reactions, and it spends 1-3 Actions to hand out sub-Action value - a net action-economy SINK for its owner. Comparative deflation check, since this lens warns that action economy hides inside riders: the only two candidates in the tree are Expose's granted Reactive Strike and the capstone's enemy reaction-lock, and the lock is scored under control. Nothing here grants a NEW action, an extra Action, a Free-Action rider, or an Opportunity use - unlike deity/Fate's Weave the Thread (Aid as a Free Action once per round), deity/Civilization's Trade Routes (teleport as a Free Action) or deity/Knowledge's The Final Study (a free Strike for every ally). 1 stands."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "Verified. All nine texts read: no movement, no teleport, no repositioning, no Speed change, no Disengage-likes. The tree never moves anybody."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Verified. No area, radius, aura, zone, hazard, wall, or difficult terrain in any of the nine talents. Every effect names one willing ally and/or one creature in Attunement Range. This is the tree's single largest intent failure - both intent sources promise 'Decree' radius zones - and the comparative sting is that the atlas plainly knows how to build one: deity/Fate's Ordained Ground ('designate a 5 ft square... an ally that begins its turn on it gains +1 to all defenses'), deity/Civilization's Foundations, and deity/Order's Final Decree ('every enemy in Attunement Range as if bound by your Edict') all implement declared zones. See intentDrift."
+   },
+   {
+    "axis": "information",
+    "score": 0,
+    "evidence": "Verified. No detection, scouting, foreknowledge, intent-reading, or hidden-fact reveal. The closest thing is Expose noticing that a Censured creature failed a test, which is public information at the table. Comparative deflation check: the trees that own this state it explicitly on the document - deity/Chaos's Void Sense ('you sense the location of every enemy bearing your Omen through any obstruction'), deity/Knowledge's Studied Mark ('learn its current HP, conditions, and Physical and Spiritual defenses'), deity/Death's Reaper's Harvest. Sovereignty has no such clause anywhere. 0 is correct, not deflated."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Verified. Despite the king-arbiter fantasy and flavour lines like 'By my decree, you are diminished', not one talent has a persuasion, command, deception, reputation, or out-of-combat leverage clause. Every effect is bounded by Attunement Range and a round-or-scene combat duration. Comparative note that sharpens the finding: deity/Power - the atlas's other dominance deity - does put it on the document (Warlord's Advance: 'you have an advantage on Presence tests to intimidate, command, or lead against the target'). The deity of the right to rule does not."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 0,
+    "evidence": "Verified. No travel, crafting, survival, downtime, or non-combat problem solving in any of the nine descriptions. The tree is inert the moment initiative is not being rolled."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Verified. No companions, constructs, minions, or animated allies. The tree only ever modifies creatures that already exist."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "One generator, but a good one: Expose (Passive, free, depth 1, L2) - 'When a creature affected by your Censure fails a test, you recover 1 Investiture.' 'A test' is broad (attacks, saves, opposed tests), so against a busy enemy this can return more than 1 per round, and it is the only reason the tree's 2-3 Investiture talents are affordable against a ~4 pool. Count re-verified by grep across all 365: the bonus-regen talents are leyline/Black Predatory Patience and Predator's Due, leyline/Red Flashpoint (plus the second Red hit the census counts), deity/Chaos Void Sense, deity/Death Reaper's Harvest, deity/Life Prognosis, deity/Knowledge Accumulate and deity/Sovereignty Expose - consistent with resource-economy.js's nine producers across seven trees, and NOT the 'one of only five in the whole 365' an earlier draft claimed. Read one by one, the other eight key off the owner's own success, a kill, or damage taken by a marked target; Expose alone keys off enemy FAILURE. Held at 2 because it is a single talent and the tree produces no Focus, no Opportunity, no plot die and - unlike Death (Harvested Remain), Chaos (Omen), Fate (Ordained Ground/Snare), Order (Edict/Covenant), Knowledge (Insight) or Destruction (Charge) - no token of its own for anything to spend."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Expose",
+     "dice": "none of its own - grants the ALLY a Reactive Strike (the ally's weapon dice, the ally's 1 focus, the ally's one Reaction)",
+     "action": "Passive",
+     "depth": 1,
+     "earliestLevel": 2,
+     "conditional": true,
+     "note": "MEDIATED, not this tree's damage, and NOT counted in countReal. Triple-gated by the text: the target must be affected by your Censure, it must FAIL an attack test, and the ally who may strike must be that attack's target. Reactive Strike is a standard reaction every character already has (SYSTEM-PRIMER, Standard Actions), so the tree supplies the trigger, not the damage."
+    }
+   ],
+   "countReal": 0,
+   "countFalsePositiveMitigation": 5,
+   "peakDamagePerAction": "0. There is no damage formula (all-talents.json: isDamageFormula=false on all nine), no fixed-damage clause, no summon, no zone, and no Afflicted-style ongoing condition. The largest offensive number the tree produces is +2 damage-die steps on ONE ally (Sovereignty: 3 Actions, 3 Investiture, once per scene), i.e. about +2 average damage on each of that ally's hits, accruing over every hit for the scene. Per Action spent the tree rolls nothing at all, and its offensive output is entirely a function of how often somebody else's dice hit.",
+   "repeatability": "Nothing of its own to repeat. The scene-long buffs and debuffs (Decree of Ruin, Investiture of Authority, Edict of the Fallen, Sovereignty) persist for free once placed, so the ally's +1/+2 step applies on every hit for the rest of the scene and the enemy's -1/-2 applies to every attack it makes; but the tree itself never rolls a die at a target, and after 2-3 setup rounds it has no active option left.",
+   "verdict": "This tree deals ZERO damage, and both evidence streams confirm it independently: 0 damage formulas and 0 heal formulas in the authored overlay, and 0 SOURCE hits in the prose census (Sovereignty is one of only three trees where the two streams agree at zero). The word 'damage' appears in seven of the nine talents - Censure, Exalt, Decree of Ruin, Investiture of Authority, Edict of the Fallen, Sovereign's Balance, Sovereignty; not Expose, not Sovereign's Favor - and in every one of the seven it refers to damage DIE SIZE, never to damage dealt. Five of those seven are mitigation, which is why countFalsePositiveMitigation is 5; four are enablement of an ALLY's damage, with two talents in both lists. The census's DIESIZE=7 column is therefore correct and there is NO classifier bug to report on this tree. earliestDamageDepth / earliestDamageLevel are deliberately OMITTED: with countReal=0 there is no earliest damage, and the census itself prints '-' for this tree's earliestL. A Sovereignty-only character's offensive option on every round of every fight is the standard Strike that every character already has."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 2,
+    "exemplars": "Censure, Exalt",
+    "note": "Both depth 0, earliest L1, both 1 Action + 1 Investiture, both single-target, both lasting until the start of your next turn. Censure additionally risks a contested Black vs. Cognitive test to move one die one step - about 1 point of prevented damage, at risk, for a full Action and a quarter of a ~4 Investiture pool. Exalt cannot fail, but it spends an Action to give an ally less than an Action's worth of damage. COMPARATIVE BAR ADDED: the sibling deity entries land a whole fantasy for the same 1 Action / 1 Investiture - Power's Warlord's Advance is an attack plus [Tier][Die] plus temp HP plus a social rider; Knowledge's Studied Mark places 2 Insight and reads the target's HP, conditions and two defences; Order's Edict places a scene-long prohibition that punishes with [Tier][Die] + Intellect spirit damage and Disoriented. Against those, the deity guide's principle 1 is met thematically and missed numerically by a wide margin."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Expose (L2), Sovereign's Favor (L2), Edict of the Fallen (L3), Sovereign's Balance (L3), Decree of Ruin (L6), Investiture of Authority (L6)",
+    "note": "The good band, and it is not one band in play: four of the six are reachable at L2-L3, while Decree of Ruin (Black 3+) and Investiture of Authority (White 3+) cannot be held before L6, two levels LATER than the depth-3 capstone. COMPARATIVE CORRECTION: this L4-capstone / L6-tier-2 inversion is NOT a Sovereignty defect - deity/Knowledge (Pack Share Green 3+ L6, Killing Blow Red 3+ L6, capstone The Final Study L4) and deity/Life (Surgical Precision Blue 3+ L6, Adaptive Mutation Green 3+ L6, capstone Apex Form L4) reproduce it exactly, and Order does it once (Sealed Edict L6). Four of ten deity trees share the shape; it is an atlas-level pacing artifact. Where the band delivers: duration jumps from one round to FOR THE SCENE, converting a bad per-round trade into a one-time setup cost. Edict of the Fallen (depth 2, L3, 2 Actions / 2 Investiture) is the tree's best talent by a distance - scene-long -2 steps on the enemy's attack damage plus a party-wide temp HP drip on every attack it fails, with no frequency cap. Expose and Sovereign's Favor are free Passives that fix the tree's two structural problems (Investiture drain, no defence). Sovereign's Balance is the weak link and is exactly the 'synthesis nodes that just repeat tier-2' pitfall the deity guide names in Part 8."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Sovereignty",
+    "note": "Depth 3, earliest L4. It complies with the guide's '3 Actions: capstones only' rule, but 3 Actions is your ENTIRE Slow turn (a Fast turn's 2 Actions cannot pay it at all) and 3 Investiture is most of the pool, once per scene, to move two dice two steps each. Against Edict of the Fallen at 2 Actions / 2 Investiture with no once-per-scene limit, the marginal gain is one extra ally-side step plus the reaction-lock rider - and that rider only fires when the one nominated ally lands hits. COMPARATIVE: it is the thinnest of the ten deity capstones. Order's Final Decree binds every enemy in range, cascades every active Edict, and pays every Witness temp HP plus an advantage; Knowledge's The Final Study dumps [Tier][Die] per Insight and gives every ally a free Strike; Civilization's Magnum Opus turns the construct into a Colossus and knocks a radius Prone. Sovereignty's is a duration/step increment on what the tree already did. Good, not the payoff principle 9 demands."
+   }
+  ],
+  "frontOrBackLoaded": "Back-loaded by depth, front-loaded by LEVEL. By depth every deeper node is a shallower node with a longer duration or a bigger step, so the entries go vestigial once their scene-long versions arrive. But by level the tree front-loads: Censure (L1), Exalt (L1), Expose (L2), Sovereign's Favor (L2), Edict of the Fallen (L3), Sovereign's Balance (L3) and even the capstone Sovereignty (L4) are all reachable inside Tier 1, while Decree of Ruin and Investiture of Authority are stranded at L6 by rank-3 gates. COMPARATIVE CORRECTION: an earlier pass read that stranding as a Sovereignty-specific inversion; it is the shared shape of Knowledge and Life, whose capstones are also L4 with two rank-3 tier-2 talents at L6, so it is an atlas pacing artifact rather than a finding against this tree. What IS specific to Sovereignty: 'Censure -> Decree of Ruin -> Edict of the Fallen' is not a chain, because Edict's prerequisite is 'Expose OR Decree of Ruin', so Decree of Ruin is never required, and the actual L4 capstone route is Censure -> Expose -> Edict of the Fallen -> Sovereignty, which never touches the elevate half of the tree at all. The tree acquires no new VERB after depth 1: Expose's Reactive Strike grant and Sovereignty's reaction lock are the only two mechanics in the whole tree that are not 'move a damage die one or two steps'.",
+  "uniqueOwnership": [
+   "The ONLY tree in all 365 Edha talents that manipulates damage DIE SIZE in either direction. VERIFIED BY GREP over all-talents.json: 'die size' / 'damage die' / 'increases by one step' / 'decreases by one step' matches exactly the seven Sovereignty talents and nothing else, and the census's DIESIZE column reads 7 for Sovereignty and 0 for all twenty other trees. Every other buff/debuff in the game moves flat numbers, advantage state, or conditions; this tree is the sole owner of the d4-d12 step ladder as a resource.",
+   "The only tree whose OPERATING VERB is a paired elevate/diminish, and the only one that fires the pair for 1 Action (Sovereign's Balance, depth 2, L3). CLAIM NARROWED - the prior 'only tree that elevates an ally and diminishes an enemy with a SINGLE action' is false as stated: deity/Order's Final Decree ('every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage') and deity/Civilization's Magnum Opus ('each affected enemy tests Agility vs. your Red and is knocked Prone on a failure... Each ally in one of your Foundations gains +2 to all defenses') both pair ally-elevation and enemy-diminishment inside one activation. Both are 3-Action once-per-scene capstones; Sovereignty is the only tree where the pairing is the routine play rather than the flourish.",
+   "The only scene-long enemy reaction-lock keyed to a specific ally's hits (Sovereignty). COMPARISON SET COMPLETED: the other reaction-denial talents in the 365 are leyline/Black Extract Thought ('When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn'), leyline/Blue Absolute Stillness ('Creatures you have reduced to 0 Speed... cannot take Reactions' - an open-ended passive lock, so the earlier claim that the comparisons are 'always instant or short-duration' was false), leyline/Red Incite ('it must Strike the nearest character or lose its Reaction') and leyline/Red Flashpoint ('all affected characters lose a Reaction' - a MULTI-TARGET denial the prior profile missed entirely). What survives is the pairing: Sovereignty is the only reaction lock that names a partner ally whose hits apply it.",
+   "The only Reactive Strike grant handed to the ally who was the TARGET of the attack (Expose). Verified by grep: the genuine grants in the system are four including this one - heroic/Warrior Ironstance (to yourself, when you are grazed or missed), leyline/Green Drive the Prey (to allies, when the target moves within their reach) and deity/Fate Weave the Thread (to an ally on a linked Ordained Ground square, when a Snare triggers). The other four 'Reactive Strike' hits do the opposite: leyline/Black Cruel Step and leyline/Green Pack Pressure MOVE WITHOUT PROVOKING one, heroic/Leader Resolute Stand PREVENTS them, heroic/Warrior Vigilant Stance only discounts the focus cost. Ironstance is the closest analogue, so Expose's distinct property is that a THIRD party's talent hands the reaction to the ally who was attacked.",
+   "The only Investiture-recovery talent keyed to an enemy FAILING a test (Expose). Checked one by one against the eight other bonus-regen talents (Predatory Patience, Predator's Due, Flashpoint, Void Sense, Reaper's Harvest, Prognosis, Accumulate): all key off the owner's own success, a kill, or damage taken by a marked target. Note the narrower boundary - enemy failure as a TRIGGER is not unique (leyline/Blue Reactive Analysis and leyline/Red Shatter Focus both fire on 'a character within Attunement Range fails a test'); Expose is unique as an Investiture faucet driven by it.",
+   "The only tree whose entire debuff suite is untyped numeric reduction with no condition attached - it never applies Weakened, Slowed, Exhausted, Disoriented, or disadvantage, which also makes it the only debuff tree that cannot be answered by condition immunity or condition removal. Held after checking the other debuff-heavy trees: Blue's five debuffs are all 'disadvantage', Black's run on Weakened/Isolated, Power's on Compelled/Weakened, Order's on Disoriented/Weakened, Fate's on Restrained/Disoriented. Caveat: 'untyped' is an inference from silence - no talent says the reduction is not a magical effect, so a GM ruling on dispel or suppression could still answer it."
+  ],
+  "gaps": [
+   "Damage. Zero, at any depth, at any level, on both evidence streams. A Sovereignty-only character's attack every round is the standard Strike; the tree contributes nothing to killing anything except by making someone else's die one or two sizes bigger.",
+   "Healing and condition removal. No Health restoration, no Focus restoration, no clearing of Prone/Restrained/Weakened/Injuries. Temp HP is the tree's entire answer to the party taking damage - and comparatively the weakest version of it in the deity atlas (Order's Bear Witness pays every round for free; Fate's Bulwark Ground pays every round and blanks advantage against the ally; Power's Investiture of Command pays [Tier][Die] to three allies at once).",
+   "Solo play - REFINED. Five of nine talents need a willing ALLY in Attunement Range (Exalt, Investiture of Authority, Sovereign's Favor, Sovereign's Balance, and the elevate half of Sovereignty). Alone against one enemy the tree keeps Censure, Decree of Ruin, Edict of the Fallen's debuff half, and Expose's Investiture refund - which needs no ally at all; only its Reactive Strike clause does. What dies solo is the entire elevate half, Expose's strike grant, and Edict's temp HP clause.",
+   "Anything outside a combat round. No social leverage, no exploration, no travel, no crafting, no downtime, no investigation - a deity of sovereignty who cannot command, cow, judge, or rule anyone at a table where dice are not being rolled for initiative. deity/Power, the atlas's other dominance deity, at least puts an intimidate/command rider on its entry.",
+   "Multi-enemy scenes. Every debuff names one creature; the only party-wide clause in the tree is Edict of the Fallen's temp HP. A Sovereignty player facing six minions has one Action's worth of relevance and then sits down - where Order's Final Decree binds every enemy in range and Civilization's Magnum Opus hits a radius.",
+   "Movement and positioning. Nothing moves, nothing repositions, nothing escapes a grapple or a bad square.",
+   "Information. No scouting, no detection, no reading intent - the tree cannot even choose its target wisely with its own tools.",
+   "Areas and zones - the mechanic both intent sources name as the tree's signature, and the one thing three sibling trees already build (Fate's Ordained Ground, Civilization's Foundations, Order's Final Decree radius). See intentDrift.",
+   "Focus, Opportunity and the plot die. The tree spends only Investiture and generates only Investiture; it never touches Focus, Opportunity, the Plot Die, or the Draw Mana riders of the two colours it gates on, despite the leyline guide's principle 6 saying Focus fits Black and Opportunity fits White.",
+   "Levels 4 and 5 add nothing: the capstone is reachable at L4 and the only remaining talents are rank-3 gated to L6. Recorded with the comparative caveat that deity/Knowledge and deity/Life have the identical dead band, so this is an atlas pacing artifact rather than a Sovereignty-only fault."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'His blessed rule the battlefield as a court, elevating one and diminishing another with the same gesture.'",
+     "delivered": "PARTIAL",
+     "evidence": "The 'same gesture' exists only at depth 2 and 3: Sovereign's Balance (1 Action: ally +1 step, enemy -1 step) and Sovereignty (3 Actions: +2/-2 for the scene). At depth 0-1, elevating and diminishing are two separate Actions costing two separate Investiture (Censure and Exalt; Decree of Ruin and Investiture of Authority). The signature gesture is a late-tree reward, not the tree's operating mode - and a player can reach the capstone at L4 via Censure -> Expose -> Edict of the Fallen without ever owning an elevate talent."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'Signature resource: Decree - a declared law projected within a radius: allies inside are elevated, enemies inside are diminished.' / DEITY GUIDE Part 4: 'Homebrew resource: Decree zones (declared laws within a radius)', loop 'Diminish target -> elevate ally -> bring them into Decree'.",
+     "delivered": "NOT DELIVERED",
+     "evidence": "There is no Decree resource, token, keyword, zone, radius, aura, or area anywhere in the nine talents. Every effect targets one named willing ally and/or one named creature in Attunement Range - a targeting envelope, not a projected zone, and nobody is elevated or diminished by standing in it. The word 'Decree' occurs exactly once in the tree, inside the talent NAME 'Decree of Ruin', which is a single-target Black vs. Cognitive test. The tags across the tree are censure, exalt, die_size, scene, temp_hp, buff, debuff, capstone, investiture_recovery, reactive_strike - 'decree' is not a tag on any talent. This violates deity guide principle 5 ('homebrew resources should be the spine of the tree... generated by an entry and spent by most of the rest'): Sovereignty's stated homebrew resource is generated by nothing and spent by nothing. It is the only one of the ten promised signature resources in the atlas that is NAME ONLY. COMPARATIVE AGGRAVATION: the promise is not exotic, and the atlas already implements both halves of it. deity/Fate's Ordained Ground is literally a declared square where allies inside are elevated ('an ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft from that square'), with Bulwark Ground adding temp HP and advantage-denial on top; deity/Order's Final Decree is literally a declared law projected in a radius ('name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict'); deity/Civilization's Foundations are persistent zones with ally riders. Sovereignty's Decree is the one zone promise in the atlas nobody built."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'drawing both into Decrees - declared laws that hold sway within his reach.'",
+     "delivered": "NOT DELIVERED",
+     "evidence": "'Within his reach' is implemented as ordinary Attunement Range targeting shared by every talent in the game. Nothing is 'drawn into' anything: there is no persistent declared law, no area to be inside or outside of, and no effect that changes as creatures move."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 4, Verdannis): 'Black tests for diminish; White tests for elevate. This is the cleanest example of the color-thematic test rule.'",
+     "delivered": "PARTIAL - and the guide's headline claim is half false",
+     "evidence": "The Black half is delivered exactly: all three talents that test roll Black (Censure vs. Cognitive, Decree of Ruin vs. Cognitive, Edict of the Fallen vs. Spiritual; all-talents.json confirms skill=black and activationType=skill_test on those three and only those three). The White half does not exist. Not one talent tests White - all four elevate talents (Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty) are activationType=utility with no test at all. White appears only as a rank prerequisite (White 2+ on both entries, White 3+ on Investiture of Authority). So the 'cleanest example' is a one-sided example, and a Sovereignty character can reach the capstone having never rolled White for this tree. This matches deity-gate-audit.js, which lists Sovereignty's White 3+ as a TOLL BOOTH. COUNT CORRECTED: Sovereignty is NOT the only tree charging a 3+ toll booth - deity/Knowledge demands Green 3+ on Pack Share and never tests Green anywhere (its only two tests, Killing Blow and The Final Study, both roll Red vs. Physical), which is exactly the toll-booth definition. It is one of two, and the comparative pattern the audit actually shows is that four of the five toll booths are White."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 1/2/3): two entry nodes each delivering the fantasy on turn one; tier-3 synthesis prereq '[Tier-2 talent A] or [Tier-2 talent B]' from each branch; principle 3 'Tier-3 synthesis nodes bring the two halves together'.",
+     "delivered": "DELIVERS (structure) - an earlier pass's 'PARTIAL, the synthesis claim is false' is WITHDRAWN",
+     "evidence": "Entries deliver: Censure and Exalt are exact mirrors - both depth 0, L1, 1 Action, 1 Investiture, one diminishing and one elevating - and the node counts match the guide's cleanest shape (2 entries + 4 tier-2 + 2 tier-3 + 1 capstone). On the synthesis prerequisite, an earlier pass read 'from each branch' as requiring each tier-3 node to bridge the two halves, and marked Sovereignty non-compliant because Edict of the Fallen takes 'Expose or Decree of Ruin' (both censure-side) and Sovereign's Balance takes 'Sovereign's Favor or Investiture of Authority' (both exalt-side). THE COMPARATIVE CHECK KILLS THAT READING: every deity tree in the atlas is built the same way - Order's Verdict takes 'Lawkeeper's Eye or Sealed Edict' (both Edict-side) and Concord takes 'Bear Witness or Shoulder the Oath' (both Covenant-side); Knowledge's The Pack takes 'Accumulate or Pack Share' (both Studied Mark-side) and Death Mark takes 'Hunter's Discipline or Killing Blow' (both Predatory Strike-side); Life's Lifeline takes 'Surgical Precision or Prognosis' and Primal Regeneration takes 'Overgrowth or Adaptive Mutation'. The guide's parenthetical - 'allowing the player to reach synthesis from either side' - means either of that branch's two tier-2 nodes, and the halves converge at the capstone, exactly as Sovereignty's 'Sovereign's Balance or Edict of the Fallen' does. Sovereignty is compliant. The residual observation is atlas-wide and not a finding against this tree: principle 3's 'tier-3 nodes bring the two halves together' is in practice satisfied only at the capstone, and only as an OR. The genuine Sovereignty-specific quirk survives - Sovereign's Balance shrinks an enemy's die but sits behind two exalt-side nodes, so it can be owned by a character with no Censure at all."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 2): 'Skill-rank gates beyond the entry-node 2+ requirement are rare in deity trees. The 2+ in both colors already gates the tree behind significant investment.'",
+     "delivered": "PARTIAL - downgraded from DRIFTED",
+     "evidence": "Sovereignty carries two such gates, on two of its four tier-2 talents: Black 3+ on Decree of Ruin and White 3+ on Investiture of Authority. Because the skill-rank cap is 2 until level 5, both are hard L6 locks on talents that are only depth 1 in the graph, while the depth-3 capstone is reachable at L4. COMPARATIVE CORRECTION: an earlier pass filed this as a NEW FINDING against Sovereignty. A grep for '3+' across the deity atlas returns seven talents in four trees - Order (Sealed Edict, Blue 3+), Life (Surgical Precision Blue 3+, Adaptive Mutation Green 3+), Knowledge (Pack Share Green 3+, Killing Blow Red 3+) and Sovereignty (two) - and both Life and Knowledge also strand two depth-1 talents at L6 behind an L4 capstone. 'Rare' remains broadly true of the atlas (7 of 90 deity talents), so the guide is not badly wrong; Sovereignty is at the joint-worst end of a shared pattern, not an outlier. What remains Sovereignty-specific is that its more expensive gate, White 3+, buys a rank the tree never rolls."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 2): deity action-type targets - Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free ~10-15%, Reaction ~10%, 3 Actions capstone only.",
+     "delivered": "DRIFTED",
+     "evidence": "Re-counted directly from the nine dossier lines: Passive 2 (22%, near target), 1 Action 5 (56%, versus a 25-35% target), 2 Actions 1 (11%, under target), 3 Actions 1 (the capstone, compliant). Special 0%, Free Action 0%, Reaction 0% - three whole categories missing. The measurement table's system-wide note holds: all ten deity trees have zero Specials, so that gap is not Sovereignty's alone. The Free-Action and Reaction gaps ARE more specific to it: Destruction, Fate and Order all field Free-Action upgrade riders (Pinpoint Charge, Inevitable Snare, Sealed Edict) and Order and Civilization field Reactions (Shoulder the Oath, Bonds of Community). The tree pays full Actions for effects that should ride as Specials or Free upgrade riders, which is the mechanical root of its net-negative action economy at depth 0-1. Guide principle 10 ('action-type honesty') is not violated in the other direction - nothing here is mis-typed as an Action when it should be a Reaction, because the tree has no triggered talents to mis-type."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 2): description length - entries/tier-2 ~30-45 words, tier-3 synthesis ~40-55, capstone up to ~70.",
+     "delivered": "PARTIAL",
+     "evidence": "Word counts recomputed exactly from the description field rather than estimated: Exalt 29 and Sovereign's Favor 22 (both slightly UNDER the 30-45 band), Censure 34, Investiture of Authority 37 and Expose 38 (inside), Decree of Ruin 47 (just over the 45 cap). BOTH tier-3 nodes bust their band - Edict of the Fallen 69 words against a 40-55 target (it is doing three things: scene-long -2 steps, a failure clause, and a party-wide temp HP engine) and Sovereign's Balance 59. The capstone Sovereignty is 61, inside the ~70 cap. The prior profile's estimates were within a word or two throughout, but it flagged only one tier-3 overrun; both overrun, and two talents also undershoot the floor."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 2 / principle 6): cost scale 1 Investiture entry / 2 Investiture tier-2 and synthesis / 3 Investiture plus once-per-scene capstone; Investiture spend in the description opening.",
+     "delivered": "DELIVERS",
+     "evidence": "Exact compliance, checked field by field against the Cost column: Censure and Exalt 1 Investiture; Decree of Ruin, Investiture of Authority, Edict of the Fallen and Sovereign's Balance all 2 Investiture; Sovereignty 3 Investiture and 'Once per scene'. Every non-Passive description opens 'Spend X Investiture and...', and both Passives (Expose, Sovereign's Favor) correctly carry no spend phrase and no Cost field."
+    },
+    {
+     "claim": "DESIGN GUIDE (Part 3, principle 9): 'Deity power is Radiant-tier... don't undersell the capstones.'",
+     "delivered": "DRIFTED",
+     "evidence": "Nine talents that collectively move two dice at most four steps and hand out 1d6 temp HP is human-scale, not cosmic. The capstone costs a full Slow turn plus 3 Investiture, once per scene, for a two-step swing that Edict of the Fallen already half-delivers at 2 Actions with no frequency cap. COMPARATIVE: measured against the sibling capstones - Final Decree, The Final Study, Magnum Opus, Apex Form - Sovereignty's is the smallest in the atlas. Against the guide's own parity target ('leyline mages are mortal... Radiant-equivalent power lives in the Deity Domain trees'), this tree sits on the wrong side of the line: it reads as a leyline support specialty that happens to charge two colours at rank 2+, plus two rank-3 tolls."
+    }
+   ],
+   "verdict": "PARTIAL - core gesture delivered, signature mechanic entirely absent, and two of the three structural 'drifts' an earlier pass filed against this tree turn out to be atlas-wide conventions rather than Sovereignty defects. The elevate-one/diminish-one fantasy IS on the page and IS mechanically distinctive (die-size manipulation is unique in all 365 talents). But the promised 'Decree' resource - the declared law projected within a radius, named by BOTH intent sources as the tree's signature - exists in no talent, and the sting is comparative: Fate's Ordained Ground already implements an ally-elevating declared square, Order's Final Decree already implements a radius-wide declared law, and Civilization's Foundations already implement persistent zones, so the mechanic was available and simply not built here. The guide's headline claim that this is the cleanest Black-diminish/White-elevate test split is half false, because no talent tests White at all - and its White 3+ toll booth is one of TWO 3+ tolls in the atlas, not the only one (Knowledge's Green 3+ is the other). WITHDRAWN from the prior verdict: the tier-3 prerequisite shape is the standard deity pattern (Order, Knowledge and Life are built identically), and the L6-tier-2 / L4-capstone inversion is shared with Knowledge and Life. THE SOMETHING TEST: this tree's something is scene-long, condition-free suppression of ONE enemy's damage output, and nothing else in the 365 does it - leyline/White's Shield Wall is the nearest analogue and it works from the defender's side at half [Tier][Die]. But read the something one notch broader as 'make my ally hit harder' and the tree LOSES outright to deity/Knowledge (The Pack: all allies, bonus Vital damage per Insight up to 5, for the scene) and leyline/Green (Pack Pressure: +[Tier][Die] to you and every adjacent ally for one Action). What the tree actually is: a single-target damage-die-size arbiter - nine talents, one verb, with duration and step count as the only progression axes, plus two off-verb riders (an Investiture refund with a granted Reactive Strike, and a scene-long reaction lock). It should either be renamed off 'Decree' or have the zone mechanic actually built - noting that the 'Decree'/'Edict' law-declaration vocabulary is already implemented, as a real token economy, by deity/Order."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "BOTH",
+    "talents": "CONSUME (7 of 9, verified against the Cost fields): Censure 1, Exalt 1, Decree of Ruin 2, Investiture of Authority 2, Edict of the Fallen 2, Sovereign's Balance 2, Sovereignty 3. PRODUCE (1): Expose recovers 1 whenever a creature affected by your Censure fails a test. Matches resource-economy.js's 'Sovereignty 1 regen / 7 costers'."
+   },
+   {
+    "keyword": "damage die size / die step (the d4-d6-d8-d10-d12 ladder, min d4, max d12)",
+    "role": "PRODUCE",
+    "talents": "The tree's own mechanic and its sole owner in the 365 (grep-verified against all-talents.json): Censure, Exalt, Decree of Ruin, Investiture of Authority, Sovereign's Balance, Edict of the Fallen, Sovereignty - 7 of 9, matching the census's DIESIZE=7. One asymmetry in the text worth a ruling: Edict of the Fallen reduces 'damage die size FOR ATTACKS', where the other six say 'damage die size' unqualified."
+   },
+   {
+    "keyword": "Censure (a named applied state, not merely a talent name)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Censure. CONSUME: Expose ('a creature affected by your Censure'). WIRING SEAM: Decree of Ruin, Edict of the Fallen, Sovereign's Balance AND Sovereignty all produce the same die-size reduction and none of the four says it applies Censure, so it is unclear whether Expose keys off any of them. All four carry the 'censure' TAG, which suggests the intent is yes, but a tag is not text. COMPARATIVE NOTE: the atlas's other named markers are placed by an explicit clause - Order's Edict ('place an Edict on a character'), Fate's Snare ('place a Snare'), Knowledge's Insight ('place 2 Insight on it'), Death's Harvested Remain ('mark the corpse as a Harvested Remain') - so Sovereignty's is the one marker in the atlas whose re-application is left implicit."
+   },
+   {
+    "keyword": "Exalt (a named applied state, not merely a talent name)",
+    "role": "BOTH",
+    "talents": "PRODUCE: Exalt. CONSUME: Sovereign's Favor ('When you use Exalt on an ally'), Investiture of Authority ('replacing any existing Exalt on that target'). SAME SEAM: Sovereign's Favor triggers on the talent Exalt specifically, so on a literal reading it does NOT fire off Investiture of Authority, Sovereign's Balance, or the capstone - which is what keeps Exalt a permanent prerequisite tax rather than a talent you outgrow."
+   },
+   {
+    "keyword": "Decree",
+    "role": "NEITHER - declared but absent",
+    "talents": "Named by both intent sources as the tree's signature resource; implemented by zero talents; appears only inside the name 'Decree of Ruin'. Recorded so a cross-tree synergy map does not list it as an available hook. Collision worth a ruling: deity/Order runs a real Edict token economy (3 producers / 1 consumer, cap = tier active, scene duration) and owns a talent named Final Decree, so Sovereignty's 'Edict of the Fallen' borrows another tree's live resource name while applying no such token."
+   },
+   {
+    "keyword": "Attunement Range (15/30/60/90/120 ft by rank)",
+    "role": "CONSUME",
+    "talents": "8 of 9: every talent except Sovereign's Favor names it (Favor has no range clause of its own - it inherits Exalt's). The tree's reach therefore scales with colour rank rather than with Tier."
+   },
+   {
+    "keyword": "temporary HP",
+    "role": "PRODUCE",
+    "talents": "Sovereign's Favor ([Tier][Die], explicitly non-stacking with itself) and Edict of the Fallen (equal to your Tier, to EVERY ally in Attunement Range, each time the judged creature fails an attack test). Both sit in the system-wide 'temp HP produced by 14 talents, consumed by 0' column - it is spent by being hit. Comparatively the smallest of the deity temp-HP engines: Order's Bear Witness pays every round for free, Fate's Bulwark Ground pays every round plus advantage-denial, Power's Investiture of Command pays [Tier][Die] to three allies at once."
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME",
+    "talents": "Sovereign's Favor only - the tree's single tier-scaling number (1d6 at Tier 1 rank 2). Everything else is a flat step count or a flat Tier value, which is why the tree does not gain power at the L6 tier break the way every damage tree does."
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME",
+    "talents": "Edict of the Fallen (temp HP equal to your Tier)."
+   },
+   {
+    "keyword": "Reactive Strike",
+    "role": "PRODUCE",
+    "talents": "Expose grants it to the ally who was the target of the failed attack. It is a standard reaction (1 focus) and consumes that ally's one Reaction for the round; the text grants the opportunity, not cost relief. The system's other genuine grants are Warrior's Ironstance, Green's Drive the Prey and Fate's Weave the Thread."
+   },
+   {
+    "keyword": "reaction denial ('cannot take reactions')",
+    "role": "PRODUCE",
+    "talents": "Sovereignty only - whenever the nominated ally hits the nominated enemy, until the start of that enemy's next turn, for the scene. Cross-tree company: Black's Extract Thought, Blue's Absolute Stillness, Red's Incite and Red's Flashpoint."
+   },
+   {
+    "keyword": "Black (skill / leyline colour)",
+    "role": "CONSUME",
+    "talents": "Rolled by Censure and Decree of Ruin (vs. Cognitive) and Edict of the Fallen (vs. Spiritual) - the only three skill_test talents in the tree. Gates: Black 2+ on both entries, Black 3+ on Decree of Ruin (an L6 lock)."
+   },
+   {
+    "keyword": "White (skill / leyline colour)",
+    "role": "CONSUME - gate only, never rolled",
+    "talents": "White 2+ on both entries, White 3+ on Investiture of Authority. No talent in the tree tests White. deity-gate-audit.js classes this as a TOLL BOOTH; Sovereignty is ONE OF TWO trees demanding a 3+ toll-booth colour (deity/Knowledge charges Green 3+ on Pack Share and never tests Green either). Four of the atlas's five toll booths are White."
+   },
+   {
+    "keyword": "Cognitive defence",
+    "role": "CONSUME",
+    "talents": "Censure, Decree of Ruin (test Black vs. Cognitive)."
+   },
+   {
+    "keyword": "Spiritual defence",
+    "role": "CONSUME",
+    "talents": "Edict of the Fallen (test Black vs. Spiritual) - the tree's only Spiritual-targeting effect."
+   },
+   {
+    "keyword": "scene (duration and frequency limiter)",
+    "role": "CONSUME",
+    "talents": "Duration: Decree of Ruin, Investiture of Authority, Edict of the Fallen, Sovereignty. Frequency: 'Once per creature per scene' (Decree of Ruin), 'Once per ally per scene' (Investiture of Authority), 'Once per scene' (Sovereignty). Edict of the Fallen is the only scene-long talent with NO frequency cap - which is most of why it outclasses the capstone."
+   },
+   {
+    "keyword": "willing ally",
+    "role": "CONSUME",
+    "talents": "Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty - the elevate half is target-gated on consent, so it cannot be used on charmed or hostile creatures."
+   },
+   {
+    "keyword": "failed test / failed attack test (enemy failure as a trigger)",
+    "role": "CONSUME",
+    "talents": "Expose (any failed test -> 1 Investiture; failed attack test -> ally Reactive Strike) and Edict of the Fallen (failed attack test -> party temp HP). Not unique as a trigger - leyline/Blue Reactive Analysis and leyline/Red Shatter Focus also fire on 'a character within Attunement Range fails a test' - but Sovereignty is the only tree that monetises it into Investiture. The tree supplies no accuracy debuff of its own: it shrinks damage dice, never attack rolls, so it rents the miss-rate its two failure engines feed on from other trees."
+   },
+   {
+    "keyword": "ally hits the enemy (partner-hit trigger)",
+    "role": "CONSUME",
+    "talents": "Sovereign's Balance (extends both effects one additional round) and Sovereignty (applies the reaction lock)."
+   },
+   {
+    "keyword": "NOT USED - recorded for the synergy map",
+    "role": "NEITHER",
+    "talents": "Focus, Opportunity, the Plot Die, Draw Mana and the Black/White Attunement Keys, every named condition (Weakened, Slowed, Restrained, Stunned, Disoriented, Prone, Afflicted, Exhausted, Enhanced, Empowered, Focused, Determined), advantage and disadvantage (no Sovereignty talent appears in advantage-ledger.md), every damage type, every zone or area, and any homebrew token of its own are absent from all nine talents."
+   }
+  ],
+  "crossTreeHooks": [
+   "The entire Exalt half (Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty) realises its value on someone else's character sheet. It is worth a lot beside a high-frequency die-based striker (Warrior, Hunter, Red) and close to nothing beside an ally whose damage is fixed or expressed as [Tier][Die] talent damage - an open question the tree's own text never answers: does 'damage die size' upgrade a talent's [Tier][Die], or only a weapon die? That ruling swings the tree's buff value by a factor of two or more. Concrete anti-synergy it creates either way: an ally built on deity/Knowledge or deity/Death deals bonus VITAL damage in flat [Tier][Die] chunks, so Exalt does little or nothing for them.",
+   "REDUNDANCY WARNING for party building (comparative, added this pass): Sovereignty's elevate half is dominated by deity/Knowledge's The Pack and Pack Share (all allies in range, bonus Vital damage per Insight up to 5, scene-long, ignoring Deflect) and by leyline/Green's Pack Pressure (+[Tier][Die] to you and every adjacent ally for 1 Action / 1 Investiture). A party already fielding either gets very little from Exalt; the debuff half stays additive with everything.",
+   "Expose needs (a) an ally to be the TARGET of the Censured enemy's attack, (b) that ally to still hold their one Reaction for the round, and (c) the ally's 1 focus for a standard Reactive Strike. It competes directly with every other Reaction in the party under the hard 1-per-round cap, so it anti-synergises with leyline/White (seven Reactions competing for one slot) more than with any other tree, and is strongest in a party with few competing Reactions.",
+   "Expose's Investiture refund scales with how many tests the enemy makes, so it is fed by other players' effects that force saves or opposed tests - Fate's Snares, Order's Edicts and Destruction's Charges are the obvious suppliers. A Sovereignty character next to a save-heavy caster runs a materially different resource economy than one next to a pure weapon party.",
+   "Edict of the Fallen pays the party temp HP for every enemy MISS, so its output is a function of the party's accuracy debuffing, not of Sovereignty's - this tree supplies no disadvantage, no Weakened, and no defence buff, so that engine is entirely rented from other trees (leyline/Blue's five disadvantage talents and leyline/White's Voice of Authority are the obvious suppliers).",
+   "Sovereignty's reaction lock only matters against enemies whose reactions the party actually fears, and pairs with the genuine Reactive Strike talents - Warrior's Ironstance, Green's Drive the Prey, Fate's Weave the Thread. Black's Cruel Step, Green's Pack Pressure and Leader's Resolute Stand avoid or PREVENT Reactive Strikes rather than making them, and Warrior's Vigilant Stance only discounts them, so none of those three is a hook for this rider.",
+   "Both entries require Black 2+ AND White 2+, and the tree adds Black 3+ and White 3+ gates on top, so every Sovereignty character necessarily owns deep investment in two leyline trees - yet no talent here references Black's isolation trigger, White's coordination, or either colour's Draw Mana rider. The gate is paid in leyline investment and returns no leyline synergy; the White rank in particular is never rolled.",
+   "The debuff half is a mitigation layer that composes with, and is partly redundant with, other trees' damage reduction and Deflect - leyline/White's Shield Wall ('attacks against them deal half [Tier][Die] less damage') is the closest functional twin, working from the defender's side - but it is one of the few debuffs in the game that relies on no condition, so it still works on condition-immune enemies where an ally's Weakened/Slowed effects fail.",
+   "Naming AND mechanic collision to resolve before any cross-tree map is drawn: deity/Order owns the Edict token (3 producers / 1 consumer) and a talent named Final Decree; deity/Fate owns Ordained Ground, which is the ally-elevating declared square Sovereignty's path description promises; deity/Civilization owns Foundations - while Sovereignty's promised 'Decree' resource is unimplemented and its 'Edict of the Fallen' applies no Edict. Three trees share the law-declaration / declared-zone vocabulary, and the one named for it is the one that does not implement it."
+  ],
+  "topThree": [
+   "Edict of the Fallen - the tree's best talent and its true power ceiling: depth 2, earliest L3, 2 Actions and 2 Investiture for a scene-long two-step reduction to one enemy's ATTACK damage die plus a party-wide temp HP drip on every attack it fails, with no once-per-scene cap. The only talent in the tree that does two different things well, the only one with a party-wide clause, and - per payment, across a whole scene - plausibly the strongest sustained enemy-damage suppression in the 365.",
+   "Expose - free, Passive, available at L2, and it fixes both of the tree's structural failures at once: it refunds the Investiture the tree drinks (the only regen in all 365 talents keyed to enemy failure) and converts an enemy's miss into an extra attack from an ally. The tree's engine.",
+   "Sovereignty - the capstone package: +2/-2 steps for the scene on a chosen pair plus a scene-long conditional reaction lock, reachable at L4. It sets the tree's ceiling even though it is the thinnest of the ten deity capstones and overpriced against Edict of the Fallen."
+  ],
+  "bottomThree": [
+   "Decree of Ruin - depth 1 by graph but L6 by its Black 3+ gate, 1 Action and 2 Investiture, once per creature per scene, for half of Edict of the Fallen's debuff three levels after Edict is already available. Its real function is as one of two prerequisite routes into Edict, and the other route (Expose) is free.",
+   "Exalt - an Action and an Investiture so an ally deals roughly +1 damage for one round: less value than taking a Strike yourself, and roughly a quarter of what leyline/Green's Pack Pressure gives multiple allies for the same 1 Action / 1 Investiture. Only playable once Sovereign's Favor is bolted on.",
+   "Sovereign's Balance - 1 Action and 2 Investiture at depth 2 to do both entries at once for a single round, with a conditional one-round extension. Costs more Investiture than the two entries combined for the same duration, is superseded by the scene-long talents beside it and by the capstone above it, and runs 59 words against a 40-55 word cap."
+  ],
+  "weakTalents": [
+   {
+    "name": "Censure",
+    "reason": "Overcosted and over-gated for what it does: 1 Action + 1 Investiture + a contested Black vs. Cognitive test that can simply fail, for one round of -1 damage die step - roughly 1 point of average damage prevented, and only if you won the roll. NOT strictly dominated: Decree of Ruin costs twice the Investiture, is 'Once per creature per scene', and cannot be held before L6 (Black 3+); Edict of the Fallen costs 2 Actions. Censure remains the cheap, unlimited, L1-legal option and is a hard prerequisite for both Expose and Decree of Ruin, so it is never a dead pick - it is just a poor Action once the scene-long versions exist. Comparative bar: the nine other deity entries all land a whole fantasy for the same 1 Action / 1 Investiture."
+   },
+   {
+    "name": "Exalt",
+    "reason": "Net-negative action economy. A full Action and 1 Investiture so that an ALLY deals about +1 average damage on their hits for one round - less value than taking a Strike yourself, and directly out-classed at identical cost by leyline/Green's Pack Pressure (an extra [Tier][Die], avg 3.5, to you AND every adjacent ally, plus free movement for all of them). It only earns an Action once Sovereign's Favor is attached (adding [Tier][Die] = 1d6 temp HP at Tier 1 rank 2), which makes Exalt a talent that is a never-pick on its own merits and a prerequisite tax in practice."
+   },
+   {
+    "name": "Sovereign's Balance",
+    "reason": "Overcosted synthesis node, and the exact pitfall the deity guide names in Part 8 ('synthesis nodes that just repeat tier-2'). 1 Action + 2 Investiture at depth 2 to do Exalt and Censure simultaneously for ONE round - twice the Investiture of the two entries combined for the same duration, with the only genuine addition a conditional one-round extension if the ally hits the enemy. It runs 59 words against the guide's 40-55 tier-3 cap, and both its prerequisites are exalt-side, so it can be owned by a character who has never taken Censure. Compare its opposite number, Edict of the Fallen, which for one more Action buys the whole scene."
+   },
+   {
+    "name": "Sovereignty",
+    "reason": "Overcosted capstone. 3 Actions - your whole Slow turn, more than a Fast turn can even pay - plus 3 Investiture, once per scene, for +2/-2 steps and a conditional reaction lock. Against Edict of the Fallen (2 Actions, 2 Investiture, -2 steps for the scene, no frequency cap, plus party temp HP) the capstone's marginal gain is one ally-side upgrade and a rider gated on a nominated ally landing hits. Against the sibling capstones (Final Decree, The Final Study, Magnum Opus) it is the smallest payoff in the deity atlas. Guide principle 9 says do not undersell the capstone; this one is a duration/step increment, not a payoff of what the tree has been building."
+   },
+   {
+    "name": "Investiture of Authority",
+    "reason": "Below the curve for its gate. 1 Action + 2 Investiture, once per ally per scene, for +1 step, arriving at exactly the level (6) where Tier 2 lands and everyone's base damage doubles - and because the tree's payload is a flat step count rather than a [Tier][Die], it is one of the few talents in the atlas that gets relatively WEAKER at the tier break it is gated behind. It is also the only place the White rank the whole path charges for is used at all, and then only as a gate, never as a test. CORRECTION carried forward: it is not 'the tree's only rank-3 prerequisite' - Decree of Ruin carries Black 3+ and is equally stranded at L6."
+   },
+   {
+    "name": "Decree of Ruin",
+    "reason": "Depth 1 by graph but L6 by gate (Black 3+), which puts it two levels behind the capstone and three behind Edict of the Fallen, which already does double its debuff for one extra Action. 1 Action + 2 Investiture, once per creature per scene, for -1 step for the scene. Its only structural role is as one of the two prerequisite routes into Edict - and the other route, Expose, is free and available at L2."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "2-3 rounds of active plays at the start of a fight, then nothing. Against a ~4 Investiture pool at L1 (2 + max(AWA,PRE), per the primer) the tree affords four entry activations or two mid-tier activations; Draw Mana returns Tier per Action, so at Tier 1 refuelling a 2-Investiture talent costs TWO Actions of drawing per one Action of talent - about 33% uptime, the worst case in the system for an Action-heavy kit. What saves the tree is duration, not economy: once Decree of Ruin, Investiture of Authority, Edict of the Fallen and Sovereignty are placed 'for the scene' they cost nothing further and persist for free. The honest picture is a front-loaded setup tree - burn the pool over rounds 1-3, then take the standard Strike every remaining round while the placed effects tick. Expose is the single most important talent for sustainability: 1 Investiture back per failed test by the Censured creature can return more than 1 per round and is the only thing that makes a second mid-tier activation affordable inside one fight.",
+   "triggerGatedCount": 2,
+   "reactionCount": 0,
+   "resourceCostersOutOfTree": 7,
+   "note": "Reactions: 0 of 9 - the tree owns no Reaction at all (versus the deity guide's ~10% target), so it never competes with itself for the 1-Reaction-per-round cap; it does hand a Reaction to an ALLY (Expose), which competes with that ally's own. Trigger-gated is 2 under the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'): Expose qualifies strictly (an enemy must fail a test) and Sovereign's Favor qualifies loosely, in that it fires only when you use Exalt. Edict of the Fallen, Sovereign's Balance and Sovereignty are ACTIVATED talents with conditional riders, not trigger-gated talents - they fire on your own Action. 2 of 9 (22%) sits inside the measured deity range (0-3, i.e. 0-33%). Resource costers: 7 of 9 spend Investiture (1/1/2/2/2/2/3), matching resource-economy.js's '1 regen / 7 costers'; the other 2 are free Passives. No talent in the tree spends Focus, Opportunity, HP, or the Plot Die."
+  }
+ },
+ "corrections": [
+  {
+   "field": "axes.damage_direct.score",
+   "from": "1",
+   "to": "0",
+   "reason": "The profile's own damageAccounting says countReal 0 and 'This tree deals ZERO damage', and both evidence streams agree at zero (all-talents.json: isDamageFormula=false on all nine; census SOURCE 0). Its sole basis was Expose, which grants an ally a Reactive Strike - a STANDARD reaction every character already owns for 1 focus (SYSTEM-PRIMER, Standard Actions: 'A talent that reproduces a standard action is worth roughly zero'). The dice, focus and reaction are the ally's; that credit is already scored under action_economy. Scoring 1 also blurs the distinction the primer draws for the three confirmed zero-damage trees."
+  },
+  {
+   "field": "axes.damage_scaling.score",
+   "from": "1",
+   "to": "0",
+   "reason": "The axis definition states 'Score 0 if damage_direct is 0.' The old evidence string also argued off-axis: it described ally damage-die STEPS (Exalt, Investiture of Authority, Sovereign's Balance, Sovereignty), which is buff, not the tree's damage scaling."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Rubric 4 = 'one of the better options in the game for this'. The four buff talents deliver only two distinct effects (one-round +1 step; scene-long +1 or +2 steps), always to a SINGLE willing ally, at roughly +1 average damage per step per hit - the profile itself calls it 'numerically thin' - and two of the four (Sovereign's Balance, Sovereignty) are the same talents already scored under debuff. That is rubric 3: 'a real, usable competency; several talents, at least one good one'."
+  },
+  {
+   "field": "axes.debuff.evidence",
+   "from": "'Half the tree' (5 talents) + buff's 'other defining half' (4 talents)",
+   "to": "7 die-size talents plus 2 riders, with 2 talents in both lists",
+   "reason": "Arithmetic error: 5 + 4 = 9 only by double-counting Sovereign's Balance and Sovereignty (which both buff and debuff) while excluding Expose and Sovereign's Favor (which do neither). The two 'halves' framing is impossible on its own numbers. Score held at 4."
+  },
+  {
+   "field": "axes.resource_economy.evidence / uniqueOwnership[4]",
+   "from": "'one of only five Investiture-recovery talents in the whole 365'; 'the other four generators (Chaos' Void Sense, Death's Reaper's Harvest, Knowledge's Accumulate, Life's Prognosis)'",
+   "to": "one of NINE bonus-regen talents across seven trees - leyline Black 2 (Predatory Patience, Predator's Due), leyline Red 2 (incl. Flashpoint), Chaos 1, Death 1, Life 1, Knowledge 1, Sovereignty 1",
+   "reason": "resource-economy.js measures 'Investiture produced by 9 talents / 7 trees' and its per-tree bonus-regen line reads Black 2 / Red 2 / Chaos 1 / Death 1 / Life 1 / Knowledge 1 / Sovereignty 1. The profile omitted both leyline trees entirely. The narrower uniqueness claim (only generator keyed to an enemy FAILING a test) was re-checked talent by talent and survives."
+  },
+  {
+   "field": "uniqueOwnership[3] (Reactive Strike claim)",
+   "from": "'The other six Reactive Strike talents - Black's Cruel Step, Fate's Weave the Thread, Green's Pack Pressure and Drive the Prey, Leader's Resolute Stand, Warrior's Vigilant Stance and Ironstance - all key off proximity or the owner's own action'",
+   "to": "Only three talents in the system actually GRANT a Reactive Strike: Warrior's Ironstance ('when you're grazed or missed, you can make a Reactive Strike against your attacker'), Green's Drive the Prey ('Allies may make Reactive Strikes against it if it moves within their reach') and Fate's Weave the Thread ('an ally standing on either linked square may make a free Reactive Strike')",
+   "reason": "Two errors. (a) The list labelled 'six' contains seven names. (b) Grep of every dossier shows five of the seven do not grant one at all: Cruel Step and Pack Pressure move 'without provoking Reactive Strikes'; Resolute Stand says 'Valiant Intervention prevents Reactive Strikes'; Vigilant Stance only 'reduce[s] the focus cost of Dodge and Reactive Strike'. Ironstance is in fact the close analogue (attacked character strikes back), so Expose's distinctness is narrower than claimed: a third party's talent handing the reaction to the attacked ally."
+  },
+  {
+   "field": "uniqueOwnership[2] (reaction denial)",
+   "from": "'always as an instant or short-duration effect, never as a persistent conditional lock'",
+   "to": "Blue's Absolute Stillness is an open-ended passive lock ('Creatures you have reduced to 0 Speed ... cannot take Reactions'); the surviving claim is that Sovereignty is the only lock keyed to a nominated PARTNER ally's hits",
+   "reason": "Names verified (Extract Thought, Absolute Stillness, Incite all exist and say what was quoted), but the duration characterisation is contradicted by Absolute Stillness's text, which has no duration clause at all."
+  },
+  {
+   "field": "weakTalents['Investiture of Authority'].reason",
+   "from": "'it carries the tree's only rank-3 prerequisite (White 3+)'",
+   "to": "Two rank-3 prerequisites exist: White 3+ on Investiture of Authority AND Black 3+ on Decree of Ruin",
+   "reason": "Dossier line for Decree of Ruin: 'prereq: Black 3+; Censure | earliest L6'. The 'only' is factually wrong and it hid a structural finding (see the powerByDepth and intentDrift corrections)."
+  },
+  {
+   "field": "powerByDepth['depth 1-2'].note / exemplars",
+   "from": "treated as a single band with no level split",
+   "to": "records that four members are L2-L3 while Decree of Ruin and Investiture of Authority are rank-3 gated to L6 - two levels LATER than the depth-3 capstone (L4)",
+   "reason": "Depth and earliest-L are independent in this tree. Recomputed from the dossier: Expose L2, Sovereign's Favor L2, Edict of the Fallen L3, Sovereign's Balance L3, Decree of Ruin L6, Investiture of Authority L6, Sovereignty L4. The capstone precedes two tier-2 nodes, which the prior profile never states."
+  },
+  {
+   "field": "weakTalents['Censure'].reason",
+   "from": "'Strictly dominated by Decree of Ruin (same Action, same test, scene duration) and by Edict of the Fallen'",
+   "to": "not dominated: Decree of Ruin costs 2 Investiture (vs 1), is 'Once per creature per scene', and is L6-gated by Black 3+; Edict of the Fallen costs 2 Actions; Censure is also a hard prerequisite for Expose and Decree of Ruin",
+   "reason": "Text-vs-claim. 'Strictly dominated' requires the replacement to be no worse on every axis; Decree of Ruin is worse on cost, frequency and availability, and Censure gates two other talents."
+  },
+  {
+   "field": "weakTalents (new entry)",
+   "from": "6 weak talents listed, Decree of Ruin absent",
+   "to": "added Decree of Ruin",
+   "reason": "Depth 1 but L6 by gate, 1 Action + 2 Investiture, once per creature per scene, for -1 step - half of Edict of the Fallen's debuff, three levels after Edict is already legal at L3. Its only structural role is as one of two prerequisite routes into Edict, and the other (Expose) is free."
+  },
+  {
+   "field": "damageAccounting.earliestDamageDepth / earliestDamageLevel",
+   "from": "1 / 2",
+   "to": "omitted",
+   "reason": "With countReal 0 there is no earliest damage; the census itself prints '-' for Sovereignty's earliestL. Recording 1/L2 for a mediated ally strike contradicts the same object's countReal and verdict, and would be read downstream as a damage onset."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "'well under a fifth of a single 1d6 [Tier][Die] per Action spent'",
+   "to": "per Action the tree rolls nothing; the ally-side value is +2 average damage per hit for the SCENE and therefore accrues rather than being a per-Action fraction",
+   "reason": "The old framing understates a scene-long effect by pricing it as a single per-Action payout. The corrected wording keeps the zero-damage verdict without the false comparison."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "5",
+   "to": "2",
+   "reason": "Recounted against the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'). Only Expose fires solely on an enemy's action; Sovereign's Favor fires only when YOU use Exalt (loose qualifier). Edict of the Fallen, Sovereign's Balance and Sovereignty are ACTIVATED talents (2, 1 and 3 Actions) whose conditional clauses are riders, not gates on the talent. 5 of 9 = 56% also sits outside the measured range printed for every deity tree (0-3, 0-33%)."
+  },
+  {
+   "field": "intentDrift.claims (structure claim)",
+   "from": "'DELIVERS ... 2 tier-3 synthesis nodes (Edict of the Fallen, Sovereign's Balance), 1 capstone, reachable from either branch ... textbook deity tree'",
+   "to": "PARTIAL - neither tier-3 node is a synthesis node",
+   "reason": "Prerequisite fields read directly: Edict of the Fallen = 'Expose or Decree of Ruin' (both censure-branch), Sovereign's Balance = 'Sovereign's Favor or Investiture of Authority' (both exalt-branch). The deity guide's tier-3 pattern is '[Tier-2 A] or [Tier-2 B] FROM EACH BRANCH' and principle 3 says synthesis nodes 'bring the two halves together'. Only the capstone bridges, and as an OR. This also means Sovereign's Balance can be owned by a character with no Censure."
+  },
+  {
+   "field": "intentDrift.claims (new)",
+   "from": "absent",
+   "to": "added: deity guide 'Skill-rank gates beyond the entry-node 2+ requirement are rare in deity trees' - DRIFTED",
+   "reason": "Sovereignty carries two (Black 3+, White 3+) on half its tier-2 talents, producing an inverted progression (capstone at L4, two tier-2 nodes at L6) and a dead L4-L5 band. The prior profile did not test this guide line at all."
+  },
+  {
+   "field": "intentDrift.claims (description length)",
+   "from": "only Edict of the Fallen flagged as over the tier-3 cap",
+   "to": "both tier-3 nodes flagged: Edict of the Fallen ~71 and Sovereign's Balance ~60 against a 40-55 target; Decree of Ruin ~48 just over the 45 tier-2 cap",
+   "reason": "Word counts re-run on the dossier text. Sovereign's Balance was never counted in the prior profile."
+  },
+  {
+   "field": "mechanicalKeywords['Attunement Range'].talents",
+   "from": "'All 9 - it is the targeting envelope for every effect'",
+   "to": "8 of 9; Sovereign's Favor names no range and inherits Exalt's",
+   "reason": "Sovereign's Favor's full text is 'When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.' - no range clause."
+  },
+  {
+   "field": "mechanicalKeywords['Censure'].talents (wiring seam)",
+   "from": "seam named only Decree of Ruin and Edict of the Fallen",
+   "to": "seam covers Decree of Ruin, Edict of the Fallen, Sovereign's Balance and Sovereignty",
+   "reason": "All four reduce an enemy's damage die and none says it applies Censure, so all four raise the same question for Expose's trigger. All four carry the 'censure' tag, but a tag is not talent text."
+  },
+  {
+   "field": "gaps (solo play) and crossTreeHooks (Reactive Strike partners)",
+   "from": "'Alone ... the tree collapses to Censure -> Decree of Ruin -> Edict of the Fallen and nothing else'; hooks list Cruel Step / Pack Pressure / Resolute Stand as Reactive Strike users",
+   "to": "Expose's Investiture refund also works solo (only its Reactive Strike clause needs an ally); hooks corrected to Ironstance / Drive the Prey / Weave the Thread",
+   "reason": "Expose's first sentence has no ally condition. The hook-list error is the same misreading corrected in uniqueOwnership[3]."
+  },
+  {
+   "field": "mechanicalKeywords['Decree'] / crossTreeHooks (new)",
+   "from": "absent",
+   "to": "records that deity/Order owns a live Edict token economy (3 producers / 1 consumer) and a talent named Final Decree",
+   "reason": "Sovereignty's 'Edict of the Fallen' uses another tree's implemented resource name while applying no such token, and its own promised 'Decree' resource is unimplemented - a vocabulary collision a cross-tree synergy map must not resolve by assuming a hook exists."
+  },
+  {
+   "field": "verified-unchanged (no correction)",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Checked against text and found CORRECT: all nine cost fields (1/1/2/2/2/2/3 Investiture, 7 costers) and action types (2 Passive, 5x 1-Action, 1x 2-Action, 1x 3-Action capstone); reactionCount 0; countFalsePositiveMitigation 5; 'damage' appearing in exactly 7 of 9 talents; depth/level for every talent; the die-size uniqueness claim (grep: 'die size' appears in no other dossier, census DIESIZE 7 vs 0 elsewhere); the Black-tests/White-never-tests finding (skill=black on exactly the three skill_test talents); the toll-booth finding; the action-type drift percentages; the cost-scale DELIVERS verdict; and 'no advantage anywhere in the tree' (no Sovereignty talent appears in advantage-ledger.md). No third classifier bug was found on this tree - the census correctly binned all seven die-size talents as DIESIZE, not as damage."
+  },
+  {
+   "field": "axes.protection.score",
+   "from": "3",
+   "to": "2",
+   "reason": "SCORE INFLATION via disclosed double-count. The prior evidence built the 3 on 'the Censure line functioning as genuine party-wide damage reduction' - the same die-step effect already scoring 4 on debuff. The calibration anchor ('a tree with one Reaction that reduces damage once per round scores protection 2, not 4') exists to stop one mitigation effect earning twice. What the tree owns exclusively here is two small temp-HP riders: Sovereign's Favor ('temporary HP equal to [Tier][Die]... does not stack', gated on spending an Action + 1 Investiture on Exalt) and Edict of the Fallen ('temporary HP equal to your Tier' = 1 per ally per enemy MISS at Tier 1). Comparative check against the other 20 trees: deity/Order fields Bear Witness (free temp HP EVERY round), Shoulder the Oath ('you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White') and Covenant (+1 all defenses); deity/Fate fields Ordained Ground (+1 all defenses) + Bulwark Ground ('attacks against that ally cannot benefit from advantage'); leyline/White fields Shield Wall ('attacks against them deal half [Tier][Die] less damage') plus seven Reactions. Sovereignty has no shield, interception, resistance, redirection or self-protection at all."
+  },
+  {
+   "field": "axes.buff.score",
+   "from": "4",
+   "to": "3",
+   "reason": "SCORE INFLATION on the comparative bar. The prior evidence called the die-step buff 'genuinely valuable and genuinely unique' - the mechanism is unique, the payload is not competitive. Rubric 4 means 'one of the better options in the game'. Exalt is 1 Action + 1 Investiture for ~+1 average damage to ONE willing ally. For the same 1 Action, leyline/Green's Pack Pressure gives 'you and each ally within 15 feet' free movement and 'an extra [Tier][Die] damage' (avg 3.5); deity/Knowledge's The Pack gives 'allies in Attunement Range... bonus Vital damage equal to your Insight count' (up to 5, Deflect-ignoring) for the SCENE; deity/Power's Investiture of Command gives three allies [Tier][Die] temp HP plus an advantage. The four Sovereignty talents also deliver only two distinct effects and two of them are already scored on debuff. NOTE: an earlier pass had already moved this from 4 to 3 for partly different reasons; this pass supplies the cross-tree evidence the score needed and confirms 3."
+  },
+  {
+   "field": "uniqueOwnership[1] (single-Action elevate+diminish)",
+   "from": "'The only tree that elevates an ally and diminishes an enemy with a SINGLE action'",
+   "to": "'The only tree whose OPERATING VERB is a paired elevate/diminish, and the only one that fires the pair for 1 Action' + named counter-examples",
+   "reason": "UNIQUE-OWNERSHIP CLAIM FALSE AS STATED. Searching all 21 trees for talents carrying both an ally-benefit and an enemy-penalty clause in one activation returns two others: deity/Order's Final Decree ('every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage') and deity/Civilization's Magnum Opus ('each affected enemy tests Agility vs. your Red and is knocked Prone on a failure... Each ally in one of your Foundations gains +2 to all defenses'). Both are 3-Action capstones, so what survives is that Sovereignty does it at 1 Action and as its routine play."
+  },
+  {
+   "field": "uniqueOwnership[2] (reaction lock) and mechanicalKeywords 'reaction denial'",
+   "from": "comparison set of three (Extract Thought, Absolute Stillness, Incite)",
+   "to": "comparison set of four - adds leyline/Red Flashpoint",
+   "reason": "MISSED COMPARATOR. Grep for reaction-denial text returns leyline/Red Flashpoint: 'Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction...' - a MULTI-TARGET reaction denial the prior profile did not list anywhere. The narrowed claim (only lock keyed to a named partner ally's hits) still stands, but the comparison set was incomplete."
+  },
+  {
+   "field": "intentDrift.claims - tier-3 synthesis structure",
+   "from": "'PARTIAL - CORRECTED from DELIVERS... the SYNTHESIS claim is false... Neither tier-3 node bridges the branches, which is precisely what the guide's from each branch pattern exists to prevent'",
+   "to": "'DELIVERS (structure) - WITHDRAWN'",
+   "reason": "FALSE SINGLING-OUT, caught only by looking at the other trees. Every deity tree in the atlas uses the identical prerequisite shape: Order's Verdict takes 'Lawkeeper's Eye or Sealed Edict' (both Edict-branch) and Concord takes 'Bear Witness or Shoulder the Oath' (both Covenant-branch); Knowledge's The Pack takes 'Accumulate or Pack Share' and Death Mark takes 'Hunter's Discipline or Killing Blow'; Life's Lifeline takes 'Surgical Precision or Prognosis' and Primal Regeneration takes 'Overgrowth or Adaptive Mutation'. The guide's parenthetical - 'allowing the player to reach synthesis from either side' - plainly means either of that branch's two tier-2 nodes, with convergence at the capstone. Sovereignty is compliant; the residual (halves converge only at the capstone, and only as an OR) is an atlas-wide observation, not a finding against this tree."
+  },
+  {
+   "field": "intentDrift.claims - rank-gate claim",
+   "from": "'DRIFTED - NEW FINDING'",
+   "to": "'PARTIAL - downgraded'",
+   "reason": "FALSE SINGLING-OUT. Grepping '3+' across the deity atlas returns seven talents in four trees: Order (Sealed Edict Blue 3+), Life (Surgical Precision Blue 3+, Adaptive Mutation Green 3+), Knowledge (Pack Share Green 3+, Killing Blow Red 3+), Sovereignty (Decree of Ruin Black 3+, Investiture of Authority White 3+). Sovereignty ties Life and Knowledge for the most, and both of those trees ALSO strand two depth-1 talents at L6 behind an L4 capstone - so the 'inverted progression' is a shared shape, not a Sovereignty defect. The guide's 'rare' is still broadly true (7 of 90 deity talents)."
+  },
+  {
+   "field": "intentDrift + mechanicalKeywords 'White' - toll-booth uniqueness",
+   "from": "'Sovereignty is the only tree charging a 3+ toll booth' / 'the only tree demanding a 3+ toll-booth colour' (asserted twice)",
+   "to": "'one of TWO 3+ toll booths - deity/Knowledge charges Green 3+ and never tests Green'",
+   "reason": "FALSE UNIQUENESS, contradicted by the measurement table the profile cites. The supplied toll-booth list reads 'Knowledge green 3+ | Sovereignty white 3+'. Verified in the text rather than the table: Knowledge's Pack Share requires 'Green 3+; Studied Mark', and Knowledge's only two skill tests (Killing Blow, The Final Study) both roll 'Red vs. Physical' - so Green is charged at rank 3 and never rolled. The surviving cross-tree pattern is that four of the five toll booths are White."
+  },
+  {
+   "field": "frontOrBackLoaded + powerByDepth['depth 1-2'] + gaps['Levels 4 and 5 add nothing']",
+   "from": "the L4-capstone / L6-tier-2 inversion and the L4-L5 dead band presented as Sovereignty findings",
+   "to": "same observations, each carrying the comparative caveat that Knowledge and Life reproduce them exactly",
+   "reason": "COMPARATIVE CONTEXT MISSING. deity/Knowledge (capstone The Final Study L4; Pack Share and Killing Blow L6) and deity/Life (capstone Apex Form L4; Surgical Precision and Adaptive Mutation L6) have the identical inversion and the identical L4-L5 dead band. Reporting it as a Sovereignty flaw over-charges this tree for an atlas-level pacing artifact."
+  },
+  {
+   "field": "uniqueOwnership[4] + mechanicalKeywords 'failed test'",
+   "from": "'Expose alone turns your own debuff into a self-funding engine off enemy failure' (uniqueness asserted for the trigger as well as the faucet)",
+   "to": "boundary narrowed - unique as an Investiture faucet; enemy failure as a TRIGGER is not unique",
+   "reason": "OVER-BROAD BOUNDARY. leyline/Blue's Reactive Analysis ('When a character within Attunement Range fails a test, spend 1 Investiture to gain an advantage on your next test against them') and leyline/Red's Shatter Focus ('When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus') both key off enemy failure. Only the Investiture-recovery half of the claim survives - verified one by one against the other eight bonus-regen talents, all of which key off the owner's own success, a kill, or damage to a marked target."
+  },
+  {
+   "field": "intentDrift.claims - the Decree promise (evidence) + axes.terrain_zone + gaps + crossTreeHooks",
+   "from": "'NOT DELIVERED' argued only from inside the tree, with a single Order naming-collision note",
+   "to": "same verdict, plus the comparative aggravation: Fate, Order and Civilization all build the mechanic Sovereignty promises",
+   "reason": "LENS-D REQUIREMENT ('is the promise this tree makes ALSO made by another tree's intent file? Say which'). deity/Fate's intent promises and its talents deliver Ordained Ground - 'designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses' - which IS 'a declared zone where allies inside are elevated'. deity/Order's intent promises declared law and Final Decree delivers the radius version ('name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict'). deity/Civilization's Foundations are persistent zones. The absence is therefore not a technical limit; the mechanic exists three times over in the same atlas."
+  },
+  {
+   "field": "intentDrift.verdict + oneLineIdentity - the SOMETHING test",
+   "from": "no explicit 'something' named or tested against other trees",
+   "to": "'something' named (scene-long, condition-free suppression of one enemy's damage output) and tested both ways",
+   "reason": "LENS-E REQUIREMENT. Narrowly the something holds: nothing else in the 365 reduces an enemy's damage die, and the closest functional analogue - leyline/White's Shield Wall, 'attacks against them deal half [Tier][Die] less damage' - works from the defender's side. Read one notch broader as 'make my ally hit harder', the tree loses outright to deity/Knowledge and leyline/Green (see the buff correction). That is a finding, not a failure of the profile, and it is now recorded."
+  },
+  {
+   "field": "intentDrift.claims - description word counts",
+   "from": "estimates ('~34', '~48', '~62', '~71', '~60'), with only Edict of the Fallen flagged as a tier-3 overrun",
+   "to": "exact counts from the description field (Exalt 29, Sovereign's Favor 22, Censure 34, Investiture of Authority 37, Expose 38, Decree of Ruin 47, Sovereign's Balance 59, Sovereignty 61, Edict of the Fallen 69), with BOTH tier-3 nodes flagged and the two entries noted as under the 30-word floor",
+   "reason": "MINOR MISCOUNTS. The estimates were within a word or two throughout, but two talents (Exalt 29, Sovereign's Favor 22) fall UNDER the guide's 30-45 floor and were reported as 'inside 30-45', and the prior text flagged only one tier-3 overrun in one place while flagging both elsewhere."
+  },
+  {
+   "field": "axes.resource_economy.evidence",
+   "from": "already-corrected count retained, but attributed loosely",
+   "to": "producers enumerated by name from grep",
+   "reason": "VERIFICATION, not a value change. The eight bonus-regen talents found by text are leyline/Black Predatory Patience and Predator's Due, leyline/Red Flashpoint, deity/Chaos Void Sense, deity/Death Reaper's Harvest, deity/Life Prognosis, deity/Knowledge Accumulate and deity/Sovereignty Expose, consistent with resource-economy.js's nine across seven trees. Score held at 2: one talent, no token, no Focus/Opportunity/plot-die production."
+  },
+  {
+   "field": "axes.damage_direct / damage_scaling / control / healing / mobility / information / social_influence / exploration_utility / summons / action_economy - scores",
+   "from": "0 / 0 / 1 / 0 / 0 / 0 / 0 / 0 / 0 / 1",
+   "to": "unchanged",
+   "reason": "CHECKED AND FOUND CORRECT. Every one was re-read against all nine talent texts and cross-checked against the trees that do own the axis (Chaos/Knowledge for information, Power for social_influence, Fate/Civilization/Knowledge for granted actions, Blue/Fate/Order/Power for control). No deflation found: the tree genuinely has nothing on those axes, and the two riders that could hide credit (Expose's Reactive Strike grant, the capstone's reaction lock) are each scored exactly once, under action_economy and control respectively. The debuff 4 was also re-tested against Blue's five disadvantage talents and held, on duration-per-payment rather than the prior 'five of nine' percentage argument, which is not a cross-tree measure."
+  }
+ ]
+}

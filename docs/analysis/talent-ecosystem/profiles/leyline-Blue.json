@@ -1,0 +1,672 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "leyline/Blue",
+ "correctionCount": 40,
+ "profile": {
+  "atlas": "leyline",
+  "tree": "Blue",
+  "oneLineIdentity": "A 25-talent kit that deals literally zero damage and wins by imposing disadvantage (5 talents, the largest single-tree block in the game) plus a foreknowledge/illusion sideline it genuinely owns — but its three teeth (talent negation, the 0-Speed lock, the lock's upgrade) all sit behind Blue 3+ and arrive together at level 6, and eight of its 25 talents are unreachable before then.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 0,
+    "evidence": "Verified three ways over all-talents.json: 0 damage roll formulas, 0 heal formulas, and the string 'damage' appears in ZERO of the 25 descriptions, authored overrides or authored bodies (re-run: damage-word hits = []). No summon deals damage (Phantom Double has 1 health and takes no actions; Living Image only 'interact[s] with the environment'). No zone deals damage (Phantom Barricade 'provides cover and blocks movement'; Holographic Illusion is a static illusion with no stated mechanical effect). No ongoing-damage condition (Disoriented, disadvantage, movement rate 0 — never Afflicted). No damage rider on Ghostly Walls, Absolute Stillness, Counterspell or Redirect Momentum. NOT unique: heroic/Scholar is also damage-word 0 AND formula 0, and deity/Sovereignty creates no damage either."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 0,
+    "evidence": "Forced to 0 because damage_direct is 0. The tree's [Tier]/[Die]/[Size] scaling exists but is spent elsewhere — Phantom Barricade's wall health 2[Die] (the tree's ONLY [Die] expression, and it is object HP), Baleful's focus tax equal to tier, Composed's max-focus increase by tier, and [Size] on Redirect Momentum / Holographic Illusion / Phantom Step — never on damage."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "Held at 3, but the comparative case is worse than the profile argued. Blue's control is Ghostly Walls (1 Action, 2 Investiture, contested Blue vs Cognitive, single target, movement rate 0 until end of your next turn, Blue 3+ = L6) + Absolute Stillness (L6, adds Reaction-denial and Physical disadvantage), Counterspell (talent negation, L6), Subtle Suggestion (Disoriented — no reactions — but rides an influence success no Blue talent produces, L3), Redirect Momentum (Reaction, shave/push [Size] = 5 ft at Tier 1, L2) and Phantom Barricade (blocks movement, L2). REFUTATION: cheaper, earlier, strictly better single-target lockdown exists in four other trees — leyline/Green's Grasping Vines (1 Action, 1 Investiture, Green 1+, L2) applies Restrained, which is movement 0 PLUS disadvantage on everything but escape; leyline/Green's Territorial Instinct reduces movement to 0 at L2 for 1 Investiture; deity/Fate's Snare (L1) restrains AND deals [Tier][Die]+Awareness keen; heroic/Hunter's Deadly Trap (L1) immobilises AND deals 2d4; deity/Power's Kneel (L1) compels. Blue's two-talent L6 combo is roughly one L2 Green talent. Real competency, several talents, at least one good one — but nowhere near 'one of the better options in the game'."
+   },
+   {
+    "axis": "debuff",
+    "score": 4,
+    "evidence": "LOWERED from 5. The disadvantage claim itself is verified: exactly 15 talents in all 365 name 'disadvantage' and FIVE are Blue (Pattern Recognition, Intercept, False Premise, Probability Cascade, Absolute Stillness) — the largest single-tree block, next largest being heroic/Leader and heroic/Warrior at 2-3 each. Probability Cascade is the only talent anywhere hitting TWO consecutive tests. But 5 means 'the reference implementation of this axis', and on the axis as defined (numeric penalties, defence reduction, vulnerability, disadvantage-likes) Blue is SECOND, not first: a broad enemy-penalty count over all 365 gives leyline/Black 7 to Blue's 6, and Black's is an integrated engine — Black Leyline Attunement applies Weakened to every isolated enemy in Attunement Range for FREE every time it Draws Mana, Sapping Hex adds more, and four talents (Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude) consume it. Blue's five are single-target 1-Investiture riders with no payoff loop, and the resource census confirms disadvantage is produced by 14 talents across 9 trees and consumed by ZERO. Blue owns disadvantage; Black owns debuff."
+   },
+   {
+    "axis": "protection",
+    "score": 2,
+    "evidence": "NO damage reduction, no temporary HP, no resistance, no Deflect, no interception, no 'reduce damage taken' Reaction — a cross-tree grep for those patterns returns only a false positive on Anticipate ('resistance test'). What exists is positional: Phantom Barricade (scene-long 2[Die] barrier providing cover and blocking movement), Phantom Double (soaks exactly one hit; each enemy tests Perception separately, so it can fail against the one that mattered), Collected (+2 Cognitive/Spiritual, Blue 3+/L6, on the defences a caster is least often attacked on). Against the anchor that puts a once-per-round damage-reducing Reaction at 2, zero mitigation cannot score above it."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "No restoration of Health, focus or Investiture anywhere in the 25; zero heal formulas in the authored overlay. Composed raises the maximum focus ceiling rather than restoring focus. Nothing picks up a downed ally or refills the caster's own pool beyond the universal Draw Mana."
+   },
+   {
+    "axis": "buff",
+    "score": 2,
+    "evidence": "Exactly four advantage producers, re-verified by grepping Blue's own text: Blue Leyline Attunement, Calculated Patience, Reactive Analysis, Anticipate. The binary-advantage rule caps what a character gains in a round at ONE, and three of the four are self-facing. CORRECTION to the profile's overlap argument: the overlap is narrower than claimed — the Key covers only Cognitive tests, Calculated Patience covers any first test on a slow turn, so they collide only when your first slow-turn test is Cognitive; Calculated Patience is the tree's only advantage on a Physical or Spiritual test. Ally-facing buff is still nearly absent: Anticipate (influence resistance only, L6) and Telepathic Network's 'Allies in the network share your expertise', which names no mechanic and ships events=0 effects=0."
+   },
+   {
+    "axis": "action_economy",
+    "score": 3,
+    "evidence": "STRENGTHENED, not lowered. Forewarned (depth 0, L1, free passive) grants 1 Reaction when your declaration lands — one of exactly three extra-Reaction talents in all 365 (grep-confirmed: heroic/Envoy's Foresight, heroic/Hunter's Sidestep). CORRECTION to the profile's correction: both rivals carry rank-3 SKILL gates (Foresight 'Instill Confidence; Discipline 3+', Sidestep 'Shadowing; Stealth 3+') and the rank cap is 2 through level 5, so under a consistent reading both are level 6, not the L4/L3 the dossier prints. Forewarned is therefore the ONLY extra-Reaction talent reachable in Tier 1, by five levels — a stronger claim than either the original or its first correction. Probable Outcome (L3) re-chooses fast/slow after everyone has committed. Not higher because Blue grants zero extra ACTIONS — only 5 talents in 365 do (heroic/Warrior's three stances, heroic/Leader's Synchronized Assault, heroic/Scholar's Turning Point) — and because the tree's own five Reactions mean the +1 slot mostly buys back an over-investment."
+   },
+   {
+    "axis": "mobility",
+    "score": 1,
+    "evidence": "Rests on exactly ONE talent. Phantom Step (Passive, L3 — an ally who moves may move an additional [Size] feet without provoking Reactions) is party-wide, free and repeatable but only 5 ft at rank 2, and is the whole of the tree's mobility. Nothing moves the Blue mage — no teleport, no speed increase, no free disengage. Redirect Momentum's push nominally targets 'a character' so it can shove an ally 5 ft, but it is written as enemy forced movement and is excluded by the axis definition either way."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 2,
+    "evidence": "Only ONE talent creates a feature with a stated mechanical effect: Phantom Barricade (2[Die] health, scene duration, 'provides cover and blocks movement'). Holographic Illusion creates 'a static illusion... not exceeding [Size]' for the scene with NO stated mechanical consequence — no cover, no blocking, no test, no condition; Living Image adds mobility to illusions but no zone. Ghostly Walls is named for walls but is a single-target contested lock, not an area. No hazards, no damage, no difficult or dangerous terrain — against leyline/Green, whose Attunement Key alone creates difficult terrain every Draw Mana, and deity/Fate's 7 Ordained Ground / 5 Snare talents, this is minor."
+   },
+   {
+    "axis": "information",
+    "score": 4,
+    "evidence": "A genuine strength and the count survives comparison: Read Intent, Forewarned, Probable Outcome, Telepathic Network and Reactive Analysis are five information talents, against 2 in leyline/Green (Primal Awareness, Predator's Instinct) and 1 each in heroic/Agent, deity/Chaos, deity/Order, deity/Death and deity/Fate on the same classifier. Read Intent ('the GM reveals what action that creature intends to take next round') is verified as one of only TWO talents in 365 with that effect; the other, deity/Fate's Read the Threads, is strictly better and earlier (L2 vs L4, also reveals planned movement, plus a free Ordained Ground reposition). Telepathic Network and Anticipate are the only two talents in 365 mentioning telepathy. Not 5: no detection of hidden creatures, no scouting beyond Attunement Range, no divination, and the single best foreknowledge talent in the game belongs to Fate."
+   },
+   {
+    "axis": "social_influence",
+    "score": 2,
+    "evidence": "LOWERED from 3. Every Blue social talent is a rider on an influence attempt the tree cannot make: Subtle Suggestion converts an influence success into Disoriented, Anticipate defends against incoming influence, Ghostly Walls merely gates on 'a character you can influence', and no talent in the 25 makes an influence test or improves one. The best piece, Baleful, is not Blue's — the identical text ships as heroic/Agent's Baleful (depth 1, prereq \"Get 'Em Talking\", L2) and heroic/Leader's (depth 2, prereq 'Rumormonger', L3), while Blue gates it behind Persuasion 3+, i.e. level 6. That is the anchor for 2 verbatim: present but minor, and you would not pick this tree for it. The two Persuasion prerequisites are evidence the tree EXPECTS a social kit from elsewhere, not evidence it supplies one."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 3,
+    "evidence": "Blue delivers one of the five categories the axis names and none of the other four — no travel, no crafting, no survival, no downtime. What it has is a strong infiltration/coordination lane: Telepathic Network (scene-long silent party communication, unique in 365), Holographic Illusion, Living Image (a remote conversational proxy, but L6), Phantom Double, Read Intent, Phantom Barricade. CORRECTION to the profile's evidence: it does not 'grant no expertise' — Telepathic Network's second sentence purports to share your expertise with the whole network, but names no mechanic and ships events=0 effects=0, so the grant is undeliverable rather than absent. One strong lane of five = 3."
+   },
+   {
+    "axis": "summons",
+    "score": 1,
+    "evidence": "Nothing acts on its own. Phantom Double has 1 health and takes no actions — a decoy. Living Image moves illusions at YOUR movement rate and needs YOUR Action for anything requiring attention, at 1 Investiture per round — a puppet. No construct, animal, spirit or animated ally, against deity/Civilization's Combat Construct and heroic/Hunter's animal companion."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 1,
+    "evidence": "Generates nothing; 1 only because Composed permanently raises the focus ceiling by your tier, which is more focus available per rest. Blue produces no Investiture, no focus and no Opportunity — the census gives Blue 0 regen / 15 costers (16 in truth; Counterspell's Cost field misspells 'Investiure' so the classifier misses it) and 0 focus regen, against Black's and Red's 2 Investiture-regen talents each. The Blue Key spends its Draw Mana trigger on an advantage rather than a resource, the only leyline Key that returns nothing resource-adjacent. Baleful taxes an ENEMY's focus — denial, not generation."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [],
+   "countReal": 0,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": -1,
+   "earliestDamageLevel": -1,
+   "peakDamagePerAction": "0 [Tier][Die]. Zero at every depth, every level, every action cost. No floor and no ceiling because there is no source. A Blue-only character's entire offensive output is the universal Strike action, unmodified.",
+   "repeatability": "N/A — no damage source exists to repeat. The repeatable per-round output is one disadvantage (Pattern Recognition / False Premise / Intercept, ~1 Investiture) and, only from L6, a 0-Speed lock (Ghostly Walls, 1 Action + 2 Investiture, contested).",
+   "verdict": "Blue creates no damage whatsoever, confirmed three ways over all-talents.json: 0 damage roll formulas in the authored overlay; the string 'damage' absent from all 25 descriptions, authored overrides and authored bodies (re-run returns an empty list); and a hand read of every talent for indirect sources — no attacking summon, no hazard, no damaging zone, no Afflicted or other ongoing-damage condition. There is no mitigation-read-as-damage false positive to strip because the word never appears. Blue is one of THREE zero-created-damage trees (with heroic/Scholar and deity/Sovereignty) and one of TWO whose talent text never says 'damage' (with heroic/Scholar, whose three roll formulas are type:heal) — not a category of one. The consequence stands either way: every control and debuff effect Blue produces is a multiplier with no base, and unlike Scholar (which at least heals) or Sovereignty (which shrinks enemy damage dice), Blue converts nothing into a result on its own."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0",
+    "rating": 2,
+    "exemplars": "Forewarned, Calculated Patience, Blue Leyline Attunement, Phantom Double",
+    "note": "Only THREE of the four are picks — Blue Leyline Attunement is the free Key granted with the path. Forewarned is the tree's best talent and, once the rank cap is read consistently, the only extra-Reaction talent in the game before level 6. Calculated Patience overlaps the free Key whenever the slow turn's first test is Cognitive and is otherwise the tree's only non-Cognitive advantage — weak, not worthless. Phantom Double is 2 Actions + 2 Investiture (a full opening turn plus half a level-1 pool) for a 1-health decoy any hit deletes, at 76 words, three times the design cap."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Counterspell, Telepathic Network, Phantom Barricade, Pattern Recognition, Subtle Suggestion, Redirect Momentum",
+    "note": "Fourteen talents (6 at depth 1, 8 at depth 2) — wide and competent but individually small; six are a 1-Investiture rider producing one disadvantage or one advantage. Standouts: Counterspell (the only talent-activation interrupt in 365, but Blue 3+ so L6) and Telepathic Network (transformative out of combat, and unwired). The band splits hard on level: Composed, Collected and Counterspell are L6; the rest is live by L3. Collected is filler existing to be Anticipate's prerequisite — the identical text exists in FOUR other trees and reaches heroic/Envoy at depth 0 / L1 with no prerequisite at all."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 4,
+    "exemplars": "Ghostly Walls, Absolute Stillness, Probability Cascade, Read Intent, Baleful",
+    "note": "Seven talents (six at depth 3, Absolute Stillness at depth 4) and this is where the teeth are. Ghostly Walls into Absolute Stillness is the tree's only hard lock; Probability Cascade is the only two-test disadvantage in 365; Read Intent is one of only two foreknowledge talents. FIVE of the seven are really L6, not four — Baleful requires Persuasion 3+ and the rank cap is 2 through L5, so its true earliest level is 6, not the L4 the dossier prints. (This is a systematic dossier artefact, not a Blue-only one: earliestLevel applies the rank-3 bump only to leyline COLOUR skills, so roughly forty talents across the atlas carrying Deduction 3+, Stealth 3+, Discipline 3+ etc. are printed early too.) Only Probability Cascade and Read Intent are reachable in Tier 1. Anticipate is the band's dud."
+   }
+  ],
+  "frontOrBackLoaded": "BACK-LOADED, and more sharply than the raw gate count shows. Seven talents carry a Blue 3+ gate (Composed, Collected, Counterspell, Anticipate, Ghostly Walls, Living Image, Absolute Stillness) and an EIGHTH — Baleful — carries Persuasion 3+, which the rank cap (max skill rank 2 through level 5) puts at level 6 just as surely. So 8 of 25 talents, including the only hard lock, the only talent negation, the only defence buff, the focus-cap raise and the best influence talent, are unreachable before level 6. Levels 1-5 are a small kit of 1-Investiture disadvantage riders, one advantage, one conditional extra Reaction, a wall and a decoy; level 6 hands the tree lockdown, Counterspell and Baleful in the same step that upgrades [Die] to d8 and doubles the tier multiplier. Forewarned is the one genuinely front-loaded piece — and it is the single most front-loaded talent of its kind in the game.",
+  "uniqueOwnership": [
+   "The largest concentration of disadvantage-imposition in the game: exactly 15 talents in all 365 name 'disadvantage' and 5 are Blue (Pattern Recognition, Intercept, False Premise, Probability Cascade, Absolute Stillness), against a next-largest of 2-3 per tree. Probability Cascade is the only talent anywhere imposing disadvantage on TWO consecutive tests. NOTE the limit of this ownership: the resource census shows disadvantage is produced by 14 talents across 9 trees and consumed by nothing, anywhere.",
+   "Talent-activation interruption: Counterspell is the only talent in 365 that makes another character's talent FAIL as it is being activated. DOWNGRADED from 'the only talent negation in all 365' — the broader capability is shared: leyline/White's Counterpoint negates an influence effect, deity/Chaos's Unweaving ends a running magical buff, stance or sustained effect, and leyline/Green's Natural Order switches off illusions and deception-advantage for a scene. Blue owns the interrupt, not negation as a whole.",
+   "REFUTED as written, replaced: Blue is NOT 'the only 0-Speed engine in the atlas'. Three other talents reduce a target to zero movement — leyline/Green's Territorial Instinct ('reduce its movement to 0 this turn', 1 Investiture, depth 1, L2 — four levels earlier and half the cost of Ghostly Walls), leyline/Black's Sovereign of Solitude ('reduce its movement rate to 0', which ALSO rolls [Tier][Die] vital damage), and deity/Civilization's Siege Form (on your own Construct) — plus the Restrained/Immobilized producers (Green's Grasping Vines L2, Fate's Snare L1, Hunter's Deadly Trap L1), both conditions being movement 0 by definition. What Blue genuinely owns is the UPGRADE: Absolute Stillness is the only talent anywhere that converts an existing immobilise into Reaction-denial plus Physical disadvantage — and because it reads 'creatures you have reduced to 0 Speed' without naming Ghostly Walls, Territorial Instinct and Sovereign of Solitude can legally feed it in a two-colour build.",
+   "Illusion as a mechanical subsystem: Blue is the only tree in the game that CREATES illusions. The word appears mechanically in four talents in 365 — Phantom Double, Holographic Illusion, Living Image (all Blue) and leyline/Green's Natural Order, which exists to shut them off — and in a fifth, deity/Chaos's Unweaving, as flavour only ('Structure is an illusion. Chaos is only reminding it.').",
+   "Telepathy: Telepathic Network and Anticipate are the only two talents in all 365 that mention telepathy, and Telepathic Network is the only scene-long party-wide silent-communication effect in the game.",
+   "Turn-order rewriting: Probable Outcome changes your fast/slow choice AFTER all creatures have chosen. Verified against all six talents in 365 that reference fast or slow turns (Blue's two, Red's three, Scholar's Turning Point) — every other one reads the choice; only Probable Outcome retracts it.",
+   "UPGRADED: Forewarned is the only extra-Reaction talent in the game reachable before level 6, by five levels. There are exactly three extra-Reaction talents in 365 — Forewarned (free, depth 0, L1), heroic/Envoy's Foresight ('Gain an additional reaction each turn', prereq 'Instill Confidence; Discipline 3+') and heroic/Hunter's Sidestep (an extra Dodge reaction, prereq 'Shadowing; Stealth 3+'). Both rivals carry rank-3 skill gates that the level 1-5 rank cap of 2 puts at level 6, whatever the dossier's printed L4/L3 say. Forewarned's grant is conditional on a correct prediction and Foresight's is not — but Foresight does not exist in Tier 1 and Forewarned does."
+  ],
+  "gaps": [
+   "Damage. A Blue-only character can never kill anything with a talent; their entire offensive output for ten levels is the universal Strike, unmodified. (Shared with heroic/Scholar and deity/Sovereignty; not unique to Blue.)",
+   "Healing and revival of any kind. Nothing restores Health, focus or Investiture to anyone.",
+   "Damage mitigation. No temp HP, no resistance, no Deflect, no redirection, no interception, not one 'reduce damage taken' Reaction; the only defensive passive (Collected) is L6 and covers the least-attacked defences.",
+   "Self-mobility. No teleport, speed increase, free disengage or repositioning for the caster; Phantom Step helps allies only.",
+   "Area effects. Every talent targets one character, one point, or the caster — against leyline/Black's Attunement Key, which Weakens every isolated enemy in range for free.",
+   "Resource generation. 16 of 25 spend Investiture and nothing generates any; the Blue Key is the only leyline Key returning no resource-adjacent value.",
+   "Condition removal and status cleansing — nothing, for anyone.",
+   "Self-concealment. The illusion suite makes props and decoys; nothing hides the Blue mage.",
+   "Travel, crafting, survival, downtime and expertise grants — none. Telepathic Network purports to share expertise across the network but names no mechanic and is unwired.",
+   "Correlated dead zones: against an enemy that spends no Investiture, cannot be influenced, does not move, or has no intentions to read, Counterspell, Read Intent, Subtle Suggestion, Baleful, Ghostly Walls and Redirect Momentum are ALL blank at once.",
+   "Description-length discipline: 11 of 25 (44%) exceed the 25-word cap — Phantom Double 76, Living Image 39, Phantom Barricade 35, Redirect Momentum 32, Ghostly Walls 32, Counterspell 31, Holographic Illusion 30, False Premise 30, Forewarned 29, Anticipate 29, Absolute Stillness 28. Only 14 of 25 are at or under target.",
+   "Three talents are not Blue's own, and Blue pays the worst gate for each — but not in the shape the profile claimed. Collected is verbatim in FOUR other trees (leyline/Green L4, heroic/Agent L2, heroic/Scholar L2, heroic/Envoy depth 0 / L1 with no prerequisite) while Blue pays Blue 3+ / L6. Baleful is verbatim in heroic/Agent (L2) and heroic/Leader (L3) while Blue pays Persuasion 3+ / L6. Composed's verbatim twin is leyline/BLACK, not a heroic tree; heroic/Envoy's Composed is a different and strictly better talent ('increase your max AND CURRENT focus') at L2.",
+   "Data defects reaching the table: Counterspell's Cost field reads '2 Focus; 1 Investiure' (the reason machine counts say 15 Investiture costers, not 16); Absolute Stillness's generator prose reads 'Creatures ... also has' (fixed in the authored override, which wins); Read Intent states no range at all, unlike the 11 Blue talents that scope off Attunement Range.",
+   "Wiring: six talents ship events=0 effects=0 and are entirely manual — Forewarned (the tree's best talent), Telepathic Network, Probable Outcome, Phantom Step, Baleful, Absolute Stillness. 24% unwired, worst of the five leyline trees."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'They rarely meet force with force.' (path description)",
+     "delivered": "OVER-DELIVERED — the tree never meets force with force at all.",
+     "evidence": "Not one of the 25 deals damage; the word 'damage' does not appear in any description, authored override or authored body. 'Rarely' understates an absolute. Blue is not alone (heroic/Scholar and deity/Sovereignty also create no damage) but it is the only one of the three whose intent prose gestures at the fact."
+    },
+    {
+     "claim": "'Blue leyline mages read the battle a beat before it happens... tacticians, augurs, and pattern-readers.'",
+     "delivered": "DELIVERS — but the promise is DUPLICATED by another path's intent file.",
+     "evidence": "Read Intent, Forewarned, Probable Outcome, Reactive Analysis, Telepathic Network. Best-supported claim in the file. The overlap: deity/Fate's intent says of Olvarra's blessed 'they do not react to the battle; they have already read it' — the same promise, delivered by Read the Threads at L2 with strictly more information (action AND planned movement) plus a free reposition. deity/Order's intent also claims 'Lawkeeper foresight' and delivers it on Lawkeeper's Eye ('you learn the bound character's intended action'). Blue's headline identity is shared with two deity paths, both of which reach it earlier."
+    },
+    {
+     "claim": "'...intercepting an attack foreseen.'",
+     "delivered": "PARTIAL — nothing in the tree intercepts an attack.",
+     "evidence": "Intercept only 'impose[s] disadvantage on that action'; it stops, redirects and absorbs nothing. Counterspell intercepts a TALENT, and only one spending Investiture. No interception, no redirection, no protective Reaction — the closest is Phantom Double soaking one hit on a 1-health decoy."
+    },
+    {
+     "claim": "'...bending probability against an enemy.' / 'Probability control — impose Disadvantage, force declarations, redirect outcomes.'",
+     "delivered": "DELIVERS (as disadvantage, not as probability)",
+     "evidence": "Pattern Recognition, Intercept, False Premise, Probability Cascade, Absolute Stillness — 5 of the 15 disadvantage talents in 365, the largest single-tree block. Precisely: the tree sets a binary tri-state flag over and over; there is no reroll, dice-selection or result substitution anywhere in the 25."
+    },
+    {
+     "claim": "'...raising images and walls that exist only in the mind' / Illusion specialty",
+     "delivered": "DELIVERS",
+     "evidence": "Phantom Barricade, Phantom Double, Holographic Illusion, Living Image, Ghostly Walls. Blue is the only tree in 365 that creates illusions; the only other mechanical use of the word is Green's Natural Order, which negates them. Two slippages: Phantom Step and Redirect Momentum sit in the Illusion specialty with no illusion mechanic, and Holographic Illusion — the specialty's purest expression — has no stated mechanical effect at all."
+    },
+    {
+     "claim": "Foresight specialty: 'forewarning, interception, telepathic links, and analysis that makes a Reaction the right one.'",
+     "delivered": "DELIVERS",
+     "evidence": "Forewarned, Intercept, Telepathic Network, Reactive Analysis, Collected, Probable Outcome, Read Intent, Anticipate — eight talents, every named item present literally."
+    },
+    {
+     "claim": "Calculation specialty: 'pattern recognition, counterspells, and suggestions that quietly reshape an enemy's choices.'",
+     "delivered": "DELIVERS",
+     "evidence": "Pattern Recognition, Counterspell, Subtle Suggestion, False Premise, Baleful, Probability Cascade, Composed. All three named items exist literally."
+    },
+    {
+     "claim": "DESIGN GUIDE, Blue's stated KEY MECHANIC: 'Plot Die manipulation is Blue's capstone identity. Choosing any Plot Die face is the ultimate Blue expression.'",
+     "delivered": "DRIFTED — entirely absent, and a disagreement between the two intent sources.",
+     "evidence": "No talent manipulates, rerolls, selects or influences the Plot Die. The one adjacent talent, Probability Cascade, SPENDS an Opportunity as a cost — a consumer, not a manipulator. Corroborated: Plot Die talents exist in exactly two trees (leyline/Red, heroic/Agent). Blue also has no capstone; its deepest node is a passive rider on Ghostly Walls."
+    },
+    {
+     "claim": "DESIGN GUIDE: 'Costs favor: Free passives, Investiture for active manipulation, Focus for precision plays.'",
+     "delivered": "PARTIAL",
+     "evidence": "Investiture-for-manipulation delivered (16 of 25). Free passives delivered (9 of 25 = 36%, on target). Focus nearly untouched: exactly ONE talent spends focus (Counterspell, 2), one raises the cap (Composed), one taxes an enemy's (Baleful) — against the same guide's principle 6, 'Focus fits ... Blue (precision costs mental effort)'. And the guide assigns Opportunity to Red and White, yet Probability Cascade is priced in Opportunity."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets.",
+     "delivered": "PARTIAL — one clear miss, mechanically load-bearing.",
+     "evidence": "Re-counted from the data and matching the deterministic table exactly: Passive 9 (36%, target ~35%), Special 5 (20%, under the 25-30% target), 1 Action 3 (12%), 2 Actions 2 (8%, exact), Free 1 (4%), 3 Actions 0 (met). Reaction 5 (20%) against a 5-8% target — roughly triple. With a hard 1-Reaction cap, Intercept, Redirect Momentum, Counterspell, False Premise and Anticipate compete for one slot every round, so most of that 20% is dead weight per round."
+    },
+    {
+     "claim": "DESIGN GUIDE: description target 20-25 words.",
+     "delivered": "MISSED — 11 of 25 (44%) are over the cap.",
+     "evidence": "Word counts re-run over the authored text (whitespace split): Phantom Double 76, Living Image 39, Phantom Barricade 35, Redirect Momentum 32, Ghostly Walls 32, Counterspell 31, Holographic Illusion 30, False Premise 30, Forewarned 29, Anticipate 29, Absolute Stillness 28. Only 14 of 25 are at or under 25 words."
+    },
+    {
+     "claim": "DESIGN GUIDE principle 7: 'Blue manipulates probability; Red escalates momentum' — no bleed across colour lines.",
+     "delivered": "DELIVERS, with one seam",
+     "evidence": "No damage, healing, terrain damage or pack mechanics — the lines are respected unusually cleanly. The seam is social: Baleful, Subtle Suggestion, False Premise and Ghostly Walls key on 'influence' and two gate on Persuasion, closer to Black's domination lane. Baleful in particular is not a Blue talent at all — the same text ships in heroic/Agent and heroic/Leader, both earlier."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "A pure disadvantage-and-denial controller with a genuinely-owned foreknowledge and illusion sideline, not a probability manipulator — and a tree whose real kit does not assemble until level 6. Where the design guide says Blue's identity is choosing Plot Die faces, the built tree applies a binary disadvantage flag over and over (5 talents, the largest single-tree block in the game), then at L6 gains its only talent negation, its only hard lock and its best influence talent in one step. It is also completely non-damaging — which the path description gestures at ('rarely meet force with force') but never states as the absolute it is, and which it shares with heroic/Scholar and deity/Sovereignty rather than owning alone. Its 'something', tested against the other twenty trees: Blue is the only tree that creates illusions, the only tree with telepathy, the only tree that retracts an initiative declaration, and the only tree with an extra Reaction before level 6 — four uncontested pieces. Its headline foresight promise, by contrast, is made and better kept by deity/Fate."
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "CONSUME (never produces)",
+    "talents": "16 of 25: Phantom Double 2, Telepathic Network 2, Ghostly Walls 2, and 1 each for Pattern Recognition, Intercept, Reactive Analysis, Phantom Barricade, Redirect Momentum, Counterspell, False Premise, Subtle Suggestion, Holographic Illusion, Anticipate, Probability Cascade, Read Intent; Living Image charges 'Variable Investiture', 1/round upkeep. (Machine counts of 15 miss Counterspell — its Cost field misspells 'Investiure'.)"
+   },
+   {
+    "keyword": "Focus",
+    "role": "BOTH, weakly — raises the cap and taxes the enemy, never generates",
+    "talents": "Composed (max focus + tier), Counterspell (spends 2 focus), Baleful (enemy pays extra focus equal to your tier)"
+   },
+   {
+    "keyword": "Opportunity",
+    "role": "CONSUME only",
+    "talents": "Probability Cascade. CORRECTED framing: this is a standard, deliberate design pattern, not an unpaid dependency — the leyline guide calls Opportunity costs 'elegant: free in resources but require the Plot Die to cooperate', and 22 talents across 11 trees are priced in it. Opportunity comes off the Plot Die, which every character rolls. What IS true comparatively: all 9 Opportunity producers in 365 sit in heroic trees (Agent's Sure Outcome and Contacts talents, Envoy's High Society Contacts, Leader's Well Supplied and Rumormonger, Scholar's and Warrior's range-expanders); no leyline or deity tree produces any."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "PRODUCE",
+    "talents": "Blue Leyline Attunement, Calculated Patience, Reactive Analysis, Anticipate — 4 producers, 3 self-facing. They overlap only when they land on the same roll; the Key covers Cognitive tests only, so Calculated Patience is the tree's sole advantage on a Physical or Spiritual test."
+   },
+   {
+    "keyword": "Disadvantage",
+    "role": "PRODUCE — the tree's signature",
+    "talents": "Pattern Recognition, Intercept, False Premise, Probability Cascade (two consecutive tests), Absolute Stillness — 5 of the 15 in all 365, the largest single-tree block. Consumed by nothing, in any tree."
+   },
+   {
+    "keyword": "Reaction (the 1/round resource)",
+    "role": "BOTH — produces one conditionally, consumes five, denies the enemy's",
+    "talents": "PRODUCE: Forewarned (+1 only if the declaration was correct; the only Tier-1 extra-Reaction talent in the game). CONSUME: Intercept, Redirect Momentum, Counterspell, False Premise, Anticipate. DENY: Absolute Stillness, Subtle Suggestion (Disoriented). BYPASS: Phantom Step."
+   },
+   {
+    "keyword": "Draw Mana",
+    "role": "CONSUME (rides its trigger)",
+    "talents": "Blue Leyline Attunement — the only leyline Key whose rider is neither a resource, a heal, a condition nor terrain."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "SCOPE keyword",
+    "talents": "11 talents (verified by grep): Telepathic Network, Reactive Analysis, Redirect Momentum, Phantom Step, Holographic Illusion, Phantom Barricade, Ghostly Walls, Phantom Double, Counterspell, False Premise, Probability Cascade. Anticipate scopes off the Telepathic Network; Read Intent states no range at all."
+   },
+   {
+    "keyword": "Blue (the skill)",
+    "role": "CONSUME — the tested skill",
+    "talents": "Redirect Momentum, Counterspell, False Premise, Read Intent, Ghostly Walls — exactly the 5 carrying skill=blue in the wiring"
+   },
+   {
+    "keyword": "Blue 3+ (rank gate)",
+    "role": "CONSUME — pacing gate, all L6",
+    "talents": "Composed, Collected, Counterspell, Anticipate, Ghostly Walls, Living Image, Absolute Stillness. Blue 2+ on Calculated Patience, Pattern Recognition, Probable Outcome, Holographic Illusion, Phantom Step, Read Intent."
+   },
+   {
+    "keyword": "Persuasion 2+ / 3+ (rank gate)",
+    "role": "CONSUME — off-colour prerequisite, and a hidden level gate",
+    "talents": "False Premise (Persuasion 2+, L3) and Baleful (Persuasion 3+). Persuasion 3+ is a level-6 requirement under the rank cap, making Baleful the eighth L6 talent even though the dossier prints L4 — a systematic artefact of the dossier applying the rank-3 bump only to colour skills."
+   },
+   {
+    "keyword": "Cognitive defense",
+    "role": "CONSUME — the target defence",
+    "talents": "Phantom Double, Counterspell, False Premise, Read Intent, Ghostly Walls"
+   },
+   {
+    "keyword": "Cognitive test",
+    "role": "BOTH — buffed by the Key, triggers two talents",
+    "talents": "Blue Leyline Attunement, Pattern Recognition (on your success), False Premise (on their success)"
+   },
+   {
+    "keyword": "Cognitive and Spiritual defense",
+    "role": "PRODUCE (+2)",
+    "talents": "Collected — verbatim in leyline/Green (L4), heroic/Agent (L2), heroic/Envoy (depth 0, L1, no prerequisite) and heroic/Scholar (L2); Blue's is the most expensively gated of the five at Blue 3+ / L6"
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Subtle Suggestion — one of 14 Disoriented talents across 11 trees, not an ownership"
+   },
+   {
+    "keyword": "Speed 0 / movement rate 0 (immobilise)",
+    "role": "BOTH — produced then consumed",
+    "talents": "PRODUCE: Ghostly Walls. CONSUME/UPGRADE: Absolute Stillness. CORRECTED: not the only such pair and not the atlas's sole producer — leyline/Green's Territorial Instinct reduces movement to 0 at L2 for 1 Investiture and leyline/Black's Sovereign of Solitude reduces movement rate to 0 and rolls [Tier][Die] vital damage; both can legally satisfy Absolute Stillness's 'creatures you have reduced to 0 Speed'. deity/Civilization's Siege Form sets your OWN Construct to 0 Speed."
+   },
+   {
+    "keyword": "Cover",
+    "role": "PRODUCE",
+    "talents": "Phantom Barricade"
+   },
+   {
+    "keyword": "Illusion (as an object with health and duration)",
+    "role": "PRODUCE, then CONSUME/upgrade",
+    "talents": "PRODUCE: Phantom Double (1 health), Phantom Barricade (2[Die] health, scene), Holographic Illusion (scene, [Size], no stated mechanical effect). UPGRADE: Living Image. Blue is the only tree in 365 that creates illusions; the word appears mechanically in only 4 talents, the fourth being Green's Natural Order, which negates them."
+   },
+   {
+    "keyword": "Telepathic Network (in-tree construct)",
+    "role": "PRODUCE then CONSUME",
+    "talents": "PRODUCE: Telepathic Network. CONSUME: Anticipate. The only two talents in 365 naming telepathy."
+   },
+   {
+    "keyword": "Forewarned declaration (in-tree prediction token)",
+    "role": "PRODUCE then CONSUME",
+    "talents": "PRODUCE: Forewarned. CONSUME: Intercept (fires only on a declared action; Forewarned is also its managed connection prerequisite)"
+   },
+   {
+    "keyword": "Influence (applied or resisted)",
+    "role": "BOTH — but the tree never produces the influence attempt itself",
+    "talents": "Subtle Suggestion, Baleful, Anticipate, Ghostly Walls. No Blue talent makes or improves an influence test."
+   },
+   {
+    "keyword": "Fast turn / Slow turn",
+    "role": "CONSUME",
+    "talents": "Calculated Patience, Probable Outcome — 2 of the 6 fast/slow talents in 365 (the others are Red's three and Scholar's Turning Point), and Probable Outcome is the only one that retracts the choice"
+   },
+   {
+    "keyword": "Talent activation / an enemy spending Investiture",
+    "role": "CONSUME — enemy-facing trigger",
+    "talents": "Counterspell — the only activation interrupt in 365 (Chaos's Unweaving ends a running effect, White's Counterpoint negates an influence effect)"
+   },
+   {
+    "keyword": "Perception (enemy test)",
+    "role": "CONSUME",
+    "talents": "Phantom Double"
+   },
+   {
+    "keyword": "Athletics (opposed)",
+    "role": "CONSUME",
+    "talents": "Redirect Momentum"
+   },
+   {
+    "keyword": "[Size]",
+    "role": "CONSUME — scaling (5 ft at Tier 1 rank 2)",
+    "talents": "Redirect Momentum, Holographic Illusion, Phantom Step"
+   },
+   {
+    "keyword": "[Die]",
+    "role": "CONSUME — scaling",
+    "talents": "Phantom Barricade (2[Die] = 2d6 at Tier 1 rank 2). The only [Die] expression in the tree, and it is object HP, not damage."
+   },
+   {
+    "keyword": "Tier",
+    "role": "CONSUME — scaling",
+    "talents": "Composed (max focus), Baleful (enemy focus tax) — both are level-6 talents once Baleful's Persuasion 3+ gate is read against the rank cap, so both are only ever seen at Tier 2, i.e. +2"
+   },
+   {
+    "keyword": "Scene (duration)",
+    "role": "PRODUCE — persistent state",
+    "talents": "Telepathic Network, Phantom Barricade, Holographic Illusion"
+   }
+  ],
+  "crossTreeHooks": [
+   "Probability Cascade requires an Opportunity and Blue generates none — but this is the guide's intended pattern ('Opportunity costs are elegant: free in resources but require the Plot Die to cooperate'), used by 22 talents across 11 trees, and Opportunity is a Plot Die face every character can roll. The real comparative fact: all 9 Opportunity-producing talents in 365 sit in heroic trees (Agent, Envoy, Leader, Scholar, Warrior); no leyline or deity tree produces any, so a Blue mage is fed by the Plot Die or by a heroic party member, never by a fellow mage.",
+   "Counterspell fires only when a character in range SPENDS INVESTITURE to activate a talent — a mirror-match answer against leyline and deity casters, completely blank against non-Invested enemies and against every heroic path, which runs on Focus (the census shows zero Investiture costers in all six heroic trees). The swingiest cross-table dependency in the tree.",
+   "Reactive Analysis needs someone in range to FAIL a test first — it monetises other people's bad rolls, including allies', and does nothing on a clean round. leyline/Red's Shatter Focus keys off exactly the same trigger, so a Red ally in the party competes for the same failures.",
+   "Pattern Recognition and False Premise both key off a COGNITIVE TEST resolving; against a purely Physical fight both are much weaker.",
+   "Subtle Suggestion, Baleful, Anticipate and Ghostly Walls all key on INFLUENCE and Blue supplies no influence effect of its own; the two Persuasion prerequisites confirm the tree expects an outside social kit — and heroic/Envoy, /Leader and /Agent are where that kit lives.",
+   "Blue's shared talents are worse in Blue. Collected: verbatim in four other trees, reaching heroic/Envoy at depth 0 / L1 with no prerequisite, while Blue pays Blue 3+ / L6. Baleful: verbatim in heroic/Agent (depth 1, prereq \"Get 'Em Talking\", L2) and heroic/Leader (depth 2, prereq 'Rumormonger', L3), while Blue pays Persuasion 3+ / L6. Composed: the verbatim twin is leyline/BLACK, and heroic/Envoy's version is a different, strictly better talent ('max AND CURRENT focus') at L2. Three of Blue's 25 slots buy what another path hands out years earlier or better.",
+   "Phantom Step, Anticipate and Telepathic Network are ALLY-FACING and worth nothing solo.",
+   "Redirect Momentum triggers only when a character MOVES, and is dead the moment an ally has already immobilised the target.",
+   "Absolute Stillness reads 'Creatures you have reduced to 0 Speed', which in-tree means Ghostly Walls only — but NOT in the wider game. leyline/Green's Territorial Instinct and leyline/Black's Sovereign of Solitude both reduce a target's movement to 0 in those words, so a Blue/Green or Blue/Black character can feed Absolute Stillness from a second colour, and Green's version does it at L2. Open reading beyond that: whether Restrained or Immobilized (Green's Grasping Vines, Hunter's Deadly Trap, Fate's Snare) counts, and whether 'you' extends to an ally. deity/Civilization's Siege Form sets your OWN Construct to 0 Speed, so that reading would fire it against your own summon.",
+   "The illusion suite is hard-countered by leyline/Green's Natural Order (2 Actions, 2 Investiture, Green 3+, L6) — the only explicit anti-illusion clause in 365. CORRECTED: it does NOT blank Blue's advantage output. Natural Order removes 'advantage gained from deception', and none of Blue's four advantage sources is deception-based (Draw Mana on a Cognitive test, a slow turn's first test, someone else failing, an influence-resistance test).",
+   "Because the tree creates zero damage, EVERY control and debuff effect Blue produces is a multiplier requiring a damage-dealing partner — a shape it shares with heroic/Scholar and deity/Sovereignty, though Scholar at least heals and Sovereignty at least shrinks enemy damage dice.",
+   "Blue's three self-advantage talents are anti-synergistic with any other advantage source in the party (binary rule). And an ENEMY running leyline/Red's Emotional Overload ('when a character within Attunement Range gains an advantage from any source, spend 1 Investiture; it gains a disadvantage on its next non-attack test') can punish Blue's own free Attunement Key — the text says 'a character', not 'an enemy'.",
+   "Blue<->Black cosine similarity is 0.844 (rank 5 of 210), which the debuff finding explains: both trees are built on stacking non-damaging penalties onto enemies, and Black's Weakened engine is the larger one. Blue<->Scholar at 0.794 is the more instructive pairing, though — the two zero-damage-word trees — and the functional split shows where they diverge: Blue impose_disadvantage 5 / Scholar 1, Scholar heal 2 / Blue 0."
+  ],
+  "topThree": [
+   "Forewarned — depth 0, level 1, no cost, no action: declare a character and an action type each round and gain an extra Reaction when you are right. UPGRADED on re-check: it is the only extra-Reaction talent in the game reachable before level 6, because both rivals carry rank-3 skill gates (Envoy's Foresight needs Discipline 3+, Hunter's Sidestep needs Stealth 3+) that the rank cap puts at L6 regardless of the L4/L3 the dossier prints. It breaks a hard cap, five levels before anything else can, and it is the engine the tree's five competing Reactions need. Its one weakness against Foresight is that the grant is conditional on the prediction landing.",
+   "Counterspell — a Reaction that makes an enemy's Investiture-spending talent simply FAIL. Verified as the only activation interrupt in 365 (White's Counterpoint negates an influence effect; Chaos's Unweaving ends an already-running effect). Priced honestly at 2 focus + 1 Investiture on a contested test, and Blue 3+, so L6 and never available in Tier 1 — and blank against every heroic path, none of which spends Investiture.",
+   "Telepathic Network — promoted over Ghostly Walls. Scene-long silent communication with everyone in Attunement Range is the only effect of its kind in 365, arrives at depth 1 / L2, and is the tree's single largest out-of-combat lever. Ghostly Walls, by contrast, is beaten on cost, level and effect by leyline/Green's Grasping Vines (L2, 1 Investiture, Restrained). Telepathic Network's charges are that 2 Actions + 2 Investiture is half a level-2 turn and pool, and that it is unwired with an undeliverable second sentence."
+  ],
+  "bottomThree": [
+   "Anticipate — depth 3, level 6, costs a Reaction AND 1 Investiture for one binary advantage on a resistance test against influence effects only. The narrowest trigger in the tree, competing for the same Reaction slot as Counterspell, and needing Telepathic Network up for the ally half to matter. At 29 words it is also over the design cap.",
+   "Collected — a Blue 3+ / L6 slot spent on +2 to the two defences a caster is least often attacked on, whose only real function is to be Anticipate's prerequisite, and whose identical text exists in four other trees — reaching heroic/Envoy at depth 0, level 1, with no prerequisite at all. The single worst level-for-effect trade in the tree.",
+   "Reactive Analysis — pays 1 Investiture for one binary advantage, only after someone in range has already failed a test, and only against that specific character. Softer than the profile claimed (it works on turns you did not Draw Mana, and on non-Cognitive tests), but it is still a 1-Investiture Special buying a state the free Key often already supplies."
+  ],
+  "weakTalents": [
+   {
+    "name": "Calculated Patience",
+    "reason": "Partly redundant with a free resource: the Blue Attunement Key already grants an advantage on your next Cognitive test after Draw Mana, so on a slow turn whose first test is Cognitive the second source is worth nothing by the binary rule. SOFTENED from 'worth literally nothing' — the Key covers Cognitive only, so Calculated Patience is the tree's sole advantage on a Physical or Spiritual test. Still weak: slow turns only, first test only, and it burns a depth-0 pick and a Blue 2+ gate."
+   },
+   {
+    "name": "Reactive Analysis",
+    "reason": "Pays 1 Investiture for one binary advantage that frequently duplicates the free Key, and requires someone else to fail first AND that you then test against that specific character. leyline/Red's Shatter Focus rides the same 'a character fails a test' trigger for a strictly more useful payoff (strip 1 focus)."
+   },
+   {
+    "name": "Anticipate",
+    "reason": "Depth 3, Blue 3+ so level 6, costs 1 Investiture AND a Reaction (competing with four other Blue Reactions for the 1/round cap), and buys one binary advantage on an influence-resistance test only. At 29 words it is also over the design cap."
+   },
+   {
+    "name": "Collected",
+    "reason": "Rank-3 gated filler that is not Blue's own — its real function is to be Anticipate's prerequisite, it protects the least-attacked defences, and the identical talent exists in four other trees, reaching heroic/Envoy at depth 0 / level 1 with NO prerequisite while Blue pays Blue 3+ / level 6."
+   },
+   {
+    "name": "Telepathic Network",
+    "reason": "OVERCOSTED and partly undeliverable: 2 Actions + 2 Investiture (half a level-2 pool) at depth 1, and its second sentence 'Allies in the network share your expertise' names no mechanic — the wiring confirms it (events=0, effects=0). The effect it does deliver is unique in 365, which is why it still ranks in the top three."
+   },
+   {
+    "name": "Phantom Double",
+    "reason": "OVERCOSTED for depth 0: 2 Actions + 2 Investiture at level 1 against a ~4 pool and a 1-per-Action Draw Mana — an entire opening turn plus half the reserve — for a 1-health duplicate any hit deletes, and because each enemy tests Perception separately it can fail against the one that mattered. At 76 words it is three times the design cap and the longest talent in the tree."
+   },
+   {
+    "name": "Living Image",
+    "reason": "OVERCOSTED in practice: 'Complex illusions cost 1 Investiture per round to maintain' eats a meaningful share of every turn for a puppet that still needs your Action to do anything requiring attention, and its Cost field 'Variable Investiture' is not a priced cost. Mitigating: it is Blue 3+, so it never exists at Tier 1 where the one-Action-per-round math bites hardest; at Tier 2 one Draw Mana funds two rounds."
+   },
+   {
+    "name": "Intercept",
+    "reason": "Doubly conditional for a Reaction slot — the right character AND the right action type must have been declared with Forewarned (also its managed prerequisite) — for one disadvantage at 1 Investiture, the same payoff Pattern Recognition and False Premise deliver on looser triggers. It competes for the Reaction slot rather than exploiting the extra one Forewarned granted."
+   },
+   {
+    "name": "Baleful",
+    "reason": "The effect is good but Blue's copy is mispriced: the identical text ships as heroic/Agent's Baleful (depth 1, prereq \"Get 'Em Talking\", L2) and heroic/Leader's (depth 2, prereq 'Rumormonger', L3) with no rank gate at all, while Blue gates it behind Persuasion 3+ — a rank-3 skill, unreachable before level 6 under the rank cap, four levels later than the Agent version and two later than the L4 the dossier prints. It is also unwired (events=0, effects=0)."
+   },
+   {
+    "name": "Ghostly Walls",
+    "reason": "ADDED on comparative check. The tree's headline lock is beaten on every axis by leyline/Green's Grasping Vines: Blue pays 2 Investiture, 1 Action, Blue 3+ (level 6) for movement rate 0 until the end of your next turn; Green pays 1 Investiture, 1 Action, Green 1+ (level 2) for Restrained, which is movement 0 PLUS disadvantage on every test but escape. Green's Territorial Instinct reduces movement to 0 at L2 for 1 Investiture as well. Ghostly Walls is only worth its price once Absolute Stillness — a second L6 talent pick — is attached."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Effectively indefinite at a low rate — the tree's quiet strength. 16 of 25 spend Investiture against a ~4 pool refilled at Tier per Draw Mana Action, but the SHAPE saves it: ELEVEN of those 16 cost no Action — five Specials (Pattern Recognition, Reactive Analysis, Subtle Suggestion, Probability Cascade, Living Image), five Reactions (Intercept, Redirect Momentum, Counterspell, False Premise, Anticipate) and one Free Action (Holographic Illusion), all verified against the action field. A Blue mage on a slow turn can Draw Mana twice (+2 at Tier 1), still have one Action left, and still fire a Special and a Reaction. A typical round costs ~2 Investiture against ~2 drawn, so the tree runs its good options essentially forever at 1-2 effects per round, bursting its pool for ~2 rounds of doubled effects. Exceptions: Phantom Double (2 Actions + 2 Inv), Telepathic Network (2 Actions + 2 Inv) and Ghostly Walls (1 Action + 2 Inv) each consume most of an opening turn's resources; Living Image's 1-per-round upkeep would exactly cancel a Tier-1 Draw Mana Action, though it is Blue 3+ so in play it is always Tier 2 where one Draw Mana funds two rounds. Focus is a secondary but real constraint: only Counterspell spends it, but at 2 focus from a 2+WIL pool that refills only on rests and competes with every 1-focus Dodge, Aid and Reactive Strike, that is roughly two Counterspells per rest — which is also the entire reason Composed exists.",
+   "reactionCount": 5,
+   "triggerGatedCount": 8,
+   "resourceCostersOutOfTree": 1,
+   "note": "Reactions 5/25 = 20% against a 5-8% target — roughly triple, and with a hard 1/round cap Intercept, Redirect Momentum, Counterspell, False Premise and Anticipate compete for one slot every round; a Blue mage picks ONE to be their round and the others idle. Forewarned's conditional +1 is the tree's own partial mitigation and the strongest argument for taking it. CORRECTED to the deterministic 8 (from 12): the 8 are the five Reactions plus Reactive Analysis, Forewarned and Phantom Step — every talent that cannot fire unless ANOTHER creature acts. The wider reading of 12 adds Pattern Recognition, Subtle Suggestion, Absolute Stillness and Probable Outcome, which gate on your own prior success or on a timing window; that boundary is not self-consistent, since it admits Probable Outcome (a timing window) while excluding Calculated Patience (also a timing window), which would make it 13. Under any of the three readings roughly a third to a half of the tree does nothing unless something happens first. Resource costers whose resource the tree cannot produce: 1 — Probability Cascade (Opportunity), which the design guide treats as an intended Plot-Die-gated pattern rather than a defect."
+  }
+ },
+ "corrections": [
+  {
+   "field": "damageAccounting.verdict / uniqueOwnership[0] / axes.damage_direct.evidence",
+   "from": "Blue is the only tree of all 21 in the atlas that deals no damage whatsoever; a machine check across all-talents.json puts Blue alone at damage-word=0 AND formula=0 (heroic/Scholar is damage-word=0 but still carries 3 formulas)",
+   "to": "Blue is one of THREE zero-damage trees (leyline/Blue, heroic/Scholar, deity/Sovereignty) and one of TWO with damage-word 0 (Blue and Scholar)",
+   "reason": "Re-counted damage-word and isDamageFormula over all 365 talents: leyline/Blue = 0/0 AND heroic/Scholar = 0/0. Scholar's three roll formulas are type:heal, which the dossier cross-check states explicitly ('Scholar's three and Green's two are heals'), so they are NOT damage formulas. The profile's uniqueness claim — which it called 'the single most important comparative fact about the tree' — is false on both of its own criteria. deity/Sovereignty is also 0 damage formulas (its 7 damage-word hits are die-SIZE manipulation)."
+  },
+  {
+   "field": "uniqueOwnership (extra-Reaction bullet) / topThree[0] / axes.action_economy.evidence",
+   "from": "Forewarned is 'the only free always-on one' of the three extra-Reaction talents in all 365",
+   "to": "Forewarned is the EARLIEST (depth 0, L1) and the only leyline source, but its grant is CONDITIONAL on a correct prediction; heroic/Envoy's Foresight is a free Passive granting 'Gain an additional reaction each turn' unconditionally at depth 3 / L4",
+   "reason": "Verbatim text of heroic/Envoy's Foresight: action Passive, cost none, 'Gain an additional reaction each turn.' It is free and always-on with no trigger. Forewarned's text requires 'If that character takes the declared action before your next turn, you gain 1 Reaction' — a condition. The grep confirms exactly three extra-Reaction talents (Forewarned, Foresight, Hunter's Sidestep), so the count of three is right and only the 'only free always-on' framing is wrong."
+  },
+  {
+   "field": "uniqueOwnership (talent negation) / topThree[1]",
+   "from": "Talent negation shared with only one other talent in the game (White's Counterpoint)",
+   "to": "Counterspell is the ONLY talent-activation negation in all 365; Counterpoint is the nearest analogue but negates an influence effect, not a talent",
+   "reason": "leyline/White Counterpoint verbatim: 'When an enemy within Attunement Range successfully influences an ally, test White. On a success, you may spend 1 Investiture to negate the effect and Disorient the enemy.' It negates an influence effect. Counterspell negates a talent activation. The profile under-claimed Blue's ownership by conflating them."
+  },
+  {
+   "field": "frontOrBackLoaded / powerByDepth[2].note / mechanicalKeywords (Persuasion gate)",
+   "from": "Seven of 25 talents sit behind a Blue 3+ gate and are therefore unreachable before level 6",
+   "to": "EIGHT of 25 are unreachable before level 6 — the seven Blue 3+ talents plus Baleful, which requires Persuasion 3+",
+   "reason": "SYSTEM-PRIMER: 'Tier 1 = levels 1-5, max skill rank 2; Tier 2 = levels 6-10, max skill rank 3.' The cap applies to skills generally, not just the colour skill. Baleful's prerequisite is 'Persuasion 3+' with an empty rankGate field, and the dossier consequently prints 'earliest L4' — the dossier's earliestLevel computation applies the rank-3-to-L6 bump only to the tree's own colour. Baleful's true earliest level is 6. This also changes powerByDepth's depth-3+ band from four L6 talents to five, leaving only Probability Cascade and Read Intent (both L4) reachable in Tier 1."
+  },
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "10 of those 16 are Specials, Reactions or Free Actions that cost no Action",
+   "to": "ELEVEN of those 16",
+   "reason": "Counted directly: Investiture-spending Specials = Pattern Recognition, Reactive Analysis, Subtle Suggestion, Probability Cascade, Living Image (5); Reactions = Intercept, Redirect Momentum, Counterspell, False Premise, Anticipate (5); Free Action = Holographic Illusion (1). Total 11. A naive string match on the Cost field returns 10 because Counterspell's Cost field misspells Investiture as 'Investiure'."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "11",
+   "to": "12",
+   "reason": "The profile stated its own definition ('cannot be used on your own initiative without something else happening first') and then omitted Phantom Step, whose text is 'When an ally within Attunement Range moves, they may move an additional [Size] feet'. Adding it gives 12/25 = 48%. Also recorded in the note: under the narrower deterministic definition the count is exactly 8 (the 5 Reactions plus Reactive Analysis, Forewarned and Phantom Step), which reconciles the profile's 11 with the measurement table's 8."
+  },
+  {
+   "field": "intentDrift claim on description length (delivered + evidence) / gaps",
+   "from": "'PARTIAL … Most talents are on target' with Phantom Double ~70, Living Image ~45, Counterspell ~40, Ghostly Walls ~40",
+   "to": "'MISSED — 11 of 25 (44%) are over the cap', with exact counts Phantom Double 75, Living Image 39, Phantom Barricade 35, Redirect Momentum 32, Ghostly Walls 32, Counterspell 31, Holographic Illusion 30, False Premise 30, Forewarned 29, Anticipate 29, Absolute Stillness 28",
+   "reason": "Word-counted every description programmatically. Three of the four named counts were inflated (Living Image is 39 not ~45; Counterspell 31 not ~40; Ghostly Walls 32 not ~40) and seven over-cap talents were missed entirely. 'Most talents are on target' is false — only 14 of 25 are at or under 25 words."
+  },
+  {
+   "field": "mechanicalKeywords (Attunement Range)",
+   "from": "14 talents scope off it … Phantom Double, Reactive Analysis, Telepathic Network, Phantom Barricade, Redirect Momentum, Counterspell, False Premise, Holographic Illusion, Phantom Step, Probability Cascade, Ghostly Walls, Anticipate among others",
+   "to": "Exactly 11 talents scope off it; Anticipate does not (it scopes off the Telepathic Network) and Read Intent states no range at all",
+   "reason": "Regex over the 25 descriptions for 'Attunement Range' returns 11: Telepathic Network, Reactive Analysis, Redirect Momentum, Phantom Step, Holographic Illusion, Phantom Barricade, Ghostly Walls, Phantom Double, Counterspell, False Premise, Probability Cascade. Anticipate's text is 'When you or an ally in your Telepathic Network would be targeted by an influence effect'. Read Intent's text names no range, which is itself a data gap now recorded in gaps."
+  },
+  {
+   "field": "uniqueOwnership (illusion) / intentDrift illusion claim",
+   "from": "3 of the 5 illusion talents in the atlas are Blue",
+   "to": "3 of the only 4 talents in all 365 that name illusion are Blue; the fourth is Green's Natural Order, which exists to counter them",
+   "reason": "Grep for illusion|illusory across all 365 descriptions and authored bodies returns exactly four hits: Phantom Double, Holographic Illusion, Living Image (Blue) and Natural Order (Green). The '5' was also internally inconsistent with the same bullet's list of four Blue illusion pieces."
+  },
+  {
+   "field": "NEW finding — weakTalents (Baleful added), gaps, crossTreeHooks, axes.social_influence.evidence",
+   "from": "(absent — the profile treated Baleful as a Blue-owned standout: 'the single best influence talent in the leyline atlas')",
+   "to": "Baleful, Collected and Composed are duplicated verbatim in heroic trees and Blue pays the worst gate for all three",
+   "reason": "Name-collision scan over all 365: Baleful appears 3x (leyline/Blue Persuasion 3+ i.e. L6; heroic/Agent depth 1 L2; heroic/Leader depth 2 L3), Collected 5x (Blue at Blue 3+/L6 vs heroic/Envoy at depth 0/L1), Composed 3x (Blue at Blue 3+/L6 vs heroic/Envoy at L2, and Envoy's authored text is strictly better: 'max and current focus'). Three of Blue's 25 slots buy effects another path hands out four to five levels earlier."
+  },
+  {
+   "field": "axes.control.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Recount of when the control actually exists: the only hard lock (Ghostly Walls), its upgrade (Absolute Stillness) and the only action-denial (Counterspell) are ALL Blue 3+, i.e. L6. Through levels 1-5 the tree's entire control output is Redirect Momentum (a contested Reaction shaving 5 ft at rank 2) and Phantom Barricade. Subtle Suggestion's Disoriented rides an influence success no Blue talent produces. The profile's own hedge — 'almost all of it is MOVEMENT denial rather than Action denial' — argues for 3, and the calibration anchor (one once-per-round damage-reducing Reaction = 2) puts one single-target contested L6 immobilise below 'one of the better options in the game'."
+  },
+  {
+   "field": "axes.protection.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Internal contradiction: the evidence string itself states 'no damage reduction, no temp HP, no resistance and no reduce-damage-taken Reaction anywhere'. Against the stated anchor that a once-per-round damage-reducing Reaction scores 2, a kit with zero mitigation of any kind cannot score above it. What remains is positional — cover from Phantom Barricade, one absorbed hit from a 1-health decoy, and +2 Cog/Spi at L6 on the defences the profile itself calls least relevant."
+  },
+  {
+   "field": "axes.terrain_zone.score",
+   "from": "3",
+   "to": "2",
+   "reason": "Only ONE talent creates a battlefield feature with a stated mechanical effect. Holographic Illusion's full text is 'create a static illusion within Attunement Range not exceeding [Size]. The illusion lasts for the scene. Use a Free Action to make minor adjustments' — no cover, no blocking, no test, no condition, no rules consequence at all. Counting it as a persistent battlefield feature inflated the axis; the rubric's 3 requires several talents."
+  },
+  {
+   "field": "axes.exploration_utility.score",
+   "from": "4",
+   "to": "3",
+   "reason": "Internal contradiction: the evidence concedes 'there is no travel, crafting, survival or downtime mechanic at all' — four of the five categories the axis names. Blue covers only non-combat problem solving, and grants none of the expertise that is the heroic trees' downtime currency. A genuine competency in one of five lanes is the rubric's 3, not 4."
+  },
+  {
+   "field": "axes.mobility.score",
+   "from": "2",
+   "to": "1",
+   "reason": "The axis rests on exactly one talent (Phantom Step), and the profile's own gaps entry says 'Phantom Step helps allies only' with no self-mobility of any kind. The rubric's 1 is literally 'one incidental talent'. Redirect Momentum is excluded by the axis definition (enemy forced movement)."
+  },
+  {
+   "field": "powerByDepth[0].rating",
+   "from": "3",
+   "to": "2",
+   "reason": "Recount of what is actually pickable at depth 0: four entries but Blue Leyline Attunement is the free Key granted with the path, so there are three picks — one excellent (Forewarned), one the profile itself calls a near-never-pick (Calculated Patience, redundant with the free Key), and one it calls badly priced (Phantom Double, 2 Actions + 2 Investiture for a 1-health decoy, and 75 words). One good pick of three is a 2."
+  },
+  {
+   "field": "sustainability.note (Focus) ",
+   "from": "Focus is never the binding constraint",
+   "to": "Focus is a secondary but not negligible constraint — roughly two Counterspells per rest",
+   "reason": "Counterspell costs 2 focus out of a 2+WIL pool that refills only on rests (SYSTEM-PRIMER Resources table), and every Dodge, Aid and Reactive Strike costs 1 focus from the same pool. 'Never binding' overstates it."
+  },
+  {
+   "field": "crossTreeHooks (Probability Cascade)",
+   "from": "Its whole value is imported from the Plot Die and from Opportunity-generating paths (the design guide assigns Opportunity to Red and White)",
+   "to": "No talent in all 365 grants an Opportunity outright; the only manufacturers are heroic/Agent's Sure Outcome (converts a Complication into an Opportunity) and the Opportunity-range expanders in heroic/Warrior and heroic/Scholar",
+   "reason": "Grep over all Opportunity-mentioning talents: every leyline and deity instance SPENDS one. The design guide's line 'Opportunity fits Red… and White…' is about which colours should spend it, not which generate it, so the profile mis-cited the guide as assigning generation."
+  },
+  {
+   "field": "axes.debuff.evidence (verification note added)",
+   "from": "of the 15 talents in all 365 whose text imposes disadvantage, FIVE are Blue",
+   "to": "kept at 5 of 15, with the note that the deterministic classifier counts 14 producers",
+   "reason": "My own grep returns 15 talents whose text names disadvantage and confirms Blue holds 5, and that Probability Cascade is the only two-test version. The measurement table's 14 differs on one self-facing case (Warrior's Defensive Position / Hunter's Shadowing). The profile's number survives; recording the discrepancy so the next reader does not treat it as an error."
+  },
+  {
+   "field": "gaps (new entries)",
+   "from": "(absent)",
+   "to": "Added: description-length discipline (11 of 25 over cap); the three duplicated heroic talents; and data defects — Counterspell's Cost field typo '1 Investiure', Absolute Stillness's 'Creatures … also has', and Read Intent stating no range",
+   "reason": "All three are verifiable in the data and one of them (the Investiure typo) is the direct cause of every machine count reporting 15 Investiture costers where the true number is 16 — worth recording so the discrepancy is not re-litigated."
+  },
+  {
+   "field": "CHECKED, NO CHANGE — damageAccounting counts",
+   "from": "damageTalents [], countReal 0, countFalsePositiveMitigation 0, earliestDamageDepth -1, earliestDamageLevel -1",
+   "to": "unchanged",
+   "reason": "Read all 25 talents for indirect damage in both directions: no mitigation miscounted as damage (there is nothing to miscount — the word never appears), no rider on an existing attack, no summon that attacks (Phantom Double 1 health and takes no actions; Living Image needs YOUR Action), no hazard, no damaging zone (Phantom Barricade blocks and grants cover; Holographic Illusion is inert), no Afflicted tick, no redirect. Confirmed 0."
+  },
+  {
+   "field": "CHECKED, NO CHANGE — action-type distribution, Investiture coster count, reactionCount, advantage producers, depth-band membership",
+   "from": "Passive 9 / Special 5 / Action 3 / 2-Action 2 / Free 1 / Reaction 5; 16 Investiture costers; 5 Reactions; 4 advantage producers; depth 0 = 4, depth 1-2 = 14, depth 3+ = 7",
+   "to": "all confirmed exact",
+   "reason": "Hand-recounted every one against the dossier lines and all-talents.json; each matches. The 4 advantage producers match advantage-ledger.md verbatim. Depth bands sum to 25. Dice checks: Phantom Barricade's 2[Die] is 2d6 at Tier 1 rank 2 and is object HP, not damage; [Size] is 5 ft at rank 2, which the profile applied correctly to Phantom Step."
+  },
+  {
+   "field": "uniqueOwnership[2] / mechanicalKeywords 'Speed 0' / crossTreeHooks 'Absolute Stillness'",
+   "from": "\"The only 0-Speed engine in the atlas... Verified: no other talent in 365 reduces a target to 0 Speed (Civilization's Siege Form sets your OWN Construct's Speed to 0).\"",
+   "to": "Blue is NOT the only 0-Speed producer. Rewritten to name leyline/Green's Territorial Instinct and leyline/Black's Sovereign of Solitude, and to relocate Blue's real ownership to Absolute Stillness (the only immobilise-UPGRADE anywhere).",
+   "reason": "REFUTED BY TEXT. leyline/Green Territorial Instinct (d1, Green 1+, L2, 1 Investiture): 'When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.' leyline/Black Sovereign of Solitude (d5, L6, 2 Investiture): 'When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success.' The profile's verification regex evidently matched only 'movement rate BECOMES 0', missing 'reduce ... TO 0'. Both are leyline, i.e. in the same atlas. Green's does it four levels earlier and for half the cost of Ghostly Walls. Material consequence: both can satisfy Absolute Stillness's 'creatures you have reduced to 0 Speed', so the profile's 'in-tree means Ghostly Walls only' understated the combo."
+  },
+  {
+   "field": "axes[3].score (debuff)",
+   "from": "5 — 'The defining pillar... Blue is the reference implementation of imposing disadvantage.'",
+   "to": "4 — a strength, but second to leyline/Black on the axis as defined.",
+   "reason": "SCORE INFLATION under lens (b). The disadvantage count is verified (15 talents name it in 365; Blue holds 5, next-largest tree 2-3). But the axis is 'numeric penalties, defence reduction, vulnerability, disadvantage-likes', not disadvantage alone, and a broad enemy-penalty pass over all 365 puts leyline/Black at 7 to Blue's 6. Black's is a produce-and-consume ENGINE: 'Black Leyline Attunement: When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened' (free, repeatable, area) plus Sapping Hex, with four consumers (Predatory Patience, Spoils of Isolation, Dread Presence, Sovereign of Solitude). Blue's five are single-target 1-Investiture riders and the resource census confirms disadvantage is consumed by ZERO talents in any tree. 'Reference implementation' requires no peer; Black is a peer."
+  },
+  {
+   "field": "axes[11].score (social_influence)",
+   "from": "3 — 'Real but entirely rider-shaped.'",
+   "to": "2",
+   "reason": "SCORE INFLATION; the profile's own evidence argued for 2 and then scored 3 — the same internal contradiction it caught on exploration_utility. Anchor for 2 is 'present but minor; you would not pick this tree for it'. No Blue talent makes or improves an influence test; Subtle Suggestion, Baleful, Anticipate and Ghostly Walls all ride or defend against one. And the best piece is not Blue's: 'To resist your influence, a character must spend additional focus equal to your tier' is verbatim heroic/Agent's Baleful (prereq \"Get 'Em Talking\", L2) and heroic/Leader's (prereq 'Rumormonger', L3), while Blue gates it Persuasion 3+ = L6."
+  },
+  {
+   "field": "uniqueOwnership[1] / mechanicalKeywords 'Talent activation' / topThree[1]",
+   "from": "\"Counterspell is the ONLY talent in all 365 that makes another character's talent fail.\"",
+   "to": "Counterspell is the only ACTIVATION interrupt; the broader negation capability is shared with three other talents.",
+   "reason": "OVERBROAD UNIQUE-OWNERSHIP CLAIM (lens a). deity/Chaos Unweaving: 'On success, end one magical buff, stance, or sustained effect on the target.' leyline/White Counterpoint negates an influence effect. leyline/Green Natural Order: 'enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception' for the scene. Counterspell's genuine ownership is narrower and should be stated as such: it is the only one that intercepts a talent AS IT IS ACTIVATED."
+  },
+  {
+   "field": "uniqueOwnership[6] / topThree[0] / axes[7] (action_economy)",
+   "from": "\"The earliest extra Reaction in the game: Forewarned... the earliest by three levels... heroic/Envoy's Foresight grants 'an additional reaction each turn' unconditionally at L4.\"",
+   "to": "Forewarned is the ONLY extra-Reaction talent reachable in Tier 1, by five levels — both rivals are really L6.",
+   "reason": "SCORE/CLAIM DEFLATION, corrected upward. Prerequisites read from the data: heroic/Envoy Foresight = 'Instill Confidence; Discipline 3+'; heroic/Hunter Sidestep = 'Shadowing; Stealth 3+'. The rank cap is 2 through level 5 (SYSTEM-PRIMER), so both are level 6, not the L4/L3 the dossier prints. The profile applied the rank-cap argument to Baleful but not to the two talents it was comparing Forewarned against — an inconsistency that cost Blue its strongest genuine claim. Also: 'earliest by three levels' was arithmetically wrong even on the dossier's own numbers (Sidestep prints L3)."
+  },
+  {
+   "field": "gaps[12] / crossTreeHooks[5] / weakTalents 'Composed'",
+   "from": "\"Composed... duplicated verbatim in heroic trees... Composed L6 vs Envoy L2 with better authored text.\"",
+   "to": "Composed's verbatim twin is leyline/BLACK; heroic/Envoy's Composed is a DIFFERENT, strictly better talent.",
+   "reason": "FACTUAL ERROR. Exact-text comparison across all 365: Blue's Composed ('Increase your maximum focus by your tier') matches leyline/Black's Composed (d3, prereq 'Extract Thought') exactly and matches NO heroic talent. heroic/Envoy's Composed reads 'Increase your max and current focus by your tier' — the authored-override divergence flagged in the brief. The profile named the wrong duplicate tree and omitted the leyline/Black copy entirely."
+  },
+  {
+   "field": "crossTreeHooks[10] (Natural Order)",
+   "from": "\"...the only explicit anti-illusion clause in the atlas, which also blanks Blue's advantage output.\"",
+   "to": "Removed the advantage clause; Natural Order does not touch any Blue advantage source.",
+   "reason": "CLAIM NOT SUPPORTED BY TEXT. Natural Order removes 'advantage gained from deception'. Blue's four advantage sources are Draw Mana → next Cognitive test (the Key), a slow turn's first test (Calculated Patience), someone in range failing a test (Reactive Analysis), and an influence-resistance test (Anticipate). None is deception-derived, so Natural Order blanks Blue's illusions only."
+  },
+  {
+   "field": "crossTreeHooks[0] / mechanicalKeywords 'Opportunity' / axes[14]",
+   "from": "\"...no talent in the atlas grants one outright — the nearest manufacturers are heroic/Agent's Sure Outcome and the Opportunity-range expanders in heroic/Warrior and heroic/Scholar... The tree's most conspicuous unpaid dependency.\"",
+   "to": "Reframed: Opportunity is a Plot-Die face and an intended cost pattern (22 talents / 11 trees); all 9 producers sit in five HEROIC trees (Agent, Envoy, Leader, Scholar, Warrior), none in any leyline or deity tree.",
+   "reason": "INCOMPLETE ENUMERATION plus a mis-framing. The producer list omitted heroic/Envoy (High Society Contacts) and heroic/Leader (Well Supplied, Rumormonger), each of which literally 'add[s] opportunity to a test', and omitted Agent's two Contacts talents. And DESIGN-GUIDE-CLAIMS.md says of this exact pattern: 'Opportunity costs are elegant — \"free\" in resources but require the Plot Die to cooperate.' Calling a standard system-wide pattern the tree's 'most conspicuous unpaid dependency' overstates a design choice into a defect."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "12 (with a stated 12/25 = 48%)",
+   "to": "8, matching the deterministic measurement table, with both wider readings explained in the note.",
+   "reason": "INTERNALLY INCONSISTENT BOUNDARY. The profile's own 12-item list admits Probable Outcome ('After all creatures choose fast or slow turn, you may change your choice' — a timing window) while excluding Calculated Patience ('When you take a slow turn' — also a timing window), which would make 13 under its own rule. The deterministic 8 (five Reactions + Reactive Analysis + Forewarned + Phantom Step = every talent gated on ANOTHER creature acting) is a defensible line and is what the measurement table reports for Blue."
+  },
+  {
+   "field": "uniqueOwnership[3] (illusion)",
+   "from": "\"illusion/illusory appears in only FOUR talents in all 365 and three are Blue\"",
+   "to": "The word appears in FIVE talents; four use it mechanically (3 Blue + Green's Natural Order) and the fifth, deity/Chaos's Unweaving, uses it only in flavour ('Structure is an illusion. Chaos is only reminding it.').",
+   "reason": "COUNT OFF BY ONE, though the conclusion survives. Verified by grep over description + authored override + authored body + flavour across all 365. The stronger and still-true statement is the one now in the field: Blue is the only tree in the game that CREATES illusions."
+  },
+  {
+   "field": "topThree[2] / weakTalents",
+   "from": "topThree included Ghostly Walls; weakTalents did not list it.",
+   "to": "Ghostly Walls demoted out of topThree (replaced by Telepathic Network) and ADDED to weakTalents.",
+   "reason": "THE 'SOMETHING' TEST (lens e). Ghostly Walls is 2 Investiture, 1 Action, Blue 3+ (L6) for 'the target's movement rate becomes 0 until end of your next turn'. leyline/Green's Grasping Vines is 1 Investiture, 1 Action, Green 1+ (L2) for Restrained — movement 0 PLUS disadvantage on everything but escape. Blue's headline lock is strictly beaten by a level-2 talent in another leyline tree, so it cannot be one of the tree's three best pieces. Telepathic Network's effect, by contrast, exists nowhere else in 365."
+  },
+  {
+   "field": "intentDrift.claims[1] (the 'read the battle a beat before it happens' promise)",
+   "from": "delivered: 'DELIVERS' with a caveat that Fate owns a better version of the headline effect.",
+   "to": "delivered: 'DELIVERS — but the promise is DUPLICATED by another path's intent file', naming deity/Fate and deity/Order.",
+   "reason": "LENS (d) REQUIREMENT the profile did not run: is this promise also made by another tree's INTENT file? Yes. INTENT-deity-Fate.md: Olvarra 'sets the board before initiative is rolled. Her blessed do not react to the battle; they have already read it.' DESIGN-GUIDE-CLAIMS.md gives deity/Order 'Lawkeeper foresight', delivered on Lawkeeper's Eye ('you learn the bound character's intended action on its next turn'). Blue's headline identity is claimed by two other paths, both of which reach it at L2."
+  },
+  {
+   "field": "axes[6] (buff) evidence / bottomThree[1] / weakTalents 'Calculated Patience'",
+   "from": "\"a Blue mage who Draws Mana on a slow turn has Calculated Patience and the free Key on the same roll; the second is worth literally nothing\"",
+   "to": "Softened: the Key covers Cognitive tests only, so the two collide only when the slow turn's first test is Cognitive; Calculated Patience is the tree's sole advantage on a Physical or Spiritual test.",
+   "reason": "OVERSTATED REDUNDANCY. Blue Leyline Attunement: 'gain an advantage on your next COGNITIVE test'. Calculated Patience: 'your first test that turn gains advantage' — any test. Score unchanged (buff stays 2, the talent stays weak), but the reasoning was wrong and would have mispriced the talent for a Physical-facing build."
+  },
+  {
+   "field": "gaps[11] / powerByDepth[0] / weakTalents 'Phantom Double'",
+   "from": "Phantom Double 75 words (profile's own recount, 'the profile said ~70')",
+   "to": "76 words",
+   "reason": "Minor recount, method stated: whitespace-split over the authored text via the data file. Immaterial to the finding (still ~3x the 20-25 word cap and the longest talent in the tree), recorded for exactness since the profile made word counts a named gap."
+  },
+  {
+   "field": "powerByDepth[2].note / mechanicalKeywords 'Persuasion 2+/3+'",
+   "from": "The Baleful L4→L6 correction stated as a Blue-specific dossier error.",
+   "to": "Retained and CONFIRMED, but generalised: the dossier applies the rank-3 → L6 bump only to leyline COLOUR skills, so roughly forty talents across the atlas carrying Deduction 3+, Stealth 3+, Discipline 3+, Perception 3+ etc. are printed early too.",
+   "reason": "The profile's catch is CORRECT and I verified it, but stating it as Blue-only understates a systematic artefact that also changes Blue's comparison set — it is why Envoy's Foresight and Hunter's Sidestep are really L6, which in turn upgrades Forewarned's unique-ownership claim (see that correction)."
+  },
+  {
+   "field": "axes[2] (control) evidence",
+   "from": "Comparative case argued only from the calibration anchor ('one single-target contested L6 immobilise is a real competency').",
+   "to": "Score unchanged at 3; evidence rewritten to cite the four trees that do hard control earlier and cheaper.",
+   "reason": "Lens (b) requires an axis to be defensible against how other trees score. Named: Green's Grasping Vines (L2, Restrained), Green's Territorial Instinct (L2, movement 0), Fate's Snare (L1, Restrained + [Tier][Die] keen), Hunter's Deadly Trap (L1, Immobilized + 2d4), Power's Kneel (L1, Compelled). Score survives; the justification did not."
+  },
+  {
+   "field": "axes[12] (exploration_utility) evidence",
+   "from": "\"It also grants no expertise, the heroic trees' downtime currency.\"",
+   "to": "\"it does not 'grant no expertise' — Telepathic Network's second sentence purports to share your expertise with the whole network, but names no mechanic and ships events=0 effects=0.\"",
+   "reason": "Contradicted by the tree's own text: 'Allies in the network share your expertise.' The right finding is that the grant is UNDELIVERABLE, not absent — which is a different and more useful defect to report."
+  },
+  {
+   "field": "mechanicalKeywords 'Disoriented'",
+   "from": "Listed without comparative context.",
+   "to": "Annotated: 'one of 14 Disoriented talents across 11 trees, not an ownership'.",
+   "reason": "Lens (a) housekeeping — the measurement table gives Disoriented 14 talents / 11 trees, so nothing about Subtle Suggestion's condition is Blue's to own; noted so the keyword is not read as a claim."
+  }
+ ]
+}

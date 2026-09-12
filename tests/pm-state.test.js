@@ -309,7 +309,7 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings finds NO open ruling in the real EDHA_RULINGS.md — R-56 closed with item 83", () => {
+test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings open in the real EDHA_RULINGS.md", () => {
   // item 83 (2026-09-07 21:51 ET): Ben answered R-56 in chat, verbatim "Cosmere ladder for
   // everyone", reversing his own 2026-09-06 (a). R-56 was the SOLE open ruling left in the doc
   // (item 95 had closed R-90 and R-91), so with its ANSWERED (final) marker recorded and the entry
@@ -321,17 +321,30 @@ test("build-dashboard: parseOpenRulings finds NO open ruling in the real EDHA_RU
   // `*Recommended*` style (R-109) and its no-marker fallback (R-108), item 76's bold-inline default
   // (R-105/R-106), and item 85's last-marker-wins REOPENED rule (its own fixture test). What only
   // the real doc can check is the closed list and the count — so that is all that is left here.
-  // ⚠️ When Ben opens the next ruling this length assertion moves to 1; do not delete it, and do not
+  // ⚠️ When Ben opens the next ruling this length assertion moves; do not delete it, and do not
   // re-point the illustrations at whatever that ruling turns out to be.
+  //
+  // 2026-09-09, talent ecosystem review: eleven rulings opened at once (R-95 … R-105), the largest
+  // batch the doc has taken. The length assertion moves from 0 to 11 exactly as the note above
+  // said it would, and the three shape loops below — which have been vacuous since item 83 — go
+  // LIVE for the first time: every one of the eleven must parse an `ask` that ends in a question
+  // mark and a `default` with the bold markers stripped. That is the point of keeping them.
+  //
+  // 2026-09-12: six more (R-106 … R-111) filed from the same review's problem ledger, so the list
+  // grows to seventeen and the same three shape loops hold every one of them to that contract.
+  const ECOSYSTEM_RULINGS = ["R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102",
+    "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
-  assert.strictEqual(open.length, 0, `no ruling is open in the real doc after item 83 closed R-56 — got [${ids.join(", ")}]`);
-  // The shape contract still has to hold for whatever opens next, so keep the loops: they are
-  // vacuous today and become live the moment a ruling reopens.
+  assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
+    `the open rulings are exactly the eleven from the talent ecosystem review — got [${ids.join(", ")}]`);
+  assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
+    `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
+  // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
   for (const r of open) assert.ok(r.default.length > 0 && !/\*\*/.test(r.default), `${r.id}: default is empty or still carries bold markers — "${r.default}"`);
   for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);

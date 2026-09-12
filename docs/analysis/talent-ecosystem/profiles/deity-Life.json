@@ -1,0 +1,624 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Life",
+ "correctionCount": 37,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Life",
+  "oneLineIdentity": "A near-testless support tree (one test in nine talents) that owns the game's single largest heal expression and the only heals with temporary-HP and stacking-Deflect riders attached, marks one creature so that the entire party's damage against it gains +Tier Vital and so that a free Passive pays its owner Investiture every round, and deals literally zero damage with any Action of its own.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 2,
+    "evidence": "No talent in the tree makes an attack or rolls damage — the dossier header confirms 0 damage formulas and 5 heal formulas, and I re-read all nine texts to check for damage arriving without the word (no summon, no zone, no hazard, no redirect that hits an enemy). All damage is a rider on somebody else's already-successful attack: Vital Diagnosis ('You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier', scene-long, party-wide, Deflect-ignoring, depth 0 / L1); Adaptive Mutation's Bone Spurs (+Tier Keen on a willing creature's melee attacks) and Venom Glands ('melee hits inflict Afflicted [half [Tier][Die] Vital]' — genuine ongoing-condition damage, the one place this tree deals damage with no attack roll of anyone's); Apex Form ('deals additional Vital damage equal to your Tier on all attacks', doubles active mutations). Three real contributors, all conditional riders. Held at the top of the rubric's 1-2 rider band rather than at 1 for one specific textual reason: Vital Diagnosis says 'You AND allies', so the Life character's own free Strike (a standard action every character has) carries the rider — the tree is not literally incapable of reducing HP, it just needs no talent to do it. Not raised above 2: the rider is flat Tier, and deity/Knowledge's The Pack does the same job scaling on Insight count (up to 5) rather than on Tier."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 2,
+    "evidence": "Repeatable forever once set: Vital Diagnosis and the mutations have no per-round cost, no cap, and last the scene, so the rider fires on every attack every round. But the scaling is flat-Tier, not dice — +1 Vital at Tier 1 becomes +2 Vital at Tier 2 and stops there for the whole level range under review. The only die-scaled offence is Venom Glands' Afflicted [half [Tier][Die] Vital]; because Adaptive Mutation is gated Green 3+ and so cannot exist before L6, that die is never smaller than half of 2d8 in actual play, and Apex Form doubles it to a full [Tier][Die]. The tree cannot convert additional Actions into additional damage at any tier, so its threat is a fixed multiplier on the party's output rather than something that keeps pace on its own."
+   },
+   {
+    "axis": "control",
+    "score": 1,
+    "evidence": "One incidental source: Adaptive Mutation's Venom Glands applies Afflicted[X] to enemies a willing creature hits in melee — a real named condition, but ongoing damage, not action denial. Nothing in the nine talents restrains, immobilises, slows, stuns, disorients, knocks prone, or forces a target choice. Dense Tissue's 'immune to forced movement' is anti-control on an ally, not control of an enemy. Surgical Precision REMOVES conditions rather than applying them."
+   },
+   {
+    "axis": "debuff",
+    "score": 2,
+    "evidence": "One source, and a good one: Vital Diagnosis functions as a scene-long vulnerability marker — every point of damage the whole party deals to the Diagnosed creature gains +Tier Vital, which bypasses Deflect. That is a vulnerability-style debuff in everything but name, applied with no test and no save at depth 0. Prognosis rides on the same marker but pays the Life character rather than penalising the target. No defence reduction, no numeric penalties to enemy rolls, no disadvantage-likes anywhere in the tree. Held at 2 rather than 3 because it is a single talent and because it is not even the best example of its own shape: deity/Knowledge's Pack Share grants allies the identical +Tier Vital on the marked creature, and The Pack (verbatim: 'allies in Attunement Range deal bonus Vital damage equal to your Insight count') caps at 5, a strictly bigger version of the same debuff. Note also deity/Sovereignty's Censure / Decree of Ruin / Edict of the Fallen line, which shrinks an enemy's damage DIE by one or two steps — a different and in many fights larger debuff than Life's."
+   },
+   {
+    "axis": "protection",
+    "score": 3,
+    "evidence": "SCORE LOWERED FROM 4 ON RECOUNT (checker A); EVIDENCE FURTHER CORRECTED HERE. The tree touches every sub-category. Deflect: Overgrowth (+1, stacking to 3 — verified as the only stacking Deflect source in the corpus), Adaptive Mutation's Dense Tissue (+2 Deflect and immune to forced movement), Apex Form (+2 Deflect). Temp HP: Life Surge and Overgrowth both convert overflow healing into temporary HP (verified corpus-unique). Interception/redirection: Lifeline lets you take up to half of an ally's incoming damage as Spirit damage on yourself, once per round for the whole scene. The '3 of 7 Deflect grants' figure is re-verified here by full-corpus text scan: leyline/White Guardian Stance, heroic/Envoy Withering Retort, heroic/Warrior Stonestance, deity/Civilization Siege Form (grants to a Construct, not a character), plus Life's three. Against that: every piece of it costs an Action plus Investiture on your own turn, the tree has ZERO Reactions, and the corpus holds two better per-instance interceptors — deity/Order's Shoulder the Oath (a Reaction that halves an ally's damage, reduces the remainder by your White ranks and grants BOTH parties temp HP, though it is gated on that ally being in a Covenant with you) and leyline/White's Shared Burden (a Reaction: take half in their place, 2 Investiture every time). 'A real, usable competency; several talents, at least one good one' is the honest band."
+   },
+   {
+    "axis": "healing",
+    "score": 5,
+    "evidence": "SCORE HELD; 'BY A WIDE MARGIN' WITHDRAWN. Life owns 5 of the 11 heal roll-formulas in the entire 365-talent corpus (re-verified by dumping every type=heal formula: White/Mending Aura 1, Green/Mender's Instinct + Verdant Mend 2, Scholar/Field Medicine + Swift Healer + Applied Medicine 3, Life 5) and Surgical Precision's (2 * @tier)d(2 * @skills.green.rank + 2) is the only heal in the corpus with a doubled tier multiplier — 4d8 at Tier 2 rank 3. Breadth as well as size: a burst heal with an attribute add (Life Surge), a heal-with-armour (Overgrowth), a heal-plus-condition-removal on a test (Surgical Precision), two sources of per-turn regeneration (Primal Regeneration, Apex Form), a heal amplifier (Prognosis), and overflow-to-temp-HP on two of them. What the comparative check refutes is the MARGIN: Life Surge's [Tier][Die] + Awareness is essentially the same expression as leyline/Green's Verdant Mend ([Tier][Die] + Green modifier), and Overgrowth's [Tier][Die] exactly equals Green's Mender's Instinct. Only Surgical Precision — a level-6 node — is genuinely bigger than anything else in the game. Nor is the bench deepest by talent count: Green fields SIX healing talents (Mender's Instinct, Verdant Mend, Resurgent Growth, Natural Recovery, Vital Surge, Reknit Form) including the corpus's only injury removal, its own heal amplifier and its own condition removal. 5 still stands because Life packs five heal formulas plus an amplifier into a NINE-talent tree with a rider on every one, where Green spends 6 of 25 and its heal cards carry no rider — Life is the reference implementation of heal-with-a-rider, with Green as its near-peer on raw output and its superior on breadth of effect."
+   },
+   {
+    "axis": "buff",
+    "score": 4,
+    "evidence": "SCORE HELD AT THE FLOOR OF THE BAND; THE RIVAL THE PROFILE NEVER NAMED IS ADDED. None of it is advantage — the tree appears nowhere in advantage-ledger.md (zero of the 48 advantage-naming talents, re-verified by grep), so it dodges the binary-advantage cap entirely and everything it gives an ally stacks. Adaptive Mutation grafts one of three scene-long body upgrades onto a willing creature (+Tier Keen melee damage, melee hits inflicting Afflicted, or +2 Deflect with forced-movement immunity); Apex Form turns one creature into a scene-long engine ([Tier][Die] regeneration per turn, +2 Deflect, +Tier Vital on all attacks, doubled mutations) and is plausibly the single largest ally buff in the game. Overgrowth's stacking Deflect and Primal Regeneration's per-turn HP are lesser versions. The comparative case against 5, and against the top of 4: deity/Sovereignty is an ENTIRE nine-talent tree of ally elevation (Exalt at depth 0 / L1 steps an ally's damage die up; Sovereign's Favor adds [Tier][Die] temp HP to it; Investiture of Authority makes the step last the scene; the capstone gives +2 steps for the scene) and it delivers that from an ENTRY at level 1, where Life's two real buffs are a depth-3 capstone (L4) and a Green 3+ node (L6). deity/Power's Investiture of Command buffs three allies at once. Life is single-target and touch-ranged on both of its big ones, and genuinely thin on buff at levels 1-5."
+   },
+   {
+    "axis": "action_economy",
+    "score": 1,
+    "evidence": "SCORE RAISED FROM 0 — the profile's own gaps section contradicted its own score. No talent grants an action, a reaction, a free action, a Special, an extra turn, or an Opportunity, and none refunds a listed action cost; 6 of 9 cost a full 1 Action, Primal Regeneration costs 2 and Apex Form costs 3. But two riders do real action-economy work, and the rubric's 1 ('one incidental talent, or a rider on something else') is where that lands, not 0. Lifeline: 'For the scene, when that creature takes damage you MAY take up to half instead' — a once-per-round interrupt that fires on the enemy's turn and spends no Reaction, in a system where 1 Reaction per round is a hard cap. Prognosis: 1 free Investiture per round is exactly a Tier-1 Draw Mana, so it removes the Action the leyline economy would otherwise charge (SYSTEM-PRIMER: 'one Action drawing, one Action spending'). Neither GRANTS an action, which is why this is 1 and not 2 or 3."
+   },
+   {
+    "axis": "mobility",
+    "score": 1,
+    "evidence": "Nothing generates movement, speed, teleportation or repositioning. The single incidental touch is Surgical Precision's option to remove Slowed from a willing creature, which restores an ally's halved movement — a rider on a rider. Adaptive Mutation's Dense Tissue grants immunity to forced movement, which is resistance to displacement rather than mobility."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Looked at all nine talents: no areas, templates, hazards, difficult terrain, walls, zones, or persistent battlefield features. Every effect targets a creature. (The Green Draw Mana rider does create difficult terrain, but that is the leyline Attunement Key granted with the colour, not a talent in this tree.)"
+   },
+   {
+    "axis": "information",
+    "score": 2,
+    "evidence": "Exactly one talent: Vital Diagnosis reveals a creature's exact HP, max HP, conditions, and both Physical and Spiritual defences for the scene, with no test and no save, at depth 0 / L1. It is NOT the only source of exact enemy statistics: deity/Knowledge's Studied Mark is also a depth-0 / L1 / 1-Action / 1-Investiture talent that 'learn[s] its current HP, conditions, and Physical and Spiritual defenses', and Pack Share extends the same reveal to every ally in Attunement Range for the scene. Vital Diagnosis's genuine edge, verified by scanning every talent naming max/maximum HP: it is the ONLY talent in the corpus that reveals MAX HP, so only a Life character knows what fraction of an enemy is left. Other information talents are narrower (Green's Scent the Weak ranks who is lowest; Blue's Read Intent, Fate's Read the Threads and Order's Lawkeeper's Eye give an intended action; Hunter's Sharp Eye gives one attribute or a 'below half' flag). Score stays 2 — one talent, and nothing else in the tree scouts, detects or predicts."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "Looked and found nothing. No persuasion, command, deception, intimidation, reputation, or any out-of-combat leverage over people in any of the nine talents. Vital Diagnosis is the only talent that can target an unwilling creature at all, and it only reads it."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 2,
+    "evidence": "Real but narrow, and entirely medical. Out-of-combat healing is genuinely strong (Life Surge, Surgical Precision, Overgrowth) and Surgical Precision removes Weakened/Disoriented/Slowed. Vital Diagnosis is usable as a diagnostic on any creature — its text says 'choose a creature', not 'choose an enemy' — so reading exact HP and conditions answers 'how badly hurt / what is wrong with them'. Adaptive Mutation's Dense Tissue has environmental-hazard use. Against that: no travel, no crafting, no survival, no downtime mechanic, no divination, and — pointedly for the deity of Life — no Injury removal. Verified corpus-wide: leyline/Green's Reknit Form is the ONLY talent in all 365 that removes an injury (heroic/Scholar's Ongoing Care removes a condition CAUSED by an injury, not the injury). Comparatively this sits far below Scholar and Hunter, which is why it is 2 and not 3."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "Looked and found nothing. No companion, construct, minion, animated ally, or any new entity. Mutations modify a creature that already exists and is willing; they do not create one. (deity/Civilization's Combat Construct, deity/Death's Risen Servant and heroic/Hunter's animal companion are what a real summons axis looks like.)"
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "COUNT CORRECTED AGAIN, AND A CLASSIFIER BUG FOUND. One generator, and a genuinely good one: Prognosis is a free Passive at depth 1 that recovers 1 Investiture once per round whenever a Diagnosed creature takes damage from any source. At Tier 1 that is exactly what an Action of Draw Mana returns (minus the colour's Attunement rider), delivered for free. It is one of EIGHT Investiture-recovery talents across 7 trees, not nine: resource-economy.json's producer list contains a FALSE POSITIVE — leyline/Red's Emotional Overload is listed as an Investiture producer, but its text reads 'When a character within Attunement Range gains an advantage from any source, SPEND 1 Investiture. It gains a disadvantage on its next non-attack test.' It is a consumer, and the same file lists it in Red's consumer column too. The real list is Black/Predatory Patience + Predator's Due, Red/Flashpoint, Chaos/Void Sense, Death/Reaper's Harvest, Life/Prognosis, Knowledge/Accumulate, Sovereignty/Expose = 8. Held at 2 because it is a single talent, it is gated on the party doing the damage rather than on anything this tree does, and the tree generates no Focus, no Opportunity, and no Health for anyone but its targets."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Vital Diagnosis",
+     "dice": "flat +Tier Vital per damage instance (+1 at Tier 1, +2 at Tier 2); no roll formula",
+     "action": "1 Action, 1 Investiture, Attunement Range (setup once, lasts the scene)",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "RIDER, but the strongest kind: it applies to YOU AND ALLIES, on every damage instance, for the whole scene, and it is Vital so it ignores Deflect. Because it says 'you and allies', the Life character's own free Strike carries it, so the tree is not literally incapable of dealing damage — it just needs no talent to do so. Applied with no test and no save. Wiring is events=2, no damage formula — whether the engine really applies a party-wide rider to other actors' rolls is an implementation question the dossier cannot settle. Comparative: deity/Knowledge's Studied Mark occupies the identical slot (depth 0, L1, 1 Action, 1 Investiture, reveal + mark) and Pack Share / The Pack carry the identical party-wide Vital rider."
+    },
+    {
+     "name": "Adaptive Mutation",
+     "dice": "Bone Spurs: +Tier Keen per melee attack. Venom Glands: Afflicted [half [Tier][Die] Vital] ongoing. Third option (Dense Tissue) deals no damage.",
+     "action": "1 Action, 2 Investiture, touch a willing creature (setup once, lasts the scene)",
+     "depth": 1,
+     "earliestLevel": 6,
+     "conditional": true,
+     "note": "RIDER on a willing creature's melee attacks, and only 2 of the 3 modes deal damage at all. The Afflicted option is ongoing CONDITION damage — this tree dealing damage without an attack roll — and is the tree's only die-scaled offence. Gated behind Green 3+, so it cannot exist before level 6; any Tier-1 valuation of it is meaningless, because at L6 the character is already Tier 2 and [Tier][Die] is at least 2d8."
+    },
+    {
+     "name": "Apex Form",
+     "dice": "+Tier Vital on all of the target's attacks; doubles an active mutation (Bone Spurs to +2xTier Keen, Venom Glands to Afflicted [[Tier][Die] Vital])",
+     "action": "3 Actions, 3 Investiture, touch a willing creature (MAY BE SELF), once per scene",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": true,
+     "note": "RIDER on a single willing creature's attacks — and the text explicitly says '(may be self)', so unlike the rest of the tree's touch talents it is not dead without a party. Reachable at L4 by either branch (Life Surge > Overgrowth > Primal Regeneration, or Vital Diagnosis > Prognosis > Lifeline — both walks verified against the connections graph), but the 'doubles mutations' half is dead until L6 because Adaptive Mutation is Green 3+. Its roll formula is a heal; its damage contribution has no formula."
+    }
+   ],
+   "countReal": 3,
+   "countFalsePositiveMitigation": 2,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "Zero dice per Action spent, at every depth, from any talent. What the tree has is a one-time setup that permanently multiplies other people's damage: at Tier 2 rank 3, one Action of Vital Diagnosis adds +2 Vital to EVERY damage instance the party lands on one creature for the rest of the scene — in a four-attack party round that is 8 Vital per round, about 0.9 [Tier][Die] equivalents (2d8 averages 9) per round, ignoring Deflect, forever, for one Action ever spent. Layered at the tree's deepest reachable point, one ally under Apex Form with doubled Venom Glands adds Afflicted [2d8 Vital] ongoing plus +2 Vital per attack, and with doubled Bone Spurs +4 Keen plus +2 Vital per attack. The Life character's own per-Action damage after setup is whatever a plain Strike deals plus the +Tier rider — no talent of theirs ever rolls damage.",
+   "repeatability": "Setup-once, permanent-for-the-scene, no per-round cost and no cap — the riders never need re-paying and never run out. The flip side is that the tree cannot pour further Actions into damage: its offensive output is a fixed multiplier on the party's, not a resource it can spend into.",
+   "verdict": "This tree deals no damage of its own and cannot be made to. All five of its machine-readable roll formulas are type=heal; there is not one damage formula in the tree, which matches the damage-census reading of SOURCE 0 / SRC+AMP 3. Its entire offensive footprint is three conditional riders that improve other creatures' attacks (Vital Diagnosis party-wide, Adaptive Mutation and Apex Form on one grafted creature), plus one ongoing Afflicted condition. Two talents look like damage and are not: LIFELINE is tagged spirit_damage and speaks of Spirit damage bypassing Deflect, but the damage is dealt TO YOU as a redirect and is mitigation for someone else, not damage dealt; PRIMAL REGENERATION mentions Vital and Spirit damage only as the condition that switches its regeneration off. Neither is counted. Overgrowth's and Dense Tissue's Deflect grants are likewise mitigation, not damage. No damage was found hiding without the word: I checked specifically for summons, zones, hazards, Afflicted ticks and redirects, and the only one present (Venom Glands' Afflicted) is already counted. Corpus cross-check: this puts Life alongside leyline/Blue, heroic/Scholar and deity/Sovereignty as an effectively zero-source tree, but unlike Sovereignty (which at least sizes damage dice) Life's compensation is a rider that pays the whole party."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 4,
+    "exemplars": "Life Surge, Vital Diagnosis",
+    "note": "Both cost 1 Action and 1 Investiture and each is individually available as the L1 pick — but a character gets 1 talent per level, so a Life disciple holds ONE of them at L1 and both at L2. Life Surge is best-in-class healing ([Tier][Die] + Awareness at range, overflow to temp HP, may self-target — though leyline/Green's Verdant Mend, [Tier][Die] + Green modifier, is a near-identical expression); Vital Diagnosis is the game's most complete statblock reveal AND a scene-long party-wide Deflect-ignoring damage rider AND the marker the tree's whole economy hangs on — for one Investiture, no test, no save. Exceptionally strong for level 1, and both remain core picks at level 10. The shape is not unique: deity/Knowledge's Studied Mark is the same 1-Action / 1-Investiture depth-0 reveal-and-mark. This band satisfies the deity guide's principle 1 ('fantasy on the first talent — from both entries') as cleanly as any tree in the atlas."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Prognosis, Surgical Precision, Adaptive Mutation (strong, but the last two are level-6); Overgrowth, Lifeline, Primal Regeneration (weak)",
+    "note": "The widest variance band in the tree, and the split is a scheduling problem. The band holds SIX talents, not five — Adaptive Mutation (depth 1) was omitted from the original exemplar list. The two best mid-nodes are locked away: Surgical Precision needs Blue 3+ and Adaptive Mutation needs Green 3+, so both are level 6. What a level 2-5 Anaveth character can actually reach here is Prognosis (genuinely great: free Passive, 1 Investiture per round, +[Tier][Die] healing on conditioned targets — and the direct analogue of deity/Knowledge's Accumulate and deity/Chaos's Void Sense, which carry the same clause almost verbatim), plus Overgrowth (a smaller heal than the entry it depends on), Lifeline (over-costed and risky, but see weakTalents — it is not the trap it first looks like), and Primal Regeneration (2 Actions and 2 Investiture for Tier + 1 = 2 HP per turn until its mutation clause becomes reachable at L6). Levels 2 through 5 are the tree's thin zone."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Apex Form",
+    "note": "CRITICISM PARTLY WITHDRAWN ON A CLOSER READ OF THE TEXT. Strong output for a long fight — scene-long [Tier][Die] regeneration, +2 Deflect, +Tier Vital on all attacks, doubled mutations, and it may be cast on yourself. Its cost profile (3 Actions, 3 Investiture, once per scene) is EXACTLY what the deity guide prescribes for a capstone, so price is not the complaint. The claim that it 'detonates nothing the tree accumulated' is wrong as stated: 'Active mutations on the target are doubled in effect' IS the capstone paying off the tree's declared signature resource — the analogue of Knowledge's capstone consuming Insight. What survives: (a) that payoff clause is inert until L6 while the capstone itself is reachable at L4, so for two levels half the card does nothing; (b) it ignores the DIAGNOSED marker entirely, which is the tree's actual load-bearing resource; (c) it ends by inflicting an Injury on the creature it buffed, which this tree alone among healers cannot remove. Comparative: deity/Power's Mantle of the Aspirant and deity/Sovereignty's Sovereignty are the two capstones in the atlas that genuinely consume or pay off nothing — Life is not in that group once the mutation clause is credited, but it is well behind Knowledge's The Final Study and Destruction's The Unmooring."
+   }
+  ],
+  "frontOrBackLoaded": "FRONT-LOADED, sharply. The two depth-0 entries plus the free depth-1 Passive (Prognosis) are the whole engine — best-in-class healing, the game's most complete statblock reveal, a permanent party-wide Vital rider, and a self-funding Investiture economy. All three are online by LEVEL 3 in any legal order, and Prognosis itself is reachable at L2 (depth 1) if you open on Vital Diagnosis; the whole engine costs 2 Investiture of standing spend. Everything after that is either a smaller version of the entry (Overgrowth heals LESS than Life Surge one node deeper), an over-costed sponge (Lifeline), a slow trickle (Primal Regeneration), or locked to level 6 by an extra rank gate (Adaptive Mutation, Surgical Precision). The capstone is a marginal upgrade with an Injury attached. A character who took only Life Surge, Vital Diagnosis and Prognosis has ~80% of the tree's practical value for 3 of its 9 picks.",
+  "uniqueOwnership": [
+   "The most COMPLETE enemy statblock reveal, and the only one that gives MAX HP. Vital Diagnosis reveals exact HP, MAX HP, conditions, AND both Physical and Spiritual defences, for the scene, with no test and no save. deity/Knowledge's Studied Mark (also depth 0 / L1 / 1 Action / 1 Investiture) reveals current HP, conditions and both defences, and Pack Share extends that reveal to the whole party for the scene. VERIFIED by scanning every talent whose text names max/maximum HP: leyline/Black Hardy and leyline/Green Hardy raise it, deity/Power Warlord's Fury counts enemies below half of it, and Vital Diagnosis is the only talent in all 365 that TELLS you the denominator.",
+   "A party-wide damage rider on a single marked target — one of only two implementations, not the only one. Vital Diagnosis is 'you and every ally deal +Tier Vital, ignoring Deflect, for the whole scene, from one Action'. deity/Knowledge's Pack Share grants allies the identical +Tier Vital on the Insight-bearing creature, and The Pack (depth 2, L3) grants allies bonus Vital equal to your Insight COUNT, capping at 5 and therefore outscaling Life's flat Tier. What is still Life's alone is that its version needs no accumulating resource and arrives at LEVEL 1 with a free statblock attached — Knowledge's party-wide versions are a depth-1 Pack Share gated to L6 or a depth-2 The Pack at L3.",
+   "The sole owner of Mutation — a persistent, scene-long, choose-one biological modification grafted onto another creature (Bone Spurs / Venom Glands / Dense Tissue), doubled by the capstone. VERIFIED corpus-wide: the words 'mutation'/'mutate' appear in exactly three talents, all three in this tree (Adaptive Mutation, Primal Regeneration, Apex Form) and nowhere else in the 365. Nothing else in the game alters another character's body for the scene.",
+   "The single largest heal EXPRESSION in the game, and the only bench where every heal carries a rider. VERIFIED by dumping every type=heal formula: 11 exist, Life owns 5, and Surgical Precision's (2 * @tier)d(2 * @skills.green.rank + 2) is the only heal in the corpus with a doubled tier multiplier — 4d8 at Tier 2 rank 3. CORRECTED from 'largest healing by a wide margin': Life Surge ([Tier][Die] + Awareness) is essentially the same size as leyline/Green's Verdant Mend ([Tier][Die] + Green modifier) and Overgrowth exactly equals Green's Mender's Instinct, so the margin is one level-6 talent, not the whole bench. Green also fields six healing talents to Life's five-plus-amplifier, including the only injury removal in the game.",
+   "The only heals that turn overflow into temporary HP as a standing rule (Life Surge, Overgrowth). VERIFIED: those two are the only talents in all 365 whose text contains an overflow / excess-above-maximum clause (the other 'exceed' hits are Blue's Holographic Illusion sizing and Knowledge's Insight cap), so every other healer in the game loses the excess.",
+   "The only STACKING Deflect source (Overgrowth, +1 per cast to a cap of 3), and the owner of 3 of the 7 Deflect-granting talents in the corpus. Full verified list: leyline/White Guardian Stance, heroic/Envoy Withering Retort, heroic/Warrior Stonestance, deity/Civilization Siege Form (to a Construct), plus Life's Overgrowth, Adaptive Mutation (Dense Tissue) and Apex Form. The stacking clause really is unique — no other Deflect grant in the game accumulates.",
+   "An Investiture engine driven by the PARTY's offence rather than the owner's actions — one of three, not the only one. Prognosis pays 1 Investiture per round whenever a Diagnosed creature takes damage from any source. deity/Chaos's Void Sense ('once per round, when an enemy bearing one of your Omens ... takes damage from any source, you recover 1 Investiture') and deity/Knowledge's Accumulate ('when that creature takes damage from any source, you recover 1 Investiture once per round' — verbatim identical) are the same engine on a different marker. All three are depth-1 Passives on their tree's marker branch: this is a deity-atlas pattern, not a Life invention. The corpus holds 8 Investiture-recovery talents across 7 trees in total (resource-economy.json says 9 and is wrong — see the resource_economy axis).",
+   "The only damage-redirection that HEALS the person you absorbed for, and the only one that is a standing arrangement rather than a per-instance Reaction. VERIFIED: the corpus holds exactly three redirects — leyline/White's Shared Burden (Reaction, 2 Investiture EVERY time, take half in their place, no heal), deity/Order's Shoulder the Oath (Reaction, halves, reduces the remainder by your White ranks, temp HP to both, but only for an ally in a Covenant with you), and Lifeline. Lifeline is the only one paid ONCE for the whole scene, the only one that is optional per instance ('you MAY take up to half'), the only one that costs no Reaction, and the only one that heals the protected creature ([Tier][Die] each time). Shoulder the Oath is the better single interception; Lifeline is the better standing one."
+  ],
+  "gaps": [
+   "Cannot deal damage with any talent. All nine cards are riders, heals or mitigation; the Life character's own damage comes from the free Strike every character already has, plus Vital Diagnosis's +Tier. Against a single enemy with nobody else in the fight, the tree's contribution is 'heal yourself, Strike, and hope'.",
+   "Cannot act on anyone else's turn as an action type: zero Reactions, zero Free Actions, zero Specials in nine talents. COMPARATIVE CALIBRATION ADDED: deity/Death and deity/Knowledge are also 0 Reaction / 0 Free Action, and ALL TEN deity trees are 0 Special, so only part of this is a Life finding. Also corrected: the claim that 'nothing can interrupt a killing blow' is wrong — Lifeline is pre-loaded on your own turn and then absorbs up to half of an incoming hit for the rest of the scene without spending a Reaction, which is exactly an interrupt. What is true is that the tree cannot answer an enemy move it did not anticipate, and cannot save an ally it did not anchor in advance.",
+   "Cannot control anything. No stun, restrain, immobilise, slow, disorient, prone, forced movement, or forced target choice. A big threat walking through the party cannot be stopped, only out-healed.",
+   "No mobility, no terrain, no zones, no summons. If the problem is a chasm, a locked door, a fleeing target, or a need to be somewhere else, this tree contributes nothing.",
+   "No social or investigative leverage. Zero persuasion, deception, command, intimidation. The only thing it can 'read' is a body's HP.",
+   "Cannot remove Injuries — the deity of Life is the one healer in the game whose kit cannot do this, while the Green leyline tree it is gated behind (Reknit Form, verified as the corpus's only injury-removal talent) can. Worse, its capstone INFLICTS one. This is the sharpest gap in the tree, because the leyline guide's own colour boundary reads 'Green heals deeply (and removes Injuries)' and Life is a Green-gated tree.",
+   "Cannot resurrect, cure disease or poison by name, craft, travel, forage, or do downtime work. Its out-of-combat use is HP restoration and three condition removals.",
+   "Touch range on four of its nine talents (Adaptive Mutation, Surgical Precision, Primal Regeneration, Apex Form) — a Life character cannot deliver the mutation half of their kit from safety.",
+   "Weak but NOT worthless solo. Life Surge, Surgical Precision and Apex Form all carry explicit self-target clauses ('May self-target', '(may be self)'), so a solo Life character still has the game's biggest heal, a condition strip, and a scene-long regeneration-plus-Deflect buff on themselves. What genuinely dies without a party is the offence and the economy: Vital Diagnosis's rider (mostly), Prognosis's income, Adaptive Mutation's melee riders and Lifeline all need another creature to exist and to act. Four of nine, not five.",
+   "GAP DOWNGRADED — mostly not a Life finding. 'No Focus interaction and no Plot Die interaction' is literally true, but NO deity tree in the atlas spends Focus (the measurement's Focus costers are the six heroic trees plus exactly one each in White, Blue and Black), and NO deity tree touches the Plot Die (3 talents / 2 trees, leyline/Red and heroic/Agent only). What IS a real if minor Life gap is Opportunity: the deity guide calls the Opportunity spend the deity's elegant signature cost, and exactly one deity talent in all ten trees uses one (deity/Power's Momentum of Victory) — so Life shares that absence with eight of ten siblings.",
+   "The tree grants no advantage to anyone (verified: no Life talent appears among advantage-ledger.md's 48), so it cannot help anyone else roll better. Recorded for completeness, but read it against the buff axis: because advantage is binary, this means every buff Life hands out actually stacks, which is worth more than a fourth redundant advantage source in a corpus where 45 talents across 13 trees produce advantage and only 7 consume it.",
+   "Levels 2 through 5 are thin: the tree's two best mid-nodes (Adaptive Mutation, Surgical Precision) are locked behind rank-3 gates, so the mid-game picks are Overgrowth, Lifeline and Primal Regeneration, the three weakest talents in the tree."
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "PATH DESCRIPTION: 'surgeons and shapers who do not merely close wounds but improve the body they mend'",
+     "delivered": "DELIVERED",
+     "evidence": "Every heal in the tree carries an improvement rider rather than being bare HP: Life Surge and Overgrowth convert overflow into temporary HP, Overgrowth adds stacking Deflect, Surgical Precision strips a condition, Primal Regeneration and Apex Form leave persistent regeneration, Adaptive Mutation grafts a scene-long body upgrade. No talent in the tree is a plain heal — and cross-checked against the corpus, no other healing tree can say that per card (Green's Verdant Mend and Mender's Instinct and White's Mending Aura are bare heal formulas; Green's riders live in SEPARATE talents — Resurgent Growth, Natural Recovery, Vital Surge)."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'diagnoses before she heals: reading an ally's anatomy to strike an enemy's with precision'",
+     "delivered": "PARTIAL — there is no strike, and the ally/enemy framing does not survive contact with the text",
+     "evidence": "Vital Diagnosis says 'choose a creature in Attunement Range' — it can read an ally or an enemy, so the objection that it 'reads the ENEMY, not an ally' overstates the card; what is true is that its damage rider only pays out on an enemy, so play will always point it at one. The real drift is 'to strike': there is no precision strike anywhere in the tree. The payoff is a flat +Tier Vital rider applied to damage you and your allies were dealing anyway, and the Life character has no attack talent of any kind. The fantasy sentence describes an attack the tree cannot make — and deity/Knowledge, which makes the same promise in its own intent file, DOES make it (Predatory Strike, Killing Blow, The Final Study)."
+    },
+    {
+     "claim": "PATH DESCRIPTION: 'knitting flesh with riders no leyline mender can match — temporary vigor, deflecting hide'",
+     "delivered": "DELIVERED, with one comparative qualification",
+     "evidence": "Checked against the corpus: Life owns the only two overflow-to-temp-HP heals and 3 of the game's 7 Deflect-granting talents (including the only stacking one), while the leyline menders it names (Green's Verdant Mend and Mender's Instinct, White's Mending Aura) carry no rider on the heal card itself. The qualification the comparative check adds: Green DOES have temp-HP and condition-removal riders, just as separate talents (Vital Surge grants temp HP equal to half [Tier][Die]; Natural Recovery removes a condition for an Opportunity), so 'no leyline mender can match' is true per CARD and false per TREE."
+    },
+    {
+     "claim": "PATH DESCRIPTION + DESIGN GUIDE: 'Signature resource: Mutation' — 'mutations that turn a wounded comrade into the battle's engine'",
+     "delivered": "DRIFTED on timing and on weight",
+     "evidence": "Mutation is generated by exactly one talent (Adaptive Mutation) which is NOT an entry node — it sits at depth 1 behind a Green 3+ gate, making it unreachable before level 6 — and is consumed by only two others (Primal Regeneration's better clause, Apex Form's doubling). Three of nine talents touch the tree's stated signature resource (the deterministic signature-resource count of 2 undercounts; the word appears in three talent texts, verified by corpus grep), and a level 1-5 Anaveth disciple has no access to it whatsoever. The deity guide's principle 5 says a homebrew resource 'should be generated by an entry and spent by most of the rest of the tree'; this is a direct violation in the guide's own words. Comparative: the atlas's clean examples are Fate (Ordained Ground 7 talents, Snare 5) and Chaos (Omen 8), where the resource IS on an entry."
+    },
+    {
+     "claim": "DESIGN GUIDE colour split: 'Green tests for healing, regeneration, and biological mutation; Blue tests for vital-knowledge precision damage and analysis riders'",
+     "delivered": "VIOLATED, and largely moot",
+     "evidence": "The tree makes exactly ONE test across nine talents. That test is Surgical Precision's 'Test Blue vs. Physical' — on a HEALING talent, which the guide explicitly assigns to Green. The other eight talents have no test at all, so the colour-split rule has almost nothing to govern. Worse, an internal inconsistency confirmed against the authored formula: Surgical Precision is gated on Blue 3+ and tests Blue, but its roll formula sizes the die off GREEN rank, (2 * @tier)d(2 * @skills.green.rank + 2) — a Blue-gated, Blue-tested talent whose payoff scales with the other colour. All five heal formulas in the tree size off @skills.green.rank; Blue's entire mechanical job across nine talents is that one test. The gate audit records Life as 'blue:1' for exactly this reason, and Blue is one card away from being a toll booth on a rank-3 (level-6, six-skill-rank) investment."
+    },
+    {
+     "claim": "DESIGN GUIDE structure: 'Both branches deliver, then converge' (principle 3) and 'Tier-3 synthesis: prereq [Tier-2 talent A] or [Tier-2 talent B] FROM EACH BRANCH'",
+     "delivered": "NOT A VIOLATION — VERDICT REVERSED BY COMPARATIVE CHECK",
+     "evidence": "MAJOR CORRECTION. The previous verdict ('VIOLATED — the two branches never converge') is refuted by reading the other deity trees' connection graphs. Life's shape is: two entries; four depth-1 nodes, two per branch; two depth-2 or-gates each taking either depth-1 node FROM ITS OWN BRANCH (Lifeline = Surgical Precision or Prognosis; Primal Regeneration = Overgrowth or Adaptive Mutation); one depth-3 capstone connecting one node from EACH branch (Apex Form = Primal Regeneration, Lifeline). That is EXACTLY the shape shipped by deity/Order (Verdict = Lawkeeper's Eye or Sealed Edict; Concord = Bear Witness or Shoulder the Oath; Final Decree = Verdict or Concord), deity/Fate (Weave the Thread = Read the Threads or Bulwark Ground; Foreknown Strike = Inevitable Snare or Hexmark; Thread of Inevitability = either) and deity/Sovereignty (Sovereign's Balance; Edict of the Fallen; Sovereignty). Four of ten deity trees implement the guide's ambiguous sentence the same way, and Life satisfies the guide's other explicit line — 'Capstone: prereq one of the tier-3 synthesis nodes', 'the capstone is reachable from either tier-3 node'. The surviving observation, which is true but is not a violation: a player CAN walk Vital Diagnosis > Prognosis > Lifeline > Apex Form to L4 owning no mutation — but the same is true of every one of those four trees, and the guide explicitly WANTS the capstone reachable from either side."
+    },
+    {
+     "claim": "DESIGN GUIDE prerequisites: 'Skill-rank gates beyond the entry-node 2+ requirement are RARE in deity trees'",
+     "delivered": "VIOLATED — but shared with two siblings, not a Life-specific flaw",
+     "evidence": "Life carries two rank-3 gates on a nine-talent tree: Green 3+ on Adaptive Mutation and Blue 3+ on Surgical Precision. Verified against the whole atlas: deity/Sovereignty carries exactly two (White 3+ on Investiture of Authority, Black 3+ on Decree of Ruin) and deity/Knowledge two (Pack Share, Killing Blow — both L6). Three of ten trees carry two each and the other seven carry none, so 'rare' is technically satisfied atlas-wide while these three are outliers together. What IS Life-specific is the consequence: its two gated nodes are its two BEST mid-nodes, so the tree's strongest middle is simply absent for the whole Tier-1 half of a character's life, which is what produces the L2-L5 thin zone. Sovereignty's gated nodes are scene-long upgrades of effects it already has at L1, so its Tier-1 game is intact."
+    },
+    {
+     "claim": "DESIGN GUIDE action-type targets for deity trees (Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free ~10-15%, Reaction ~10%, 3 Actions capstone only)",
+     "delivered": "VIOLATED on six of seven rows — but only three of those violations are Life's own",
+     "evidence": "Distribution across the 9 talents, re-counted from the data: 1 Action 6/9 = 67% (target 25-35%, VIOLATED), Passive 1/9 = 11% (target 25-30%, VIOLATED), Special 0/9 (target 15-20%, VIOLATED), 2 Actions 1/9 = 11% (target 15-25%, VIOLATED below the floor), Free Action 0% (target 10-15%, VIOLATED), Reaction 0% (target ~10%, VIOLATED), 3 Actions 1/9 and it is the capstone (COMPLIANT). COMPARATIVE CORRECTION: the Special row is violated by ALL TEN deity trees (zero Special talents in the entire atlas), so it is a guide-vs-atlas finding, not a Life finding; the Reaction and Free rows are violated by Death and Knowledge too. The three that are genuinely Life's own: 6x 1-Action is the HIGHEST count in the deity atlas (Knowledge 5, Sovereignty 5, Death 4, everyone else 2-3); a single Passive where Knowledge has 3 and Order/Destruction/Sovereignty have 2; and the 2-Action row below floor where Power has 4 and Chaos/Death/Civilization have 3. Two thirds of this tree being one action type is the real structural complaint."
+    },
+    {
+     "claim": "DESIGN GUIDE principle 9: 'Deity power is Radiant-tier... Don't undersell the capstones'",
+     "delivered": "PARTIAL",
+     "evidence": "The tree's healing genuinely exceeds anything leyline per card (only doubled-tier heal expression, only stacking Deflect, only overflow-to-temp-HP), so the power claim holds on that axis. The capstone is partly undersold: Apex Form is a single-target scene buff for a whole Slow turn that ends in an Injury this tree cannot remove, and it ignores the DIAGNOSED marker that is the tree's actual spine. Its price is correct for a capstone, and its 'active mutations are doubled' clause IS a genuine payoff of the stated signature resource — but that clause is inert until L6 while the capstone is reachable at L4. Compare deity/Knowledge's The Final Study, which consumes every Insight for a per-stack payload AND gives every ally a free Strike, for the identical 3 Actions / 3 Investiture."
+    },
+    {
+     "claim": "DESIGN GUIDE principle 1: 'Fantasy on the first talent — from both entries'",
+     "delivered": "DELIVERED",
+     "evidence": "Both entries land a distinct facet for 1 Action and 1 Investiture at depth 0: Life Surge makes you the biggest healer at the table immediately, and Vital Diagnosis makes you the surgeon who reads a body and marks it. Neither is setup-only, and neither is the pitfall list's 'second entry that is a less-good version of the first'. This is the tree's structurally cleanest compliance."
+    },
+    {
+     "claim": "LENS-B INTENT COLLISION: this path's promise is also made, nearly word for word, by another path's intent file",
+     "delivered": "COLLISION CONFIRMED — deity/Knowledge (Gnothis)",
+     "evidence": "NEW FINDING. Life's intent: 'diagnoses before she heals: reading an ally's anatomy to strike an enemy's with precision'; deity guide loop 'Diagnose (Blue) -> heal-and-mutate (Green) -> ally becomes the engine'. Knowledge's intent: 'Predator-scholar. Insight stacks on a studied target escalate damage from you AND YOUR ALLIES; the pack shares the hunt'; loop 'Study (Green) -> stack -> strike (Red)'. Both trees promise the same machine: spend one Action to mark a creature, learn its HP / conditions / both defences, and escalate the whole party's damage against it, funded by a depth-1 Passive that returns 1 Investiture whenever the marked creature takes damage. The implementations are near-verbatim (Vital Diagnosis vs. Studied Mark; Prognosis vs. Accumulate; Vital Diagnosis's party rider vs. Pack Share). Worth recording that the deterministic functional-overlap run does NOT flag this pair — Life<->Knowledge is nowhere in the printed top 15 of 210, whose only deity pair is Destruction<->Fate at 0.779 — so this is a case where reading the text beats the cosine measure, presumably because Life's vector is dominated by heal features and Knowledge's by damage features while the SHARED marker machinery is a small slice of each."
+    },
+    {
+     "claim": "DISAGREEMENT BETWEEN THE TWO INTENT SOURCES (reported, not resolved)",
+     "delivered": "The path description leads with healing-with-riders and treats mutation as the flourish; the design guide makes Mutation the spine and demands it be generated by an entry and spent by most of the tree. What shipped is neither.",
+     "evidence": "The tree's real load-bearing resource is the DIAGNOSED marker — created by an entry at L1 for 1 Investiture, consumed by Prognosis for the tree's entire Investiture economy, and the source of all its party-facing offence. Neither intent document names Diagnosed as a resource at all. Meanwhile the documented signature resource, Mutation, is a level-6 side branch touched by 3 of 9 talents. The tree has an undocumented spine and a decorative signature. And the undocumented spine is the least original thing in it — deity/Knowledge's Insight marker is the same machine built deliberately with a stacking counter attached, and deity/Chaos's Omen is a third instance of the same depth-1 Investiture clause."
+    }
+   ],
+   "actuallyIs": "Empirically this is not the 'vital surgeon whose mutations make a comrade the battle's engine' — it is a DIAGNOSIS-ECONOMY HEALER. You spend one Action at level 1 to mark a creature, and that mark simultaneously reveals its full statblock, taxes it +Tier Vital from everyone in the party for the rest of the scene, and (via a free depth-1 Passive) pays you 1 Investiture per round, which funds the game's biggest heals indefinitely. Mutation is a late, narrow, level-6 branch bolted onto that engine — and the engine itself is a less-developed version of deity/Knowledge's Insight loop.",
+   "verdict": "PARTIAL"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Investiture",
+    "role": "BOTH",
+    "talents": "CONSUMED by 8 of 9 (13 Investiture total: Life Surge 1, Vital Diagnosis 1, Overgrowth 1, Surgical Precision 1, Adaptive Mutation 2, Lifeline 2, Primal Regeneration 2, Apex Form 3). PRODUCED by Prognosis (1 per round, free) — one of 8 Investiture-recovery talents across 7 trees (resource-economy.json's 9 includes leyline/Red's Emotional Overload, which SPENDS Investiture; classifier false positive, and the same file lists it as a Red consumer)."
+   },
+   {
+    "keyword": "Diagnosed (marker/state)",
+    "role": "BOTH",
+    "talents": "PRODUCED by Vital Diagnosis; CONSUMED by Prognosis (Investiture income) and it is what the party-wide +Tier Vital rider keys off. The tree's real spine and an undocumented resource. Direct analogues elsewhere: Knowledge/Insight, Chaos/Omen."
+   },
+   {
+    "keyword": "Mutation (Bone Spurs / Venom Glands / Dense Tissue)",
+    "role": "BOTH",
+    "talents": "PRODUCED by Adaptive Mutation (one per creature, scene duration, mutually exclusive); CONSUMED by Primal Regeneration (better regen clause) and Apex Form (doubles it). The stated signature resource; verified to appear in exactly these three talents and nowhere else in the 365."
+   },
+   {
+    "keyword": "Temporary HP",
+    "role": "PRODUCE",
+    "talents": "Life Surge and Overgrowth — overflow healing above max HP becomes temp HP. Verified as the only two talents in the corpus with an overflow clause; 14 talents across 9 trees grant temp HP by other means (Order 3, Sovereignty 2, Power 2, plus Black, Green, Civilization, Death, Fate)."
+   },
+   {
+    "keyword": "Deflect",
+    "role": "BOTH",
+    "talents": "PRODUCED by Overgrowth (+1, stacking to 3 — the corpus's only stacking Deflect), Adaptive Mutation / Dense Tissue (+2), Apex Form (+2) — 3 of the 7 Deflect-granting talents in the game. BYPASSED by the tree's own Vital and Spirit damage."
+   },
+   {
+    "keyword": "Vital damage",
+    "role": "PRODUCE",
+    "talents": "Vital Diagnosis (+Tier from you and allies), Apex Form (+Tier on the target's attacks), Adaptive Mutation / Venom Glands (Afflicted, Vital). Also a negative trigger: Vital damage ends Primal Regeneration."
+   },
+   {
+    "keyword": "Keen damage",
+    "role": "PRODUCE",
+    "talents": "Adaptive Mutation / Bone Spurs (+Tier on melee attacks; doubled by Apex Form). Keen is Deflect-reducible, unlike the tree's Vital riders."
+   },
+   {
+    "keyword": "Spirit damage",
+    "role": "PRODUCE (self-directed)",
+    "talents": "Lifeline — you take the redirected half as Spirit damage on yourself, which bypasses your own Deflect. Also a negative trigger: Spirit damage ends Primal Regeneration. No enemy ever takes Spirit damage from this tree."
+   },
+   {
+    "keyword": "Afflicted[X]",
+    "role": "PRODUCE",
+    "talents": "Adaptive Mutation / Venom Glands — a willing creature's melee hits inflict Afflicted [half [Tier][Die] Vital]; doubled by Apex Form to a full [Tier][Die]. One of 5 Afflicted talents across 5 trees."
+   },
+   {
+    "keyword": "Injury",
+    "role": "PRODUCE",
+    "talents": "Apex Form inflicts one on its target when the effect ends. The tree has NO way to remove an Injury; leyline/Green's Reknit Form is verified as the only talent in all 365 that can (deity/Death's Raise Dead ADDS one; heroic/Scholar's Ongoing Care removes a condition caused by one)."
+   },
+   {
+    "keyword": "Weakened / Disoriented / Slowed",
+    "role": "CONSUME (remove)",
+    "talents": "Surgical Precision removes exactly one of these three, and only on a successful Blue vs. Physical test (on failure it heals and strips nothing). Prognosis also keys off 'a creature that has a condition' for its bonus healing die."
+   },
+   {
+    "keyword": "Forced movement",
+    "role": "CONSUME (negate)",
+    "talents": "Adaptive Mutation / Dense Tissue grants immunity to it."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME",
+    "talents": "Life Surge, Vital Diagnosis, Overgrowth, Lifeline target within it. Four others require TOUCH; Prognosis is a Passive with no target."
+   },
+   {
+    "keyword": "Touch (willing creature)",
+    "role": "CONSUME",
+    "talents": "Adaptive Mutation, Surgical Precision, Primal Regeneration, Apex Form — four of nine require adjacency and consent. Surgical Precision and Apex Form carry explicit self-target clauses, so only Adaptive Mutation and Primal Regeneration strictly need someone else."
+   },
+   {
+    "keyword": "Regeneration (start-of-turn HP)",
+    "role": "PRODUCE",
+    "talents": "Primal Regeneration (Tier + 1, or [Tier][Die] + 1 with a mutation), Apex Form ([Tier][Die]). Compare leyline/Green's Resurgent Growth (tier + Green modifier at the start of your turn) — the one other standing regeneration in the corpus."
+   },
+   {
+    "keyword": "Green rank (@skills.green.rank)",
+    "role": "CONSUME",
+    "talents": "Sizes the heal die on ALL FIVE heal formulas, including Blue-gated, Blue-tested Surgical Precision. Green 2+ gates both entries; Green 3+ gates Adaptive Mutation to L6."
+   },
+   {
+    "keyword": "Blue rank",
+    "role": "CONSUME",
+    "talents": "Blue 2+ gates both entries; Blue 3+ gates Surgical Precision to L6; Surgical Precision is the tree's only test and it tests Blue. Blue sizes nothing — it is one card away from being a toll booth, and the deity-gate audit records Life as 'blue:1'."
+   },
+   {
+    "keyword": "Physical defense / Spiritual defense",
+    "role": "CONSUME",
+    "talents": "Revealed by Vital Diagnosis (along with exact HP and max HP); Surgical Precision tests Blue vs. Physical."
+   },
+   {
+    "keyword": "Awareness (attribute)",
+    "role": "CONSUME",
+    "talents": "Life Surge adds @attr.awa to its heal — the only attribute the tree reads, and one of the two that set the Investiture pool (2 + max(AWA, PRE)), so the entry heal and the resource pool scale off the same stat."
+   },
+   {
+    "keyword": "Tier / [Tier][Die] / Attunement Range scaling",
+    "role": "CONSUME",
+    "talents": "All scaling. Note every offensive rider in the tree scales on flat Tier, not on the die; only Venom Glands' Afflicted is die-scaled."
+   },
+   {
+    "keyword": "Focus",
+    "role": "NEITHER — absent",
+    "talents": "Zero talents spend, grant, or interact with Focus. Recorded as a structural absence, but NOT a Life-specific one: no deity tree in the atlas spends Focus."
+   },
+   {
+    "keyword": "Opportunity / Plot Die",
+    "role": "NEITHER — absent",
+    "talents": "Zero talents spend or generate Opportunity, and nothing touches the Plot Die. The deity guide names Opportunity spends as the elegant deity cost; verified corpus-wide, exactly ONE deity talent in all ten trees uses one (Power's Momentum of Victory), and no deity talent anywhere touches the Plot Die."
+   },
+   {
+    "keyword": "Advantage",
+    "role": "NEITHER — absent",
+    "talents": "The tree grants no advantage to anyone — verified: not one Life talent appears among advantage-ledger.md's 48. Notable rather than a flaw: every buff it hands out stacks, so it is immune to the binary-advantage redundancy problem in a corpus where 45 talents across 13 trees produce advantage and only 7 consume it."
+   }
+  ],
+  "crossTreeHooks": [
+   "Vital Diagnosis's damage rider ('You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier') scales linearly with how many attacks per round the rest of the table makes. Its value is set mostly by other players' trees; in a party of one it collapses to the +Tier on your own free Strike.",
+   "It overlaps directly with deity/Knowledge, which is the same machine built deliberately: Studied Mark is the same depth-0 reveal-and-mark, Accumulate carries a verbatim-identical Investiture clause, Pack Share grants the same +Tier Vital and The Pack a bigger version. Two such markers on different creatures split the party's focus fire; the party only benefits from either by concentrating fire, which is the same demand made twice.",
+   "Prognosis's Investiture income ('when a Diagnosed creature takes damage from any source') is funded by the party's offence, not by anything this tree does. A Life character in a defensive standoff generates nothing.",
+   "Prognosis's second clause (+[Tier][Die] healing on a creature that has a condition) depends on ENEMIES having applied a condition to your ally — it pays out more the nastier the opposition, and pays nothing against a plain-damage foe. Note Black's Draw Mana rider applies Weakened, so a Black-attuned partner turns this clause on from your own side of the table.",
+   "Adaptive Mutation and Apex Form both require a willing creature with attacks worth improving. Bone Spurs and Venom Glands are MELEE-only, so their value is set by whether the party has a front-liner; graft them onto a caster and they do nothing.",
+   "Lifeline triggers only when an enemy damages the creature you anchored, so it is entirely reactive to the opposition's targeting choices — but unlike deity/Order's Shoulder the Oath and leyline/White's Shared Burden it consumes no Reaction and is paid once for the scene, which matters because this tree has no other use for a Reaction anyway.",
+   "Surgical Precision's condition-removal half is dead unless something else in the fight applies Weakened, Disoriented or Slowed. Corpus-wide those are common (Weakened 12 talents, Disoriented 14, Slowed 6) but come mostly from enemies in practice; Black's Draw Mana rider is the one reliable ally-side source of Weakened.",
+   "The whole tree is gated on Blue 2+ AND Green 2+, with two nodes needing rank 3 — and every heal die is literally sized by @skills.green.rank, making Green rank this tree's damage die. Blue rank buys two gates and one test.",
+   "The tree cannot remove the Injury its own capstone inflicts; it needs leyline/Green's Reknit Form (verified as the corpus's only injury-removal talent) to clean up after Apex Form. That is a Green-attuned character, which the tree already requires — so the fix sits inside the colour investment already paid for, and a Life PC who also spends picks in Green can self-service it.",
+   "It grants no advantage and no actions, so it never overwrites or competes with another tree's advantage-granting talents — it layers cleanly with everything, making it an unusually low-friction party member mechanically in a corpus that over-produces advantage 45 producers to 7 consumers."
+  ],
+  "topThree": [
+   "Vital Diagnosis — one Action and one Investiture at level 1 buys the game's most complete enemy statblock reveal (the only one that includes MAX HP), a scene-long party-wide Deflect-ignoring damage tax, and the marker that funds the tree's entire economy. Best value-per-Investiture talent in the tree by a distance, though deity/Knowledge's Studied Mark occupies the same slot with a different payoff.",
+   "Prognosis — a free Passive at depth 1 (reachable at L2) that pays 1 Investiture per round, matching a Tier-1 Draw Mana minus the Attunement rider, and adds [Tier][Die] to any Life heal on a conditioned creature. Zero cost, zero action, two strong effects, and it is what lets the tree run at 100% uptime. Not unique in shape — Chaos's Void Sense and Knowledge's Accumulate carry the same first clause — but the only one paired with a heal amplifier.",
+   "Surgical Precision — the largest heal expression in the whole 365-talent corpus, (2 * @tier) dice, with a condition strip attached. Priced against the actual text: 4d8 at Tier 2 rank 3 is the SUCCESS branch of a Blue vs. Physical test; on a failure it heals [Tier][Die] (2d8) and strips nothing. Still 1 Action and 1 Investiture, and even the failure branch matches a full leyline heal (Green's Verdant Mend)."
+  ],
+  "bottomThree": [
+   "Overgrowth — a deeper node that heals strictly less than the entry it requires, for the same Action and the same Investiture, buying only +1 Deflect per cast. The clearest below-curve node in the tree; its heal exactly equals leyline/Green's Mender's Instinct, a shallow talent in a 25-talent tree.",
+   "Primal Regeneration — 2 Actions and 2 Investiture for 2 HP per turn at the level it becomes available (L3), needing four-plus rounds to match one Life Surge, switched off by any Vital or Spirit damage, and with its good clause locked behind a talent that does not exist until L6.",
+   "Lifeline — 1 Action and 2 Investiture to volunteer to eat half an ally's damage as unmitigable Spirit damage on the squishiest member of the party. Repeatable once per round for the whole scene, so it is net-positive party HP rather than a break-even single heal — but Overgrowth is half the Investiture, heals the same die on demand, and adds Deflect with no risk."
+  ],
+  "weakTalents": [
+   {
+    "name": "Overgrowth",
+    "reason": "Below curve for its depth by construction, and the clearest structural mistake in the tree: it sits one node deeper than Life Surge, costs exactly the same 1 Action and 1 Investiture, and heals [Tier][Die] where its own prerequisite heals [Tier][Die] + Awareness. You pay a talent pick and a depth step for strictly less healing, buying +1 Deflect. The Deflect stacks to 3 over three casts — genuinely unique in the corpus and defensible in a long fight — but a deeper node that is a smaller version of the entry it hangs off is the deity guide's 'synthesis that just repeats tier-2' pitfall running downhill."
+   },
+   {
+    "name": "Primal Regeneration",
+    "reason": "Below curve for its depth throughout the levels at which it is actually reachable. 2 Actions (two thirds of a Slow turn) and 2 Investiture for Tier + 1 HP per turn — 2 HP a round at Tier 1, about four full rounds to match one cast of Life Surge, which costs a quarter as much. Its good clause ([Tier][Die] + 1 per turn) requires an active mutation from Adaptive Mutation, which is Green 3+ and does not exist until L6, three levels after this becomes takeable at L3. It also switches off entirely the moment the target takes any Vital or Spirit damage — and this party sees more Vital damage than most, because its own Vital Diagnosis rider converts everyone's hits into partly-Vital damage."
+   },
+   {
+    "name": "Lifeline",
+    "reason": "Over-costed and risky, but not the never-pick it first looks like. The card says 'For the scene, when that creature takes damage you may take up to half instead as Spirit damage... When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.' That is once per round FOR THE SCENE, not once total: over a four-round fight it can pay four [Tier][Die] heals. Net party HP is therefore POSITIVE by up to [Tier][Die] per round — the damage is transferred, not created, and the heal is pure gain — and after the 1-Action setup it costs no further Actions and no Reaction, which makes it the tree's most action-efficient healing per Investiture over a long fight and the corpus's only standing (rather than per-instance) redirect. The objections that survive: the transferred damage is Spirit and so bypasses your own Deflect, the character eating it is the healer whose death ends the party's sustain, and it competes badly at the point of purchase — Overgrowth is half the Investiture, heals the same die on demand, and adds Deflect with no risk."
+   },
+   {
+    "name": "Apex Form",
+    "reason": "COST CRITICISM WITHDRAWN; 'PAYS OFF NOTHING' CRITICISM PARTLY WITHDRAWN. 3 Actions, 3 Investiture and once per scene is precisely the capstone profile the deity guide prescribes ('3 Investiture + once-per-scene = capstone'; '3 Actions... Capstones only — one per tree, max'), so it cannot be faulted for its price; and 'Active mutations on the target are doubled in effect' IS the capstone paying off the tree's declared signature resource, which the previous assessment denied outright. What survives: it inflicts an Injury on its target when the effect ends and this tree alone among healers cannot remove one; it is reachable at L4 while the mutation-doubling half is inert until L6; and it pays off the DECORATIVE resource while ignoring the tree's actual spine — no Diagnosed marker is consumed, extended, or spread. Measured against the atlas, the two capstones that genuinely pay off nothing are deity/Power's Mantle of the Aspirant and deity/Sovereignty's Sovereignty; Life sits above those and below Knowledge's The Final Study and Destruction's The Unmooring."
+   }
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "Without Prognosis: ordinary. A starting pool of ~4 Investiture (2 + max(AWA, PRE)) buys four 1-Investiture plays, after which Draw Mana returns Tier per Action — 1 at Tier 1 — so the tree runs at 50% uptime, one Action drawing and one Action healing, exactly like any leyline caster. WITH Prognosis online (L2 at the earliest if you open on Vital Diagnosis, and only while a Diagnosed creature takes damage each round) the picture changes completely: the free 1 Investiture per round exactly funds one 1-Investiture Action every round forever, so a Life character never has to spend an Action on Draw Mana to keep healing. That is effectively unlimited rounds of Life Surge / Overgrowth / Surgical Precision — the tree's routine game is fully sustainable, and it is one of only three trees in the corpus with a party-offence-funded Investiture engine (Chaos's Void Sense and Knowledge's Accumulate being the others). Its BIG plays are not: Adaptive Mutation (2), Lifeline (2), Primal Regeneration (2) and Apex Form (3) total 9 Investiture, so a full deployment costs roughly two pools plus nine rounds of Prognosis income. Realistic pattern: one heavy setup turn (at L6, Vital Diagnosis 1 + Adaptive Mutation 2 + a heal 1 = 4 Investiture and all three Actions), then income-limited routine healing for the rest of the fight.",
+   "triggerGatedCount": 2,
+   "reactionCount": 0,
+   "resourceCostersOutOfTree": 8,
+   "note": "Applying the stated definition ('a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit'), exactly two Life talents qualify on their own text: Prognosis ('When a Diagnosed creature takes damage from any source...') and Lifeline ('when that creature takes damage you may take up to half instead'). This is inside the deterministic action-type table's 0-3 band for every deity tree. Kept from the earlier count of 5, because it is a separate and still-true observation: five of nine talents have PAYOFFS that depend on someone else acting first (Prognosis, Lifeline, Vital Diagnosis's damage rider, Adaptive Mutation's Bone Spurs/Venom Glands, Apex Form's damage clause). Those five are pre-loaded on your own turn and then fire automatically, so they do not compete for actions — but roughly half the tree's printed power is delivered by other people. Costs: 8 of 9 talents spend Investiture (13 total, counted off the Cost fields); 0 spend Focus, 0 spend Opportunity, 0 spend HP as a listed Cost (Lifeline spends HP in effect, not in its Cost field). Only Prognosis is free. Reactions: 0 of 9 — the tree never competes with itself for the 1-Reaction-per-round cap, a genuine structural advantage shared with deity/Death, deity/Knowledge and deity/Power; and Lifeline gives it a damage-interrupt that costs no Reaction. But it can never act on an enemy's turn to do anything it did not pre-load."
+  }
+ },
+ "corrections": [
+  {
+   "field": "uniqueOwnership[0] + axes.information.evidence",
+   "from": "'The only source of exact enemy statistics in the game... A scan of all 365 talents found no other source of exact numeric enemy statistics'",
+   "to": "'The most COMPLETE enemy statblock reveal, though not the only one' — deity/Knowledge's Studied Mark and Pack Share do the same job; Life's edge is max HP only",
+   "reason": "FALSE UNIQUENESS CLAIM, refuted by the raw data. deity/Knowledge Studied Mark (depth 0, L1, 1 Action, 1 Investiture — identical slot and price to Vital Diagnosis) reads verbatim: 'Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses.' Pack Share: 'For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight.' The profile's own listed comparables (Scent the Weak, Read Intent, Read the Threads, Lawkeeper's Eye) are real but are not the nearest ones. The only surviving Life-exclusive detail is MAX HP, which Studied Mark does not give."
+  },
+  {
+   "field": "uniqueOwnership[1]",
+   "from": "'The only PARTY-WIDE damage rider on a single marked target... Every other damage-amplification effect in the corpus improves its own owner's attacks.'",
+   "to": "'one of only two implementations, not the only one'",
+   "reason": "FALSE UNIQUENESS CLAIM. deity/Knowledge Pack Share: allies '...deal bonus Vital damage equal to your Tier on attacks against it' — the identical rider, same damage type, same scene duration. deity/Knowledge The Pack (depth 2, L3) is strictly larger: 'allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight' (Insight caps at 5, vs Life's flat Tier 1-2). This also feeds the debuff-axis evidence, which now names both."
+  },
+  {
+   "field": "uniqueOwnership[6]",
+   "from": "'The only Investiture engine driven by the PARTY's offence rather than the owner's actions: Prognosis...'",
+   "to": "'one of three, not the only one' — Chaos/Void Sense and Knowledge/Accumulate are the same engine",
+   "reason": "FALSE UNIQUENESS CLAIM. deity/Chaos Void Sense: 'Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.' deity/Knowledge Accumulate: 'When that creature takes damage from any source, you recover 1 Investiture once per round.' All three are depth-1 Passives hanging off their tree's marker entry — a deity-atlas pattern, not a Life invention."
+  },
+  {
+   "field": "axes.resource_economy.evidence",
+   "from": "'It is one of only 7 Investiture-recovery talents in the corpus.'",
+   "to": "'one of NINE Investiture-recovery talents across 7 trees'",
+   "reason": "MISREAD OF THE SUPPLIED CENSUS. The brief says 'Investiture 9 talents / 7 trees' produced; the profile read the tree count as the talent count. Confirmed against resource-economy.json, which lists all nine by name: Black/Predatory Patience + Predator's Due, Red/Flashpoint + Emotional Overload, Chaos/Void Sense, Death/Reaper's Harvest, Life/Prognosis, Knowledge/Accumulate, Sovereignty/Expose."
+  },
+  {
+   "field": "axes.protection.score + evidence, uniqueOwnership[5], mechanicalKeywords Deflect",
+   "from": "score 4, justified by '3 of only 5 talents in all 365 that grant a Deflect bonus (the others being White's Guardian Stance and Civilization's Siege Form)'",
+   "to": "score 3, '3 of the 7 Deflect-granting talents'",
+   "reason": "MISCOUNT of the load-bearing evidence. A full scan of all 365 talent texts finds SEVEN Deflect-bonus grants: leyline/White Guardian Stance ('you both gain +1 Deflect'), heroic/Envoy Withering Retort ('increase your deflect against the attack by your ranks in Discipline'), heroic/Warrior Stonestance ('Your deflect increases by 1'), deity/Civilization Siege Form, plus Life's three. Two were missed entirely. Life's share drops from 60% to 43%, and since that share was the stated reason for a 4 the score moves to 3 — reinforced by the tree's zero Reactions and by deity/Order's Shoulder the Oath being a single better protection talent (Reaction, halves the damage, reduces the remainder by White ranks, temp HP for both). The 'only STACKING Deflect' sub-claim was checked and SURVIVES."
+  },
+  {
+   "field": "sustainability.triggerGatedCount",
+   "from": "5",
+   "to": "2",
+   "reason": "MISCOUNTED AGAINST THE STATED DEFINITION and against the deterministic table (which caps every deity tree at 0-3). By the brief's definition — a Reaction, or a talent that only fires when an ally/enemy acts or when you are hit — only Prognosis ('When a Diagnosed creature takes damage from any source') and Lifeline ('when that creature takes damage you may take up to half instead') qualify on their own text. The other three the profile counted (Vital Diagnosis, Adaptive Mutation, Apex Form) are 1-Action and 3-Action talents you activate on your own turn whose RIDERS are conditional. The five-talent observation is preserved verbatim in the note as a separate, true point."
+  },
+  {
+   "field": "intentDrift action-type claim",
+   "from": "'VIOLATED on five of seven rows'",
+   "to": "'VIOLATED on SIX of seven rows'",
+   "reason": "ARITHMETIC SLIP. The profile listed 2 Actions at 11% against a 15-25% target and then did not count it as a violation. 1/9 = 11.1% is below the 15% floor. Violated rows: 1 Action 67%, Passive 11%, Special 0%, 2 Actions 11%, Free 0%, Reaction 0% = six. Only the 3-Action row (1/9, and it is the capstone) is compliant."
+  },
+  {
+   "field": "frontOrBackLoaded; powerByDepth[depth 0].note",
+   "from": "'all online by level 2 for 2 Investiture total'; 'both are live at L1'",
+   "to": "'all three online by LEVEL 3'; 'a Life disciple holds ONE of them at L1 and both at L2'",
+   "reason": "DEPTH/LEVEL ARITHMETIC. The dossier's 'earliest L1' means each talent is individually reachable at L1, not that both can be held. At 1 talent per level, Life Surge + Vital Diagnosis occupy L1-L2 and Prognosis (depth 1, prereq Vital Diagnosis) lands at L3. The profile's own bottom line ('3 of its 9 picks') already implies L3, contradicting its own 'level 2'."
+  },
+  {
+   "field": "powerByDepth[depth 1-2].exemplars",
+   "from": "'Prognosis, Surgical Precision (strong); Overgrowth, Lifeline, Primal Regeneration (weak)' — five talents",
+   "to": "six talents, with Adaptive Mutation added",
+   "reason": "OMISSION against the dossier depth values. The depth 1-2 band contains SIX talents: Adaptive Mutation (depth 1), Overgrowth (1), Prognosis (1), Surgical Precision (1), Lifeline (2), Primal Regeneration (2). Adaptive Mutation — the tree's signature-resource generator — was left out of the band it belongs to, while being discussed in the note."
+  },
+  {
+   "field": "weakTalents[Lifeline] + bottomThree[Lifeline]",
+   "from": "'The clearest never-pick... Net party HP is roughly break-even at best... returning a single [Tier][Die] heal... its once-per-round cap means it cannot even function as a big-hit sponge.'",
+   "to": "over-costed and risky, but net-POSITIVE party HP by up to [Tier][Die] per round, repeatable for the scene",
+   "reason": "TEXT-VS-CLAIM. The card reads 'For the scene, when that creature takes damage you may take up to half instead... the target immediately heals [Tier][Die] HP. Once per round.' Once per round FOR THE SCENE is repeatable, not a single heal, and the profile contradicted itself (its own protection axis said 'once per round for the scene'). The damage is TRANSFERRED, not created, so the [Tier][Die] heal is pure net party gain each round it fires. A once-per-round cap is also what makes it a big-hit sponge, not what prevents it. The real objections (Spirit bypasses your Deflect; the healer is the wrong body to absorb with) are retained."
+  },
+  {
+   "field": "weakTalents[Apex Form]; powerByDepth[depth 3+].note",
+   "from": "'Over-costed rather than weak. 3 Actions... plus 3 Investiture (most of a level-1 pool)... plus once per scene'",
+   "to": "cost criticism withdrawn; the Injury and the no-payoff-of-accumulated-resource criticisms stand",
+   "reason": "CLAIM CONTRADICTED BY THE CITED STANDARD. DESIGN-GUIDE-CLAIMS.md PART 2 Cost scale: '3 Investiture + once-per-scene = capstone'; action-type table: '3 Actions — Capstones only, one per tree, max'. Apex Form matches the prescribed capstone profile exactly on all three counts, so it cannot be faulted for price. The profile's own intentDrift already conceded the 3-Action row was 'legal — it is the capstone' while weakTalents called the same cost excessive."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Apex Form].action; gaps[solo]",
+   "from": "'3 Actions, 3 Investiture, touch, once per scene'; 'Nearly worthless solo... Five of nine talents are dead weight without a party'",
+   "to": "'touch a willing creature (MAY BE SELF)'; 'Weak but NOT worthless solo... Four of nine, not five'",
+   "reason": "TEXT-VS-CLAIM. Apex Form's text is 'touch a willing creature (may be self)'; Life Surge and Surgical Precision both say 'May self-target'. Three of the tree's strongest talents work on a solo character, so the capstone is not party-dependent and the count of party-dependent talents is four (Vital Diagnosis's rider, Prognosis, Adaptive Mutation, Lifeline), not five — and the profile's own list of 'five' actually named six items."
+  },
+  {
+   "field": "gaps[reactions]",
+   "from": "'Nothing can interrupt a killing blow, save a falling ally in response to the hit, or answer an enemy's move.'",
+   "to": "Lifeline IS an interrupt that costs no Reaction; what is missing is anything not pre-loaded",
+   "reason": "TEXT-VS-CLAIM, internally inconsistent with the profile's own protection axis. Lifeline: 'when that creature takes damage you may take up to half instead' — that is damage interception at the moment of the blow, and it consumes no Reaction. The true gap is narrower: the tree cannot respond to anything it did not anchor in advance."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Adaptive Mutation].dice",
+   "from": "'half of 1d6 at Tier 1, half of 2d8 at Tier 2'",
+   "to": "Tier-1 line removed — the talent cannot exist before L6 / Tier 2",
+   "reason": "DICE/LEVEL ERROR. Adaptive Mutation is gated Green 3+, and the rank cap is 2 until level 5 (SYSTEM-PRIMER tier table), so its earliest level is 6 and the character is already Tier 2. A Tier-1 valuation of this talent describes a state that never occurs. The profile itself records earliestLevel 6 two lines away."
+  },
+  {
+   "field": "intentDrift claim 2 ('reading an ally's anatomy')",
+   "from": "'Vital Diagnosis reads the ENEMY, not an ally'",
+   "to": "it reads either — the card says 'choose a creature'; the drift is the missing 'strike'",
+   "reason": "TEXT-VS-CLAIM. Vital Diagnosis: 'Spend 1 Investiture and choose a creature in Attunement Range.' No ally/enemy restriction, no willing clause, no test. Only its damage rider is enemy-facing. The genuine drift — that the path promises a precision STRIKE the tree has no talent to deliver — is retained and is the stronger objection."
+  },
+  {
+   "field": "intentDrift.claims (NEW)",
+   "from": "absent",
+   "to": "NEW CLAIM: 'Both branches deliver, then converge' / tier-3 synthesis prereq pattern — VIOLATED",
+   "reason": "MISSED FINDING, from recounting the connections graph the brief flags as managed prerequisites. Lifeline's group is 'Surgical Precision or Prognosis' — both descend from Vital Diagnosis. Primal Regeneration's is 'Overgrowth or Adaptive Mutation' — both descend from Life Surge. Neither tier-3 node crosses branches, so the guide's synthesis requirement ('prereq [Tier-2 A] or [Tier-2 B] from each branch') is unmet and a player can reach L4 down one branch having touched nothing from the other."
+  },
+  {
+   "field": "intentDrift.claims (NEW)",
+   "from": "absent",
+   "to": "NEW CLAIM: 'Skill-rank gates beyond the entry-node 2+ requirement are RARE in deity trees' — VIOLATED",
+   "reason": "MISSED FINDING against DESIGN-GUIDE-CLAIMS.md PART 2 Prerequisite patterns. Life carries two rank-3 gates (Green 3+ on Adaptive Mutation, Blue 3+ on Surgical Precision) on nine talents, tying the highest demand in the atlas per the gate audit. This is the mechanical cause of the L2-L5 thin zone the profile describes without attributing."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'A no-test support tree...'",
+   "to": "'A near-testless support tree (one test in nine talents)...'",
+   "reason": "TEXT-VS-CLAIM. Surgical Precision: 'Test Blue vs. Physical.' The profile's own intentDrift section says 'The tree makes exactly ONE test across nine talents', contradicting its headline."
+  },
+  {
+   "field": "topThree[Surgical Precision]",
+   "from": "'4d8 at Tier 2 for 1 Action and 1 Investiture' with 'a failure clause that still heals'",
+   "to": "4d8 is the SUCCESS branch of a Blue vs. Physical test; failure heals [Tier][Die] (2d8) and strips nothing",
+   "reason": "UNDER-STATED CONDITIONALITY on the tree's headline number. Card text: 'Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition... On failure, heal [Tier][Die] only.' The authored formula (2 * @tier)d(...) encodes only the success branch, so quoting 4d8 without the gate overstates the expected value. The 'largest heal expression in the corpus' claim itself was verified against all 11 type=heal formulas and SURVIVES."
+  },
+  {
+   "field": "CHECKED AND UNCHANGED",
+   "from": "n/a",
+   "to": "n/a",
+   "reason": "Claims I attacked and could not break: (1) 0 damage formulas / 5 heal formulas, and no damage hiding without the word — no summons, zones, hazards or enemy-facing redirects exist in the tree; countReal 3 and countFalsePositiveMitigation 2 stand, and Lifeline/Primal Regeneration are correctly excluded as mitigation. (2) All nine depth and earliest-L values match the dossier exactly (0/0/1/1/1/1/2/2/3; L1/L1/L6/L2/L2/L6/L3/L3/L4). (3) Investiture arithmetic: 13 total across 8 costers, matching the census's 'Life 1 regen / 8 costers'. (4) reactionCount 0 and the 6x1-Action / 1 Passive / 1x2-Action / 1x3-Action split, both re-derived from the cards. (5) '5 of 11 heal formulas' and Surgical Precision as the only doubled-tier heal — dumped and confirmed. (6) Overflow-to-temp-HP is genuinely corpus-unique to Life Surge and Overgrowth (only 2 hits across 365). (7) Reknit Form is genuinely the only injury-removal talent in the corpus. (8) 'Mutation' appears in exactly 3 talents, all in this tree. (9) Zero advantage grants — no Life talent appears in advantage-ledger.md. (10) Overgrowth healing strictly less than its own prerequisite Life Surge, for the same cost, one node deeper. (11) The peakDamagePerAction arithmetic (4 attacks x +2 Vital = 8/round vs 2d8 avg 9 = 0.9 [Tier][Die]). (12) The Blue-tested/Green-scaled inconsistency on Surgical Precision, confirmed against the authored formula."
+  },
+  {
+   "field": "intentDrift.claims['Both branches deliver, then converge'].delivered",
+   "from": "VIOLATED — the two branches never converge",
+   "to": "NOT A VIOLATION — Life ships the standard deity shape",
+   "reason": "BIGGEST FINDING. The profile flagged as a Life-specific structural failure something that four of ten deity trees do identically. Read from all-talents.json connections: Order (Verdict = Lawkeeper's Eye or Sealed Edict; Concord = Bear Witness or Shoulder the Oath; Final Decree = Verdict or Concord), Fate (Weave the Thread = Read the Threads or Bulwark Ground; Foreknown Strike = Inevitable Snare or Hexmark; Thread of Inevitability = either) and Sovereignty (Sovereign's Balance = Sovereign's Favor or Investiture of Authority; Edict of the Fallen = Expose or Decree of Ruin; Sovereignty = either) all place their depth-2 or-gates INSIDE one branch and let the depth-3 capstone span both — exactly Life's Lifeline / Primal Regeneration / Apex Form. Life also satisfies the guide's own explicit lines 'Capstone: prereq one of the tier-3 synthesis nodes' and 'The capstone is reachable from either tier-3 node'."
+  },
+  {
+   "field": "axes.action_economy.score",
+   "from": "0",
+   "to": "1",
+   "reason": "SCORE DEFLATION (lens c). The profile's own gaps entry says Lifeline 'absorbs up to half of an incoming hit for the rest of the scene without spending a Reaction, which is exactly an interrupt' — that is acting out of turn at zero action cost, in a system whose primer calls the 1-Reaction-per-round cap 'load-bearing'. Prognosis's free 1 Investiture/round removes the Draw Mana Action the primer says a leyline caster must spend every other round. Rubric 1 = 'one incidental talent, or a rider on something else'; 0 = 'does not do this at all', which the text contradicts."
+  },
+  {
+   "field": "axes.resource_economy.evidence / uniqueOwnership[Prognosis] / mechanicalKeywords[Investiture]",
+   "from": "one of NINE Investiture-recovery talents across 7 trees",
+   "to": "one of EIGHT across 7 trees",
+   "reason": "THIRD CLASSIFIER BUG, as the brief predicted. resource-economy.json lists leyline/Red's Emotional Overload as an Investiture PRODUCER, but its text reads 'When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test.' It spends, and the same JSON also lists it in Red's consumer column. Verified list: Predatory Patience, Predator's Due, Flashpoint, Void Sense, Reaper's Harvest, Prognosis, Accumulate, Expose = 8."
+  },
+  {
+   "field": "axes.healing.evidence / uniqueOwnership[healing] / oneLineIdentity",
+   "from": "'the largest healing in the game by a wide margin, and the deepest bench of it'",
+   "to": "'the single largest heal EXPRESSION in the game'; margin and bench claims withdrawn",
+   "reason": "SCORE-INFLATION CHECK on the tree's headline axis. Comparing formulas across the corpus: Life Surge is (@tier)d(...)+@attr.awa and Green's Verdant Mend is (@tier)d(...)+@skills.green.mod — the same expression; Overgrowth's (@tier)d(...) is byte-identical to Green's Mender's Instinct. Only Surgical Precision's doubled tier multiplier is genuinely unmatched, and it is a level-6 node. Green also fields SIX healing talents (Mender's Instinct, Verdant Mend, Resurgent Growth, Natural Recovery, Vital Surge, Reknit Form) to Life's five plus an amplifier, and owns the only injury removal in the game. Score held at 5 on per-talent density and the rider-on-every-heal claim, which does survive."
+  },
+  {
+   "field": "axes.buff.evidence",
+   "from": "'single-target only (every party-wide buff in the game lives elsewhere)' — no named rival",
+   "to": "names deity/Sovereignty and deity/Power as the rivals; score held at the FLOOR of 4",
+   "reason": "LENS-B(b). A 4 means 'one of the better options in the game', which requires checking who else does it. Sovereignty is an entire nine-talent tree of ally elevation delivering from an ENTRY at L1 (Exalt steps the ally's damage die; Sovereign's Favor adds temp HP; Investiture of Authority makes it scene-long; the capstone gives +2 steps), where Life's two real buffs are a depth-3 capstone (L4) and a Green 3+ node (L6). Power's Investiture of Command buffs three allies at once. The profile never mentioned either."
+  },
+  {
+   "field": "axes.protection.evidence / uniqueOwnership[Lifeline]",
+   "from": "Shoulder the Oath cited as the only better protection talent; redirect claim unqualified",
+   "to": "adds leyline/White's Shared Burden as the third redirect; notes Shoulder the Oath's Covenant gate; restates Lifeline's true edge",
+   "reason": "UNIQUE-OWNERSHIP CHECK. A full-corpus scan for 'instead of / in their place / half that damage' returns exactly three redirects: Shared Burden (Reaction, 2 Investiture EVERY time, no heal), Shoulder the Oath (Reaction, but 'when an ally IN A COVENANT WITH YOU would take damage' — a prerequisite talent the profile omitted), and Lifeline. Lifeline's genuine distinction is that it is the only STANDING redirect — paid once for the scene, optional per instance, consuming no Reaction — not merely that it heals."
+  },
+  {
+   "field": "powerByDepth['depth 3+'].note and weakTalents[Apex Form].reason",
+   "from": "'it consumes and detonates nothing the tree accumulated — no Diagnosed marker, no mutation spend, no stacks'",
+   "to": "partly withdrawn: 'Active mutations on the target are doubled in effect' IS the capstone paying off the tree's stated signature resource",
+   "reason": "The card text contradicts the claim. Comparatively, the atlas's genuinely payoff-free capstones are deity/Power's Mantle of the Aspirant (self-buff) and deity/Sovereignty's Sovereignty (a bigger Exalt+Censure); Chaos, Destruction, Knowledge and Death all consume their resource. Life sits between. The surviving criticisms — the clause is inert until L6 while the capstone is reachable at L4, and it ignores the DIAGNOSED marker that is the tree's actual spine — are kept."
+  },
+  {
+   "field": "intentDrift.claims (new entry added)",
+   "from": "(absent)",
+   "to": "'LENS-B INTENT COLLISION: deity/Knowledge makes the same promise'",
+   "reason": "REQUIRED BY LENS d, and missing. Knowledge's intent file promises 'Insight stacks on a studied target escalate damage from you AND YOUR ALLIES', which is Life's 'diagnose then strike with precision' promise made twice. The implementations are near-verbatim (Studied Mark vs. Vital Diagnosis; Accumulate vs. Prognosis, same clause word for word; Pack Share's +Tier Vital vs. Vital Diagnosis's). Also records that the deterministic functional-overlap run does NOT rank Life<->Knowledge in the printed top 15 of 210 — a text-beats-classifier disagreement worth flagging."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets].delivered/evidence",
+   "from": "'VIOLATED on SIX of seven rows' presented as Life's failings",
+   "to": "same arithmetic, but split into three atlas-wide violations and three genuinely Life's own",
+   "reason": "LENS-B calibration. Special 0% is violated by ALL TEN deity trees, so it is a guide-vs-atlas finding, not a Life one; Death and Knowledge are also 0 Reaction / 0 Free Action. What IS Life-specific, verified by counting the whole atlas: 6x 1-Action is the highest count of any deity tree (Knowledge 5, Sovereignty 5, Death 4, others 2-3), one Passive against Knowledge's 3, and 2-Actions below floor against Power's 4."
+  },
+  {
+   "field": "intentDrift.claims[rank gates].evidence",
+   "from": "'tying the highest rank demand any deity tree makes'",
+   "to": "same, reframed as shared with Sovereignty and Knowledge, with the Life-specific consequence isolated",
+   "reason": "Verified atlas-wide: Life (Green 3+, Blue 3+), Sovereignty (White 3+, Black 3+) and Knowledge (Pack Share, Killing Blow) each carry exactly two rank-3 gates; the other seven carry none. The violation is real but shared. The part that is Life's alone is that its gated nodes are its two BEST mid-nodes, where Sovereignty's are scene-long upgrades of effects it already has at L1 — so only Life's Tier-1 game is hollowed out."
+  },
+  {
+   "field": "gaps (Focus / Plot Die entry)",
+   "from": "'No Focus interaction and no Opportunity interaction... it cannot participate in the Focus economy or the Plot Die economy at all'",
+   "to": "downgraded: no deity tree spends Focus and no deity tree touches the Plot Die; only the Opportunity absence is (mildly) Life's",
+   "reason": "SCORE/CLAIM DEFLATION CHECK. The measurements say Focus costers are the six heroic trees plus exactly 1 each in White/Blue/Black — zero deity. Plot Die is 3 talents / 2 trees (Red, Agent) — zero deity. Corpus scan of deity Opportunity use returns exactly one talent in all ten trees (Power's Momentum of Victory), so Life shares that with eight siblings. Presenting these as Life gaps overstated the case."
+  },
+  {
+   "field": "gaps (Reactions/Free Actions entry)",
+   "from": "'zero Reactions, zero Free Actions, zero Specials in nine talents' (unqualified)",
+   "to": "same fact, with the comparative note that Death and Knowledge match it and all ten deity trees are 0 Special",
+   "reason": "Same calibration issue: a gap that three of ten siblings share is a weaker finding than an unqualified one implies."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "'all three online by LEVEL 3, not level 2: one talent per level means Life Surge and Vital Diagnosis fill L1-L2 and Prognosis lands at L3'",
+   "to": "'all three online by LEVEL 3 in any legal order, and Prognosis itself is reachable at L2 (depth 1) if you open on Vital Diagnosis'",
+   "reason": "The dossier gives Prognosis depth 1 / earliest L2. The profile's ordering is only one of several legal ones and read as if forced; Vital Diagnosis (L1) > Prognosis (L2) > Life Surge (L3) is equally legal."
+  },
+  {
+   "field": "oneLineIdentity",
+   "from": "'produces the largest heals in the game'",
+   "to": "'owns the game's single largest heal expression'",
+   "reason": "Consequence of the healing correction above — the plural overstated a claim that rests on one level-6 talent, since Life Surge and Overgrowth are matched by Green's Verdant Mend and Mender's Instinct."
+  },
+  {
+   "field": "axes.debuff.evidence / axes.summons.evidence / axes.exploration_utility.evidence",
+   "from": "(comparators absent or partial)",
+   "to": "named the Sovereignty die-shrink line as a rival debuff; named Civilization/Death/Hunter as what a real summons axis looks like; named Scholar and Hunter as why exploration stays 2",
+   "reason": "Housekeeping under lens (b)/(e): each of these scores was defensible but the evidence did not show the cross-tree work the score implied. Scores unchanged (2 / 0 / 2)."
+  },
+  {
+   "field": "axes.damage_direct.evidence",
+   "from": "(no account of why 2 rather than 1 given that no Life talent attacks)",
+   "to": "adds the load-bearing textual reason — Vital Diagnosis says 'You AND allies', so the character's own free Strike carries the rider",
+   "reason": "CHECKED AND HELD. I tried to push this to 1 on the grounds that no talent of the tree's own ever rolls damage. The text stops that: the rider is not restricted to allies, so a Life character does add damage with a standard action. Held at 2, evidence corrected so the score is defensible rather than asserted."
+  },
+  {
+   "field": "NOT CORRECTED — verified and found sound",
+   "from": "",
+   "to": "",
+   "reason": "These claims survived a full-corpus check unchanged: (1) 'only stacking Deflect, 3 of 7 Deflect grants' — the seven are Guardian Stance, Withering Retort, Stonestance, Siege Form, Overgrowth, Dense Tissue, Apex Form; (2) 'only two overflow-to-temp-HP heals' — Life Surge and Overgrowth are the only talents in 365 with an excess-above-max clause; (3) 'only talent revealing MAX HP' — Studied Mark gives current HP only; (4) 'mutation appears in exactly three talents, all Life'; (5) 'Reknit Form is the only injury removal in 365'; (6) 'Life owns 5 of 11 heal formulas and the only doubled-tier one'; (7) 'no Life talent appears in advantage-ledger.md' — grepped, zero hits; (8) both L4 walks to Apex Form; (9) Surgical Precision is Blue-gated and Blue-tested but sizes off @skills.green.rank."
+  }
+ ]
+}

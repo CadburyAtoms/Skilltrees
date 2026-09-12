@@ -1,0 +1,639 @@
+{
+ "run": "wf_691be1e4-540",
+ "tree": "deity/Chaos",
+ "correctionCount": 42,
+ "profile": {
+  "atlas": "deity",
+  "tree": "Chaos",
+  "oneLineIdentity": "A single-target mark-and-detonate striker: it stamps an Omen on an enemy, then cashes it in for Deflect-ignoring spirit or vital damage plus Disoriented/Isolated, funded entirely by Investiture and hard-capped by an Omen limit equal to your Tier — the weakest of the atlas's three marker-detonation trees per Action, but the only tree that can force an enemy to reroll a live test downward.",
+  "axes": [
+   {
+    "axis": "damage_direct",
+    "score": 4,
+    "evidence": "5 of 9 talents carry a damage roll formula and ALL of it bypasses Deflect: Entropy Strike ([Tier][Die] spirit, 1 Action/1 Inv, depth 0/L1), Isolating Pressure ([Tier][Die]+AWA vital, only if the target already bears an Omen), Cascade Collapse ([Tier][Die] spirit per Omen removed), Isolating Ruin ([Tier][Die]+AWA vital, doubled against an Omen-bearer), Unravel Everything ([Tier][Die]+AWA spirit per Omen, or 2[Tier][Die] vital vs Isolated). Both entries are damage talents, so damage starts at depth 0 / L1. COMPARATIVE CHECK (this recount, from the damageType field across all 365): 5 Deflect-ignoring formulas is the most of any tree in the atlas — Order has 4 (all spirit), Knowledge 3 (all vital), leyline/Black 3 (vital), and Destruction's 6 formulas are energy/keen with only two Deflect-ignoring riders (Pinpoint Charge, The Unmooring). So Chaos genuinely leads on Deflect-ignoring formula count. Not a 5 because per-hit numbers are modest (1d6 for the whole of L1-L5), three of the five payloads cost 2 or 3 Actions, and Black leyline's Severance (Passive: ALL your attacks against Isolated characters deal vital instead of their normal type) converts unlimited damage for free, which out-volumes anything here."
+   },
+   {
+    "axis": "damage_scaling",
+    "score": 3,
+    "evidence": "Formulas are (@tier)d(2*rank+2), so 1d6 at Tier 1 rank 2 becomes 2d8 at Tier 2 rank 3, and the Omen cap (= tier) simultaneously doubles the targets Cascade Collapse and Unravel Everything can hit — a genuine multiplicative jump at L6. But repeatability is poor: the only every-round option is Entropy Strike (1 Action, 1 Investiture); every larger payload costs 2-3 Investiture out of a ~4 pool with only Void Sense (1/round, conditional) as bonus income. Comparative qualifier added this recount: Destruction carries the IDENTICAL tier cap on its markers (Set Charge: 'You may sustain up to your tier Charges'), so the L6 target-count step is a shared deity pattern, not a Chaos-specific scaling story."
+   },
+   {
+    "axis": "control",
+    "score": 3,
+    "evidence": "KEPT AT 3 AFTER COMPARATIVE CHECK. Disoriented (no reactions, obscured senses — real action denial) from three talents: Unweaving, Cascade Collapse, Unravel Everything. Counted across all 365 talent texts, Chaos's THREE Disoriented instances are the most of any tree in the atlas (Order 2, Death 2, White 2, Envoy 2; every other tree 0-1), so 'one of the better options in the game' is defensible. Isolated from two: Isolating Pressure, Isolating Ruin. CORRECTED caveat: Isolated is not a canon condition (absent from the primer's condition list) and denies the target nothing by itself — it is an enabler for this tree's own vital payloads and for Black's kit — so the control score rests on the three Disoriented riders, not on five talents. Deflating caveats: all three Disoriented instances are riders bundled onto a damage payload, two of them gated on an Omen existing, and nothing here stuns, restrains or immobilises — leyline/Blue's Ghostly Walls (movement rate 0) and Absolute Stillness (no Reactions + disadvantage on Physical) are harder control than anything Chaos owns."
+   },
+   {
+    "axis": "debuff",
+    "score": 3,
+    "evidence": "CORRECTED EVIDENCE, SCORE UNCHANGED. Four talents impose a non-damage penalty: Unweaving ends one magical buff, stance, or sustained effect; Shatter Focus (Reaction, 1 Investiture) removes an Omen to make an enemy 'reroll and take the lower result' — which by the primer's own implementation (hasDisadvantage -> roll 2, keep lowest) IS the disadvantage state, imposed after the roll has landed; Isolating Pressure and Isolating Ruin apply Isolated. The profile under test described Shatter Focus as stripping 1 focus on any failed test; that text belongs to leyline/Red's identically-named talent and is deleted here — see corrections. Unweaving's uniqueness is real but narrower than 'the only dispel in 365': Blue/Calculation's Counterspell (2 focus + 1 Investiture, Blue vs Cognitive, 'On a success, the talent fails') and White/Accord's Counterpoint ('negate the effect and Disorient the enemy') both counter magic; verified by grepping all 365, Unweaving is the only one that ends an ALREADY-RUNNING sustained effect, and its value is set entirely by what the opposition is running. Isolated is also a live debuff for this specific character: every Chaos PC is Black 2+ and carries the free Black Attunement Key, whose Draw Mana rider Weakens enemies with no ally within 5 ft (whether an APPLIED 'Isolated' status satisfies a rider written against real geometry is not settleable from the data — flag for the table)."
+   },
+   {
+    "axis": "protection",
+    "score": 0,
+    "evidence": "Read all 9 talents: no damage reduction, temp HP, shield, resistance, interception or redirection. 'Damage' appears only as damage dealt. Zero mitigation false positives to discount."
+   },
+   {
+    "axis": "healing",
+    "score": 0,
+    "evidence": "Dossier header records 5 damage formulas and 0 heal formulas, and no talent text restores Health, Focus or Investiture to anyone but the caster (Void Sense returns Investiture to self only, scored under resource_economy)."
+   },
+   {
+    "axis": "buff",
+    "score": 0,
+    "evidence": "Zero Chaos talents appear in advantage-ledger.md (re-verified this recount by grepping the ledger for 'Chaos' — no hits), and no talent grants an ally a bonus, reroll or advantage. Nothing here grants YOU an advantage either. The atlas's actual advantage-conversion talent is Red's Emotional Overload ('When a character gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test'), which is in a different tree — the path description's 'advantage stolen' is not implemented here as a grant of any kind."
+   },
+   {
+    "axis": "action_economy",
+    "score": 0,
+    "evidence": "DEFLATION CHECK RUN, SCORE HELD AT 0. No talent grants an action, free action, extra reaction, or out-of-turn activity. Shatter Focus is a Reaction that CONSUMES your one Reaction per round rather than granting one — by the primer's rule that a talent reproducing a standard action is worth roughly zero, giving a character something to spend a Reaction they already had on is not action economy. Note the contrast that makes this a real gap rather than a neutral zero: Destruction's Set Charge detonates its markers as a FREE ACTION, while Chaos's equivalents cost 2-3 Actions. Enemy reaction denial via Disoriented is scored under control."
+   },
+   {
+    "axis": "mobility",
+    "score": 0,
+    "evidence": "No movement, teleport, reposition or speed effect anywhere in the tree; Isolated is a relational state, not forced movement. The movement talents that interact with Isolation (Black's Cruel Step, Unnerving Approach) are in the leyline tree, not here."
+   },
+   {
+    "axis": "terrain_zone",
+    "score": 0,
+    "evidence": "Omens are markers on creatures, not squares. No difficult terrain, hazard, wall, zone or persistent battlefield feature in any of the 9 talents. Direct contrast within the same mechanical family: Destruction's Charges leave dangerous terrain for the scene at every detonation; Chaos's Omens leave nothing behind when they go off."
+   },
+   {
+    "axis": "information",
+    "score": 1,
+    "evidence": "Void Sense: 'You sense the location of every enemy bearing your Omen through any obstruction' — genuine see-through-walls detection, but only of targets you already successfully marked, so it never finds anything unknown, and the sentence rides on a Passive whose other half is the tree's Investiture engine. One talent, narrow scope, cannot scout: that is the rubric's 1 ('one incidental talent, or a rider on something else'), not its 2. Comparative anchor: Knowledge's Studied Mark reveals 'current HP, conditions, and defenses' and Pack Share broadcasts that to the whole party — that is what information 3+ looks like on a 9-talent deity tree."
+   },
+   {
+    "axis": "social_influence",
+    "score": 0,
+    "evidence": "No persuasion, command, deception, reputation or Influence-test talent; every test is Blue or Black vs Cognitive/Physical/Spiritual for a hostile effect."
+   },
+   {
+    "axis": "exploration_utility",
+    "score": 1,
+    "evidence": "Only incidental: Unweaving can end a magical sustained effect (a ward or running ritual out of combat) and Void Sense sees through obstructions. Both are combat talents with an occasional out-of-combat edge; nothing addresses travel, crafting, survival or downtime."
+   },
+   {
+    "axis": "summons",
+    "score": 0,
+    "evidence": "No companion, construct, minion or animated ally anywhere in the tree."
+   },
+   {
+    "axis": "resource_economy",
+    "score": 2,
+    "evidence": "Void Sense is the single generator: 'Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.' A real self-triggering engine (your own Entropy Strike sets it off) and what makes the tree playable past round two — at Tier 1 it literally doubles Draw Mana's income. HELD at 2 rather than raised on the comparative check: the deterministic census puts Chaos at 1 regen / 8 costers, which is exactly the deity median (Death 1/8, Life 1/8, Sovereignty 1/7, Knowledge 1/6), so this is the normal amount for the atlas, not a strength — you would not pick this tree for resource generation. Its prereq is Isolating Pressure — the BLACK entry — but what it actually depends on is an Omen source, and both pre-capstone Omen sources sit on the Blue branch, so a pure-Black-branch build owns a completely inert Passive. One talent; the tree generates no Focus, Opportunity or Plot Die value at all."
+   }
+  ],
+  "damageAccounting": {
+   "damageTalents": [
+    {
+     "name": "Entropy Strike",
+     "dice": "[Tier][Die] spirit — (@tier)d(2*@skills.blue.rank+2); 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3",
+     "action": "1 Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Cost 1 Investiture. Conditional only on the Blue vs Cognitive test succeeding — no Omen or state prerequisite. The tree's baseline repeatable attack AND its only pre-capstone Omen generator that also deals damage. Spirit ignores Deflect. It is also the only talent that STATES the Omen cap."
+    },
+    {
+     "name": "Isolating Pressure",
+     "dice": "[Tier][Die] + Awareness vital — (@tier)d(2*@skills.black.rank+2)+@attr.awa; 1d6+AWA at Tier 1",
+     "action": "1 Action",
+     "depth": 0,
+     "earliestLevel": 1,
+     "conditional": true,
+     "note": "Cost 2 Investiture. RIDER, heavily conditional: damage fires only if the target already bears an Omen, and Omens come only from Entropy Strike or Spreading Omen — both on the OTHER branch. A player taking only this entry deals zero damage with it; it applies Isolated (until the start of YOUR next turn) and nothing else. Vital ignores Deflect. COMPARATIVE (added this recount): Knowledge's second entry, Predatory Strike, is the same slot done right — 'deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target' — a minimum floor plus self-generation. Isolating Pressure has neither."
+    },
+    {
+     "name": "Cascade Collapse",
+     "dice": "[Tier][Die] spirit per Omen removed — (@tier)d(2*@skills.blue.rank+2); 1d6 at Tier 1",
+     "action": "2 Actions",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "Cost 2 Investiture. Conditional on the Blue test AND on Omens existing. Nominally an AoE, but the Omen cap equals Tier, so at Tier 1 (every level it is reachable before L6) it removes at most ONE Omen: single-target 1d6 + Disoriented for 2 Actions and 2 Investiture. Its structural twin, Destruction's Cascading Failure, sits at the same depth for the same 2 Actions / 2 Investiture, but each Charge it detonates is already a 10-ft radius."
+    },
+    {
+     "name": "Isolating Ruin",
+     "dice": "[Tier][Die] + Awareness vital, plus an additional [Tier][Die] + Awareness vital if the target bears an Omen — 2d6+2AWA max at Tier 1, 4d8+2AWA at Tier 2",
+     "action": "2 Actions",
+     "depth": 2,
+     "earliestLevel": 3,
+     "conditional": true,
+     "note": "Its damage requires a successful Black vs Physical test, exactly the standard by which Entropy Strike is flagged conditional. Cost 2 Investiture. The base half needs no Omen — the only mid-tree damage that does not — while the doubling half is an Omen rider. Applies Isolated until the start of THEIR next turn, a DIFFERENT duration from Isolating Pressure's 'your next turn'. Best damage-per-Action in the tree, but only against an Omen-bearer. Its prose prereq field is empty; its managed prerequisites come entirely from connections (Unweaving, Void Sense), both Black-branch."
+    },
+    {
+     "name": "Unravel Everything (capstone)",
+     "dice": "[Tier][Die] + Awareness spirit per Omen removed; 2[Tier][Die] vital instead (no Awareness adder) if the bearer is Isolated — (@tier)d(2*@skills.blue.rank+2)+@attr.awa",
+     "action": "3 Actions",
+     "depth": 3,
+     "earliestLevel": 4,
+     "conditional": false,
+     "note": "It has no test (activation=utility), it self-supplies the Omens it then removes, and it needs only enemies in Attunement Range — it cannot miss. Cost 3 Investiture, with NO once-per-scene limiter. VERIFIED THIS RECOUNT AGAINST ALL TEN DEITY CAPSTONES: it is the ONLY one of ten without one — Final Decree, Magnum Opus, Raise Dead, The Unmooring, Thread of Inevitability, Mantle of the Aspirant, Apex Form, The Final Study and Sovereignty all carry 'Once per scene'. Target count = Omen cap = Tier, so at L4-L5 this 3-Action, 3-Investiture capstone hits exactly ONE enemy; two only from L6. TEXT AMBIGUITY: 'instead take 2[Tier][Die] vital damage' replaces the damage clause, and it is unclear whether an Isolated bearer is still Disoriented."
+    }
+   ],
+   "countReal": 5,
+   "countFalsePositiveMitigation": 0,
+   "earliestDamageDepth": 0,
+   "earliestDamageLevel": 1,
+   "peakDamagePerAction": "Recomputed and re-verified this recount. At Tier 2 rank 3, [Tier][Die] IS 2d8, so the capstone's best case of 8d8 = 4 [Tier][Die] over 3 Actions = 1.33 [Tier][Die] per Action — not the 2.7 [Tier][Die] the original profile claimed, which divided 8d8 by 3 Actions and then mislabelled a d8 as a [Tier][Die]. Ladder: (a) Sustainable floor — Entropy Strike, 1 Action / 1 Investiture for 1 [Tier][Die] spirit = 1d6 (avg 3.5) at L1-L5, 2d8 (avg 9) at L6+. (b) Isolating Ruin against an Omen-bearer: 2[Tier][Die] + 2xAWA vital over 2 Actions = 1 [Tier][Die] + 1 AWA per Action (avg 9+AWA per Action at Tier 2), all Deflect-ignoring — the tree's best single-target rate. Against a target with NO Omen it is [Tier][Die]+AWA over 2 Actions = avg 1.75 + 0.5xAWA per Action at Tier 1, BELOW Entropy Strike's 3.5 until Awareness reaches 4. (c) Capstone at the deepest reachable point (Tier 2, rank 3, Omen cap 2): against two non-Isolated enemies, 2 x (2d8 + AWA) = 4d8 + 2AWA (avg 18 + 2AWA) over 3 Actions = avg 6 + 0.67xAWA per Action — WORSE per Action than Isolating Ruin. Against two Isolated enemies, 2 x 4d8 = 8d8 (avg 36) = 12 per Action, which beats Isolating Ruin's rate only while Awareness is under 3, though it does spread across two enemies. (d) That 8d8 peak is not self-reachable: Isolating Pressure (1 Action) + Unravel Everything (3 Actions) is 4 Actions against a 3-Action Slow turn, and both Isolated windows expire at the start of a turn (yours, or the target's) before you could act again. The capstone's best clause depends on external forced movement — and the cleanest source is one the same character can own, Black leyline's Unnerving Approach ('push it [Size] feet directly away, potentially leaving the target Isolated') — or on enemies already standing alone. At Tier 1 the same capstone is one target for 1d6+AWA, or 2d6 if that target happens to be Isolated.",
+   "repeatability": "Only Entropy Strike (1 Action, 1 Investiture) is truly every-round. Every other damage talent costs 2-3 Investiture against a ~4 pool with Draw Mana returning 1 Investiture per Action at Tier 1 and Void Sense returning at most 1 per round, so the 2-Action payloads run roughly every other round and the capstone once. CORRECTED: the profile under test said 'nothing in the tree carries a per-scene or per-round use limit' — Void Sense's Investiture rebate is explicitly 'Once per round'. What IS true, and is stronger than the original claim, is that no talent carries a per-SCENE limit, which makes Chaos's capstone the only re-firable capstone among the ten deity trees. The throttle is purely Investiture, so an outside Investiture source removes it.",
+   "verdict": "A genuine damage tree, unusually so for its density: 5 of 9 talents deal damage, both entries are damage talents, and 100% of the damage is spirit or vital — it never touches Deflect, and 5 Deflect-ignoring formulas is the highest count in the atlas (Order 4, Knowledge 3, Black 3). But raw numbers are small (1d6 for the entire Tier 1 band), most big hits are gated behind an Omen the other branch has to supply, and the two 'area' pieces are single-target until level 6 because the Omen cap equals Tier — a cap Destruction shares while still getting a 10-ft radius per marker. The recount confirms 5 real damage talents and ZERO mitigation false positives — the damage-census SOURCE 4 / SRC+AMP 1 and the 5 authored roll formulas agree with the text, and no unworded damage source (summon, hazard, zone, Afflicted tick, redirect) was missed. The damage claim that did not survive checking was the capstone's per-Action rate: corrected downward by half, and shown to be externally dependent."
+  },
+  "powerByDepth": [
+   {
+    "band": "depth 0 entries",
+    "rating": 3,
+    "exemplars": "Entropy Strike; Isolating Pressure",
+    "note": "Badly asymmetric entries. Entropy Strike is an excellent turn-one package — 1 Action, 1 Investiture, [Tier][Die] spirit AND it generates the tree's resource. Isolating Pressure costs twice as much (2 Investiture, half the L1 pool — the deity guide's own scale calls 2 a 'tier-2 / synthesis' price), needs a resource it cannot produce, and delivers only the Isolated state. The deity guide's principle 1, 'a player who picks either entry should feel the deity's archetype on turn one', fails here — and the comparative case proves it is a solved problem elsewhere rather than an inherent one: Knowledge's second entry Predatory Strike places its own Insight and floors its damage at a minimum 1 stack; Fate's second entry Snare generates Snares directly."
+   },
+   {
+    "band": "depth 1-2",
+    "rating": 3,
+    "exemplars": "Isolating Ruin; Void Sense; Shatter Focus; Unweaving — against Spreading Omen and Cascade Collapse",
+    "note": "CORRECTED: Shatter Focus moves from this band's negative column to its positive one (the case against it rested on another tree's talent text — see corrections), and Cascade Collapse takes its place in the negative column, which the profile under test's own bottomThree already implied but its powerByDepth exemplars omitted. The widest quality spread in the tree. Isolating Ruin (best damage/Action against an Omen-bearer), Void Sense (only economy and only sensor), Shatter Focus (1 Investiture Reaction, no test, forces an enemy to reroll a live test downward — the only forced enemy reroll in 365 talents) and Unweaving (the only removal of an already-running sustained effect in 365) are all worth the pick; Spreading Omen is functionally dead below L6 and Cascade Collapse is overcosted at Tier 1."
+   },
+   {
+    "band": "depth 3+",
+    "rating": 3,
+    "exemplars": "Unravel Everything",
+    "note": "Rated 3 as reached (L4, Tier 1: one target, [Tier][Die]+AWA — or 2[Tier][Die] if it happens to be Isolated — for a whole 3-Action turn and 3 Investiture) and 4-5 once Tier 2 lands (two targets, no test to miss, and the only deity capstone with no once-per-scene limiter, so it can fire again as soon as Investiture allows). Correct in shape — it detonates what the tree banks — but its power is a step function on the tier boundary, not on depth, and its premium clause cannot be set up by this tree inside one turn. Destruction's The Unmooring is the same slot at the same price done better: every detonation becomes a 15-ft radius that ignores deflect and the scene's dangerous terrain merges permanently."
+   }
+  ],
+  "frontOrBackLoaded": "Back-loaded, and unusually it back-loads on TIER rather than on depth. Every NODE in the 9-talent tree is depth-reachable by level 4 (the deepest talent sits at depth 3) — owning all nine still takes nine picks, i.e. level 9. What matters is that the tree's defining multi-target design — Spreading Omen, Cascade Collapse, Unravel Everything — is inert until the Omen cap (= Tier) rises from 1 to 2 at level 6. From L1 to L5 this plays as a modest single-target striker whose deepest talents are worse per Action than its own entry. Comparative qualifier added this recount: the tier-cap-on-markers back-load is shared with Destruction (Set Charge caps Charges at your tier too), but Destruction's markers are 10-ft AoE at cap 1, so its Tier-1 experience is not degraded the way Chaos's is. The back-loading is Chaos-specific in its severity, not in its mechanism.",
+  "uniqueOwnership": [
+   "The Omen: the only banked-misfortune marker in the atlas placed on a CREATURE and detonated for damage. Verified Chaos-exclusive — a grep of all 365 talent texts returns 'Omen' only in these nine. CORRECTED: the 'hard simultaneous cap equal to your Tier' is NOT part of the uniqueness — Destruction's Set Charge carries the identical constraint ('You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene'). Destruction's Charge is the nearest shape overall and can also be placed on terrain or objects.",
+   "Unweaving is the only talent in all 365 that ends an ALREADY-RUNNING magical buff, stance, or sustained effect — re-verified this recount by grepping every talent text for dispel / end-sustained / negate. It is NOT the only counter-magic: Blue/Calculation's Counterspell (2 focus + 1 Investiture, Blue vs Cognitive, 'On a success, the talent fails') and White/Accord's Counterpoint ('negate the effect and Disorient the enemy') both counter magic as it lands. Both are interrupts; only Unweaving removes something already running. Every Chaos character is Blue 2+ and so can plausibly own Counterspell as well, making the pair complementary rather than the niche being empty.",
+   "Shatter Focus is the atlas's ONLY forced ENEMY reroll: a grep of all 365 for reroll / take-the-lower returns exactly three talents — heroic/Agent's Opportunist and Double Down (both reroll your OWN plot die) and this one, which makes an enemy reroll a live test and keep the lower result, post-roll, with no test of your own. That is the disadvantage state applied after the dice have already landed, which nothing else in the atlas does. THIS REPLACES the profile under test's 'only focus-strip Reaction' claim, which was sourced from a different tree's talent.",
+   "Chaos is the only tree that APPLIES Isolated as a status (Isolating Pressure, Isolating Ruin) — but CORRECTED from 'the only tree that produces it': Black's Unnerving Approach manufactures the same state by forced movement ('push it [Size] feet directly away, potentially leaving the target Isolated'). Black's Sapping Hex, Severance and Cruel Step only READ it. Black leyline exploits enemies who happen to be alone; Chaos declares the state outright — and it stacks with Black's own Draw Mana rider, which Weakens enemies with no ally within 5 ft.",
+   "The only payload that converts an enemy's isolation into a damage TYPE swap: Unravel Everything turns [Tier][Die]+AWA spirit into 2[Tier][Die] vital against Isolated bearers.",
+   "The only detonate-all-markers-simultaneously effect that also self-supplies its own markers in the same activation (Unravel Everything places and removes in one talent, with no test). Destruction's Cascading Failure and The Unmooring also detonate simultaneously; neither self-supplies.",
+   "ADDED THIS RECOUNT: Unravel Everything is the only one of the ten deity capstones with no 'Once per scene' limiter — verified against all ten. Simultaneously a design-guide miss and the tree's one structural advantage at Tier 2."
+  ],
+  "gaps": [
+   "Cannot heal, shield, grant temp HP, or reduce incoming damage in any way — a Chaos-only character contributes nothing while the party is being ground down.",
+   "Cannot help an ally at all. Zero buffs, zero advantage granting (no Chaos talent appears in the advantage ledger), zero Aid-likes, zero condition removal. No talent here a teammate ever benefits from except indirectly.",
+   "No action economy of its own — no extra actions, no free actions, and zero Specials. The Special miss is atlas-wide (the deterministic measurement records zero Special talents in all ten deity trees) so it is not a Chaos fault; the Free-Action miss is, and it bites: Destruction detonates its markers as a FREE ACTION while every Chaos effect costs a full Action or more.",
+   "No mobility whatsoever: cannot move, reposition, disengage or escape with any talent here — which is also why the capstone cannot set up its own best clause.",
+   "No zones, terrain or persistent battlefield presence — nothing happens on a turn you do not spend Actions, and unlike Destruction's Charges its markers leave nothing behind when they go off.",
+   "No social play. In any negotiation, court or interrogation scene the player sits on their hands; there is no Influence, Deception, Persuasion or reputation talent.",
+   "Almost no exploration or downtime value: no travel, survival, crafting, lockpicking or knowledge. Void Sense only finds things you already marked, so it cannot scout.",
+   "No answer to a target that resists your tests. Every damage talent except the capstone needs a successful Blue or Black test first; there is no reroll for yourself, no advantage source, and not one of the nine talents carries a failure clause — every non-Passive reads 'On success, …' and stops.",
+   "Cannot pressure more than one enemy before level 6. Against a group at L1-L5 the Omen cap of 1 makes every 'area' talent single-target — and unlike Destruction, whose single Tier-1 Charge is still a 10-ft radius, Chaos's single Omen hits exactly one creature.",
+   "CORRECTED: no Focus, Opportunity or Plot Die interaction in EITHER direction. The profile under test credited the tree with stripping focus from a target; it does not — no Chaos talent mentions focus outside the title 'Shatter Focus'. Investiture is the sole currency, cutting the tree off from the Opportunity-spend and Focus-economy seams the rest of the system uses.",
+   "THE STRUCTURAL FAULT, and it IS genuinely Chaos-specific: the Black branch cannot produce the resource all four of its talents want. Isolating Pressure, Unweaving, Void Sense and Isolating Ruin each carry an Omen rider, and not one of them can place an Omen. A player who walks only the Black branch owns a Passive (Void Sense) that is 100% inert and three talents running at half text. Death's Black branch (Withering Touch -> Consuming Decay / Death Ward -> Necrotic Cascade) is self-sufficient; Knowledge's second entry places its own Insight with a minimum-1 floor; Fate's second entry generates Snares. Chaos is the deity tree where this was not solved.",
+   "CORRECTED FROM THE PROFILE UNDER TEST, AND DEMOTED: the claim 'neither mid-tree synthesis node actually synthesises' is factually true of Chaos (Cascade Collapse's parents are both Blue-branch, Isolating Ruin's both Black-branch) but is NOT a Chaos gap. I rebuilt the connection graph for all ten deity trees and every one is identical in shape: 2 entries -> 2 single-parent children each -> 2 depth-2 nodes each rooted in exactly ONE entry -> a capstone joining both. The deity guide's 'tier-3 synthesis: one parent from each branch' is unimplemented across the entire deity atlas. Filing it against Chaos alone was the original profile's error."
+  ],
+  "weakTalents": [
+   {
+    "name": "Spreading Omen",
+    "reason": "Functionally dead for the whole of Tier 1. It places an Omen on the target 'and one additional enemy within 10 ft of them, subject to your Omen cap' — and the cap is your Tier, which is 1 at levels 1-5, with 'placements beyond this cap are lost'. So for the entire band in which it is reachable it places exactly one Omen for 1 Action and 1 Investiture: Entropy Strike with the [Tier][Die] spirit damage deleted, at the identical Action and Investiture price and off the identical Blue vs Cognitive test. Even at Tier 2 it only beats Entropy Strike when you have two free Omen slots and no interest in damage."
+   },
+   {
+    "name": "Cascade Collapse",
+    "reason": "Overcosted at the tier where it is reached: 2 Actions and 2 Investiture at depth 2 for [Tier][Die] spirit + Disoriented on ONE target (cap = Tier = 1 until L6). Two casts of Entropy Strike deal the same 2 x [Tier][Die] for the same 2 Investiture and leave you holding an Omen, but they buy no Disoriented and need two successful tests rather than one; and its depth-peer Isolating Ruin deals up to 2[Tier][Die] + 2xAWA vital for identical cost, but only against an Omen-bearer. Cascade Collapse is therefore paying two Actions and two Investiture for a single Disoriented — a poor trade, not an empty one. Its structural twin at the same depth and price in Destruction, Cascading Failure, detonates markers that are each already a 10-ft radius. It justifies itself at L6+."
+   },
+   {
+    "name": "Isolating Pressure",
+    "reason": "Below the curve for an ENTRY node, and the tree's clearest structural fault. It costs 2 Investiture out of a ~4 starting pool — the deity guide's own scale calls 2 a 'tier-2 / synthesis' price, and the OTHER entry costs 1 — and its damage clause is conditional on an Omen this branch has no way to create. A player taking only this entry has bought a 1-Action, 2-Investiture 'apply Isolated' button and never sees the deity's signature resource: exactly the 'single-entry tree' pitfall the guide names. The comparative proof that this is a solvable design fault rather than an inherent one is Knowledge's Predatory Strike, the same slot in the same atlas, which places its own Insight and floors its damage at a minimum of 1 stack."
+   },
+   {
+    "name": "Unravel Everything",
+    "reason": "Not a never-pick, but overcosted as reached. At L4-L5 it spends your entire Slow turn (3 Actions) and 3 of ~4 Investiture to hit ONE enemy for [Tier][Die] + Awareness. Isolating Ruin against an Omen-bearer deals DOUBLE that (2[Tier][Die] + 2xAWA) for two-thirds the Actions and two-thirds the Investiture. Even at Tier 2 against two non-Isolated enemies the capstone's per-Action rate (avg 6 + 0.67xAWA) sits below Isolating Ruin's (avg 9 + AWA); it clearly leads only when both targets are already Isolated, which this tree cannot arrange for itself in one turn. Its real compensations are that it cannot miss, that it self-supplies its Omens, and — verified against all ten deity capstones — that it is the only one that can be cast more than once per scene."
+   }
+  ],
+  "intentDrift": {
+   "claims": [
+    {
+     "claim": "'A disciple of Maelith forces Complications onto an enemy's actions' — the generation mechanism is enemy misfortune / Complications.",
+     "delivered": "NOT DELIVERED",
+     "evidence": "The word 'Complication' appears in zero of the 9 talents. Verified across all 365 this recount: Complication appears in exactly five talents, none in Chaos, and four of the five are ALLY-side Complication MITIGATION (White's Pillar of Order, Agent's Sure Outcome and Double Down, Leader's Cutthroat Tactics, Scholar's Contingency). Omens are placed by YOU succeeding on a Blue vs Cognitive test (Entropy Strike, Spreading Omen) or simply spent into being by the capstone. The design guide itself records the resource as 'TBD — likely a Complication token banked by the player'; what shipped is a mark you apply by hitting. Chaos is also the only path description in the atlas that promises Complications, so no other tree covers this seam either."
+    },
+    {
+     "claim": "'then banks that misfortune and spends it: as focus seized'",
+     "delivered": "NOT DELIVERED",
+     "evidence": "CORRECTED EVIDENCE. No Chaos talent mentions focus in any form — verified against all nine texts AND the authored overlay in data/authored/deity-chaos.json. There is NO authored divergence anywhere in this tree: Shatter Focus's authored description is identical to data/domain.json's, and the Chaos dossier carries no AUTHORED OVERRIDE DIVERGES marker (the only four in the atlas are leyline/Blue, leyline/Red and leyline/White x2). Shatter Focus spends an Omen to force a reroll-lower, which is not focus seizure. The atlas's actual focus-strip Reaction is leyline/Red's talent, ALSO NAMED Shatter Focus ('When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus', Reaction, cost —, depth 2, specialty Frenzy) — a different talent in a different tree, which the profile under test mistook for a Chaos authored override."
+    },
+    {
+     "claim": "'... as advantage stolen'",
+     "delivered": "PARTIAL",
+     "evidence": "UPGRADED from NOT DELIVERED. No Chaos talent appears in advantage-ledger.md and nothing here grants, transfers or redirects an advantage, so nothing is 'stolen' in the literal sense. But Shatter Focus spends a banked Omen to make an enemy 'reroll and take the lower result' — and by the primer's own implementation (hasDisadvantage -> d20.number = 2, modifier 'kl') that IS the disadvantage state, applied to a live test. So the 'bank misfortune -> spend it to take an enemy's good roll away' half of the promise does land, once, on one talent. The atlas's literal advantage-conversion talent is Red's Emotional Overload, not anything here."
+    },
+    {
+     "claim": "'... as Vital wounds carved into a target left isolated and alone'",
+     "delivered": "DELIVERED",
+     "evidence": "Isolating Pressure ([Tier][Die]+AWA vital on an Omen-bearer, applies Isolated), Isolating Ruin ([Tier][Die]+AWA vital doubled on an Omen-bearer, applies Isolated), Unravel Everything (2[Tier][Die] vital instead of spirit against Isolated bearers). The most cleanly executed thing in the tree — with the caveat that the capstone's clause cannot be self-set-up in one turn."
+    },
+    {
+     "claim": "Design guide colour split: 'Blue tests for forcing Complications and disrupting cognition; Black tests for vital-damage payloads and exploiting Isolation.'",
+     "delivered": "DELIVERED (mechanically; the 'Complications' word is still fiction)",
+     "evidence": "Blue tests vs Cognitive on Entropy Strike, Spreading Omen, Cascade Collapse — all spirit damage and Disoriented. Black tests vs Physical/Spiritual on Isolating Pressure, Unweaving, Isolating Ruin — all vital damage and Isolated. The split is textbook; only the label 'Complications' is unimplemented. NOTE the disagreement between the two intent sources: the path description promises focus-seizure and advantage-theft, the design guide promises a Complication token — the talents implement the guide's colour split faithfully and neither source's stated resource. This is also the only deity gate the gate-audit calls clean (Blue tested 3x, Black tested 3x, both sizing damage dice)."
+    },
+    {
+     "claim": "Design guide loop: 'Pressure (Blue) -> Complication generated -> bank -> spend on Isolation-payoff (Black).'",
+     "delivered": "PARTIAL",
+     "evidence": "The bank-and-spend half is real and pervasive — 7 of 9 talents reference the Omen. The generation half is wrong: you generate by landing an attack, not by pressuring an enemy into failure. And the Blue->Black direction of the loop is exactly what the tree's structure forbids from the Black side: all four Black-branch talents consume Omens and none can generate one, so the loop only runs if the player has bought into the Blue branch first."
+    },
+    {
+     "claim": "Design guide principle 1: 'A new player who picks either entry should feel the deity's archetype on turn one.'",
+     "delivered": "VIOLATED",
+     "evidence": "Isolating Pressure cannot place an Omen and its damage clause requires one. Taken alone it is an 'apply Isolated' button for 1 Action and 2 Investiture, with none of the signature resource. Only Entropy Strike delivers the fantasy standalone. Consequently a pure Black-branch build (Isolating Pressure -> Unweaving / Void Sense -> Isolating Ruin) contains a talent, Void Sense, that is completely inert — both of its sentences key off an Omen it can never obtain. COMPARATIVE CHECK CONFIRMS this is a Chaos-specific miss and not a deity-wide one: Knowledge's Predatory Strike and Fate's Snare both generate their own tree's resource from the second entry, and Death's second-branch talents do not depend on the first branch's resource at all."
+    },
+    {
+     "claim": "Design guide prerequisite pattern: 'Tier-3 synthesis: prereq [Tier-2 talent A] or [Tier-2 talent B] FROM EACH BRANCH', plus principle 3, 'Tier-3 synthesis nodes bring the two halves together.'",
+     "delivered": "VIOLATED — BUT SYSTEM-WIDE, NOT CHAOS-SPECIFIC",
+     "evidence": "CORRECTED THIS RECOUNT. Cascade Collapse's connections are Spreading Omen and Shatter Focus, both children of Entropy Strike on the Blue branch; Isolating Ruin's are Unweaving and Void Sense, both children of Isolating Pressure on the Black branch. Neither depth-2 node takes one parent per side. TRUE — but I rebuilt the connection graph for all ten deity trees and every one is identical in shape: Order, Civilization, Death, Destruction, Fate, Power, Life, Knowledge and Sovereignty ALL root each depth-2 node in exactly ONE entry and join the two branches only at the capstone. The guide's rule is unimplemented across the entire deity atlas. The original profile filed this as a Chaos fault; the comparative check refutes that, and the finding survives only as an atlas-level one."
+    },
+    {
+     "claim": "Design guide cost scale: '3 Investiture + once-per-scene = capstone.'",
+     "delivered": "VIOLATED",
+     "evidence": "STRENGTHENED from PARTIAL by the comparative check. Unravel Everything is priced at 3 Investiture as the scale prescribes but carries NO once-per-scene limiter — and I checked all ten deity capstones: Final Decree, Magnum Opus, Raise Dead, The Unmooring, Thread of Inevitability, Mantle of the Aspirant, Apex Form, The Final Study and Sovereignty ALL carry 'Once per scene'. Chaos is the sole exception in ten. Its throttle is purely the Investiture pool, which makes 'once per fight in practice' an economic inference rather than a rule; an outside Investiture source removes it. The only use limit anywhere in the tree is Void Sense's 'Once per round'."
+    },
+    {
+     "claim": "Design guide principle 5: 'the homebrew resource should be generated by an entry and spent by most of the rest of the tree.'",
+     "delivered": "PARTIAL",
+     "evidence": "Spend side excellent — Isolating Pressure, Shatter Focus, Unweaving, Void Sense, Cascade Collapse, Isolating Ruin and Unravel Everything all key off the Omen. Generation is single-sourced on ONE entry (Entropy Strike), with Spreading Omen a same-branch duplicate and the capstone self-supplying. The resource-economy census agrees: Omen 3 producers / 2 consumers, a sealed loop entirely inside this tree. The guide's wording is satisfied on its face ('generated by an entry'); the failure is that it is generated by only ONE of the two entries, which principle 1 forbids."
+    },
+    {
+     "claim": "Design guide pitfall: 'a capstone should pay off what the tree has been building.'",
+     "delivered": "PARTIAL",
+     "evidence": "Shape is right — Unravel Everything places and detonates every Omen with no test required. But its scale is the Omen cap, which equals Tier, so at the level it becomes reachable (L4) it detonates exactly one Omen for 3 Actions and 3 Investiture, and its premium clause needs an Isolated target the tree cannot produce inside a single turn. The payoff is deferred to a level gate the tree's structure does not signal. Destruction's The Unmooring is the same slot at the same price done better: same tier cap on markers, but every detonation becomes a 15-ft radius that ignores deflect and the whole scene's dangerous terrain merges permanently."
+    },
+    {
+     "claim": "Design guide action-type targets for deity trees: Passive ~25-30%, Special ~15-20%, Action ~25-35%, 2 Actions ~15-25%, Free Action ~10-15%, Reaction ~10%, 3 Actions capstone-only.",
+     "delivered": "PARTIAL",
+     "evidence": "Recounted from the nine dossier entries and confirmed: Passive 1/9 (11%), 1 Action 3/9 (33%), 2 Actions 3/9 (33%), Reaction 1/9 (11%), 3 Actions 1/9 (the capstone), Special 0/9, Free Action 0/9 — nine talents, arithmetic correct. Action (33% vs 25-35%) and Reaction (11% vs ~10%) are both ON target, and the single 3-Action capstone is compliant. The genuine failures are Special and Free Action missed entirely, 2 Actions well over (33% vs 15-25%), and Passive well under (11% vs 25-30%). COMPARATIVE CONTEXT added this recount: the Special miss is universal — the deterministic measurement records zero Special talents in all ten deity trees — so only the Free-Action miss, the 2-Action overweight and the Passive underweight are Chaos-specific."
+    }
+   ],
+   "verdict": "PARTIAL",
+   "actuallyIs": "A single-target, Deflect-ignoring nuker with a mark-and-detonate cadence, a dispel, and one very good interference Reaction. It is a striker, not a broker: it makes its own luck by landing tests rather than harvesting enemy failure, and of the two payoffs the path description leads with, 'focus seized' is entirely absent while 'advantage stolen' survives only as Shatter Focus's forced reroll-down. Structurally it is two parallel colour ladders that meet at the capstone — which is how all ten deity trees are built, not a Chaos deviation — with one Chaos-specific fault the others avoided: the Black branch consumes a resource it cannot make. What it actually sells is 'every point of damage I deal bypasses Deflect, I can manufacture the Isolated state that doubles it, and once a round I can take an enemy's good roll away.'"
+  },
+  "mechanicalKeywords": [
+   {
+    "keyword": "Omen",
+    "role": "BOTH",
+    "talents": "PRODUCE: Entropy Strike, Spreading Omen, Unravel Everything. CONSUME: Isolating Pressure, Shatter Focus, Unweaving, Cascade Collapse, Isolating Ruin, Unravel Everything. READ: Void Sense. Verified exclusive to this tree — no talent outside Chaos names an Omen. CORRECTED: Shatter Focus's Omen consumption is real in BOTH the generator prose and the authored overlay; the original profile marked it 'printed text only'."
+   },
+   {
+    "keyword": "Omen cap (= your Tier)",
+    "role": "CONSUME (hard gate)",
+    "talents": "Stated only on Entropy Strike ('placements beyond this cap are lost'); binds Spreading Omen, Cascade Collapse and Unravel Everything. Cap 1 at Tier 1, 2 at Tier 2 — the single most load-bearing number in the tree. CORRECTED: not unique to Chaos — Destruction's Set Charge caps Charges at your tier the same way."
+   },
+   {
+    "keyword": "Investiture",
+    "role": "BOTH",
+    "talents": "CONSUME: all 8 non-Passive talents — Entropy Strike 1, Isolating Pressure 2, Shatter Focus 1, Spreading Omen 1, Unweaving 2, Cascade Collapse 2, Isolating Ruin 2, Unravel Everything 3 = 14 Investiture to fire the whole tree once. PRODUCE: Void Sense only (1 per round, conditional)."
+   },
+   {
+    "keyword": "Isolated (no ally within 5 ft)",
+    "role": "BOTH",
+    "talents": "PRODUCE (applies the state): Isolating Pressure (until the start of YOUR next turn), Isolating Ruin (until the start of THEIR next turn — a different duration, and neither window survives to your own next turn). CONSUME (reads the state for a damage-type upgrade): Unravel Everything. Not a canon condition (absent from the primer's condition list); it denies the target nothing by itself. Defined in the atlas by Black's Sapping Hex as 'one with no ally within 5 feet'."
+   },
+   {
+    "keyword": "Disoriented",
+    "role": "PRODUCE",
+    "talents": "Unweaving, Cascade Collapse, Unravel Everything — the tree's only real action denial (no reactions, obscured senses), and three instances is the highest count of any tree in the atlas (next: Order, Death, White, Envoy at 2 each)."
+   },
+   {
+    "keyword": "forced reroll (reroll and take the lower result)",
+    "role": "PRODUCE",
+    "talents": "Shatter Focus only. REPLACES the original profile's 'focus' keyword entry, which was sourced from leyline/Red's identically-named talent. Verified atlas-unique: the only two other reroll talents in 365 are heroic/Agent's Opportunist and Double Down, and both reroll your own plot die. Mechanically equivalent to imposing disadvantage (primer: roll 2, keep lowest), but applied after the roll has landed."
+   },
+   {
+    "keyword": "spirit damage",
+    "role": "PRODUCE",
+    "talents": "Entropy Strike, Cascade Collapse, Unravel Everything — the Blue branch's damage type; ignores Deflect."
+   },
+   {
+    "keyword": "vital damage",
+    "role": "PRODUCE",
+    "talents": "Isolating Pressure, Isolating Ruin, Unravel Everything (Isolated clause) — the Black branch's damage type; ignores Deflect."
+   },
+   {
+    "keyword": "Attunement Range",
+    "role": "CONSUME (range keyword, scales with rank)",
+    "talents": "Shatter Focus, Void Sense, Cascade Collapse, Unravel Everything."
+   },
+   {
+    "keyword": "Reaction",
+    "role": "CONSUME",
+    "talents": "Shatter Focus — the tree's only Reaction, so it never competes with itself for the 1-per-round cap, but it does compete with Dodge / Aid / Reactive Strike. CORRECTED JUDGMENT: at 1 Investiture with no test and no focus cost, cancelling a live enemy roll, it usually WINS that comparison; the original profile judged the slot on the wrong talent's text and called it a loss."
+   },
+   {
+    "keyword": "[Tier][Die]",
+    "role": "CONSUME (scaling notation)",
+    "talents": "All 5 damage talents; 1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3. The capstone's 2[Tier][Die] Isolated clause is the only doubled instance in the tree, and the only damage expression in the tree that carries no Awareness adder."
+   },
+   {
+    "keyword": "Awareness (attribute)",
+    "role": "CONSUME (flat damage adder)",
+    "talents": "Isolating Pressure, Isolating Ruin, Unravel Everything (spirit clause only) — AWA is this tree's damage stat as well as, via 2 + max(AWA, PRE), its Investiture pool stat: a real double-dip."
+   },
+   {
+    "keyword": "Blue skill rank",
+    "role": "CONSUME",
+    "talents": "Gate (Blue 2+) on both entries; sets die size on Entropy Strike, Cascade Collapse, Unravel Everything; test skill for Entropy Strike, Spreading Omen, Cascade Collapse."
+   },
+   {
+    "keyword": "Black skill rank",
+    "role": "CONSUME",
+    "talents": "Gate (Black 2+) on both entries; sets die size on Isolating Pressure and Isolating Ruin; test skill for Isolating Pressure, Unweaving, Isolating Ruin."
+   },
+   {
+    "keyword": "magical buff / stance / sustained effect",
+    "role": "CONSUME (dispel target)",
+    "talents": "Unweaving — the only removal of an already-running sustained effect in the atlas, though not the only counter-magic (Blue's Counterspell and White's Counterpoint are interrupts). Its value is entirely a function of what the opposition is running."
+   },
+   {
+    "keyword": "Complication",
+    "role": "NEITHER — claimed by both intent sources, implemented by nothing",
+    "talents": "Named in INTENT-deity-Chaos.md and in the deity guide's Maelith entry; appears in zero Chaos talent texts. Across all 365 it appears in five talents (White's Pillar of Order, Agent's Sure Outcome and Double Down, Leader's Cutthroat Tactics, Scholar's Contingency), four of which MITIGATE Complications for allies. Recorded so a cross-tree synergy map does not wire a seam that does not exist."
+   },
+   {
+    "keyword": "focus",
+    "role": "NEITHER — the tree does not touch focus in either direction",
+    "talents": "NONE. Recorded explicitly because the profile under test credited Chaos with a focus-strip Reaction. Chaos's Shatter Focus names focus only in its title. The atlas's focus-strippers are leyline/Red's Shatter Focus (Reaction, cost —, 1 focus on any failed test), heroic/Warrior's Feinting Strike (focus equal to Intimidation ranks) and heroic/Agent's Double Down (self, on Complication); leyline/Black's Coercive Pressure only READS focus loss."
+   }
+  ],
+  "crossTreeHooks": [
+   "Void Sense's Investiture income triggers on an Omen-bearer taking damage 'from any source' — the tree's only economy talent literally pays you for allies focusing your mark. A party that fires on your Omen target funds your next turn.",
+   "Every Isolated payload depends on the target having no ally within 5 ft. Chaos applies Isolated on two talents, but neither duration survives long enough to feed its own capstone (Isolating Pressure 1 Action + Unravel Everything 3 Actions exceeds a 3-Action Slow turn, and both windows close at the start of a turn) — so forced-movement and scatter effects from other trees are what actually make the capstone's 2[Tier][Die] vital clause reachable. The cleanest source is one the same character can own: Black's Unnerving Approach pushes an enemy's ally away 'potentially leaving the target Isolated'. This is a dependency, not a bonus.",
+   "Mandatory Blue 2+ AND Black 2+ on both entries means every Chaos character is also a Blue/Black leyline character. Black's Draw Mana rider (enemies with no ally within 5 ft become Weakened) fires on exactly the state Chaos creates — though whether an APPLIED Isolated status satisfies a rider written against real geometry is not settleable from the data and should be confirmed at the table. Blue's rider (advantage on your next Cognitive test) buys the Blue vs Cognitive tests Entropy Strike, Spreading Omen and Cascade Collapse all need — and the tree grants no advantage of its own, so that external source is the only one.",
+   "Unweaving's counter-magic overlaps a talent the same character can plausibly own: Blue/Calculation's Counterspell (2 focus + 1 Investiture, Blue vs Cognitive, the talent fails). They are complementary rather than redundant (Counterspell interrupts an activation, Unweaving ends something already running), but a Chaos player who also runs Blue deep should know both exist. Unweaving's worth is otherwise set entirely outside this tree, by the opposition's kit.",
+   "CORRECTED HOOK: Shatter Focus triggers only on an enemy ALREADY BEARING one of your Omens making a test — not on any character failing a test (that is leyline/Red's same-named talent). So its uptime is a function of how many Omens you keep in play, which the Tier cap holds to one before L6 and which the tree's own detonation payloads constantly spend. It is the only reason to leave an Omen sitting rather than cashing it, and the tension between the two is the tree's most interesting decision.",
+   "The tree consumes Investiture only (14 across its eight non-Passive talents) and generates almost none: any external Investiture regeneration converts directly into more Chaos rounds. One of the more regeneration-hungry trees in the atlas — and since it is the only deity tree whose capstone has no once-per-scene limiter, outside economy is the sole cap on how often that capstone fires, which makes it the deity tree most improved by an Investiture battery in the party.",
+   "Cascade Collapse and the capstone want MANY Omens out; before L6 the cap makes that impossible, and no other tree raises the Omen cap or produces an Omen — an unfillable seam.",
+   "THE 'SOMETHING' TEST (lens e): Chaos's something is 'mark an enemy, then detonate the mark for Deflect-ignoring damage'. Two other trees do that and both do it better per Action. Destruction (Set Charge -> Cascading Failure -> The Unmooring) carries the same tier cap on markers but each marker is a 10-ft AoE that leaves persistent dangerous terrain and detonates as a FREE ACTION. Knowledge (Studied Mark / Predatory Strike -> Accumulate -> The Final Study) stacks its marker automatically at the start of every turn, floors its damage at a minimum stack, and shares the mark's intel with the party. What Chaos genuinely owns alone is narrower and should be the tree's stated selling point: the only forced ENEMY reroll in 365 talents, the only applied-Isolated status, the only dispel of an already-running effect, and the highest Deflect-ignoring formula count and Disoriented count in the atlas."
+  ],
+  "topThree": [
+   "Isolating Ruin — 2 Actions, 2 Investiture, up to 2[Tier][Die] + 2xAWA vital plus applied Isolated. QUALIFIED: it is the tree's best damage-per-Action only against an Omen-bearer; with no Omen it is [Tier][Die]+AWA over two Actions, which trails Entropy Strike's per-Action rate until Awareness reaches 4. It is still the only mid-tree payload that functions at all without a resource from the other branch.",
+   "Void Sense — a free Passive that is simultaneously the tree's only Investiture income (1/round, self-triggering off your own damage), its only sensor, and the thing that turns a two-round burst into a sustainable engine. It sets the tree's real power ceiling — but it sits on the Black branch and is completely inert unless you also own a Blue-branch Omen source.",
+   "Entropy Strike — the cheapest, most repeatable, Deflect-ignoring damage in the tree AND the only pre-capstone source of the resource seven other talents need. Effectively mandatory; the tree does not function without it. (Shatter Focus is the near-miss for this list, promoted out of the bottom three on this recount: 1 Investiture, a Reaction, no test, and it takes an enemy's live roll away — the only forced enemy reroll in 365 talents.)"
+  ],
+  "bottomThree": [
+   "Spreading Omen — capped out of existence below L6; at Tier 1 it is Entropy Strike with the damage deleted, at the same Action and Investiture price and off the same test.",
+   "Cascade Collapse — 2 Actions and 2 Investiture at depth 2 buying a single-target [Tier][Die] + Disoriented until level 6; two casts of Entropy Strike match its damage for the same Investiture and leave you an Omen, and its depth-peer Isolating Ruin doubles it against an Omen-bearer for identical cost.",
+   "Isolating Pressure — REPLACES Shatter Focus on this list (see corrections). An entry node priced at 2 Investiture against the other entry's 1, out of a ~4 pool, whose damage clause requires a resource its own branch cannot produce; taken alone it buys an 'apply Isolated' button and none of the deity's signature fantasy, and it leaves Void Sense downstream of it 100% inert."
+  ],
+  "sustainability": {
+   "roundsOfGoodOptions": "About two full-power rounds, then one good option per round. The starting pool is ~4 Investiture (2 + max(AWA, PRE)). The multiset of costs across the eight non-Passive talents is 1, 1, 1, 2, 2, 2, 2, 3 = 14 Investiture to fire the whole tree once. A representative opening Slow turn (Entropy Strike 1 Inv + Isolating Ruin 2 Inv) spends 3 Actions and 3 Investiture and leaves 1. From round two the character is on Draw Mana income: 1 Investiture per Action at Tier 1, so one Action drawing buys one Entropy Strike — 50% uptime, exactly the primer's baseline. Void Sense is the lever that breaks it, adding 1 Investiture per round free as long as an Omen-bearer is being hit, lifting the tree to roughly one full Action of Chaos every round plus a 2-Investiture play every other round. Without Void Sense (a Blue-branch-only build) sustainability is poor: of the Blue branch beyond Entropy Strike, Spreading Omen costs 1 but deals nothing, and Shatter Focus, Cascade Collapse and the capstone cost 1, 2 and 3 with no payback. At Tier 2 Draw Mana returns 2 per Action and the picture improves to ~2/3 uptime — which is also exactly when the Omen cap doubles, so the tree's economy and its target count switch on together at level 6. CORRECTED: the tree carries exactly one use limit, Void Sense's 'Once per round'; what is true and stronger is that no talent carries a per-SCENE limit, which alone among the ten deity trees leaves the capstone re-firable inside a fight.",
+   "triggerGatedCount": 2,
+   "reactionCount": 1,
+   "resourceCostersOutOfTree": 8,
+   "note": "Recounted directly from the nine dossier entries and the authored overlay. Reactions: 1 of 9 (Shatter Focus) — the tree never competes with itself for the 1-Reaction-per-round cap, and against Dodge/Aid/Reactive Strike a 1-Investiture, no-test forced reroll of a live enemy roll is a strong use of the slot. Trigger-gated: 2 of 9 (Shatter Focus, a Reaction when an Omen-BEARING enemy makes a test; Void Sense, when an Omen-bearer takes damage — your own attacks satisfy it, so it is only nominally external). Both triggers require an Omen already in play, which the Tier cap holds to one before L6, so the tree's two trigger-gated talents compete with its detonation payloads for the same single marker — a tension the original profile missed by mis-reading Shatter Focus's trigger as 'any character failing a test'. Resource costers: 8 of 9 talents spend Investiture, totalling 14; only Void Sense is free. No talent costs or generates Focus, Opportunity, Health or Plot Die value for the character, making the tree brittle to Investiture denial and unusually responsive to any outside regeneration."
+  }
+ },
+ "corrections": [
+  {
+   "field": "sustainability.roundsOfGoodOptions",
+   "from": "this tree's talents cost 1/1/2/2/2/2/3 — 16 Investiture to fire all eight non-Passive talents once",
+   "to": "the actual multiset across the eight non-Passive talents is 1, 1, 1, 2, 2, 2, 2, 3 = 14 Investiture to fire the whole tree once",
+   "reason": "Double arithmetic error. The listed multiset has only SEVEN values for EIGHT talents, and those seven sum to 13, not 16. Read from the dossier Cost fields: Entropy Strike 1, Isolating Pressure 2, Shatter Focus 1, Spreading Omen 1, Unweaving 2, Cascade Collapse 2, Isolating Ruin 2, Unravel Everything 3."
+  },
+  {
+   "field": "mechanicalKeywords[Investiture].talents",
+   "from": "CONSUME: all 8 non-Passive talents (1-3 each; 16 Investiture to fire the whole tree once)",
+   "to": "…= 14 Investiture to fire the whole tree once, not 16",
+   "reason": "Same miscount repeated in a second field; corrected in both places and the per-talent costs enumerated so it cannot drift again."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "2 x 4d8 = 8d8 vital (~36) against two Isolated targets, i.e. roughly 2.7 [Tier][Die] per Action",
+   "to": "8d8 = 4 [Tier][Die] over 3 Actions = 1.33 [Tier][Die] per Action (avg 12 points per Action)",
+   "reason": "Unit error: the profile divided 8d8 by 3 Actions to get ~2.67 and then labelled the result [Tier][Die]. At Tier 2 rank 3 the primer says [Tier][Die] IS 2d8, so 8d8 = 4 [Tier][Die], and 4/3 = 1.33. The claimed figure was exactly double the true one."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "(peak presented as an achievable turn: 8d8 vital against two Isolated targets)",
+   "to": "added: the 8d8 peak is not self-reachable — Isolating Pressure (1 Action) + Unravel Everything (3 Actions) = 4 Actions against a 3-Action Slow turn, and both Isolated windows expire at the start of a turn; the clause depends on external forced movement or enemies already standing alone",
+   "reason": "Text check. Isolating Pressure: 'Isolated until the start of your next turn'. Isolating Ruin: 'Isolated until the start of their next turn'. Neither survives to a later turn of yours, and neither can be combined with the 3-Action capstone inside one turn. The profile's own crossTreeHooks half-conceded this while damageAccounting presented the number unqualified."
+  },
+  {
+   "field": "damageAccounting.peakDamagePerAction",
+   "from": "(no comparison of capstone vs Isolating Ruin per Action)",
+   "to": "added: capstone at Tier 2 vs two non-Isolated enemies = 4d8+2AWA over 3 Actions = avg 6 + 0.67xAWA per Action, BELOW Isolating Ruin's avg 9 + AWA per Action; and Isolating Ruin with no Omen is avg 1.75 + 0.5xAWA per Action at Tier 1, below Entropy Strike's 3.5 until AWA reaches 4",
+   "reason": "Recomputed from the formulas. Two of the profile's headline judgments (capstone as peak, Isolating Ruin as 'most damage per Action') are true only under conditions it did not state."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Unravel Everything].conditional",
+   "from": "true",
+   "to": "false",
+   "reason": "Contradicts its own note: 'No test at all (activation=utility) — it just spends 3 Investiture, so it cannot miss.' It also self-supplies the Omens it removes. It is the only unconditional damage talent in the tree."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Isolating Ruin].conditional",
+   "from": "false",
+   "to": "true",
+   "reason": "Its damage requires a successful Black vs Physical test — the exact standard by which the profile flags Entropy Strike conditional:true. The two flags were inverted relative to each other."
+  },
+  {
+   "field": "axes[information].score",
+   "from": "2",
+   "to": "1",
+   "reason": "The evidence string argues for a 1 and the score says 2: 'only of targets you already successfully marked, so it never finds anything unknown. One talent, narrow scope.' The rubric's 1 is 'one incidental talent, or a rider on something else' — Void Sense's detection sentence rides on a Passive whose other half is the Investiture engine, and the tree cannot scout."
+  },
+  {
+   "field": "uniqueOwnership[Unweaving] / axes[debuff].evidence / mechanicalKeywords[dispel]",
+   "from": "the ONLY dispel in the 365-talent set (grep over all-talents.json returns exactly one)",
+   "to": "the only talent that ends an ALREADY-RUNNING magical buff, stance, or sustained effect — Blue/Calculation's Counterspell and White/Accord's Counterpoint also counter magic, but both are interrupts",
+   "reason": "The stated grep basis is false. Reading all-talents.json: Counterspell (Blue/Calculation, Reaction, 2 Focus + 1 Inv) — 'On a success, the talent fails'; Counterpoint (White/Accord, Reaction, 1 Inv) — 'negate the effect and Disorient the enemy'. The uniqueness survives only in the narrowed form, and it matters because every Chaos character is Blue 2+ and can plausibly own Counterspell too."
+  },
+  {
+   "field": "axes[resource_economy].evidence",
+   "from": "one talent, gated behind owning the Blue entry as well as the Black branch",
+   "to": "its prereq is Isolating Pressure — the BLACK entry, not the Blue one; what it actually depends on is an Omen source, and both pre-capstone Omen sources sit on the Blue branch",
+   "reason": "Prerequisite claim is factually wrong against the dossier line 'Void Sense — prereq: Isolating Pressure | connections: Isolating Pressure'. The functional dependency the profile meant is real and is now stated correctly."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "(claim absent)",
+   "to": "ADDED — deity guide's tier-3 prerequisite pattern ('prereq [Tier-2 A] or [Tier-2 B] from each branch') and principle 3 ('Tier-3 synthesis nodes bring the two halves together'): VIOLATED",
+   "reason": "Unchecked design-guide claim, and the biggest structural finding the profile missed. Cascade Collapse's connections (Spreading Omen, Shatter Focus) are both Blue-branch children of Entropy Strike; Isolating Ruin's (Unweaving, Void Sense) are both Black-branch children of Isolating Pressure. Neither node takes one parent per side, neither is reachable from the opposite branch, and neither merges the colours. Also added to gaps."
+  },
+  {
+   "field": "intentDrift.claims",
+   "from": "(claim absent)",
+   "to": "ADDED — deity guide cost scale '3 Investiture + once-per-scene = capstone': PARTIAL",
+   "reason": "Unravel Everything is 3 Investiture with NO once-per-scene limiter, and no talent in the tree carries any use limit. This makes the profile's 'once per fight in practice' an economic inference rather than a rule — an outside Investiture source removes it. Consequence propagated to repeatability, sustainability and crossTreeHooks."
+  },
+  {
+   "field": "intentDrift.claims[action-type targets].evidence",
+   "from": "(listed only the misses)",
+   "to": "added that Action (33% vs target 25-35%) and Reaction (11% vs ~10%) are ON target and the single 3-Action capstone is compliant",
+   "reason": "The counts themselves recount correctly (1/3/3/1/1 = 9), but reporting only failures misstates compliance. The real failures are Special 0%, Free Action 0%, 2 Actions 33% vs 15-25%, Passive 11% vs 25-30%."
+  },
+  {
+   "field": "weakTalents[Cascade Collapse].reason",
+   "from": "strictly worse than spending the same two Actions on Entropy Strike twice … and strictly worse than its depth-peer Isolating Ruin",
+   "to": "paying two Actions and two Investiture for a single Disoriented — a poor trade, not an empty one",
+   "reason": "'Strictly worse' is unsupportable twice in the same sentence the profile writes '+ Disoriented'. Two Entropy Strikes buy no Disoriented and need two successful tests, not one; Isolating Ruin's doubled damage requires an Omen-bearer."
+  },
+  {
+   "field": "topThree[Isolating Ruin]",
+   "from": "Most damage per Action in the tree",
+   "to": "the tree's best damage-per-Action only against an Omen-bearer; with no Omen it trails Entropy Strike's rate until Awareness reaches 4",
+   "reason": "Arithmetic: [Tier][Die]+AWA over 2 Actions at Tier 1 = avg 1.75 + 0.5xAWA per Action vs Entropy Strike's 3.5; breakeven at AWA 3.5."
+  },
+  {
+   "field": "weakTalents[Unravel Everything].reason",
+   "from": "which Isolating Ruin does for two-thirds the actions and two-thirds the Investiture",
+   "to": "Isolating Ruin against an Omen-bearer deals DOUBLE that (2[Tier][Die] + 2xAWA) for two-thirds the Actions and two-thirds the Investiture",
+   "reason": "Understated its own case. Isolating Ruin does not match the capstone's single-target output, it doubles it."
+  },
+  {
+   "field": "frontOrBackLoaded",
+   "from": "The whole 9-talent tree is reachable by level 4",
+   "to": "every NODE is depth-reachable by level 4 (deepest talent is depth 3) — owning all nine still takes nine picks, i.e. level 9",
+   "reason": "Conflates depth-reachability with ownership under the 1-talent-per-level rule. The back-loaded-on-tier argument is unaffected and stands."
+  },
+  {
+   "field": "gaps[Focus/Opportunity]",
+   "from": "No Focus or Opportunity interaction at all — the tree can neither pay in nor generate either",
+   "to": "no Focus, Opportunity or Plot Die interaction FOR ITSELF (Shatter Focus strips focus from a target, which is an effect, not an economy)",
+   "reason": "Contradicted the profile's own mechanicalKeywords entry listing focus as CONSUME (strips from a target)."
+  },
+  {
+   "field": "powerByDepth[depth 1-2].exemplars",
+   "from": "Isolating Ruin; Void Sense; Unweaving — against Spreading Omen and Shatter Focus",
+   "to": "…against Spreading Omen, Shatter Focus and Cascade Collapse",
+   "reason": "Cascade Collapse is depth 2 and belongs in this band; the profile omitted it here while naming it one of the tree's three worst talents in bottomThree."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Isolating Ruin].note and mechanicalKeywords[Isolated]",
+   "from": "(duration not distinguished)",
+   "to": "noted that Isolating Pressure applies Isolated 'until the start of YOUR next turn' while Isolating Ruin applies it 'until the start of THEIR next turn'",
+   "reason": "Two different durations in the printed text, unremarked in the profile, and load-bearing for whether the capstone's vital clause can ever be self-set-up."
+  },
+  {
+   "field": "damageAccounting.damageTalents[Unravel Everything].note",
+   "from": "(no ambiguity noted)",
+   "to": "added: 'instead take 2[Tier][Die] vital damage' replaces the damage clause and it is unclear whether an Isolated bearer is still Disoriented",
+   "reason": "Genuine text ambiguity that changes the capstone's value; worth a ruling rather than an assumption."
+  },
+  {
+   "field": "axes[control].evidence",
+   "from": "(credited Isolated as control alongside Disoriented)",
+   "to": "added: Isolated is not a canon condition and denies the target nothing by itself, so the score rests on the three Disoriented talents",
+   "reason": "The primer's condition list does not contain Isolated; it is an enabler for this tree's vital payloads and Black's Draw Mana rider. Score held at 3 on the three Disoriented talents alone."
+  },
+  {
+   "field": "NO CHANGE — verified and correct",
+   "from": "—",
+   "to": "—",
+   "reason": "Checked and confirmed unchanged: all 9 depth and earliest-L values against the dossier; countReal 5 and countFalsePositiveMitigation 0 (both damage streams agree, and no unworded damage source — summon, hazard, zone, Afflicted tick, redirect — exists in the tree); triggerGatedCount 2, reactionCount 1, resourceCostersOutOfTree 8; the action-type census 1/3/3/1/1; every dice expression (1d6 at Tier 1 rank 2, 2d8 at Tier 2 rank 3, Isolating Ruin 2d6+2AWA / 4d8+2AWA, capstone 8d8 avg 36); every Cost field; Entropy Strike as the sole statement of the Omen cap; buff 0 (no Chaos talent in advantage-ledger.md, grep-verified); Omen and Isolated-application both Chaos-exclusive (grep over all-talents.json); Shatter Focus as the only focus-strip Reaction of four focus-strippers; Shatter Focus's wiring carrying no Investiture consumption; and scores for damage_direct, damage_scaling, protection, healing, buff, action_economy, mobility, terrain_zone, social_influence, exploration_utility, summons, resource_economy."
+  },
+  {
+   "field": "THE HEADLINE ERROR — Shatter Focus (touches axes.debuff, uniqueOwnership, weakTalents, bottomThree, powerByDepth[depth 1-2], mechanicalKeywords, crossTreeHooks, intentDrift['focus seized'], sustainability.note)",
+   "from": "\"Shatter Focus's authored (Foundry-winning) text strips 1 focus as a Reaction on any failed test\"; \"'When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus'\"; \"its wiring (events=1, activation=utility, no consumes) shows no Investiture consumption despite a printed 1 Investiture cost\"; \"the shipped authored text is a different talent from the printed one\"",
+   "to": "Chaos's Shatter Focus has NO authored divergence. Its authored text is identical to the generator prose: 'Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.' Its wiring is events=1, activation=utility, consume=[{resource:'inv',value:{min:1,max:1}}], one handler of type edha-reroll-react with markStatus:'omen'.",
+   "reason": "CROSS-TREE NAME COLLISION, and it is almost certainly the 'third classifier bug' the brief predicted. There are TWO talents called Shatter Focus in the 365: deity/Chaos's (Reaction, 1 Investiture, Omen-gated reroll-lower) and leyline/Red's (dossier leyline-Red.md:110-116 — specialty Frenzy, Reaction, cost —, depth 2, 'When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus', wiring events=1 effects=0 activation=utility, NO consumes). Every detail the profile attributed to a Chaos 'authored override' — the wording, the 'a character' rather than 'an enemy', the missing Investiture consumption — is Red's row. Verified three ways: (1) data/authored/deity-chaos.json's Shatter Focus description.value is the reroll text; (2) data/domain.json's is byte-identical to it, so there is nothing to diverge; (3) grep of the whole dossier set for '⚠️ AUTHORED OVERRIDE DIVERGES' returns exactly four hits — leyline-Blue.md:199, leyline-Red.md:106, leyline-White.md:142 and :207 — and none in deity-Chaos.md. The brief's own claim that Chaos/Shatter Focus is one of three material divergences is therefore also wrong and should be corrected upstream."
+  },
+  {
+   "field": "uniqueOwnership[4] (the fifth claim)",
+   "from": "\"The only focus-strip Reaction: Shatter Focus's authored text ('it loses 1 focus') is the sole Reaction among the four focus-stripping talents in the atlas\"",
+   "to": "DELETED and replaced with: Shatter Focus is the atlas's ONLY forced ENEMY reroll — grepping all 365 for reroll/take-the-lower returns exactly three talents, and the other two (Agent's Opportunist, Double Down) reroll your OWN plot die.",
+   "reason": "Chaos does not strip focus at all; the true focus-strip Reaction is leyline/Red's same-named talent. The replacement claim was verified by the same grep and is a genuine, tighter unique-ownership finding: nothing else in the atlas alters an enemy's roll after it has landed."
+  },
+  {
+   "field": "uniqueOwnership[2] — 'the only tree that APPLIES Isolated'",
+   "from": "\"verified: Black's Sapping Hex, Severance, Cruel Step and Unnerving Approach only READ it\"",
+   "to": "One of two producers. Black's Unnerving Approach MANUFACTURES Isolated: 'Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.' Chaos remains the only tree that applies it as a status regardless of geometry; Sapping Hex, Severance and Cruel Step do only read it.",
+   "reason": "Lens (a): 'the only source of X' is usually false. Direct text of Unnerving Approach in all-talents.json refutes the four-way 'only READ it' list. This also strengthens the crossTreeHooks item — the forced-movement source the capstone needs is a talent the same Black-2+ character can own."
+  },
+  {
+   "field": "uniqueOwnership[0] — the Omen claim",
+   "from": "\"the only banked-misfortune marker … with a hard simultaneous cap equal to your Tier\"",
+   "to": "The Omen itself is verified Chaos-exclusive, but the tier cap is NOT part of the uniqueness — Destruction's Set Charge reads 'You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.'",
+   "reason": "Lens (a). The profile bundled a shared structural constraint into a unique claim, which also made its frontOrBackLoaded and damage_scaling arguments read as Chaos-specific when they are a deity-wide pattern."
+  },
+  {
+   "field": "intentDrift.claims — the tier-3 synthesis claim (also gaps, last item)",
+   "from": "\"VIOLATED … Chaos is two parallel three-talent colour ladders that meet only at the capstone, not a branch-then-synthesise tree\" (filed as an ADDED Chaos finding)",
+   "to": "VIOLATED — BUT SYSTEM-WIDE, NOT CHAOS-SPECIFIC. Demoted from a Chaos fault to an atlas-level observation.",
+   "reason": "I rebuilt the connections graph for all ten deity trees from all-talents.json. Every one has identical topology: 2 entries, 2 single-parent children per entry, 2 depth-2 nodes each rooted in exactly ONE entry, capstone joining both. Order/Verdict+Concord, Civilization/Arsenal+Bastion, Death/Necrotic Cascade+Risen Servant, Destruction/Cascading Failure+Fault Line, Fate/Weave the Thread+Foreknown Strike, Power/Investiture of Command+Warlord's Fury, Life/Lifeline+Primal Regeneration, Knowledge/The Pack+Death Mark, Sovereignty/Sovereign's Balance+Edict of the Fallen — none takes one parent per branch. Charging Chaos for a rule nobody implements is exactly the comparative error this lens exists to catch."
+  },
+  {
+   "field": "intentDrift.claims — capstone cost scale",
+   "from": "\"PARTIAL … carries NO once-per-scene limiter\" (stated without comparison)",
+   "to": "VIOLATED, and Chaos is the SOLE exception in ten: Final Decree, Magnum Opus, Raise Dead, The Unmooring, Thread of Inevitability, Mantle of the Aspirant, Apex Form, The Final Study and Sovereignty all carry 'Once per scene'.",
+   "reason": "Checked every deity 3-Action capstone. This is the rare case where the comparative check STRENGTHENED a finding rather than deflating it, and it also flips the finding's valence: no scene limiter makes Unravel Everything the only re-firable deity capstone, which is a real Tier-2 advantage the profile did not credit."
+  },
+  {
+   "field": "damageAccounting.repeatability and sustainability.roundsOfGoodOptions",
+   "from": "\"Nothing in the tree carries a per-scene or per-round use limit\" / \"No talent in the tree carries a per-scene or per-round use limit\"",
+   "to": "The tree carries exactly one use limit — Void Sense's 'Once per round' on the Investiture rebate. No talent carries a per-SCENE limit.",
+   "reason": "Direct text of Void Sense. A small factual error, but it sits inside the sustainability arithmetic (the 1 Inv/round income the whole economy argument turns on is itself the once-per-round clause), so leaving it uncorrected made the profile self-contradictory."
+  },
+  {
+   "field": "intentDrift.claims — \"as advantage stolen\"",
+   "from": "NOT DELIVERED — \"Nothing in this tree grants, steals, denies or redirects an advantage. The closest is the printed (non-shipping) Shatter Focus reroll-lower, a disadvantage-like.\"",
+   "to": "PARTIAL — Shatter Focus is not 'non-shipping'; it is the shipped text, and 'reroll and take the lower result' IS the disadvantage implementation per SYSTEM-PRIMER (hasDisadvantage → d20.number=2, 'kl'). The bank-and-spend-to-deny-a-good-roll half of the promise lands once.",
+   "reason": "Follows from the headline correction. The promise is still not fully delivered (nothing transfers an advantage to you, and zero Chaos talents appear in advantage-ledger.md — re-verified), but calling it NOT DELIVERED on the basis of a text the profile had wrongly declared overridden was unsound."
+  },
+  {
+   "field": "weakTalents / bottomThree",
+   "from": "weakTalents included Shatter Focus ('the shipped authored text is a different talent from the printed one … buys 1 focus off a target for the tree's only Reaction'); bottomThree listed Spreading Omen, Shatter Focus, Cascade Collapse",
+   "to": "Shatter Focus removed from both. weakTalents now Spreading Omen, Cascade Collapse, Isolating Pressure, Unravel Everything; bottomThree now Spreading Omen, Cascade Collapse, Isolating Pressure.",
+   "reason": "With its real text, Shatter Focus is one of the better talents in the tree: 1 Investiture, a Reaction, no test of your own, and it takes away a live enemy roll — cheaper and more decisive than Blue's False Premise (1 Inv + a test, and only affects the NEXT test). Isolating Pressure takes the vacated slot on the strength of the entry-node argument the profile already made elsewhere but never carried into its bottom three."
+  },
+  {
+   "field": "axes.control",
+   "from": "score 3 (evidence resting on three Disoriented talents, with the Isolated caveat)",
+   "to": "score 3, HELD, with new comparative grounding: Chaos's three Disoriented instances are the highest count of any tree in 365 (Order, Death, White and Envoy tie at 2; everything else 0-1), plus an explicit deflating counterweight (all three are riders on damage, and Blue's Ghostly Walls / Absolute Stillness are harder control).",
+   "reason": "Lens (b) says control is where trees get scored generously, so I tried to move this to 2. The atlas-wide Disoriented count refuted my own deflation attempt — this is a checked-and-kept score, not an unexamined one."
+  },
+  {
+   "field": "axes.damage_direct",
+   "from": "score 4 with evidence internal to the tree",
+   "to": "score 4, HELD, with cross-tree grounding added (5 Deflect-ignoring formulas is the atlas maximum: Order 4, Knowledge 3, Black 3, and Destruction's 6 formulas are mostly energy/keen) and a counterweight (Black's Severance converts unlimited attacks to vital for free, which out-volumes anything here).",
+   "reason": "Lens (b): a 4 must be defensible against how other trees score. It is, but only on Deflect-ignoring density — not on raw volume, which the profile's evidence implied."
+  },
+  {
+   "field": "axes.resource_economy and axes.action_economy",
+   "from": "resource_economy 2 (asserted); action_economy 0 (asserted)",
+   "to": "Both HELD, with the deflation check documented. resource_economy: the census puts Chaos at 1 regen / 8 costers, the exact deity median (Death 1/8, Life 1/8, Sovereignty 1/7, Knowledge 1/6), so 2 = 'present but minor' is right. action_economy: Shatter Focus is acting out of turn, but it grants no action a character did not already have, and Destruction detonates its markers as a FREE ACTION while Chaos pays 2-3 Actions.",
+   "reason": "Lens (c) requires checking 0-1 scores for hidden riders. Both survived, but the reasoning was absent from the original and is now on the record."
+  },
+  {
+   "field": "mechanicalKeywords",
+   "from": "a 'focus' entry ('CONSUME — strips from a target … Shatter Focus, authored text only … one of four focus-strippers in the atlas and the only Reaction among them'); Omen CONSUME list marked 'Shatter Focus (printed text only)'",
+   "to": "'focus' rewritten to role NEITHER with the atlas's real focus-strippers named (leyline/Red Shatter Focus, Warrior's Feinting Strike, Agent's Double Down; Black's Coercive Pressure only reads focus loss); a new 'forced reroll' keyword added; the 'printed text only' qualifier stripped from Shatter Focus's Omen consumption, which is real in both sources.",
+   "reason": "Same headline error. A synergy map built on the old entry would wire Chaos into the Focus economy, which it does not touch in either direction."
+  },
+  {
+   "field": "gaps — the Focus/Opportunity/Plot Die item",
+   "from": "\"(Shatter Focus strips focus from a target, which is an effect, not an economy)\"",
+   "to": "Parenthetical deleted; the gap is now stated as no focus interaction in EITHER direction.",
+   "reason": "Consequence of the headline correction."
+  },
+  {
+   "field": "crossTreeHooks — Shatter Focus hook",
+   "from": "\"Shatter Focus (authored) triggers on any character within Attunement Range failing a test — dead on a turn where nobody rolls badly, so its uptime is a function of how many tests the rest of the table forces.\"",
+   "to": "It triggers only on an enemy ALREADY BEARING one of your Omens making a test, so its uptime is a function of how many Omens you keep in play — which the Tier cap holds to one before L6 and which the tree's own detonation payloads constantly spend.",
+   "reason": "Same headline error, and the corrected version surfaces a real design tension (hold the Omen for interference vs. spend it for damage) that the wrong text hid entirely. It also required correcting sustainability.triggerGatedCount's description, though the count of 2 was right."
+  },
+  {
+   "field": "crossTreeHooks — NEW item (the 'SOMETHING' test, lens e)",
+   "from": "absent",
+   "to": "Chaos's something is mark-and-detonate, and two other trees do it better per Action: Destruction (same tier cap, but each marker is a 10-ft AoE leaving persistent dangerous terrain, detonated as a FREE ACTION; The Unmooring at the same 3 Act/3 Inv gives every detonation a 15-ft deflect-ignoring radius) and Knowledge (Accumulate stacks the marker free at the start of every turn, Predatory Strike floors damage at a minimum stack, Pack Share broadcasts intel). What Chaos owns alone is narrower: the only forced enemy reroll, the only applied-Isolated status, the only dispel of an already-running effect, and the atlas's highest Deflect-ignoring formula and Disoriented counts.",
+   "reason": "Lens (e) is mandatory and the profile did not run it. The finding is not a failure of the tree so much as a correction to what the tree should be sold on."
+  },
+  {
+   "field": "powerByDepth[depth 0].note, weakTalents[Isolating Pressure], intentDrift[principle 1]",
+   "from": "the entry-asymmetry argument, asserted without a comparator",
+   "to": "Same argument, now anchored: Knowledge's second entry Predatory Strike solves the identical problem in the same atlas — 'deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target' (a minimum floor plus self-generation); Fate's second entry Snare generates Snares; Death's Black branch does not depend on the other branch's resource at all.",
+   "reason": "Lens (d)/(e). Without a comparator, 'the entries are asymmetric' reads as an inherent cost of two-entry design. With one, it is a specific, fixable Chaos defect — which makes it a much more actionable finding and confirms it is NOT deity-wide the way the synthesis-node complaint turned out to be."
+  },
+  {
+   "field": "intentDrift.claims — action-type targets",
+   "from": "listed Chaos's Special 0% as a straightforward miss",
+   "to": "Comparative context added: zero Specials is universal across all ten deity trees per the deterministic measurement, so only the Free-Action miss, the 2-Action overweight (33% vs 15-25%) and the Passive underweight (11% vs 25-30%) are Chaos-specific.",
+   "reason": "Lens (d): a promise this tree misses that every tree misses is not evidence about this tree."
+  },
+  {
+   "field": "oneLineIdentity and intentDrift.actuallyIs",
+   "from": "\"...hard-capped by an Omen limit equal to your Tier\" / \"...the two payoffs the path description leads with — seized focus and stolen advantage — are respectively broken by an authored override and entirely absent\"",
+   "to": "Identity extended with the comparative placement (weakest of the atlas's three marker-detonation trees per Action, but the only tree that can force an enemy to reroll a live test downward); actuallyIs rewritten to say focus-seizure is entirely absent, advantage-theft survives only as the forced reroll-down, the two-parallel-ladders structure is how all ten deity trees are built, and the one Chaos-specific structural fault is the Black branch consuming a resource it cannot make.",
+   "reason": "Both sentences were downstream of the headline error and of the mis-attributed synthesis-node violation."
+  }
+ ]
+}
