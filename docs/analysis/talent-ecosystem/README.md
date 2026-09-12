@@ -19,7 +19,8 @@ node docs/analysis/talent-ecosystem/derive-dossiers.js    <outdir>   # 21 dossie
 node docs/analysis/talent-ecosystem/damage-census.js      <outdir>   # damage classifier, roll-formula cross-check, wiring, damage types
 node docs/analysis/talent-ecosystem/functional-overlap.js <outdir>   # tree-vs-tree function-vector overlap
 node docs/analysis/talent-ecosystem/resource-economy.js   <outdir>   # producer/consumer census + advantage ledger + plot die
-node docs/analysis/talent-ecosystem/deity-gate-audit.js   <outdir>   # two-colour gates + signature resources
+node docs/analysis/talent-ecosystem/deity-gate-audit.js   <outdir>   # two-colour gates on all three channels + signature resources
+node docs/analysis/talent-ecosystem/advantage-classify.js <outdir>   # every advantage-naming talent, classified by hand
 node docs/analysis/talent-ecosystem/shared-talents.js     <outdir>   # cross-tree duplicate talents + data hygiene
 node docs/analysis/talent-ecosystem/combat-share.js       <outdir>   # what does nothing once initiative is rolled
 node docs/analysis/talent-ecosystem/formula-audit.js                 # @paths that will not resolve to a number
@@ -195,23 +196,45 @@ competes for one slot every round, and 52% of it cannot be used on White's own i
 15–20% Special and a leyline target of 25–30%. Every deity turn spends real Actions. Each tree has
 exactly one 3-Action talent, its capstone, which is what the deity guide prescribes.
 
-**Nine of ten deity trees charge for a colour they never test.** Five get nothing at all from it —
-no test and no damage die sized by it, so the rank investment buys only the gate:
+**Nine of ten deity trees never roll one of their two gate colours — but only one gets nothing at
+all from it.** A gate colour can pay back its rank three ways, all visible in the authored overlay:
+it is **rolled** (`skill: "<colour>"`), it **sizes a roll** (`@skills.<colour>.rank` in a damage,
+heal or temp-HP formula), or it sets **reach** (`rangeColor`, `color`, `allyRange` and similar —
+that colour's Attunement Range). `deity-gate-audit.js` counts all three. Each cell reads
+*first colour / second colour*; "rolled", "sizes" and "reach" count references, "talents" counts
+the talents that read the colour at all:
 
-| Tree | gate | tests | sizes a damage die | dead colour |
-|---|---|---|---|---|
-| Chaos | black/blue | blue 3, black 3 | blue 3, black 2 | — the only clean one |
-| Order | blue/white | blue 1 | blue 4 | **white 2+** |
-| Civilization | red/white | none | red 2 | **white 2+** |
-| Fate | green/white | none | green 3 | **white 2+** |
-| Knowledge | red/green | red 2 | red 3 | **green 3+** |
-| Sovereignty | black/white | black 3 | none | **white 3+** |
+| Tree | gate | rank | rolled | sizes | reach | talents | verdict |
+|---|---|---|---|---|---|---|---|
+| Chaos | black / blue | 2+ / 2+ | 6 / 7 | 5 / 7 | 0 / 3 | 3 / 5 | both used — the only tree that rolls both |
+| Civilization | red / white | 2+ / 2+ | 0 / 0 | 3 / 5 | 2 / 1 | 3 / 4 | red thin · white used, never rolled |
+| Death | black / green | 2+ / 2+ | 2 / 0 | 6 / 3 | 4 / 3 | 4 / 3 | green thin |
+| Destruction | blue / red | 2+ / 2+ | 0 / 1 | 1 / 8 | 0 / 7 | 1 / 8 | **blue near-dead** — `Pinpoint Charge` only |
+| Fate | green / white | 2+ / 2+ | 0 / 0 | 3 / 0 | 4 / 0 | 5 / 0 | **white is a toll booth** — no talent reads it |
+| Knowledge | red / green | 3+ / 3+ | 4 / 0 | 10 / 0 | 1 / 7 | 4 / 7 | green sets reach, never rolled |
+| Life | blue / green | 3+ / 3+ | 1 / 0 | 0 / 11 | 1 / 0 | 1 / 8 | **blue near-dead** — `Surgical Precision` only |
+| Order | blue / white | 3+ / 2+ | 2 / 0 | 4 / 4 | 6 / 2 | 5 / 3 | white thin |
+| Power | black / red | 2+ / 2+ | 4 / 0 | 1 / 3 | 7 / 1 | 4 / 2 | red thin |
+| Sovereignty | black / white | 3+ / 3+ | 6 / 0 | 0 / 1 | 3 / 2 | 3 / 3 | white thin |
 
-**Four of the five dead colours are White.** White is gated by four deity trees and mechanically
-rewarded by none of them. Sovereignty demands White 3+ — a level-6, six-skill-rank investment —
-and tests Black three times and White zero times, while the deity design guide says of exactly
-this tree: *"Black tests for diminish; White tests for elevate. This is the cleanest example of
-the color-thematic test rule."*
+**Exactly one gate colour is a toll booth: Fate's White.** Two more pay back through a single
+talent (Destruction's Blue, Life's Blue), and five are *thin* — never rolled, and read by only two
+or three talents (Civilization's Red, Death's Green, Order's White, Power's Red, Sovereignty's
+White). Across all ten trees, 11 of the 20 gate colours are never rolled.
+
+> ⚠️ **Correction.** An earlier draft of this section said five deity trees get *nothing* from a
+> gate colour, and that *"four of the five dead colours are White. White is gated by four deity
+> trees and mechanically rewarded by none of them."* That came from a script that read only the
+> rolled skill and the talent's own damage formula. The cross-cut's problem ledger re-counted with
+> the reach channel included, and `deity-gate-audit.js` now counts all three channels and agrees
+> with it. Civilization's White sizes its Construct and Foundation dice, Knowledge's Green sets the
+> reach of seven talents, and Order's White sizes four formulas. White is not the colour nobody
+> rewards.
+
+What survives is the guide's own worked example. Of Sovereignty it says *"Black tests for
+diminish; White tests for elevate. This is the cleanest example of the color-thematic test rule"*
+— and Sovereignty rolls Black on three talents and White on none. Its White 3+ gate, a level-6
+investment, buys `Sovereign's Favor`'s temp-HP die and two reach fields. **R-99.**
 
 ### Four stated signature mechanics were designed and never built
 
@@ -230,8 +253,8 @@ Complication.
 
 | Resource | Produced by | Consumed by | Verdict |
 |---|---|---|---|
-| **advantage** | 45 talents, 13 trees | 7 talents, 5 trees | **over-produced, and it does not stack** |
-| **disadvantage** | 14 talents, 9 trees | 0 | produced, never consumed; also does not stack |
+| **advantage** | 36 talents, 13 trees | 7 consume or deny it | **does not stack on one roll** — but only 9–19 of the 36 can reach an attack roll (`advantage-classify.js`) |
+| **disadvantage** | *withdrawn* | — | the same binary scalar; the earlier regex count (14 / 0) was wrong in the same way as advantage's and is withdrawn — see R-98 for Blue's five |
 | Investiture | 9 (bonus regen only) | 133 (the Cost field) | |
 | Focus | 6 | 52 | |
 | Opportunity | 9 | 17 | |
@@ -424,16 +447,22 @@ guide's sentence describes.
 > Sovereignty's *player-facing* path description promises Decree twice, in the prose a player reads
 > when choosing a god.
 
-### 3. Blue's core lever is binary, so five talents do one talent's work
+### 3. Two of Blue's disadvantage talents collide — not all five
 
-Blue imposes disadvantage with five talents. Disadvantage is the same non-stacking scalar as
-advantage, boolean-OR'd by `edhaNextModFoldMode`. **A Blue mage's second disadvantage in a round
-is worth zero**, so the tree's power is far flatter than its talent count suggests. Only
-`Probability Cascade` escapes it, by spanning the target's next **two** tests rather than one.
+Blue imposes disadvantage with five talents, the largest single-tree block in the game, and
+disadvantage is one binary scalar boolean-OR'd by `edhaNextModFoldMode`. But the binary rule only
+bites a second source **on the same roll**, and Blue's five mostly land on different rolls:
+`Intercept` on a declared action, `Probability Cascade` across a creature's next *two* tests,
+`Absolute Stillness` as a standing state on a creature at 0 Speed. **Only `Pattern Recognition`
+and `False Premise` both write "their next test"** — so on one target in one round the second is
+worthless, and a player who owns both pays two Investiture for one disadvantage.
 
-The fix needs no new engine work: `edha-next-test-mod` already carries a `formula` field whose
-dice/flat modifiers **SUM** (item 49). It is used today by one adversary ability and by no talent.
-**R-98.**
+> ⚠️ **Correction.** An earlier draft of this section was titled "Blue's core lever is binary, so
+> five talents do one talent's work" and pointed at the summing `formula` channel as the fix. The
+> cross-cut's problem ledger showed that over-applies the rule, and it carries a surviving
+> objection to the summing channel: used by one adversary ability and no talent, and uncapped
+> additive penalties are the biggest balance risk the review found. **R-98** is narrowed to the one
+> real pair, with a default of re-aiming `False Premise`.
 
 ### 4. The real diagnosis: White has two talents in twenty-five it can spend an Action on
 
@@ -546,15 +575,19 @@ talent data.
    gated behind an off-colour `Skill 3+`, i.e. **level 6**. Both sides spike at 6; after that
    heroic is flat for the rest of the tier and leyline keeps climbing with rank.
 3. **Deity parity.** Not close. Sovereignty is last by a wide margin — no damage, no independent
-   effect, a signature resource that was never built, and a dead gate colour. Life is low-damage
-   but legitimate. Chaos, Order, Death, Destruction and Knowledge are strong. The two-colour gate
-   is priced inconsistently: nine of ten trees charge for a colour they never test, and five get
-   nothing at all from it.
+   effect, and a signature resource that was never built. Life is low-damage but legitimate.
+   Chaos, Order, Death, Destruction and Knowledge are strong. The two-colour gate is priced
+   inconsistently, though less badly than the first draft of this review said: nine of ten trees
+   never roll one of their gate colours, but counting what a colour sizes and how far it reaches,
+   exactly one gate colour pays back nothing at all (Fate's White), two pay back through a single
+   talent, and five are thin.
 4. **Synergies.** Mostly absent by construction. Leyline and deity run on Investiture, heroic on
-   Focus; eight resources are sealed single-tree loops; and the one currency that *is* shared
-   across 13 trees — advantage — does not stack, so a party's second advantage granter contributes
-   nothing. The deity two-colour gate, which is the system's only *designed* cross-path synergy,
-   is a toll booth in five of ten cases.
+   Focus; eight resources are sealed single-tree loops; and the currency shared most widely —
+   advantage, granted by 36 talents across 13 trees — does not stack on a single roll. That makes
+   a few specific builds redundant (Green + Hunter; Order's own `Lawkeeper's Eye` against its
+   `Final Decree`; an Order ally against a Power character's `Kneel`), rather than making every
+   second advantage granter worthless. The deity two-colour gate, the system's only *designed*
+   cross-path synergy, is a toll booth for one gate colour of twenty and weak for seven more.
 
 ## Known limits of these measurements
 
