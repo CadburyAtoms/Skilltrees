@@ -3508,3 +3508,123 @@ green (the doc is not a dashboard source — say so if `--check` disagrees).
 
 **PM:** lane R · model sonnet · size S · deps — · verify: the grep before/after. Found by item 83;
 filed 2026-09-08 01:1x.
+
+## 104. [ ] R-95 (a) — `Momentum's Edge`: retune the rider to `[Tier][Die]` so it resolves at all (DATA + card text, REBUILD leyline) (2026-09-13)
+
+**Why:** the rider is `bonusFormula: "@movement.walk.rate"`, a DerivedValueField object; Foundry 13's `replaceFormulaData` renders it as rune-wrapped JSON and the Strike's damage roll fails whenever the 20 ft trigger is met (CRITIQUE.md §R-95; ECO-2 predicts case 1). Ben chose (a): fix the resolution and retune the payload to `[Tier][Die]`.
+
+**What to do:** in `data/authored/leyline-red.json` change the rider's `bonusFormula` to `(@tier)d(2 * @skills.red.rank + 2)` (the resolution bug disappears with the reference); card text in `data/leyline.json` → "bonus impact damage equal to [Tier][Die]"; keep `whenMovedTowardFt: 20`. Re-point ECO-2 at the new expectation (a `(1)d6`-shaped term on the bar). No engine change.
+
+**Done when:** the formula and card agree, `formula-audit.js` still finds no unresolvable reference, ECO-2 is rewritten, pack rebuilt by Ben.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: formula-audit + the bench row. Filed 2026-09-13 from R-95.
+
+## 105. [ ] R-96 (a) — the minimal-change set for Blue and White: Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (DATA, REBUILD leyline) (2026-09-13)
+
+**Why:** the ecosystem review's consolidated position, adopted by Ben. The re-parent is proven safe (mutated into `data/leyline.json`: validate + 1085 tests pass; Read Intent depth 1 / L2). Retyping Interposing Shield is engine-safe (the damage-react dispatcher never reads activation type).
+
+**What to do:** `data/leyline.json`: Read Intent `connections: ["Forewarned"]`; Pattern Recognition `connections: ["Calculated Patience", "Read Intent"]`; Interposing Shield `action` → Special; Shared Burden cost → 1 Investiture; Ordered Advance → 1 Action. Mirror in `data/authored/leyline-white.json` (activation cost type `spe`; consume 1; Shared Burden's rule `costValue: 1`; Ordered Advance activation value 1). Bench rows: Pattern Recognition after a Read Intent success; the Special still fires its card; one White mitigation per hit (note the engine posts every matching card — the one-Reaction rule is table-run).
+
+**Done when:** validate + tests green, three 🤖 rows filed, pack rebuilt by Ben.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: validate + the mutation is the shipped data. Filed 2026-09-13 from R-96.
+
+## 106. [ ] R-97 (a) — Sovereignty's Decree zone, as a radius that moves with the arbiter (DESIGN GATE → engine primitive → DATA) (2026-09-13)
+
+**Why:** both intent sources promise Decree; no talent creates a zone; Sovereignty scores 13, last by four. Ben chose (a). The critique's constraint: `Lay Foundation` and `Ordained Ground` are already the same designate-a-square, so Decree must be a moving radius centred on the arbiter (or a zone that steps dice), not a third square.
+
+**What to do:** a deity-revision-guide design pass FIRST (full-text proposals, Ben's yes before any data — the lore approval gate); then the aura primitive (an `edha-aura` shape exists in ENGINE_INDEX — check reuse), then the Sovereignty cards that create/extend it, then bench rows.
+
+**Done when:** Ben approves the design; the primitive and cards ship with pins; Sovereignty rolls White somewhere (the guide's own worked example).
+
+**PM:** lane B · model opus · size L · deps design gate · verify: the design artifact then the bench. Filed 2026-09-13 from R-97.
+
+## 107. [ ] R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DESIGN + DATA, REBUILD leyline) (2026-09-13)
+
+**Why:** both rules write `edha-next-test-mod {victim, disadvantage}` and fold to one. Ben chose (a).
+
+**What to do:** propose one replacement payload (talent-balance skill; e.g. the target loses its Reaction, or a focus drain) for Ben's yes; then card text + the authored rule.
+
+**Done when:** approved text shipped; the pair no longer collide; one 🤖 row.
+
+**PM:** lane B · model sonnet · size S · deps design yes · verify: the two rules differ. Filed 2026-09-13 from R-98.
+
+## 108. [ ] R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DESIGN + DATA, REBUILD deity) (2026-09-13)
+
+**Why:** `deity-gate-audit.js`: Fate's White is read by no talent; Destruction's Blue and Life's Blue by one each. Ben chose (a): a roll, a sized formula, or reach for each; leave the five thin gates alone.
+
+**What to do:** per tree, one proposal (Ordained Ground is the natural White half of Fate; a second Blue-reading talent in Destruction and in Life) for Ben's yes; then data.
+
+**Done when:** the audit shows each of the three colours read by ≥2 talents or rolled.
+
+**PM:** lane B · model sonnet · size M · deps design yes · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99.
+
+## 109. [ ] R-100 (a) — retune `Final Decree`'s redundant Witness clause; note the two cross-path advantage collisions in the guides (DATA + DOCS, REBUILD deity) (2026-09-13)
+
+**Why:** Final Decree's Witness advantage is redundant against Order's own Lawkeeper's Eye; Green + Hunter and Order + Power are the two cross-path collisions. Ben chose (a).
+
+**What to do:** replace the Witness clause with a non-advantage payload (proposal for Ben's yes); one authoring note in both revision guides naming the pairings.
+
+**Done when:** card + rule shipped; guides carry the note.
+
+**PM:** lane B · model sonnet · size S · deps design yes · verify: advantage-classify. Filed 2026-09-13 from R-100.
+
+## 110. [ ] R-102 (a) — `Composed` / `Focused Mind` / `Clear Mind` become one name and one wording across five trees; settle "max and current" (DATA, REBUILD all three packs) (2026-09-13)
+
+**Why:** one talent under three names; Envoy's copy adds "and current". Ben chose (a).
+
+**What to do:** pick the name (Composed is the majority), one wording, one answer on max-vs-current (recommend max only — the AE shape); rename in `data/cosmere.json` / `leyline.json`, the authored overlays (docIds change with the name — check every `connections` and prose prereq that names the old ones; iron rule 7), the bench roster if it lists one.
+
+**Done when:** one name in the data; validate + lint green; prereqs still resolve.
+
+**PM:** lane R · model sonnet · size M · deps — · verify: shared-talents.js shows one name. Filed 2026-09-13 from R-102.
+
+## 111. [ ] R-104 (a) — the prose pass: path descriptions and both revision guides say what each tree actually is (DOCS + DATA text, REBUILD for the description field) (2026-09-13)
+
+**Why:** twenty of twenty-one trees are PARTIAL or DRIFTED against their prose; the heroic path descriptions are still verbatim Roshar ("Roshar is a world riven by conflict", "Available in the Stormlight Handbook"). Ben chose (a).
+
+**What to do:** tree by tree, rewrite `data/path-descriptions.json` from the profiles (`docs/analysis/talent-ecosystem/profiles/`), Edha-generic, no nation-specific hooks; then the guides' identity sections. Batch by atlas for Ben's yes (lore approval gate).
+
+**Done when:** every description names the tree the talents deliver; the six heroic descriptions carry no Roshar.
+
+**PM:** lane B · model sonnet · size L · deps approval per batch · verify: read-through. Filed 2026-09-13 from R-104.
+
+## 112. [ ] R-105 (c) + R-108 (a) + R-110 (d) + R-111 (b) — the guides record the four decisions; two cards gain the cancel line (DOCS + two cards, REBUILD heroic) (2026-09-13)
+
+**Why:** four answers that are documentation plus one line on two cards: the heroic-vs-leyline tier trade is accepted (with the critique's per-Action parity arithmetic); the deity Special target is restated and nothing converted yet; `Fatal Thrust` and `Defensive Position` keep "two" and gain "advantages and disadvantages cancel one-for-one; roll with whatever remains", plus a guide note that the engine folds two-against-one to nothing and these two are played by hand; `Withering Ray` stays and is written into the guides as the leyline damage ceiling.
+
+**What to do:** `.claude/skills/leyline-revision-guide/SKILL.md` and `deity-revision-guide/SKILL.md` sections; the session-zero material for the tier trade; the two heroic cards in `data/cosmere.json` + the authored overlays' descriptions.
+
+**Done when:** the four decisions are findable in the guides; the two cards carry the line.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: read-through + lint. Filed 2026-09-13 from R-105/R-108/R-110/R-111.
+
+## 113. [ ] R-107 (a) — Temp HP unifies on keep-the-higher: route Life Surge, Overgrowth and Spoils of Isolation through `edhaGrantTempHpCross`; fix the header; pin the Life Surge case (ENGINE-ONLY, F5) (2026-09-13)
+
+**Why:** two writers disagree (`28-temporary-hp.js:6` vs `:13`); heal overflow (`03-where-an-effect-lives.js:882`) and `thpFromTotal` (`53-native-event-system.js:3071`) overwrite a larger pool. Ben chose (a).
+
+**What to do:** the two call sites → `edhaGrantTempHpCross`; the single-target `thp` effect path (`33:237`) and the non-victim `edha-temp-hp` path (`53:61`) likewise; header line 13 rewritten; a test in `tests/` (held 6, overflow 3 → still 6); ECO-1 re-pointed to expect the pool to survive.
+
+**Done when:** every Temp HP write keeps the higher; the pin fails under reversion.
+
+**PM:** lane B · model opus · size S · deps — · verify: the pin + ECO-1. Filed 2026-09-13 from R-107.
+
+## 114. [ ] R-109 (a) — repair `Trade Routes` so it works with one Foundation; write `Forge Construct`'s flat 1 into its card (DATA, REBUILD deity) (2026-09-13)
+
+**Why:** `Trade Routes` reads "choose two of your active Foundations" while the tier cap allows one until level 6 — uncastable for the whole current level range. Ben chose (a): keep the cap, fix the talent.
+
+**What to do:** reword Trade Routes to work from one Foundation (proposal for Ben's yes — e.g. link a Foundation to a point in Attunement Range); Forge Construct's card says "one active Construct" is deliberate.
+
+**Done when:** a level-2 Civilization character can cast it; text approved and shipped.
+
+**PM:** lane B · model sonnet · size S · deps design yes · verify: read-through. Filed 2026-09-13 from R-109.
+
+## 115. [ ] Handoff §9k — the four generic primitives that make the Leybreaker / Ley-surveyor cue cards live (ENGINE-ONLY, F5) (2026-09-13)
+
+**Why:** PR #329 shipped fourteen talents; nine of their clauses post cue cards because no primitive covers them: a Draw Mana / activation watch, an Attunement-rank marker, a Draw Mana marker, and `whileStanceActive` on `edha-damage-rider`. Each is one small generic handler (iron rule 2a).
+
+**What to do:** build the four in that order, each with a pin and a 🤖 row, then switch the affected talents' cue rules to the real handlers (data change → rebuild).
+
+**Done when:** HS-3, HS-6, HS-10's cue cards are replaced by engine effects; §9k rows ticked.
+
+**PM:** lane B · model opus · size M · deps — · verify: the pins + the HS rows. Filed 2026-09-13 from the specialty swap.
