@@ -390,7 +390,7 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // 114, Trade Routes), R-118 (item 108, the three thin deity gates), R-119 (item 106, Sovereignty's
   // Decree zone) — filed in EDHA_RULINGS.md §L, all WAITING on Ben. The open set is exactly these
   // six until he answers.
-  const ECOSYSTEM_RULINGS = ["R-114", "R-115", "R-116", "R-117", "R-118", "R-119"];
+  const ECOSYSTEM_RULINGS = ["R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
