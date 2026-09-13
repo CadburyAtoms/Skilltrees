@@ -466,15 +466,15 @@
       "docId": "rn4oUuKtzhgTulVT",
       "img": "icons/magic/defensive/shield-barrier-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Distance is not an excuse. It never was.</em></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Distance is not an excuse. It never was.</em></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>"
       },
       "activation": {
         "type": "utility",
         "cost": {
           "value": null,
-          "type": "rea"
+          "type": "spe"
         },
         "consume": [
           {
@@ -583,14 +583,14 @@
       "docId": "h3q3tiHxEtSvYhd7",
       "img": "icons/sundries/flags/banner-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>One step sets the rhythm. The rest find their place.</em></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>One step sets the rhythm. The rest find their place.</em></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>"
       },
       "activation": {
         "type": "utility",
         "cost": {
-          "value": 2,
+          "value": 1,
           "type": "act"
         },
         "consume": [
@@ -815,9 +815,9 @@
       "docId": "SHLqjQfvBCcV2cEh",
       "img": "icons/magic/defensive/shield-barrier-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>You carry your share. Then theirs.</em></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You carry your share. Then theirs.</em></p><p>When an ally adjacent to you takes damage, spend 1 Investiture. If you do, take half that damage in their place.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 1 Investiture. If you do, take half that damage in their place.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 1 Investiture. If you do, take half that damage in their place.</p>"
       },
       "activation": {
         "type": "utility",
@@ -830,8 +830,8 @@
             "type": "resource",
             "resource": "inv",
             "value": {
-              "min": 2,
-              "max": 2,
+              "min": 1,
+              "max": 1,
               "actual": 0
             }
           }
@@ -849,7 +849,7 @@
       "events": {
         "SharedBurdenRct0": {
           "id": "SharedBurdenRct0",
-          "description": "White / Bulwark. H25, iron rule 2b (07-25, pass 2bQ). Adjacent ally, half the damage taken in their place, 2 Investiture — identical to the retired block. `@dealt` is the damage that just landed, which is why this needed a formula token rather than a plain die.",
+          "description": "White / Bulwark. H25, iron rule 2b (07-25, pass 2bQ). Adjacent ally, half the damage taken in their place, 1 Investiture (R-96 (a), item 105: cut from 2). `@dealt` is the damage that just landed, which is why this needed a formula token rather than a plain die.",
           "event": "edha-watch-rule",
           "handler": {
             "type": "edha-damage-react",
@@ -858,8 +858,8 @@
             "requireAdjacent": true,
             "amountFormula": "floor(@dealt / 2)",
             "costResource": "inv",
-            "costValue": 2,
-            "prompt": "{victim} took {dealt} damage adjacent to you. Spend 2 Inv → take {amount} of it in their place."
+            "costValue": 1,
+            "prompt": "{victim} took {dealt} damage adjacent to you. Spend 1 Inv → take {amount} of it in their place."
           },
           "order": 0
         }
