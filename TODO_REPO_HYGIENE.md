@@ -3719,3 +3719,23 @@ filed 2026-09-08 01:1x.
 **Done when:** the blocked card names the mark once; `tests/gated-note.test.js` gains a case pinning that the note and the suffix never repeat the same sentence; the unmarked and halved cards are byte-identical to what bench 46 recorded.
 
 **PM:** lane R · model sonnet · size S · deps —. Filed 2026-09-13 from bench run 46.
+
+## 125. [ ] `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
+
+**Why:** at item 122's review the PM dry-ran the script twice. From the main checkout (board branch, live `docs/pm-live.json`) it refused naming bench-46. From a worktree it PASSED the same guard while bench 46 was mid-run — that checkout's `docs/pm-live.json` was `main`'s, and `main` only carries the overlay as of the last merged board PR. The guard is therefore only as fresh as the checkout it runs from, and a PM that has not yet landed its board PR (the normal state mid-shift) could close Foundry under a live bench.
+
+**What to do:** `checkNoBenchWorker` gains a second, checkout-independent signal: the output of `git worktree list --porcelain` (any worktree on a `pm/bench-*` branch) and `git branch --list 'pm/bench-*'` unmerged into `origin/main`; either one refuses exactly like a lane-B worker on the overlay, with the same `--force-bench` override. Keep it PURE — the orchestrator gathers the two lists, the guard decides — and pin both signals in `tests/deploy-cycle.test.js` (a worktree line → refuse; a merged branch → pass).
+
+**Done when:** the pin passes and fails on the reversion; a dry run from a fresh worktree while a `pm/bench-*` worktree exists refuses.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM at item 122's review.
+
+## 126. [ ] `scripts/README.md` misses three tracked scripts — `build-levelup-guides.py`, `levelup-guides-prose.json`, `validate-build.py` (DOCS-ONLY) (2026-09-13)
+
+**Why:** item 122's worker ran `node scripts/check-scripts-readme.js` and it reported the drift; the three files landed with build-forge (2026-09-09) without README rows. The verifier is a gate candidate that is not wired (item 21), so nothing failed.
+
+**What to do:** add the three rows in the table's shape (one line each: what it is, who runs it); consider wiring `check-scripts-readme.js` into `scripts/gates.js` so the drift cannot recur — if you do, the gate count in the work-item skill and the board's gate references bump too.
+
+**Done when:** `node scripts/check-scripts-readme.js` reports clean; the gate decision is recorded either way.
+
+**PM:** lane R · model sonnet · size XS · deps — · verify: the verifier's output. Filed 2026-09-13 by the PM from item 122's report.
