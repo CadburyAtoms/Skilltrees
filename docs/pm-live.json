@@ -1,25 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Sunday session: bench run 45 merged (#335) — 28 of 29 bench rows retired; item 105 merged (#336, the Blue/White minimal-change set). Fix pass 11 (bench 45's three defects + Momentum's Edge) is the last worker running. When it lands: ONE deploy-to-foundry.bat run + ⟳ Sync Talents covers heroic + leyline; R-112 is yours to answer (default: raise The Reckoning's focus pool to 3).",
-    "waitingOn": "R-112 (tap the default) · one deploy-to-foundry.bat run + ⟳ Sync Talents after fix pass 11 merges",
+    "status": "waiting",
+    "note": "Sunday session: 7 PRs merged (the phone page, the stale-cards fix, item 112, bench run 45, item 105, fix pass 11). Engine is live (F5). Nothing runs until 15:30 (the trailing window is full). Yours: R-112 (tap the default), F5, then ONE deploy-to-foundry.bat run + ⟳ Sync Talents — bench 46 (12 rows) waits on that.",
+    "waitingOn": "R-112 · F5 · one deploy-to-foundry.bat run + ⟳ Sync Talents (heroic + leyline)",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "fix-pass-11",
-      "title": "Fix pass 11 — bench 45's defects: 118 (duplicated cue-card names), 120 (gated regen cue prints its static note), 119 engine half (silent failed consume → warning), 104 (Momentum's Edge rider → [Tier][Die])",
-      "model": "opus",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/fix-pass-11",
-      "startedAt": "2026-09-13T15:52:00Z",
-      "agent": "Fix pass 11 (bench 45)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; test-pass-fixes; REBUILD heroic + leyline owed at merge"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
