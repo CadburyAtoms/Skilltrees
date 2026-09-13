@@ -82,9 +82,9 @@
       "docId": "AcyUtd6NkFDE7wNE",
       "img": "icons/magic/defensive/shield-barrier-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield. Advantages and disadvantages cancel one-for-one; roll with whatever remains.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield. Advantages and disadvantages cancel one-for-one; roll with whatever remains.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield. Advantages and disadvantages cancel one-for-one; roll with whatever remains.</p>"
       },
       "activation": {
         "type": "none",
