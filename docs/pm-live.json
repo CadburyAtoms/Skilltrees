@@ -1,8 +1,8 @@
 {
   "pm": {
     "status": "waiting",
-    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
-    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
+    "note": "Sunday session: 15 PRs merged. Seven rulings are waiting for you on the Needs Ben tab — R-92 (a generic dropped-to-0-HP GM cue; it had been hidden in the answered section since 09-09), R-114 (Mantle of the Aspirant's heal), R-115 (False Premise), R-116 (Final Decree), R-117 (Trade Routes), R-118 (three deity gates), R-119 (the Decree moving zone) — each with a default you can tap. Press F5 for item 123. Nothing is running until the next slot at 19:24.",
+    "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },

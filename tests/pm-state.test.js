@@ -384,7 +384,13 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // 2026-09-13, item 123: Ben answered R-113 in chat, verbatim "R-113 - agents need to be able to
   // sync adversaries for bench runs" (option (a)), moved to §K.10 — the open set is EMPTY again.
   // R-113 joins the closed list below so a regression that re-opens it is named.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-13, item 127: six design-proposal rulings filed for the queued TODO items — R-114
+  // (item 101, the redirect-unwind heal — renumbered off item 101's phantom "R-92"), R-115 (item
+  // 107, False Premise's payload), R-116 (item 109, Final Decree's Witness clause), R-117 (item
+  // 114, Trade Routes), R-118 (item 108, the three thin deity gates), R-119 (item 106, Sovereignty's
+  // Decree zone) — filed in EDHA_RULINGS.md §L, all WAITING on Ben. The open set is exactly these
+  // six until he answers.
+  const ECOSYSTEM_RULINGS = ["R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -393,7 +399,7 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
-    `the open rulings are exactly the pinned set (EMPTY since item 123 closed R-113, 2026-09-13) — got [${ids.join(", ")}]`);
+    `the open rulings are exactly the pinned set (R-114 … R-119 since item 127 filed them, 2026-09-13) — got [${ids.join(", ")}]`);
   assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
     `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
   // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.
