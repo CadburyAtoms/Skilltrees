@@ -1,7 +1,11 @@
-{ "pm": { "status": "awake", "note": "Sunday session: item 116 merged #331 (this page is now three tabs); bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; item 117 (stale Yours-to-do cards) queued behind it.",
-          "waitingOn": null, "nextWakeAt": null, "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)" },
-  "workers": [
-    { "item": "bench-45", "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows", "model": "opus", "size": "L", "lane": "B",
-      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" }
-  ],
-  "usage": null }
+{
+  "pm": {
+    "status": "waiting",
+    "note": "Sunday session: 7 PRs merged (the phone page, the stale-cards fix, item 112, bench run 45, item 105, fix pass 11). Engine is live (F5). Nothing runs until 15:30 (the trailing window is full). Yours: R-112 (tap the default), F5, then ONE deploy-to-foundry.bat run + ⟳ Sync Talents — bench 46 (12 rows) waits on that.",
+    "waitingOn": "R-112 · F5 · one deploy-to-foundry.bat run + ⟳ Sync Talents (heroic + leyline)",
+    "nextWakeAt": null,
+    "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
+  },
+  "workers": [],
+  "usage": null
+}
