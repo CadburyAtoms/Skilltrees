@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T18:44:44.449Z",
+  "generatedAt": "2026-09-13T18:48:50.471Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "35bb73d777",
-    "commit": "2bcd117",
+    "hash": "1557b70829",
+    "commit": "bb5966f",
     "branch": "pm/board-2026-09-13c",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,12 +43,39 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: item 119 closed (#339, The Reckoning's pool 3; five bestiary feel rows shelved). The PM ran the deploy itself: Foundry closed, engine + art synced, all five packs rebuilt and validated, Foundry relaunched into edha. Bench 46 is next. Re-join your Gamemaster client whenever you like.",
+    "note": "Sunday session: the deploy ran without you at 14:41 (all five packs + engine live, Foundry relaunched into edha). Bench 46 is driving the 11 rows that deploy unblocked; item 122 is turning the deploy into a gated script with tests (PM-R18). Re-join your Gamemaster client whenever you like. Nothing is waiting on you.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-46",
+      "title": "Bench run 46 — item 120's Nexus-Fed rows, 105's three, 104's Momentum's Edge, 118's cue cards, 119's Reckoning re-drive + Ring control (Predator's Due blocked on 88)",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/bench-46",
+      "startedAt": "2026-09-13T18:48:00Z",
+      "agent": "Bench run 46",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; owns the Browser pane; on the 14:41 deploy"
+    },
+    {
+      "item": "122",
+      "title": "deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs",
+      "model": "sonnet",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/122-deploy-cycle-script",
+      "startedAt": "2026-09-13T18:48:00Z",
+      "agent": "Work item 122",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; never touches the live Foundry"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1454,6 +1481,30 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 339
+    },
+    {
+      "pos": 116,
+      "item": null,
+      "title": "Bench run 46 — the 14:41 deploy: item 120's three Nexus-Fed rows, 105's three, 104's Momentum's Edge, 118's cue cards, 119's Reckoning re-drive + the Ring control, Predator's Due (blocked on 88). Step zero: both PCs refreshed (PM-R17), roster, ⟳ Sync Adversaries. Dispatched 14:48",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "deploy ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 117,
+      "item": "122",
+      "title": "scripts/deploy-cycle.js — the agent-run deploy as ONE gated script: pre-flight guards (clean main, no hand-edited engine, no bench on the table, world named, exe found), pack + engine backups, the eight bat steps fail-fast with logs, relaunch + verification (stamps, served hash = HEAD, /join), the DEPLOY STATE record, PURE guards pinned + a dry-run smoke test; runbook / CLAUDE.md / PM + bench skills updated (PM-R18). Dispatched 14:48",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "PM-R18 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -1509,20 +1560,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "13:28",
-      "at": "2026-09-07T17:28:00.000Z",
-      "item": "Item 90 (five harness-only rows retired) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "8 min, 155 turns",
-      "weighted": "2.4M",
-      "weightedM": 2.4,
-      "outcome": "merged 13:32 after review (gh mergedAt 17:32Z), no trailers, no bounce; the worker's report arrived after the merge (it had paused on its own CI watch). DOCS-ONLY",
-      "pr": 282
-    },
     {
       "date": "2026-09-07",
       "time": "13:22",
@@ -2348,9 +2385,23 @@
       "weightedM": null,
       "outcome": "deployed",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:48",
+      "at": "2026-09-13T18:48:00.000Z",
+      "item": "Ben in chat: \"the full bench loop doesn't need me anymore? Can we test and write a few gates and guardrails that are needed\" → PM-R18 (agent-run deploy: yes) recorded; dispatched bench run 46 (opus, worktree pm/bench-46 — the 11 open 🤖 rows on the 14:41 deploy; step zero refreshes both PCs + roster + ⟳ Sync Adversaries) and item 122 (sonnet, worktree pm/122-deploy-cycle-script — deploy-cycle.js with guards, backups, verification, tests, docs). Trailing-5h dispatches 9 of 6 on Ben's direction; Opus 3 of the day (bench 45, fix pass 11, bench 46)",
+      "itemNo": null,
+      "model": "opus + sonnet",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 242,
+  "runLogTotal": 243,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
