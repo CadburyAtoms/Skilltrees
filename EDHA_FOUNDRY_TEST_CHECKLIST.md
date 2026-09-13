@@ -380,6 +380,15 @@ bench and report it** — every converted talent rides the same premise. The dia
 the day-1 bench report, already fixed.
 
 
+## Path descriptions — item 111 (2026-09-13; **REBUILD leyline + deity + heroic packs + ⟳ Sync Talents first**)
+
+The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approved prose from
+`docs/analysis/talent-ecosystem/TREE-INTENT.md`). Nothing mechanical changed; these rows only
+prove the rebuilt packs and the Sync carry the text. Any bench actor works.
+
+- [ ] 🤖 **111-1 — the deployed path items carry the approved openings:** off the rebuilt packs (console, no roster needed), each path item’s `system.description.value` begins with its approved opening — leyline/Black *"Black leyline mages are predators, and the leyline feeds on them"*, heroic/Warrior *"Warriors fight in stances"*, deity/Chaos *"Maelith, the Unmaker of Certainties"* — and three spot checks hold: Black’s Draw Mana line says **5 ft** (not 10), Power’s signature-resource line names **Warlord’s Fury** and not "Bounty", and no heroic description contains "Roshar" or "Stormlight Handbook".
+- [ ] 🤖 **111-2 — an owned path item shows the new text after ⟳ Sync Talents, and the starting-skill parse still holds:** on Bench — Heroic (Warrior) and Bench — Black, the actor’s owned path item shows the new description after Sync (owned copies are frozen snapshots until then); then `edhaParseStartingSkill` over the six heroic path cards read off the pack returns Insight / Discipline / Perception / Leadership / Lore / Athletics (the creation wizard’s fallback — `tests/starting-skill.test.js` pins it against the data file, this pins it against the pack).
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —

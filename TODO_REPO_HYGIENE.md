@@ -3587,7 +3587,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size M · deps — · verify: shared-talents.js shows one name. Filed 2026-09-13 from R-102.
 
-## 111. [ ] R-104 (a) — the prose pass: path descriptions and both revision guides say what each tree actually is (DOCS + DATA text, REBUILD for the description field) (2026-09-13)
+## 111. [x] (2026-09-13, PR #349) R-104 (a) — the prose pass: path descriptions and both revision guides say what each tree actually is (DOCS + DATA text, REBUILD for the description field) (2026-09-13) — DONE 2026-09-13, PR #349 (Ben approved every draft opening in `TREE-INTENT.md` in one pass; all 21 descriptions, both guides’ PART 4, primer regenerated; checklist rows 111-1 / 111-2 prove the rebuilt packs carry it)
 
 **Why:** twenty of twenty-one trees are PARTIAL or DRIFTED against their prose; the heroic path descriptions are still verbatim Roshar ("Roshar is a world riven by conflict", "Available in the Stormlight Handbook"). Ben chose (a).
 
