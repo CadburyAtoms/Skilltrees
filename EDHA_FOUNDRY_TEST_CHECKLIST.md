@@ -838,7 +838,11 @@ call, in `EDHA_RULINGS.md`.)*
   roll errors, or the formula shows `[object Object]` / `NaN`; (2) the formula carries no
   Momentum's Edge term, or a `+ 0`; (3) a term of +25 to +30 — which would mean the reference resolves
   after all and R-95's implementation half is wrong. **Control:** re-stamp at rest, 0 ft moved — no
-  rider in any case.
+  rider in any case. **Code prediction (critique, 2026-09-12): case (1), and the whole Strike's
+  damage roll fails, not just the rider** — Foundry 13's `replaceFormulaData` renders an Object as
+  a rune-wrapped JSON string (`ᚖ{…}ᚖ`), `edhaFoldRiderFormula` passes it on because it holds no
+  `@`, and the appended term cannot parse. Record the error text verbatim; if the card instead
+  shows `+ 0` or no term, the prediction is wrong and `CRITIQUE.md` §R-95 needs a note.
 
 ---
 

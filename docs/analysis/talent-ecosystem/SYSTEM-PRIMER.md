@@ -64,6 +64,17 @@ Consequences you must reason with:
   used by one adversary ability (`Probability Net`) and by no talent. So a designer who wants a
   penalty that stacks does not need new engine work — the primitive exists.
 
+  > ⚠️ **Critique, 2026-09-12** (`CRITIQUE.md`). "By no talent" is wrong. The summing `formula`
+  > field is carried by seven player talents in the authored data: `Pack Hunting`
+  > (`heroic-hunter.json:524`), `Confident`, `Decisive`, `Demonstrative` and `Shrewd Command`
+  > (`heroic-leader.json:138/277/359/853`), `Tactical Ploy` (`:965`, a −1d4 *penalty*) and
+  > `Overwhelm with Details` (`heroic-scholar.json:754`). It is proven on player cards; the only
+  > surviving objection to using it more is the design one — uncapped additive modifiers.
+  > Also: the printed rule (SR p.18) cancels advantages and disadvantages one-for-one, so two
+  > advantages against one disadvantage is one advantage at the table — a case the engine's
+  > `edhaNextModFoldMode` (both directions → null) cannot represent; it matters only for manual
+  > talents (R-110).
+
 ## Resources
 
 | Resource | Max | Refill |
