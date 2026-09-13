@@ -3638,3 +3638,13 @@ filed 2026-09-08 01:1x.
 **Done when:** the injected page and `dash/index` are a fraction of their former size (numbers in the PR), three phone-viewport screenshots show the tabs, the PM skill's mobile-board section matches the one-document contract, gates green.
 
 **PM:** lane R · model fable (Ben authorized, chat 2026-09-13) · size M · deps — · verify: the screenshots + the size numbers, then REPUBLISH the artifact (`--inject` → `Artifact(url)`) and push the new `dash/index`. Filed 2026-09-13 by the worker (the PM had no PR to file it on).
+
+## 117. [ ] `parseBenOnly` reads "Waiting on Ben" text from the REPLACED session-of-record lines, so the phone's "Yours to do" cards resurrect answered asks (TOOLING + test pin) (2026-09-13)
+
+**Why:** Reviewing item 116's Needs Ben screenshot on 2026-09-13, the two "Yours to do" cards were R-56 (answered 09-07; item 83 merged #313) and "ONE deploy-to-foundry.bat run tomorrow for items 92 + 93" (Ben ran it 09-07 21:52) — both from the 09-07 19:56 session line that the board keeps only as _(The line this replaces, for the record:)_ history. `scripts/pm-state.js parseBenOnly()` scans the whole session-of-record blockquote, so every superseded line's **Waiting on Ben:** text is projected as a live ask with a Done button, while the current line says "Waiting on Ben: nothing."
+
+**What to do:** scope `parseBenOnly()` (and any sibling that reads "Waiting on Ben" / "Still owed by Ben" / "Ben owes") to the FIRST session-of-record paragraph only — the text before the first `_(The line this replaces` marker; pin it with a fixture carrying a current line with no asks and a replaced line with two, expecting `[]`, and the reversion shown failing; regenerate `docs/pm-state.json`.
+
+**Done when:** the pin passes and fails on the reversion; `node scripts/pm-state.js` on the real board yields zero Ben-only asks while the current line says nothing is waiting; the PM pushes `pm/state`.
+
+**PM:** lane R · model sonnet · size S · deps 116 ✓ · verify: the pin + a real-board run. Filed 2026-09-13 by the PM at item 116's review.

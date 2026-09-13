@@ -1,9 +1,7 @@
-{ "pm": { "status": "awake", "note": "Sunday session (Ben, chat 10:26 ET): bench run 45 syncs talents + adversaries and drives HS-1…10 + 19 more 🤖 rows; item 116 rebuilds this phone page as three tabs.",
+{ "pm": { "status": "awake", "note": "Sunday session: item 116 merged #331 (this page is now three tabs); bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; item 117 (stale Yours-to-do cards) queued behind it.",
           "waitingOn": null, "nextWakeAt": null, "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)" },
   "workers": [
     { "item": "bench-45", "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows", "model": "opus", "size": "L", "lane": "B",
-      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" },
-    { "item": "116", "title": "Phone board → three tabs (Overview · Bench rows · Needs Ben); deploy state one line", "model": "fable", "size": "M", "lane": "R",
-      "branch": "pm/116-phone-board-three-tabs", "startedAt": "2026-09-13T14:31:00Z", "agent": "Work item 116", "phase": "working", "pr": null, "note": "fable-worker (Ben's chat authorization 09-13); worktree; headless-Chrome verification only" }
+      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" }
   ],
   "usage": null }
