@@ -807,7 +807,7 @@
             "type": "edha-note",
             "icon": "📍",
             "whisper": "public",
-            "text": "<strong>Mark the Ground</strong>: for the scene the chosen ally's leyline talents treat their color rank as <strong>1 higher</strong> for Attunement Range and [Size]; an ally with no leyline instead gains an advantage on Perception tests."
+            "text": "for the scene the chosen ally's leyline talents treat their color rank as <strong>1 higher</strong> for Attunement Range and [Size]; an ally with no leyline instead gains an advantage on Perception tests."
           },
           "order": 0
         }
@@ -901,7 +901,7 @@
             "type": "edha-note",
             "icon": "🌊",
             "whisper": "public",
-            "text": "<strong>Steady the Line</strong>: the next time the chosen ally Draws Mana before the start of your next turn, they recover <strong>1 additional Investiture</strong>; if they cannot Draw Mana, they recover 1 focus instead."
+            "text": "the next time the chosen ally Draws Mana before the start of your next turn, they recover <strong>1 additional Investiture</strong>; if they cannot Draw Mana, they recover 1 focus instead."
           },
           "order": 0
         }

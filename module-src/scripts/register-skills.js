@@ -4441,7 +4441,10 @@ async function edhaTurnCueSweep(combat, prior, current) {
           const got = edhaHealCutGate(prevTok.actor, heal);
           const line = edhaHealLine(prevTok.actor, heal, got, d => `regains ${d} HP`);
           if (got > 0) await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + got }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
-          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `${line}.`, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
+          // item 120: a GATED tick drops the rule's static note — it was written un-gated and would
+          // print a number the gate never delivered, right next to the parenthetical saying so.
+          const note = edhaDeliveredNote(h.note, line ? `${line}.` : "", heal, got);
+          await edhaPostCueCard(prevTok.actor, tal, { note, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -4775,6 +4778,29 @@ function edhaHealLine(who, requested, delivered, phrase) {
   const info = edhaHealCutInfo(who);
   if (!info) return "";
   return `${who?.name ?? "the target"} ${info.fraction === 0 ? "cannot regain HP" : "has their healing halved"}${info.byName ? ` (${info.byName})` : ""} — no healing lands`;
+}
+/* WHICH sentence a gated payload's card carries (item 120, fix pass 11 — bench run 45). The
+ * announcement helper above composes the truth from what was DELIVERED, but a cue rule can ALSO
+ * carry its own static `note`, authored before the gate existed and therefore un-gated by
+ * construction. The `edha-regen` sweep posted `h.note || line`, so the static note won on exactly
+ * the creatures the gate exists for: a withered Garden Sow's tick read
+ *   "⏰ Nexus-Fed (B45 Garden Sow): Nexus-Fed — the Sow regains 5 HP. (no HP applied — … no healing
+ *    lands.)"
+ * and the GM reads the 5 first. Item 68's contract ("a heal card is built from what was delivered")
+ * was honoured in the parenthetical and broken in the body of the same card.
+ *
+ * The rule: **when less landed than was asked for, the composed line is the only honest sentence**
+ * — the static note is dropped, blocked (0) and halved (some) alike. An UNGATED payload
+ * (delivered === requested, the overwhelmingly common case) keeps the author's note, which is the
+ * whole point of the field. Returns "" when neither has anything to say.
+ * PURE — pinned in tests/gated-note.test.js. Reach for it at ANY card site that holds both a
+ * static note and a delivered-amount line; `h.note || line` at such a site is the bug. */
+function edhaDeliveredNote(note, deliveredLine, requested, delivered) {
+  const asked = Math.max(0, Math.floor(Number(requested) || 0));
+  const got = Math.max(0, Math.floor(Number(delivered) || 0));
+  const line = String(deliveredLine ?? "").trim();
+  if (got < asked) return line;
+  return String(note ?? "").trim() || line;
 }
 async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {
@@ -8552,8 +8578,8 @@ Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaRef
 Hooks.on("deleteCombat", (combat) => { if (!edhaDefBuffGmGate()) return; for (const c of (combat?.combatants ?? [])) if (c.actor) void edhaRemoveDefBuff(c.actor); });
 
 /* ============================================================================================
- * RESOURCE-CONSUME DIALOG (backlog J + item 50) — two things, both about the system's own
- * consume prompt.
+ * RESOURCE-CONSUME DIALOG (backlog J + items 50, 119) — three things, all about the system's own
+ * consume path.
  * (1) TITLE — cosmetic. The prompt opens titled "Consume Resource" with no clue WHICH item asked,
  *     which on a talent-dense sheet is a coin flip. One helper rewrites the header from the item
  *     on the app; two hooks reach it, because the dialog renders under `renderItemConsumeDialog`
@@ -8567,8 +8593,18 @@ Hooks.on("deleteCombat", (combat) => { if (!edhaDefBuffGmGate()) return; for (co
  *     `use()` and cannot reach those options, and a DOM tick at `renderItemConsumeDialog` would
  *     bind to the template's checkbox ids instead of the option shape. `??` is kept, so an
  *     explicit caller (`showConsumeDialog({shouldConsume: false})`) still gets what it asked for.
+ * (3) SAY SO WHEN THE COST CANNOT BE PAID — item 119, bench run 45. An underfunded use is a
+ *     no-op the GM cannot tell from a dead button. The system DOES refuse it
+ *     (`use()` → "Cannot consume, not enough of resource", 2.1.0 index.js ~L7120) but that toast
+ *     names neither the item, the actor, the resource nor the amount, leaves no console line and
+ *     no chat record, and is gone in seconds — which is why bench run 45 read The Reckoning's
+ *     Unbreakable Line (3 Focus against a pool that maxes at 2) as a dead ability. So the engine
+ *     announces the shortfall in its own words, on `preUseItem`, BEFORE the system's generic
+ *     refusal, and writes the same sentence to the console. It **never vetoes** — the system
+ *     stays the thing that decides; this only makes its decision legible.
  * Owns: edhaSetConsumeTitle + the renderItemConsumeDialog / renderDialogV2 registrations;
- *       edhaPreTickConsumeOptions (PURE — pinned) · edhaInstallConsumeDialogWrapper + its ready hook.
+ *       edhaPreTickConsumeOptions (PURE — pinned) · edhaInstallConsumeDialogWrapper + its ready hook;
+ *       edhaCostShortfalls + edhaShortfallText (PURE — pinned) + the preUseItem announcer.
  * ============================================================================================ */
 
 /* --- J: name the resource-consume popup --------------------------------------------------------
@@ -8631,6 +8667,48 @@ function edhaInstallConsumeDialogWrapper() {
   return "patched";
 }
 Hooks.once("ready", () => { try { edhaInstallConsumeDialogWrapper(); } catch (e) { console.error("Edha Content | consume-dialog wrapper failed", e); } });
+
+/* --- item 119: the refusal, in words -----------------------------------------------------------
+ * PURE (pinned in tests/consume-shortfall.test.js): which rows of an `edhaConsumeList` the
+ * balances cannot cover. `balances` is a plain { resource: currentValue } map so the decision is
+ * testable without a document — the caller reads the actor once and hands the numbers over.
+ * A row that IS affordable never appears; `short` is always > 0 in the result. */
+function edhaCostShortfalls(list, balances) {
+  return (Array.isArray(list) ? list : []).map((c) => {
+    const need = Math.max(0, Math.floor(Number(c?.amount) || 0));
+    const have = Math.max(0, Math.floor(Number(balances?.[c?.resource]) || 0));
+    return { resource: c?.resource, need, have, short: need - have };
+  }).filter((s) => s.resource && s.short > 0);
+}
+/* PURE (pinned): the ONE sentence both refusal points speak — this announcer and `edhaConsumeCost`
+ * (the burst/takeover charger, which refuses for real rather than predicting the system's refusal).
+ * It names the actor, the item, the resource, what is needed, what is there and the gap, because
+ * every one of those was missing from the toast that let a dead ability read as dead. Returns ""
+ * when nothing is short, so a caller can use it as its own gate. Callers add their own tail. */
+function edhaShortfallText(actorName, itemName, shortfalls) {
+  const parts = (Array.isArray(shortfalls) ? shortfalls : []).filter((s) => s && s.short > 0)
+    .map((s) => `${s.short} ${EDHA_RES_LABEL[s.resource] || s.resource} short (needs ${s.need}, has ${s.have})`);
+  if (!parts.length) return "";
+  return `Edha: ${actorName || "this creature"} cannot pay for ${itemName || "this"} — ${parts.join("; ")}.`;
+}
+/* Registered here rather than beside the cost-ledger hook in the prompt/pick section: this one
+ * announces, it does not record, and it must never influence the vote. It returns undefined on
+ * every path — Foundry stops a hook chain on `false`, and a use refused HERE would be one more
+ * silent no-op, which is the bug. Fires before the consume dialog, so on a multi-cost item whose
+ * short row the GM then unticks the sentence is a prediction that did not come true; the tail says
+ * so rather than claiming the use failed. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    const list = edhaConsumeList(item); if (!list.length) return;
+    const balances = {};
+    for (const c of list) balances[c.resource] = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
+    const text = edhaShortfallText(actor.name, item.name, edhaCostShortfalls(list, balances));
+    if (!text) return;
+    console.warn(`Edha Content | ${text} (the system will refuse the use unless that cost is unticked)`);
+    ui.notifications?.warn(`${text} The use is refused unless you untick that cost.`);
+  } catch (e) { /* never block a use */ }
+});
 
 /* ============================================================================================
  * TALENT BUDGET (Edha house rules) — the level-up restriction: how many talents a character of
@@ -12275,17 +12353,21 @@ function edhaConsumeList(item) {
     .filter(c => c.amount > 0);
 }
 // Deduct the talent's activation cost; returns false (and warns) if the actor can't pay.
+// item 119: the refusal wording is shared with the preUseItem announcer (section RESOURCE-CONSUME
+// DIALOG) through edhaCostShortfalls/edhaShortfallText, so both refusal points name the same
+// things — actor, item, resource, need, balance, gap. The old warn here named the need but never
+// the balance, so a GM could not see how far short they were; and this path has no dialog, so its
+// refusal is final rather than a prediction.
 function edhaConsumeCost(item) {
   try {
     const actor = item?.actor; const list = edhaConsumeList(item);
-    for (const c of list) {
-      const cur = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
-      if (cur < c.amount) { ui.notifications?.warn(`Edha: ${actor.name} needs ${c.amount} ${EDHA_RES_LABEL[c.resource] || c.resource} for ${item.name}.`); return false; }
-    }
+    const balances = {};
+    for (const c of list) balances[c.resource] = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
+    const short = edhaShortfallText(actor?.name, item?.name, edhaCostShortfalls(list, balances));
+    if (short) { console.warn(`Edha Content | ${short}`); ui.notifications?.warn(short); return false; }
     const updates = {};
     for (const c of list) {
-      const cur = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
-      updates[`system.resources.${c.resource}.value`] = Math.max(0, cur - c.amount);
+      updates[`system.resources.${c.resource}.value`] = Math.max(0, (balances[c.resource] || 0) - c.amount);
     }
     // #28b: the takeover path's activation cost is a spend as much as edhaSpendResource's is.
     if (Object.keys(updates).length) actor.update(updates, edhaSpendTag("edhaConsumeCost"));

@@ -817,6 +817,22 @@ mark), beside three unmarked allies at +2. **Raise Dead confirmed ungated**: the
 returned to **1 HP**, Disoriented, *"⚰️ Raise Dead : Bench Ally — One returns to life at 1 HP …"* —
 R-10 (3) holds.)*
 
+*(**Fix pass 11 re-test — TODO item 120, the defect 70-2 left behind. ENGINE-ONLY: F5 is enough, no
+pack rebuild and no ⟳ Sync.** The sweep now runs the rule's static `note` through `edhaDeliveredNote`,
+which drops it whenever less landed than was asked for. Same Sow, same marks as 70-2; **advance the
+round between takes** — `edhaPostCueCard` is once per round and will silently eat the second card.)*
+- [ ] 🤖 **Nexus-Fed, WITHERED (the reported card)** — mark `B45 Garden Sow` with Withering Touch for
+      real, hurt it, end its turn. HP must not move, and the cue card must carry **no number at all**:
+      expect *"⏰ Nexus-Fed (B45 Garden Sow): B45 Garden Sow cannot regain HP (Withering Touch) — no
+      healing lands. (no HP applied — …)"*. **FAIL if "regains 5 HP" appears anywhere on it.**
+      *(Fix pass 11, 2026-09-13 — pinned headless in `tests/gated-note.test.js`.)*
+- [ ] 🤖 **Nexus-Fed, HALVED** — same Sow carrying the `{fraction: 0.5}` Necrotic Grasp mark instead:
+      **2 HP** lands and the card prints **2**, never the rolled 5. *(Fix pass 11, 2026-09-13.)*
+- [ ] 🤖 **Nexus-Fed, UNMARKED — the control that must NOT change** — the ungated tick still applies
+      **+5** and still reads the rule's own authored note *"Nexus-Fed — the Sow regains 5 HP."* plus
+      *"(+5 HP applied, end of turn.)"*. This is the half of the fix that is easy to over-shoot.
+      *(Fix pass 11, 2026-09-13.)*
+
 ## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
 
 *(Both rows OBSERVE behaviour that is already deployed — no fix has been made for either. Record
@@ -1198,6 +1214,24 @@ regains 1 Investiture") **and** `flags.edha-content.nextTestMod = {mode:"advanta
 source:"Flashpoint"}` written to the actor. The very next Red test opened with its die control already
 classed `advantage` — nothing clicked — and rolled **`2d20kh + 5`** = 21, after which the `nextTestMod`
 flag was consumed. Pre-selected AND enforced. The card also stamps "Flashpoint fired ✓" and disables.)*
+
+## Momentum's Edge — the retuned rider, TODO item 104 / R-95 (a) (2026-09-13 — DATA: **leyline pack REBUILD + ⟳ Sync Talents** before this row means anything)
+
+*(Replaces the retired **ECO-2**, which observed the defect rather than a fix. The rider was
+`bonusFormula: "@movement.walk.rate"` — a DerivedValueField OBJECT, which `Roll.replaceFormulaData`
+renders as rune-wrapped JSON, so the whole Strike's damage roll threw `Unresolved StringTerm ᚖ{…}ᚖ`
+and **posted no card at all**. Ben chose R-95 (a): fix the resolution AND retune the payload, so the
+rider is now `(@tier)d(2 * @skills.red.rank + 2)` — [Tier][Die], the same shape as Prognosis — and the
+card says so. The 20 ft trigger is unchanged. **Method, from bench run 41:** read the card's own
+`.dice-formula` node, not `msg.rolls[0].formula`, and sample the same root again ~2 s after the card
+lands — the cosmere damage card rebuilds its damage section after `renderChatMessageHTML`.)*
+- [ ] 🤖 **Momentum's Edge — a `(1)d6`-shaped term on the damage bar after a 20 ft approach** —
+      `Bench — Red` (tier 1, Red rank 2) stamped at turn start, displaced exactly **20 ft** toward a
+      hostile dummy, then an impact Strike. The damage card must **post**, and its formula bar must
+      carry a rolled die term from the rider (at tier 1 / rank 2 that is `(1)d6`), not a rune-wrapped
+      object and not a flat 30. **Control at 0 ft moved, same target and talent:** the card posts with
+      **no** Momentum's Edge term at all. *(Fix pass 11, 2026-09-13 — supersedes ECO-2;
+      `docs/analysis/talent-ecosystem/formula-audit.js` reports clean on the repo side.)*
 
 ---
 
@@ -2299,6 +2333,20 @@ public), each naming its table-run clause. ⚠️ **One defect filed: four of th
 talent name twice** — `edha-note` already prefixes it, and Stillstance / Saltstance / Mark the Ground /
 Steady the Line repeat it in their own `text` ("📍 **Mark the Ground**: **Mark the Ground**: for the
 scene…"). Exactly four across all of `data/authored/` — **TODO item 118**.)*
+
+### HS-10b — the doubled name is stripped, TODO item 118 (2026-09-13 — DATA: **heroic pack REBUILD + ⟳ Sync Talents** before this row means anything)
+
+*(`edha-note` prefixes every card with the icon and the talent's name — its own schema hint says the
+text is "shown verbatim after the talent's name", and the other 37 note rules in the repo follow it, so
+the ENGINE is canon and the four card texts were the drift. The leading `<strong><name></strong>: ` is
+gone from exactly those four. **Not touched, and must NOT be "fixed":** `Decisive Command`'s
+"**Authority**:" and `Field Medicine`'s "**Resuscitation**:" open with a SUB-FEATURE name, not the
+talent's — that is the house style working as intended.)*
+- [ ] 🤖 **The four cue cards read their name ONCE** — re-drive HS-10's five cards. Stillstance,
+      Saltstance, Mark the Ground and Steady the Line must each read *"🧂 **Saltstance**: your Strikes
+      deal…"* with the name appearing exactly once; the fifth (Read the Draw) is unchanged and still
+      whispered to the GMs. **FAIL on any card whose name appears twice.** *(Fix pass 11, 2026-09-13 —
+      the repo-side sweep of all 41 `handler.text` values reports 0.)*
 
 - [ ] ⚑ **HS-11 — feel: is Stillstance's ally-guard at depth 0 too strong at the table, and is Read the
   Weave's scene-long party advantage?** The reviewer flagged both; they were accepted provisionally.
@@ -4244,6 +4292,28 @@ at all**: no chat card, no `ui.notifications` warning, no log line. The Crownox 
 first take on the Reckoning read exactly like a dead ability; raising its pool to 5 made the identical
 take work and consumed exactly 3. Filed as **TODO item 119** (the cost/pool mismatch, and the silent
 consume failure behind it); the cost-versus-pool half is a design call, **R-112**.)*
+
+*(**Fix pass 11 — item 119's ENGINE half only. ENGINE-ONLY: F5 is enough, no pack rebuild and no
+⟳ Sync.** The report's mechanism was half wrong and the delta says so: `edhaConsumeCost` already
+warned and is **not** on this path — an adversary ability goes through the SYSTEM's `use()`, which
+refuses with the anonymous *"Cannot consume, not enough of resource"*. The engine now announces the
+shortfall by name on `preUseItem`, in a toast **and** in the console, and never vetoes. ⛔ **The
+cost/pool half is NOT fixed** — R-112 is still waiting on Ben, so The Reckoning still cannot pay for
+its own ability; that is what these rows are meant to make visible, not to resolve. **Do not
+hand-edit the pool** — the whole point is what an underfunded use now looks like.)*
+- [ ] 🤖 **The Reckoning — the underfunded use now SAYS so** — fresh pack import of `The Reckoning`
+      (focus pool max 2), target selected, use **Unbreakable Line** (3 Focus). Expect a warning
+      naming all six facts — *"Edha: The Reckoning cannot pay for Unbreakable Line — 1 Focus short
+      (needs 3, has 2)."* — as a `ui.notifications` toast **and** as an `Edha Content |` line in the
+      console (F12), where it survives the toast fading. **FAIL if the button is still silent.**
+      *(Fix pass 11, 2026-09-13 — pinned headless in `tests/consume-shortfall.test.js`.)*
+- [ ] 🤖 **…and the announcer did not become a second veto** — the same take must still reach the
+      system's own refusal: the consume prompt still opens, and nothing about the use is cancelled
+      EARLIER than it was before the fix. The engine warning is an announcement, not a gate.
+      *(Fix pass 11, 2026-09-13.)*
+- [ ] 🤖 **The Crownox Ring control — an AFFORDABLE use is announced not at all** — same ability on
+      `B45 Crownox Ring` (focus max 3): no Edha shortfall toast, no console line, and the 3 Focus are
+      consumed exactly as bench run 45 already measured. *(Fix pass 11, 2026-09-13.)*
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the

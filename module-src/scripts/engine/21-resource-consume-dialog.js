@@ -1,6 +1,6 @@
 /* ============================================================================================
- * RESOURCE-CONSUME DIALOG (backlog J + item 50) — two things, both about the system's own
- * consume prompt.
+ * RESOURCE-CONSUME DIALOG (backlog J + items 50, 119) — three things, all about the system's own
+ * consume path.
  * (1) TITLE — cosmetic. The prompt opens titled "Consume Resource" with no clue WHICH item asked,
  *     which on a talent-dense sheet is a coin flip. One helper rewrites the header from the item
  *     on the app; two hooks reach it, because the dialog renders under `renderItemConsumeDialog`
@@ -14,8 +14,18 @@
  *     `use()` and cannot reach those options, and a DOM tick at `renderItemConsumeDialog` would
  *     bind to the template's checkbox ids instead of the option shape. `??` is kept, so an
  *     explicit caller (`showConsumeDialog({shouldConsume: false})`) still gets what it asked for.
+ * (3) SAY SO WHEN THE COST CANNOT BE PAID — item 119, bench run 45. An underfunded use is a
+ *     no-op the GM cannot tell from a dead button. The system DOES refuse it
+ *     (`use()` → "Cannot consume, not enough of resource", 2.1.0 index.js ~L7120) but that toast
+ *     names neither the item, the actor, the resource nor the amount, leaves no console line and
+ *     no chat record, and is gone in seconds — which is why bench run 45 read The Reckoning's
+ *     Unbreakable Line (3 Focus against a pool that maxes at 2) as a dead ability. So the engine
+ *     announces the shortfall in its own words, on `preUseItem`, BEFORE the system's generic
+ *     refusal, and writes the same sentence to the console. It **never vetoes** — the system
+ *     stays the thing that decides; this only makes its decision legible.
  * Owns: edhaSetConsumeTitle + the renderItemConsumeDialog / renderDialogV2 registrations;
- *       edhaPreTickConsumeOptions (PURE — pinned) · edhaInstallConsumeDialogWrapper + its ready hook.
+ *       edhaPreTickConsumeOptions (PURE — pinned) · edhaInstallConsumeDialogWrapper + its ready hook;
+ *       edhaCostShortfalls + edhaShortfallText (PURE — pinned) + the preUseItem announcer.
  * ============================================================================================ */
 
 /* --- J: name the resource-consume popup --------------------------------------------------------
@@ -78,4 +88,46 @@ function edhaInstallConsumeDialogWrapper() {
   return "patched";
 }
 Hooks.once("ready", () => { try { edhaInstallConsumeDialogWrapper(); } catch (e) { console.error("Edha Content | consume-dialog wrapper failed", e); } });
+
+/* --- item 119: the refusal, in words -----------------------------------------------------------
+ * PURE (pinned in tests/consume-shortfall.test.js): which rows of an `edhaConsumeList` the
+ * balances cannot cover. `balances` is a plain { resource: currentValue } map so the decision is
+ * testable without a document — the caller reads the actor once and hands the numbers over.
+ * A row that IS affordable never appears; `short` is always > 0 in the result. */
+function edhaCostShortfalls(list, balances) {
+  return (Array.isArray(list) ? list : []).map((c) => {
+    const need = Math.max(0, Math.floor(Number(c?.amount) || 0));
+    const have = Math.max(0, Math.floor(Number(balances?.[c?.resource]) || 0));
+    return { resource: c?.resource, need, have, short: need - have };
+  }).filter((s) => s.resource && s.short > 0);
+}
+/* PURE (pinned): the ONE sentence both refusal points speak — this announcer and `edhaConsumeCost`
+ * (the burst/takeover charger, which refuses for real rather than predicting the system's refusal).
+ * It names the actor, the item, the resource, what is needed, what is there and the gap, because
+ * every one of those was missing from the toast that let a dead ability read as dead. Returns ""
+ * when nothing is short, so a caller can use it as its own gate. Callers add their own tail. */
+function edhaShortfallText(actorName, itemName, shortfalls) {
+  const parts = (Array.isArray(shortfalls) ? shortfalls : []).filter((s) => s && s.short > 0)
+    .map((s) => `${s.short} ${EDHA_RES_LABEL[s.resource] || s.resource} short (needs ${s.need}, has ${s.have})`);
+  if (!parts.length) return "";
+  return `Edha: ${actorName || "this creature"} cannot pay for ${itemName || "this"} — ${parts.join("; ")}.`;
+}
+/* Registered here rather than beside the cost-ledger hook in the prompt/pick section: this one
+ * announces, it does not record, and it must never influence the vote. It returns undefined on
+ * every path — Foundry stops a hook chain on `false`, and a use refused HERE would be one more
+ * silent no-op, which is the bug. Fires before the consume dialog, so on a multi-cost item whose
+ * short row the GM then unticks the sentence is a prediction that did not come true; the tail says
+ * so rather than claiming the use failed. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    const list = edhaConsumeList(item); if (!list.length) return;
+    const balances = {};
+    for (const c of list) balances[c.resource] = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
+    const text = edhaShortfallText(actor.name, item.name, edhaCostShortfalls(list, balances));
+    if (!text) return;
+    console.warn(`Edha Content | ${text} (the system will refuse the use unless that cost is unticked)`);
+    ui.notifications?.warn(`${text} The use is refused unless you untick that cost.`);
+  } catch (e) { /* never block a use */ }
+});
 

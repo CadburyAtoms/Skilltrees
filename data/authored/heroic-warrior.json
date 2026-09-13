@@ -801,7 +801,7 @@
             "type": "edha-note",
             "icon": "🛡️",
             "whisper": "public",
-            "text": "<strong>Stillstance</strong>: enemies within your reach must spend an additional Action to attack your allies. When an Invested character within your reach Draws Mana or uses a leyline or deity talent, you may make a Reactive Strike against it."
+            "text": "enemies within your reach must spend an additional Action to attack your allies. When an Invested character within your reach Draws Mana or uses a leyline or deity talent, you may make a Reactive Strike against it."
           },
           "order": 0
         }
@@ -913,7 +913,7 @@
             "type": "edha-note",
             "icon": "🧂",
             "whisper": "public",
-            "text": "<strong>Saltstance</strong>: your Strikes deal <strong>+@tier</strong> damage while you stand in it, and Invested characters within your reach must spend an additional Action to Draw Mana."
+            "text": "your Strikes deal <strong>+@tier</strong> damage while you stand in it, and Invested characters within your reach must spend an additional Action to Draw Mana."
           },
           "order": 0
         }
