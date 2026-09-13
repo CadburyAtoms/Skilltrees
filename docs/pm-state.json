@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T15:52:41.211Z",
+  "generatedAt": "2026-09-13T16:11:20.811Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "82ca753c67",
-    "commit": "c3f8b30",
+    "hash": "80d94eb68e",
+    "commit": "6aa6d0c",
     "branch": "pm/board-2026-09-13b",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: bench run 45 merged (#335) — 28 of 29 bench rows retired; the heroic specialties all passed. Fix pass 11 (its three defects + Momentum's Edge) and item 105 (the Blue/White minimal-change set) are running. Then ONE deploy-to-foundry.bat run + ⟳ Sync Talents covers everything; R-112 is yours to answer (default: raise The Reckoning's focus pool to 3).",
-    "waitingOn": "R-112 (tap the default) · one deploy-to-foundry.bat run + ⟳ Sync Talents after fix pass 11 + item 105 merge",
+    "note": "Sunday session: bench run 45 merged (#335) — 28 of 29 bench rows retired; item 105 merged (#336, the Blue/White minimal-change set). Fix pass 11 (bench 45's three defects + Momentum's Edge) is the last worker running. When it lands: ONE deploy-to-foundry.bat run + ⟳ Sync Talents covers heroic + leyline; R-112 is yours to answer (default: raise The Reckoning's focus pool to 3).",
+    "waitingOn": "R-112 (tap the default) · one deploy-to-foundry.bat run + ⟳ Sync Talents after fix pass 11 merges",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; test-pass-fixes; REBUILD heroic + leyline owed at merge"
-    },
-    {
-      "item": "105",
-      "title": "R-96 (a) — Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (REBUILD leyline)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/105-blue-white-minimal-set",
-      "startedAt": "2026-09-13T15:52:00Z",
-      "agent": "Work item 105",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; three 🤖 rows for bench 46"
     }
   ],
   "usage": null,
@@ -1305,14 +1292,14 @@
     {
       "pos": 101,
       "item": "105",
-      "title": "R-96 (a) Blue/White minimal-change set (REBUILD leyline; three 🤖 rows)",
+      "title": "R-96 (a) Blue/White minimal-change set — Read Intent to depth 1 (OR-parent of Pattern Recognition), Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action; three 🤖 rows for bench 46 (REBUILD leyline + ⟳ Sync Talents owed)",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": null,
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 336
     },
     {
       "pos": 102,
@@ -1539,20 +1526,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "12:15",
-      "at": "2026-09-07T16:15:00.000Z",
-      "item": "Dispatched item 84 (opus, worktree — Opus 2 of 3 today) and item 85 (sonnet, worktree) the minute #274 landed; both engine/tooling S items with pins. Opus budget after this: 1 slot left today (PM-R16)",
-      "itemNo": "274",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "two workers in flight; the PM's own cost so far this session ≈ 2.5M",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "12:15",
@@ -2378,9 +2351,23 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "11:52",
+      "at": "2026-09-13T15:52:00.000Z",
+      "item": "Item 105 (R-96 (a) — the Blue/White minimal-change set) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "19 min, 125 tool uses",
+      "weighted": "5.3M",
+      "weightedM": 5.3,
+      "outcome": "merged 12:10 after review, no trailers; CI green on 72a3e07, gates 12/12 in the worktree (1087 tests). Data: Read Intent re-parented Probable Outcome → Forewarned and added as an OR-parent of Pattern Recognition; Interposing Shield rea → spe; Shared Burden 2 → 1 Investiture (consume + costValue + prompt + prose); Ordered Advance 2 → 1 Action — overlay and source prose aligned. Proof: validate 0 warnings, 1087 tests, validate-build.py ALL BUILDS PASS, iron rule 7 read by hand (prose names no parent). Three 🤖 rows (Blue ×1, White ×2) for bench 46. REBUILD leyline + ⟳ Sync Talents owed — one bat run with fix pass 11's",
+      "pr": 336
     }
   ],
-  "runLogTotal": 235,
+  "runLogTotal": 236,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3030,6 +3017,12 @@
       "model": "opus",
       "item": null,
       "pr": 335
+    },
+    {
+      "at": "2026-09-13T15:52:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 336
     }
   ],
   "statusVocab": [
