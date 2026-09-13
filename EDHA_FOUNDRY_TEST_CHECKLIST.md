@@ -821,17 +821,25 @@ R-10 (3) holds.)*
 pack rebuild and no ⟳ Sync.** The sweep now runs the rule's static `note` through `edhaDeliveredNote`,
 which drops it whenever less landed than was asked for. Same Sow, same marks as 70-2; **advance the
 round between takes** — `edhaPostCueCard` is once per round and will silently eat the second card.)*
-- [ ] 🤖 **Nexus-Fed, WITHERED (the reported card)** — mark `B45 Garden Sow` with Withering Touch for
-      real, hurt it, end its turn. HP must not move, and the cue card must carry **no number at all**:
-      expect *"⏰ Nexus-Fed (B45 Garden Sow): B45 Garden Sow cannot regain HP (Withering Touch) — no
-      healing lands. (no HP applied — …)"*. **FAIL if "regains 5 HP" appears anywhere on it.**
-      *(Fix pass 11, 2026-09-13 — pinned headless in `tests/gated-note.test.js`.)*
-- [ ] 🤖 **Nexus-Fed, HALVED** — same Sow carrying the `{fraction: 0.5}` Necrotic Grasp mark instead:
-      **2 HP** lands and the card prints **2**, never the rolled 5. *(Fix pass 11, 2026-09-13.)*
-- [ ] 🤖 **Nexus-Fed, UNMARKED — the control that must NOT change** — the ungated tick still applies
-      **+5** and still reads the rule's own authored note *"Nexus-Fed — the Sow regains 5 HP."* plus
-      *"(+5 HP applied, end of turn.)"*. This is the half of the fix that is easy to over-shoot.
-      *(Fix pass 11, 2026-09-13.)*
+
+*(✅ **ALL THREE NEXUS-FED ROWS RETIRED on evidence, bench run 46 (2026-09-13)** — engine hash-verified
+`921132b0…` = `main` @ `5bfa8ff`. One fresh pack import (`B46 Garden Sow`, 62 HP) in one inactive
+bench combat, a round advanced between every take, and **every mark produced FOR REAL** — Withering
+Touch armed on `Bench — Death` (`withernext`) then a melee Sidesword hit, `healCut {fraction: 0,
+byName: "Withering Touch"}`; the halved variant from a `Bench — Black` Withering Ray hit,
+`healCut {fraction: 0.5, byName: "Necrotic Grasp"}`.
+**UNMARKED control (the over-shoot guard):** HP **40 → 45**, card *"⏰ Nexus-Fed (B46 Garden Sow):
+Nexus-Fed — the Sow regains 5 HP. (+5 HP applied, end of turn.)"* — the author's static note is still
+read, exactly as authored. **WITHERED:** HP **28 → 28**, card *"⏰ Nexus-Fed (B46 Garden Sow): B46
+Garden Sow cannot regain HP (Withering Touch) — no healing lands. (no HP applied — B46 Garden Sow
+cannot regain HP (Withering Touch) — no healing lands.)"* — **no number anywhere on it**, and
+"regains 5 HP" does not appear. **HALVED:** HP **24 → 26**, card *"⏰ Nexus-Fed (B46 Garden Sow):
+regains 2 HP. (+2 HP applied, end of turn.)"* — prints **2**, never the rolled 5, and the un-gated
+static note is correctly dropped. Item 120's fix is live and did not over-shoot.
+⚠️ **One cosmetic defect the fix left behind:** in the FULLY-BLOCKED case the composed sentence
+prints **twice** on one card — `edhaDeliveredNote` returns the line as the note, and the cue card
+then appends it again inside `(no HP applied — …)`. The halved case does not duplicate (its
+parenthetical is the "+2 HP applied" line). Filed as **TODO item 124**.)*
 
 ## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
 
@@ -933,18 +941,27 @@ Grasping Vines rolled `1d20 + 1` = 10 and printed "10 vs Bench — Green's PHY 1
 Territorial Instinct rolled 15, printed "15 vs Bench — Green's SUR 12 — SUCCESS" and applied **Immobilized**
 (asserted on the document); Tussock-Sow / Drive the Prey rolled 21 vs SUR 12 and applied **Slowed**.)*
 
-- [ ] 🤖 **Item 105 — Interposing Shield retyped to a Special (R-96 (a))**: after **REBUILD leyline
-      + ⟳ Sync Talents**, `Interposing Shield`'s activation icon should read Special (`*`), not
-      Reaction. Trigger it (an ally within 10 ft takes damage) and confirm the same offer card as
-      before still posts and still spends 1 Investiture — the retype touches only
-      `activation.cost.type`, not the `edha-damage-react` handler.
-- [ ] 🤖 **Item 105 — one White mitigation per hit (R-96 (a))**: after **REBUILD leyline +
-      ⟳ Sync Talents**, with a PC owning two or more of `Interposing Shield` / `Shared Burden` /
-      `Retributive Guard` / `Devoted Conduit`, take one hit that qualifies for more than one.
-      The engine posts EVERY matching card today (no single-Reaction enforcement) — confirm that
-      is still the observed behaviour, and record on the row what "one per hit" means at the
-      table (a player-run house rule, not an engine gate). Also confirm `Shared Burden`'s offer
-      now reads **1 Investiture** (down from 2) and still redirects half the damage taken.
+*(✅ **BOTH ITEM-105 WHITE ROWS RETIRED on evidence, bench run 46 (2026-09-13)**, on the hash-verified
+`921132b0…` deploy after the 14:41 rebuild + the roster's ⟳ Sync. **Both halves fell out of ONE hit:**
+`Bench Ally — One` placed 5 ft from `Bench — White` (which owns all four White mitigations) took 10
+impact from `Bench Target — Adjacent A`.
+**Interposing Shield as a Special:** the sheet row renders **`*`** where `Retributive Guard` and
+`Shared Burden` still render `r` — pack and owned copy both read `cost.type: "spe"`, so the rebuild
+and the sync both landed. The offer card still posts unchanged (*"🛡️ Interposing Shield — Bench Ally
+— One took 4 damage within 10 ft. Spend 1 Inv → move up to 10 ft toward them and reduce it by 3
+(half [Die])"*), and clicking it spent **1 Investiture (4 → 3)**, healed the ally **37 → 40**, posted
+*"🛡️ Interposing Shield : Bench — White reduces Bench Ally — One's damage by 3; Bench — White moves
+up to 10 ft toward Bench Ally — One"*, and disabled the button. The `edha-damage-react` handler is
+untouched by the retype, as the item predicted.
+**One White mitigation per hit — the observation stands, unchanged:** that single hit posted **THREE**
+offer cards (Retributive Guard, Shared Burden, Interposing Shield) **plus** `Devoted Conduit`'s passive
+Shield Wall reduction applied automatically (*"🛡️ Bench Ally — One 's damage reduced by 5 — Shield
+Wall"*). **There is no single-Reaction enforcement in the engine and none was added** — "one per hit"
+is a table/player house rule, not an engine gate. `Shared Burden`'s offer now reads **1 Investiture**
+(down from 2) and was driven to completion: 1 Inv spent (3 → 2), `Bench — White` took **2** in the
+ally's place (57 → 55) = half the 4 damage, card *"🛡️ Shared Burden : Bench — White takes 2 in Bench
+Ally — One's place — only 1 of it is undone on Bench Ally — One."* (the ally was 1 off its 41 max, and
+item 68's delivered-amount contract says so honestly rather than claiming 2).)*
 
 ---
 
@@ -1020,14 +1037,28 @@ suffix as always). **POS 2:** the same PC copying an **ally** (targeting `Bench 
 fresh `B40 Mistheron` cast **The Seeming** in the same session and its copy's token read
 **`Mistheron (3)`** — plain, no suffix, the veil intact.)*
 
-- [ ] 🤖 **Item 105 — Read Intent feeds Pattern Recognition (R-96 (a))**: after **REBUILD leyline
-      + ⟳ Sync Talents**, use `Read Intent` (1 Action, 1 Investiture, Blue vs. Cognitive) on a
-      target and succeed. Off that same success, `Pattern Recognition`'s Special should now be
-      pickable even without `Calculated Patience` — `connections` is
-      `["Calculated Patience", "Read Intent"]` (OR, not AND) — and imposing disadvantage on the
-      target's next test this round. Confirm both re-parented depth (Read Intent now sits directly
-      under `Forewarned`, not `Probable Outcome`) and the OR-loop actually let you take
-      `Pattern Recognition` at Blue 2+ off `Read Intent` alone.
+*(✅ **ITEM-105 BLUE ROW RETIRED on evidence, bench run 46 (2026-09-13)**, engine hash-verified
+`921132b0…`, after the 14:41 rebuild + ⟳ Sync. All four claims proven, two of them structurally.
+**Re-parented depth:** the Blue Leyline tree node for `Read Intent` carries exactly one managed
+talent prerequisite and its `talents` map is `{forewarned}` — `Probable Outcome`'s is `{intercept}`,
+so Read Intent no longer hangs off it.
+**The OR-loop is real, and it is the SYSTEM that makes it OR — not an Edha convention.**
+`Pattern Recognition`'s node carries **ONE** managed talent prerequisite whose `talents` map holds
+BOTH `calculated-patience` and `read-intent`; the system's `characterMeetsPrerequisiteRule`
+(`systems/cosmere-rpg/index.js`) resolves a `type: "talent"` prereq with
+`Array.from(prereq.talents).some(...)` — **OR** — while `characterMeetsTalentPrerequisites` `.every()`s
+across separate ENTRIES — AND. So one entry with two talents is genuinely "either one". **Driven
+live, both directions:** a scratch character at Blue 2 owning `Forewarned` + `Read Intent` and
+**NOT** `Calculated Patience` read `prerequisitesMet: true` on the Pattern Recognition node; the
+negative control owning only `Forewarned` read **false**.
+**The mechanical half:** `Read Intent` (1 Action + 1 Investiture, `edha-def-test` blue vs `cog`)
+rolled *"Read Intent : 24 vs Bench Target — Adjacent A's COG 14 — SUCCESS"*, spent 1 Inv (4 → 3) and
+whispered *"🔮 Read Intent : GM — reveal the action the target intends to take next round."* Off that
+success `Pattern Recognition` (Special + 1 Inv, 3 → 2) posted its pick card, "Impose disadvantage"
+wrote `nextTestMod {mode: "disadvantage", count: 1, source: "Pattern Recognition"}` to the target and
+announced it — and the disadvantage was **pre-selected AND enforced**: the target's very next test
+opened with its die control already classed `disadvantage`, rolled **`2d20kl + 4`** = 5 under a
+*"🔮 Pattern Recognition — disadvantage on this test."* card, and the flag was consumed.)*
 
 ---
 
@@ -1236,13 +1267,22 @@ rider is now `(@tier)d(2 * @skills.red.rank + 2)` — [Tier][Die], the same shap
 card says so. The 20 ft trigger is unchanged. **Method, from bench run 41:** read the card's own
 `.dice-formula` node, not `msg.rolls[0].formula`, and sample the same root again ~2 s after the card
 lands — the cosmere damage card rebuilds its damage section after `renderChatMessageHTML`.)*
-- [ ] 🤖 **Momentum's Edge — a `(1)d6`-shaped term on the damage bar after a 20 ft approach** —
-      `Bench — Red` (tier 1, Red rank 2) stamped at turn start, displaced exactly **20 ft** toward a
-      hostile dummy, then an impact Strike. The damage card must **post**, and its formula bar must
-      carry a rolled die term from the rider (at tier 1 / rank 2 that is `(1)d6`), not a rune-wrapped
-      object and not a flat 30. **Control at 0 ft moved, same target and talent:** the card posts with
-      **no** Momentum's Edge term at all. *(Fix pass 11, 2026-09-13 — supersedes ECO-2;
-      `docs/analysis/talent-ecosystem/formula-audit.js` reports clean on the repo side.)*
+*(✅ **RETIRED on evidence, bench run 46 (2026-09-13)**, engine hash-verified `921132b0…` after the
+14:41 rebuild + ⟳ Sync. 📌 **Row-text correction:** the bench `Bench — Red` is **tier 2, Red rank 3**,
+not the tier 1 / rank 2 the row assumed, so the honest expectation computed from the actor (the skill's
+"formulas scale off the ACTOR" trap) is **`(2)d8`**, not `(1)d6` — same shape, one tier up.
+The owned copy carries the retuned `bonusFormula: "(@tier)d(2 * @skills.red.rank + 2)"` and the card
+text now reads *"bonus impact damage equal to [Tier][Die]"*.
+**The 20 ft take:** Red stamped at turn start at x=1500 (a `turn` set directly under the Advanced
+Cosmere Combat Tracker — `nextTurn()` does not work), then displaced exactly **1200 px = 20 ft** at
+60 px/ft toward `Bench Target — Adjacent A`, then `Volatile Strike` (the impact talent — both bench
+weapons are `keen`, and the rider's `appliesTo` is an exact-string match). The card **posted**, and
+its own rendered `.dice-formula` node read
+**`floor(2d8 / 2) + ((1 + 2))[Mighty] + (2d8)[Momentum's Edge] + 5`** = 22 — a rolled, folded, LABELLED
+die term, not a rune-wrapped object and not a flat 30. **Control at 0 ft moved, same target and same
+talent:** `floor(2d8 / 2) + ((1 + 2))[Mighty] + 5` = 11 — **no Momentum's Edge term at all**. Item
+104's retune is live and the ECO-2 defect (an unresolvable `@movement.walk.rate` that made the whole
+Strike post nothing) is gone.)*
 
 ---
 
@@ -2353,11 +2393,17 @@ the ENGINE is canon and the four card texts were the drift. The leading `<strong
 gone from exactly those four. **Not touched, and must NOT be "fixed":** `Decisive Command`'s
 "**Authority**:" and `Field Medicine`'s "**Resuscitation**:" open with a SUB-FEATURE name, not the
 talent's — that is the house style working as intended.)*
-- [ ] 🤖 **The four cue cards read their name ONCE** — re-drive HS-10's five cards. Stillstance,
-      Saltstance, Mark the Ground and Steady the Line must each read *"🧂 **Saltstance**: your Strikes
-      deal…"* with the name appearing exactly once; the fifth (Read the Draw) is unchanged and still
-      whispered to the GMs. **FAIL on any card whose name appears twice.** *(Fix pass 11, 2026-09-13 —
-      the repo-side sweep of all 41 `handler.text` values reports 0.)*
+*(✅ **RETIRED on evidence, bench run 46 (2026-09-13)** — engine hash-verified `921132b0…`, heroic pack
+rebuilt at 14:41 and `Bench — Heroic` ⟳ Synced (71 talents). All five cards re-driven; **every one
+reads its name exactly once**, and the doubled `<strong><name></strong>: ` prefix is gone from all four:
+*"🛡️ Stillstance : enemies within your reach must spend an additional Action to attack your allies…"*,
+*"🧂 Saltstance : your Strikes deal +2 damage while you stand in it…"* (`@tier` resolved live),
+*"📍 Mark the Ground : for the scene the chosen ally's leyline talents treat their color rank as 1
+higher…"*, *"🌊 Steady the Line : the next time the chosen ally Draws Mana… they recover 1 additional
+Investiture…"*. The fifth, **Read the Draw**, is unchanged and still whispered — *"🔮 Read the Draw :
+GM — reveal the target's current Investiture and focus, and its highest leyline rank."* with a
+non-empty `whisper` list. ⓘ Single-client run: Bench was the only active GM, so the whisper resolved
+to one id; `edhaWhisperIds` would add Ben's Gamemaster client when it is connected. Item 118 closed.)*
 
 - [ ] ⚑ **HS-11 — feel: is Stillstance's ally-guard at depth 0 too strong at the table, and is Read the
   Weave's scene-long party advantage?** The reviewer flagged both; they were accepted provisionally.
@@ -4334,16 +4380,27 @@ re-drives The Reckoning on the REBUILT pack instead, in the new row below.)*
       reason: the underfunded take this row re-checked no longer exists on the REBUILT pack. Pinned
       headless in the same test file.
       *(Fix pass 11, 2026-09-13 → retired on R-112 (a), 2026-09-13.)*
-- [ ] 🤖 **The Reckoning — re-drive on the REBUILT pack (pool 2 → 3, R-112 (a))** — fresh pack import
-      of the REBUILT `The Reckoning` (focus pool max now **3**, matching Crownox Ring), target
-      selected, use **Unbreakable Line** (3 Focus). Expect the SAME shape as the Ring control below:
-      a 3-Focus consume prompt, a roll config headed "UNBREAKABLE LINE (WHITE)", the contest core's
-      Enter-the-DC dialog, and a real resolved card — no shortfall toast, no console warning (the
-      pool can pay in full now). **FAIL if a shortfall notice still appears, or if the use is still
-      silent.** *(Item 119 DATA half, R-112 (a), 2026-09-13.)*
-- [ ] 🤖 **The Crownox Ring control — an AFFORDABLE use is announced not at all** — same ability on
-      `B45 Crownox Ring` (focus max 3): no Edha shortfall toast, no console line, and the 3 Focus are
-      consumed exactly as bench run 45 already measured. *(Fix pass 11, 2026-09-13.)*
+*(✅ **BOTH ROWS RETIRED on evidence, bench run 46 (2026-09-13)** — engine hash-verified `921132b0…`,
+adversaries pack rebuilt at 14:41, both blocks taken as **FRESH pack imports**. **R-112 (a) confirmed
+in the shipped pack:** `The Reckoning` and `Crownox Ring` both now read
+`foc {value: 3, max: {override: 3, useOverride: true}}`, both `Unbreakable Line` copies consume 3
+Focus, and the two blocks' `edha-gm-cue` notes finally agree on the cost — *"the lead may spend 3
+Focus…"* / *"an adjacent ox may spend 3 Focus…"*.
+**The Reckoning now pays for its own signature ability.** The full walk ran end to end: consume prompt
+*"UNBREAKABLE LINE — CONSUME RESOURCE / Consume 3 Focus?"* → roll config headed **"UNBREAKABLE LINE
+(WHITE)"** → the contest core's **"UNBREAKABLE LINE — ENTER THE DC"** prompt (`input[name='edhaDC']`)
+→ a real resolved card, *"Unbreakable Line : 3 vs Bench Target — Adjacent A's DC 2 — SUCCESS (no
+payload rule on this talent — resolve at the table). Success: the pack-mate holds at 1 health instead
+of dropping (once per round…)"*. **Focus 3 → 0 — exactly 3 consumed. No Edha shortfall toast and no
+shortfall console line.** The silent no-op bench 45 measured is gone.
+**The Crownox Ring control is identical in every respect:** same four-step walk, DC prompt reading
+*"B46 Crownox Ring rolled 19"*, resolved card *"19 vs … DC 2 — SUCCESS … the ring-mate holds at 1
+health"*, Focus **3 → 0**, no Edha notice of any kind. Item 119 is closed on both halves.
+⚠️ **One noise source worth knowing for future adversary rows:** BOTH blocks also raised the SYSTEM's
+own action-economy warning — *"<name> does not have enough special actions to use Unbreakable Line!"*
+— because a bench adversary driven outside combat has no special actions. It is a cosmere-rpg
+notification, not the Edha shortfall announcer (which names the resource), it never vetoed the use,
+and it appeared identically on the affordable control. Do not read it as a shortfall.)*
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
@@ -4657,6 +4714,14 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
       `edha-on-defeat → edha-triggered-effect` with no audience field. **Item 88 is still open ([ ]),
       so there was nothing new to test — this row is BLOCKED on item 88 / R-90, not failing for a new
       reason.** Leave it 🤖 and re-drive it the run after item 88 merges.
+      ⛔ **2026-09-13, bench run 46 — NOT RE-DRIVEN, and deliberately so; the blocker is re-confirmed
+      rather than re-measured.** Item 88 is still `[ ]`, so the kill take could only have produced a
+      third identical result. Both halves of the blocker were re-read on the **deployed** engine
+      (hash-verified `921132b0…` = `main` @ `5bfa8ff`), not inferred from the repo: `edhaRollCard`'s
+      `ChatMessage.create({ speaker, rolls, sound, content })` still carries **no `whisper` key at
+      all**, and the shipped pack's `Predator's Due` on `Cragdrake Alpha` is still the single
+      `edha-on-defeat → edha-triggered-effect` with **no audience field**. Nothing changed; nothing
+      to test. Row stays 🤖, BLOCKED on **item 88 / R-90**.
       *(2026-07-27x bench run 16 — **PARTIAL: the heal is right, the card is PUBLIC not whispered.**
       ✅ Engine-applied heal confirmed: Alpha 30 → **38** on reducing a character to 0, card
       "⚡ Predator's Due (Bench Adv — Cragdrake Alpha) — … regains **8** health … **2d8 4 4 8**",

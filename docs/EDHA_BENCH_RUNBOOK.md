@@ -1594,6 +1594,62 @@ hand-edited engine, an unclean tree) means stop and ask Ben, not `--force-bench`
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 46 (2026-09-13 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **`edha.syncAllAdversaries()` is NOT bench-safe either — run 45's `fixPcTokens()` lesson generalises,
+  and a BRIEF asking for it is not authority to run it.** Run 46's step zero said to run
+  `⟳ Sync Adversaries from Pack`. Reading the source first (which is the standing rule) showed an
+  unfiltered `game.actors.filter(type === "adversary")` loop that replaces `system` **wholesale**
+  (`{recursive:false, diff:false}`) on every world adversary, then walks **`for (const scene of
+  game.scenes)`** stamping prototype token fields onto every token of each — and the world held a
+  **live, started combat on a scene outside the bench's licence**. The run declined, recorded why, and
+  filed it (**TODO item 123 / R-113**). **Before any world-wide `edha.*` mutator: read it for an
+  unfiltered `game.actors` OR `game.scenes` loop, and check `game.combats` for a `started` combat.**
+  The bench's rows needed nothing from it anyway — fresh pack imports read the pack directly.
+- ⭐⭐ **Check the scene NAMES, not just "the Playtest Map".** The world now also contains
+  **"Playtest Map (Copy)"** — same wall count, same token count, holding Ben's live combat. The licence
+  in hard rule 4 names "Playtest Map"; the copy is not it. Snapshot token deltas for **every** scene
+  (not just the one you view) so the end-of-run diff can prove you stayed off the others.
+- ⭐ **A row's expected NUMBER can be stale even when the row is right.** Momentum's Edge's row said
+  "(tier 1, Red rank 2) → `(1)d6`"; the bench `Bench — Red` is **tier 2, Red rank 3**, so the honest
+  expectation computed from the actor is `(2)d8`. Compute from the actor and correct the row text —
+  do not fail a good fix against a stale stat line, and do not silently pass without saying which
+  number you actually expected.
+- ⭐ **A rider's `appliesTo` is an EXACT string match against the item's own `damage.type`.** Both bench
+  weapons are `keen`, so "an impact Strike" cannot be a Sidesword swing — it has to be an impact-typed
+  talent (`Volatile Strike` / `Shockwave Slam`). Read `edhaRiderMatches` before staging a rider row, or
+  the rider legitimately never fires and the take reads as a dead fix.
+- ⭐ **A tree-shape claim ("OR, not AND") is provable without the tree UI, in two calls.** The node's
+  `prerequisites` is the truth: **one** entry whose `talents` map holds both names is OR; two separate
+  entries are AND — the system's `characterMeetsPrerequisiteRule` uses `.some()` inside an entry and
+  `characterMeetsTalentPrerequisites` `.every()`s across entries. Then prove it live by creating a
+  scratch character with one branch's talent plus the tree item and reading `node.prerequisitesMet`
+  (it is computed in `TalentTreeItemDataModel.prepareDerivedData`, so the tree must be OWNED). Run a
+  negative control in the same call.
+- ⚠️ **The system's own action-economy warning looks exactly like a shortfall and is not one.** Driving
+  an adversary ability outside combat raises *"<name> does not have enough special actions to use
+  <ability>!"* — a cosmere-rpg notification that never vetoes. It fired identically on the AFFORDABLE
+  control, which is what proved it noise. The Edha shortfall announcer names the **resource**; match on
+  that, not on "a warning appeared".
+- ⚠️ **`Combat.create()` + `createEmbeddedDocuments("Combatant", …)` can leave a DUPLICATE combatant for
+  the same token** (run 46 got 3 for 2 tokens, the same `tokenId` twice). Assert `combat.combatants.size`
+  against what you added and delete the extra before setting `turn`, or the turn indices you compute are
+  wrong and the turn-end sweep fires on the wrong actor.
+- ⚠️ **`document.querySelector("ol.chat-log")` can return the WRONG, empty list** — the chat-notifications
+  popout uses the same selector, and a whispered card may render only in one of them. Resolve a card by
+  `document.querySelector('[data-message-id="<id>"]')` globally and click the button inside THAT element;
+  stale duplicates of the same offer from earlier runs are otherwise indistinguishable by button text.
+- ✅ **`origin/main` can advance mid-run when a second worker lands.** Diffing your work against
+  `origin/main` then shows the OTHER worker's section as "deleted by you". Diff against your branch's
+  own base (`HEAD` at branch time) before believing you clobbered anything, then merge `origin/main` and
+  regenerate the dashboard — the checklist merged clean, only the generated HTML conflicted.
+- **Density, measured: 10 checklist rows retired on evidence (open 🤖 11 → 1, the survivor BLOCKED on an
+  unshipped item and re-confirmed on the deployed engine rather than re-measured), 2 defects filed, 1
+  ruling filed, 1 row-text correction, and 1 briefed step declined-with-cause — in ~45 driving calls.
+  End-of-run diff: 67 actors in and out, every scene's token-id set identical across all three scenes,
+  Ben's live combat untouched (7 combatants, active, round 1 turn 3), zero changes to any token on
+  "Playtest Map (Copy)".**
+
 ## Operating lessons from run 45 (2026-09-13 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **`edha.fixPcTokens()` is NOT bench-safe — never run it from a bench session.** It loops
