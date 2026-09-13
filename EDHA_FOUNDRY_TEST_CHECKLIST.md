@@ -866,6 +866,17 @@ promise. **Control at 0 ft moved, same target, same talent:** the roll succeeded
 `floor(2d8 / 2) + ((1 + 2))[Mighty] = 6` with a normal damage card and no Momentum's Edge term. So
 `CRITIQUE.md` §R-95 needs no correction, and **TODO item 104** carries the fix.)*
 
+## Agent-run deploy — item 122 (2026-09-13 — TOOLING + DOCS: nothing to deploy from this PR itself)
+
+*(`scripts/deploy-cycle.js` is the gated, tested replacement for the ad-hoc shell chain the PM ran
+by hand at 14:41 ET on 2026-09-13 (`docs/PM_BOARD.md` run log) — guards, timestamped backups, the
+eight `deploy-to-foundry.bat` steps fail-fast, a relaunch + post-flight verification, and (on
+success) a new dated line at the top of this file's `# ⚑ DEPLOY STATE` section (near the top of
+the file), appended by the script itself. Its own guards/verifiers are unit-pinned in
+`tests/deploy-cycle.test.js`; this row is its first LIVE run, which no test can stand in for.)*
+
+- [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backups, eight steps, relaunch,
+      verification, the DEPLOY STATE record.
 
 ---
 
