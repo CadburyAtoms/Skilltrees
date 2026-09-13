@@ -2244,6 +2244,38 @@ and Forge Construct's baked *"Construct Slam 2d8 impact"*.)*
 Run on **Bench — Heroic** (it carries exactly the talents these rows name, across all six
 paths).
 
+## Leybreaker + Ley-surveyor (2026-09-13 — the specialty swap; **REBUILD heroic + ⟳ Sync Talents first**, then re-drag Bench — Heroic's Warrior and Scholar talents: prereqs are structural and may not Sync)
+
+Shardbearer and Artifabrian are gone from the packs; Leybreaker (Warrior) and Ley-surveyor (Scholar) took
+their sixteen slots. Fourteen cards are new; Mighty and Overwhelm with Details stayed. The design proposal
+and its review are the artifact `c5861aae…`; the four engine primitives that make the cue cards live are
+handoff §9k.
+
+- [ ] 🤖 **HS-1 — both trees load with 25 nodes and every new node is reachable.** Open the Warrior and Scholar
+  trees on Bench — Heroic: Leybreaker's eight sit where Shardbearer's did (roots Ley-tempered, Stillstance),
+  Ley-surveyor's eight where Artifabrian's did (roots Ley-sense, Read the Draw), and no node refuses with a
+  prerequisite its card does not name (iron rule 7).
+- [ ] 🤖 **HS-2 — Stillstance and Saltstance are stances.** Entering one ends the other (system modality
+  "stance"); Saltstance's marker carries +1 Physical defense from its stance-rider effect; Vigilant Stance's
+  free entry applies to both.
+- [ ] 🤖 **HS-3 — Break the Draw drains @tier focus on a melee hit.** Strike a dummy that has focus, use the
+  talent: the victim loses focus equal to the tier (1 at Tier 1) and the note card offers the Investiture
+  alternative.
+- [ ] 🤖 **HS-4 — Sever the Line applies Slowed on hit**, and its card names the 5 ft Attunement Range clamp.
+- [ ] 🤖 **HS-5 — Turn the Working rolls Athletics vs. Cognitive** from its Reaction card (activation
+  `skill_test` / `ath`), with 2 focus consumed.
+- [ ] 🤖 **HS-6 — Breaker's Charge moves half speed toward the target, then rolls its own +2d8.** The move
+  card relocates the token; the talent's damage roll reads 2d8.
+- [ ] 🤖 **HS-7 — Fault in the Line drains 1 Investiture on a success.** Against Bench — Blue (holds
+  Investiture): Deduction vs. Cognitive; on a success the victim's Investiture drops by 1 — the first
+  PC-side `op: drain` / `resource: inv` rule, so record the bookkeeping tag it writes.
+- [ ] 🤖 **HS-8 — Read the Weave rolls Deduction vs. Cognitive** and posts its scene-rider cue on a success.
+- [ ] 🤖 **HS-9 — Surveyor's Eye gives an advantage on Perception tests only** (a Lore test is unchanged).
+- [ ] 🤖 **HS-10 — the cue cards post on use** for Stillstance, Saltstance, Read the Draw, Mark the Ground and
+  Steady the Line, each naming the clause the table runs.
+- [ ] ⚑ **HS-11 — feel: is Stillstance's ally-guard at depth 0 too strong at the table, and is Read the
+  Weave's scene-long party advantage?** The reviewer flagged both; they were accepted provisionally.
+
 > ✅ **THE HEROIC PACK IS REBUILT AND THE BLOCK IS CLEARED (bench run 11, 2026-07-27m).** The engine
 > was hash-verified identical to `HEAD` (`3c69f7d2…`, 1 439 212 normalised bytes) and all five packs
 > read their fixes live before anything was driven. **Seven of the eight dead-skill-key rows PASSED

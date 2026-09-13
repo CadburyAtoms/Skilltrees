@@ -577,6 +577,19 @@ edha-items pack; adversaries = migrate attacks to real weapons; money = engine-t
   bench section "Character-creation wizard"; the map-picker asset still carries every label — which
   render to ship is ruling R-41/R-42, item 61).
 
+### 9k. Heroic specialty swap follow-ups (opened 2026-09-13 — Leybreaker / Ley-surveyor landed as authored rules + cue cards; four small generic primitives make the cues live)
+- [ ] **Draw Mana / activation watch** — a watch rule (`edhaWatchersOfRule` shape) that fires a listed
+  rule when ANOTHER character Draws Mana or activates a talent within a range. Consumers: Ley-tempered's
+  tell, Stillstance's Reactive Strike, Read the Draw's reveal, Fault in the Line's trigger.
+- [ ] **Attunement-rank marker** — a per-actor marker read where colour rank feeds `edhaAttuneFtColor` /
+  `EDHA_SIZE_FT`: ±N rank steps or a flat clamp with an expiry. Consumers: Sever the Line (5 ft clamp),
+  Mark the Ground (+1 rank for the scene).
+- [ ] **Draw Mana marker** — read by `edhaDrawMana` (52-green-instinct.js): +N / −N Investiture on the next
+  or every Draw, and a cannot-Draw lock until the end of the next turn. Consumers: Steady the Line,
+  Read the Weave, Breaker's Charge.
+- [ ] **`whileStanceActive` on `edha-damage-rider`** — the test rider already carries it; the damage rider
+  does not. Consumer: Saltstance's +@tier Strike rider.
+
 ### 9g. Resolved (history — the dashboard skips this heading)
 Everything the engine backlog once listed and has since built is recorded in the dated deltas, not
 here: the 07-04 pass (summon relay, `edhaAttackKind`, injuries, `edhaCanSee`, forced-move stamp,
