@@ -3773,3 +3773,13 @@ scripts/gates.js` green.
 
 **PM:** lane R · model sonnet · size S · deps — · verify: the parse check + gates. Filed 2026-09-13
 by the PM as the design-proposal batch items 101/106/107/108/109/114 were waiting on.
+
+## 128. [ ] The bench may CREATE its own scenes for test runs (Ben, 2026-09-13) — write the licence into the bench skill and runbook, and give the roster script a standing Bench Arena (DOCS + TOOLING) (2026-09-13)
+
+**Why:** Ben, phone board 2026-09-13 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes specifically for future test bench runs."* Today the bench's licence is the existing "Playtest Map" (PM-R13, widened 2026-09-06) and it stays off every other scene — bench run 46 found Ben's live combat on "Playtest Map (Copy)" and rightly refused to touch it. A bench-owned scene removes the collision for good: the bench creates and uses its own, and Ben's scenes are never in scope.
+
+**What to do:** `.claude/skills/bench-run/SKILL.md` hard rules 3 / 4 and `docs/EDHA_BENCH_RUNBOOK.md`: a bench run may create scenes named `Bench — <purpose>` (e.g. a standing `Bench Arena`), VIEW them, place its tokens there, and delete what it created; it still never activates or deactivates a scene (that yanks every client) and never touches a scene it did not create except the licensed "Playtest Map". `scripts/bench-setup-console.js`: an optional step that creates (or finds) the standing `Bench Arena` scene from a small fixed spec (grid, dimensions, a plain background) and places the roster there instead of on the Playtest Map when `USE_ARENA = true`; idempotent (re-run finds, never duplicates); the snapshot/cleanup convention records the scene id. The scoped adversary sync (item 123) then targets the arena's scene id. One 🤖 row: create the arena, place the roster, run one row, clean up — with the Playtest Map and every Ben scene byte-identical before/after.
+
+**Done when:** the skill + runbook carry the licence with Ben's words; the roster script creates the arena idempotently (a headless pin on the pure spec/plan if any); the 🤖 row is filed.
+
+**PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
