@@ -3628,3 +3628,13 @@ filed 2026-09-08 01:1x.
 **Done when:** HS-3, HS-6, HS-10's cue cards are replaced by engine effects; §9k rows ticked.
 
 **PM:** lane B · model opus · size M · deps — · verify: the pins + the HS rows. Filed 2026-09-13 from the specialty swap.
+
+## 116. [x] (2026-09-13, PR #331) The phone board becomes three tabs (Overview · Bench rows · Needs Ben); the deploy banner and the full dashboard mirror stop swallowing the page (TOOLING + PM republish) (2026-09-13)
+
+**Why:** Ben (chat, 2026-09-13): *"the 'deployed' section is gigantic and taking up the whole artifact. Really the artifact just needs a tab for bench rows, a tab for 'needs Ben' and an overview of the project tab."* `mobileSnapshot()` shipped EVERY prose block of the checklist's `# ⚑ DEPLOY STATE` section (27 blocks, ~24 KB of history) as `deploy.prose`, and the page mirrored the whole desktop dashboard (every tab, section and row — six ~200 KB chunk documents, a 1.47 MB injected page) under a "More" toggle nobody could read on a phone.
+
+**What to do:** `mobileSnapshot()` projects the deploy section to ONE bounded line (`{ title, line, owed[≤3] }`, never the prose) and puts each mirror ref's row text and each open ruling's card text on the index; `pm-state.js` writes `dash/index` alone (no chunks, cap-checked); the page is rebuilt as three tabs — Overview (PM state + worker clock, snapshot tiles, the deploy line, budget window, queue, run-log tail), Bench rows (the 🤖 queue grouped by section with deploy chips), Needs Ben (ruling cards, asks, every ⚑ row, the inbox) — keeping item 94's Sent ✓ / Recorded by PM ✓ behaviour. Pin the deploy bound and the index shape in `tests/`.
+
+**Done when:** the injected page and `dash/index` are a fraction of their former size (numbers in the PR), three phone-viewport screenshots show the tabs, the PM skill's mobile-board section matches the one-document contract, gates green.
+
+**PM:** lane R · model fable (Ben authorized, chat 2026-09-13) · size M · deps — · verify: the screenshots + the size numbers, then REPUBLISH the artifact (`--inject` → `Artifact(url)`) and push the new `dash/index`. Filed 2026-09-13 by the worker (the PM had no PR to file it on).
