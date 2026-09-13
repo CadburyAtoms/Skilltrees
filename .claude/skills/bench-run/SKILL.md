@@ -47,6 +47,18 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    reported an orphan token as cleaned up, was asked how it knew, and had to retract — its
    snapshot had only captured ids. The retraction then had to be chased into two documents
    that had already repeated it.
+9. **Before calling ANY world-wide `edha.*` mutator, read it for an unfiltered `game.actors` /
+   `game.scenes` loop first** (run 45's `fixPcTokens()` finding, run 46's `syncAllAdversaries()`
+   finding — a briefed step is not authority to run one blind). **`edha.syncAllAdversaries()` may
+   be called from a bench (item 123 / R-113, Ben: "agents need to be able to sync adversaries for
+   bench runs"), but ONLY scoped**: read the DRY RUN first (a bare `edha.syncAllAdversaries()` with
+   no args always previews — reports the actor list + per-scene token counts, writes nothing),
+   then call it for real as `edha.syncAllAdversaries({ folder: "Edha Bench" /* or actorIds */,
+   scenes: [<the licensed Playtest Map's id only>], dryRun: false })`. **Never call it unscoped,
+   and never pass `allowStartedCombat: true`** — that override is Ben's, not the bench's. A refusal
+   (a candidate token in a STARTED combat on an in-scope scene) means the scope was wrong; narrow
+   it, do not override it. "Playtest Map (Copy)" is still Ben's scene (R-113's narrower question
+   was never answered) — never name it in `scenes`.
 
 ## The loop
 

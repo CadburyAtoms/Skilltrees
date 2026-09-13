@@ -878,6 +878,23 @@ the file), appended by the script itself. Its own guards/verifiers are unit-pinn
 - [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backups, eight steps, relaunch,
       verification, the DEPLOY STATE record.
 
+## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
+
+*(Bench run 46 declined an unscoped `⟳ Sync Adversaries from Pack` because it would have rewritten
+every world adversary and stomped token fields onto a scene holding a live, started combat outside
+the bench's licence. R-113 (answered, §K.10) added `{folder, actorIds, scenes, dryRun,
+allowStartedCombat}` to `edhaSyncAllAdversaries`; the pure decision `edhaSyncPlan` is unit-pinned in
+`tests/engine-helpers.test.js`, so this row is only what a table can prove: a live call with real
+scope filters, and that a combat elsewhere is genuinely left untouched.)*
+
+- [ ] 🤖 **123-1 — scoped sync on the bench folder + Playtest Map, dry run then real:** with the
+      bench roster imported, call `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<Playtest
+      Map id>] })` with no `dryRun` — confirm it reports a PLAN (actor list + per-scene token counts)
+      and writes nothing. Then call it again with `dryRun: false` — confirm the same actor/token set
+      is synced for real, and that a **started combat Ben is running on a DIFFERENT scene (never one
+      the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
+      not read, sync, or touch them at all.
+
 ---
 
 # BENCH — White (leyline)

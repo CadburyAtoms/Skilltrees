@@ -210,7 +210,7 @@ region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_T
 | `THE CHARACTER-CREATION WIZARD` | ENGINE-OWNED by declaration (multi-step dialog). ~1,000 lines: `edhaCreationWizard` · `edhaCreatorNewCharacter` · the steps (`edhaCreatorWelcomeStep`/`PickStep`/`AttrStep`/`SkillStep`/`BudgetStep`/`NameStep`) · picks (`EDHA_CREATOR_PICKS`, `edhaCreatorApplyPick`, `edhaCreatorChangeSlot`, `edhaCreatorWeaponPick`, `edhaGrantBasicActions`, `edhaCreatorPathRank`) · **undo** (`edhaCreationWipeIds`, `edhaCreatorWipeOriginPicks`, `edhaCreatorWipePathRank`, `edhaCreationRestart` — a new step owes a wipe) · the map picker (`edhaCwMapData`, `edhaCwWireMap`) · expertises (`edhaPickExpertisesDialog`) · the steppers (`edhaCwStepperDialog`, `edhaCwAttrBudget`, `edhaCwSkillBudget`, `edhaCwDerivedPreview`) · `edhaCleanPackCopy` (pack docs are COPIED, never linked). |
 | `SHEET QoL` | `edhaBudgetRow` + four `renderCharacterSheet` decorators, the Readable-Dark `init` stylesheet, the `createItem` refresh. Purely presentational — nothing here writes a rule, status, or damage. |
 | `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `edhaSrcKey` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (atlas\|group\|name), so a RENAMED talent is left alone rather than overwritten. |
-| `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` + the sheet/directory buttons. |
+| `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · **`edhaSyncPlan`** (item 123/R-113: the pure scope/dry-run/started-combat-refusal decision — `{actors, sceneTokens, refusals}`) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` (`{folder, actorIds, scenes, dryRun, allowStartedCombat}`) + the sheet/directory buttons. |
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
 | `LOOT CACHES + BODY SEARCH` (item 34b, 2026-09-06) | `edhaCreateLootCache` (console `edha.createLootCache(name)` — a flagged `edha-content.lootCache` adversary-type actor, Loot Caches folder, linked chest token) · the PURE, pinned helpers `edhaLootableItems` / `edhaLootRows` (gear only; a body keeps `alwaysEquipped` weapons) · `edhaLootDefeated` (HP ≤ 0 or DEFEATED) · `edhaLootSourceKind` (cache flag wins → "cache"; defeated adversary → "body"; else null) · `edhaLootGapFt` / `edhaLootInReach` (`EDHA_LOOT_REACH_FT` 5, edge-to-edge) · **`edhaLootClaim`** / `edhaLootRelease` on `EDHA_LOOT_CLAIMS` (the synchronous double-loot guard) · live: `edhaLootMyTokenNear` → `edhaLootTryOpen` (the `Token#_onClickLeft2` init patch `edhaPatchLootDblClick` — returns BEFORE the sheet render for a loot source, so adversary sheets never open to players) → `EDHA_CARD_BUTTONS["edha-loot-btn"]` → `EDHA_SOCKET_ACTIONS["loot-take"]` → `edhaLootTakeGM` (claim → delete on source → create on taker → public card). `tests/loot-caches.test.js`. |
@@ -2758,6 +2758,21 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   land without re-placing. Match: `_stats.compendiumSource` → name (both stable — build ids are
   deterministic). Bulk skips RENAMED world copies (customized variants; their sheet button syncs
   explicitly). Deploy notes now say "⟳ Sync Adversaries" where they used to say "re-drag".
+- **Item 123 / R-113 (2026-09-13) — the bulk path gained a scope/dry-run/refusal guard**, because
+  the unfiltered `edhaSyncAllAdversaries()` would rewrite every world adversary AND push token
+  fields onto every scene, including one holding someone else's started combat (bench run 46
+  declined to call it for exactly this reason). It now takes
+  `{folder, actorIds, scenes, dryRun, allowStartedCombat}`: `dryRun` DEFAULTS to true when the
+  options object is omitted (a bare `edha.syncAllAdversaries()` from the console is always a
+  preview — actors touched + per-scene token counts, nothing written); `folder`/`actorIds` narrow
+  the candidate actors; `scenes` (an array of scene ids) narrows which scenes get token writes —
+  a scene left out is never touched; and any candidate token that is a combatant in a STARTED
+  combat (`started === true` or `round > 0`) REFUSES the whole call unless
+  `allowStartedCombat: true`. Ben's sheet button and his "⟳ Sync Adversaries from Pack" bulk
+  button both pass `dryRun: false` explicitly, so they write exactly as they always have — this
+  guard is for what an AGENT calls, not a change to Ben's workflow. The decision is the pure
+  **`edhaSyncPlan(actors, scenes, combats, opts)`** → `{actors, sceneTokens, refusals}`, pinned in
+  `tests/engine-helpers.test.js`. ENGINE-ONLY (F5).
 
 ## GM cue cards (07-16 — adversary reactions/morale at their named hooks)
 - **`edha-gm-cue`** (event `edha-apply-watch`; on-hit cues ride event `edha-on-hit`): a whispered
