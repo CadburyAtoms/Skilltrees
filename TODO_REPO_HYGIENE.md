@@ -3513,6 +3513,8 @@ filed 2026-09-08 01:1x.
 
 **Why:** the rider is `bonusFormula: "@movement.walk.rate"`, a DerivedValueField object; Foundry 13's `replaceFormulaData` renders it as rune-wrapped JSON and the Strike's damage roll fails whenever the 20 ft trigger is met (CRITIQUE.md §R-95; ECO-2 predicts case 1). Ben chose (a): fix the resolution and retune the payload to `[Tier][Die]`.
 
+**MEASURED LIVE, bench run 45 (2026-09-13) — ECO-2, case (1) confirmed in full.** `Bench — Red` stamped at turn start and displaced exactly 20 ft toward a hostile dummy, then an impact Strike (Shockwave Slam): the roll threw `Unresolved StringTerm ᚖ{"derived":25,"override":30,"useOverride":true,"bonus":0}ᚖ requested for evaluation` and **posted no card at all** — the whole damage roll is lost, not just the rider, and it is lost **silently** (no chat card, no `ui.notifications`; the rejection only surfaces if you await the promise). Control at 0 ft moved, same target and talent: `floor(2d8 / 2) + ((1 + 2))[Mighty] = 6`, normal card, no rider term. Whatever the fix does, the pin should cover "a rider formula that resolves to an object must not eat the Strike".
+
 **What to do:** in `data/authored/leyline-red.json` change the rider's `bonusFormula` to `(@tier)d(2 * @skills.red.rank + 2)` (the resolution bug disappears with the reference); card text in `data/leyline.json` → "bonus impact damage equal to [Tier][Die]"; keep `whenMovedTowardFt: 20`. Re-point ECO-2 at the new expectation (a `(1)d6`-shaped term on the bar). No engine change.
 
 **Done when:** the formula and card agree, `formula-audit.js` still finds no unresolvable reference, ECO-2 is rewritten, pack rebuilt by Ben.
@@ -3628,3 +3630,33 @@ filed 2026-09-08 01:1x.
 **Done when:** HS-3, HS-6, HS-10's cue cards are replaced by engine effects; §9k rows ticked.
 
 **PM:** lane B · model opus · size M · deps — · verify: the pins + the HS rows. Filed 2026-09-13 from the specialty swap.
+
+## 116. [ ] Four Leybreaker / Ley-surveyor cue cards print the talent name twice (DATA, REBUILD heroic + ⟳ Sync) (2026-09-13)
+
+**Why:** `edha-note` already prefixes its card with the icon and the talent's name, so a rule whose own `text` also opens with `<strong><name></strong>:` renders it twice. Measured live at bench run 45: *"📍 **Mark the Ground**: **Mark the Ground**: for the scene…"*. A sweep of every `handler.text` in `data/authored/` found **exactly four**, all from PR #329 — `Stillstance` and `Saltstance` (`heroic-warrior.json`), `Mark the Ground` and `Steady the Line` (`heroic-scholar.json`). The other 37 note/cue rules in the repo are clean, so this is a new regression, not the house style.
+
+**What to do:** strip the leading `<strong><name></strong>: ` from those four `handler.text` values. Nothing else changes — the cards are otherwise correct and were verified firing (HS-10).
+
+**Done when:** the sweep reports 0; a rebuilt heroic pack's four cards read *"🧂 **Saltstance**: your Strikes deal…"* once.
+
+**PM:** lane B · model sonnet · size XS · deps — · verify: the sweep + one bench read. Filed 2026-09-13 from bench run 45.
+
+## 117. [ ] `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2 — and a failed consume is a silent no-op (DATA + ENGINE) (2026-09-13)
+
+**Why:** bench run 45 drove item 89's new `use → edha-def-test` rule on both Unbreakable Line blocks. It works on the Crownox Ring (focus max 3). On `The Reckoning` the ability consumes **3 Focus** while its `resources.foc.max.override` is **2**, so it can never be paid — and `item.use()` then produces **nothing at all**: no chat card, no `ui.notifications` warning, no console line. The first take read exactly like a dead ability; raising the pool to 5 made the identical take work and consumed exactly 3. Item 89 copied the Crownox cost onto a block whose stat line cannot pay it, and the Reckoning's own cue text never promises a focus cost ("the lead may test White (DC = half the damage)").
+
+**What to do:** decide which side is canonical — either raise The Reckoning's focus pool to 3+ or drop/lower the consume to match its card — and align `data/adversaries.json` plus the cue text. Separately, make a failed `consume` visible: `edhaConsumeCost` should post a `ui.notifications.warn` naming the resource and the shortfall, so a GM never sees a button do nothing.
+
+**Done when:** both blocks can actually pay their own ability; a deliberately underfunded use prints a warning instead of silence; a bench row re-drives The Reckoning without hand-editing its pool.
+
+**PM:** lane B · model sonnet · size S · deps — · verify: a bench re-drive of the Reckoning row. Filed 2026-09-13 from bench run 45.
+
+## 118. [ ] A gated `edha-regen` cue card still prints its static "regains N HP" note beside "no healing lands" (ENGINE-ONLY, F5) (2026-09-13)
+
+**Why:** item 70 gated the regen tick at its emitter and item 68's contract says a heal card is built from what was DELIVERED. The `edha-regen` sweep honours that in its parenthetical but not in its body: it posts the rule's `note` in preference to the composed `line` (`h.note || line`), so a rule that carries its own `note` wins and the card reads *"⏰ Nexus-Fed (B45 Garden Sow): **Nexus-Fed — the Sow regains 5 HP.** (no HP applied — B45 Garden Sow cannot regain HP (Withering Touch) — no healing lands.)"* — measured live at bench run 45. The GM reads "regains 5 HP" first. 70-1's Apex Form card composes from `line` and is correct, which is why only the adversary side shows it.
+
+**What to do:** in `module-src/scripts/engine/07-edha-owner-list.js`'s `edha-regen` sweep, prefer the gate's `line` over the rule's static `note` when the delivered amount is less than the rolled one (or suppress the static note entirely on a gated tick). Pin it in `tests/`.
+
+**Done when:** a withered Nexus-Fed tick's card carries no un-gated number; the ungated tick's card is unchanged.
+
+**PM:** lane B · model sonnet · size XS · deps — · verify: the pin + a bench re-drive of 70-2. Filed 2026-09-13 from bench run 45.

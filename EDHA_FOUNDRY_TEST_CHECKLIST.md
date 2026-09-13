@@ -337,9 +337,15 @@ shape keys `system.events` by rule id and puts the type on `handler`.)
 
 ### Order card rewording — R-93 (2026-09-09, **REBUILD deity + ⟳ Sync Talents**)
 
-- [ ] 🤖 **`Bear Witness` reads “temporary HP equal to your **ranks in** White”** on the card in Foundry (was “your White”). Text-only — the engine already paid `@skills.white.rank`; Ben ruled 2026-09-09 that the code is right and the card was wrong. Check the sheet card, the chat card and the short form all agree.
-- [ ] 🤖 **`Shoulder the Oath` reads “reduce … by your **ranks in** White” and “temporary HP equal to your **ranks in** White”** — same fix, two phrases, same rule (`healBonusFormula` and `thpFormula` both `@skills.white.rank`).
-- [ ] 🤖 **`Kindle` and `Bonds of Community` still read “your Red” / “your White”** — deliberately UNCHANGED: `@skills.red.mod` and `@skills.white.rank + @attr.wil` are both the modifier, so those two cards were already correct. A rewording here would be a regression.
+*(✅ **All three R-93 card-text rows RETIRED on evidence, bench run 45 (2026-09-13)** — read straight
+off the deity and leyline packs Ben rebuilt at 10:24 ET, and off the owned copies on `Bench — Order` /
+`Bench — Red` after the ⟳ Sync. **`Bear Witness`** — *"…gains temporary HP equal to your **ranks in**
+White."* in the full card, the short form and the chat form, all three identical, and the owned copy
+matches. **`Shoulder the Oath`** — *"…reduce the remaining damage to that ally by your **ranks in**
+White. Both you and that ally gain temporary HP equal to your **ranks in** White."*, both phrases
+present in full, short and chat, owned copy matching. **`Kindle`** still reads *"add additional damage
+equal to your **Red modifier**"* and **`Bonds of Community`** still reads *"temporary HP equal to your
+**White**"* — both deliberately unchanged, as the row required.)*
 
 **✅ All FOUR builds carried into bench run 11 are DONE and VERIFIED LIVE (2026-07-27m).** Ben ran
 them; the run then read all five packs directly and confirmed each fix in place — Flamestance
@@ -783,30 +789,33 @@ the full amount. ⚠️ `edhaApplyBurstResults` was deliberately left ungated �
 1 HP still lands on a withered creature (R-10 (3)); the retired R-10 rows in the Death block already
 cover that direction and must NOT regress.)*
 
-- [ ] 🤖 **70-1 — Mending Aura's turn tick on a Withered ally.** Grant the regen (Mending Aura /
-  Apex Form's vital regen, i.e. any `edha-regen` rule) to a withered ally below max HP, then end
-  that ally's turn in a started combat. **Expect HP unchanged (+0)**, the gate card
-  *"🩸 &lt;name&gt; cannot regain HP (Withering Touch)"*, and the regen cue card carrying
-  *"no HP applied — &lt;name&gt; cannot regain HP (Withering Touch) — no healing lands"* with **no
-  number anywhere in it**. Control: the same tick on an unmarked ally still prints *"+N HP applied,
-  end of turn"* and moves the HP. Halved variant: the tick lands **half** and the card prints the
-  halved number, never the un-gated one.
-- [ ] 🤖 **70-2 — an adversary regen tick on a Withered creature (The Garden Sow's Nexus-Fed).**
-  Same check on the bestiary side of the same handler, since the adversary rules are where
-  `edha-regen` shipped first: wither a Nexus-Fed adversary below max, end its turn. **Expect +0**
-  and the mark named on the card; unmarked control ticks in full.
-- [ ] 🤖 **70-3 — the decay lifesteal heal-back into a Withered owner.** Wither `Bench — Death`,
-  then have it run **Consuming Decay** on a victim and tick a turn. **Expect the victim to take the
-  decay damage exactly as before** (the damage is NOT gated) while the owner's HP stays put, and the
-  decay card to read *"&lt;owner&gt; cannot regain HP (Withering Touch) — no healing lands"* instead
-  of *"regains N HP"*. Halved variant: the owner drains back **half** the usual amount.
-- [ ] 🤖 **70-4 — a burst HEAL over a Withered token (the emitter gate).** Detonate a healing burst
-  (`edha-burst` with `burst.heal`, `affects: allies`) catching one withered ally and one unmarked
-  ally. **Expect the burst card's per-target lines to differ**: the unmarked ally reads
-  *"&lt;name&gt;: +N HP (capped at max)"* and gains N; the withered ally's line reads
-  *"&lt;name&gt; cannot regain HP (Withering Touch) — no healing lands"* and its HP does not move.
-  ⚠️ Confirm in the same window that **Raise Dead still returns a withered creature to 1 HP** — that
-  hit rides `edhaApplyBurstResults`, which stays ungated on purpose.
+*(✅ **70-1 … 70-4 ALL RETIRED on evidence, bench run 45 (2026-09-13)**, engine hash-verified
+`8c690b21…` = `HEAD`. Every mark was produced FOR REAL (Withering Touch armed → melee Sidesword hit →
+`healCut {fraction: 0, byName: "Withering Touch"}`; the halved variant from a Bench — Black
+Withering-Ray hit → `{fraction: 0.5, byName: "Necrotic Grasp"}`), and every row carried its control.
+**70-1** — control ally **23 → 33** with *"🌿 Apex Form (Bench — Life): Bench Ally — Two regenerates
+10 HP."*; withered ally **23 → 23 (+0)** with the gate card *"🩸 Bench Ally — One cannot regain HP
+(Withering Touch)."* and the regen cue *"🌿 Apex Form (Bench — Life): Bench Ally — One cannot regain HP
+(Withering Touch) — no healing lands."* — **no number anywhere in it**. Halved variant: the tick landed
+**4** and the card printed **4**, not the ungated roll. 📌 **Row-text correction:** the drivable PC-side
+regen is `edha-regen-grant` (Apex Form → `edhaResolveLifeRegen` → `edhaCrossHeal`, at the TARGET's turn
+**start**); Mending Aura is an `edha-burst` heal (that is 70-4's path) and **no PC talent carries an
+`edha-regen` rule at all** — the only `edha-regen` in shipped content is the Sow's Nexus-Fed, i.e. 70-2.
+**70-2** — same Sow, two rounds: unmarked **40 → 45** with *"⏰ Nexus-Fed … (+5 HP applied, end of
+turn.)"*; withered **39 → 39** with the gate card and *"(no HP applied — B45 Garden Sow cannot regain HP
+(Withering Touch) — no healing lands.)"*. ⚠️ Its cue still reads its static `note` first — *"Nexus-Fed —
+the Sow regains 5 HP."* — so the blocked card both claims 5 HP and says none lands (`h.note ||
+${line}.`); filed as **TODO item 118**. ⚠️ Harness note: `edhaPostCueCard` is **once per round**, so two
+ticks in the same round silently drop the second card — advance the round between takes. **70-3** —
+withered owner: victim took **12 vital in full** (15 → 3, damage NOT gated), owner **20 → 20**, card
+*"Bench — Death cannot regain HP (Withering Touch) — no healing lands."*; unmarked control: victim 10
+vital, owner **+5** (half); halved mark: victim 10 vital, owner **+2** (half of half) with the printed
+number halved. **70-4** — one Mending Aura burst produced **three different per-target lines in one
+card**: *"Bench Ally — One cannot regain HP (Withering Touch) — no healing lands"* (4 → 4), *"Bench
+Ally — Two: +2 HP (capped at max)"* (20 → 22), and *"Bench — Death: +1 HP (capped at max)"* (the halved
+mark), beside three unmarked allies at +2. **Raise Dead confirmed ungated**: the still-withered ally
+returned to **1 HP**, Disoriented, *"⚰️ Raise Dead : Bench Ally — One returns to life at 1 HP …"* —
+R-10 (3) holds.)*
 
 ## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
 
@@ -814,35 +823,25 @@ cover that direction and must NOT regress.)*
 what happens, read off the flag or the card's own formula node; whether it is right is the ruling's
 call, in `EDHA_RULINGS.md`.)*
 
-- [ ] 🤖 **ECO-1 — which Temp HP writer wins on a live table (R-107).** The code says the two
-  writers disagree: heal overflow overwrites (`03-where-an-effect-lives.js:882` →
-  `edhaWriteTempHp`), every cross-actor grant keeps the higher (`edhaGrantTempHpCross`). Take
-  `Bench Ally — One` at **full HP**, seed it with `edha.setTempHp(ally, 30, "bench seed")`, and read
-  `flags.edha-content.tempHp` — **30 / "bench seed"**. Have `Bench — Life` cast **Life Surge** on it.
-  **Expect the flag to DROP** to the overflow — the whole `[Tier][Die] + Awareness` roll, which stays
-  under 30 even at Tier 2 with every colour at rank 3 — labelled "Life Surge", with the chat line
-  *"Life Surge overflow: Bench Ally — One gains N Temp HP"*. **Control, same ally:** re-seed 30, then
-  land a smaller grant through the keep-higher writer — `Bench — Order`'s `Bear Witness` round-start
-  grant, driven as bench run 39 drove it for R-36 (a Covenant on the ally, rounds advanced in a bench
-  combat) — and **expect 30 / "bench seed" to survive**. Record both flag readings verbatim. Optional
-  third case: `Bench — Black` seeded with 30 casts `Spoils of Isolation` over a Weakened dummy — expect
-  its own pool replaced by the damage total.
-- [ ] 🤖 **ECO-2 — does `Momentum's Edge` error, or silently add nothing (R-95).** The PC talent has
-  carried `bonusFormula: "@movement.walk.rate"` since 2026-06-15 (`d0c8080`), and
-  `movement.walk.rate` is a DerivedValueField object, not a number. (Brandram's adversary version is
-  a different formula — `2d4`, ruling 113 — and its row was retired on evidence at bench run 19; that
-  proves nothing about this one.) Use run 19's drive: step a bench combat onto `Bench — Red`'s turn so
-  `_edhaTurnStartPos` is stamped, displace the token **exactly 20 ft** toward a hostile dummy (1200 px
-  on the Playtest Map), and Strike in melee. Read the damage card's own `.dice-formula` node ~2 s after
-  it lands (the method note under "Damage-rider formula bars" above). **Record which it is:** (1) the
-  roll errors, or the formula shows `[object Object]` / `NaN`; (2) the formula carries no
-  Momentum's Edge term, or a `+ 0`; (3) a term of +25 to +30 — which would mean the reference resolves
-  after all and R-95's implementation half is wrong. **Control:** re-stamp at rest, 0 ft moved — no
-  rider in any case. **Code prediction (critique, 2026-09-12): case (1), and the whole Strike's
-  damage roll fails, not just the rider** — Foundry 13's `replaceFormulaData` renders an Object as
-  a rune-wrapped JSON string (`ᚖ{…}ᚖ`), `edhaFoldRiderFormula` passes it on because it holds no
-  `@`, and the appended term cannot parse. Record the error text verbatim; if the card instead
-  shows `+ 0` or no term, the prediction is wrong and `CRITIQUE.md` §R-95 needs a note.
+*(✅ **ECO-1 and ECO-2 BOTH OBSERVED AND RETIRED, bench run 45 (2026-09-13)** — engine hash-verified
+`8c690b21…` = `HEAD`. **ECO-1: the two writers really do disagree, exactly as R-107 read the code.**
+`Bench Ally — One` at full HP, seeded `edha.setTempHp(ally, 30, "bench seed")` → flag **`{value: 30,
+source: "bench seed"}`**. Bench — Life's **Life Surge** healed 15 into a full-HP ally → the flag
+**DROPPED** to **`{value: 15, source: "Life Surge"}`** with *"💚 Life Surge overflow: Bench Ally — One
+gains 15 Temp HP."* — the overflow writer overwrites a larger pool. **Control:** re-seeded 30, then a
+smaller keep-higher grant (`Bench — Power`'s **Investiture of Command**, the same
+`edhaGrantTempHpCross` path Bear Witness uses) granted 13 → the flag stayed **`{value: 30, source:
+"bench seed"}`**; the card still said *"gains 13 Temp HP"* while nothing changed. TODO item 113 carries
+the fix. **ECO-2: case (1), and the code prediction was right in full** — with `Bench — Red` stamped at
+turn start and displaced exactly **20 ft (1200 px)** toward a hostile dummy, the impact Strike
+(Shockwave Slam) **threw and posted no card at all**, verbatim:
+`Unresolved StringTerm ᚖ{"derived":25,"override":30,"useOverride":true,"bonus":0}ᚖ requested for
+evaluation`. It is the **whole damage roll** that is lost, not just the rider, and it is lost
+**silently** — no chat card, no `ui.notifications` entry; the rejection only surfaces if you await the
+promise. **Control at 0 ft moved, same target, same talent:** the roll succeeded —
+`floor(2d8 / 2) + ((1 + 2))[Mighty] = 6` with a normal damage card and no Momentum's Edge term. So
+`CRITIQUE.md` §R-95 needs no correction, and **TODO item 104** carries the fix.)*
+
 
 ---
 
@@ -1151,14 +1150,11 @@ answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckles
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
 
-- [ ] 🤖 **92-1 — Volatile Strike fires on ANY melee hit, not just impact (R-88 (a), item 92,
-      REBUILD + ↻ Sync Talents)**: bench run 42 (2026-09-07, PR #274) measured a plain weapon hit
-      that dealt impact posting the "⚡ Volatile Strike — 1 Investiture …" offer, and the same PC's
-      ordinary keen sidesword hit posting nothing — the `edha-on-hit` rule carried a
-      `whenDamageType: "impact"` gate the card never mentions. Item 92 removed that key from
-      `data/authored/leyline-red.json`'s Volatile Strike rule. Re-test on the rebuilt pack: an
-      ordinary keen melee hit by a Volatile Strike owner should now post the offer (bench 42's
-      negative case, flipped). Needs the leyline pack REBUILD + ⟳ Sync Talents to be live.
+*(✅ **92-1 RETIRED on evidence, bench run 45 (2026-09-13)** — on the leyline pack rebuilt at 10:24 ET.
+The `whenDamageType: "impact"` key is gone from both the pack copy and Bench — Red's owned copy, and an
+**ordinary keen Sidesword melee hit** by a Volatile Strike owner posted the offer: *"⚡ Volatile Strike
+— 1 Investiture · Volatile Strike — spend 1 Investiture (test Red vs Physical) to add half [Tier][Die]
+impact to the creature you hit."* with its Fire button. Bench 42's negative case, flipped.)*
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 52-1 and 52-2** (item 52 / R-27), on the
 hash-verified `0ea0741a…` deploy. ⚠️ **The rally-stack talent on `Bench — Red` is `Feeding Frenzy`,
@@ -2251,28 +2247,37 @@ their sixteen slots. Fourteen cards are new; Mighty and Overwhelm with Details s
 and its review are the artifact `c5861aae…`; the four engine primitives that make the cue cards live are
 handoff §9k.
 
-- [ ] 🤖 **HS-1 — both trees load with 25 nodes and every new node is reachable.** Open the Warrior and Scholar
-  trees on Bench — Heroic: Leybreaker's eight sit where Shardbearer's did (roots Ley-tempered, Stillstance),
-  Ley-surveyor's eight where Artifabrian's did (roots Ley-sense, Read the Draw), and no node refuses with a
-  prerequisite its card does not name (iron rule 7).
-- [ ] 🤖 **HS-2 — Stillstance and Saltstance are stances.** Entering one ends the other (system modality
-  "stance"); Saltstance's marker carries +1 Physical defense from its stance-rider effect; Vigilant Stance's
-  free entry applies to both.
-- [ ] 🤖 **HS-3 — Break the Draw drains @tier focus on a melee hit.** Strike a dummy that has focus, use the
-  talent: the victim loses focus equal to the tier (1 at Tier 1) and the note card offers the Investiture
-  alternative.
-- [ ] 🤖 **HS-4 — Sever the Line applies Slowed on hit**, and its card names the 5 ft Attunement Range clamp.
-- [ ] 🤖 **HS-5 — Turn the Working rolls Athletics vs. Cognitive** from its Reaction card (activation
-  `skill_test` / `ath`), with 2 focus consumed.
-- [ ] 🤖 **HS-6 — Breaker's Charge moves half speed toward the target, then rolls its own +2d8.** The move
-  card relocates the token; the talent's damage roll reads 2d8.
-- [ ] 🤖 **HS-7 — Fault in the Line drains 1 Investiture on a success.** Against Bench — Blue (holds
-  Investiture): Deduction vs. Cognitive; on a success the victim's Investiture drops by 1 — the first
-  PC-side `op: drain` / `resource: inv` rule, so record the bookkeeping tag it writes.
-- [ ] 🤖 **HS-8 — Read the Weave rolls Deduction vs. Cognitive** and posts its scene-rider cue on a success.
-- [ ] 🤖 **HS-9 — Surveyor's Eye gives an advantage on Perception tests only** (a Lore test is unchanged).
-- [ ] 🤖 **HS-10 — the cue cards post on use** for Stillstance, Saltstance, Read the Draw, Mark the Ground and
-  Steady the Line, each naming the clause the table runs.
+*(✅ **HS-1 … HS-10 ALL RETIRED on evidence, bench run 45 (2026-09-13)** — driven on the hash-verified
+deploy (`8c690b21…`, 1 700 906 normalised bytes, byte-identical to `HEAD`) with the heroic pack rebuilt
+at 10:24 ET. Bench — Heroic carried 15 of the 16 new talents after the roster-script fix (Mighty is
+deliberately absent — it collides across five heroic trees and no row needs it); zero Shardbearer /
+Artifabrian strays remained.
+**HS-1** — both trees' `talent_tree` documents read **exactly 25 nodes** off the deployed pack; the 16
+new nodes sit at layout coordinates **byte-identical** to Shardbearer's / Artifabrian's (150 talents
+before and after); every node's managed prerequisites match its card's prose exactly (Leybreaker roots
+Ley-tempered + Stillstance ("Discipline 1+"), Ley-surveyor roots Ley-sense + Read the Draw ("Lore 1+"),
+both DAGs fully reachable); both trees render in the Foundry path sheet with their specialty column
+labelled. **HS-2** — all six stances carry `modality: "stance"`; entering Saltstance ended Stillstance
+(one marker at a time), Saltstance's marker applied `system.defenses.phy.bonus` **0 → 1** from its
+`stanceRider` effect, and its cue resolved `@tier` → "+2 damage". *(Vigilant Stance's "enter other
+stances as a Free Action" carries no automation on either side — it is a table-run clause, and the two
+new stances are shape-identical to the ones it already covered.)* **HS-3** — clean take on a 12-focus
+pool: *"🧠 Break the Draw : … loses **2** focus."* (@tier = 2 at Tier 2) with the note offering *"or, if
+it has Investiture, 2 Investiture instead"*. **HS-4** — *"Sever the Line — … is **Slowed**"*, status
+applied, card naming *"its **Attunement Range is 5 ft** until the end of its next turn"*. **HS-5** —
+roll config read **"TURN THE WORKING (ATHLETICS)"**, `1d20 + 5 = 20` vs COG 14 → SUCCESS, focus 4 → 2.
+**HS-6** — token moved **4500 → 5400 px = 15.0 ft = half of walk rate 30**, card *"moves 15 ft toward
+… ignoring Reactions"*, talent's own roll **2d8**. **HS-7** — `1d20 + 3 = 23` vs Bench — Blue's COG 16 →
+SUCCESS, Investiture **3 → 2**, card *"✨ Fault in the Line : Bench — Blue loses 1 Investiture."*; the
+bookkeeping tag it writes is **none** — no actor flag moved, the drain is a direct resource write plus
+a public card. **HS-8** — `1d20 + 3 = 17` vs COG 16 → SUCCESS, scene-rider cue posted on the success,
+2 focus consumed. **HS-9** — Perception rolled **`2d20kh + 4`**, Lore **`1d20 + 4`** in the same take.
+**HS-10** — all five cue cards posted (Read the Draw whispered to the GMs as authored, the other four
+public), each naming its table-run clause. ⚠️ **One defect filed: four of the cue cards print the
+talent name twice** — `edha-note` already prefixes it, and Stillstance / Saltstance / Mark the Ground /
+Steady the Line repeat it in their own `text` ("📍 **Mark the Ground**: **Mark the Ground**: for the
+scene…"). Exactly four across all of `data/authored/` — **TODO item 116**.)*
+
 - [ ] ⚑ **HS-11 — feel: is Stillstance's ally-guard at depth 0 too strong at the table, and is Read the
   Weave's scene-long party advantage?** The reviewer flagged both; they were accepted provisionally.
 
@@ -3470,43 +3475,32 @@ at 30, no other field changed; mutation-pinned in `tests/adversary-senses.test.j
 `tests/derived-stats.test.js`, `tests/engine-helpers.test.js`). These rows are what only a live
 table can settle.
 
-- [ ] 🤖 **83-1 — a PC sheet reads the ladder after F5 alone (ENGINE, no rebuild).** On any bench PC,
-      set AWA 0 and read `system.senses.range.value` on the sheet: **5** (it read 10 under R-56 (a)).
-      Then walk AWA 1→5 and confirm **10 · 10 · 20 · 20 · 50**. Read the DerivedValueField's
-      **`.value`**, never `.derived`/`.override`. Also confirm no ⟳ Sync was needed for the sheet
-      number — the sheet is derived every prepare, which is the claim the delta makes.
-- [ ] 🤖 **83-2 — an adversary SHEET and its TOKEN both read 5 ft at AWA 0 (needs the REBUILD).**
-      **BLOCKED-ON-DEPLOY until Ben's next `deploy-to-foundry.bat` run + ⟳ Sync Adversaries from
-      Pack.** After it: pick any adversary with no `senses` override, read `system.senses.range.value`
-      (**5**) and its prototype `sight.range` (**5**), then a placed token's `sight.range` (**5**).
-      R-56 (a)'s parity invariant is the point — sheet and token must agree, for every creature.
-      Spot-check at whole-population scale if the run has room: **51 of 52** pack adversaries should
-      read 5/5, one (the Grove) 30/30, and **0** mismatched.
-- [ ] 🤖 **83-3 — the bespoke escape hatch survives: Briar-Gone Grove still sees 30 ft.**
-      **BLOCKED-ON-DEPLOY (same rebuild + sync as 83-2).** The Grove's sheet `senses.range.value`
-      must be **30** with `useOverride true`, its token `sight.range` **30**, and its
-      `senses.range.derived` **5** underneath — i.e. the override wins over the system's ladder
-      exactly as it won over the Edha table. This is the only authored instance of the override, so
-      it is the only live test the clause has.
-- [ ] 🤖 **83-4 — the creation wizard's preview promises the ladder, and the finished sheet agrees.**
-      ENGINE-only (F5). Run ＋ Edha Character to the attributes step and read the **Senses** cell of
-      the live derived-stat panel at AWA 0 (**5 ft**), 2 (**10 ft**) and 4 (**20 ft**); Finish and
-      confirm the sheet reads the same number. (Bench run 21's original failure was preview-vs-sheet
-      drift, so the *agreement* is the row, not just the number.) If the run can push AWA to 9, the
-      cell should render **∞**, not `9007199254740991 ft`.
-- [ ] 🤖 **83-5 — the bench roster script stamps PC sight from the ladder (R-2 re-pin).**
-      `scripts/bench-setup-console.js` now writes `prototypeToken.sight.range` **10** for its AWA-2
-      PCs (was 20 under the Edha table). Re-run the roster setup and confirm all bench PC prototypes
-      read **10**, and that a token created fresh during the run inherits 10. ⚠️ Known from bench run
-      30: the prototype write does **not** reach tokens already on the map — those keep their stored
-      range until re-placed or re-stamped, so read prototypes and freshly-placed tokens, not the
-      standing ones, or record both.
-- [ ] 🤖 **83-6 — what an EXISTING PC token needs (the deploy claim).** The delta claims F5 alone
-      moves every SHEET but not a stored token `sight.range`, and that `edha.fixPcTokens()` (or any
-      AWA edit) is what re-stamps an existing PC's tokens. Verify both halves on one PC: after F5 the
-      sheet moved and the placed token did not; after `edha.fixPcTokens()` from the GM console the
-      prototype **and** the placed token read the ladder's number. If that is wrong, the delta's
-      deploy instructions to Ben are wrong.
+*(✅ **83-1 … 83-6 ALL RETIRED on evidence, bench run 45 (2026-09-13)** — engine hash-verified
+`8c690b21…` = `HEAD`, adversaries pack rebuilt and world-synced at 10:24 ET (41 synced, 0 skipped, 1
+missing = the `Bench Target — Undefended` fixture, which has no pack twin).
+**83-1** — on a bench PC, `system.senses.range.value` walked **5 · 10 · 10 · 20 · 20 · 50** for AWA
+0→5, `useOverride false` throughout, read off `.value`; no ⟳ Sync was involved — each read came from a
+fresh prepare after a plain attribute write. **83-2** — whole-population, straight off the deployed
+pack: **52 adversaries, 51 read 5/5** (sheet `senses.range.value` / prototype `sight.range`), **0
+mismatched**, the single exception being the Grove; plus the live half — a Garden Sow imported fresh and
+placed read sheet **5**, prototype **5**, placed token **5**. **83-3** — Briar-Gone Grove, imported and
+placed: sheet **30**, `useOverride` **true**, `senses.range.derived` **5** underneath, prototype **30**,
+placed token **30**. **83-4** — the wizard's live derived-stat panel read **Senses 5 ft** at AWA 0,
+**10 ft** at 2 and **20 ft** at 3, and the finished sheet read **20** at AWA 3 — preview and sheet agree,
+which is the row. ⚠️ The **∞** clause is **not reachable in the wizard**: level 1 caps any one attribute
+at 3. Off-wizard, a sheet at AWA 9 derives the raw sentinel **9007199254740991**, so whatever renders it
+must special-case it — recorded, not failed. **83-5** — all **16** bench PC prototypes read **10** (AWA 2),
+and the six tokens this run created fresh inherited **10**. ⚠️ **But the script stamps the PCs and not the
+TARGETS:** `Bench Target — Adjacent A`, `— Floater` and `— Isolated` still carry prototype **20** against a
+sheet of 10, and the adversary-typed `Bench Target — Undefended` carries **10** against a sheet of 5 —
+four fixtures violating R-56 (a)'s parity invariant. Fixed in the script this run (see the delta); the
+standing prototypes stay stale until the next roster run re-stamps them. **83-6** — both halves, on
+`Bench — Heroic`: after the deploy the SHEET read **10** while its stored token still read **20** (six
+standing bench tokens did), and an AWA edit re-stamped **prototype and placed token together** (AWA
+2→3 moved all three to 20; 3→2 brought all three to 10). ⚠️ `edha.fixPcTokens()` itself was **not** run
+and must not be run by a bench session: it writes `prototypeToken` on **every** character actor in the
+world, Tem parinaem, Soggy Bottom and Ishee included, which PM-R17 forbids. The row's own alternative
+(“or any AWA edit”) exercises the same `edhaPcSightShape` writer and is the bench-safe drive.)*
 
 ---
 
@@ -3637,12 +3631,13 @@ the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adju
 module-visible data -->`), so lint pass 5 is satisfied by the reasoned exemption, not by silence.
 Nothing to bench: the mechanic is the GM's application step by construction.)*
 
-- [ ] 🤖 **Item 93 / R-89 (a) — the `noHook` flag survives a Foundry edit.** Open a marked
-  ability's description in the Foundry editor (e.g. the Stonebound Captain's Combat Training, or
-  Wrongwake's Drag Under — the ability R-89 caught losing its old HTML-comment marker on save),
-  save, re-extract: the `noHook` flag must survive (it lives in `flags['edha-content'].noHook`,
-  renders nowhere, and the editor never touches it) and `lint-refs.js` pass 5 must stay green.
-  This is the whole point of moving the declaration off prose (R-89) — confirm it live, once.
+*(✅ **Item 93 / R-89 (a) RETIRED on evidence, bench run 45 (2026-09-13).** Driven on a fresh pack
+import in the bench folder (`The Garden Sow / The Old Agreement`, which carries `noHook`) rather than
+on Ben's campaign Stonebound Captain. The real ProseMirror editor was opened from the item sheet's
+Description tab, text was typed into it and **Save** clicked; the description changed on the document
+(" BENCH45." landed at the end) and `flags['edha-content']` came back **byte-identical**, `noHook`
+intact. So the flag survives a Foundry editor round-trip exactly as R-89 intended — which the old
+HTML-comment marker did not. `lint-refs.js` pass 5 green in this run's gate sweep.)*
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
@@ -4210,85 +4205,23 @@ for the first time". Keep 2bAB-9.)*
 
 
 ## 2. Crownox Ring (White rival ×3 — the wall)
-- [ ] 🤖 **Unbreakable Line ally-drops cue — NOW COVERS BOTH BLOCKS (2026-07-27v)** — a ring-mate would
-      drop → whispered 3-Focus card; the White test resolves through the contest core on use.
-      ⚠️ **This row is the ONLY Unbreakable Line coverage in the file.** The Ashkar §4 duplicate (The
-      Reckoning, "when a pack-mate drops within 5 ft … test White DC ½ damage to hold at 1") was
-      retired into this one — **the ability has never been benched on either block**, so do not read the
-      merge as evidence. Drive it on the Crownox and, if the wording differs, on The Reckoning too.
-      *(It was NOT among the seven restored 07-26j rules that printed real numbers at bench run 3.)*
-      **2026-07-28e, bench run 19 — PARTIAL, row stays. Both blocks driven; two separate findings.**
-      ✅ The cue itself FIRES on **both** blocks, wordings differ as the row anticipated —
-      Crownox: *"⏰ Unbreakable Line (Bench Adv — Crownox Ring): … an adjacent ox may spend 3 Focus:
-      test White vs. DC = …"*; Reckoning: *"⏰ Unbreakable Line (Bench Adv — The Reckoning): A pack-mate
-      dropped within 5 ft: the lead may test White (DC = half the damage) via the contest core …
-      (Bench Adv — Victim Tokened dropped, **within 5 ft**.)"*
-      ❌ **(a) The 5-ft reach cannot reach an adjacent ally.** `edhaTokenGapFt` is **centre-to-centre**
-      and `edhaAllyDropEligible` applies **no slack**. Measured, four positions:
-      (i) Crownox Ring (**Large 2×2**), ally orthogonally adjacent → gap **7.5 ft** → ❌ no card;
-      (ii) Crownox Ring, ally overlapping the ring's own square → gap 0 ft → ✅ fires;
-      (iii) The Reckoning (Medium), ally orthogonally adjacent → gap 5.0 ft → ✅ fires;
-      (iv) The Reckoning, ally **diagonally** adjacent → gap **7.07 ft** → ❌ no card.
-      So a Large owner's 5-ft `ally-drops` can **never** reach a ring-mate standing beside it, and a
-      Medium owner's misses every diagonal — while both cards' prose says "an adjacent ox" / "a
-      pack-mate dropped within 5 ft". Note the engine's own `enemy-turn-start` sweep adds **`+ 2.5`
-      half-square slack "for adjacency reads"** and `ally-drops` has none. Blast radius: the two 5-ft
-      rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. **Whether the fix is slack or
-      edge-to-edge measurement is a design call — see `EDHA_RULINGS.md`.**
-      - ✅ **R-52 (c)(i) RETIRED on evidence 2026-09-06, bench run 39 — the half-square slack works,
-        and the boundary case the ruling doubted DOES fire.** Driven on the hash-verified
-        `7d8e0226…` deploy with `B39 Crownox Ring` (Large 2×2), `B39 The Reckoning` (Medium) and
-        `B39 Sergeant Halden Roek` imported FRESH from the pack, one same-side victim token moved
-        between takes, and the centre-to-centre gap **computed and printed for all three owners on
-        every take** so no result rests on an assumed distance. All six positions:
-        **(i) 7.5 ft → ✅ NOW FIRES** (Crownox Ring — exactly on the new 7.5-ft boundary; the ruling's
-        prose predicted a miss, the measurement says otherwise), **(ii) 0.0 ft → ✅** (Ring),
-        **(iii) 5.0 ft → ✅** (Reckoning), **(iv) 7.071 ft → ✅ NOW FIRES** (Reckoning, the diagonal
-        that used to miss). **NEG (load-bearing):** the victim one full square out, **10.0 ft** from
-        the Reckoning — **no card from anyone**. **NEG 2:** at **25.0 ft** from Roek his 20-ft
-        `Cover Their Retreat` cue **refused**. ⭐ **And the NEG 2 silence is not blind:** a positive
-        control at exactly **20.0 ft** from Roek fired his cue in the very next take. On every take
-        the two non-firing owners were silent at their measured gaps, so each result carries its own
-        cross-check. ⚠️ **(b) below is still NOT fixed by this** — the missing `use` rule is separate,
-        and so is R-52 (c)(ii), edge-to-edge measurement for sized tokens (TODO item 62), which is
-        what "an ADJACENT ox" would still need for a Huge owner.
-      - 📏 **R-52 (c)(ii) MEASURED 2026-09-07, bench run 42 — the numbers item 62 needs.** Staged on the
-        Playtest Map (300 px = 5 ft) with a real 3×3 token (the Fen-Heart token temporarily widened to
-        3×3, restored to 2×2 after) and a 1×1 neighbour **touching** it — edge-to-edge **0.0 ft** in
-        every case. Centre-to-centre, against the current gate (c2c ≤ rule + 2.5 ft slack, so 7.5 ft
-        for a 5-ft rule): **1×1 owner 5.0 ft ✅ · 2×2 (Large) 7.5 ft ✅ (exactly on the boundary — the
-        case run 39 measured firing) · 3×3 (Huge) orthogonal 10.0 ft ❌ · 3×3 diagonal 14.142 ft ❌ ·
-        4×4 (Gargantuan) orthogonal 12.5 ft ❌.** So the half-square slack fixed Large and nothing
-        larger, and the slack a Huge owner would need is 5 ft (7.5 ft for Gargantuan) — i.e. **size-
-        dependent, which is exactly what edge-to-edge gives for free (0.0 ft at every size)**. Item 62
-        can be reframed on these six numbers; nothing else here is blocked on them.
-      ❌ **(b) "the White test resolves through the contest core on use" is UNIMPLEMENTED on both
-      blocks.** Behaviour-tested, not merely read: using the item on either block posted an **empty
-      chat card** (`content: ""`) with the owner as speaker — no test, no contest core, no roll.
-      Both blocks' `Unbreakable Line` carries **only** the `edha-apply-watch` → `edha-gm-cue` rule;
-      there is no `use` rule at all.
-      ⛔ **2026-09-07, bench run 43 — RE-CONFIRMED against the DEPLOYED pack, and now FILED.** Read
-      straight out of `edha-content.edha-adversaries`: `Crownox Ring / Unbreakable Line` and
-      `The Reckoning / Unbreakable Line` each carry exactly one rule,
-      `edha-apply-watch → edha-gm-cue {rangeFt: 5}` — no `use` rule on either. **(a) is fully retired**
-      (the cue fires on both blocks, and R-52 (c)(i)'s half-square slack was measured at run 39), so
-      **the only thing left on this row is (b)**, which is an authored-data gap, not a test:
-      → **TODO_REPO_HYGIENE item 89**. ⚠️ Same read surfaced a second inconsistency for that item:
-      `The Reckoning`'s `activation.type` is **`"none"`** while the Crownox Ring's is **`utility`**,
-      for the same ability — so even a hand-click cannot start the test on one of the two blocks.
-      Row stays 🤖, blocked on item 89; re-drive (b) when it ships.
-      🔧 **2026-09-07, item 89 SHIPPED (REBUILD + ⟳ Sync Adversaries — not yet on Ben's deployed
-      pack)** — both blocks now carry a `use` → `edha-def-test` rule (`skill: white, vs: prompt-dc`,
-      the same shape as the Callthief's Counterpoint): using the item queues a real White contest-core
-      test instead of posting an empty card. `The Reckoning` also lost its stray `kind: "trait"` and
-      gained `cost: "Special"` / `consume: "3 Focus"` to match Crownox Ring, so both blocks' built
-      `activation.type` now agree (`skill_test`, promoted by the def-test rule's skill — see item 89's
-      PR for why `vs: prompt-dc` rather than a static `dc`: H1's `dc` field is a flat number only, and
-      "half the damage taken" varies per drop). **Re-drive (b) after the next deploy**: click
-      Unbreakable Line on either block with a target selected, confirm a real White roll posts and the
-      contest resolves (SUCCESS/FAIL line, not an empty card), and confirm both blocks' Activation
-      glyphs now read the same. 🤖 not ⚑ — this is a live-table observation an agent bench run can
-      drive once Ben has rebuilt and synced.
+*(✅ **Unbreakable Line — THE WHOLE ROW IS NOW RETIRED, bench run 45 (2026-09-13).** (a), the
+ally-drops cue on both blocks, retired at bench run 39 on R-52 (c)(i)'s half-square slack (six measured
+positions, two load-bearing NEGs, each take's centre-to-centre gap printed). **(b) — item 89's `use`
+rule is deployed and it works, on BOTH blocks.** Driven on FRESH pack imports (`B45 Crownox Ring`,
+`B45 The Reckoning`) with a target selected: the item now opens a 3-Focus consume prompt, then a roll
+config headed **“UNBREAKABLE LINE (WHITE)”**, then the contest core's own Enter-the-DC dialog, and
+resolves to a real card — Ring: *“Unbreakable Line : 5 vs Bench Target — Adjacent A's DC 4 — SUCCESS …
+Success: the ring-mate holds at 1 health instead of dropping (once per round; GM adjudicates — adversary
+Investiture has no auto-write).”*; Reckoning: the same shape resolving *“22 vs … DC 30 — FAIL”*. No more
+empty `content: ""` card, and both blocks' activation now behaves identically.
+⛔ **But a new defect fell straight out of it, and it makes the ability unusable as shipped on one of
+the two blocks:** `The Reckoning`'s Unbreakable Line consumes **3 Focus** while The Reckoning's focus
+pool **maxes at 2** (`max.override: 2`) — so it can never be paid, and `item.use()` then does **nothing
+at all**: no chat card, no `ui.notifications` warning, no log line. The Crownox Ring (max 3) is fine. The
+first take on the Reckoning read exactly like a dead ability; raising its pool to 5 made the identical
+take work and consumed exactly 3. Filed as **TODO item 117** (the cost/pool mismatch, and the silent
+consume failure behind it).)*
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
@@ -4589,6 +4522,17 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
       (The False Spring, Hazewyrm Elder, Hazewyrm Adult) post through the same public `edhaRollCard`.
       → filed as **TODO_REPO_HYGIENE item 88**; the design call is **R-90**. Row stays 🤖 for the
       whisper half; re-drive it after the fix.
+      ❌ **2026-09-13, bench run 45 — RE-DRIVEN on a DIFFERENT engine (`8c690b21…`, hash-verified =
+      `HEAD`) and the split is unchanged.** A fresh `B45 Cragdrake Alpha` (HP 30 of 56), CONTROLLED on
+      the canvas, took the `character`-typed `Bench Target — Floater` from 40 to 0. ✅ Heal: Alpha
+      **30 → 33**, card *"⚡ **Predator's Due** (B45 Cragdrake Alpha) — … regains **3** health.
+      (Predator's Due: +2d8 health ([Tier][Die]: count = tier 2, die = boss rank 3, ruling 122) and 1
+      Focus on the kill (focus is a GM add).) 2d8 1 2 3 3"*. ❌ Audience: `whisper: []` — **public**,
+      third run in a row. Root cause re-confirmed on the deployed engine itself, not inferred:
+      `edhaRollCard` still contains no `whisper` key at all, and the Alpha's rule is still the single
+      `edha-on-defeat → edha-triggered-effect` with no audience field. **Item 88 is still open ([ ]),
+      so there was nothing new to test — this row is BLOCKED on item 88 / R-90, not failing for a new
+      reason.** Leave it 🤖 and re-drive it the run after item 88 merges.
       *(2026-07-27x bench run 16 — **PARTIAL: the heal is right, the card is PUBLIC not whispered.**
       ✅ Engine-applied heal confirmed: Alpha 30 → **38** on reducing a character to 0, card
       "⚡ Predator's Due (Bench Adv — Cragdrake Alpha) — … regains **8** health … **2d8 4 4 8**",
