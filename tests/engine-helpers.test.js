@@ -6,7 +6,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine, eq, mockActor, mockItem, stageWorld, withStubs } = require("./harness.js");
+const { loadEngine, eq, mockActor, mockItem, stageWorld, withStubs, readEngineSource, codeOnly } = require("./harness.js");
 
 /* This file's ~200 tests deliberately share ONE engine load (a per-test reload would be wasteful
  * runtime for no correctness benefit): nothing here leaves game/canvas state un-restored — every
@@ -478,6 +478,112 @@ test("edhaAdvSyncPlan: missing flags object never throws; empty source drops onl
   const plan = env.edhaAdvSyncPlan(owned, []);
   eq(plan.drop, ["b"]);
   eq(plan.keep, ["a"]);
+});
+
+// --- item 123 / R-113: edhaSyncPlan — the bulk sync's scope/dry-run/refusal decision (pure) ------
+// Bench run 46 found `edhaSyncAllAdversaries()` an unfiltered game.actors/game.scenes loop that
+// would have stomped a live, started combat on a scene outside the bench's licence. These pin the
+// pure decision so a reversion (ignoring the `scenes` filter, or not refusing a started combat) is
+// caught here, without a Foundry world.
+(() => {
+  const actors = [{ id: "actorCinder01", name: "Cinderhound" }, { id: "actorAshkar02", name: "Ashkar Lead" }];
+  const scenes = [
+    { id: "scenePlaytest", name: "Playtest Map", tokens: [{ id: "tokPlaytest1", actorId: "actorCinder01" }] },
+    { id: "scenePlaytestCopy", name: "Playtest Map (Copy)", tokens: [{ id: "tokCopy1", actorId: "actorCinder01" }, { id: "tokCopy2", actorId: "actorAshkar02" }] },
+    { id: "sceneUnrelated", name: "Some Other Scene", tokens: [{ id: "tokOther1", actorId: "actorAshkar02" }] },
+  ];
+  const startedCombat = [{ id: "combatLive1", sceneId: "scenePlaytestCopy", started: true, round: 1, combatantTokenIds: ["tokCopy1"] }];
+  const startedByRoundOnly = [{ id: "combatLive2", sceneId: "scenePlaytestCopy", started: false, round: 3, combatantTokenIds: ["tokCopy1"] }];
+  const unstartedCombat = [{ id: "combatPending", sceneId: "scenePlaytestCopy", started: false, round: 0, combatantTokenIds: ["tokCopy1"] }];
+
+  test("edhaSyncPlan: a scene left out of `scenes` never appears in sceneTokens, even with matching tokens", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, [], { scenes: ["scenePlaytest"] });
+    eq(plan.sceneTokens, { scenePlaytest: 1 });
+    eq(plan.refusals, []);
+  });
+
+  test("edhaSyncPlan: a started combat on a LISTED scene refuses, naming the scene/combat/token", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, startedCombat, { scenes: ["scenePlaytestCopy"] });
+    eq(plan.refusals, [{ sceneId: "scenePlaytestCopy", sceneName: "Playtest Map (Copy)", combatId: "combatLive1", tokenId: "tokCopy1", actorId: "actorCinder01", actorName: "Cinderhound" }]);
+  });
+
+  test("edhaSyncPlan: round > 0 counts as started even without an explicit started:true", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, startedByRoundOnly, { scenes: ["scenePlaytestCopy"] });
+    assert.strictEqual(plan.refusals.length, 1, "round:3 with no started flag must still refuse");
+    assert.strictEqual(plan.refusals[0].combatId, "combatLive2");
+  });
+
+  test("edhaSyncPlan: an UNSTARTED combat (round 0) does not refuse", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, unstartedCombat, { scenes: ["scenePlaytestCopy"] });
+    eq(plan.refusals, []);
+    eq(plan.sceneTokens, { scenePlaytestCopy: 2 });
+  });
+
+  test("edhaSyncPlan: allowStartedCombat:true bypasses the refusal but keeps the token count", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, startedCombat, { scenes: ["scenePlaytestCopy"], allowStartedCombat: true });
+    eq(plan.refusals, []);
+    eq(plan.sceneTokens, { scenePlaytestCopy: 2 });
+  });
+
+  test("edhaSyncPlan: no `scenes` filter touches every scene with a matching token — today's unfiltered footprint, unchanged", () => {
+    const plan = env.edhaSyncPlan(actors, scenes, [], {});
+    eq(plan.sceneTokens, { scenePlaytest: 1, scenePlaytestCopy: 2, sceneUnrelated: 1 });
+    eq(plan.refusals, []);
+  });
+})();
+
+// --- item 123 / R-113: edhaSyncAllAdversaries — dry-run default + the button wiring ---------------
+// game.packs isn't one of stageWorld's managed fields, so it's saved/restored by hand alongside
+// the staged user/actors/scenes/combats — this file's convention (see its header note) is that
+// nothing here leaves game/canvas state un-restored.
+test("edhaSyncAllAdversaries: a bare call (no args) is a DRY RUN and writes nothing", async () => {
+  const priorPacks = env.game.packs;
+  env.game.packs = { get: () => ({}) };   // pack "exists" — enough to pass the pack-found guard
+  const staged = stageWorld(env, { user: { isGM: true }, actors: [], scenes: [], combats: [] });
+  try {
+    const result = await env.edhaSyncAllAdversaries();
+    assert.strictEqual(result.dryRun, true, "no-args console call must default to a dry run");
+    eq(result.actors, []);
+    eq(result.sceneTokens, {});
+  } finally {
+    staged.undo();
+    env.game.packs = priorPacks;
+  }
+});
+
+test("edhaSyncAllAdversaries: dryRun:false is a real run's shape — the DRY RUN default is opt-out, not a hardcoded refusal", async () => {
+  const priorPacks = env.game.packs;
+  env.game.packs = { get: () => ({}) };
+  const staged = stageWorld(env, { user: { isGM: true }, actors: [], scenes: [], combats: [] });
+  try {
+    const result = await env.edhaSyncAllAdversaries({ dryRun: false });
+    assert.strictEqual(result.dryRun, undefined, "a real run's result shape has no dryRun:true flag");
+    eq(result.synced, []);
+  } finally {
+    staged.undo();
+    env.game.packs = priorPacks;
+  }
+});
+
+// Anchored on the section's own CSS class names (".edha-adv-sync-bar" / ".edha-adv-sync-all-btn")
+// rather than the hook name string — "renderActorDirectory" is registered a SECOND, unrelated
+// time elsewhere in the engine (the talent-sync directory button), which would misidentify the
+// block if the hook name alone were used as the boundary.
+test("wiring: the bulk directory button passes {dryRun:false} explicitly (Ben's button must keep writing, not silently become preview-only)", () => {
+  const code = codeOnly(readEngineSource());
+  const start = code.indexOf(".edha-adv-sync-all-btn");
+  assert.ok(start >= 0, "the adversary bulk-sync button block was not found in engine source");
+  const btnBlock = code.slice(start);
+  assert.ok(/edhaSyncAllAdversaries\(\s*\{\s*dryRun:\s*false\s*\}\s*\)/.test(btnBlock), "the directory bulk-sync button must call edhaSyncAllAdversaries({dryRun:false})");
+});
+
+test("wiring: the adversary sheet's single-actor sync button stays unfiltered (no scene arg — explicit intent)", () => {
+  const code = codeOnly(readEngineSource());
+  const start = code.indexOf(".edha-adv-sync-bar");
+  const end = code.indexOf(".edha-adv-sync-all-btn");
+  assert.ok(start >= 0 && end > start, "adversary sync button blocks not found in engine source");
+  const btnBlock = code.slice(start, end);
+  assert.ok(/edhaSyncAdversaryActor\(actor\)/.test(btnBlock), "the sheet button must still call edhaSyncAdversaryActor(actor) with no scene filter");
 });
 
 // --- 07-18 bench: Surefooted +10 displayed as +20 — the derivation folded rate.bonus into the
