@@ -130,38 +130,42 @@ Current leyline talents only use talent-to-talent chaining. **Add skill rank pre
 ## PART 4: COLOR IDENTITIES
 
 > **Note:** Attunement/Physical/Cognitive have been replaced by Specialties. The descriptions below are reference, not law.
+>
+> **Rewritten 2026-09-13 under R-104 (a)** to say what each colour's talents *actually deliver* (the readable per-tree read is `docs/analysis/talent-ecosystem/TREE-INTENT.md`). Where a line here used to promise something no talent does, the old promise is named and retired so it is not re-authored by accident.
 
 ### ⚪ WHITE — Order, Unity, Institutional Authority
 - **Draw Mana rider**: Allies within Attunement Range regain health equal to Tier.
-- **Themes**: Group coordination, Plot Die sharing, anti-chaos stability. Formation defense, damage sharing, shallow AoE healing. Cooperative tests, Assist bonuses, anti-Influence defense, condition removal.
-- **Key mechanic**: Plot Die integration. White rewards coordinated group action.
-- **Cannot**: Remove Injuries (that's Green).
+- **Themes**: Adjacency defence (free Deflect for whoever stands with you, less damage for every ally at your shoulder, interposition, a blow taken in another's place, retribution, the drop-to-1 save), plot-die coordination (a pointed target, chained raised stakes, Aid synergy, an ally's Complication blanked), shallow healing (the Draw Mana trickle, one Opportunity aura), anti-Influence discipline, and consensual **accords** with allies.
+- **Key mechanic**: Standing together, and the plot die. White rewards coordinated group action; nearly every talent needs a friendly body beside it. The shape of a White turn is Slow, in position, and reactive — its best moments are answers to what an enemy just did.
+- **Cannot**: Remove Injuries (that's Green). **Bind enemies to terms** — an accord is an agreement with an ally; the two enemy-facing Accord riders act on an influence contest White wins with the system's own action. Grant actions or move enemies (Leader's and Blue's).
 - **Costs favor**: Free passives, Investiture for active heals/buffs, Opportunity for bonus coordination effects.
 
-### 🔵 BLUE — Knowledge, Foresight, Probability Control
+### 🔵 BLUE — Knowledge, Foresight, Denial
 - **Draw Mana rider**: Advantage on next Cognitive test.
-- **Themes**: Prediction, preparation, Plot Die manipulation, telepathy. Illusion barriers, false images. Probability control — impose Disadvantage, force declarations, redirect outcomes.
-- **Key mechanic**: Plot Die manipulation is Blue's capstone identity. Choosing any Plot Die face is the ultimate Blue expression.
-- **Costs favor**: Free passives, Investiture for active manipulation, Focus for precision plays.
+- **Themes**: Prediction rewarded with Reactions, an intent the GM reveals, telepathy, the initiative take-back; disadvantage on the roll that matters (five ways); the counterspell and the freeze; and the game's only illusion kit (double, barricade with hit points, static image that later walks, unseen slick, extra movement for allies).
+- **Key mechanic**: **Disadvantage-and-denial.** Blue never rolls damage — it makes the enemy's roll go wrong and its plan fail. **Blue has no plot-die talent.** The plot-die identity belongs to Agent (rerolls, face changes) and White (coordination). *(Corrected 2026-09-13: the old "Plot Die manipulation is Blue's capstone identity / choosing any Plot Die face is the ultimate Blue expression" described a tree that was never built; do not write Blue plot-die talents to chase it without a ruling.)*
+- **Level shape**: The counterspell, the 0-Speed lock and its upgrade, the moving image and the harder influence all sit at Blue 3+ — level 6. Design new Blue talents knowing the tree completes late; before that it is a disadvantage engine with a barricade and a double.
+- **Costs favor**: Free passives, Investiture for active denial and illusion. *(The old "Focus for precision plays" is retired — one Blue talent costs focus; the colour runs on Investiture like every other.)*
 
 ### ⚫ BLACK — Isolation, Domination, Predation
-- **Draw Mana rider**: Enemies within Attunement Range with no ally within 10 ft become Weakened.
-- **Themes**: Isolation engine — reward enemies being alone, punish grouped enemies splitting. HP sacrifice for power, Vital damage (bypasses Deflect), self-harm as currency. Focus economy — spend Focus for leverage, strip enemy Focus, dominate the depleted.
-- **Key mechanic**: "No allied creature within 10 ft" is the consistent isolation trigger.
-- **Costs favor**: HP loss (Physical), Focus (Cognitive), Investiture sparingly. Black pays in blood and willpower.
+- **Draw Mana rider**: Enemies within Attunement Range with no ally within **5 ft** become Weakened. *(Corrected 2026-09-13: the Key and every isolation talent say 5 ft; the old 10 ft here and in the path description was never in a card.)*
+- **Themes**: Isolation engine — reward enemies being alone. **Weakened is the working condition**: the Key applies it to whoever stands alone, a hit on an Isolated target applies it, one free shove per turn *creates* the solitude, and the tree pays Weakened off every turn (bonus die and Investiture back on the attack, vital damage to all of them at once, the lock that keeps them from rejoining their line). HP sacrifice for power — vital damage that bypasses Deflect, paid in health, with advantage and a stored Reserve as the return. Focus pressure — make every thought the enemy spends cost more; deny a whole turn; puppet the depleted.
+- **Key mechanic**: "No allied creature within 5 ft" is the isolation trigger; Weakened is what it produces and what the tree pays off.
+- **Does NOT**: strip enemy focus. Black *taxes* focus and reads its loss; the complete strip-and-execute loop (`Feinting Strike` → `Wit's End`) is heroic/Warrior's. `Puppeteer` needs a 0-focus target the colour cannot produce — a future Black talent that removes focus would give it its precondition. No talent penalises a Black mage for being surrounded; the old "surrounded, a Black mage falters" was flavour.
+- **Costs favor**: HP loss for the Ritual line (the only HP costs in the game); Investiture for the rest — it is Black's dominant cost in practice, not "sparingly"; Focus once (`Puppeteer`).
 - **Damage ceiling (R-111, 2026-09-13):** `Withering Ray`'s doubled-tier vital formula (`2[Tier][Die]` — 2d6 at Tier 1, 4d8 at Tier 2) is the only doubled-tier damage formula in the leyline atlas, and it stays exactly as written: HP-costed instead of Investiture, no once-per-turn cap. It is now the documented **leyline damage ceiling** — measure any new leyline damage talent's per-Action output against it, with the HP cost counted in: a three-cast turn (~33 vital for ~4.5 HP of a ~12 HP level-1 pool) is the same size as three Strikes with `Mighty` (~31 physical, free), so Black's edge is the vital damage type ignoring Deflect, not raw size.
 
 ### 🔴 RED — Passion, Momentum, Reckless Escalation
 - **Draw Mana rider**: Advantage on next Physical test. Lose your Reaction until start of next turn.
-- **Identity tax**: Drawing Mana costs your Reaction. Red trades defense for offense.
-- **Themes**: Momentum building, escalation rewards, Fast turn synergy. Explosive force, self-harm for damage, AoE, pyromancy. Emotional manipulation, tempo acceleration, forced aggression.
-- **Key mechanic**: Red gets stronger as fights escalate. Damage taken feeds future power.
-- **Costs favor**: HP loss, Investiture for big hits, Opportunity for momentum spikes. Red should have "spend Opportunity to [devastating effect]" talents.
+- **Identity tax**: Drawing Mana costs your Reaction. Red trades defense for offense — no Red talent reduces damage or heals.
+- **Themes**: Two damage lines — the **energy engine** (bolt, arc to a second target, area surge, kindling on every burn, afterburn, chain detonation through the fallen) and the **melee charge** (advance without provoking, the run-up strike, the leap that flattens the landing, the slam into a wall, free movement after damage on Fast turns) — plus the **Frenzy** layer: a stacking party-wide bonus fed by every blow struck near you (the only stacking test bonus in the leyline atlas), Fast-turn tempo, incitement, and punishments for the confident, the failing and the twice-struck.
+- **Key mechanic**: Red gets stronger as the fight gets louder — escalation fed by damage **dealt** near the mage, by anyone. *(Corrected 2026-09-13: the old "damage taken feeds future power" / "self-harm for damage" / "costs favor HP loss" described talents that were never built — Red has no HP-cost talent and reads none of its own wounds; that is Black's identity. Write Red escalation off damage dealt, kills, and Fast turns.)*
+- **Costs favor**: Investiture for big hits, Opportunity for momentum spikes (`Reckless Gambit`, `Afterburn`, `Reckless Momentum`); no HP costs.
 
 ### 🟢 GREEN — Nature, Instinct, Pack Logic
 - **Draw Mana rider**: Create difficult terrain at a point within Attunement Range (within [Size]).
-- **Themes**: Cluster engine — difficult terrain creation + adjacency bonuses. Deep single-target healing (Green CAN remove Injuries), terrain damage, pack pressure. Instinct-based awareness, anti-artifice, pack coordination.
-- **Key mechanic**: Difficult terrain + adjacency bonuses reward enemies being together. Green's cluster engine mirrors Black's isolation engine.
+- **Themes**: **Territory** — difficult terrain that spreads when enemies end their turn in it, bites whoever enters it, and holds (roots that Restrain, no Disengage without a test). **Deep single-target restoration** — Green CAN remove Injuries and nothing else in the game can; a Reaction heal that fires by itself at half health; regeneration on anyone healed; condition removal; temporary HP. **The pack** — focus-fire: advantage for two who close on the same enemy, bonus damage per attacker on the same target, the pack moved as one body without provoking, the weakest creature always known, prey driven into the packmates' reach. Wilderness senses (no Surprise outdoors, tracking, fear sensed).
+- **Key mechanic**: **The PARTY clusters, onto one target.** *(Corrected 2026-09-13: the old "difficult terrain + adjacency bonuses reward enemies being together / Green's cluster engine mirrors Black's isolation engine" is one talent at level 6 (`Apex Predator`); the tree as built rewards allies converging, not enemies bunching. Write pack talents as party focus-fire.)*
 - **Costs favor**: Investiture for healing and terrain, free passives for pack bonuses.
 
 ---
