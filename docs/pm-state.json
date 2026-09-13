@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T20:28:56.988Z",
+  "generatedAt": "2026-09-13T20:48:42.770Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "ef955eba70",
-    "commit": "708773c",
+    "hash": "e22e79379e",
+    "commit": "a5e441e",
     "branch": "pm/board-2026-09-13d",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -997,8 +997,8 @@
       "model": "sonnet",
       "size": "M",
       "deps": "83 ✓ · Ben's batch",
-      "status": "shelved",
-      "statusDetail": "121",
+      "status": "blocked",
+      "statusDetail": "shelved into 121 — the bestiary redo; Ben 2026-09-13",
       "pr": null
     },
     {

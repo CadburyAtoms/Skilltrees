@@ -379,18 +379,21 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // loops were live on it. Answered the same day (Ben, phone board, 14:10 ET: (a) raise the pool to
   // 3) and moved to §K.9 — the open set is EMPTY again. R-112 joins the closed list below.
   // 2026-09-13, bench run 46: R-113 filed (may a bench run call `edha.syncAllAdversaries()`, and
-  // should the bulk button gain a scope guard — it carries TODO item 123), so the set is one again
-  // and the three shape loops below are live on it.
-  const ECOSYSTEM_RULINGS = ["R-113"];
+  // should the bulk button gain a scope guard — it carries TODO item 123), so the set was one
+  // again and the three shape loops below went live on it.
+  // 2026-09-13, item 123: Ben answered R-113 in chat, verbatim "R-113 - agents need to be able to
+  // sync adversaries for bench runs" (option (a)), moved to §K.10 — the open set is EMPTY again.
+  // R-113 joins the closed list below so a regression that re-opens it is named.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
-      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112"]) {
+      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
-    `the open rulings are exactly the pinned set (R-113 since bench run 46, 2026-09-13) — got [${ids.join(", ")}]`);
+    `the open rulings are exactly the pinned set (EMPTY since item 123 closed R-113, 2026-09-13) — got [${ids.join(", ")}]`);
   assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
     `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
   // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.

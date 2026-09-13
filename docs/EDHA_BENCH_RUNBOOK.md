@@ -1606,6 +1606,18 @@ hand-edited engine, an unclean tree) means stop and ask Ben, not `--force-bench`
   filed it (**TODO item 123 / R-113**). **Before any world-wide `edha.*` mutator: read it for an
   unfiltered `game.actors` OR `game.scenes` loop, and check `game.combats` for a `started` combat.**
   The bench's rows needed nothing from it anyway — fresh pack imports read the pack directly.
+- ⭐⭐ **Item 123 / R-113 (same day): `edhaSyncAllAdversaries()` now takes `{folder, actorIds, scenes,
+  dryRun, allowStartedCombat}`, and Ben answered — "agents need to be able to sync adversaries for
+  bench runs" — so a bench run MAY call the bulk sync, but ONLY scoped.** A bare
+  `edha.syncAllAdversaries()` (no args) is a DRY RUN by default — it reports the actor list and
+  per-scene token counts and writes nothing; read that plan first. Then call it for real **scoped**
+  to the bench: `edha.syncAllAdversaries({ folder: "Edha Bench" /* or actorIds: [...] */, scenes:
+  [<the licensed Playtest Map's id only>], dryRun: false })`. **Never call it unscoped** (no
+  `folder`/`actorIds`/`scenes`) and **never pass `allowStartedCombat: true`** — that flag exists for
+  Ben's own workflow, not the bench's. A candidate token sitting in a STARTED combat on an in-scope
+  scene refuses the whole call by design; if that happens, the scope was wrong — narrow it, don't
+  override it. R-113's narrower question (whether "Playtest Map (Copy)" is the bench's scene too)
+  was **not** answered — it is still Ben's scene; never name it in `scenes`.
 - ⭐⭐ **Check the scene NAMES, not just "the Playtest Map".** The world now also contains
   **"Playtest Map (Copy)"** — same wall count, same token count, holding Ben's live combat. The licence
   in hard rule 4 names "Playtest Map"; the copy is not it. Snapshot token deltas for **every** scene
