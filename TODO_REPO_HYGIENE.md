@@ -3748,7 +3748,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size XS · deps — · verify: the verifier's output. Filed 2026-09-13 by the PM from item 122's report.
 
-## 127. [x] (2026-09-13, PR #TBD) Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 filed as rulings R-114 … R-119 (DOCS-ONLY) (2026-09-13)
+## 127. [x] (2026-09-13, PR #347) Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 filed as rulings R-114 … R-119 (DOCS-ONLY) (2026-09-13)
 
 **Why:** items 101, 106, 107, 108, 109 and 114 each named a design proposal as their blocking
 dependency rather than a concrete question Ben could answer from his phone — item 101's heading
