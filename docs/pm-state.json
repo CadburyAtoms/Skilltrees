@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T23:26:11.437Z",
+  "generatedAt": "2026-09-13T23:42:35.257Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "f6857e42a7",
-    "commit": "797fbae",
+    "hash": "c82b86606f",
+    "commit": "1674382",
     "branch": "pm/board-2026-09-13g",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,27 +42,13 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "awake",
-    "note": "Sunday evening: item 124 (the doubled sentence on a blocked regen card) is being fixed. After it merges the PM runs the new deploy script for real for the first time (Foundry will close and relaunch; re-join your client after). Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "status": "waiting",
+    "note": "Sunday evening: item 124 merged and live — press F5 (items 123 + 124). The deploy script's first live run failed SAFELY before it touched anything: it tried to back up the packs while Foundry still held their lock files. Item 129 fixes the step order; the PM re-runs it after. Seven rulings still wait on the Needs Ben tab.",
+    "waitingOn": "F5 (items 123 + 124 are live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "124",
-      "title": "A fully-blocked edha-regen card prints its sentence twice — pure suffix helper, pinned",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/124-regen-card-no-repeat",
-      "startedAt": "2026-09-13T23:26:00Z",
-      "agent": "Work item 124",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; ENGINE-ONLY (F5) at merge"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1513,9 +1499,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": null,
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 352
     },
     {
       "pos": 120,
@@ -1548,9 +1534,9 @@
       "lane": "B",
       "model": "pm",
       "size": null,
-      "deps": "125 preferred",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "129",
+      "status": "blocked",
+      "statusDetail": "129 — the first live run died on the pack LOCK file before step 1; nothing changed",
       "pr": null
     },
     {
@@ -1585,6 +1571,18 @@
       "model": "sonnet",
       "size": "S",
       "deps": "PM-R19 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 126,
+      "item": "129",
+      "title": "deploy-cycle.js backs up the packs BEFORE closing Foundry → EBUSY on the LevelDB LOCK (first live run, 19:41): back up after the close, skip lock files, fail-fast message, pins",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "122 ✓",
       "status": "queued",
       "statusDetail": "2026-09-13",
       "pr": null
@@ -1647,34 +1645,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "18:00",
-      "at": "2026-09-07T22:00:00.000Z",
-      "item": "Evening tally (17:10 → 18:00, Ben's hours by his word): 5 items merged (92, 91, 93, 95, 94) + 3 board PRs (#287, #290, #293) = 8 PRs; workers 23.4M weighted (all Sonnet: 1.7 + 6.5 + 7.7 + 2.8 + 4.7); four of five PRs needed a main merge by the PM (the three bookkeeping files every parallel worker edits — changelog top, dashboard, TODO), which is the price of running Sonnet items in parallel and is cheaper than serializing them. Queue: nothing Sonnet-sized left; Opus resumes 00:00 ET (70 → 80 or 88, push live, bench 44); R-56 is the only open ruling and waits on Ben's clarification. Owed to Ben: ONE bat run (leyline + adversaries) + both ⟳ Syncs",
-      "itemNo": "287",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "50 min",
-      "weighted": "≈ 4M (PM)",
-      "weightedM": 4,
-      "outcome": "loop idles until 00:00 unless Ben writes",
-      "pr": 295
-    },
-    {
-      "date": "2026-09-07",
-      "time": "19:56",
-      "at": "2026-09-07T23:56:00.000Z",
-      "item": "PM handoff — loop STOPPED on Ben's word (\"hand off\") so a fresh context takes the overnight shift. Two idle wakes (18:03, 19:05) found nothing: clean tree, no PRs, inbox empty, Foundry up, engine in sync. Nothing running, nothing queued that a session can take before 00:00 ET (Opus reset): then 70 → 80 (or 88), push live, bench 44; 81 / 62 the night after; 83 on R-56's go. Waiting on Ben: R-56 (phone tap = keep the Edha table vs. morning note = cosmere ladder), ONE bat run tomorrow (leyline + adversaries) + both ⟳ Syncs. Session total (17:10 → 19:56): 8 PRs merged (#287 → #295 less #289's number gap: items 92 / 91 / 93 / 95 / 94 + boards h / i / j / k), workers 23.4M weighted (all Sonnet), PM ≈ 5M; the artifact republished once. Next PM: edha-pm-weeknight at 21:00 ET (MODEL GUARD) or Ben by hand",
-      "itemNo": "287",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "2 h 46",
-      "weighted": "≈ 5M (PM) + 23.4M workers",
-      "weightedM": 5,
-      "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "20:30",
@@ -2486,9 +2456,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "19:26",
+      "at": "2026-09-13T23:26:00.000Z",
+      "item": "Item 124 (edhaRegenSuffix — a fully-blocked regen card names the mark once; unmarked + halved cards byte-identical to bench 46's) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "14 min, 101 tool uses",
+      "weighted": "3.7M",
+      "weightedM": 3.7,
+      "outcome": "merged 19:40 after review, no trailers; CI green on f331ad7, gates 12/12 (1156 tests). ENGINE-ONLY — pushed live 19:40 (6 in sync; F5 owed). One 🤖 row under item 70's section",
+      "pr": 352
+    },
+    {
+      "date": "2026-09-13",
+      "time": "19:41",
+      "at": "2026-09-13T23:41:00.000Z",
+      "item": "First live deploy-cycle.js --yes run (PM) — dry run: 6/6 guards PASS; live run: guards PASS, then FAILED in backupPacks() before step 1 — EBUSY on packs/edha-leyline/LOCK (Foundry holds the LevelDB lock; the backup runs before the close). Nothing written, Foundry up, no half-state. → item 129 filed (Sonnet XS); the 122 first-run row stays open, blocked on 129",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "failed safely",
+      "pr": null
     }
   ],
-  "runLogTotal": 257,
+  "runLogTotal": 259,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3204,6 +3202,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-13T23:26:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 352
     }
   ],
   "statusVocab": [
