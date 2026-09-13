@@ -1,11 +1,25 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: 7 PRs merged (the phone page, the stale-cards fix, item 112, bench run 45, item 105, fix pass 11). Engine is live (F5). Nothing runs until 15:30 (the trailing window is full). Yours: R-112 (tap the default), F5, then ONE deploy-to-foundry.bat run + ⟳ Sync Talents — bench 46 (12 rows) waits on that.",
-    "waitingOn": "R-112 · F5 · one deploy-to-foundry.bat run + ⟳ Sync Talents (heroic + leyline)",
+    "status": "awake",
+    "note": "Sunday session: R-112 answered (a) — thanks. A Sonnet worker is raising The Reckoning's pool to 3 and shelving the five bestiary feel rows (bestiary redo later, item 121). When it merges the PM closes Foundry, rebuilds all five packs + pushes the engine, relaunches Foundry (it opens straight into edha) and runs bench 46 as Bench — you only re-join your Gamemaster client afterwards.",
+    "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "119",
+      "title": "R-112 (a): The Reckoning's focus pool 2 → 3 + cue text; R-112 → §K; five bestiary feel rows shelved; item 121 placeholder",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/119-reckoning-pool-r112",
+      "startedAt": "2026-09-13T18:24:00Z",
+      "agent": "Work item 119 data + shelving",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; adversaries REBUILD rides the PM's deploy cycle"
+    }
+  ],
   "usage": null
 }
