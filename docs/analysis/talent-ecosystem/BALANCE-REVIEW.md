@@ -49,12 +49,15 @@ Five facts set the scale. Three are the critique's; two are new to this review.
 3. **Level 6 is a double step for leyline and deity** (tier 1 → 2 and rank cap 2 → 3 together):
    `[Tier][Die]` goes 1d6 → 2d8, average 3.5 → 9. Heroic dice stay flat; heroic's growth channel is
    the weapon, `Mighty` and the modifier (R-105).
-4. **Investiture is an Action in disguise.** At tier 1, Draw Mana buys ONE Investiture for ONE
-   Action. Once the starting pool (about four) is spent — two or three rounds into a fight — every
-   "1 Action, 1 Investiture" talent is a two-Action play in steady state, and every "2 Actions, 2
-   Investiture" talent is a whole turn. At tier 2 the draw buys two, so the tax halves. This is why
-   the trees with an **income passive** (a refund that fires without an Action) play as if they
-   had a fourth Action, and why `Withering Ray`'s health cost is a bigger edge than its dice.
+4. **Investiture is an Action in disguise — less so than this review first said.** When this was
+   written, Draw Mana bought ONE Investiture for ONE Action at tier 1, so once the starting pool
+   (about four) was spent every "1 Action, 1 Investiture" talent was a two-Action play. Ben's
+   verification question surfaced that the tier yield was an implementation default no ruling had
+   set, and **R-126 (a) made the draw equal to your highest attuned colour rank** — two at levels
+   1–5, three from level 6. Under the rule now live, a 1-Investiture talent is a **1.5-Action**
+   play in steady state (1.33 from level 6), a Draw plus two one-Investiture plays is a sustainable
+   turn from level 1, and an **income passive** is worth about half an Action a round rather than a
+   whole one. `Withering Ray`'s health cost is still an edge, a smaller one. *(Restated 2026-09-13.)*
 5. **Advantage and disadvantage are one binary flag each** (the primer), and the expected value of
    either on a d20 is about three points — roughly a fifth of a hit's chance. A talent that spends
    an Action and an Investiture to impose disadvantage on one roll buys, in expectation, a fifth of
@@ -117,6 +120,11 @@ spent early and then sits. **Power and Destruction pay per activation and get no
 Power disciple's `Kneel` + `Absolute Authority` is three Investiture, most of the level-1 pool, once
 a fight; a Destruction disciple detonates one Charge per Investiture. Both are 100% Action-costed
 trees (Power has no Passive at all) with no persistence beyond Destruction's terrain.
+
+**Outcome, after R-126 (a) (2026-09-13):** with a two-point draw, Power's Draw + `Kneel` + `Warlord's
+Advance` and Destruction's Draw + two Charges are sustainable every turn from level 1 with no income
+at all — the reason for the clause is gone, and item 130 was closed as unnecessary on its own
+Done-when. What follows is the recommendation as it stood before R-126, kept for the record.
 
 **Recommended default (R-121 (a)):** one income clause each, on an existing talent, in the tree's
 own idiom — `Warlord's Advance`: *"If this attack reduces the target to 0 HP, you gain temporary HP
@@ -397,7 +405,7 @@ Three things the verifier raised unasked, carried forward:
 
 ## 9. The rulings this review files
 
-*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, is **R-126** (§C): the engine and the card recover Investiture equal to your **tier** (1 / 2 / 3), the design texts never set an amount, and the number was an implementation default of June 2026. Yardstick 4 and item 130 are sized after it.*
+*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, was **R-126** — answered the same day, (a): **Draw Mana now recovers Investiture equal to your highest attuned colour rank** (engine, card and docs changed in PR #TBD; the tier yield had been an implementation default of June 2026). Yardstick 4 is restated above; item 130 (R-121's income clauses) closed as unnecessary.*
 
 | ruling | tree | recommended default | deploy |
 |---|---|---|---|

@@ -62,7 +62,7 @@ risk is the ecosystem's largest identified balance risk — do not reach for it 
 *(R-100, R-110 — `EDHA_RULINGS.md`, answered 2026-09-13.)*
 
 ### Key Mechanic: Draw Mana
-Drawing Mana costs 1 Action, restores Investiture, and triggers the Leyline Attunement's rider effect. Each color's Attunement Key Talent defines what Draw Mana does for that color.
+Drawing Mana costs 1 Action, restores Investiture **equal to your highest attuned colour rank** (2 at levels 1–5 for a character who took a colour at creation, 3 from level 6 — R-126 (a), 2026-09-13; from June to September 2026 the engine restored your *tier*, one per Action at levels 1–5, which was an implementation default no ruling had set), and triggers the Leyline Attunement's rider effect. Each color's Attunement Key Talent defines what Draw Mana does for that color. Design consequence: a 1-Investiture talent is a 1.5-Action play in steady state at tier 1, not a 2-Action one, so price leyline Action talents against that.
 
 ---
 

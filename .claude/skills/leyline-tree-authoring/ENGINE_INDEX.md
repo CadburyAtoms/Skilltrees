@@ -1797,6 +1797,10 @@ Ratchet 14 → 4 — only Blue's four remained (pass AA cleared them).
   information rule: public card counts only what the player can SEE, hidden/wall skips whisper
   via `edhaPostGmCard`. Black Leyline Attunement's Draw Mana rider; **`EDHA_DRAW_MANA` is
   DELETED** — `edhaDrawMana` is recover-Investiture + dispatch only.
+- **`edhaDrawManaYield(actor)`** (R-126 (a), 2026-09-13) — Draw Mana's recovered amount: the highest
+  of the five colour ranks via `edhaColorRank` (an adversary's role rank counts), floor 1. Tier no
+  longer enters it (it was the tier from 2026-06-12, an implementation default no ruling had set).
+  Pinned in `tests/draw-mana-yield.test.js`; the card text lives in `foundry-build.js` `drawManaItemDoc`.
 
 ## The Destruction + Red paths' primitives (07-26, pass 2bY)
 Both trees to zero; the `charges` ledger repointed (the FIFTH of six — POINT-BOUND entries like

@@ -15,7 +15,9 @@
 //   • Weapon die d8 (4.5) for every Strike. Hit chance is the same for everyone and is ignored
 //     (every line is "damage if it lands"); vital / spirit lines note that they ignore Deflect.
 //   • A Slow turn = 3 Actions. A leyline / deity turn that spends Investiture beyond the starting
-//     pool must Draw Mana (1 Action → tier Investiture); "steady state" lines include the draw.
+//     pool must Draw Mana (1 Action → Investiture equal to the highest attuned colour rank: 2 at
+//     L1/L5, 3 at L7 — R-126 (a), 2026-09-13; it was the TIER, 1/1/2, when the review was first
+//     run); "steady state" lines include the draw.
 //   • Investiture pool at L1 ≈ 4 (2 + max(AWA, PRE)); focus pool ≈ 4–5. Heroic lines cost
 //     focus or nothing and are treated as unlimited across a four-round fight unless noted.
 //   • Party = the character plus three allies; "party hits per round" = 6 for riders that pay
@@ -25,9 +27,9 @@
 "use strict";
 
 const CP = {
-  L1: { tier: 1, die: 3.5, halfDie: 1.75, mod: 4, draw: 1, mighty: 2, wpn: 4.5 },
-  L5: { tier: 1, die: 3.5, halfDie: 1.75, mod: 5, draw: 1, mighty: 2, wpn: 4.5 },
-  L7: { tier: 2, die: 9,   halfDie: 4.5,  mod: 6, draw: 2, mighty: 3, wpn: 4.5 },
+  L1: { tier: 1, die: 3.5, halfDie: 1.75, mod: 4, draw: 2, mighty: 2, wpn: 4.5 },
+  L5: { tier: 1, die: 3.5, halfDie: 1.75, mod: 5, draw: 2, mighty: 2, wpn: 4.5 },
+  L7: { tier: 2, die: 9,   halfDie: 4.5,  mod: 6, draw: 3, mighty: 3, wpn: 4.5 },
 };
 
 // Each line: name, tree, the earliest checkpoint it exists at, a function of the checkpoint
@@ -46,9 +48,9 @@ const LINES = [
   ["Knowledge: same, if the bonus were Tier per Insight + one [Tier][Die]", "deity/Knowledge (proposal)", c => 2 * (c.wpn + c.mod + c.die + 5 * c.tier), "the R-120 (b) shape"],
   ["Civilization: Construct alone, Tempered Edge + Arsenal", "deity/Civilization", c => 2 * (c.die + c.die), "free after ~4 Investiture of setup; half of it ignores Deflect (Tempered Edge); the disciple's own three Actions are on top"],
   ["Civilization: Construct + the disciple's Strike ×3", "deity/Civilization", c => 2 * (c.die + c.die) + 3 * (c.wpn + c.mod), "the whole turn"],
-  ["Power: draw + Warlord's Advance ×2 (+Fury max)", "deity/Power", c => 2 * (c.wpn + c.mod + c.die + 2 * c.tier), "1 Investiture each; no income — the pool runs dry"],
+  ["Power: draw + Warlord's Advance ×2 (+Fury max)", "deity/Power", c => 2 * (c.wpn + c.mod + c.die + 2 * c.tier), "1 Investiture each; sustainable from L1 under R-126 (a) — the draw pays for both"],
   ["Death: free layer (Decay + Servant + Garden) + Strike ×3", "deity/Death", c => 3 * c.die + 3 * (c.wpn + c.mod), "after two install turns; Cascade is per death, not counted"],
-  ["Destruction: draw + Set Charge ×2, two enemies in each radius", "deity/Destruction", c => 2 * 2 * c.die, "energy; no roll, no save; 1 Investiture each, no income"],
+  ["Destruction: draw + Set Charge ×2, two enemies in each radius", "deity/Destruction", c => 2 * 2 * c.die, "energy; no roll, no save; 1 Investiture each, sustainable from L1 under R-126 (a)"],
   ["Chaos at tier 1: Entropy Strike + Isolating Ruin on the Omen", "deity/Chaos", c => c.tier < 2 ? (c.die + (c.die + 3) * 2) : null, "spirit/vital; ONE Omen at tier 1 (cap = tier); 3 Investiture for one turn"],
   ["Chaos at tier 2: Spreading Omen + Cascade Collapse (2 bearers)", "deity/Chaos", c => c.tier < 2 ? null : 2 * c.die, "spirit; 3 Investiture; + Disoriented on both"],
   ["Green: party riders — Coordinated Hunt on 6 party hits (3 attackers)", "leyline/Green", c => 6 * Math.min(3, c.tier === 1 ? 2 : 3), "free; +N per hit, N = attackers on the target, max = rank"],

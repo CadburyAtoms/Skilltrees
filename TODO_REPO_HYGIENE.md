@@ -3794,7 +3794,9 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the authored formula + a mutation run of `balance-turns.js`. Filed 2026-09-13 from R-120.
 
-## 130. [ ] R-121 (a) — Power and Destruction gain one Investiture-income clause each (`Warlord's Advance` on a kill, `Concussive Yield` on a multi-hit) — sized after R-126 (DATA, REBUILD deity) (2026-09-13)
+## 130. [x] (2026-09-13, closed as unnecessary — its own Done-when) R-121 (a) — Power and Destruction gain one Investiture-income clause each (`Warlord's Advance` on a kill, `Concussive Yield` on a multi-hit) — sized after R-126 (DATA, REBUILD deity) (2026-09-13)
+
+> **Closed 2026-09-13 with the R-126 arithmetic recorded, PR #TBD.** R-126 (a) makes Draw Mana yield the highest attuned colour rank — 2 at levels 1–5, 3 from 6. Power's Draw + `Kneel` (1) + `Warlord's Advance` (1) and Destruction's Draw + two Charges (2) are sustainable every turn from level 1 with no income clause; the reason the review gave for the clause ("pay per activation with nothing back, the pool runs dry") no longer holds. No rule shipped. Reopen if Ben wants the clauses as a pure buff.
 
 **Why:** five deity trees carry a passive Investiture refund and five do not; Power (100% Action-costed, no Passive) and Destruction (one Investiture per Charge) are the two that pay per activation with nothing back. Ben chose (a) — and asked, the same day, whether Draw Mana was ever meant to yield one per Action at tier 1 (**R-126**). Size this after R-126: with a two-point draw the clause may be unnecessary.
 
@@ -3843,3 +3845,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** both cards and both status lists ship; validate + tests green; row filed; pack rebuilt by Ben.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: validate + the row. Filed 2026-09-13 from R-125.
+
+## 135. [x] (2026-09-13, PR #TBD) R-126 (a) — Draw Mana recovers Investiture equal to your highest attuned colour rank, not your tier (ENGINE-ONLY for the number, F5; the card text needs REBUILD leyline + adversaries) (2026-09-13)
+
+**Why:** `edhaDrawMana` recovered `tier` Investiture per Action (one at levels 1–5) from 2026-06-12, and the shipped card said "equal to your Tier" — an implementation default no ruling had set (the initial-atlas design text said only "restores Investiture"). Ben, asked whether it scaled: *"that was not my intent … I like option a- equal to highest color rank."*
+
+**What was done:** `edhaDrawManaYield(actor)` (52-green-instinct.js) — the highest of the five colour ranks via `edhaColorRank` (an adversary's role rank counts), floor 1 — replaces the tier read in the write and the chat line; `foundry-build.js` `drawManaItemDoc` says "equal to your highest leyline rank"; `tests/draw-mana-yield.test.js` pins the helper including a NEGATIVE tier case; ENGINE_INDEX, the leyline guide's Key Mechanic, SYSTEM-PRIMER, the handbook, the handoff reference, BALANCE-REVIEW.md (yardstick 4 restated) and `balance-turns.js` (draw 2 / 2 / 3) updated; item 130 closed as unnecessary. Rows DM-1 / DM-2 in the checklist.
+
+**Done when:** DM-1 (engine, F5) and DM-2 (card, after REBUILD) pass on the bench.
+
+**PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.

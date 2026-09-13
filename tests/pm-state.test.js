@@ -396,7 +396,7 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // level-6 wall), R-124 (Tempered Edge's Deflect scope), R-125 (Power's dead Frightened reads).
   // The pinned set below is whatever the real doc holds open on the day this was last re-pinned;
   // the PM's item-127 batch (R-114 … R-119, §L "Waiting") is in it when that batch is in the doc.
-  const ECOSYSTEM_RULINGS = ["R-126", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-92"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
+  const ECOSYSTEM_RULINGS = ["R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-92"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

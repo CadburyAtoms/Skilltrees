@@ -391,6 +391,11 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
 - [ ] 🤖 **BR-1 — Risen Servant’s condition immunities bind (balance-review verifier, 2026-09-13):** `data/authored/deity-death.json` sets `conditionImmunities: "frightened, compelled, disoriented"` on the summon spec, while `data/adversaries.json`’s own schema note says `frightened` / `compelled` are Edha-custom and not valid system ids. Raise a Risen Servant on Bench — Death, then apply Disoriented (any source) and Compelled (Bench — Power’s `Kneel`) to it: both must be refused or removed by the immunity, not silently applied. If the custom ids are dropped by the system, the fix is engine-side (map the custom immunities through the Edha status registry) — file it, do not patch the spec.
 
+## Draw Mana yield — R-126 (a) (2026-09-13; **ENGINE-ONLY for the number — relaunch / F5**; the card text needs **REBUILD leyline + adversaries**)
+
+- [ ] 🤖 **DM-1 — a leyline character draws its highest colour rank, not its tier:** on Bench — Black (Black rank 2, tier 1), use Draw Mana with Investiture below max − 2: the pool rises by **2** and the chat line reads *"Draws Mana — recover 2 Investiture (highest leyline rank)"*. Then on a two-colour bench actor (any deity roster actor with e.g. Black 2 / Green 3) the draw recovers **3**. Then on a boss adversary with an embedded Draw Mana (role rank 3) it recovers 3, and on a minion 1. The pool still clamps at max.
+- [ ] 🤖 **DM-2 — the rebuilt Draw Mana card says so:** off the rebuilt leyline pack and off a re-imported adversary embed, the Draw Mana action's description reads *"Recover Investiture equal to your highest leyline rank, and trigger your leyline color's Attunement rider"* — no "Tier". Owned copies on existing actors are frozen snapshots until ⟳ Sync / re-drag; the engine's number is live regardless of the card (DM-1).
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
