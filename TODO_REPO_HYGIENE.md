@@ -3680,3 +3680,13 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: the pin + a bench re-drive of 70-2. Filed 2026-09-13 from bench run 45.
 
+## 121. [ ] Bestiary redo (Ben, 2026-09-13)
+
+**Why:** Ben (chat, 2026-09-13): *"The bestiary 'how does this feel' items can all be shelved. We are going to redo the bestiary later."* Five ⚑ feel rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md` (Cold-Fire Cinderbrock's PITIABLE read, Heat of the Flats' SHADE negation, Dirgehounds pack-or-mob, Crownox ring-integrity, Tollbird swarm bookkeeping) were shelved by item 119's PR rather than answered, because the bestiary itself is getting a broader pass, not a row-by-row fix.
+
+**What to do:** scope with Ben before any work; the five shelved feel rows re-open with it.
+
+**Done when:** Ben scopes it.
+
+**PM:** lane H · model — · size ? · deps Ben's scoping.
+

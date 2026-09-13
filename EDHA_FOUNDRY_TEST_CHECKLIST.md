@@ -4065,12 +4065,13 @@ The run-17/18 blocker notes follow.)*
 checks out. Whether it "reads sad, not undying" is prose, and its biography carries that read
 explicitly.)*
 
-- [ ] ⚑ **Cold-Fire Cinderbrock — does it read PITIABLE, or just weaker?** — the whole point of
+- [x] ⚑ **Cold-Fire Cinderbrock — does it read PITIABLE, or just weaker?** — the whole point of
       the wasting variant is that a 14-HP stripped Cinderbrock (no Fire the Wrack, no Den Fury)
       should land as **sad**, not as a nerfed statblock. Run it once and say which it was; if it
       only reads weaker, the fix is prose and encounter framing, not numbers. *(Split out
       2026-07-27w when its mechanical half — the loadout read — retired above and took the
-      flavor question with it.)*
+      flavor question with it.)* *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later;
+      re-raise with the redo.)*
 
 # Canticle Plains Bestiary (W28, rulings 106–107 — statted 2026-07-20)
 
@@ -4156,10 +4157,11 @@ False Spring, it posted "⏰ **Heat of the Flats** (Bench Adv — The False Spri
 1 focus (open glare; shade or full cover negates — table read). *(Bench — Black's turn starts in
 range.)*" ⚠️ Note for future runs: the cue is `enemy-turn-start`, so the mover must be on the **opposite
 disposition** — a same-side token starting its turn correctly fires nothing.)*
-- [ ] ⚑ **Heat of the Flats — when does SHADE negate the glare?** — the cue has no shade
+- [x] ⚑ **Heat of the Flats — when does SHADE negate the glare?** — the cue has no shade
       clause and no hook could give it one; it is a table read. Say what counts as shade
       (a wall? any cover? only a roofed square?) so the card can carry the answer.
-      *(Split 2026-07-27w.)*
+      *(Split 2026-07-27w.)* *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later;
+      re-raise with the redo.)*
 *(**Gone Into the Shimmer cue** — RETIRED on evidence 2026-07-28c, bench run 18, **with its no-re-fire
 control**: the first crossing of 24 (48 → 22) posted "⏰ **Gone Into the Shimmer** (Bench Adv — The
 False Spring): It drops the mirage and disengages into the heat-haze — end of the fight, start of the
@@ -4198,9 +4200,10 @@ the pack takes the cut-out one. *(hit Bench Target — Floater.)*")*
 
 *(**Loadout sanity (numbers)** — RETIRED on evidence 2026-07-28c, bench run 18, read off a fresh pack
 import: **role rival · count 3 · hp 14** (`max.override = 14`). Both numbers the row asks for match.)*
-- [ ] ⚑ **Dirgehounds — pack or mob?** — play them once: do 3 × 14 HP dirgehounds read as a
+- [x] ⚑ **Dirgehounds — pack or mob?** — play them once: do 3 × 14 HP dirgehounds read as a
       **pack that cuts one target out of the group**, or as an undifferentiated swarm? If they
       play as a mob, say so and the count/HP split gets re-cut. *(Split 2026-07-27w.)*
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 
 ---
 
@@ -4347,10 +4350,11 @@ ON the document, and matches the row's "(sheet note)" exactly; the listed Deflec
 ring-TIGHTENS cue fired**: *"⏰ Stations Kept (Bench Adv — Crownox Ring): Bloodied — the ring tightens
 around the calves; it does not scatter and does not pursue."* on 26 → 13 (line 13). Incidentally
 re-confirmed **Retributive Guard** (2bAB-3) posting its retaliate prompt by itself from the damage.)*
-- [ ] ⚑ **Crownox — where does a ring stop being a ring?** — an ox pulled 10+ ft "loses the wall
+- [x] ⚑ **Crownox — where does a ring stop being a ring?** — an ox pulled 10+ ft "loses the wall
       kit", but nothing enforces or measures that and no hook exists for it. Say the rule you
       actually want at the table (a distance? a broken adjacency chain? GM eyeball?) and it can
       go in the card text. *(Split 2026-07-27w.)*
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 
 ## 3. Rootling Swarm (Green minion ×3 — "the Snare")
 
@@ -4399,8 +4403,9 @@ while its own cue says it "goes still instead of dying". See `EDHA_RULINGS.md`.)
 disposition −2 so it does not void the victim's isolation) hit an asserted-Isolated character and the
 engine applied the status — *"Sapping Hex — Bench Target — Isolated is Weakened."* plus the `Weakened`
 effect on the actor.)*
-- [ ] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
+- [x] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
       (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 *(**Bloodied re-settle cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ It Re-Gathers on the Rooflines (Bench Adv — Tollbird Flock): Bloodied — the flock breaks and
 re-settles on the rooflines, out of reach."* on 14 → 7.)*
