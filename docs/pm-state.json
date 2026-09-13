@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T20:50:21.714Z",
+  "generatedAt": "2026-09-13T21:27:20.182Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a77c7605a4",
-    "commit": "8838567",
-    "branch": "pm/board-2026-09-13d",
+    "hash": "7b1003a84b",
+    "commit": "11903b1",
+    "branch": "pm/board-2026-09-13e",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "waiting",
-    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
-    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
+    "note": "Sunday session: 15 PRs merged. Seven rulings are waiting for you on the Needs Ben tab — R-92 (a generic dropped-to-0-HP GM cue; it had been hidden in the answered section since 09-09), R-114 (Mantle of the Aspirant's heal), R-115 (False Premise), R-116 (Final Decree), R-117 (Trade Routes), R-118 (three deity gates), R-119 (the Decree moving zone) — each with a default you can tap. Press F5 for item 123. Nothing is running until the next slot at 19:24.",
+    "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
@@ -1038,13 +1038,13 @@
     {
       "pos": 97,
       "item": "101",
-      "title": "R-92 — Mantle of the Aspirant's redirect-unwind heal (47-power.js ~L306) is a hea writer outside the heal-cut gate, declared nowhere (found by item 70's sweep). (b) declare it the exception + a census line (sonnet S, DOCS + test) or (a) gate it like the other three (opus S, ENGINE-ONLY). Filed 00:3x",
+      "title": "R-114 — Mantle of the Aspirant's redirect-unwind heal (47-power.js ~L306) is a hea writer outside the heal-cut gate, declared nowhere (found by item 70's sweep). (b) declare it the exception + a census line (sonnet S, DOCS + test) or (a) gate it like the other three (opus S, ENGINE-ONLY). Filed 00:3x",
       "lane": "R/B",
       "model": "sonnet/opus",
       "size": "S",
       "deps": "R-92 (Ben)",
       "status": "blocked",
-      "statusDetail": "R-114 — the Mantle-of-the-Aspirant question was never filed as a ruling; the rulings file's R-92 is the answered \"dropped\" cue; file it as R-114 and put it to Ben",
+      "statusDetail": "R-114",
       "pr": null
     },
     {
@@ -1294,9 +1294,9 @@
       "lane": "B",
       "model": "opus",
       "size": "L",
-      "deps": "design yes",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "R-119",
+      "status": "blocked",
+      "statusDetail": "R-119",
       "pr": null
     },
     {
@@ -1306,9 +1306,9 @@
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "design yes",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "R-115",
+      "status": "blocked",
+      "statusDetail": "R-115",
       "pr": null
     },
     {
@@ -1318,9 +1318,9 @@
       "lane": "B",
       "model": "sonnet",
       "size": "M",
-      "deps": "design yes",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "R-118",
+      "status": "blocked",
+      "statusDetail": "R-118",
       "pr": null
     },
     {
@@ -1330,9 +1330,9 @@
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "design yes",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "R-116",
+      "status": "blocked",
+      "statusDetail": "R-116",
       "pr": null
     },
     {
@@ -1390,9 +1390,9 @@
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "design yes",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "deps": "R-117",
+      "status": "blocked",
+      "statusDetail": "R-117",
       "pr": null
     },
     {
@@ -1550,6 +1550,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 343
+    },
+    {
+      "pos": 124,
+      "item": "127",
+      "title": "Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 filed as WAITING rulings R-114 … R-119 (each with full proposed card text, options, a recommended default, cost + deploy class); item 101's phantom R-92 → R-114; the six TODO deps re-pointed. DOCS-ONLY. Dispatched 16:53",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 347
     }
   ],
   "rulings": [
@@ -1598,7 +1610,7 @@
   ],
   "benOnly": [
     "F5 (item 123 live)",
-    "R-114 once filed",
+    "seven rulings on the phone — R-92, R-114 … R-119 (each with a default)",
     "the two YOUR-CALL branches (a drawing brief and a playtest watch sheet — keep or delete) whenever."
   ],
   "inbox": [],
@@ -1609,48 +1621,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "17:38",
-      "at": "2026-09-07T21:38:00.000Z",
-      "item": "Dispatched item 94 (sonnet, worktree — the phone-board re-render fix, TOOLING-only + PM republish) the minute #290 merged",
-      "itemNo": "290",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "three workers in flight (91, 93, 94)",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "17:20",
-      "at": "2026-09-07T21:20:00.000Z",
-      "item": "Item 91 (rulings close-out, evening paste) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "19 min, 270 turns",
-      "weighted": "6.5M",
-      "weightedM": 6.5,
-      "outcome": "merged 17:40 after review (gh mergedAt 21:40Z), no trailers, no bounce; the worker merged main twice itself (#288, #290 — changelog top + dashboard); R-83 / R-88 / R-89 ANSWERED (a) inline, four wizard-v2 rows retired, the real-doc open-rulings pin re-pointed to R-90 / R-91; parseOpenRulings 6 → 3, wizard-v2 open rows 17 → 13. Found: the brief cited item 61's PR as #262, it is #256 (fixed in the text). DOCS-ONLY. Cost note: two mid-flight merges of main roughly doubled a docs item",
-      "pr": 289
-    },
-    {
-      "date": "2026-09-07",
-      "time": "17:41",
-      "at": "2026-09-07T21:41:00.000Z",
-      "item": "Dispatched item 95 (sonnet, worktree — R-90 / R-91 close-out, retire the R-62 audience row) the minute #289 merged",
-      "itemNo": "289",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "three workers in flight (93, 94, 95)",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "17:20",
@@ -2448,9 +2418,51 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:53",
+      "at": "2026-09-13T20:53:00.000Z",
+      "item": "Dispatched item 127 (sonnet, worktree pm/127-design-proposals-rulings — R-114 (item 101's Mantle-of-the-Aspirant heal), R-115 (107 False Premise payload), R-116 (109 Final Decree Witness clause), R-117 (114 Trade Routes), R-118 (108 three deity gates), R-119 (106 Decree moving zone) as WAITING rulings with full proposed text + defaults; DOCS-ONLY). Trailing-5h dispatches 6 of 6 (14:24, 14:48 ×2, 15:48 ×2, 16:53)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:53",
+      "at": "2026-09-13T20:53:00.000Z",
+      "item": "Item 127 (design proposals for 101 / 106 / 107 / 108 / 109 / 114 → WAITING rulings R-114 … R-119 in a new §L; six TODO deps re-pointed; item 101's phantom R-92 → R-114) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "30 min, 121 tool uses",
+      "weighted": "7.0M",
+      "weightedM": 7,
+      "outcome": "merged 17:24 after review, no trailers; CI green on d9eeb0a, gates 12/12 (1149 tests); every Ask line ends in a question mark and every default parses. PM find at review: R-92 was open inside §K Settled since 09-09 (no Ask line, skipped by the parser) → relocated to §L with an Ask line on the board branch; open rulings 6 → 7",
+      "pr": 347
+    },
+    {
+      "date": "2026-09-13",
+      "time": "17:27",
+      "at": "2026-09-13T21:27:00.000Z",
+      "item": "Nothing running. Open rulings on the phone: R-92, R-114 … R-119. Queue: 124 / 125 / 126 (Sonnet XS) ready; 101 / 106 / 107 / 108 / 109 / 114 wait on their rulings; 110 / 113 / 115 Opus tomorrow; the deploy-cycle first live run after 124. Trailing-5h dispatches: 6 of 6 until 19:24. Waiting on Ben: F5, the seven rulings, the two YOUR-CALL branches",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 251,
+  "runLogTotal": 254,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3148,6 +3160,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 345
+    },
+    {
+      "at": "2026-09-13T20:53:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-13T20:53:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 347
     }
   ],
   "statusVocab": [
