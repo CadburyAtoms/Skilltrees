@@ -1,25 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Sunday session: 14 PRs merged; item 123 is live (press F5). A Sonnet worker is writing six design proposals as rulings R-114 … R-119 for you to answer from this page — Mantle of the Aspirant's heal, False Premise, Final Decree, Trade Routes, the three deity gates, the Decree moving zone. Nothing else is running.",
-    "waitingOn": "F5 (item 123 is live) · the six rulings once item 127 lands · the two YOUR-CALL branches",
+    "status": "waiting",
+    "note": "Sunday session: 15 PRs merged. Seven rulings are waiting for you on the Needs Ben tab — R-92 (a generic dropped-to-0-HP GM cue; it had been hidden in the answered section since 09-09), R-114 (Mantle of the Aspirant's heal), R-115 (False Premise), R-116 (Final Decree), R-117 (Trade Routes), R-118 (three deity gates), R-119 (the Decree moving zone) — each with a default you can tap. Press F5 for item 123. Nothing is running until the next slot at 19:24.",
+    "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "127",
-      "title": "Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 → WAITING rulings R-114 … R-119 (full card text, options, defaults)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/127-design-proposals-rulings",
-      "startedAt": "2026-09-13T20:53:00Z",
-      "agent": "Design proposals as rulings",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS-ONLY — nothing written into data/"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
