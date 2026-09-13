@@ -22,6 +22,9 @@ first paragraph in the voice of the existing path descriptions, written to be pa
 `data/path-descriptions.json` once Ben says yes. The draft openings are proposals for the item-111
 batches (one atlas per batch, lore-approval gate), not decisions. Nothing here changes a talent.
 
+**Readable version.** The same content, published for reading on a phone: https://claude.ai/code/artifact/129432ed-fbf1-4ce5-a795-54ea1badc8b6
+(one section per tree, a rail to jump between them; republished from this file when it changes).
+
 **What this is not.** Not a balance review, not a ranking, not a count. The one number kept
 throughout is the level a thing arrives at when it matters to the feel (a "rank 3" gate is a level-6
 gate for every skill, so a specialty whose payoff is rank-3 gated is a late specialty).
