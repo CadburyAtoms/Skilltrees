@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T16:25:08.846Z",
+  "generatedAt": "2026-09-13T19:31:59.725Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "de06e666af",
-    "commit": "9a3824c",
-    "branch": "pm/board-2026-09-13b",
+    "hash": "80ad5d3708",
+    "commit": "bb6607d",
+    "branch": "pm/board-2026-09-13c",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "waiting",
-    "note": "Sunday session: 7 PRs merged (the phone page, the stale-cards fix, item 112, bench run 45, item 105, fix pass 11). Engine is live (F5). Nothing runs until 15:30 (the trailing window is full). Yours: R-112 (tap the default), F5, then ONE deploy-to-foundry.bat run + ⟳ Sync Talents — bench 46 (12 rows) waits on that.",
-    "waitingOn": "R-112 · F5 · one deploy-to-foundry.bat run + ⟳ Sync Talents (heroic + leyline)",
+    "note": "Sunday session: 11 PRs merged. Bench 46 retired 10 of 11 rows on the deploy the PM ran itself; the bench declined the bulk adversary sync after finding your live combat on \"Playtest Map (Copy)\" (R-113 asks whether that scene is the bench's). Nothing is running. Yours: R-113 (default: guard the bulk sync), and say whether to keep spending today — four small Sonnet items are ready.",
+    "waitingOn": "R-113 (tap the default) · a budget word: keep going today, or stop until tonight/next weekend?",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
@@ -1446,13 +1446,97 @@
     {
       "pos": 115,
       "item": "119",
-      "title": "cost/pool half — The Reckoning's Unbreakable Line (3 Focus vs a 2 pool) — apply Ben's R-112 answer to data/adversaries.json + align the cue text (adversaries REBUILD)",
-      "lane": "H",
+      "title": "cost/pool half — R-112 = (a) (Ben, phone, 14:10): The Reckoning's focus pool 2 → 3, cue text aligned on both blocks, R-112 → §K; + Ben's chat instruction: the five bestiary \"how does this feel\" ⚑ rows SHELVED (bestiary redo later → item 121 placeholder) (adversaries REBUILD; DOCS)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "R-112 ✓",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 339
+    },
+    {
+      "pos": 116,
+      "item": null,
+      "title": "Bench run 46 — the 14:41 deploy: item 120's three Nexus-Fed rows, 105's three, 104's Momentum's Edge, 118's cue cards, 119's Reckoning re-drive + the Ring control, Predator's Due (blocked on 88). Step zero: both PCs refreshed (PM-R17), roster, ⟳ Sync Adversaries. 10 of 11 retired (Predator's Due blocked on 88); ⟳ Sync Adversaries DECLINED after reading its source (a live combat on \"Playtest Map (Copy)\") → items 123 / 124, R-113. Dispatched 14:48",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "deploy ✓",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 341
+    },
+    {
+      "pos": 117,
+      "item": "122",
+      "title": "scripts/deploy-cycle.js — the agent-run deploy as ONE gated script: pre-flight guards (clean main, no hand-edited engine, no bench on the table, world named, exe found), pack + engine backups, the eight bat steps fail-fast with logs, relaunch + verification (stamps, served hash = HEAD, /join), the DEPLOY STATE record, PURE guards pinned + a dry-run smoke test; runbook / CLAUDE.md / PM + bench skills updated (PM-R18). Merged 15:11; the PM's first live --yes run is a 🤖 row. Dispatched 14:48",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "PM-R18 ✓",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 340
+    },
+    {
+      "pos": 118,
+      "item": "123",
+      "title": "edha.syncAllAdversaries() is not bench-safe — scope + dry-run + started-combat refusal (ENGINE-ONLY, F5)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "R-113",
+      "status": "blocked",
+      "statusDetail": "R-113",
+      "pr": null
+    },
+    {
+      "pos": 119,
+      "item": "124",
+      "title": "a fully-blocked edha-regen cue card prints its sentence twice (ENGINE-ONLY, F5; edhaDeliveredNote call sites)",
+      "lane": "R",
       "model": "sonnet",
       "size": "XS",
-      "deps": "R-112",
-      "status": "blocked",
-      "statusDetail": "R-112",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 120,
+      "item": "125",
+      "title": "deploy-cycle.js's bench guard must also read git worktree list / local pm/bench-* branches — the tracked overlay lags the board branch (TOOLING + pin)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "122 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 121,
+      "item": "126",
+      "title": "scripts/README.md misses three build-forge scripts; consider wiring check-scripts-readme.js as a gate (DOCS)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 122,
+      "item": null,
+      "title": "Deploy cycle — first live deploy-cycle.js --yes run by the PM (the 🤖 row item 122 filed) — after the next fix pass merges; from a clean main with no bench worktree",
+      "lane": "B",
+      "model": "pm",
+      "size": null,
+      "deps": "125 preferred",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     }
   ],
@@ -1501,9 +1585,7 @@
     }
   ],
   "benOnly": [
-    "R-112 — tap an answer on the phone (default (a))",
-    "press F5 on the Gamemaster client (items 119 + 120 are live in the module)",
-    "ONE deploy-to-foundry.bat run + ⟳ Sync Talents — heroic (112 + 118) and leyline (104 + 105) packs (adversaries follow R-112 in a later run; bench 46 waits on (2) + (3))."
+    "R-113 (default (a)), and a word on whether to keep spending today — 123 / 124 / 125 / 126 are Sonnet XS–S, the design-proposal batch (106 / 107 / 108 / 109 / 114 → R-114+) is Sonnet S, 110 / 113 / 115 are Opus (tomorrow)."
   ],
   "inbox": [],
   "foundry": {
@@ -1513,118 +1595,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "12:15",
-      "at": "2026-09-07T16:15:00.000Z",
-      "item": "Item 85 (REOPENED rulings on the phone card; Art tab bold garble) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "20 min, 128+ turns",
-      "weighted": "5.6M",
-      "weightedM": 5.6,
-      "outcome": "merged 12:31 after review (gh mergedAt 16:31Z), no trailers, no bounce; last-marker-wins + code-span protection, three pins, mutation both ways, canon codex rebuilt (same helper). TOOLING-only. Found: bare *Recommended* style → item 87 seed",
-      "pr": 277
-    },
-    {
-      "date": "2026-09-07",
-      "time": "12:45",
-      "at": "2026-09-07T16:45:00.000Z",
-      "item": "Item 87 (bare *Recommended* default on the phone card) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "12 min, 151 turns",
-      "weighted": "2.8M",
-      "weightedM": 2.8,
-      "outcome": "merged 12:46 after review (gh mergedAt 16:46Z), no trailers, no bounce; additive fallback, pins, byte-identical existing defaults. TOOLING-only",
-      "pr": 279
-    },
-    {
-      "date": "2026-09-07",
-      "time": "12:30",
-      "at": "2026-09-07T16:30:00.000Z",
-      "item": "Bench run 43 (the 20 remaining 🤖 rows + item 84's cue re-test) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "54 min, 403 turns",
-      "weighted": "11.1M",
-      "weightedM": 11.1,
-      "outcome": "merged 13:23 after review (gh mergedAt 17:23Z), one themed commit, no trailers; open 🤖 20 → 10, all gated — queue drained; items 88 / 89 + R-90 / R-91; the harness-only recommendation → item 90; world diff EMPTY. DOCS-ONLY, no deploy owed",
-      "pr": 280
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:22",
-      "at": "2026-09-07T17:22:00.000Z",
-      "item": "Dispatched item 86 (sonnet, worktree — engine-only, the last edhaIsTalent harvest loop) and, once #280 landed, item 90 (sonnet, worktree — the five harness-only retirements). Opus 3 of 3 spent for the calendar day",
-      "itemNo": "280",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "two Sonnet workers in flight; the PM's own cost this session ≈ 4M so far",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:28",
-      "at": "2026-09-07T17:28:00.000Z",
-      "item": "Item 90 (five harness-only rows retired) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "8 min, 155 turns",
-      "weighted": "2.4M",
-      "weightedM": 2.4,
-      "outcome": "merged 13:32 after review (gh mergedAt 17:32Z), no trailers, no bounce; the worker's report arrived after the merge (it had paused on its own CI watch). DOCS-ONLY",
-      "pr": 282
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:22",
-      "at": "2026-09-07T17:22:00.000Z",
-      "item": "Item 86 (edhaListPlaceNotes rule-bearer gate) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "14 min, 109+ turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 13:40 after review, no trailers; the PM merged origin/main on the branch (changelog conflict: both 86's and 90's deltas kept, newest first), regenerated the dashboard, gates 11/11, CI green on the merge head. ENGINE-ONLY → pushed live 13:40 (served a23e70d1bad4…), F5 owed by Ben",
-      "pr": 283
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:35",
-      "at": "2026-09-07T17:35:00.000Z",
-      "item": "Dispatched item 89 (sonnet, worktree — Unbreakable Line's missing use rule, DATA → REBUILD)",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "the only queued row a Sonnet worker can take without a ruling; the rest wait on Opus (midnight) or Ben",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:35",
-      "at": "2026-09-07T17:35:00.000Z",
-      "item": "Item 89 (Unbreakable Line's missing use rule) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "14 min, 110 turns",
-      "weighted": "4.1M",
-      "weightedM": 4.1,
-      "outcome": "merged 13:54 after review (gh mergedAt), no trailers, no bounce; contest-core rule on both blocks, activation aligned, pack built + inspected, gates --ci green. DATA → REBUILD + ⟳ Sync Adversaries owed",
-      "pr": 285
-    },
     {
       "date": "2026-09-07",
       "time": "13:55",
@@ -2352,9 +2322,121 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:10",
+      "at": "2026-09-13T18:10:00.000Z",
+      "item": "Phone inbox: R-112 = (a) (Ben, mobile board, 14:10 ET — raise The Reckoning's focus pool to 3; his words recorded in the ruling by the 119 worker). Marked seen 14:24",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "ruling answered",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:24",
+      "at": "2026-09-13T18:24:00.000Z",
+      "item": "Ben in chat: shelve the bestiary \"how does this feel\" rows (bestiary redo later); can the PM run the deploy cycle itself? (yes — see the session line). Dispatched item 119's data half + the five-row shelving + item 121 placeholder (sonnet, worktree pm/119-reckoning-pool-r112; adversaries REBUILD + DOCS). Cap note: 7th dispatch in the trailing 5h, one over the weekend cap of 6, on Ben's direct instruction",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:24",
+      "at": "2026-09-13T18:24:00.000Z",
+      "item": "Item 119 data half (R-112 (a): The Reckoning's pool 2 → 3, cue text aligned, R-112 → §K.9) + Ben's shelving (five bestiary feel ⚑ rows SHELVED, item 121 placeholder) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "13 min, 106 tool uses",
+      "weighted": "4.4M",
+      "weightedM": 4.4,
+      "outcome": "merged 14:38 after review, no trailers; CI green on d595a64, gates 12/12 + --ci 14/14 (pack-build-validate: both blocks Foc 3). Open ⚑ 7 → 2; open rulings 1 → 0; the two pool-2 announcer rows retired (coverage pinned headless), one re-drive row for bench 46. DATA → adversaries REBUILD — ridden by the PM's own deploy cycle (next row)",
+      "pr": 339
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:44",
+      "at": "2026-09-13T18:44:00.000Z",
+      "item": "Deploy cycle run BY THE PM (Ben, chat 14:2x: \"I would love if you could handle that for me\") — 14:41:21 → 14:41:31 ET from main @ 5bfa8ff: Foundry closed gracefully (CloseMainWindow on the main process, 5 → 0 processes in under 20 s), module-src-sync.js 6 in sync / 0 hand-edited (push copied nothing — the engine was already live), sync-art.js current, all five packs rebuilt (stamps 18:41:25Z; deity 110 items, adversaries 52 blocks / 336 embeds, items 113), validate-packs.js + validate-adversaries.js PASSED (0 issues), Foundry relaunched from the exe and answered HTTP 302 → /join (world Edha) within 3 s, served engine sha 921132b0… = main. Nothing owed to Ben's machine; bench 46 (11 open 🤖 rows) is next, at 15:30 when the trailing-5h cap clears (or on Ben's word).",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "deployed",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:48",
+      "at": "2026-09-13T18:48:00.000Z",
+      "item": "Ben in chat: \"the full bench loop doesn't need me anymore? Can we test and write a few gates and guardrails that are needed\" → PM-R18 (agent-run deploy: yes) recorded; dispatched bench run 46 (opus, worktree pm/bench-46 — the 11 open 🤖 rows on the 14:41 deploy; step zero refreshes both PCs + roster + ⟳ Sync Adversaries) and item 122 (sonnet, worktree pm/122-deploy-cycle-script — deploy-cycle.js with guards, backups, verification, tests, docs). Trailing-5h dispatches 9 of 6 on Ben's direction; Opus 3 of the day (bench 45, fix pass 11, bench 46)",
+      "itemNo": null,
+      "model": "opus + sonnet",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:48",
+      "at": "2026-09-13T18:48:00.000Z",
+      "item": "Item 122 (deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "21 min, 128 tool uses",
+      "weighted": "5.8M",
+      "weightedM": 5.8,
+      "outcome": "merged 15:11 after review, no trailers; CI green on 3893d9e, gates 12/12 + --ci 14/14 (1139 tests). PM dry-ran it twice: worktree → refuses off main (bench guard blind there — its overlay was main's); main checkout → refuses naming bench-46. Follow-up: the bench guard should also read worktrees/branches. Out of scope reported: scripts/README.md misses three files. First live --yes run = the PM's next deploy (🤖 row)",
+      "pr": 340
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:48",
+      "at": "2026-09-13T18:48:00.000Z",
+      "item": "Bench run 46 (the 14:41 deploy: items 120 / 105 / 104 / 118 / 119's rows) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "42 min, 219 tool uses",
+      "weighted": "10.3M",
+      "weightedM": 10.3,
+      "outcome": "merged 15:30 after review, no trailers; CI green on 05392e5, gates 12/12 + --ci 14/14. Engine hash-verified = main. 10 of 11 rows retired (Predator's Due blocked on 88). Declined the briefed ⟳ Sync Adversaries on reading its source (world-wide rewrite + a live combat on \"Playtest Map (Copy)\") → items 123 / 124, R-113 WAITING. Both PCs refreshed, zero field changes; world diff clean. Runbook: run-46 lessons (the system's \"not enough special actions\" toast is noise)",
+      "pr": 341
+    },
+    {
+      "date": "2026-09-13",
+      "time": "15:31",
+      "at": "2026-09-13T19:31:00.000Z",
+      "item": "Nothing running. Items 125 + 126 filed by the PM (deploy-cycle bench guard blind in a fresh worktree; scripts/README drift). Queue: 123 ← R-113, 124 / 125 / 126 Sonnet XS–S ready, the deploy-cycle first-run 🤖 row after the next fix pass; 110 / 113 / 115 Opus tomorrow. Trailing-5h dispatches: 7 (11:01 … 14:48) against the weekend cap of 6 — the next slot clears at 16:20. Waiting on Ben: R-113 + a budget word for the rest of today",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 238,
+  "runLogTotal": 246,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3016,6 +3098,30 @@
       "model": "opus",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-13T18:24:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-13T18:24:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 339
+    },
+    {
+      "at": "2026-09-13T18:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 340
+    },
+    {
+      "at": "2026-09-13T18:48:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 341
     }
   ],
   "statusVocab": [
