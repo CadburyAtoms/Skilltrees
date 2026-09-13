@@ -1,4 +1,9 @@
-{ "pm": { "status": "waiting", "note": "01:30 ET (09-08): six items merged tonight — 70 (heal-cut gates) and 83 (cosmere senses ladder) are LIVE in the module; 99, 100, 102, 103 were tooling and docs. Owed by you when Foundry is back: F5 (sheets), then ONE deploy-to-foundry.bat + ⟳ Sync Adversaries (adversary tokens 10 → 5 ft), and `edha.fixPcTokens()` from the GM console for existing PC tokens. Foundry has been DOWN since your 21:52 bat run — bench run 44 waits for it; next check ~02:30, and if it is still down the last Opus slot goes to item 88 (whisper adversary cards to the GM) instead. The rulings doc has zero open rulings. Waiting on you: R-92 (default: declare the exception) and Foundry.",
-          "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)", "nextWakeAt": "2026-09-08T06:30:00Z", "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift" },
-  "workers": [],
+{ "pm": { "status": "awake", "note": "Sunday session (Ben, chat 10:26 ET): bench run 45 syncs talents + adversaries and drives HS-1…10 + 19 more 🤖 rows; item 116 rebuilds this phone page as three tabs.",
+          "waitingOn": null, "nextWakeAt": null, "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)" },
+  "workers": [
+    { "item": "bench-45", "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows", "model": "opus", "size": "L", "lane": "B",
+      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" },
+    { "item": "116", "title": "Phone board → three tabs (Overview · Bench rows · Needs Ben); deploy state one line", "model": "fable", "size": "M", "lane": "R",
+      "branch": "pm/116-phone-board-three-tabs", "startedAt": "2026-09-13T14:31:00Z", "agent": "Work item 116", "phase": "working", "pr": null, "note": "fable-worker (Ben's chat authorization 09-13); worktree; headless-Chrome verification only" }
+  ],
   "usage": null }

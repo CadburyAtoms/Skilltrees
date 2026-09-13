@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T05:29:55.152Z",
+  "generatedAt": "2026-09-13T14:33:40.989Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "b517d166a4",
-    "commit": "dd0b877",
-    "branch": "main",
+    "hash": "05389c3de1",
+    "commit": "1f6ff47",
+    "branch": "pm/board-2026-09-13",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -38,17 +38,44 @@
   },
   "windowStatus": {
     "open": true,
-    "changeAt": "2026-09-08T11:00:00.000Z",
+    "changeAt": "2026-09-14T11:00:00.000Z",
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "01:30 ET (09-08): six items merged tonight — 70 (heal-cut gates) and 83 (cosmere senses ladder) are LIVE in the module; 99, 100, 102, 103 were tooling and docs. Owed by you when Foundry is back: F5 (sheets), then ONE deploy-to-foundry.bat + ⟳ Sync Adversaries (adversary tokens 10 → 5 ft), and `edha.fixPcTokens()` from the GM console for existing PC tokens. Foundry has been DOWN since your 21:52 bat run — bench run 44 waits for it; next check ~02:30, and if it is still down the last Opus slot goes to item 88 (whisper adversary cards to the GM) instead. The rulings doc has zero open rulings. Waiting on you: R-92 (default: declare the exception) and Foundry.",
-    "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)",
-    "nextWakeAt": "2026-09-08T06:30:00Z",
-    "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
+    "status": "awake",
+    "note": "Sunday session (Ben, chat 10:26 ET): bench run 45 syncs talents + adversaries and drives HS-1…10 + 19 more 🤖 rows; item 116 rebuilds this phone page as three tabs.",
+    "waitingOn": null,
+    "nextWakeAt": null,
+    "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-45",
+      "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/bench-45",
+      "startedAt": "2026-09-13T14:30:00Z",
+      "agent": "Bench run 45",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; owns the Browser pane"
+    },
+    {
+      "item": "116",
+      "title": "Phone board → three tabs (Overview · Bench rows · Needs Ben); deploy state one line",
+      "model": "fable",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/116-phone-board-three-tabs",
+      "startedAt": "2026-09-13T14:31:00Z",
+      "agent": "Work item 116",
+      "phase": "working",
+      "pr": null,
+      "note": "fable-worker (Ben's chat authorization 09-13); worktree; headless-Chrome verification only"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1262,6 +1289,150 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 309
+    },
+    {
+      "pos": 100,
+      "item": "104",
+      "title": "R-95 (a) Momentum's Edge rider → [Tier][Die]",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 101,
+      "item": "105",
+      "title": "R-96 (a) Blue/White minimal-change set",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 102,
+      "item": "106",
+      "title": "R-97 (a) Sovereignty Decree zone (moving radius) — design gate first",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "design yes",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 103,
+      "item": "107",
+      "title": "R-98 (a) re-aim False Premise",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "design yes",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 104,
+      "item": "108",
+      "title": "R-99 (a) three deity gates get a job",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "design yes",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 105,
+      "item": "109",
+      "title": "R-100 (a) Final Decree Witness clause + guide note",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "design yes",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 106,
+      "item": "110",
+      "title": "R-102 (a) Composed/Focused Mind/Clear Mind unify",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 107,
+      "item": "111",
+      "title": "R-104 (a) the prose pass, by atlas",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "L",
+      "deps": "approval per batch",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 108,
+      "item": "112",
+      "title": "R-105/108/110/111 guides + two cancel lines",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 109,
+      "item": "113",
+      "title": "R-107 (a) Temp HP keep-the-higher everywhere",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 110,
+      "item": "114",
+      "title": "R-109 (a) Trade Routes repair + Forge Construct card",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "design yes",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 111,
+      "item": "115",
+      "title": "§9k the four Leybreaker/Ley-surveyor primitives",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
     }
   ],
   "rulings": [
@@ -1320,48 +1491,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "23:21",
-      "at": "2026-09-07T03:21:00.000Z",
-      "item": "Engine + map asset pushed live (module-src-sync.js push, 2 copied) the minute bench 41 was merged",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "engine ee29b118… = main at 6e657c3 (items 71, 75, 10 batch 2 now live), thyrcross-nations.json c81a388b… (item 61), 6 in sync, 0 hand-edited, safety copies kept. The REBUILD stack is still Ben's bat",
-      "pr": null
-    },
-    {
-      "date": "2026-09-06",
-      "time": "23:21",
-      "at": "2026-09-07T03:21:00.000Z",
-      "item": "Fix pass 10 (TODO 78 — the Ambush Bite render-timing FAIL) — test-pass-fixes, worktree; and item 77 (Power's negated side read) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "opus + fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "dispatched together the minute bench 41 merged; both ENGINE-ONLY; two workers in flight",
-      "pr": null
-    },
-    {
-      "date": "2026-09-06",
-      "time": "23:21",
-      "at": "2026-09-07T03:21:00.000Z",
-      "item": "Item 77 (negated actor-level side reads) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "13 min, 99 turns",
-      "weighted": "2.0M",
-      "weightedM": 2,
-      "outcome": "merged 23:35 after review (gh mergedAt 03:35:0xZ), no trailers, no bounce; the item widened from one site to six of the same shape (the PM accepted the sweep as in scope — the brief asked for it); the worker merged main itself. ENGINE-ONLY → pushed live 23:35 (no bench running); 🤖 row 77-1 for bench 42",
-      "pr": 267
-    },
     {
       "date": "2026-09-06",
       "time": "23:21",
@@ -2159,9 +2288,51 @@
       "weightedM": 32.7,
       "outcome": "waiting",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "10:26",
+      "at": "2026-09-13T14:26:00.000Z",
+      "item": "Resume — Sunday, hand-started by Ben in chat (weekend window). main 1f6ff47, clean, no PRs, no worktrees; engine 6 in sync; Ben's deploy-to-foundry.bat at ~10:24 (five packs stamped 14:24 UTC — the #329 heroic specialties and #330 rulings are the last merges); Foundry 302; inbox empty. No PM rows since 09-08 01:30 — the 09-09 → 09-13 commits were Ben-driven sessions (session-forge, build-forge, ecosystem review, rulings R-95 … R-111 → items 104–115, the specialty swap). Trailing-5h dispatches: 0",
+      "itemNo": "329",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "—",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "10:30",
+      "at": "2026-09-13T14:30:00.000Z",
+      "item": "Dispatched bench run 45 (opus, worktree pm/bench-45 — step zero per Ben: ⟳ Sync Talents on Tem parinaem / Soggy Bottom (PM-R17 refresh) + the roster PCs, ⟳ Sync Adversaries from Pack; then the 29 open 🤖 rows — HS-1…10 first, then 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox Unbreakable Line, Predator's Due, the three card-text rows). Opus 1 of the weekend window; the worker owns the Browser pane",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "10:31",
+      "at": "2026-09-13T14:31:00.000Z",
+      "item": "Dispatched item 116 (fable-worker, worktree pm/116-phone-board-three-tabs — Ben's one-off chat authorization of a Fable agent for this item; the phone page becomes three tabs — Overview · Bench rows · Needs Ben — and the DEPLOY STATE prose collapses to one line; headless-Chrome verification only, the bench owns the Browser pane; the worker files item 116 itself; TOOLING + PM republish). Phone state pushed 10:32, dashboard chunks 10:33 (@ede97d48da)",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 225,
+  "runLogTotal": 228,
   "runLogFrom": "2026-09-06",
   "dispatches": [
     {
@@ -2775,6 +2946,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 316
+    },
+    {
+      "at": "2026-09-13T14:30:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
