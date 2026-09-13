@@ -16,8 +16,8 @@
  *   - the mobile snapshot's rows ARE the desktop's rows — every `data-id` in the committed
  *     EDHA_DASHBOARD.html is a snapshot row id and vice versa, the two mirrors match `data-ref`
  *     for `data-ref`, and the stamps agree — so the phone can never show a row the desktop lacks;
- *   - the shards never exceed the chunk cap and cover every section exactly once;
- *   - --inject fills BOTH slots (board state + dashboard) and the page can assemble the second.
+ *   - dash/index is ONE store document under the cap, every mirror ref carrying its row (item 116);
+ *   - --inject fills BOTH slots (board state + dashboard index) and the deploy block is bounded.
  */
 "use strict";
 const assert = require("assert");
@@ -25,8 +25,8 @@ const fs = require("fs");
 const path = require("path");
 
 const REPO = path.resolve(__dirname, "..");
-const { parseBoard, injectState, injectPage, shardDashboard, wallToIso, inWindow, nextWindowOpen,
-  parseWindowEntry, parseBenOnly, STATUS_VOCAB, DASH_CHUNK_BYTES, DEFAULT_RUNLOG_ROWS } = require(path.join(REPO, "scripts", "pm-state.js"));
+const { parseBoard, injectState, injectPage, dashIndex, wallToIso, inWindow, nextWindowOpen,
+  parseWindowEntry, parseBenOnly, STATUS_VOCAB, DASH_INDEX_BYTES, DEFAULT_RUNLOG_ROWS } = require(path.join(REPO, "scripts", "pm-state.js"));
 const dashboard = require(path.join(REPO, "scripts", "build-dashboard.js"));
 
 const FIXTURE = `# PM Board — fixture
@@ -304,7 +304,34 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
   for (const r of snap.forBen) { const it = byId.get(r.id); assert.ok(it && !it.done && it.flags > 0, `forBen ref ${r.id} is an open ⚑ row`); }
   for (const r of snap.benchQueue) { const it = byId.get(r.id); assert.ok(it && !it.done && it.bots > 0, `benchQueue ref ${r.id} is an open 🤖 row`); }
   assert.deepStrictEqual(snap.tabs.map((t) => t.key), ["bench", "art", "world", "engine", "repo", "rulings"], "desktop tab order, Project excluded (the page is the board)");
-  assert.ok(snap.deploy && snap.deploy.prose.length > 0, "the DEPLOY STATE banner rides along");
+  assert.ok(snap.deploy && snap.deploy.line, "the DEPLOY STATE line rides along");
+});
+
+// ---- item 116 (2026-09-13): the deploy state is ONE bounded line, never the section's prose ----
+// Ben: "the 'deployed' section is gigantic and taking up the whole artifact." The checklist's
+// `# ⚑ DEPLOY STATE` section was shipped whole (27 prose blocks, ~24 KB on 2026-09-13) as
+// `deploy.prose`; now only its title line and the first sentence of what it says is owed ride.
+test("build-dashboard: the projected deploy block is bounded — a title line and at most 3 owed sentences, never the section's prose", () => {
+  const d = snapshot().deploy;
+  assert.ok(d, "the real checklist has a DEPLOY STATE section");
+  assert.deepStrictEqual(Object.keys(d).sort(), ["line", "owed", "title"], "no `prose`/`hot` — the section's body never ships");
+  assert.ok(d.line.length > 0 && d.line.length <= 200, `line is ${d.line.length} chars`);
+  assert.ok(!/DEPLOY STATE/.test(d.line), "the label is stripped from the line");
+  assert.ok(Array.isArray(d.owed) && d.owed.length <= 3, `owed has ${d.owed.length} entries`);
+  for (const o of d.owed) assert.ok(o.length <= 200 && !/\*\*/.test(o), `owed entry bounded and plain: ${o}`);
+  assert.ok(Buffer.byteLength(JSON.stringify(d)) < 1024, "the whole deploy block is under 1 KB");
+  // Synthetic: a section drowning in history still projects to the same bounded shape.
+  const sec = {
+    title: "⚑ DEPLOY STATE (confirmed 2026-01-01 — LIVE)",
+    blocks: [{ type: "prose", text: "**What is live:** " + "x".repeat(3000) }]
+      .concat(Array.from({ length: 30 }, (_, i) => ({ type: "prose", text: `⛔ **A PACK REBUILD IS OWED (round ${i}).** ` + "y".repeat(500) + ". More history." })))
+      .concat([{ type: "prose", text: "MERGED BUT NOT YET DEPLOYED: item 999 — " + "z".repeat(400) }]),
+  };
+  const big = dashboard.deployLine(sec);
+  assert.strictEqual(big.line, "confirmed 2026-01-01 — LIVE");
+  assert.strictEqual(big.owed.length, 3);
+  assert.strictEqual(big.owed[0], "⛔ A PACK REBUILD IS OWED (round 0).", "first sentence only");
+  assert.ok(Buffer.byteLength(JSON.stringify(big)) < 1024, "31 blocks of history still fit in under 1 KB");
 });
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
@@ -518,75 +545,69 @@ test("build-dashboard: countCitations counts citing rows (not raw text occurrenc
   assert.strictEqual(dashboard.countCitations("R-18", tabs, ["repo"]), 0, "a tab outside tabKeys is not searched");
 });
 
-test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
+test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks, text} and rides in the dash index (no chunk fetch needed)", () => {
   const snap = snapshot();
   // item 83 closed R-56, the last open ruling, so this is legitimately EMPTY today — the shape
   // contract below is what matters and stays live for the next ruling Ben opens.
   assert.ok(Array.isArray(snap.openRulings), "openRulings is always an array, empty or not");
   for (const r of snap.openRulings) {
-    assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
+    assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section", "text"]);
     assert.strictEqual(typeof r.blocks, "number");
+    assert.ok(r.text === null || r.text.startsWith("**" + r.id + "."), "text is the ruling's own card (item 116 — the phone's full-text expander reads it from the index)");
   }
-  const shards = shardDashboard(snap, { now: NOW });
-  assert.deepStrictEqual(shards.index.openRulings, snap.openRulings, "openRulings rides in the index, not a chunk");
+  const index = dashIndex(snap, { now: NOW });
+  assert.deepStrictEqual(index.openRulings, snap.openRulings, "openRulings rides in the index");
 });
 
-test("pm-state: the shards stay under the chunk cap and cover every section exactly once", () => {
+test("pm-state: dash/index is ONE document under the store cap — no chunks, no row blocks, every mirror ref carries its row and resolves its section", () => {
   const snap = snapshot();
   const B = (o) => Buffer.byteLength(JSON.stringify(o));
-  // The stress cap used to be a fixed 64 KiB — which is a real-world size ONLY by coincidence: on
-  // 2026-09-05 the repo tab was ONE section holding the whole TODO doc (65 443 bytes), so this same
-  // "stress" pass was silently pinning that section 93 bytes under its own ceiling. A 1.2 KB TODO
-  // addition then failed `tests/run.js` with `alone exceeds`, and every future addition would too.
-  // The fix (item 38) split the repo tab into one section per `## N.` item, so no single section
-  // should organically approach a chunk cap again — assert that, then derive the stress cap from
-  // whatever the largest REAL section actually is. This makes the pass a stress test of the
-  // SHARDER's behaviour under a tight cap (does it still shard correctly, still throw correctly),
-  // not a size limit on how much Ben is allowed to write in one TODO item or bench section.
-  const sectionBytes = [];
-  for (const tab of snap.tabs) for (const sec of tab.sections) sectionBytes.push(B({ blocks: sec.blocks }) + B(sec.id) + 2);
-  const largest = Math.max(...sectionBytes);
-  assert.ok(largest < 64 * 1024, `largest section is ${largest} bytes — a single section should stay well under a 64 KiB chunk cap`);
-  const stressCap = Math.ceil(largest * 1.5);
-  for (const maxBytes of [DASH_CHUNK_BYTES, stressCap]) {
-    const { index, chunks } = shardDashboard(snap, { maxBytes, now: NOW });
-    assert.ok(B(index) < 256 * 1024, "index under the store's document cap");
-    const seen = new Map();
-    for (const id of Object.keys(chunks)) {
-      assert.ok(B(chunks[id]) <= maxBytes, `${id} is ${B(chunks[id])} bytes, cap ${maxBytes}`);
-      assert.strictEqual(chunks[id].stamp, snap.stamp);
-      for (const secId of Object.keys(chunks[id].sections)) { assert.ok(!seen.has(secId), `${secId} appears twice`); seen.set(secId, id); }
-    }
-    for (const tab of index.tabs) for (const sec of tab.sections) {
-      assert.strictEqual(seen.get(sec.id), sec.chunk, `${sec.id} points at the chunk that holds it`);
-      assert.ok(!("blocks" in sec), "the index carries no row blocks");
-      seen.delete(sec.id);
-    }
-    assert.strictEqual(seen.size, 0, "no chunk section is outside the index");
-    assert.deepStrictEqual(index.chunks.map((c) => c.id), Object.keys(chunks));
-    assert.strictEqual(index.generatedAt, NOW);
-    assert.strictEqual(index.stamp, snap.stamp);
+  const index = dashIndex(snap, { now: NOW });
+  assert.ok(B(index) < DASH_INDEX_BYTES, `index is ${B(index)} bytes — under the store's 256 KiB document cap`);
+  assert.ok(B(index) < 128 * 1024, `index is ${B(index)} bytes — item 116 sized it at ~50 KB; a doubling is a regression to look at`);
+  assert.ok(!("chunks" in index), "item 116: the row chunks are gone — the page reads only the index");
+  const secIds = new Set();
+  for (const tab of index.tabs) for (const sec of tab.sections) {
+    assert.ok(!("blocks" in sec) && !("chunk" in sec), "the index carries no row blocks and points at no chunk");
+    secIds.add(sec.id);
   }
-  assert.ok(Object.keys(shardDashboard(snap, { maxBytes: stressCap }).chunks).length > Object.keys(shardDashboard(snap, { maxBytes: DASH_CHUNK_BYTES }).chunks).length, "a smaller cap means more chunks");
-  assert.throws(() => shardDashboard(snap, { maxBytes: 2048 }), /alone exceeds/, "a section bigger than the cap is an error, not an oversized document");
+  const refs = index.forBen.concat(index.benchQueue);
+  assert.ok(refs.length > 0, "the real docs have mirror rows");
+  for (const r of refs) {
+    assert.ok(secIds.has(r.secId), `${r.id}: its section ${r.secId} is in the index (title + chips + counts)`);
+    assert.strictEqual(typeof r.text, "string", `${r.id} carries its row text`);
+    assert.strictEqual(typeof r.label, "string");
+    assert.strictEqual(typeof r.secTitle, "string");
+    assert.strictEqual(r.done, false, "a mirror ref is an open row");
+  }
+  // Only the sections a mirror names ride — the other ~200 titles are weight the phone never reads.
+  const referenced = new Set(refs.map((r) => r.secId));
+  assert.deepStrictEqual([...secIds].sort(), [...referenced].sort(), "index.tabs[].sections == the sections the mirrors point at");
+  assert.deepStrictEqual(index.openRulings, snap.openRulings);
+  assert.strictEqual(index.generatedAt, NOW);
+  assert.strictEqual(index.stamp, snap.stamp);
+  assert.throws(() => dashIndex(snap, { maxBytes: 2048 }), /over the 2048-byte document cap/, "an over-cap index is an error, not an oversized push");
 });
 
-test("pm-state: --inject fills both slots and the page can assemble the dashboard from the second", () => {
+test("pm-state: --inject fills both slots; the dashboard slot is {index} alone and the injected page is a fraction of the old one", () => {
   const page = fs.readFileSync(path.join(REPO, "docs", "pm-board-mobile.html"), "utf8");
   assert.ok(/<script id="pm-state" type="application\/json">\{\}<\/script>/.test(page), "tracked page keeps an empty state slot");
   assert.ok(/<script id="pm-dashboard" type="application\/json">\{\}<\/script>/.test(page), "tracked page keeps an empty dashboard slot");
   const state = parseBoard(FIXTURE, { now: NOW, git: GIT });
-  const shards = shardDashboard(snapshot(), { now: NOW });
-  const out = injectPage(page, state, shards);
+  const index = dashIndex(snapshot(), { now: NOW });
+  const out = injectPage(page, state, index);
   const slot = (id) => JSON.parse(out.match(new RegExp(`<script id="${id}" type="application\\/json">([^<]*)<\\/script>`))[1]);
   assert.strictEqual(slot("pm-state").queue.length, 5);
   const d = slot("pm-dashboard");
-  assert.deepStrictEqual(Object.keys(d).sort(), ["chunks", "index"]);
+  assert.deepStrictEqual(Object.keys(d), ["index"]);
   assert.strictEqual(d.index.stamp, snapshot().stamp);
-  for (const c of d.index.chunks) assert.ok(d.chunks[c.id] && d.chunks[c.id].stamp === d.index.stamp, `chunk ${c.id} present under the index's stamp`);
+  assert.strictEqual(d.index.benchQueue.length, snapshot().counts.benchQueue);
   assert.ok(!out.includes("</script><script>alert"), "nothing in the sources can close the slot early");
-  assert.ok(out.length > page.length + 500000, "the whole dashboard rides in the page");
+  // Before item 116 the injected page carried the whole dashboard (~1.47 MB on 2026-09-13); now
+  // it is the page plus one index (~290 KB). Pin the order of magnitude, not the exact byte.
+  assert.ok(out.length < page.length + 256 * 1024, `injected page is ${out.length} bytes — page + at most one store-cap document`);
 });
+
 
 // ---- item 99: runLog is a PROJECTION (2026-09-08) --------------------------------------------
 // The run log alone hit 154 KB of a 259 KB `pm/state` document and the store's 256 KiB cap
