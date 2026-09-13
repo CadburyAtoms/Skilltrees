@@ -1,11 +1,25 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
-    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
+    "status": "awake",
+    "note": "Sunday session: 14 PRs merged; item 123 is live (press F5). A Sonnet worker is writing six design proposals as rulings R-114 … R-119 for you to answer from this page — Mantle of the Aspirant's heal, False Premise, Final Decree, Trade Routes, the three deity gates, the Decree moving zone. Nothing else is running.",
+    "waitingOn": "F5 (item 123 is live) · the six rulings once item 127 lands · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "127",
+      "title": "Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 → WAITING rulings R-114 … R-119 (full card text, options, defaults)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/127-design-proposals-rulings",
+      "startedAt": "2026-09-13T20:53:00Z",
+      "agent": "Design proposals as rulings",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; DOCS-ONLY — nothing written into data/"
+    }
+  ],
   "usage": null
 }

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T20:50:21.714Z",
+  "generatedAt": "2026-09-13T20:53:04.990Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a77c7605a4",
-    "commit": "8838567",
-    "branch": "pm/board-2026-09-13d",
+    "hash": "0cbbe550cd",
+    "commit": "f426dff",
+    "branch": "pm/board-2026-09-13e",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,13 +42,27 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
-    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
+    "status": "awake",
+    "note": "Sunday session: 14 PRs merged; item 123 is live (press F5). A Sonnet worker is writing six design proposals as rulings R-114 … R-119 for you to answer from this page — Mantle of the Aspirant's heal, False Premise, Final Decree, Trade Routes, the three deity gates, the Decree moving zone. Nothing else is running.",
+    "waitingOn": "F5 (item 123 is live) · the six rulings once item 127 lands · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "127",
+      "title": "Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 → WAITING rulings R-114 … R-119 (full card text, options, defaults)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/127-design-proposals-rulings",
+      "startedAt": "2026-09-13T20:53:00Z",
+      "agent": "Design proposals as rulings",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; DOCS-ONLY — nothing written into data/"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1550,6 +1564,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 343
+    },
+    {
+      "pos": 124,
+      "item": "127",
+      "title": "Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 filed as WAITING rulings R-114 … R-119 (each with full proposed card text, options, a recommended default, cost + deploy class); item 101's phantom R-92 → R-114; the six TODO deps re-pointed. DOCS-ONLY. Dispatched 16:53",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -1609,20 +1635,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "17:38",
-      "at": "2026-09-07T21:38:00.000Z",
-      "item": "Dispatched item 94 (sonnet, worktree — the phone-board re-render fix, TOOLING-only + PM republish) the minute #290 merged",
-      "itemNo": "290",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "three workers in flight (91, 93, 94)",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "17:20",
@@ -2448,9 +2460,23 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:53",
+      "at": "2026-09-13T20:53:00.000Z",
+      "item": "Dispatched item 127 (sonnet, worktree pm/127-design-proposals-rulings — R-114 (item 101's Mantle-of-the-Aspirant heal), R-115 (107 False Premise payload), R-116 (109 Final Decree Witness clause), R-117 (114 Trade Routes), R-118 (108 three deity gates), R-119 (106 Decree moving zone) as WAITING rulings with full proposed text + defaults; DOCS-ONLY). Trailing-5h dispatches 6 of 6 (14:24, 14:48 ×2, 15:48 ×2, 16:53)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 251,
+  "runLogTotal": 252,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3148,6 +3174,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 345
+    },
+    {
+      "at": "2026-09-13T20:53:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
