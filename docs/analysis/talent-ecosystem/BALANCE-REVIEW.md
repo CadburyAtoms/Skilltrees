@@ -23,6 +23,9 @@ ceiling). Where this review's arithmetic bears on one of the PM's six waiting pr
 (`EDHA_RULINGS.md` §L, R-114 … R-119) it says so; it files **six new rulings, R-120 … R-125**, in
 §D of the same file, each with a recommended default and the deploy class of every option.
 
+**Readable version.** The same content, published for reading on a phone: https://claude.ai/code/artifact/4d49c209-5faf-4a5a-adad-183f2632d8a4
+(republished from this file when it changes).
+
 **Method.** Every number below comes from `balance-turns.js` beside this file (run it; the
 assumptions are at the top and they are the critique's baseline: the weapon's own die and the
 system's `+ mod` on every hit, three Actions on a Slow turn, Investiture drawn at tier per Action)
