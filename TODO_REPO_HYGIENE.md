@@ -3591,7 +3591,7 @@ filed 2026-09-08 01:1x.
 
 **Why:** twenty of twenty-one trees are PARTIAL or DRIFTED against their prose; the heroic path descriptions are still verbatim Roshar ("Roshar is a world riven by conflict", "Available in the Stormlight Handbook"). Ben chose (a).
 
-**What to do:** tree by tree, rewrite `data/path-descriptions.json` from the profiles (`docs/analysis/talent-ecosystem/profiles/`), Edha-generic, no nation-specific hooks; then the guides' identity sections. Batch by atlas for Ben's yes (lore approval gate).
+**What to do:** tree by tree, rewrite `data/path-descriptions.json` from **`docs/analysis/talent-ecosystem/TREE-INTENT.md`** (the readable per-tree intent read of 2026-09-13 — every tree's *what the talents do / how it plays / specialties as built / where the prose is wrong / draft opening*; it supersedes the raw `profiles/`, three of which are stale against the cards), Edha-generic, no nation-specific hooks; then the guides' identity sections. Batch by atlas for Ben's yes (lore approval gate) — the file's closing section gives the order (heroic → leyline → deity) and lists what the prose must NOT promise until items 106 / 108 land.
 
 **Done when:** every description names the tree the talents deliver; the six heroic descriptions carry no Roshar.
 
