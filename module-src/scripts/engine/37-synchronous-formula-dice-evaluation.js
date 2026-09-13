@@ -131,17 +131,21 @@ function edhaConsumeList(item) {
     .filter(c => c.amount > 0);
 }
 // Deduct the talent's activation cost; returns false (and warns) if the actor can't pay.
+// item 119: the refusal wording is shared with the preUseItem announcer (section RESOURCE-CONSUME
+// DIALOG) through edhaCostShortfalls/edhaShortfallText, so both refusal points name the same
+// things — actor, item, resource, need, balance, gap. The old warn here named the need but never
+// the balance, so a GM could not see how far short they were; and this path has no dialog, so its
+// refusal is final rather than a prediction.
 function edhaConsumeCost(item) {
   try {
     const actor = item?.actor; const list = edhaConsumeList(item);
-    for (const c of list) {
-      const cur = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
-      if (cur < c.amount) { ui.notifications?.warn(`Edha: ${actor.name} needs ${c.amount} ${EDHA_RES_LABEL[c.resource] || c.resource} for ${item.name}.`); return false; }
-    }
+    const balances = {};
+    for (const c of list) balances[c.resource] = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
+    const short = edhaShortfallText(actor?.name, item?.name, edhaCostShortfalls(list, balances));
+    if (short) { console.warn(`Edha Content | ${short}`); ui.notifications?.warn(short); return false; }
     const updates = {};
     for (const c of list) {
-      const cur = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
-      updates[`system.resources.${c.resource}.value`] = Math.max(0, cur - c.amount);
+      updates[`system.resources.${c.resource}.value`] = Math.max(0, (balances[c.resource] || 0) - c.amount);
     }
     // #28b: the takeover path's activation cost is a spend as much as edhaSpendResource's is.
     if (Object.keys(updates).length) actor.update(updates, edhaSpendTag("edhaConsumeCost"));
