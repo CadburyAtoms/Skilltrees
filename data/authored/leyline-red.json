@@ -739,9 +739,9 @@
       "docId": "TWYgfDETZBeEAHxY",
       "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Speed is the weapon. Distance is the wind-up.</em></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Speed is the weapon. Distance is the wind-up.</em></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to [Tier][Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to [Tier][Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to [Tier][Die].</p>"
       },
       "activation": {
         "type": "none",
@@ -762,12 +762,12 @@
       "events": {
         "C9iBvvgzsAIsCNhq": {
           "id": "C9iBvvgzsAIsCNhq",
-          "description": "Red/Momentum. When you Strike after charging at least 20 ft toward the target this turn, add bonus impact equal to your Speed.",
+          "description": "Red/Momentum. When you Strike after charging at least 20 ft toward the target this turn, add bonus impact equal to [Tier][Die].",
           "event": "edha-pre-deal-damage",
           "handler": {
             "type": "edha-damage-rider",
             "appliesTo": "impact",
-            "bonusFormula": "@movement.walk.rate",
+            "bonusFormula": "(@tier)d(2 * @skills.red.rank + 2)",
             "whenTargetCondition": false,
             "whenTargetStatus": "",
             "whenMovedTowardFt": 20,
