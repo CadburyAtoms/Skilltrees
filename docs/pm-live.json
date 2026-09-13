@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Sunday session: your three answers are in. Item 123 (agents get a guarded bulk adversary sync) and the LICENSE are being written; 117 stale remote branches are deleted (the two docs-only ones you may want are still there). Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
+    "note": "Sunday session: LICENSE is in (MIT for code, CC BY-NC-SA for content, unofficial-fan-content notice); 117 stale branches deleted; item 123 (agents get a guarded bulk adversary sync) is the last worker running. Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -19,19 +19,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; ENGINE-ONLY (F5) at merge"
-    },
-    {
-      "item": "3",
-      "title": "LICENSE — MIT (code) + CC BY-NC-SA 4.0 (content) + unofficial-fan-content notice",
-      "model": "sonnet",
-      "size": "XS",
-      "lane": "R",
-      "branch": "pm/3-license",
-      "startedAt": "2026-09-13T20:25:00Z",
-      "agent": "Work item 3",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS-ONLY"
     }
   ],
   "usage": null
