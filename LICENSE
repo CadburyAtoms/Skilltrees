@@ -1,0 +1,90 @@
+Skilltrees / Edha — License
+===========================
+
+This repository mixes two kinds of thing, and they are licensed differently. This split
+(and the wording below) is the maintainer's choice, made for a homebrew project — it is
+not legal advice.
+
+Unofficial fan content
+-----------------------
+
+Edha is unofficial, fan-created content for the Cosmere RPG. This project is not
+affiliated with, endorsed by, or sponsored by Dragonsteel Entertainment or Brotherwise
+Games. Cosmere, Stormlight, and the Cosmere RPG are the intellectual property of their
+respective owners. No rules text, art, or other material from the published Cosmere RPG
+books is reproduced in this repository; the Cosmere RPG rulebook is required to use this
+project's content, and it is not included here or for sale. Nothing in this repository
+may be sold.
+
+What counts as "code" vs. "content"
+------------------------------------
+
+**Code** — licensed MIT (below): everything under `scripts/`, `module-src/`, `tests/`,
+and `.github/`; the build/tooling manifests (`package.json`, `.gitattributes`,
+`.gitignore`); and any other script that builds, tests, lints, or automates the project,
+including a small helper script that happens to live inside a `.claude/skills/*` folder
+(for example `audit.py` or `validate-build.py`).
+
+**Content** — licensed CC BY-NC-SA 4.0 (below): everything under `data/`, `docs/`, and
+`source-materials/`; the root-level `EDHA_*.md` / `EDHA_*.html` documents and the
+project's other prose documents (`README.md`, `CLAUDE.md`, `AUTHORING_WORKFLOW.md`,
+`TODO_REPO_HYGIENE.md`, `TODO_WORLDBUILDING.md`, `TRIAGE_PLAYTEST_PC_MANUALS.md`,
+`FORCED_MOVEMENT_PILOT.md`); the prose under `.claude/agents/` and `.claude/skills/`
+(skill guides, case studies, session context); and the homebrew game material itself —
+talent trees, card text, lore canon, campaign material, and adversary blocks — wherever
+in the repository it appears. When it is unclear which side a file falls on, the content
+license applies, since the point of this split is to protect the game material.
+
+---
+
+Code license — MIT
+-------------------
+
+Copyright (c) 2026 CadburyAtoms
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be included in all copies
+or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+Content license — CC BY-NC-SA 4.0
+------------------------------------
+
+Copyright (c) 2026 CadburyAtoms
+
+The content described above is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
+
+This is a human-readable summary; it is not a substitute for the full license, at:
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+You are free to:
+
+- **Share** — copy and redistribute the material in any medium or format.
+- **Adapt** — remix, transform, and build upon the material.
+
+Under the following terms:
+
+- **Attribution** — You must give appropriate credit to CadburyAtoms, provide a link to
+  this repository, and indicate if changes were made.
+- **NonCommercial** — You may not use the material for commercial purposes, and it is
+  not for sale.
+- **ShareAlike** — If you remix, transform, or build upon the material, you must
+  distribute your contributions under the same license as the original.
+
+No additional restrictions — you may not apply legal terms or technological measures
+that legally restrict others from doing anything the license permits.
