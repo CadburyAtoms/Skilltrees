@@ -55,11 +55,17 @@ MASKED bootstrap history (see CLAUDE.md) — their *content* already lives in `d
 
 ---
 
-## 3. [~] Add `package.json` + `LICENSE`; delete the root HTML snapshots
+## 3. [x] Add `package.json` + `LICENSE`; delete the root HTML snapshots — DONE 2026-09-13, PR #343
 > **2026-07-06 status: mostly DONE** — `package.json` added (private, Node ≥ 20, gate
 > script aliases incl. `npm run gates`), both `v-pre-*` snapshots deleted (nothing
 > referenced them). **Remaining: LICENSE** — Ben deferred the choice ("decide later");
 > revisit MIT vs MIT-code + CC BY-NC-SA-content when he's ready.
+>
+> **2026-09-13: LICENSE landed.** Ben's call in chat ("whatever won't get me in trouble
+> and is most widely applicable") read as dual-license: MIT for code, CC BY-NC-SA 4.0 for
+> content, plus an unofficial-fan-content notice. `LICENSE` added at repo root with the
+> code/content split spelled out by directory; `package.json` gained
+> `"license": "MIT AND CC-BY-NC-SA-4.0"`; `README.md` got a License section.
 
 **Why:** No manifest means no declared Node version and no discoverable script
 entry points; no license means "all rights reserved" by default — probably not intended

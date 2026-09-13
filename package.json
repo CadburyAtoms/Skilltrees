@@ -2,6 +2,7 @@
   "name": "skilltrees",
   "version": "0.2.0",
   "private": true,
+  "license": "MIT AND CC-BY-NC-SA-4.0",
   "description": "Edha homebrew talent trees for the Cosmere RPG: the Foundry VTT module (edha-content) and the data pipeline that builds it.",
   "engines": {
     "node": ">=20"
