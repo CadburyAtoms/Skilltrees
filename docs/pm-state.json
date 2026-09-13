@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T20:48:42.770Z",
+  "generatedAt": "2026-09-13T20:50:21.714Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "e22e79379e",
-    "commit": "a5e441e",
+    "hash": "a77c7605a4",
+    "commit": "8838567",
     "branch": "pm/board-2026-09-13d",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,27 +42,13 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "awake",
-    "note": "Sunday session: LICENSE is in (MIT for code, CC BY-NC-SA for content, unofficial-fan-content notice); 117 stale branches deleted; item 123 (agents get a guarded bulk adversary sync) is the last worker running. Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
-    "waitingOn": null,
+    "status": "waiting",
+    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
+    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "123",
-      "title": "R-113 (a): edha.syncAllAdversaries gains scope, dry-run and a started-combat refusal; R-113 → §K",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/123-sync-adversaries-scope-guard",
-      "startedAt": "2026-09-13T20:25:00Z",
-      "agent": "Work item 123",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; ENGINE-ONLY (F5) at merge"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1501,9 +1487,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-113 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 345
     },
     {
       "pos": 119,
@@ -1611,6 +1597,7 @@
     }
   ],
   "benOnly": [
+    "F5 (item 123 live)",
     "R-114 once filed",
     "the two YOUR-CALL branches (a drawing brief and a playtest watch sheet — keep or delete) whenever."
   ],
@@ -1622,34 +1609,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "17:20",
-      "at": "2026-09-07T21:20:00.000Z",
-      "item": "Item 92 (Volatile Strike drops whenDamageType: \"impact\", R-88 (a)) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "6.5 min, 112 turns",
-      "weighted": "1.7M",
-      "weightedM": 1.7,
-      "outcome": "merged 17:29 after review (gh mergedAt 21:29:31Z), no trailers, no bounce; one key + one description string; pack parity: exactly ONE doc differs (365 talents / 136 items / 20 folders both sides); row 92-1 🤖 in Red; gates 11/11 in the worktree and CI green on the head. REBUILD (leyline) + ⟳ Sync Talents owed. Found: the changelog header's delta count (\"95\") and the README index (\"94\") disagree with the file (103 ## 2026-09 headers) — a docs nit for the next close-out",
-      "pr": 288
-    },
-    {
-      "date": "2026-09-07",
-      "time": "17:30",
-      "at": "2026-09-07T21:30:00.000Z",
-      "item": "Phone inbox: seven notes (17:23–17:25), all seen 17:30 — R-83 / R-88 / R-89 (a) again; R-90 (a) → item 88 unblocked; R-91 (a) → item 95 filed; the waiting-list \"done\"; R-56 (a) tapped = keep the Edha table — contradicts the morning note, asked Ben in chat. Ben's phone-board bug (Sent ✓ marks wiped, scroll jumps) → item 94 filed, root cause read from docs/pm-board-mobile.html (tick() → renderNeedsYou every 30 s; pm/state → render()); dispatch after this board PR merges",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "items 94 / 95 filed; 91 / 93 still running",
-      "pr": 290
-    },
     {
       "date": "2026-09-07",
       "time": "17:38",
@@ -2461,9 +2420,37 @@
       "weightedM": 1.1,
       "outcome": "merged 16:28 after review, no trailers; CI green on aaac961 after ONE PM correction on the branch (the not-for-sale sentence now names the game content, not the MIT-licensed code); gates 12/12. Ben's criterion: \"whatever won't get me in trouble and is most widely applicable\" — code MIT (widest), content NC-SA + the IP notice (the trouble-avoiding half); not legal advice, stated in the file. Item 3 closed in full (its July half was package.json + the snapshot deletions)",
       "pr": 343
+    },
+    {
+      "date": "2026-09-13",
+      "time": "15:48",
+      "at": "2026-09-13T19:48:00.000Z",
+      "item": "Item 123 (R-113 (a): edhaSyncAllAdversaries gains scope, dry-run default and a started-combat refusal; edhaSyncPlan pure + pinned; R-113 → §K.10; bench-run hard rule 9) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "25 min, 168 tool uses",
+      "weighted": "8.3M",
+      "weightedM": 8.3,
+      "outcome": "merged 16:47 after review, no trailers; CI green on ee06ff1, gates 12/12 (1149 tests). ENGINE-ONLY — pushed live 16:47 (6 in sync; F5 owed). Flag: Ben's bulk button now also refuses during a started combat (protective; not what the ruling text said — his veto). PM slips: an out-of-vocabulary queue status blocked the merge commit until fixed; a false HAND-EDITED verdict from running status off a lagging branch HEAD",
+      "pr": 345
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:50",
+      "at": "2026-09-13T20:50:00.000Z",
+      "item": "Nothing running. Session tally 10:26 → 16:50: 14 PRs merged (#331 → #343, #345 — 116, 117, 112, bench 45, 105, fix pass 11, 119 + shelving, 122, bench 46, 3 LICENSE, 123 — plus board PRs #332 / #338 / #342 and this one); the first agent-run deploy (14:41) and the gated script for the next; 117 stale branches purged; bench rows 29 → 3 (Predator's Due ← 88, the deploy-cycle first run, 123-1); workers ≈ 79M weighted; Opus 3 of 3. Waiting on Ben: F5, R-114 once filed, the two YOUR-CALL branches. Next: 124 / 125 / 126 (Sonnet XS) and the design-proposal batch (files R-114 + R-115…) — trailing-5h count from the run log before each; 110 / 113 / 115 Opus tomorrow",
+      "itemNo": "331",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 249,
+  "runLogTotal": 251,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3155,6 +3142,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 343
+    },
+    {
+      "at": "2026-09-13T19:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 345
     }
   ],
   "statusVocab": [

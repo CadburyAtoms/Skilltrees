@@ -1,25 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Sunday session: LICENSE is in (MIT for code, CC BY-NC-SA for content, unofficial-fan-content notice); 117 stale branches deleted; item 123 (agents get a guarded bulk adversary sync) is the last worker running. Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
-    "waitingOn": null,
+    "status": "waiting",
+    "note": "Sunday session: 14 PRs merged. Item 123 is live — press F5 and agents can sync adversaries safely (dry run by default, scoped, refuses a started combat). LICENSE in, 117 stale branches gone. Nothing is running. Yours: F5; R-114 once a worker files it (Mantle of the Aspirant's unwind heal: gate it, the default, or declare it the exception); the two docs-only branches whenever.",
+    "waitingOn": "F5 (item 123 is live) · R-114 once filed · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "123",
-      "title": "R-113 (a): edha.syncAllAdversaries gains scope, dry-run and a started-combat refusal; R-113 → §K",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/123-sync-adversaries-scope-guard",
-      "startedAt": "2026-09-13T20:25:00Z",
-      "agent": "Work item 123",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; ENGINE-ONLY (F5) at merge"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
