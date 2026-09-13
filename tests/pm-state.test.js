@@ -375,14 +375,15 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // next ruling is filed. The seventeen join the closed list below so a regression that re-opens
   // one is named.
   // 2026-09-13, bench run 45: R-112 filed (The Reckoning cannot pay for its own Unbreakable Line —
-  // raise the pool, make it free, or drop the cost), so the set is one again and the three shape
-  // loops are live on it: it must parse an `ask` ending in a question mark and a `default`.
-  const ECOSYSTEM_RULINGS = ["R-112"];
+  // raise the pool, make it free, or drop the cost), so the set was one again and the three shape
+  // loops were live on it. Answered the same day (Ben, phone board, 14:10 ET: (a) raise the pool to
+  // 3) and moved to §K.9 — the open set is EMPTY again. R-112 joins the closed list below.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
-      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111"]) {
+      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
