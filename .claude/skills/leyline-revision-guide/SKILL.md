@@ -43,6 +43,24 @@ This skill contains the canonical design standards for the Leyline system. Consu
 ### Conditions (System-Defined)
 Disoriented, Determined, Surprised, Weakened, Slowed, Exhausted[X], Afflicted[X damage], Restrained, Prone, Immobilized.
 
+### Advantage / Disadvantage (System Mechanic)
+Advantage and disadvantage are each **one binary state**, not a stacking counter — the engine folds
+every matching source into a single scalar (`edhaNextModFoldMode`), so a second advantage or
+disadvantage from another talent, on the same roll, contributes nothing. The **printed rule**
+(SR p.18) is narrower than that fold: an advantage and a disadvantage on the same roll **cancel
+one-for-one**, so a roll with two advantages and one disadvantage still rolls with advantage — a
+case the engine's boolean fold cannot represent. Two heroic talents, `Fatal Thrust` and
+`Defensive Position`, are written to that printed rule (a second grant as insurance against a
+disadvantage) rather than the engine's fold; both are declared **MANUAL** in the heroic
+tree-section header, and their cards carry the cancel-one-for-one line as the whole
+implementation — nothing to wire, because the table plays the printed rule, not engine state.
+When designing a talent that grants a second advantage or disadvantage on a roll another talent
+already touches, decide up front whether it is meant as insurance against the opposite state (the
+printed-rule case, MANUAL and documented on the card) or as a stacking bonus (which the engine
+cannot deliver without the summing `edha-next-test-mod` channel, and that channel's uncapped-total
+risk is the ecosystem's largest identified balance risk — do not reach for it casually).
+*(R-100, R-110 — `EDHA_RULINGS.md`, answered 2026-09-13.)*
+
 ### Key Mechanic: Draw Mana
 Drawing Mana costs 1 Action, restores Investiture, and triggers the Leyline Attunement's rider effect. Each color's Attunement Key Talent defines what Draw Mana does for that color.
 
@@ -105,6 +123,8 @@ Current leyline talents only use talent-to-talent chaining. **Add skill rank pre
 
 **9. Leyline mages are mortal.** Comparable to Heroic path characters, not Radiants. No flying, no death regeneration, no shardblades. Strong and versatile, but human-scale. Radiant-equivalent power lives in the Deity Domain trees.
 
+**10. The heroic-vs-leyline damage trade is accepted — do not close it by adding a tier step to heroic.** Heroic's big damage talents (`Devastating Blow`, `Wit's End`, `Fatal Thrust`, `Deadly Trap`) carry flat dice for their whole career and sit behind an off-color `Skill 3+` gate — a level-6 unlock — while leyline/deity damage formulas double at level 6, because that level raises Tier and the rank cap together. Read as a formula comparison alone this looks lopsided, but **per Action, once the weapon's own die and the system's `+ mod` are counted, the two atlases are at parity before level 6** (a Strike with `Mighty` ≈ 9.5–10.5 free and unlimited; `Withering Ray` ≈ 11 at ~1.5 HP a cast; `Searing Bolt` ≈ 7.5 for 1 Investiture), and at level 6 leyline pulls ahead only by the amount Deflect would otherwise have taken — not by an untracked size gap. A heroic rider's own die and `Mighty` are the growth channel heroic already has; a tier-2 step on top of that would double-dip it. So: **accept the trade as designed**, and when a comparison between the two atlases comes up again, run it per Action with the weapon die and `+ mod` included, not on the raw damage formulas alone. *(R-105 (c) — `EDHA_RULINGS.md`, answered 2026-09-13, from the talent-ecosystem review's critique arithmetic.)*
+
 ---
 
 ## PART 4: COLOR IDENTITIES
@@ -129,6 +149,7 @@ Current leyline talents only use talent-to-talent chaining. **Add skill rank pre
 - **Themes**: Isolation engine — reward enemies being alone, punish grouped enemies splitting. HP sacrifice for power, Vital damage (bypasses Deflect), self-harm as currency. Focus economy — spend Focus for leverage, strip enemy Focus, dominate the depleted.
 - **Key mechanic**: "No allied creature within 10 ft" is the consistent isolation trigger.
 - **Costs favor**: HP loss (Physical), Focus (Cognitive), Investiture sparingly. Black pays in blood and willpower.
+- **Damage ceiling (R-111, 2026-09-13):** `Withering Ray`'s doubled-tier vital formula (`2[Tier][Die]` — 2d6 at Tier 1, 4d8 at Tier 2) is the only doubled-tier damage formula in the leyline atlas, and it stays exactly as written: HP-costed instead of Investiture, no once-per-turn cap. It is now the documented **leyline damage ceiling** — measure any new leyline damage talent's per-Action output against it, with the HP cost counted in: a three-cast turn (~33 vital for ~4.5 HP of a ~12 HP level-1 pool) is the same size as three Strikes with `Mighty` (~31 physical, free), so Black's edge is the vital damage type ignoring Deflect, not raw size.
 
 ### 🔴 RED — Passion, Momentum, Reckless Escalation
 - **Draw Mana rider**: Advantage on next Physical test. Lose your Reaction until start of next turn.
