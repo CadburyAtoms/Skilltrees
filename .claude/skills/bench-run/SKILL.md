@@ -35,7 +35,7 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    edit to the actor documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep
    rosters to the actors under test — do not widen a roster beyond what the run's checklist
    section needs.
-5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta (top of the current month's `docs/handoff-changelog/2026-MM.md`), never there.
+5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta (top of the current month's `docs/handoff-changelog/2026-MM.md`), never there. **Exception (item 122, 2026-09-13):** the one line `scripts/deploy-cycle.js` itself appends on a successful `--yes` run — it is the agent-run deploy's own record, not a bench finding, and it does not need a bench run to add or touch it.
 6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
    snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
    four pre-existing statuses off Ben's campaign adversaries and could only restore two — the

@@ -39,4 +39,12 @@ const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/Foundr
 // (~line 48 pre-move) and foundry-extract.js (~line 34).
 const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
 
-module.exports = { REPO_ROOT, DATA, MODROOT, ATLAS_PACK };
+// FOUNDRY_USERDATA: Foundry's own user-data root — the parent of MODROOT's `Data/modules/...`
+// (i.e. `<FOUNDRY_USERDATA>/Data/modules/edha-content` === MODROOT by default), and separately
+// the parent of `Config/options.json` (item 122, deploy-cycle.js: reads the configured world
+// before a relaunch). Kept independent of MODROOT rather than derived from it, because MODROOT
+// is routinely overridden to a scratch dir for off-Foundry builds (EDHA_MODROOT) — a scratch
+// pack root must never make this resolve to a fake "Foundry install".
+const FOUNDRY_USERDATA = process.env.EDHA_FOUNDRY_USERDATA || "C:/Users/benhe/AppData/Local/FoundryVTT";
+
+module.exports = { REPO_ROOT, DATA, MODROOT, ATLAS_PACK, FOUNDRY_USERDATA };

@@ -31,6 +31,22 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
 rewriting that file for the run after it (run 1 → run 2 = White+Blue, run 3 = Black+Green,
 then the deities, Heroic, and the non-tree console-runnable sections).
 
+## Agent-run deploy (item 122, 2026-09-13)
+
+Before a run, if `node scripts/module-src-sync.js status` reports the live engine STALE (or a
+pack rebuild is owed), the deploy no longer has to wait on Ben typing at his keyboard: run
+`node scripts/deploy-cycle.js --dry-run` first — it prints every pre-flight guard's verdict
+(clean tree on `main`, not hand-edited, no bench worker holding the table, the five packs exist,
+a world is configured, the exe is found) and changes nothing — then `node scripts/deploy-cycle.js
+--yes` once they all pass. It closes Foundry gracefully, pulls, pushes the engine, rebuilds and
+validates all five packs, relaunches the exe, polls until Foundry answers, and verifies the served
+engine against `HEAD` before recording a DEPLOY STATE line. This is a DIFFERENT thing from what
+this runbook covers below: `deploy-cycle.js` gets Foundry itself running (or re-running) a given
+commit; the bench then joins that already-running Foundry through the browser exactly as before —
+a session still cannot "log in and click around" without a live Foundry to join, it can now also
+be the one that (re)starts it first. A guard refusal (a bench worker on the overlay, a
+hand-edited engine, an unclean tree) means stop and ask Ben, not `--force-bench` on a hunch.
+
 ## Per-run checklist (the agent)
 
 > **Deploy-script rule (2026-09-05, learned twice):** `scripts/deploy-to-foundry.bat` pulls `main`
