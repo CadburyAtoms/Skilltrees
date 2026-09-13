@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Sunday session: the deploy ran without you at 14:41 (all five packs + engine live, Foundry relaunched into edha). Bench 46 is driving the 11 rows that deploy unblocked; item 122 is turning the deploy into a gated script with tests (PM-R18). Re-join your Gamemaster client whenever you like. Nothing is waiting on you.",
+    "note": "Sunday session: the deploy ran without you at 14:41; item 122 (#340) turned it into a gated script with tests. Bench 46 is driving the 11 rows that deploy unblocked. Nothing is waiting on you; re-join your Gamemaster client whenever you like.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -19,19 +19,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; owns the Browser pane; on the 14:41 deploy"
-    },
-    {
-      "item": "122",
-      "title": "deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/122-deploy-cycle-script",
-      "startedAt": "2026-09-13T18:48:00Z",
-      "agent": "Work item 122",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; never touches the live Foundry"
     }
   ],
   "usage": null

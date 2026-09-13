@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T18:48:50.471Z",
+  "generatedAt": "2026-09-13T19:12:25.600Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "1557b70829",
-    "commit": "bb5966f",
+    "hash": "9ad7a68161",
+    "commit": "b67f304",
     "branch": "pm/board-2026-09-13c",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: the deploy ran without you at 14:41 (all five packs + engine live, Foundry relaunched into edha). Bench 46 is driving the 11 rows that deploy unblocked; item 122 is turning the deploy into a gated script with tests (PM-R18). Re-join your Gamemaster client whenever you like. Nothing is waiting on you.",
+    "note": "Sunday session: the deploy ran without you at 14:41; item 122 (#340) turned it into a gated script with tests. Bench 46 is driving the 11 rows that deploy unblocked. Nothing is waiting on you; re-join your Gamemaster client whenever you like.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; owns the Browser pane; on the 14:41 deploy"
-    },
-    {
-      "item": "122",
-      "title": "deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/122-deploy-cycle-script",
-      "startedAt": "2026-09-13T18:48:00Z",
-      "agent": "Work item 122",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; never touches the live Foundry"
     }
   ],
   "usage": null,
@@ -1497,14 +1484,14 @@
     {
       "pos": 117,
       "item": "122",
-      "title": "scripts/deploy-cycle.js — the agent-run deploy as ONE gated script: pre-flight guards (clean main, no hand-edited engine, no bench on the table, world named, exe found), pack + engine backups, the eight bat steps fail-fast with logs, relaunch + verification (stamps, served hash = HEAD, /join), the DEPLOY STATE record, PURE guards pinned + a dry-run smoke test; runbook / CLAUDE.md / PM + bench skills updated (PM-R18). Dispatched 14:48",
+      "title": "scripts/deploy-cycle.js — the agent-run deploy as ONE gated script: pre-flight guards (clean main, no hand-edited engine, no bench on the table, world named, exe found), pack + engine backups, the eight bat steps fail-fast with logs, relaunch + verification (stamps, served hash = HEAD, /join), the DEPLOY STATE record, PURE guards pinned + a dry-run smoke test; runbook / CLAUDE.md / PM + bench skills updated (PM-R18). Merged 15:11; the PM's first live --yes run is a 🤖 row. Dispatched 14:48",
       "lane": "R",
       "model": "sonnet",
       "size": "M",
       "deps": "PM-R18 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 340
     }
   ],
   "rulings": [
@@ -1560,20 +1547,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "13:22",
-      "at": "2026-09-07T17:22:00.000Z",
-      "item": "Item 86 (edhaListPlaceNotes rule-bearer gate) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "14 min, 109+ turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 13:40 after review, no trailers; the PM merged origin/main on the branch (changelog conflict: both 86's and 90's deltas kept, newest first), regenerated the dashboard, gates 11/11, CI green on the merge head. ENGINE-ONLY → pushed live 13:40 (served a23e70d1bad4…), F5 owed by Ben",
-      "pr": 283
-    },
     {
       "date": "2026-09-07",
       "time": "13:35",
@@ -2399,9 +2372,23 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:48",
+      "at": "2026-09-13T18:48:00.000Z",
+      "item": "Item 122 (deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "21 min, 128 tool uses",
+      "weighted": "5.8M",
+      "weightedM": 5.8,
+      "outcome": "merged 15:11 after review, no trailers; CI green on 3893d9e, gates 12/12 + --ci 14/14 (1139 tests). PM dry-ran it twice: worktree → refuses off main (bench guard blind there — its overlay was main's); main checkout → refuses naming bench-46. Follow-up: the bench guard should also read worktrees/branches. Out of scope reported: scripts/README.md misses three files. First live --yes run = the PM's next deploy (🤖 row)",
+      "pr": 340
     }
   ],
-  "runLogTotal": 243,
+  "runLogTotal": 244,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3075,6 +3062,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 339
+    },
+    {
+      "at": "2026-09-13T18:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 340
     }
   ],
   "statusVocab": [
