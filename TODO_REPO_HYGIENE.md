@@ -3589,7 +3589,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size L · deps approval per batch · verify: read-through. Filed 2026-09-13 from R-104.
 
-## 112. [ ] R-105 (c) + R-108 (a) + R-110 (d) + R-111 (b) — the guides record the four decisions; two cards gain the cancel line (DOCS + two cards, REBUILD heroic) (2026-09-13)
+## 112. [x] (2026-09-13, PR #334) R-105 (c) + R-108 (a) + R-110 (d) + R-111 (b) — the guides record the four decisions; two cards gain the cancel line (DOCS + two cards, REBUILD heroic) (2026-09-13)
 
 **Why:** four answers that are documentation plus one line on two cards: the heroic-vs-leyline tier trade is accepted (with the critique's per-Action parity arithmetic); the deity Special target is restated and nothing converted yet; `Fatal Thrust` and `Defensive Position` keep "two" and gain "advantages and disadvantages cancel one-for-one; roll with whatever remains", plus a guide note that the engine folds two-against-one to nothing and these two are played by hand; `Withering Ray` stays and is written into the guides as the leyline damage ceiling.
 

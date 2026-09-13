@@ -58,6 +58,8 @@ Looser than leyline because deity talents skew more active. Targets:
 
 3 Actions exist in deity design specifically for the capstone slot. Outside the capstone, prefer 2 Actions even for heavy effects.
 
+> **R-108 (a), 2026-09-13 — target restated, nothing converted yet.** The deity atlas runs **0% Specials** across all ninety talents against this table's ~15–20% target (65 of 90 cost one or more Actions; the rest split across 13 Passives, 7 Free Actions and 5 Reactions). The one narrow conversion proposed — retype talents that "already ride another action" under Part 3 principle 10 — changes no talent on inspection: of the six candidates, four are already Passives, one is already a Free Action, and one (`Withering Touch`) is its own attack, not a rider. Converting standalone deity Actions into Specials now, before that authoring gap is closed, would only make deity trees more action-efficient and widen the deity-vs-leyline agency gap the primer already flags (R-96). So: **the target above stands as written, but do not convert any deity talent to a Special to chase it** until leyline's agency work (R-96) has landed and a fresh leyline-vs-deity comparison can be run. *(`EDHA_RULINGS.md` R-108, answered 2026-09-13.)*
+
 ### Description length
 
 Deity talents run longer than leyline talents because they typically include `Spend → setup → test → success clause → failure clause → duration`. Targets:
