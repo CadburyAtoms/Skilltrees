@@ -113,7 +113,7 @@
     "path": "White",
     "specialty": "Coordination",
     "name": "Ordered Advance",
-    "action": "2 Actions",
+    "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Leadership 2+",
     "description": "Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.",
@@ -183,12 +183,12 @@
     "path": "White",
     "specialty": "Bulwark",
     "name": "Interposing Shield",
-    "action": "Reaction",
+    "action": "Special",
     "cost": "1 Investiture",
     "prerequisites": "White 1+",
     "description": "When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].",
     "flavor": "Distance is not an excuse. It never was.",
-    "tags": "reaction; investiture; bulwark; defense; movement",
+    "tags": "special; investiture; bulwark; defense; movement",
     "layout": {
       "x": 0.4,
       "y": 0.34
@@ -223,9 +223,9 @@
     "specialty": "Bulwark",
     "name": "Shared Burden",
     "action": "Reaction",
-    "cost": "2 Investiture",
+    "cost": "1 Investiture",
     "prerequisites": "Strength 3+; White 2+",
-    "description": "When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place. ",
+    "description": "When an ally adjacent to you takes damage, spend 1 Investiture. If you do, take half that damage in their place. ",
     "flavor": "You carry your share. Then theirs.",
     "tags": "reaction; investiture; bulwark; strength",
     "layout": {
@@ -603,7 +603,7 @@
       "y": 0.74
     },
     "connections": [
-      "Probable Outcome"
+      "Forewarned"
     ]
   },
   {
@@ -809,7 +809,8 @@
       "y": 0.38
     },
     "connections": [
-      "Calculated Patience"
+      "Calculated Patience",
+      "Read Intent"
     ]
   },
   {

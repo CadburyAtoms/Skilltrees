@@ -922,6 +922,19 @@ Grasping Vines rolled `1d20 + 1` = 10 and printed "10 vs Bench — Green's PHY 1
 Territorial Instinct rolled 15, printed "15 vs Bench — Green's SUR 12 — SUCCESS" and applied **Immobilized**
 (asserted on the document); Tussock-Sow / Drive the Prey rolled 21 vs SUR 12 and applied **Slowed**.)*
 
+- [ ] 🤖 **Item 105 — Interposing Shield retyped to a Special (R-96 (a))**: after **REBUILD leyline
+      + ⟳ Sync Talents**, `Interposing Shield`'s activation icon should read Special (`*`), not
+      Reaction. Trigger it (an ally within 10 ft takes damage) and confirm the same offer card as
+      before still posts and still spends 1 Investiture — the retype touches only
+      `activation.cost.type`, not the `edha-damage-react` handler.
+- [ ] 🤖 **Item 105 — one White mitigation per hit (R-96 (a))**: after **REBUILD leyline +
+      ⟳ Sync Talents**, with a PC owning two or more of `Interposing Shield` / `Shared Burden` /
+      `Retributive Guard` / `Devoted Conduit`, take one hit that qualifies for more than one.
+      The engine posts EVERY matching card today (no single-Reaction enforcement) — confirm that
+      is still the observed behaviour, and record on the row what "one per hit" means at the
+      table (a player-run house rule, not an engine gate). Also confirm `Shared Burden`'s offer
+      now reads **1 Investiture** (down from 2) and still redirects half the damage taken.
+
 ---
 
 # BENCH — Blue (leyline)
@@ -995,6 +1008,15 @@ suffix as always). **POS 2:** the same PC copying an **ally** (targeting `Bench 
 *that ally's* token — **`Bench — Black (Illusion)`**, not the caster's. **NEG (load-bearing):** a
 fresh `B40 Mistheron` cast **The Seeming** in the same session and its copy's token read
 **`Mistheron (3)`** — plain, no suffix, the veil intact.)*
+
+- [ ] 🤖 **Item 105 — Read Intent feeds Pattern Recognition (R-96 (a))**: after **REBUILD leyline
+      + ⟳ Sync Talents**, use `Read Intent` (1 Action, 1 Investiture, Blue vs. Cognitive) on a
+      target and succeed. Off that same success, `Pattern Recognition`'s Special should now be
+      pickable even without `Calculated Patience` — `connections` is
+      `["Calculated Patience", "Read Intent"]` (OR, not AND) — and imposing disadvantage on the
+      target's next test this round. Confirm both re-parented depth (Read Intent now sits directly
+      under `Forewarned`, not `Probable Outcome`) and the OR-loop actually let you take
+      `Pattern Recognition` at Blue 2+ off `Read Intent` alone.
 
 ---
 
