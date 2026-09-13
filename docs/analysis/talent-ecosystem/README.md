@@ -621,6 +621,13 @@ turns the fight into a queue.
 > Civilization's `Bastion` (L3) and Power's `Unstoppable Advance` (L2) are also repeatable below
 > level 6. None sits in a tree the party holds, so the party conclusion is unchanged.
 
+> ⚠️ **Ben, 2026-09-13 — the party conclusion is withdrawn too.** A Slow turn is three Actions
+> and a Strike or one-Action talent takes one target each, so any character can point three
+> Actions at three enemies from level 1. "Nobody can answer four enemies" and "the fight turns
+> into a queue" were wrong, and the critique above accepted the premise without checking it.
+> What survives: ten trees have no *area* effect, so their damage never scales past one target
+> per Action — an efficiency gap against large packs, not an encounter-design constraint.
+
 ### 7. Temp HP has two writers, and they give opposite answers
 
 `edhaGrantTempHpCross` keeps the higher of the held and incoming pool (a tie keeps the incumbent —

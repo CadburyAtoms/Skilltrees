@@ -28,14 +28,14 @@ rules the table actually plays, or the default would do harm.
 | R-103 Scholar downtime | **HOLDS** | Data as stated. |
 | R-104 Intent drift | **HOLDS** | A judgment; the one over-reach (Blue's plot die) is already caveated. |
 | R-105 Heroic flat vs leyline doubling | **WRONG** on "leyline ahead early"; default changed to (c) | The comparison dropped the weapon die and the system's `+ mod` on every hit. Per Action before level 6, a Strike with Mighty is at parity with Withering Ray and ahead of Searing Bolt. |
-| R-106 Multi-enemy | **HOLDS** | The ten-tree zero list is text-true. The "only three repeatable plays before level 6" sub-claim undercounts by four or five. |
+| R-106 Multi-enemy | **WRONG** on its consequence (Ben, 2026-09-13) | The ten-tree zero list is text-true, but "nobody can answer four enemies" is not: a Slow turn splits three Actions across three targets from level 1. This critique accepted the premise unchecked. |
 | R-107 Temp HP writers | **HOLDS** | Every cited line verified; exactly three talents reach the overwriting writer. |
 | R-108 Deity Specials | **HOLDS** | 65 / 13 / 7 / 5 / 0 reproduced from the authored activation types. |
 | R-109 Tier caps | **HOLDS** | `Trade Routes` reads "choose two of your active Foundations"; `Lay Foundation` sustains up to your tier. |
 | R-110 Two advantages | **WRONG** on "worth nothing"; default changed | Both talents are manual, so the table plays SR p.18, where a second advantage is insurance against a disadvantage. The summing objection cites a channel seven talents already use. |
 | R-111 Withering Ray | **WEAKENED**; default changed to (b) | Arithmetic true. Framing wrong: a three-Strike heroic turn is the same size, free, and every character has it. Once-per-turn would put Black below a Strike turn. |
 
-Counts: 11 HOLDS, 4 WEAKENED, 2 WRONG. No ruling added or retired — 17 stay open.
+Counts: 10 HOLDS, 4 WEAKENED, 3 WRONG (R-106 moved to WRONG on Ben's correction of 2026-09-13; it was HOLDS when this file was first written). No ruling added or retired — 17 stay open.
 
 ---
 
@@ -258,7 +258,7 @@ weapon's own die is a growth channel leyline casters do not have.
 has (the defence advocate's fixRisks 5), and the level-1–5 premise that motivated it is gone.
 Changed to **(c) accept and document**; (a) and (b) remain on the card as alternatives.
 
-### R-106 — HOLDS on the count that matters; one sub-claim corrected
+### R-106 — WRONG on its consequence (Ben, 2026-09-13); the counts hold
 
 A full-text read of all 365 confirms the ten trees with **no** talent that damages more than one
 enemy: White, Blue, Agent, Envoy, Hunter, Leader, Scholar, Fate, Life, Sovereignty. Warrior's is
@@ -270,6 +270,15 @@ repeatable before level 6: Destruction's `Fault Line` (L3, a 60 ft line, each ch
 10 ft square for the scene); Civilization's `Bastion` (L3, every Foundation for the scene);
 Power's `Unstoppable Advance` (L2, each enemy whose space you move through). Seven or eight,
 not three. None of them is in a tree the party holds, so nothing changes for R-106's ask.
+
+**Ben's correction (2026-09-13), which this critique should have made itself.** The ruling's
+consequence — "nobody can answer four enemies before level 6, and a group turns the fight into a
+queue" — assumes one target per turn. A Slow turn is three Actions (`SYSTEM-PRIMER.md`), and a
+Strike or a one-Action talent takes one target each, so any character splits a turn across three
+enemies from level 1. The group answer is the action economy, not an area talent. What survives
+is only that ten trees have no effect that scales past one target per Action — an efficiency gap
+against packs larger than a turn can split, not an encounter-design constraint. Verdict revised
+from HOLDS to WRONG on the consequence; the counts stand.
 
 ### R-107 — HOLDS
 
