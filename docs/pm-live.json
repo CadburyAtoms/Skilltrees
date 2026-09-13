@@ -1,7 +1,38 @@
-{ "pm": { "status": "awake", "note": "Sunday session: items 116 (#331, this page is three tabs), 117 (#333, stale cards gone) and 112 (#334, four rulings into the guides + the cancel line on two heroic cards) merged. Bench run 45 is still driving its 29 rows. After it reports: one deploy-to-foundry.bat run (heroic pack) + ⟳ Sync Talents is owed.",
-          "waitingOn": "deploy-to-foundry.bat (heroic, item 112) + ⟳ Sync Talents — after bench 45", "nextWakeAt": null, "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)" },
+{
+  "pm": {
+    "status": "awake",
+    "note": "Sunday session: bench run 45 merged (#335) — 28 of 29 bench rows retired; the heroic specialties all passed. Fix pass 11 (its three defects + Momentum's Edge) and item 105 (the Blue/White minimal-change set) are running. Then ONE deploy-to-foundry.bat run + ⟳ Sync Talents covers everything; R-112 is yours to answer (default: raise The Reckoning's focus pool to 3).",
+    "waitingOn": "R-112 (tap the default) · one deploy-to-foundry.bat run + ⟳ Sync Talents after fix pass 11 + item 105 merge",
+    "nextWakeAt": null,
+    "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
+  },
   "workers": [
-    { "item": "bench-45", "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows", "model": "opus", "size": "L", "lane": "B",
-      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" }
+    {
+      "item": "fix-pass-11",
+      "title": "Fix pass 11 — bench 45's defects: 118 (duplicated cue-card names), 120 (gated regen cue prints its static note), 119 engine half (silent failed consume → warning), 104 (Momentum's Edge rider → [Tier][Die])",
+      "model": "opus",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/fix-pass-11",
+      "startedAt": "2026-09-13T15:52:00Z",
+      "agent": "Fix pass 11 (bench 45)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; test-pass-fixes; REBUILD heroic + leyline owed at merge"
+    },
+    {
+      "item": "105",
+      "title": "R-96 (a) — Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (REBUILD leyline)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/105-blue-white-minimal-set",
+      "startedAt": "2026-09-13T15:52:00Z",
+      "agent": "Work item 105",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; three 🤖 rows for bench 46"
+    }
   ],
-  "usage": null }
+  "usage": null
+}

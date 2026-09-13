@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T15:34:45.004Z",
+  "generatedAt": "2026-09-13T15:52:41.211Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "14f05c8d39",
-    "commit": "a2899ca",
+    "hash": "82ca753c67",
+    "commit": "c3f8b30",
     "branch": "pm/board-2026-09-13b",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,24 +43,37 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: items 116 (#331, this page is three tabs), 117 (#333, stale cards gone) and 112 (#334, four rulings into the guides + the cancel line on two heroic cards) merged. Bench run 45 is still driving its 29 rows. After it reports: one deploy-to-foundry.bat run (heroic pack) + ⟳ Sync Talents is owed.",
-    "waitingOn": "deploy-to-foundry.bat (heroic, item 112) + ⟳ Sync Talents — after bench 45",
+    "note": "Sunday session: bench run 45 merged (#335) — 28 of 29 bench rows retired; the heroic specialties all passed. Fix pass 11 (its three defects + Momentum's Edge) and item 105 (the Blue/White minimal-change set) are running. Then ONE deploy-to-foundry.bat run + ⟳ Sync Talents covers everything; R-112 is yours to answer (default: raise The Reckoning's focus pool to 3).",
+    "waitingOn": "R-112 (tap the default) · one deploy-to-foundry.bat run + ⟳ Sync Talents after fix pass 11 + item 105 merge",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
   "workers": [
     {
-      "item": "bench-45",
-      "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows",
+      "item": "fix-pass-11",
+      "title": "Fix pass 11 — bench 45's defects: 118 (duplicated cue-card names), 120 (gated regen cue prints its static note), 119 engine half (silent failed consume → warning), 104 (Momentum's Edge rider → [Tier][Die])",
       "model": "opus",
-      "size": "L",
+      "size": "M",
       "lane": "B",
-      "branch": "pm/bench-45",
-      "startedAt": "2026-09-13T14:30:00Z",
-      "agent": "Bench run 45",
+      "branch": "pm/fix-pass-11",
+      "startedAt": "2026-09-13T15:52:00Z",
+      "agent": "Fix pass 11 (bench 45)",
       "phase": "working",
       "pr": null,
-      "note": "worktree; owns the Browser pane"
+      "note": "worktree; test-pass-fixes; REBUILD heroic + leyline owed at merge"
+    },
+    {
+      "item": "105",
+      "title": "R-96 (a) — Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (REBUILD leyline)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/105-blue-white-minimal-set",
+      "startedAt": "2026-09-13T15:52:00Z",
+      "agent": "Work item 105",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; three 🤖 rows for bench 46"
     }
   ],
   "usage": null,
@@ -121,7 +134,7 @@
       "model": "opus",
       "size": "L",
       "deps": "Foundry window ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 142
     },
@@ -325,7 +338,7 @@
       "model": "fable-worker",
       "size": "L",
       "deps": "#23 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 244
     },
@@ -349,7 +362,7 @@
       "model": "opus",
       "size": "M",
       "deps": null,
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 194
     },
@@ -361,7 +374,7 @@
       "model": "opus",
       "size": "S",
       "deps": null,
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 193
     },
@@ -373,7 +386,7 @@
       "model": "opus",
       "size": "M",
       "deps": null,
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 197
     },
@@ -385,7 +398,7 @@
       "model": "fable-worker",
       "size": "L",
       "deps": null,
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 200
     },
@@ -397,7 +410,7 @@
       "model": "opus",
       "size": "S",
       "deps": "R-5 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 185
     },
@@ -409,7 +422,7 @@
       "model": "opus",
       "size": "M",
       "deps": "R-4 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 188
     },
@@ -421,7 +434,7 @@
       "model": "opus",
       "size": "M",
       "deps": "R-4 ✓, 28a ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 189
     },
@@ -445,7 +458,7 @@
       "model": "fable-worker",
       "size": "L",
       "deps": "Foundry window for the bench",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 233
     },
@@ -529,7 +542,7 @@
       "model": "opus",
       "size": "M",
       "deps": "45 ✓ 46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 215
     },
@@ -541,7 +554,7 @@
       "model": "opus",
       "size": "M",
       "deps": "45 ✓ 46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 217
     },
@@ -553,7 +566,7 @@
       "model": "opus",
       "size": "S",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 221
     },
@@ -565,7 +578,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 222
     },
@@ -577,7 +590,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓ · 54 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 230
     },
@@ -589,7 +602,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 223
     },
@@ -601,7 +614,7 @@
       "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 219
     },
@@ -613,7 +626,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 224
     },
@@ -625,7 +638,7 @@
       "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 240
     },
@@ -637,7 +650,7 @@
       "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 242
     },
@@ -745,7 +758,7 @@
       "model": "fable-worker",
       "size": "M",
       "deps": "34a ✓ (#220) · 57 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 232
     },
@@ -757,7 +770,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "49 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 229
     },
@@ -781,7 +794,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "59 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 237
     },
@@ -793,7 +806,7 @@
       "model": "opus",
       "size": "S",
       "deps": "R-83 ✓ (a, 09-07 17:11)",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 308
     },
@@ -817,7 +830,7 @@
       "model": "opus",
       "size": "M",
       "deps": "#245 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 253
     },
@@ -877,7 +890,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "#10 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 267
     },
@@ -889,7 +902,7 @@
       "model": "opus",
       "size": "S",
       "deps": "#265 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 269
     },
@@ -901,7 +914,7 @@
       "model": "opus",
       "size": "S",
       "deps": "bench 39 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 241
     },
@@ -925,7 +938,7 @@
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 239
     },
@@ -1009,7 +1022,7 @@
       "model": "opus",
       "size": "M",
       "deps": "R-56 ✓ (chat 21:51)",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 313
     },
@@ -1069,7 +1082,7 @@
       "model": "opus",
       "size": "S",
       "deps": "#274 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 276
     },
@@ -1141,7 +1154,7 @@
       "model": "sonnet",
       "size": "S",
       "deps": "#280 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 285
     },
@@ -1165,7 +1178,7 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-88 ✓ (a) · merged 17:29, REBUILD owed (leyline + ⟳ Sync Talents)",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 288
     },
@@ -1177,7 +1190,7 @@
       "model": "sonnet",
       "size": "M",
       "deps": "R-89 ✓ (a) · merged 17:50, adversaries REBUILD owed",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 291
     },
@@ -1280,25 +1293,25 @@
     {
       "pos": 100,
       "item": "104",
-      "title": "R-95 (a) Momentum's Edge rider → [Tier][Die]",
-      "lane": "R",
-      "model": "sonnet",
+      "title": "R-95 (a) Momentum's Edge rider → [Tier][Die] — folded into fix pass 11 (bench 45 measured the whole Strike roll dying silently)",
+      "lane": "B",
+      "model": "opus",
       "size": "S",
       "deps": null,
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
       "pos": 101,
       "item": "105",
-      "title": "R-96 (a) Blue/White minimal-change set",
+      "title": "R-96 (a) Blue/White minimal-change set (REBUILD leyline; three 🤖 rows)",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": null,
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1444,6 +1457,30 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 333
+    },
+    {
+      "pos": 114,
+      "item": null,
+      "title": "Fix pass 11 — bench 45's defects: 118 (four cue cards print the name twice, DATA → REBUILD heroic), 120 (gated edha-regen cue prints its static note, ENGINE-ONLY), 119 engine half (a failed consume is a silent no-op → ui.notifications.warn, ENGINE-ONLY; the pool/cost half is R-112), 104 (above). Dispatched 11:52",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "bench 45 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 115,
+      "item": "119",
+      "title": "cost/pool half — The Reckoning's Unbreakable Line (3 Focus vs a 2 pool) — apply Ben's R-112 answer to data/adversaries.json + align the cue text (adversaries REBUILD)",
+      "lane": "H",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "R-112",
+      "status": "blocked",
+      "statusDetail": "R-112",
+      "pr": null
     }
   ],
   "rulings": [
@@ -1491,7 +1528,8 @@
     }
   ],
   "benOnly": [
-    "one deploy-to-foundry.bat run (heroic pack, item 112) + ⟳ Sync Talents, after bench 45 finishes."
+    "R-112 — tap an answer on the phone (default (a))",
+    "ONE deploy-to-foundry.bat run + ⟳ Sync Talents AFTER fix pass 11 and 105 merge — it covers heroic (112 + 118), leyline (104 + 105) and, once R-112 is answered, adversaries (119) in one go (Foundry may stay open until then)."
   ],
   "inbox": [],
   "foundry": {
@@ -1501,34 +1539,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "10:45",
-      "at": "2026-09-07T14:45:00.000Z",
-      "item": "Item 79 (rulings close-out 2026-09-07) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "22 min, 272 turns",
-      "weighted": "6.5M",
-      "weightedM": 6.5,
-      "outcome": "merged 11:16 after review (gh mergedAt 15:16Z), two PM corrections on the branch (misattributed two-GM remark; over-tight open-rulings pin), CI green on the corrected head e88e3bc; found: parseArtWishlist had no done-detection (fixed inline), REOPENED rulings invisible to the phone card → item 85. DOCS-ONLY (+ 10 lines of dashboard tooling)",
-      "pr": 273
-    },
-    {
-      "date": "2026-09-07",
-      "time": "10:45",
-      "at": "2026-09-07T14:45:00.000Z",
-      "item": "Bench run 42 (the REBUILD stack live) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "79 min, 511 turns",
-      "weighted": "16.9M",
-      "weightedM": 16.9,
-      "outcome": "merged 12:05 after review (squash, trailer-free); open 🤖 58 → 20, ⚑ 21 → 10; 38 retired, 8 BLOCKED with the blocker re-derived, 1 defect (item 84: weapon-borne edha-on-hit inert, proven by mutation, blast radius 6 rules), R-88 / R-89, item 62's numbers, Ben's 13 marks recorded, world diff EMPTY; runbook: the hidden-pane PIXI ticker freeze explains every \"nothing moved\" measurement. DOCS-ONLY; Ben owes ⟳ Sync Talents",
-      "pr": 274
-    },
     {
       "date": "2026-09-07",
       "time": "12:15",
@@ -2340,9 +2350,37 @@
       "weightedM": 2.8,
       "outcome": "merged 11:33 after review, no trailers; CI green on c128493, gates 12/12 in the worktree (1087 tests). Data: exactly the two cards (source prose + authored overlays; primer rebuilt). Guides: leyline PART 3 principle 10 (the tier trade + per-Action parity), a new Advantage / Disadvantage section (the printed cancel rule vs the engine's boolean fold), Withering Ray as the leyline damage ceiling; deity: the Special target restated. REBUILD heroic + ⟳ Sync Talents owed — after bench 45. Out of scope: the primer / one-pager carry no tier-trade text",
       "pr": 334
+    },
+    {
+      "date": "2026-09-13",
+      "time": "10:30",
+      "at": "2026-09-13T14:30:00.000Z",
+      "item": "Bench run 45 (step zero: ⟳ Sync Talents on Tem parinaem / Soggy Bottom as a PM-R17 refresh + the roster + ⟳ Sync Adversaries; then the 29 open 🤖 rows) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "73 min, 362 tool uses",
+      "weighted": "20.4M",
+      "weightedM": 20.4,
+      "outcome": "merged 11:48 (squash) after review — its commits carried model trailers, so the PR was squashed trailer-free; CI green on 79fe9bd after one PM correction (the runbook named the silent-consume defect by its pre-renumber id). Engine hash-verified = HEAD; both PCs refreshed with nothing substantive changed; 41 adversaries synced, 0 changed. 28 of 29 rows retired (HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Unbreakable Line ×2, three R-93 card-text rows); Predator's Due left open, blocked on 88. Two verdicts overturned (Unbreakable Line (b) now real; no PC talent carries edha-regen). Filed items 118 / 119 / 120, R-112 WAITING, item 104's measured error; roster script fixed twice. World diff clean; 138 bench chat messages (Ben may flush). Queue: every lane-B bench-pending row swept to merged (34)",
+      "pr": 335
+    },
+    {
+      "date": "2026-09-13",
+      "time": "11:52",
+      "at": "2026-09-13T15:52:00.000Z",
+      "item": "Dispatched fix pass 11 (opus, worktree pm/fix-pass-11 — items 118, 120, 119's engine half, 104; test-pass-fixes; R-112's pool/cost half explicitly excluded) and item 105 (sonnet, worktree pm/105-blue-white-minimal-set — R-96 (a), three 🤖 rows). Opus 2 of the day; trailing-5h dispatches 6 of 6",
+      "itemNo": null,
+      "model": "opus + sonnet",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 233,
+  "runLogTotal": 235,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -2986,6 +3024,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 334
+    },
+    {
+      "at": "2026-09-13T14:30:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 335
     }
   ],
   "statusVocab": [
