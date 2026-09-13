@@ -1477,7 +1477,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Red 2+; ",
-    "description": "When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed. ",
+    "description": "When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to [Tier][Die]. ",
     "flavor": "Speed is the weapon. Distance is the wind-up.",
     "tags": "passive; movement; impact_damage",
     "layout": {
