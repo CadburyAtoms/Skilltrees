@@ -4640,7 +4640,7 @@
     },
     "deflect": 1,
     "hp": 18,
-    "foc": 2,
+    "foc": 3,
     "movement": 45,
     "count": 3,
     "biography": "<p>The Ordered March (canon §5c, ruling 137) — desert coursers that hunt the caravan roads not by speed but by flawless coordination: they cut the line, drive the straggler onto open ground, and close as one mind. This is why the Water-Peace and the way-witness exist (ruling 134) — the road is theirs after dark. Ruling 36/111's White country is one continuous ground: the same White as Canticle's herd-rim, across the Kaelmere border.</p><p><em>Rival, pack-run (count 3 = one rival-weight encounter; the block is the pack with its lead-beast). The danger is coordination — break the lead-beast and the pack loses its line. Distinct from the callthief's White influence trick.</em></p>",
@@ -4711,9 +4711,9 @@
               "type": "edha-gm-cue",
               "trigger": "ally-drops",
               "rangeFt": 5,
-              "note": "A pack-mate dropped within 5 ft: the lead may test White (DC = half the damage) via the contest core to hold it at 1 health; once per round."
+              "note": "Unbreakable Line — the lead may spend 3 Focus: test White vs. DC = half the damage; success → the pack-mate holds at 1 HP (once per round)."
             },
-            "description": "GM cue on a same-side drop within 5 ft (ally-drops hook) — Unbreakable Line's hold, cued at the named hook; the DC test runs through the contest core."
+            "description": "GM cue on a same-side drop within 5 ft (ally-drops hook) — Unbreakable Line's hold, cued at the named hook; the DC test runs through the contest core. Note text aligned to Crownox Ring's (R-112 (a), 2026-09-13): both now name the 3-Focus cost the lead/ox pays, not just the DC test."
           }
         ]
       },
