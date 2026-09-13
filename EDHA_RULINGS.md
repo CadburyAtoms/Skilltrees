@@ -37,6 +37,16 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 
 *(R-3 — applyButtonsTo running on one GM while world-scope — ANSWERED 2026-09-06, moved to §K.)*
 
+**R-113. May a bench run ever call `edha.syncAllAdversaries()` — and should the bulk button gain a scope guard, or stay yours alone?** Bench run 46's brief listed `⟳ Sync Adversaries from Pack` as a step-zero refresh after the 14:41 adversaries rebuild. The run **declined it** and recorded why: `edhaSyncAllAdversaries` is an unfiltered `game.actors` loop that replaces `system` **wholesale** on every world adversary (42 of them at the time) and then walks **every scene** pushing prototype token fields onto every token of each. Your world had a **live, started combat** on **"Playtest Map (Copy)"** — a scene outside the bench's licence, which covers "Playtest Map" only — with Ishee, Tem parinaem, Soggy Bottom and a Cinderhound at 6/14 mid-fight. Nothing was lost (the run's rows used fresh pack imports, and neither `The Reckoning` nor `Crownox Ring` exists as a world actor, so the sync was a no-op for the blocks it was asked for), but the next run will be briefed the same way unless this is settled. This is the same shape as run 45's `edha.fixPcTokens()` finding, one document up. **TODO item 123** carries whichever answer.
+
+Ask: Should `edha.syncAllAdversaries()` gain a scope/dry-run guard so agents can call it safely (a), or stay a button only you press, with bench runs forbidden from calling it (b)?
+
+- **(a) — *Recommended*.** Add `{folder, actorIds, scenes, dryRun}` to the bulk path, default to a dry run when it is called from the console API, and refuse (or loudly name) any candidate token that belongs to a **started** combat. Your sheet button and your own bulk button keep behaving exactly as they do now. Cost: one small engine change plus test pins. Benefit: an agent can refresh the bench scene after a rebuild without needing your hands, which is most of why the step was in the brief.
+- **(b).** Leave the engine alone and make it a rule: a bench run never calls a world-wide `edha.*` mutator, and any brief asking for one is refused and reported. Cheaper, but it means every post-rebuild adversary refresh waits for you — and briefs will keep asking for it, because the deploy genuinely does leave world adversary copies stale.
+- **(c).** Both: ship (a) *and* keep the runbook rule, so the guard is a backstop rather than a licence.
+
+*(Bench run 46, 2026-09-13. Note the narrower fact underneath: the bench's licence names "Playtest Map", and a second scene "Playtest Map (Copy)" now exists holding a live combat — if that copy is meant to be the bench's too, say so and the runbook will widen; the run treated it as yours and stayed off it entirely.)*
+
 ---
 
 ## B. Scope & width — what a rule should reach

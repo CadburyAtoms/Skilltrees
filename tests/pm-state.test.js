@@ -378,7 +378,10 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // raise the pool, make it free, or drop the cost), so the set was one again and the three shape
   // loops were live on it. Answered the same day (Ben, phone board, 14:10 ET: (a) raise the pool to
   // 3) and moved to §K.9 — the open set is EMPTY again. R-112 joins the closed list below.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-13, bench run 46: R-113 filed (may a bench run call `edha.syncAllAdversaries()`, and
+  // should the bulk button gain a scope guard — it carries TODO item 123), so the set is one again
+  // and the three shape loops below are live on it.
+  const ECOSYSTEM_RULINGS = ["R-113"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -387,7 +390,7 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
-    `the open rulings are exactly the pinned set (empty since 2026-09-13) — got [${ids.join(", ")}]`);
+    `the open rulings are exactly the pinned set (R-113 since bench run 46, 2026-09-13) — got [${ids.join(", ")}]`);
   assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
     `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
   // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.
