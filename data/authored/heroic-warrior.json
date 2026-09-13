@@ -7,68 +7,6 @@
     "extractedAt": "2026-07-12T12:55:14.486Z"
   },
   "talents": {
-    "Bloodstance": {
-      "docId": "u8fAYsBpvmMxHtkZ",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": 1,
-          "type": "act"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": [
-        {
-          "_id": "BloodStanceRid01",
-          "name": "Bloodstance — while active",
-          "img": "icons/skills/wounds/blood-drip-droplet-red.webp",
-          "type": "base",
-          "changes": [
-            {
-              "key": "system.defenses.phy.bonus",
-              "mode": 2,
-              "value": "-2"
-            },
-            {
-              "key": "system.defenses.cog.bonus",
-              "mode": 2,
-              "value": "-2"
-            },
-            {
-              "key": "system.defenses.spi.bonus",
-              "mode": 2,
-              "value": "-2"
-            }
-          ],
-          "duration": {},
-          "statuses": [],
-          "disabled": false,
-          "transfer": false,
-          "description": "<p>Copied onto the stance marker while you stand in Bloodstance: <strong>−2 to Physical, Cognitive and Spiritual defense</strong> (the cost of the widened Opportunity range). Edit the numbers here — the marker reads this effect (iron rule 2b, 07-24j). <em>transfer: false</em>, so it never applies on its own.</p>",
-          "flags": {
-            "edha-content": {
-              "stanceRider": true
-            }
-          }
-        }
-      ]
-    },
     "Cautious Advance": {
       "docId": "sL8CjCeW8XZB6Jnr",
       "img": "icons/sundries/flags/banner-blue.webp",
@@ -442,54 +380,6 @@
       },
       "effects": []
     },
-    "Meteoric Leap": {
-      "docId": "SQCPSyoptHucHYHB",
-      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": 2,
-          "type": "act"
-        },
-        "consume": [
-          {
-            "type": "resource",
-            "resource": "foc",
-            "value": {
-              "min": 2,
-              "max": 2,
-              "actual": 0
-            }
-          }
-        ],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {
-        "HeroMeteorLeap01": {
-          "id": "HeroMeteorLeap01",
-          "description": "Warrior. Multi-target leap attack: doubled damage is in the roll; 'weaker targets knocked Prone' is a GM strength-read — cue floor.",
-          "event": "edha-on-hit",
-          "handler": {
-            "type": "edha-gm-cue",
-            "note": "Meteoric Leap hit: knock WEAKER targets Prone (GM judges 'weaker'); doubling is already in the damage roll. Shardplate advantage was the owner's to claim on the roll."
-          }
-        }
-      },
-      "effects": []
-    },
     "Mighty": {
       "docId": "xVLW4DL8VXJrXyvO",
       "img": "icons/weapons/swords/greatsword-blue.webp",
@@ -582,127 +472,6 @@
       },
       "effects": []
     },
-    "Precise Parry": {
-      "docId": "WbrWrb13Uo5ixxFC",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.</p>"
-      },
-      "activation": {
-        "type": "skill_test",
-        "cost": {
-          "value": null,
-          "type": "rea"
-        },
-        "consume": [
-          {
-            "type": "resource",
-            "resource": "foc",
-            "value": {
-              "min": 1,
-              "max": 1,
-              "actual": 0
-            }
-          }
-        ],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null,
-        "skill": "ath",
-        "attribute": "default"
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
-    "Shard Training": {
-      "docId": "lOpmUVxMdgiiWeeo",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
-    "Shattering Blow": {
-      "docId": "Kd8jUTzuLMXhfhKy",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [
-          {
-            "type": "resource",
-            "resource": "foc",
-            "value": {
-              "min": 2,
-              "max": 2,
-              "actual": 0
-            }
-          }
-        ],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {
-        "HeroShatterBlow1": {
-          "id": "HeroShatterBlow1",
-          "description": "Warrior. On a melee hit, IF the owner spends 2 focus (optional — cost stays a decision): each damaged target is pushed 5 ft; armor-charge depletion is Shardplate bookkeeping (GM).",
-          "event": "edha-on-hit",
-          "handler": {
-            "type": "edha-push",
-            "whenDamageType": "any",
-            "bySize": false,
-            "distanceFt": 5,
-            "collisionFormula": "",
-            "collisionType": "impact",
-            "note": "Warrior. Shattering Blow: push 5 ft on hit — fires ONLY if the 2-focus rider was paid (owner's call; the push card can be ignored otherwise). Armor charge −1 = GM bookkeeping (Shardplate is not modeled)."
-          }
-        }
-      },
-      "effects": []
-    },
     "Signature Weapon": {
       "docId": "Kz7lHlNFZTCNCLEv",
       "img": "icons/magic/nature/leaf-glow-triple-green.webp",
@@ -730,58 +499,6 @@
       },
       "events": {},
       "effects": []
-    },
-    "Stonestance": {
-      "docId": "HwJQ3UkkYmqI7RE9",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": 1,
-          "type": "act"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": [
-        {
-          "_id": "StoneStanceRid01",
-          "name": "Stonestance — while active",
-          "img": "icons/magic/defensive/shield-barrier-glowing-triangle-orange.webp",
-          "type": "base",
-          "changes": [
-            {
-              "key": "system.deflect.bonus",
-              "mode": 2,
-              "value": "1"
-            }
-          ],
-          "duration": {},
-          "statuses": [],
-          "disabled": false,
-          "transfer": false,
-          "description": "<p>Copied onto the stance marker while you stand in Stonestance: <strong>+1 deflect</strong>. Edit the numbers here — the marker reads this effect (iron rule 2b, 07-24j). <em>transfer: false</em>, so it never applies on its own.</p>",
-          "flags": {
-            "edha-content": {
-              "stanceRider": true
-            }
-          }
-        }
-      ]
     },
     "Surefooted": {
       "docId": "nnE5uTc8G5ETXYc6",
@@ -1001,49 +718,6 @@
       },
       "effects": []
     },
-    "Windstance": {
-      "docId": "IIQ1HYzXdbxdRbGz",
-      "img": "icons/weapons/swords/greatsword-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": 1,
-          "type": "act"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {
-        "WindStanceAdv001": {
-          "id": "WindStanceAdv001",
-          "description": "Warrior. While you stand in Windstance, your Agility tests gain advantage — injected by the shared pre-roll rider pipeline. 07-24j: this replaced the name-keyed EDHA_STANCE_SKILL_ADV table (iron rule 2b). whenSkill is the SKILL id, not the attribute: Agility is Presence-or-Awareness-based, and the attribute filter would wrongly cover its siblings.",
-          "event": "edha-pre-test",
-          "handler": {
-            "type": "edha-test-rider",
-            "appliesTo": "any",
-            "bonusFormula": "",
-            "mode": "advantage",
-            "whenSkill": "agi",
-            "whileStanceActive": true,
-            "whenTargetIsolated": false
-          }
-        }
-      },
-      "effects": []
-    },
     "Wit's End": {
       "docId": "rjq3Szhuuu83ALbc",
       "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
@@ -1082,6 +756,243 @@
       },
       "events": {},
       "effects": []
+    },
+    "Ley-tempered": {
+      "docId": "1R6NHz37MpTCuplF",
+      "effects": [
+        {
+          "_id": "Q5usyLEcJMltsmpl",
+          "name": "Ley-tempered — Defenses",
+          "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "+1 Cognitive and Spiritual defense. The Draw Mana tell is played from the card until the draw-mana watch lands (MANUAL, heroic header).",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Stillstance": {
+      "docId": "uGR6yMlnb0tmAjUA",
+      "events": {
+        "f5cf3vOZMX9KwNuQ": {
+          "id": "f5cf3vOZMX9KwNuQ",
+          "description": "Warrior/Leybreaker (2026-09-13). Stance entry is the STANCE machine; both clauses are table-run today — the ally-guard like Stonestance's, the Reactive Strike like Ironstance's — until the draw-mana watch lands (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🛡️",
+            "whisper": "public",
+            "text": "<strong>Stillstance</strong>: enemies within your reach must spend an additional Action to attack your allies. When an Invested character within your reach Draws Mana or uses a leyline or deity talent, you may make a Reactive Strike against it."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Break the Draw": {
+      "docId": "KyygpRMtGhL0rzQE",
+      "events": {
+        "j2odRyied3IPUZUy": {
+          "id": "j2odRyied3IPUZUy",
+          "description": "Warrior/Leybreaker (2026-09-13). On-hit focus drain by tier — Feinting Strike's shape. The Investiture branch (op: drain, resource: inv) is the note below; one rule cannot choose by pool yet.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "target": "victim",
+            "resource": "foc",
+            "formula": "@tier"
+          },
+          "order": 0
+        },
+        "45xkFgVt9w1k0fBq": {
+          "id": "45xkFgVt9w1k0fBq",
+          "description": "The Investiture alternative and the once-per-round limit are table-run.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🩸",
+            "whisper": "public",
+            "text": "the target loses <strong>@tier</strong> focus — or, if it has Investiture, <strong>@tier Investiture instead</strong> (refund the focus drain by hand). Once per round."
+          },
+          "order": 1
+        }
+      }
+    },
+    "Sever the Line": {
+      "docId": "nSlL4iOCCtbYWd9x",
+      "events": {
+        "0WfVruY3ao2iq7Gt": {
+          "id": "0WfVruY3ao2iq7Gt",
+          "description": "Warrior/Leybreaker (2026-09-13). On-hit Slowed — Startling Blow's shape.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "status",
+            "formula": "",
+            "damageType": "energy",
+            "target": "victim",
+            "radius": 0,
+            "statusId": "slowed",
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Slowed until the end of its next turn — clear by hand."
+          },
+          "order": 0
+        },
+        "telF2QXKWR6Sd0YX": {
+          "id": "telF2QXKWR6Sd0YX",
+          "description": "The Attunement Range clamp is a cue until the range marker lands (heroic header, MANUAL).",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-note",
+            "icon": "✂️",
+            "whisper": "public",
+            "text": "the target is <strong>Slowed</strong> and its <strong>Attunement Range is 5 ft</strong> until the end of its next turn."
+          },
+          "order": 1
+        }
+      }
+    },
+    "Saltstance": {
+      "docId": "GxxvxhMoU3pWSFcq",
+      "effects": [
+        {
+          "_id": "Vc249RHOdGsV7286",
+          "name": "Saltstance — while active",
+          "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto the stance marker while you stand in Saltstance: <strong>+1 Physical defense</strong>. <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "stanceRider": true
+            }
+          }
+        }
+      ],
+      "events": {
+        "1Nk1g0Qj0pkRnnYS": {
+          "id": "1Nk1g0Qj0pkRnnYS",
+          "description": "Warrior/Leybreaker (2026-09-13). The @tier Strike rider and the Draw Mana tax are table-run until edha-damage-rider grows whileStanceActive (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🧂",
+            "whisper": "public",
+            "text": "<strong>Saltstance</strong>: your Strikes deal <strong>+@tier</strong> damage while you stand in it, and Invested characters within your reach must spend an additional Action to Draw Mana."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Turn the Working": {
+      "docId": "1MuuVgMqFJsY5cms",
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ath",
+        "attribute": "default"
+      },
+      "events": {
+        "BO58kWyoiCkFpJlR": {
+          "id": "BO58kWyoiCkFpJlR",
+          "description": "Warrior/Leybreaker (2026-09-13). Athletics vs. Cognitive — Counterspell's shape. The graze conversion / negation is the GM's, as Precise Parry's was.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ath",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: an attack becomes a graze; a talent that costs Investiture does not affect you. FAIL: it resolves as normal."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Breaker's Charge": {
+      "docId": "YXwr5MoqcwmuPhXe",
+      "damage": {
+        "formula": "2d8",
+        "type": null
+      },
+      "events": {
+        "Jo24wXtPpDu21yxt": {
+          "id": "Jo24wXtPpDu21yxt",
+          "description": "Warrior/Leybreaker (2026-09-13). Half-speed move toward the user's target — the Unstoppable move executor.",
+          "event": "use",
+          "handler": {
+            "type": "edha-move",
+            "byHalfSpeed": true
+          },
+          "order": 0
+        },
+        "5R0ZAfWNNDC8Zw8D": {
+          "id": "5R0ZAfWNNDC8Zw8D",
+          "description": "The Investiture drain and the Draw Mana lock are table-run until the draw-mana lock marker lands (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "💥",
+            "whisper": "public",
+            "text": "then Strike in melee, rolling this talent's <strong>+2d8</strong>. On a hit the target loses <strong>@tier Investiture</strong> if it has any, and cannot Draw Mana until the end of its next turn."
+          },
+          "order": 1
+        }
+      }
     }
   }
 }

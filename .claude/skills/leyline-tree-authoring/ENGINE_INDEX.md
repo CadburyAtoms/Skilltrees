@@ -3055,7 +3055,7 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): the
   remaining action/reaction-economy behaviours are queued in §9j #1b with their hook class named.
   The GRANT/BURN half is built (`edha-cae-grant` above); what is still unexpressible is the
-  **cost-discount** half (Vigilant Stance's Dodge/Reactive-Strike −1, Stonestance's attack tax) —
+  **cost-discount** half (Vigilant Stance's Dodge/Reactive-Strike −1, Stillstance's attack tax — was Stonestance's until the 2026-09-13 specialty swap) —
   no hook intercepts an action's focus cost. Do NOT mark those manual; do NOT wire them blind.
 
 ## Character creation (07-18l — §9j #5; the wizard + the kit)

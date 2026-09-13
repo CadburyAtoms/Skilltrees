@@ -183,9 +183,9 @@ if (typeof game !== "undefined") (async () => {
       skills: { ...MUNDANE, ath: 3, inm: 3, sur: 3, lea: 3, med: 2, lor: 2, prc: 2, dis: 2 },
       names: [
         // Warrior — stances + on-hit riders (2bB, 2bJ-12, on-hit spot)
-        "Vigilant Stance", "Stonestance", "Vinestance", "Bloodstance", "Flamestance", "Ironstance",
-        "Windstance", "Practiced Kata", "Feinting Strike", "Cheap Shot", "Startling Blow",
-        "Shattering Blow", "Subtle Takedown", "Meteoric Leap", "Anatomical Insight",
+        "Vigilant Stance", "Stillstance", "Vinestance", "Saltstance", "Flamestance", "Ironstance",
+        "Practiced Kata", "Feinting Strike", "Cheap Shot", "Startling Blow",
+        "Break the Draw", "Sever the Line", "Subtle Takedown", "Breaker's Charge", "Anatomical Insight",
         // Agent + Scholar — CAE / Opportunity / contests (2bC, 2bD, 2bE, 2bQ-5)
         // (a name that collides across heroic trees is written ["name", "Group"])
         "Fast Talker", "Quick Analysis", "Trickster's Hand", "Cautious Advance", "Backstep",

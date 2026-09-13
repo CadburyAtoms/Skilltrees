@@ -137,6 +137,8 @@ const SPECIALTY_ICONS = {
   surgeon: "icons/magic/life/cross-flared-green.webp",
   duelist: "icons/weapons/swords/greatsword-crossguard-blue.webp",
   shardbearer: "icons/weapons/swords/greatsword-blue.webp",
+  leybreaker: "icons/weapons/swords/greatsword-blue.webp",
+  "ley-surveyor": "icons/magic/perception/eye-ringed-green.webp",
   soldier: "icons/magic/defensive/shield-barrier-blue.webp",
 };
 

@@ -274,60 +274,6 @@
       "events": {},
       "effects": []
     },
-    "Deep Study": {
-      "docId": "07WfwZDpSA1ssuPY",
-      "img": "icons/sundries/books/book-embossed-blue.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>"
-      },
-      "activation": {
-        "type": "none",
-        "cost": {
-          "value": null
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
-    "Efficient Engineer": {
-      "docId": "0dnkHBPpy0M3Dn41",
-      "img": "icons/commodities/tech/cog-gold.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>"
-      },
-      "activation": {
-        "type": "none",
-        "cost": {
-          "value": null
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
     "Emotional Intelligence": {
       "docId": "dz4x608XjO3nLgHe",
       "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
@@ -363,34 +309,6 @@
         "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
-    "Experimental Tinkering": {
-      "docId": "tM1AcszweJMsJCus",
-      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>"
       },
       "activation": {
         "type": "utility",
@@ -494,61 +412,6 @@
           "id": "FieldMedResusc00"
         }
       },
-      "effects": []
-    },
-    "Fine Handiwork": {
-      "docId": "4aHCYV19EwsIbl2B",
-      "img": "icons/commodities/tech/cog-gold.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
-    "Inventive Design": {
-      "docId": "AyeI3yiTQrr59HF4",
-      "img": "icons/commodities/tech/cog-gold.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>"
-      },
-      "activation": {
-        "type": "none",
-        "cost": {
-          "value": null
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
       "effects": []
     },
     "Keen Insight": {
@@ -680,34 +543,6 @@
       "events": {},
       "effects": []
     },
-    "Overcharge": {
-      "docId": "PWfbiRq68Eolo1pt",
-      "img": "icons/commodities/tech/cog-gold.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
-      "effects": []
-    },
     "Overwhelm with Details": {
       "docId": "h1czOlE5Nfr7wt4l",
       "img": "icons/commodities/tech/cog-gold.webp",
@@ -756,34 +591,6 @@
           }
         }
       },
-      "effects": []
-    },
-    "Prized Acquisition": {
-      "docId": "K0zXv16vIZR3gSOc",
-      "img": "icons/commodities/tech/cog-gold.webp",
-      "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>"
-      },
-      "activation": {
-        "type": "utility",
-        "cost": {
-          "value": null,
-          "type": "spe"
-        },
-        "consume": [],
-        "flavor": "",
-        "plotDie": false,
-        "uses": null,
-        "opportunity": null,
-        "complication": null
-      },
-      "damage": {
-        "formula": null,
-        "type": null
-      },
-      "events": {},
       "effects": []
     },
     "Resuscitation": {
@@ -968,6 +775,193 @@
         }
       },
       "effects": []
+    },
+    "Ley-sense": {
+      "docId": "uKC1sVeD2xK8XnP8"
+    },
+    "Read the Draw": {
+      "docId": "qyQRupyXaIjd6fu4",
+      "events": {
+        "QmYlCS0CIlFGcaML": {
+          "id": "QmYlCS0CIlFGcaML",
+          "description": "Scholar/Ley-surveyor (2026-09-13). A Reaction with no cost; the reveal is the GM's until the draw-mana watch lands (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🔮",
+            "whisper": "owner",
+            "text": "GM — reveal the target's current <strong>Investiture</strong> and <strong>focus</strong>, and its highest leyline rank."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Mark the Ground": {
+      "docId": "5bN2dUWeXJc2F7zV",
+      "events": {
+        "YY3kHRY54Wtj9eu3": {
+          "id": "YY3kHRY54Wtj9eu3",
+          "description": "Scholar/Ley-surveyor (2026-09-13). The rank step for Attunement Range and [Size] is a cue until the rank marker lands (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📍",
+            "whisper": "public",
+            "text": "<strong>Mark the Ground</strong>: for the scene the chosen ally's leyline talents treat their color rank as <strong>1 higher</strong> for Attunement Range and [Size]; an ally with no leyline instead gains an advantage on Perception tests."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Fault in the Line": {
+      "docId": "JuZBgrIWQIFnnXHT",
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ded",
+        "attribute": "default"
+      },
+      "events": {
+        "Enk5iZuJvyB4B9DT": {
+          "id": "Enk5iZuJvyB4B9DT",
+          "description": "Scholar/Ley-surveyor (2026-09-13). Deduction vs. Cognitive — Turning Point's shape.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ded",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: the target loses 1 additional Investiture (the rule below). FAIL: nothing."
+          },
+          "order": 0
+        },
+        "mDSkUh7kAxqR6w3P": {
+          "id": "mDSkUh7kAxqR6w3P",
+          "description": "The first PC talent to carry op: drain + resource: inv (the engine's Investiture branch, 2bZ).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "target": "victim",
+            "resource": "inv",
+            "formula": "1"
+          },
+          "order": 1
+        }
+      }
+    },
+    "Surveyor's Eye": {
+      "docId": "KDfMVwTyOVzkzL7z",
+      "events": {
+        "soLWHc3q0Atz5nZq": {
+          "id": "soLWHc3q0Atz5nZq",
+          "description": "Scholar/Ley-surveyor (2026-09-13). Advantage on Perception — Ironstance's rider shape without the stance gate. The expertise and the navigation half are sheet reads (MANUAL).",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenSkill": "prc",
+            "whileStanceActive": false,
+            "whenTargetIsolated": false
+          },
+          "order": 0
+        }
+      }
+    },
+    "Steady the Line": {
+      "docId": "or7nmzaGjqojtmwL",
+      "events": {
+        "UQAOOs3zp6y25v7b": {
+          "id": "UQAOOs3zp6y25v7b",
+          "description": "Scholar/Ley-surveyor (2026-09-13). The bonus on the ally's next Draw Mana is a cue until the draw-mana marker lands (heroic header, MANUAL).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🌊",
+            "whisper": "public",
+            "text": "<strong>Steady the Line</strong>: the next time the chosen ally Draws Mana before the start of your next turn, they recover <strong>1 additional Investiture</strong>; if they cannot Draw Mana, they recover 1 focus instead."
+          },
+          "order": 0
+        }
+      }
+    },
+    "Read the Weave": {
+      "docId": "ic9f87MrX83xWAHr",
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ded",
+        "attribute": "default"
+      },
+      "events": {
+        "wAYb84eIzxqBbYLA": {
+          "id": "wAYb84eIzxqBbYLA",
+          "description": "Scholar/Ley-surveyor (2026-09-13). Deduction vs. Cognitive — Turning Point's shape.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ded",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: the scene-long effects below. FAIL: nothing."
+          },
+          "order": 0
+        },
+        "hXb3NVMnkq5pjadb": {
+          "id": "hXb3NVMnkq5pjadb",
+          "description": "The party advantage and the Draw Mana malus are cues until the draw-mana marker lands (heroic header, MANUAL).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🕸️",
+            "whisper": "public",
+            "text": "for the scene, your allies gain an <strong>advantage</strong> on their first test against the target each round, and it recovers <strong>1 less Investiture</strong> each time it Draws Mana."
+          },
+          "order": 1
+        }
+      }
     }
   }
 }
