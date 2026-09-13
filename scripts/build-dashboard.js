@@ -1309,10 +1309,14 @@ function build() {
 // Shape (schema 1):
 //   { schema, stamp, sources: {rel: hash}, tabs: [{ key, label, srcNote, sections: [{ id, title,
 //     chips: [[text, kind]], counts: {total, open, done, flags, bots}, blocks: [block] }] }],
-//     deploy: { hot: [prose], prose: [prose] } | null,
-//     forBen / benchQueue: [{ tab, secId, sub, id }]   (refs into the rows — the text is on the row),
-//     openRulings: [{ id, section, ask, default, applied, blocks }]   (item 43 — the "Needs you"
-//       view's ruling cards; see parseOpenRulings() above for what "open" and "default" mean),
+//     deploy: { title, line, owed: [string] } | null   (item 116 — ONE bounded line, never the
+//       section's prose; see deployLine() below),
+//     forBen / benchQueue: [{ tab, secId, secTitle, sub, id, kind, text, label, done, partial?,
+//       flags, bots, log? }]   (item 116 — the ref carries the row itself, so the phone's ⚑ / 🤖
+//       queues render from the index alone; `id` still matches the row in `tabs`),
+//     openRulings: [{ id, section, ask, default, applied, blocks, text }]   (item 43 — the "Needs
+//       you" view's ruling cards; see parseOpenRulings() above for what "open" and "default"
+//       mean; `text` is the full card, item 116),
 //     counts: { rows, byTab: {key: counts}, forBen, benchQueue, rulingsOpen } }
 //   block = { type: 'prose', text } | { type: 'sub', title, blocks } |
 //           { type: 'item', id, kind, text, label, done, partial?, flags, bots, log? }
@@ -1345,6 +1349,29 @@ function countCitations(id, tabs, tabKeys) {
     for (const sec of tab.sections) walk(sec.blocks);
   }
   return n;
+}
+
+// item 116 (2026-09-13, Ben: "the 'deployed' section is gigantic and taking up the whole
+// artifact"): the phone gets ONE bounded line from the checklist's `# ⚑ DEPLOY STATE` section,
+// never its prose (27 blocks, ~24 KB of history on 2026-09-13). `line` is the section title minus
+// its "DEPLOY STATE" label; `owed` is the first sentence of every block that names something
+// merged-but-not-deployed or a rebuild owed, capped to DEPLOY_OWED_MAX entries of DEPLOY_LINE_MAX
+// chars each. tests/pm-state.test.js pins the bound.
+const DEPLOY_LINE_MAX = 200;
+const DEPLOY_OWED_MAX = 3;
+const DEPLOY_OWED_RE = /MERGED BUT NOT YET DEPLOYED|REBUILD IS OWED|NOT YET DEPLOYED|^⛔/i;
+function clip(s, n) { const t = s.replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+function firstSentence(text) {
+  const t = plain(text).replace(/\s+/g, ' ').trim();
+  const m = t.match(/^(.+?[.!?])(?:\s|$)/);
+  return m ? m[1] : t;
+}
+function deployLine(sec) {
+  const line = clip(plain(sec.title).replace(/^[⚑🤖\s]*DEPLOY STATE\s*/i, '').replace(/^\((.*)\)$/, '$1'), DEPLOY_LINE_MAX);
+  const owed = sec.blocks.filter((b) => b.type === 'prose' && DEPLOY_OWED_RE.test(b.text))
+    .slice(0, DEPLOY_OWED_MAX)
+    .map((b) => clip(firstSentence(b.text), DEPLOY_LINE_MAX));
+  return { title: sec.title, line, owed };
 }
 
 function mobileSnapshot(model) {
@@ -1389,17 +1416,33 @@ function mobileSnapshot(model) {
   });
 
   const secIndex = (tab, sec) => tab.key + '-sec' + tab.sections.indexOf(sec);
-  const refs = (entries) => entries.map((e) => ({ tab: e.tab.key, secId: secIndex(e.tab, e.sec), sub: e.sub ? e.sub.title : null, id: itemId(e.tab.key, e.sec.title, e.sub ? e.sub.title : null, e.item) }));
+  // item 116 (2026-09-13): a mirror ref carries the ROW itself (text, label, log …) plus its
+  // section title, so the phone renders the ⚑ / 🤖 queues from `dash/index` alone — the row
+  // chunks are no longer shipped to the store (the full Dashboard mirror left the page).
+  const refs = (entries) => entries.map((e) => {
+    const subTitle = e.sub ? e.sub.title : null;
+    const it = e.item, { flags, bots } = markers(it);
+    const o = { tab: e.tab.key, secId: secIndex(e.tab, e.sec), secTitle: e.sec.title, sub: subTitle, id: itemId(e.tab.key, e.sec.title, subTitle, it), kind: it.kind, text: it.text, label: rowLabel(it.text), done: !!it.done, flags, bots };
+    if (it.partial) o.partial = true;
+    if (it.log && it.log.length) o.log = it.log.slice();
+    return o;
+  });
 
-  let deploy = null;
-  if (deployBanner) {
-    const prose = deployBanner.blocks.filter((b) => b.type === 'prose').map((b) => b.text);
-    deploy = { title: deployBanner.title, hot: prose.filter((t) => /MERGED BUT NOT YET DEPLOYED/i.test(t)), prose };
-  }
+  const deploy = deployBanner ? deployLine(deployBanner) : null;
 
   // "blocks" is counted here, not in parseOpenRulings(), because only mobileSnapshot has the
-  // other tabs (checklist rows live on 'bench', TODO items on 'repo') to search.
-  const openRulings = parseOpenRulings(rulingsMd).map((r) => ({ ...r, blocks: countCitations(r.id, tabs, ['bench', 'repo']) }))
+  // other tabs (checklist rows live on 'bench', TODO items on 'repo') to search. `text` is the
+  // ruling's full card (its row on the rulings tab) — item 116: the phone's "full text" expander
+  // reads it from the index now that the rulings chunk no longer ships.
+  const rulingText = (id) => {
+    const re = new RegExp('^\\*\\*' + id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\.');
+    for (const tab of tabs) {
+      if (tab.key !== 'rulings') continue;
+      for (const sec of tab.sections) for (const b of sec.blocks) if (b.type === 'item' && re.test(b.text)) return b.text;
+    }
+    return null;
+  };
+  const openRulings = parseOpenRulings(rulingsMd).map((r) => ({ ...r, blocks: countCitations(r.id, tabs, ['bench', 'repo']), text: rulingText(r.id) }))
     .sort((a, b) => b.blocks - a.blocks);
 
   return {
@@ -1440,6 +1483,6 @@ function main() {
   });
 }
 
-module.exports = { buildModel, renderHtml, build, mobileSnapshot, itemId, rowId, markers, rowLabel, parseChecklist, parseRulings, parseOpenRulings, countCitations };
+module.exports = { buildModel, renderHtml, build, mobileSnapshot, deployLine, itemId, rowId, markers, rowLabel, parseChecklist, parseRulings, parseOpenRulings, countCitations };
 
 if (require.main === module) main();

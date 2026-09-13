@@ -22,22 +22,23 @@
  *                                                     <script id="pm-state"> slot (the at-rest
  *                                                     fallback the page renders before — or
  *                                                     without — the live document) AND the whole
- *                                                     dashboard into its <script id="pm-dashboard">
- *                                                     slot
- *   node scripts/pm-state.js --dashboard-dir dir      write the DASHBOARD documents (see below):
- *                                                     dir/index.json + dir/c0.json … + manifest.json
+ *                                                     dashboard INDEX into its
+ *                                                     <script id="pm-dashboard"> slot
+ *   node scripts/pm-state.js --dashboard-dir dir      write the dashboard document (see below):
+ *                                                     dir/index.json + manifest.json
  *
- * THE DASHBOARD (added 2026-09-05 — Ben: "a full project snapshot on my phone"). The page's
- * Dashboard section is EDHA_DASHBOARD.html's content — every tab, section, and row, the ⚑/🤖
- * mirrors, the DEPLOY STATE banner — built from the SAME tab model (build-dashboard.js's
- * buildModel() → mobileSnapshot()), so the phone shows exactly the desktop's rows under the same
- * ids. The artifact store rejects a document over 256 KiB and the snapshot is ~600 KB, so it is
- * SHARDED: `dash/index` (everything but the row blocks: tabs, sections with counts, the mirrors,
- * the deploy banner, ~50 KB) plus `dash/c0`, `dash/c1`, … each holding whole sections packed to
- * DASH_CHUNK_BYTES. The page subscribes to the index and fetches the chunks it names; a chunk whose
- * `stamp` is not the index's is ignored, so a shrinking chunk count leaves harmless orphans.
- * `manifest.json` carries the `writes` array for one Artifact write_db batch. Push these whenever a
- * source doc changed (any merge) — the stamp says whether they did.
+ * THE DASHBOARD INDEX (added 2026-09-05 as a sharded copy of the whole desktop dashboard; cut
+ * down 2026-09-13, item 116 — Ben: the phone needs three tabs, Overview · Bench rows · Needs Ben,
+ * not the whole dashboard). ONE store document, `dash/index`, built from the SAME tab model the
+ * desktop is (build-dashboard.js's buildModel() → mobileSnapshot()): the per-tab open/total
+ * counts, the sections a mirror names (title / deploy chips / counts, no row blocks), the DEPLOY STATE section
+ * reduced to one bounded line, the ⚑ For Ben and 🤖 Bench queue mirrors with each ref carrying its
+ * row (text, label, update log), and the open rulings with their full card text. The page reads
+ * only this document — the `dash/c0` … row chunks are no longer written (orphans left in the
+ * store are ignored; the page never fetched a chunk the index did not name). The document must
+ * stay under the store's 256 KiB cap (DASH_INDEX_BYTES — an error here, never an oversized push;
+ * ~50 KB on 2026-09-13). `manifest.json` carries the `writes` array for the Artifact write_db
+ * call. Push it whenever a source doc changed (any merge) — the stamp says whether it did.
  *
  * RUN LOG CAP (added 2026-09-08, item 99 — the run log alone was 154 KB of a 259 KB `pm/state`
  * document and the store's 256 KiB cap refused the push). `runLog` in the output is a PROJECTION:
@@ -112,9 +113,9 @@ const DEFAULT_WINDOWS = [
 const STATUS_VOCAB = ["queued", "briefed", "running", "in-review", "merged", "blocked", "bench-pending", "Ben-only"];
 const WORKER_MODELS = new Set(["sonnet", "opus"]);
 const DOW_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-// Whole sections are packed into chunk documents up to this many bytes — well under the store's
-// 256 KiB document cap, with room for the JSON envelope.
-const DASH_CHUNK_BYTES = 200 * 1024;
+// The store refuses a document over 256 KiB; `dash/index` (the one dashboard document since item
+// 116) is checked against this before it is written anywhere.
+const DASH_INDEX_BYTES = 256 * 1024;
 const DASH_COLLECTION = "dash";
 // The run log ITSELF is projected (not chunked) into `pm/state`, so it gets its own cap — the
 // most recent this many rows ship by default; --runlog-rows overrides (0 = all). See RUN LOG CAP
@@ -260,10 +261,28 @@ function parseRulings(rows) {
  * the label lives inside the top blockquote, before any `## ` heading `sections()` keys on, and
  * `parseMd` collapses a blockquote's own paragraph breaks into one blob, erasing the very boundary
  * this needs. Returns [] if the board carries no such line yet — the page just shows no Ben-only
- * cards until the PM adopts the convention. */
+ * cards until the PM adopts the convention.
+ *
+ * CURRENT LINE ONLY (item 117, 2026-09-13). The session-of-record blockquote keeps every
+ * superseded paragraph below the live one, each still carrying its own "Waiting on Ben" text, under
+ * a `_(The line this replaces, for the record:)_` / `_(History — ...)_` marker (project-manager
+ * SKILL.md's handoff convention). Scanning the whole blockquote for the FIRST matching label — the
+ * old behaviour — found whichever paragraph happened to phrase its label as "**Waiting on Ben:**"
+ * with the ask text OUTSIDE the bold span; a current line phrased "**Waiting on Ben: nothing.**"
+ * (ask text INSIDE the bold span) didn't match that shape at all, so the scan fell through to a
+ * REPLACED paragraph's answered asks (R-56, a 09-07 bat run) and resurrected them as live "Yours to
+ * do" cards on the phone (found at item 116's review). Fixed by (a) truncating the search to the
+ * text before the first replaces/history marker — nothing after it is live — and (b) loosening the
+ * label match to stop at the colon rather than demanding an immediately-following "**", so both
+ * label shapes are found; a lone "nothing" ask (with or without trailing punctuation) then yields no
+ * cards instead of literally reporting "nothing" as an ask. */
 function parseBenOnly(md) {
-  const LABEL_RE = /\*\*Waiting on Ben\b[^*]*:\*\*/i;
-  const lines = md.split(/\r?\n/);
+  const MARKER_RE = /_\(The line this replaces|_\(History —/;
+  const LABEL_RE = /\*\*Waiting on Ben\b[^*:]*:\*{0,2}/i;
+  const allLines = md.split(/\r?\n/);
+  const markerIdx = allLines.findIndex((l) => MARKER_RE.test(l));
+  const lines = markerIdx === -1 ? allLines : allLines.slice(0, markerIdx);
+
   const startIdx = lines.findIndex((l) => LABEL_RE.test(l));
   if (startIdx === -1) return [];
   const labelMatch = lines[startIdx].match(LABEL_RE);
@@ -273,10 +292,16 @@ function parseBenOnly(md) {
     if (/^\s*$/.test(l) || /^>\s*$/.test(l) || /^#{1,6}\s/.test(l)) break; // paragraph/section boundary
     collected.push(l.replace(/^>\s?/, ""));
   }
-  const bulletLines = collected.filter((l) => /^\s*[-*]\s+/.test(l));
-  if (bulletLines.length) return bulletLines.map((l) => strip(l.replace(/^\s*[-*]\s+/, ""))).filter(Boolean);
+  const isNothing = (s) => /^nothing[.!]?$/i.test(strip(s));
 
-  const joined = collected.join(" ").replace(/\s+/g, " ").trim();
+  const bulletLines = collected.filter((l) => /^\s*[-*]\s+/.test(l));
+  if (bulletLines.length) {
+    const asks = bulletLines.map((l) => strip(l.replace(/^\s*[-*]\s+/, ""))).filter(Boolean);
+    return asks.length === 1 && isNothing(asks[0]) ? [] : asks;
+  }
+
+  const joined = strip(collected.join(" ").replace(/\s+/g, " "));
+  if (isNothing(joined)) return [];
   const parts = [];
   let depth = 0, cur = "";
   for (const ch of joined) {
@@ -520,57 +545,41 @@ function parseBoard(md, opts = {}) {
   };
 }
 
-// ---- the dashboard shards ---------------------------------------------------------
+// ---- the dashboard index ---------------------------------------------------------
 
 const byteLen = (o) => Buffer.byteLength(JSON.stringify(o));
 
-/** Pure: mobile snapshot → { index, chunks: {id: doc} }. Whole sections are packed greedily, in
- * tab order, into chunk documents under `opts.maxBytes` (default DASH_CHUNK_BYTES); a single
- * section larger than that is an error rather than an oversized document the store would reject.
- * The index is the snapshot minus the row blocks, each section pointing at its chunk. Chunk ids
- * are `c0`, `c1`, … so a re-push overwrites in place. `opts.now` stamps `generatedAt`. */
-function shardDashboard(snap, opts = {}) {
-  const maxBytes = opts.maxBytes || DASH_CHUNK_BYTES;
-  const chunks = {};
-  let cur = null, curId = null, curBytes = 0, n = 0;
-  const openChunk = () => {
-    curId = "c" + n++;
-    cur = { schema: snap.schema, stamp: snap.stamp, sections: {} };
-    curBytes = byteLen(cur);
-    chunks[curId] = cur;
-  };
+/** Pure: mobile snapshot → the ONE `dash/index` document (item 116, 2026-09-13). It is the
+ * snapshot minus the row blocks: the tabs (only the sections a mirror names — title / chips /
+ * counts), the per-tab
+ * counts, the bounded deploy line, the ⚑ / 🤖 mirrors (each ref carrying its row), and the open
+ * rulings. Everything the phone's three tabs render is in here; the row chunks (`dash/c0` …) are
+ * no longer produced. A document over `opts.maxBytes` (default DASH_INDEX_BYTES, the store's cap)
+ * is an error, never an oversized push. `opts.now` stamps `generatedAt`. */
+function dashIndex(snap, opts = {}) {
+  const maxBytes = opts.maxBytes || DASH_INDEX_BYTES;
+  const used = new Set((snap.forBen || []).concat(snap.benchQueue || []).map((r) => r.secId));
   const index = {
     schema: snap.schema, stamp: snap.stamp, generatedAt: opts.now || new Date().toISOString(),
     sources: snap.sources, counts: snap.counts, deploy: snap.deploy, forBen: snap.forBen, benchQueue: snap.benchQueue,
-    // openRulings rides in the index (small, item 43's "Needs you" cards) rather than a chunk, so
-    // the page can render them above the fold before it has fetched anything else.
     openRulings: snap.openRulings || [],
-    tabs: [], chunks: [],
+    tabs: snap.tabs.map((tab) => ({
+      key: tab.key, label: tab.label, srcNote: tab.srcNote,
+      // Only the sections a mirror ref points at (the phone groups ⚑ / 🤖 rows by section and
+      // shows each bench section's deploy chips); the other ~200 titles are weight it never reads.
+      sections: tab.sections.filter((sec) => used.has(sec.id)).map((sec) => ({ id: sec.id, title: sec.title, chips: sec.chips, counts: sec.counts })),
+    })),
   };
-  for (const tab of snap.tabs) {
-    const t = { key: tab.key, label: tab.label, srcNote: tab.srcNote, sections: [] };
-    for (const sec of tab.sections) {
-      const body = { blocks: sec.blocks };
-      const bytes = byteLen(body) + byteLen(sec.id) + 2;
-      if (bytes + byteLen({ schema: 1, stamp: snap.stamp, sections: {} }) > maxBytes) {
-        throw new Error(`pm-state: dashboard section ${sec.id} (${bytes} bytes) alone exceeds the ${maxBytes}-byte chunk cap`);
-      }
-      if (!cur || curBytes + bytes > maxBytes) openChunk();
-      cur.sections[sec.id] = body;
-      curBytes += bytes;
-      t.sections.push({ id: sec.id, title: sec.title, chips: sec.chips, counts: sec.counts, chunk: curId });
-    }
-    index.tabs.push(t);
-  }
-  index.chunks = Object.keys(chunks).map((id) => ({ id, bytes: byteLen(chunks[id]), sections: Object.keys(chunks[id].sections).length }));
-  return { index, chunks };
+  const bytes = byteLen(index);
+  if (bytes > maxBytes) throw new Error(`pm-state: dash/index is ${bytes} bytes — over the ${maxBytes}-byte document cap`);
+  return index;
 }
 
-/** The dashboard shards for the current working tree: build-dashboard.js's model → snapshot →
- * shards. Runs the same source-doc gates the HTML build does (a checklist table, a marker on a
+/** The dashboard index for the current working tree: build-dashboard.js's model → snapshot →
+ * index. Runs the same source-doc gates the HTML build does (a checklist table, a marker on a
  * header) and throws the same way. */
-function buildDashboardShards(opts = {}) {
-  return shardDashboard(dashboard.mobileSnapshot(dashboard.buildModel()), opts);
+function buildDashIndex(opts = {}) {
+  return dashIndex(dashboard.mobileSnapshot(dashboard.buildModel()), opts);
 }
 
 // ---- the page's JSON slots ------------------------------------------------------------
@@ -590,11 +599,10 @@ function injectSlot(html, id, obj) {
 /** The board state into `script#pm-state` (kept under its original name for the tests). */
 function injectState(html, state) { return injectSlot(html, "pm-state", state); }
 
-/** Both slots: the board state and the dashboard shards (`{ index, chunks }` — the same documents
- * the page would read from the store, so the at-rest fallback and the live path share one
- * assembly step). */
-function injectPage(html, state, shards) {
-  return injectSlot(injectState(html, state), "pm-dashboard", { index: shards.index, chunks: shards.chunks });
+/** Both slots: the board state and the dashboard index (`{ index }` — the same document the page
+ * reads from the store, so the at-rest fallback and the live path share one shape). */
+function injectPage(html, state, index) {
+  return injectSlot(injectState(html, state), "pm-dashboard", { index });
 }
 
 // ---- CLI ---------------------------------------------------------------------------
@@ -620,17 +628,14 @@ function parseArgs(argv) {
   return a;
 }
 
-/** Write the shards as one JSON file per document plus manifest.json — the `writes` array in it
- * is the Artifact tool's write_db batch, verbatim. */
-function writeDashboardDir(dir, shards) {
+/** Write the index as dir/index.json plus manifest.json — the `writes` array in it is the
+ * Artifact tool's write_db call, verbatim (one document since item 116). */
+function writeDashboardDir(dir, index) {
   fs.mkdirSync(dir, { recursive: true });
-  const docs = [{ doc_id: "index", body: shards.index }].concat(Object.keys(shards.chunks).map((id) => ({ doc_id: id, body: shards.chunks[id] })));
-  const writes = docs.map((d) => {
-    const file = path.join(dir, d.doc_id + ".json");
-    fs.writeFileSync(file, JSON.stringify(d.body));
-    return { op: "set", collection: DASH_COLLECTION, doc_id: d.doc_id, file_path: file };
-  });
-  const manifest = { collection: DASH_COLLECTION, stamp: shards.index.stamp, generatedAt: shards.index.generatedAt, chunks: shards.index.chunks, writes };
+  const file = path.join(dir, "index.json");
+  fs.writeFileSync(file, JSON.stringify(index));
+  const writes = [{ op: "set", collection: DASH_COLLECTION, doc_id: "index", file_path: file }];
+  const manifest = { collection: DASH_COLLECTION, stamp: index.stamp, generatedAt: index.generatedAt, bytes: byteLen(index), writes };
   fs.writeFileSync(path.join(dir, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
   return manifest;
 }
@@ -638,9 +643,9 @@ function writeDashboardDir(dir, shards) {
 function main(argv) {
   const a = parseArgs(argv);
   if (a.help) {
-    // Lines 2..49 of this file: the usage synopsis plus the DASHBOARD and RUN LOG CAP blocks that
+    // Lines 2..50 of this file: the usage synopsis plus the DASHBOARD INDEX and RUN LOG CAP blocks that
     // explain --dashboard-dir and --runlog-rows. Keep the end in step with the header if any block grows.
-    process.stdout.write(fs.readFileSync(__filename, "utf8").split("\n").slice(1, 49).join("\n") + "\n");
+    process.stdout.write(fs.readFileSync(__filename, "utf8").split("\n").slice(1, 51).join("\n") + "\n");
     return 0;
   }
   const md = fs.readFileSync(a.board, "utf8");
@@ -650,31 +655,30 @@ function main(argv) {
     live.usage = Object.assign({}, live.usage || {}, { lastSession: u, measuredAt: new Date().toISOString() });
   }
   const state = parseBoard(md, { live, runlogRows: a.runlogRows });
-  let shards = null;
-  if (a.inject || a.dashboardDir) shards = buildDashboardShards({ now: state.generatedAt });
+  let index = null;
+  if (a.inject || a.dashboardDir) index = buildDashIndex({ now: state.generatedAt });
   if (a.dashboardDir) {
-    const m = writeDashboardDir(a.dashboardDir, shards);
-    process.stderr.write(`pm-state: wrote ${m.writes.length} dashboard document(s) to ${a.dashboardDir} (stamp @${m.stamp}, ${shards.index.counts.rows} rows: ` +
-      m.chunks.map((c) => `${c.id} ${Math.round(c.bytes / 1024)}K`).join(", ") + `)\n`);
+    const m = writeDashboardDir(a.dashboardDir, index);
+    process.stderr.write(`pm-state: wrote ${m.writes.length} dashboard document to ${a.dashboardDir} (stamp @${m.stamp}, ${index.counts.rows} rows, index ${Math.round(m.bytes / 1024)}K)\n`);
     if (!a.out && !a.inject) return 0;
   }
   let out;
   if (a.inject) {
-    out = injectPage(fs.readFileSync(a.inject, "utf8"), state, shards);
+    out = injectPage(fs.readFileSync(a.inject, "utf8"), state, index);
     if (!a.out) throw new Error("pm-state: --inject needs --out (never overwrite the tracked page with a snapshot)");
   } else {
     out = JSON.stringify(state, null, 2) + "\n";
   }
-  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} of ${state.runLogTotal} run-log rows, ${state.workers.length} worker(s), window ${state.windowStatus.open ? "open" : "closed"}${shards ? `, dashboard @${shards.index.stamp}` : ""})\n`); }
+  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} of ${state.runLogTotal} run-log rows, ${state.workers.length} worker(s), window ${state.windowStatus.open ? "open" : "closed"}${index ? `, dashboard @${index.stamp}` : ""})\n`); }
   else process.stdout.write(out);
   return 0;
 }
 
 module.exports = {
-  parseBoard, injectState, injectSlot, injectPage, shardDashboard, buildDashboardShards, writeDashboardDir,
+  parseBoard, injectState, injectSlot, injectPage, dashIndex, buildDashIndex, writeDashboardDir,
   wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox, parseBenOnly,
   parseFoundry, parseCaps, parseWindowEntry, parseWindowsSpec, inWindow, nextWindowOpen, DEFAULT_WINDOWS,
-  STATUS_VOCAB, DASH_CHUNK_BYTES, DASH_COLLECTION, DEFAULT_RUNLOG_ROWS,
+  STATUS_VOCAB, DASH_INDEX_BYTES, DASH_COLLECTION, DEFAULT_RUNLOG_ROWS,
 };
 
 if (require.main === module) {

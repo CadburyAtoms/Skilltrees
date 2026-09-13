@@ -805,7 +805,7 @@ regen is `edha-regen-grant` (Apex Form → `edhaResolveLifeRegen` → `edhaCross
 turn.)"*; withered **39 → 39** with the gate card and *"(no HP applied — B45 Garden Sow cannot regain HP
 (Withering Touch) — no healing lands.)"*. ⚠️ Its cue still reads its static `note` first — *"Nexus-Fed —
 the Sow regains 5 HP."* — so the blocked card both claims 5 HP and says none lands (`h.note ||
-${line}.`); filed as **TODO item 118**. ⚠️ Harness note: `edhaPostCueCard` is **once per round**, so two
+${line}.`); filed as **TODO item 120**. ⚠️ Harness note: `edhaPostCueCard` is **once per round**, so two
 ticks in the same round silently drop the second card — advance the round between takes. **70-3** —
 withered owner: victim took **12 vital in full** (15 → 3, damage NOT gated), owner **20 → 20**, card
 *"Bench — Death cannot regain HP (Withering Touch) — no healing lands."*; unmarked control: victim 10
@@ -2276,7 +2276,7 @@ a public card. **HS-8** — `1d20 + 3 = 17` vs COG 16 → SUCCESS, scene-rider c
 public), each naming its table-run clause. ⚠️ **One defect filed: four of the cue cards print the
 talent name twice** — `edha-note` already prefixes it, and Stillstance / Saltstance / Mark the Ground /
 Steady the Line repeat it in their own `text` ("📍 **Mark the Ground**: **Mark the Ground**: for the
-scene…"). Exactly four across all of `data/authored/` — **TODO item 116**.)*
+scene…"). Exactly four across all of `data/authored/` — **TODO item 118**.)*
 
 - [ ] ⚑ **HS-11 — feel: is Stillstance's ally-guard at depth 0 too strong at the table, and is Read the
   Weave's scene-long party advantage?** The reviewer flagged both; they were accepted provisionally.
@@ -4220,7 +4220,7 @@ the two blocks:** `The Reckoning`'s Unbreakable Line consumes **3 Focus** while 
 pool **maxes at 2** (`max.override: 2`) — so it can never be paid, and `item.use()` then does **nothing
 at all**: no chat card, no `ui.notifications` warning, no log line. The Crownox Ring (max 3) is fine. The
 first take on the Reckoning read exactly like a dead ability; raising its pool to 5 made the identical
-take work and consumed exactly 3. Filed as **TODO item 117** (the cost/pool mismatch, and the silent
+take work and consumed exactly 3. Filed as **TODO item 119** (the cost/pool mismatch, and the silent
 consume failure behind it); the cost-versus-pool half is a design call, **R-112**.)*
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with

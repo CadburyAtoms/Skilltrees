@@ -3591,7 +3591,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size L · deps approval per batch · verify: read-through. Filed 2026-09-13 from R-104.
 
-## 112. [ ] R-105 (c) + R-108 (a) + R-110 (d) + R-111 (b) — the guides record the four decisions; two cards gain the cancel line (DOCS + two cards, REBUILD heroic) (2026-09-13)
+## 112. [x] (2026-09-13, PR #334) R-105 (c) + R-108 (a) + R-110 (d) + R-111 (b) — the guides record the four decisions; two cards gain the cancel line (DOCS + two cards, REBUILD heroic) (2026-09-13)
 
 **Why:** four answers that are documentation plus one line on two cards: the heroic-vs-leyline tier trade is accepted (with the critique's per-Action parity arithmetic); the deity Special target is restated and nothing converted yet; `Fatal Thrust` and `Defensive Position` keep "two" and gain "advantages and disadvantages cancel one-for-one; roll with whatever remains", plus a guide note that the engine folds two-against-one to nothing and these two are played by hand; `Withering Ray` stays and is written into the guides as the leyline damage ceiling.
 
@@ -3631,7 +3631,26 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model opus · size M · deps — · verify: the pins + the HS rows. Filed 2026-09-13 from the specialty swap.
 
-## 116. [ ] Four Leybreaker / Ley-surveyor cue cards print the talent name twice (DATA, REBUILD heroic + ⟳ Sync) (2026-09-13)
+## 116. [x] (2026-09-13, PR #331) The phone board becomes three tabs (Overview · Bench rows · Needs Ben); the deploy banner and the full dashboard mirror stop swallowing the page (TOOLING + PM republish) (2026-09-13)
+
+**Why:** Ben (chat, 2026-09-13): *"the 'deployed' section is gigantic and taking up the whole artifact. Really the artifact just needs a tab for bench rows, a tab for 'needs Ben' and an overview of the project tab."* `mobileSnapshot()` shipped EVERY prose block of the checklist's `# ⚑ DEPLOY STATE` section (27 blocks, ~24 KB of history) as `deploy.prose`, and the page mirrored the whole desktop dashboard (every tab, section and row — six ~200 KB chunk documents, a 1.47 MB injected page) under a "More" toggle nobody could read on a phone.
+
+**What to do:** `mobileSnapshot()` projects the deploy section to ONE bounded line (`{ title, line, owed[≤3] }`, never the prose) and puts each mirror ref's row text and each open ruling's card text on the index; `pm-state.js` writes `dash/index` alone (no chunks, cap-checked); the page is rebuilt as three tabs — Overview (PM state + worker clock, snapshot tiles, the deploy line, budget window, queue, run-log tail), Bench rows (the 🤖 queue grouped by section with deploy chips), Needs Ben (ruling cards, asks, every ⚑ row, the inbox) — keeping item 94's Sent ✓ / Recorded by PM ✓ behaviour. Pin the deploy bound and the index shape in `tests/`.
+
+**Done when:** the injected page and `dash/index` are a fraction of their former size (numbers in the PR), three phone-viewport screenshots show the tabs, the PM skill's mobile-board section matches the one-document contract, gates green.
+
+**PM:** lane R · model fable (Ben authorized, chat 2026-09-13) · size M · deps — · verify: the screenshots + the size numbers, then REPUBLISH the artifact (`--inject` → `Artifact(url)`) and push the new `dash/index`. Filed 2026-09-13 by the worker (the PM had no PR to file it on).
+
+## 117. [x] (2026-09-13, PR #333) `parseBenOnly` reads "Waiting on Ben" text from the REPLACED session-of-record lines, so the phone's "Yours to do" cards resurrect answered asks (TOOLING + test pin) (2026-09-13)
+
+**Why:** Reviewing item 116's Needs Ben screenshot on 2026-09-13, the two "Yours to do" cards were R-56 (answered 09-07; item 83 merged #313) and "ONE deploy-to-foundry.bat run tomorrow for items 92 + 93" (Ben ran it 09-07 21:52) — both from the 09-07 19:56 session line that the board keeps only as _(The line this replaces, for the record:)_ history. `scripts/pm-state.js parseBenOnly()` scans the whole session-of-record blockquote, so every superseded line's **Waiting on Ben:** text is projected as a live ask with a Done button, while the current line says "Waiting on Ben: nothing."
+
+**What to do:** scope `parseBenOnly()` (and any sibling that reads "Waiting on Ben" / "Still owed by Ben" / "Ben owes") to the FIRST session-of-record paragraph only — the text before the first `_(The line this replaces` marker; pin it with a fixture carrying a current line with no asks and a replaced line with two, expecting `[]`, and the reversion shown failing; regenerate `docs/pm-state.json`.
+
+**Done when:** the pin passes and fails on the reversion; `node scripts/pm-state.js` on the real board yields zero Ben-only asks while the current line says nothing is waiting; the PM pushes `pm/state`.
+
+**PM:** lane R · model sonnet · size S · deps 116 ✓ · verify: the pin + a real-board run. Filed 2026-09-13 by the PM at item 116's review.
+## 118. [ ] Four Leybreaker / Ley-surveyor cue cards print the talent name twice (DATA, REBUILD heroic + ⟳ Sync) (2026-09-13)
 
 **Why:** `edha-note` already prefixes its card with the icon and the talent's name, so a rule whose own `text` also opens with `<strong><name></strong>:` renders it twice. Measured live at bench run 45: *"📍 **Mark the Ground**: **Mark the Ground**: for the scene…"*. A sweep of every `handler.text` in `data/authored/` found **exactly four**, all from PR #329 — `Stillstance` and `Saltstance` (`heroic-warrior.json`), `Mark the Ground` and `Steady the Line` (`heroic-scholar.json`). The other 37 note/cue rules in the repo are clean, so this is a new regression, not the house style.
 
@@ -3641,7 +3660,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: the sweep + one bench read. Filed 2026-09-13 from bench run 45.
 
-## 117. [ ] `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2 — and a failed consume is a silent no-op (DATA + ENGINE) (2026-09-13)
+## 119. [ ] `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2 — and a failed consume is a silent no-op (DATA + ENGINE) (2026-09-13)
 
 **Why:** bench run 45 drove item 89's new `use → edha-def-test` rule on both Unbreakable Line blocks. It works on the Crownox Ring (focus max 3). On `The Reckoning` the ability consumes **3 Focus** while its `resources.foc.max.override` is **2**, so it can never be paid — and `item.use()` then produces **nothing at all**: no chat card, no `ui.notifications` warning, no console line. The first take read exactly like a dead ability; raising the pool to 5 made the identical take work and consumed exactly 3. Item 89 copied the Crownox cost onto a block whose stat line cannot pay it, and the Reckoning's own cue text never promises a focus cost ("the lead may test White (DC = half the damage)").
 
@@ -3651,7 +3670,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size S · deps — · verify: a bench re-drive of the Reckoning row. Filed 2026-09-13 from bench run 45.
 
-## 118. [ ] A gated `edha-regen` cue card still prints its static "regains N HP" note beside "no healing lands" (ENGINE-ONLY, F5) (2026-09-13)
+## 120. [ ] A gated `edha-regen` cue card still prints its static "regains N HP" note beside "no healing lands" (ENGINE-ONLY, F5) (2026-09-13)
 
 **Why:** item 70 gated the regen tick at its emitter and item 68's contract says a heal card is built from what was DELIVERED. The `edha-regen` sweep honours that in its parenthetical but not in its body: it posts the rule's `note` in preference to the composed `line` (`h.note || line`), so a rule that carries its own `note` wins and the card reads *"⏰ Nexus-Fed (B45 Garden Sow): **Nexus-Fed — the Sow regains 5 HP.** (no HP applied — B45 Garden Sow cannot regain HP (Withering Touch) — no healing lands.)"* — measured live at bench run 45. The GM reads "regains 5 HP" first. 70-1's Apex Form card composes from `line` and is correct, which is why only the adversary side shows it.
 
@@ -3660,3 +3679,4 @@ filed 2026-09-08 01:1x.
 **Done when:** a withered Nexus-Fed tick's card carries no un-gated number; the ungated tick's card is unchanged.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: the pin + a bench re-drive of 70-2. Filed 2026-09-13 from bench run 45.
+

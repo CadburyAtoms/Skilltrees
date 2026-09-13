@@ -172,23 +172,34 @@ the five-hour window rolling, or the next operating window opening (never a wake
 ## The mobile board (Ben's phone view; added 2026-09-04 at Ben's request)
 
 **URL: `https://claude.ai/code/artifact/a24a597c-4516-425b-9eb2-a30f1ece03f0`** (also on the board under "Mobile board").
-It is a published Artifact of `docs/pm-board-mobile.html` that shows: the PM's state and any
-running worker with an elapsed clock; a project Snapshot (the desktop dashboard's open/total per
-tab, ⚑ and 🤖 counts, DEPLOY STATE); the trailing-window budget meters (dispatches / Opus used,
-when the next slot opens, the operating windows); weighted usage per run-log row; the queue with status,
-lane, model, size, deps, PR; what waits on Ben (open rulings, blocked items, deploy staleness,
-Foundry window); the run log; an **inbox** Ben types into from his phone; and the full Dashboard
-(every EDHA_DASHBOARD.html tab and row, see below). The board part renders whatever
-is in the artifact's `pm/state` document, live, and falls back to the snapshot embedded at publish.
+It is a published Artifact of `docs/pm-board-mobile.html` — **three tabs since item 116
+(2026-09-13, Ben: "the artifact just needs a tab for bench rows, a tab for 'needs Ben' and an
+overview of the project tab")**:
+- **Overview** — the PM's state and any running worker with an elapsed clock; the snapshot tiles
+  (the desktop dashboard's open/total per tab, ⚑ and 🤖 counts); the DEPLOY STATE as **one line**
+  (the checklist section's title line + the board's live-engine fact + at most three "owed"
+  sentences — never the section's prose); the trailing-window budget meters and the next slot;
+  the queue (open rows by default, with status, lane, model, size, deps, PR); the last ten run-log
+  rows.
+- **Bench rows** — every open 🤖 checklist row grouped by its `# BENCH —` section with the
+  section's deploy chips; an agent's queue, read-only for Ben plus a "reply in inbox" per row.
+- **Needs Ben** — the open-ruling cards (item 43), Ben-only asks, blocked queue items, deploy /
+  Foundry-window asks, every ⚑ row grouped by tab › section, and the **inbox** composer with
+  Ben's own notes. The page opens here and remembers the last tab.
+The board part renders whatever is in the artifact's `pm/state` document, live, and falls back to
+the snapshot embedded at publish. What left with item 116: the full desktop-dashboard mirror
+(every tab, section and row, search, filters), the deploy section's prose, the per-row usage bars.
 
-**It also carries the whole desktop dashboard (since 2026-09-05):** a Snapshot strip and a
-Dashboard section with every `EDHA_DASHBOARD.html` tab, section, and row (same tab model, same row
-ids — `build-dashboard.js mobileSnapshot()`), the ⚑ For Ben / 🤖 Bench queue mirrors, the DEPLOY
-STATE banner, search and filters. It lives in the store as `dash/index` (tabs, section counts,
-mirrors, banner) plus `dash/c0`, `dash/c1`, … (whole sections, each under the 256 KiB document
-cap); the page subscribes to the index and fetches the chunks it names. A ⚑ row or open ruling
-has a "reply in inbox" button, so an answer Ben types from a row arrives as an ordinary inbox note
-prefixed with the row's name — read it like any other note. **Since item 94 (2026-09-07), the card
+**The dashboard part is ONE store document, `dash/index`** (item 116; before that an index plus
+`dash/c0`, `dash/c1`, … row chunks, which are no longer written — the page ignores any left in
+the store). It is built from the desktop's own tab model (`build-dashboard.js mobileSnapshot()`,
+same row ids, so the phone can never show a row the desktop does not) and carries the per-tab
+counts, the sections the mirrors name (title / chips / counts), the bounded deploy line, the ⚑ For
+Ben / 🤖 Bench queue mirrors with each ref's row text and update log, and the open rulings with
+their full card text — ~50 KB, checked against the 256 KiB cap by `pm-state.js` itself. A ⚑ row,
+a bench row or an open ruling has a "reply in inbox" button, so an answer Ben types from a row
+arrives as an ordinary inbox note prefixed with the row's name — read it like any other note.
+**Since item 94 (2026-09-07), the card
 Ben sent that reply from shows the result, not its buttons, on every later visit:** "Sent ✓" while
 the note is still `new`, or "Recorded by PM ✓" plus your exact `action` line once you mark it
 `seen` — so write that `action` for Ben to read on his phone, not as an internal shorthand.
@@ -198,7 +209,7 @@ a worker reports (before review), at step 5 (close), and at step 6 when you sche
 
 ```
 # 0. the two state files are TRACKED (docs/pm-*.json, below); everything else the loop scratches
-#    (usage.json, the dashboard chunks, the injected page) goes under gitignored tmp/pm INSIDE the
+#    (usage.json, the dashboard index, the injected page) goes under gitignored tmp/pm INSIDE the
 #    repo — a write outside the working folder is a permission prompt in a scheduled-task session
 SCRATCH=tmp/pm; mkdir -p $SCRATCH
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
@@ -222,7 +233,7 @@ and `docs/pm-state.json` (what `pm-state.js` generates from the board + overlay)
 of the scratch directory and into the repo on Ben's instruction (2026-09-06) so the exact state the
 phone is showing is reviewable in git rather than sitting in a temp folder outside the checkout.
 Regenerate them in place, push the result to the artifact store, and let them ride to `main` on the
-same PR as the rest of your bookkeeping. The dashboard chunks stay in `$SCRATCH` — they are large,
+same PR as the rest of your bookkeeping. The dashboard index stays in `$SCRATCH` — it is
 derived entirely from tracked source docs, and carry their own stamp.
 
 `workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
@@ -230,22 +241,23 @@ synthesises a worker from any `running` queue row, so an old snapshot is never b
 
 **Push the dashboard — after step 0 (resume) and at step 5 (close), i.e. whenever a source doc
 may have changed** (every merge changes at least the handoff; a bench run changes the checklist).
-It is one batch write of four or five documents; the manifest carries the `writes` array verbatim:
+It is ONE document write since item 116; the manifest carries the `writes` array verbatim:
 
 ```
-node scripts/pm-state.js --dashboard-dir $SCRATCH/dash        # index.json + c0.json … + manifest.json
+node scripts/pm-state.js --dashboard-dir $SCRATCH/dash        # index.json + manifest.json
 # stderr prints the stamp — skip the write if `read_db dash/index` already carries that stamp
-Artifact(action: "write_db", url: <URL>, db_op: "batch", writes: <manifest.json's "writes">)
+Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "dash", doc_id: "index",
+         file_path: "$SCRATCH/dash/index.json")
 ```
 
 The stamp is the hash of the eleven source docs, the same `@stamp` EDHA_DASHBOARD.html shows, so
-"phone and desktop agree" is one string compare. Never hand-edit a chunk; a chunk whose stamp is
-not the index's is ignored by the page.
+"phone and desktop agree" is one string compare. Never hand-edit the index; `dash/c*` documents
+still in the store are pre-item-116 orphans the page never reads (delete them or leave them).
 
 **Republish the page only when `docs/pm-board-mobile.html` itself changes:** build the injected
 copy with `node scripts/pm-state.js --live … --inject docs/pm-board-mobile.html --out
-$SCRATCH/pm-board.html` (this fills BOTH slots — the board state and the whole dashboard, so the
-page is ~700 KB), then `Artifact(file_path: $SCRATCH/pm-board.html, url: <URL>)` —
+$SCRATCH/pm-board.html` (this fills BOTH slots — the board state and the dashboard index, so the
+page is ~290 KB), then `Artifact(file_path: $SCRATCH/pm-board.html, url: <URL>)` —
 **always with `url`**, or a fresh session mints a second artifact and Ben's bookmark goes stale.
 Never commit a page with a filled snapshot slot (the tracked file keeps `{}` in both).
 

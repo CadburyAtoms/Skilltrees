@@ -979,7 +979,7 @@
     "name": "Fatal Thrust",
     "action": "2 Actions",
     "prerequisites": "Startling Blow; Perception 3+",
-    "description": "Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll.",
+    "description": "Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll. Advantages and disadvantages cancel one-for-one; roll with whatever remains.",
     "tags": "unsuspecting_target; gain_advantage; injury_penalty",
     "atlas": "heroic",
     "layout": {
@@ -2330,7 +2330,7 @@
     "name": "Defensive Position",
     "action": "Passive",
     "prerequisites": "Cautious Advance; Athletics 2+",
-    "description": "The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.",
+    "description": "The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield. Advantages and disadvantages cancel one-for-one; roll with whatever remains.",
     "tags": "brace; apply_disadvantage; ally",
     "atlas": "heroic",
     "layout": {
