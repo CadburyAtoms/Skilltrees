@@ -162,6 +162,17 @@ test("pm-state: the real board's 'Waiting on Ben' line parses without throwing",
   assert.ok(Array.isArray(asks));
 });
 
+const BEN_ONLY_CURRENT_NOTHING = "# Board\n\n> Current session note, nothing pending tonight. **Waiting on Ben: nothing.**\n>\n> _(The line this replaces, for the record:)_ Old session note, still carrying open asks. **Waiting on Ben:** **R-1** - a stale ruling, asked twice, unanswered; and ONE stale bat run still owed.\n\n## Queue (in order)\n\n| # | Item | Lane | Model | Size | Deps | Status | PR |\n|---:|---|:-:|:-:|:-:|---|---|---|\n| 1 | 1 filler | R | sonnet | S | - | queued | |\n";
+
+const BEN_ONLY_CURRENT_ONE_ASK = "# Board\n\n> Current session note. **Waiting on Ben:** a single fresh ask, still open.\n>\n> _(The line this replaces, for the record:)_ Old session note, still carrying open asks. **Waiting on Ben:** **R-1** - a stale ruling, asked twice, unanswered; and ONE stale bat run still owed.\n\n## Queue (in order)\n\n| # | Item | Lane | Model | Size | Deps | Status | PR |\n|---:|---|:-:|:-:|:-:|---|---|---|\n| 1 | 1 filler | R | sonnet | S | - | queued | |\n";
+
+test("pm-state: parseBenOnly scopes to the CURRENT session line only, before the first 'replaces' marker", () => {
+  assert.deepStrictEqual(parseBenOnly(BEN_ONLY_CURRENT_NOTHING), [],
+    "current line says nothing is waiting; the replaced line's two stale asks must not surface");
+  assert.deepStrictEqual(parseBenOnly(BEN_ONLY_CURRENT_ONE_ASK), ["a single fresh ask, still open."],
+    "current line's own ask surfaces; the replaced line's two stale asks are out of scope");
+});
+
 test("pm-state: a window entry with an explicit end day computes spanDays as the forward day-distance", () => {
   assert.deepStrictEqual(parseWindowEntry("Mon-Thu 21:00-07:00"), { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 });
   assert.deepStrictEqual(parseWindowEntry("Fri 21:00-Mon 07:00"), { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 }, "Fri->Sat->Sun->Mon is 3 calendar days");

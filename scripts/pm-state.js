@@ -261,10 +261,28 @@ function parseRulings(rows) {
  * the label lives inside the top blockquote, before any `## ` heading `sections()` keys on, and
  * `parseMd` collapses a blockquote's own paragraph breaks into one blob, erasing the very boundary
  * this needs. Returns [] if the board carries no such line yet — the page just shows no Ben-only
- * cards until the PM adopts the convention. */
+ * cards until the PM adopts the convention.
+ *
+ * CURRENT LINE ONLY (item 117, 2026-09-13). The session-of-record blockquote keeps every
+ * superseded paragraph below the live one, each still carrying its own "Waiting on Ben" text, under
+ * a `_(The line this replaces, for the record:)_` / `_(History — ...)_` marker (project-manager
+ * SKILL.md's handoff convention). Scanning the whole blockquote for the FIRST matching label — the
+ * old behaviour — found whichever paragraph happened to phrase its label as "**Waiting on Ben:**"
+ * with the ask text OUTSIDE the bold span; a current line phrased "**Waiting on Ben: nothing.**"
+ * (ask text INSIDE the bold span) didn't match that shape at all, so the scan fell through to a
+ * REPLACED paragraph's answered asks (R-56, a 09-07 bat run) and resurrected them as live "Yours to
+ * do" cards on the phone (found at item 116's review). Fixed by (a) truncating the search to the
+ * text before the first replaces/history marker — nothing after it is live — and (b) loosening the
+ * label match to stop at the colon rather than demanding an immediately-following "**", so both
+ * label shapes are found; a lone "nothing" ask (with or without trailing punctuation) then yields no
+ * cards instead of literally reporting "nothing" as an ask. */
 function parseBenOnly(md) {
-  const LABEL_RE = /\*\*Waiting on Ben\b[^*]*:\*\*/i;
-  const lines = md.split(/\r?\n/);
+  const MARKER_RE = /_\(The line this replaces|_\(History —/;
+  const LABEL_RE = /\*\*Waiting on Ben\b[^*:]*:\*{0,2}/i;
+  const allLines = md.split(/\r?\n/);
+  const markerIdx = allLines.findIndex((l) => MARKER_RE.test(l));
+  const lines = markerIdx === -1 ? allLines : allLines.slice(0, markerIdx);
+
   const startIdx = lines.findIndex((l) => LABEL_RE.test(l));
   if (startIdx === -1) return [];
   const labelMatch = lines[startIdx].match(LABEL_RE);
@@ -274,10 +292,16 @@ function parseBenOnly(md) {
     if (/^\s*$/.test(l) || /^>\s*$/.test(l) || /^#{1,6}\s/.test(l)) break; // paragraph/section boundary
     collected.push(l.replace(/^>\s?/, ""));
   }
-  const bulletLines = collected.filter((l) => /^\s*[-*]\s+/.test(l));
-  if (bulletLines.length) return bulletLines.map((l) => strip(l.replace(/^\s*[-*]\s+/, ""))).filter(Boolean);
+  const isNothing = (s) => /^nothing[.!]?$/i.test(strip(s));
 
-  const joined = collected.join(" ").replace(/\s+/g, " ").trim();
+  const bulletLines = collected.filter((l) => /^\s*[-*]\s+/.test(l));
+  if (bulletLines.length) {
+    const asks = bulletLines.map((l) => strip(l.replace(/^\s*[-*]\s+/, ""))).filter(Boolean);
+    return asks.length === 1 && isNothing(asks[0]) ? [] : asks;
+  }
+
+  const joined = strip(collected.join(" ").replace(/\s+/g, " "));
+  if (isNothing(joined)) return [];
   const parts = [];
   let depth = 0, cur = "";
   for (const ch of joined) {
