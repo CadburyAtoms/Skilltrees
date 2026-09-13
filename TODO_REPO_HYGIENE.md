@@ -3521,7 +3521,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps — · verify: formula-audit + the bench row. Filed 2026-09-13 from R-95.
 
-## 105. [ ] R-96 (a) — the minimal-change set for Blue and White: Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (DATA, REBUILD leyline) (2026-09-13)
+## 105. [x] (2026-09-13, PR #336) R-96 (a) — the minimal-change set for Blue and White: Read Intent to depth 1, Interposing Shield a Special, Shared Burden 1 Investiture, Ordered Advance 1 Action (DATA, REBUILD leyline) (2026-09-13)
 
 **Why:** the ecosystem review's consolidated position, adopted by Ben. The re-parent is proven safe (mutated into `data/leyline.json`: validate + 1085 tests pass; Read Intent depth 1 / L2). Retyping Interposing Shield is engine-safe (the damage-react dispatcher never reads activation type).
 
