@@ -3718,7 +3718,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps **R-113** (does the bulk button gain the guard, or does the rule stay "Ben's hands only"?). Filed 2026-09-13 from bench run 46.
 
-## 124. [ ] A fully-blocked `edha-regen` cue card prints the same sentence twice (ENGINE-ONLY, F5)
+## 124. [x] (2026-09-13, PR #352) A fully-blocked `edha-regen` cue card prints the same sentence twice (ENGINE-ONLY, F5)
 
 **Why:** bench run 46 (2026-09-13) retired item 120's three Nexus-Fed rows on evidence — the gated tick correctly drops its static note, and the unmarked control correctly keeps it — but the fully-blocked card now reads the composed sentence **twice**: *"⏰ Nexus-Fed (B46 Garden Sow): B46 Garden Sow cannot regain HP (Withering Touch) — no healing lands. **(no HP applied — B46 Garden Sow cannot regain HP (Withering Touch) — no healing lands.)**"*. The cause is the two halves of the call site meeting (`module-src/scripts/engine/07-edha-owner-list.js:462`): `edhaDeliveredNote` returns `line` as the note whenever `got < asked`, and the very next line hands `edhaPostCueCard` a suffix built from the **same** `line` — ` <em>(no HP applied — ${line}.)</em>`. The halved case does not duplicate, because its suffix is the `+N HP applied` clause instead. Cosmetic only: HP, gating and the "no number at all" contract are all correct, which is why the rows retired rather than failed.
 

@@ -3367,6 +3367,17 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   for this instead. First and only consumer today: the `edha-regen` turn-end sweep (the other
   eleven `edhaHealLine` callers compose from the line alone, and the triggered-effect dispatcher
   appends its note as a parenthetical *why* rather than in place of it).
+- **`edhaRegenSuffix(note, line, requested, delivered)`** — **WHICH parenthetical pairs with
+  `edhaDeliveredNote`'s note without repeating it** (item 124, bench run 46's follow-up to item
+  120). PURE, pinned in `tests/gated-note.test.js`, next to `edhaDeliveredNote` in
+  `07-edha-owner-list.js`. A FULLY-BLOCKED tick always has `got < asked`, so
+  `edhaDeliveredNote` has ALREADY returned the composed line as the note — the sweep's old suffix,
+  `(no HP applied — ${line}.)`, printed that identical sentence a second time on the same card. A
+  HALVED tick never collided (its suffix is the different "+N HP applied" clause), so it keeps
+  that clause unchanged; so does an ungated tick. This shrinks the blocked suffix to
+  `(no HP applied.)` only when the note it is paired with IS the composed line, and falls back to
+  the old (safe, if repetitive) long form otherwise — a defensive branch, not a live case today.
+  First and only consumer: the `edha-regen` turn-end sweep, same call site as `edhaDeliveredNote`.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's

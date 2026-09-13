@@ -857,6 +857,15 @@ prints **twice** on one card — `edhaDeliveredNote` returns the line as the not
 then appends it again inside `(no HP applied — …)`. The halved case does not duplicate (its
 parenthetical is the "+2 HP applied" line). Filed as **TODO item 124**.)*
 
+🤖 **Item 124 re-test — the fully-blocked Nexus-Fed tick names the mark once (ENGINE-ONLY, F5; no
+rebuild, no ⟳ Sync).** New pure helper `edhaRegenSuffix` shrinks the blocked suffix to
+`(no HP applied.)` when the note it is paired with already carries the composed sentence. Same
+Sow, same three marks as bench 46 (withered / halved / unmarked control); **advance the round
+between takes** — `edhaPostCueCard` is once per round. Expect: **WITHERED** — the composed
+sentence ("…cannot regain HP (Withering Touch) — no healing lands.") appears exactly ONCE on the
+card, followed by the short `(no HP applied.)` parenthetical, no un-gated 5 anywhere; **HALVED**
+and **UNMARKED control** — byte-identical to bench 46's recorded cards (unchanged by this fix).
+
 ## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
 
 *(Both rows OBSERVE behaviour that is already deployed — no fix has been made for either. Record
