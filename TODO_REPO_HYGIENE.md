@@ -3440,7 +3440,7 @@ shown failing. TOOLING-only.
 **PM:** lane R · model sonnet · size S · deps — · verify: the two mutations + gates. Filed
 2026-09-08 00:3x after the second displaced heading of the night.
 
-## 101. [ ] R-92 — Mantle of the Aspirant's redirect-unwind heal (`47-power.js` ~L306) is a `hea` writer outside the heal-cut gate, declared nowhere: gate it (a) or declare it the exception (b) (WAITING on Ben)
+## 101. [ ] R-114 — Mantle of the Aspirant's redirect-unwind heal (`47-power.js` ~L306) is a `hea` writer outside the heal-cut gate, declared nowhere: gate it (a) or declare it the exception (b) (WAITING on Ben)
 
 **Why:** item 70 (PR #308) gated R-83's three writers and swept for more: the Power tree's Mantle
 of the Aspirant "redirect unwind" heals the WEARER back the amount an ally shouldered, writing `hea`
@@ -3448,9 +3448,10 @@ without `edhaHealCutGate`, and it is named in none of the declared lists (R-10's
 three, `ENGINE_INDEX.md`'s census — now five call sites, pinned by `tests/drop-to-one-family.test.js`).
 It is arguably a reversal of a transfer (the wearer ends where it stood before shouldering — R-10's
 "a floor / an undo is not regaining" shape) rather than a heal from nothing, which is why it was
-filed as ruling **R-92** (board rulings table) rather than fixed.
+filed as ruling **R-114** (board rulings table) rather than fixed. (Filed as R-114, not R-92 — R-92
+already names a different, unrelated, already-open ruling: the 0-HP "dropped" GM cue.)
 
-**What to do (on R-92):** (b) — one declared-exception paragraph in `ENGINE_INDEX.md`'s heal-cut
+**What to do (on R-114):** (b) — one declared-exception paragraph in `ENGINE_INDEX.md`'s heal-cut
 rule naming the site and the reason, plus a negative slice in the family test so the census names
 it on purpose (Sonnet S, DOCS + one test line); (a) — gate it at the emitter exactly as item 70 did
 the other three, a pin (withered → 0 and the card names the mark; unmarked unchanged) shown failing
@@ -3458,11 +3459,12 @@ under reversion, the census 5 → 6 declared, one 🤖 row (Opus S, ENGINE-ONLY 
 ~L474 (Colossus raising `max.override` and `value` together) was listed by the same sweep as a
 max-HP grant, not a heal — no action.
 
-**Done when:** R-92 is answered and the chosen shape shipped with its pin; the family census names
+**Done when:** R-114 is answered and the chosen shape shipped with its pin; the family census names
 the site either way. Deploy class per the answer.
 
-**PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-92** · verify: the
-census + the pin. Filed 2026-09-08 00:3x from item 70's report.
+**PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-114** · verify: the
+census + the pin. Filed 2026-09-08 00:3x from item 70's report; renumbered R-92 → R-114 by item 127
+(2026-09-13; R-92 already named a different ruling).
 
 ## 102. [x] `scripts/handoff-split.js` regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences, and true counts (2026-09-08, PR #315)
 
@@ -3545,7 +3547,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** Ben approves the design; the primitive and cards ship with pins; Sovereignty rolls White somewhere (the guide's own worked example).
 
-**PM:** lane B · model opus · size L · deps design gate · verify: the design artifact then the bench. Filed 2026-09-13 from R-97.
+**PM:** lane B · model opus · size L · deps **R-119** · verify: the design artifact then the bench. Filed 2026-09-13 from R-97; design proposal filed as R-119 by item 127 (2026-09-13).
 
 ## 107. [ ] R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DESIGN + DATA, REBUILD leyline) (2026-09-13)
 
@@ -3555,7 +3557,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** approved text shipped; the pair no longer collide; one 🤖 row.
 
-**PM:** lane B · model sonnet · size S · deps design yes · verify: the two rules differ. Filed 2026-09-13 from R-98.
+**PM:** lane B · model sonnet · size S · deps **R-115** · verify: the two rules differ. Filed 2026-09-13 from R-98; design proposal filed as R-115 by item 127 (2026-09-13).
 
 ## 108. [ ] R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DESIGN + DATA, REBUILD deity) (2026-09-13)
 
@@ -3565,7 +3567,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** the audit shows each of the three colours read by ≥2 talents or rolled.
 
-**PM:** lane B · model sonnet · size M · deps design yes · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99.
+**PM:** lane B · model sonnet · size M · deps **R-118** · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99; design proposal filed as R-118 by item 127 (2026-09-13).
 
 ## 109. [ ] R-100 (a) — retune `Final Decree`'s redundant Witness clause; note the two cross-path advantage collisions in the guides (DATA + DOCS, REBUILD deity) (2026-09-13)
 
@@ -3575,7 +3577,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** card + rule shipped; guides carry the note.
 
-**PM:** lane B · model sonnet · size S · deps design yes · verify: advantage-classify. Filed 2026-09-13 from R-100.
+**PM:** lane B · model sonnet · size S · deps **R-116** · verify: advantage-classify. Filed 2026-09-13 from R-100; design proposal filed as R-116 by item 127 (2026-09-13).
 
 ## 110. [ ] R-102 (a) — `Composed` / `Focused Mind` / `Clear Mind` become one name and one wording across five trees; settle "max and current" (DATA, REBUILD all three packs) (2026-09-13)
 
@@ -3625,7 +3627,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** a level-2 Civilization character can cast it; text approved and shipped.
 
-**PM:** lane B · model sonnet · size S · deps design yes · verify: read-through. Filed 2026-09-13 from R-109.
+**PM:** lane B · model sonnet · size S · deps **R-117** · verify: read-through. Filed 2026-09-13 from R-109; design proposal filed as R-117 by item 127 (2026-09-13).
 
 ## 115. [ ] Handoff §9k — the four generic primitives that make the Leybreaker / Ley-surveyor cue cards live (ENGINE-ONLY, F5) (2026-09-13)
 
@@ -3745,3 +3747,29 @@ filed 2026-09-08 01:1x.
 **Done when:** `node scripts/check-scripts-readme.js` reports clean; the gate decision is recorded either way.
 
 **PM:** lane R · model sonnet · size XS · deps — · verify: the verifier's output. Filed 2026-09-13 by the PM from item 122's report.
+
+## 127. [x] (2026-09-13, PR #TBD) Design proposals for items 101 / 106 / 107 / 108 / 109 / 114 filed as rulings R-114 … R-119 (DOCS-ONLY) (2026-09-13)
+
+**Why:** items 101, 106, 107, 108, 109 and 114 each named a design proposal as their blocking
+dependency rather than a concrete question Ben could answer from his phone — item 101's heading
+even cited a phantom "R-92" (R-92 already names a different, unrelated, already-open ruling: the
+0-HP "dropped" GM cue). Filing each as a full WAITING ruling — concrete options, the deploy class
+of every option, a recommended default — lets Ben answer all six from the mobile board in one
+sitting instead of six separate design conversations.
+
+**What to do:** `EDHA_RULINGS.md` §L gets R-114 … R-119, one per queued item, each with a
+recommended default, the deploy class of every option, and an `Ask:` line; item 101's heading and
+PM deps line move off the phantom "R-92" onto R-114; items 106/107/108/109/114's PM deps lines
+move from "design gate"/"design yes" onto their new ruling ids (R-119/R-115/R-118/R-116/R-117);
+`CLAUDE.md`'s rulings-doc row updates its count and "no gaps" span from 113 to 119 and records the
+six new open rulings; `tests/pm-state.test.js`'s `ECOSYSTEM_RULINGS` pin lists the six new WAITING
+ids so the open-rulings shape contract still passes; a dated delta and the dashboard rebuild close
+it out. DOCS-ONLY — no data, engine or card change; every proposal is a PROPOSAL awaiting Ben's yes
+(lore-forge Phase 3: approval precedes every content commit).
+
+**Done when:** `grep -c '^\*\*R-[0-9]' EDHA_RULINGS.md` reads 119; all six new rulings parse as
+open with an `ask` ending in `?` and a `default` (verified via `parseOpenRulings`); `node
+scripts/gates.js` green.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: the parse check + gates. Filed 2026-09-13
+by the PM as the design-proposal batch items 101/106/107/108/109/114 were waiting on.
