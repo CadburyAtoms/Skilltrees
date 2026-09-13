@@ -27,8 +27,9 @@ ceiling). Where this review's arithmetic bears on one of the PM's six waiting pr
 assumptions are at the top and they are the critique's baseline: the weapon's own die and the
 system's `+ mod` on every hit, three Actions on a Slow turn, Investiture drawn at tier per Action)
 or from the census scripts re-run on 2026-09-13 (`derive-dossiers.js` and the others named in
-`README.md`). Control and support are argued in prose, not converted to damage. Six load-bearing
-claims were handed to an independent verifier before filing (its findings are in §7).
+`README.md`). Control and support are argued in prose, not converted to damage. Seven load-bearing
+claims were handed to an independent verifier before filing (its findings are in §7; two changed
+what this review recommends).
 
 ---
 
@@ -84,7 +85,10 @@ back every round; and available from level 2. It is roughly **twice the leyline 
 (which pays health), **twice the next deity**, and it is the *repeatable* line — the two talents
 written as the payoff (`Killing Blow`, `The Final Study`) spend the stack for one hit of the same
 size and are therefore never worth pressing, which the ecosystem review noticed and which is the
-tell that the multiplier landed on the wrong talent.
+tell that the multiplier landed on the wrong talent. (The verifier's shape note: the bonus is ONE
+`[Tier][Die]` roll multiplied by the Insight count, not five dice — the same average as the table,
+with much more swing: a five-Insight strike at level 7 lands anywhere between 10 and 80 bonus
+vital. The item also still carries a decoy `damage` formula beside the rider; see §7.)
 
 **Recommended default (R-120 (b)):** `Predatory Strike` deals **one `[Tier][Die]` plus your Tier
 per Insight** (level 7: 9 + 10 = 19 bonus per hit — the size of `Withering Ray`, and still the top
@@ -206,31 +210,37 @@ own lane by level 2). DATA, REBUILD leyline + deity. Alternatives: (b) Blue only
 its own initiative doing **14 damage a round at levels 3–5 and 36 at level 7, free after about four
 Investiture of setup**, while the disciple's own three Actions are untouched (67 a turn at level 7
 with plain Strikes; the model line above). That is the second-highest sustained line in the game
-and the highest that costs nothing per round. Deity power is Radiant-tier by design and the
-Construct also absorbs attacks, so the size may be intended — but one clause is doing more than
-its sentence suggests: read plainly, `Tempered Edge` makes the *whole* attack ignore Deflect, where
-every other Deflect bypass in the atlas is a damage type (vital, spirit) or a named die.
+and the highest that costs nothing per round. The review's first reading was that `Tempered
+Edge`'s "ignore deflect" might be a loose sentence; the verifier found the opposite — the rider is
+wired to add the target's Deflect back so the *whole* attack lands as if Deflect were 0, and the
+engine's own hint names Tempered Edge as the intended user. It is also the small part of the
+number: a few points a round against the 36 the two attacks deal. Deity power is Radiant-tier by
+design and the Construct absorbs attacks that would otherwise land on the party.
 
-**Recommended default (R-124 (a)):** clarify `Tempered Edge` to *"the energy damage ignores
-deflect"* (the impact die is still turned by armor), and accept the numbers otherwise. DATA (card
-text + the authored rule's scope), REBUILD deity; the engine change, if any, is in how the
-`ignore_deflect` flag is applied — the verifier's finding on that is in §7. Alternative (b): accept
-as written. Alternative (c): `Arsenal`'s second attack only on the round after a kill — a bigger
-change than the evidence asks for.
+**Recommended default (R-124 (b)):** accept as written and document it — the deity guide's
+Civilization entry says the Construct's melee attack bypasses Deflect and that the two-attack
+Construct is the tree's damage ceiling, the way R-111 documented `Withering Ray`. DOCS-ONLY.
+Alternative (a): narrow the bypass to the energy die (a retype of the rider's damage, since the
+system subtracts Deflect once from the summed instances; DATA, REBUILD deity). Alternative (c):
+`Arsenal`'s second attack only on the round after a kill — a bigger change than the evidence asks
+for.
 
 ### 8. Power's two entries read a condition nothing in the game applies — R-125
 
 `Kneel` ("advantage on attack tests against any Compelled, **Frightened**, or Weakened character")
 and `Absolute Authority` ("choose a Compelled, **Frightened**, or Weakened character") both read
-Frightened, and no talent in all 365 applies it (`Risen Servant` is merely immune to it). The
-canon reference lists Frightened among the homebrew conditions the deity reviews promoted;
-Compelled was built and Frightened was not. Two of Power's nine cards carry a permanently dead
-clause.
+Frightened, and no talent in all 365 applies it (`Risen Servant` is merely immune to it); no adversary
+ability applies it either. The canon reference lists Frightened among the homebrew conditions the
+deity reviews promoted; Compelled was built and Frightened was not. The verifier found the intent
+in the engine's status registry — *"Power (Tyrith) — GM-applied marker (nothing auto-inflicts it
+yet)"* — so at a table where the GM applies fear by hand the clause is live; nothing tells a
+player or a GM that.
 
 **Recommended default (R-125 (a)):** replace Frightened with **Disoriented** in both — a condition
 Chaos, Order, Red, White, Blue, Envoy and Leader all apply, which gives the one tree without an
-income a little cross-path synergy for free. DATA, REBUILD deity. Alternatives: (b) delete the dead
-word (honest cards, a hair weaker), (c) keep it as a hook and build a Frightened source later.
+income a little cross-path synergy for free. DATA, REBUILD deity. Alternatives: (b) keep it as the
+GM-applied marker it was built as and say so on the cards and in the guide, (c) keep the reads and
+build a Frightened source later.
 
 ### 9. Heroic: canon does most of the balancing, and the two things worth knowing are gates
 
@@ -345,7 +355,32 @@ deity tree should be.
 
 ## 7. Independent verification
 
-*(Filled in from the verifier's report before this file was committed — see the delta.)*
+Seven claims were handed to a separate verifier (read-only, working from the data files, the
+authored overlay, the engine sources and the critique) before the rulings were filed. Its
+verdicts, and what changed because of them:
+
+| claim | verdict | what it found |
+|---|---|---|
+| Knowledge multiplies `[Tier][Die]` by the Insight count | **corrected in shape, confirmed in size** | The card's own `damage` formula is a decoy; the bonus is an `edha-damage-bonus` rider whose formula is `((@tier)d(2·rank+2)) × max(count, 1)` — **one roll multiplied by the count, not N dice**. Same mean as the review's table, much higher variance (a 5-Insight strike at level 7 swings between 10 and 80 bonus vital). `Killing Blow` and `The Final Study` use the same "one roll × N" shape. Sub-claims (Studied Mark places 2, Accumulate +1 per turn and 1 Investiture back once a round, cap 5) all confirmed. |
+| Exactly five deity trees have an Investiture income passive | **confirmed** | `Void Sense`, `Reaper's Harvest`, `Prognosis`, `Accumulate`, `Expose` — all Passives; a sweep of all ninety deity cards and every authored handler that grants Investiture finds nothing in Order, Civilization, Fate, Power or Destruction. |
+| Chaos's Omen cap is tier, and the Black lane only consumes | **confirmed** | `capFormula: "@tier"` with `evict: "refuse"` on every placement (Entropy Strike, both Spreading Omen targets, Unravel Everything); `Isolating Pressure`, `Isolating Ruin`, `Unweaving` and `Cascade Collapse` carry release-only rules. |
+| The five level-6 gates | **confirmed** (one addition) | `Ghostly Walls` Blue 3+; `Absolute Stillness` Ghostly Walls + Blue 3+; `Counterspell` Blue 3+; `Adaptive Mutation` Green 3+ and Life Surge; `Surgical Precision` Blue 3+ **and Vital Diagnosis**. `validate-build.py`: rank cap 2 through level 5, 3 from level 6. |
+| `Tempered Edge`'s Deflect bypass covers the whole attack | **resolved against the review's first reading — it is the whole attack, by design** | The rider carries `addTargetDeflect: true`: the engine adds the target's Deflect back as an extra impact instance so the hit "lands as if deflect were 0", and the hint names Tempered Edge as the intended user. The Siege Cannon is excluded. **Finding 7 and R-124 were rewritten**: the recommended default is now to accept and document, with the narrowing as the alternative, because the implementation is deliberate and the bypass is worth only a few points a round against the 36 the two attacks deal. |
+| Nothing in the game applies Frightened | **confirmed, with a nuance** | Three mentions in 365 talents, all reads or immunities; no adversary ability applies it. The engine registers it as *"Power (Tyrith) — GM-applied marker (nothing auto-inflicts it yet)"* — so the clause is not dead at a table where the GM applies fear by hand; it is undocumented. **R-125 gained that as a real alternative.** |
+| The critique's per-Action baseline | **confirmed** | Every hit adds the roller's skill modifier; a d6–d8 weapon; Strike + Mighty 9.5–10.5, Withering Ray 11, Searing Bolt 7.5 per Action at levels 1–5 — the numbers `balance-turns.js` reproduces. |
+
+Three things the verifier raised unasked, carried forward:
+
+- **The decoy formulas.** `Predatory Strike`, `Killing Blow` and `The Final Study` still carry a
+  live, clickable `damage` formula on the item that duplicates what the rider applies; the only
+  guard is a chat note. Whatever R-120 decides, the reshaped talent should drop the decoy or the
+  note should stay prominent — it is a double-count surface.
+- **Risen Servant's immunities.** `deity-death.json` sets `conditionImmunities: "frightened,
+  compelled, disoriented"` on the summon, and `adversaries.json`'s own schema note says
+  `frightened` / `compelled` are Edha-custom and not valid system ids — a bench check that the
+  immunity binds rather than being silently dropped is filed as a 🤖 row.
+- **A typo.** `Counterspell`'s cost read "1 Investiure"; fixed in this PR (card text, REBUILD
+  leyline — the same rebuild the path descriptions already need).
 
 ## 8. What this review did not do
 
@@ -365,8 +400,8 @@ deity tree should be.
 | R-121 | Power, Destruction | (a) one income clause each (`Warlord's Advance` on a kill; `Concussive Yield` on a multi-hit) | DATA, REBUILD deity |
 | R-122 | Chaos | (a) Omen cap = tier + 1; `Isolating Pressure` places an Omen on an unmarked target | DATA, REBUILD deity |
 | R-123 | Blue, Life | (a) `Ghostly Walls` → Blue 2+; `Adaptive Mutation` → Green 2+ | DATA, REBUILD leyline + deity |
-| R-124 | Civilization | (a) `Tempered Edge`'s Deflect bypass is the energy die only | DATA (+ engine scope check), REBUILD deity |
-| R-125 | Power | (a) Frightened → Disoriented on `Kneel` and `Absolute Authority` | DATA, REBUILD deity |
+| R-124 | Civilization | (b) accept the whole-attack Deflect bypass as designed and document the two-attack Construct as the tree's ceiling | DOCS-ONLY |
+| R-125 | Power | (a) Frightened → Disoriented on `Kneel` and `Absolute Authority` (or (b) document it as the GM-applied marker it was built as) | DATA, REBUILD deity |
 
 Plus one note into an open item: fold the vestigial-entries retune and `Expose`'s reach into item
 106's design gate (finding 4). Nothing in this file changes a talent; every proposal waits for a
