@@ -59,15 +59,20 @@
  *   Resuscitation = whenOwnsTalent upsell note, declared below),
  *   Anatomical Insight (on-hit cue + Opportunity-menu option, authored), Know Your Moment
  *   (round-window defenses, authored), Swift Healer/Applied Medicine (heal riders, authored),
- *   Clear Mind (AE), Overwhelm with Details (Lore next-test), Sharp Eye-class reveal (gate).
+ *   Clear Mind (AE), Overwhelm with Details (Lore next-test), Sharp Eye-class reveal (gate),
+ *   Fault in the Line (def-test + the first PC-side op:drain/resource:inv `edha-focus`, authored),
+ *   Read the Weave (def-test, authored; its scene riders are cues), Surveyor's Eye (Perception
+ *   advantage rider, authored).
  *   CAE-NEXT: Strategize [grant + burn-reaction half], Contingency [plot-die edit — needs the
  *   ally's roll card, cue today]. MANUAL: the ERUDITION expertise cluster — BY NAME: Mind and
  *   Body, Emotional Intelligence, Deep Study (sheet edits; the native grant-expertises handler is
  *   the named future hook, blocked on ⟳ Sync re-firing add-to-actor on every re-add — the
  *   creator's culture work owns expertise UX. Named here 07-26: two of these were among the
- *   audit's four undeclared-and-empty), the CRAFTING/FABRIAL cluster (Efficient Engineer/
- *   Experimental Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — no
- *   crafting subsystem in the free system), Ongoing Care (rest-time; rolls fine), Keen Insight
+ *   audit's four undeclared-and-empty), the LEY-SURVEYOR cluster (2026-09-13, replaced Artifabrian): Ley-sense (a sheet
+ *   expertise + GM reads), Read the Draw / Mark the Ground / Steady the Line (cue cards — the
+ *   draw-mana watch, the rank-step marker and the Draw Mana bonus marker are the three follow-up
+ *   primitives; §9 backlog), Read the Weave's party advantage + Draw Mana malus (cue; the test is
+ *   wired), Surveyor's Eye's expertise + navigation half (sheet reads), Ongoing Care (rest-time; rolls fine), Keen Insight
  *   (Gain Advantage isn't a hookable item), Deep Contemplation (Erudition reassign = sheet edit).
  * WARRIOR — ✅ NO BUCKET-2 TALENTS LEFT (07-24s). Feinting Strike was the last, and it moved onto its
  *   document — `edha-focus` drain (@skills.itm.rank, still guard-aware because edhaDrainFocus owns
@@ -77,14 +82,20 @@
  *   handler types so every other rule on `edha-on-hit` was inert. The dispatcher now runs each
  *   rule's own executor. Do NOT re-add a name-keyed on-hit branch.
  * WARRIOR — WIRED: the STANCE machine + numeric riders + skill advantage + Practiced Kata
- *   combat-start, Shattering Blow (on-hit push,
- *   authored), Meteoric Leap (on-hit cue, authored), Devastating Blow/Wit's End (tier formulas),
+ *   combat-start, Break the Draw (on-hit @tier focus drain,
+ *   authored; its Investiture branch is a cue), Sever the Line (on-hit Slowed, authored; the
+ *   range clamp is a cue), Turn the Working (def-test, authored), Breaker's Charge (edha-move +
+ *   its own 2d8, authored; the drain/lock is a cue) — the LEYBREAKER set, 2026-09-13, replaced
+ *   Shardbearer's Shard Training/Stonestance/Windstance/Shattering Blow/Bloodstance/Precise
+ *   Parry/Meteoric Leap; Mighty stayed. Devastating Blow/Wit's End (tier formulas),
  *   Wary (authored edha-focus-guard since 2bZ — Surprised veto + drain reduction, rule-keyed),
  *   Hardy/Surefooted (AEs). CAE-NEXT: Vigilant Stance
- *   [cost-discount — Dodge/Reactive Strike −1], Stonestance's attack tax [cost-discount inverse],
- *   Flame/Wind extra actions [grant-action], Combat Training's free graze [cadence], Cautious
- *   Advance [grant-action]. MANUAL: Precise Parry (hit→graze is the GM's — the Combat Training
- *   NO-HOOK class), Shard Training (Shard gear is paid content), Signature Weapon (a weapon-
+ *   [cost-discount — Dodge/Reactive Strike −1], Stillstance's attack tax [cost-discount inverse],
+ *   Flamestance's extra action [grant-action], Combat Training's free graze [cadence], Cautious
+ *   Advance [grant-action]. MANUAL: Turn the Working's graze/negate resolution (hit→graze is the GM's — the Combat
+ *   Training NO-HOOK class), Ley-tempered's Draw Mana tell + Stillstance's Reactive Strike and
+ *   ally-guard + Saltstance's Draw Mana tax and @tier Strike rider (cue cards; the draw-mana
+ *   watch and a whileStanceActive `edha-damage-rider` are follow-up primitives, §9 backlog), Signature Weapon (a weapon-
  *   expertise grant + an Opportunity-range edit are sheet edits — the Erudition class, same
  *   grant-expertises blocker. Named here 07-26: it was one of the audit's four undeclared-and-
  *   empty), Vinestance's reaction test

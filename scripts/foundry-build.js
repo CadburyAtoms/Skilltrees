@@ -50,8 +50,9 @@ const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha
 // system.modality === "stance"). The authored overlay schema doesn't carry modality (07-18: adding it
 // would churn every fingerprint), so the 7 stance talents are name-mapped here instead. Verified from
 // the 07-17 heroic dump: the system pack ships Vigilant/Flame/Ironstance with modality "stance"; the
-// free tier lacks the other four, but they are stances by the same card text.
-const STANCE_TALENTS = new Set(["Vigilant Stance", "Flamestance", "Ironstance", "Bloodstance", "Stonestance", "Windstance", "Vinestance"]);
+// free tier lacks the other four, but they are stances by the same card text. 2026-09-13: Leybreaker's
+// Stillstance and Saltstance replaced Shardbearer's Stone/Wind/Bloodstance (the specialty swap).
+const STANCE_TALENTS = new Set(["Vigilant Stance", "Flamestance", "Ironstance", "Vinestance", "Stillstance", "Saltstance"]);
 const ADV_PACK = "edha-adversaries";
 const ITEMS_PACK = "edha-items";
 // slugifyItem used to be a SEPARATE slugifier here (no NFKD normalize, single-dash trim) from the

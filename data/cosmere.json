@@ -1608,12 +1608,12 @@
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Efficient Engineer",
+    "specialty": "Ley-surveyor",
+    "name": "Ley-sense",
     "action": "Passive",
-    "prerequisites": "Crafting 1+",
-    "description": "Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.",
-    "tags": "gain_expertise; fabrial; crafting; material_cost",
+    "description": "Gain Leylines expertise. You always know the direction of the nearest leyline nexus, and you can tell whether a character you can see is Invested and which colors it is attuned to.",
+    "flavor": "The ground has a grain. Read it.",
+    "tags": "leylines; expertise; nexus",
     "atlas": "heroic",
     "layout": {
       "x": 0.08,
@@ -1622,11 +1622,13 @@
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Prized Acquisition",
-    "action": "Special",
-    "description": "Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.",
-    "tags": "gain_expertise; craft_fabrial; special_gem",
+    "specialty": "Ley-surveyor",
+    "name": "Read the Draw",
+    "action": "Reaction",
+    "prerequisites": "Lore 1+",
+    "description": "When a character you can see Draws Mana or activates a talent, use this Reaction to learn its current Investiture and focus, and its highest leyline rank.",
+    "flavor": "Every draw leaves a ripple. Count the rings.",
+    "tags": "reaction; investiture; information",
     "atlas": "heroic",
     "layout": {
       "x": 0.22,
@@ -1635,104 +1637,114 @@
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Deep Study",
-    "action": "Passive",
-    "description": "Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.",
-    "tags": "gain_expertise; erudition",
+    "specialty": "Ley-surveyor",
+    "name": "Overwhelm with Details",
+    "action": "Special",
+    "cost": "2 Focus",
+    "prerequisites": "Surveyor's Eye; Lore 3+",
+    "description": "Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.",
+    "tags": "lore; cognitive_test; spiritual_test",
     "atlas": "heroic",
     "layout": {
       "x": 0.2,
       "y": 0.64
     },
     "connections": [
-      "Efficient Engineer"
+      "Surveyor's Eye"
     ]
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Inventive Design",
+    "specialty": "Ley-surveyor",
+    "name": "Surveyor's Eye",
     "action": "Passive",
-    "prerequisites": "Prized Acquisition; Crafting 2+",
-    "description": "Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.",
-    "tags": "crafting; prized_acquisition",
+    "prerequisites": "Read the Draw; Lore 2+",
+    "description": "Erudition grants you an additional utility expertise. You gain an advantage on tests to navigate, map, or find a route, and on Perception tests to notice ground shaped by Investiture.",
+    "flavor": "A map is a memory of walking. Make good ones.",
+    "tags": "expertise; navigation; perception",
     "atlas": "heroic",
     "layout": {
       "x": 0.28,
       "y": 0.46
     },
     "connections": [
-      "Prized Acquisition"
+      "Read the Draw"
     ]
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Fine Handiwork",
-    "action": "Special",
-    "prerequisites": "Efficient Engineer",
-    "description": "When crafting, advanced features cost one upgrade instead of two.",
-    "tags": "crafting; advanced_features",
+    "specialty": "Ley-surveyor",
+    "name": "Mark the Ground",
+    "action": "Free Action",
+    "cost": "1 Focus",
+    "prerequisites": "Ley-sense; Lore 2+",
+    "description": "Spend 1 focus and choose an ally you can see. For the scene, their leyline talents treat their color rank as 1 higher for Attunement Range and [Size]; an ally without a leyline instead gains an advantage on Perception tests.",
+    "flavor": "Stand there. The line runs deeper there.",
+    "tags": "ally; attunement_range; free_action",
     "atlas": "heroic",
     "layout": {
       "x": 0.08,
       "y": 0.46
     },
     "connections": [
-      "Efficient Engineer"
+      "Ley-sense"
     ]
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Overcharge",
-    "action": "Special",
-    "prerequisites": "Prized Acquisition; Crafting 3+",
-    "description": "Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.",
-    "tags": "raise_the_stakes; opportunity; fabrial_attack",
+    "specialty": "Ley-surveyor",
+    "name": "Fault in the Line",
+    "action": "Reaction",
+    "cost": "1 Focus",
+    "prerequisites": "Read the Draw; Deduction 2+",
+    "description": "When a character within 30 ft activates a talent that costs Investiture, spend 1 focus and test Deduction vs. Cognitive. On a success, it loses 1 additional Investiture.",
+    "flavor": "A working built in haste has a seam. Press it.",
+    "tags": "reaction; investiture; deduction",
     "atlas": "heroic",
     "layout": {
       "x": 0.18,
       "y": 0.46
     },
     "connections": [
-      "Prized Acquisition"
+      "Read the Draw"
     ]
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Experimental Tinkering",
-    "action": "Special",
-    "prerequisites": "Fine Handiwork",
-    "description": "When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.",
-    "tags": "crafting; prized_acquisition; opportunity",
+    "specialty": "Ley-surveyor",
+    "name": "Steady the Line",
+    "action": "Free Action",
+    "cost": "1 Focus",
+    "prerequisites": "Mark the Ground; Deduction 2+",
+    "description": "Spend 1 focus and choose an ally you can see. The next time they Draw Mana before the start of your next turn, they recover 1 additional Investiture. If they cannot Draw Mana, they instead recover 1 focus.",
+    "flavor": "Breathe with the line, not against it.",
+    "tags": "ally; draw_mana; free_action",
     "atlas": "heroic",
     "layout": {
       "x": 0.08,
       "y": 0.64
     },
     "connections": [
-      "Fine Handiwork"
+      "Mark the Ground"
     ]
   },
   {
     "path": "Scholar",
-    "specialty": "Artifabrian",
-    "name": "Overwhelm with Details",
-    "action": "Special",
+    "specialty": "Ley-surveyor",
+    "name": "Read the Weave",
+    "action": "2 Actions",
     "cost": "2 Focus",
-    "prerequisites": "Experimental Tinkering; Lore 3+",
-    "description": "Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.",
-    "tags": "lore; cognitive_test; spiritual_test",
+    "prerequisites": "Steady the Line; Deduction 3+",
+    "description": "Spend 2 focus and test Deduction vs. Cognitive of a character you can see. On a success, for the scene your allies gain an advantage on their first test against it each round, and it recovers 1 less Investiture each time it Draws Mana.",
+    "flavor": "Once you have seen the pattern, the pattern has seen you.",
+    "tags": "deduction; advantage; draw_mana",
     "atlas": "heroic",
     "layout": {
       "x": 0.08,
       "y": 0.82
     },
     "connections": [
-      "Experimental Tinkering"
+      "Steady the Line"
     ]
   },
   {
@@ -2146,12 +2158,12 @@
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Shard Training",
-    "action": "Special",
-    "prerequisites": "Access to a Shardblade and Shardplate",
-    "description": "Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used. ",
-    "tags": "gain_expertise; grandbow; shardblade; warhammer; ",
+    "specialty": "Leybreaker",
+    "name": "Ley-tempered",
+    "action": "Passive",
+    "description": "Gain Leylines expertise. Your Cognitive and Spiritual defenses increase by 1, and you always know when a character you can see Draws Mana or activates a talent.",
+    "flavor": "The lines hum before they bite. Learn the hum.",
+    "tags": "leylines; defense; expertise",
     "atlas": "heroic",
     "layout": {
       "x": 0.46,
@@ -2160,11 +2172,13 @@
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Stonestance",
+    "specialty": "Leybreaker",
+    "name": "Stillstance",
     "action": "Action",
-    "description": "Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.",
-    "tags": "stonestance; deflect; ally",
+    "prerequisites": "Discipline 1+",
+    "description": "Enter Stillstance: Enemies within your reach must spend an additional Action to attack your allies. When an Invested character within your reach Draws Mana or uses a leyline or deity talent, you can make a Reactive Strike against it.",
+    "flavor": "Do not chase the working. Stand where it must come to you.",
+    "tags": "stillstance; stance; ally; reactive_strike",
     "atlas": "heroic",
     "layout": {
       "x": 0.58,
@@ -2173,28 +2187,30 @@
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Windstance",
-    "action": "Action",
-    "prerequisites": "Shard Training; Perception 1+",
-    "description": "Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.",
-    "tags": "windstance; agility; gain_action:",
+    "specialty": "Leybreaker",
+    "name": "Break the Draw",
+    "action": "Special",
+    "cost": "1 Focus",
+    "prerequisites": "Ley-tempered; Athletics 2+",
+    "description": "When you hit with a melee attack, spend 1 focus. The target loses focus equal to your tier, or that much Investiture if it has any. Once per round.",
+    "flavor": "A mage's power is a held breath. Hit the ribs.",
+    "tags": "focus; investiture; on_hit",
     "atlas": "heroic",
     "layout": {
       "x": 0.46,
       "y": 0.44
     },
     "connections": [
-      "Shard Training"
+      "Ley-tempered"
     ]
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
+    "specialty": "Leybreaker",
     "name": "Mighty",
     "action": "Passive",
-    "prerequisites": "Stonestance",
-    "description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
+    "prerequisites": "Stillstance",
+    "description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.",
     "tags": "increase_damage",
     "atlas": "heroic",
     "layout": {
@@ -2202,79 +2218,83 @@
       "y": 0.44
     },
     "connections": [
-      "Stonestance"
+      "Stillstance"
     ]
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Shattering Blow",
+    "specialty": "Leybreaker",
+    "name": "Sever the Line",
     "action": "Special",
-    "cost": "2 Focus",
-    "prerequisites": "Windstance; Perception 2+",
-    "description": "When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft. ",
-    "tags": "push; deplete_armor",
+    "cost": "1 Focus",
+    "prerequisites": "Break the Draw; Perception 2+",
+    "description": "When you hit with a melee weapon attack, spend 1 focus. The target is Slowed and its Attunement Range is 5 ft until the end of its next turn.",
+    "flavor": "Cut the leg out from under the line.",
+    "tags": "slowed; attunement_range; on_hit",
     "atlas": "heroic",
     "layout": {
       "x": 0.46,
       "y": 0.62
     },
     "connections": [
-      "Windstance"
+      "Break the Draw"
     ]
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Bloodstance",
+    "specialty": "Leybreaker",
+    "name": "Saltstance",
     "action": "Action",
-    "prerequisites": "Shard Training; Mighty; Athletics 2+",
-    "description": "Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2. ",
-    "tags": "bloodstance; opportunity_range; decrease_defense",
+    "prerequisites": "Stillstance; Mighty; Athletics 2+",
+    "description": "Enter Saltstance: Your Physical defense increases by 1 and your Strikes deal extra damage equal to your tier. Invested characters within your reach must spend an additional Action to Draw Mana.",
+    "flavor": "Salt on the threshold. Nothing crosses cheaply.",
+    "tags": "saltstance; stance; defense; damage",
     "atlas": "heroic",
     "layout": {
       "x": 0.58,
       "y": 0.62
     },
     "connections": [
-      "Shard Training",
+      "Stillstance",
       "Mighty"
     ]
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Precise Parry",
+    "specialty": "Leybreaker",
+    "name": "Turn the Working",
     "action": "Reaction",
-    "cost": "1 Focus",
-    "prerequisites": "Shattering Blow; Perception 3+",
-    "description": "Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.",
-    "tags": "graze; test_athletics; test_light_weapon; test_heavy_weapon",
+    "cost": "2 Focus",
+    "prerequisites": "Sever the Line; Perception 3+",
+    "description": "When a character within your reach targets you with an attack or a talent that costs Investiture, spend 2 focus and test Athletics vs. Cognitive. On a success, turn the attack into a graze, or the talent does not affect you.",
+    "flavor": "Every working has a hinge. Find it with your shoulder.",
+    "tags": "reaction; graze; counter",
     "atlas": "heroic",
     "layout": {
       "x": 0.46,
       "y": 0.8
     },
     "connections": [
-      "Shattering Blow"
+      "Sever the Line"
     ]
   },
   {
     "path": "Warrior",
-    "specialty": "Shardbearer",
-    "name": "Meteoric Leap",
+    "specialty": "Leybreaker",
+    "name": "Breaker's Charge",
     "action": "2 Actions",
     "cost": "2 Focus",
-    "prerequisites": "Bloodstance; Athletics 3+",
-    "description": "Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.",
-    "tags": "unarmed_attack; prone; gain_advantage; shardplate; ",
+    "prerequisites": "Saltstance; Athletics 3+",
+    "description": "Spend 2 focus to move up to half your movement toward a character, then make a melee weapon attack vs. Physical, rolling an extra 2d8 damage. On a hit, the target loses Investiture equal to your tier, if it has any, and cannot Draw Mana until the end of its next turn.",
+    "flavor": "The distance is the wind-up. Close it.",
+    "tags": "charge; movement; damage; investiture",
     "atlas": "heroic",
     "layout": {
       "x": 0.58,
       "y": 0.8
     },
     "connections": [
-      "Bloodstance"
+      "Saltstance"
     ]
   },
   {
