@@ -4065,12 +4065,13 @@ The run-17/18 blocker notes follow.)*
 checks out. Whether it "reads sad, not undying" is prose, and its biography carries that read
 explicitly.)*
 
-- [ ] ⚑ **Cold-Fire Cinderbrock — does it read PITIABLE, or just weaker?** — the whole point of
+- [x] ⚑ **Cold-Fire Cinderbrock — does it read PITIABLE, or just weaker?** — the whole point of
       the wasting variant is that a 14-HP stripped Cinderbrock (no Fire the Wrack, no Den Fury)
       should land as **sad**, not as a nerfed statblock. Run it once and say which it was; if it
       only reads weaker, the fix is prose and encounter framing, not numbers. *(Split out
       2026-07-27w when its mechanical half — the loadout read — retired above and took the
-      flavor question with it.)*
+      flavor question with it.)* *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later;
+      re-raise with the redo.)*
 
 # Canticle Plains Bestiary (W28, rulings 106–107 — statted 2026-07-20)
 
@@ -4156,10 +4157,11 @@ False Spring, it posted "⏰ **Heat of the Flats** (Bench Adv — The False Spri
 1 focus (open glare; shade or full cover negates — table read). *(Bench — Black's turn starts in
 range.)*" ⚠️ Note for future runs: the cue is `enemy-turn-start`, so the mover must be on the **opposite
 disposition** — a same-side token starting its turn correctly fires nothing.)*
-- [ ] ⚑ **Heat of the Flats — when does SHADE negate the glare?** — the cue has no shade
+- [x] ⚑ **Heat of the Flats — when does SHADE negate the glare?** — the cue has no shade
       clause and no hook could give it one; it is a table read. Say what counts as shade
       (a wall? any cover? only a roofed square?) so the card can carry the answer.
-      *(Split 2026-07-27w.)*
+      *(Split 2026-07-27w.)* *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later;
+      re-raise with the redo.)*
 *(**Gone Into the Shimmer cue** — RETIRED on evidence 2026-07-28c, bench run 18, **with its no-re-fire
 control**: the first crossing of 24 (48 → 22) posted "⏰ **Gone Into the Shimmer** (Bench Adv — The
 False Spring): It drops the mirage and disengages into the heat-haze — end of the fight, start of the
@@ -4198,9 +4200,10 @@ the pack takes the cut-out one. *(hit Bench Target — Floater.)*")*
 
 *(**Loadout sanity (numbers)** — RETIRED on evidence 2026-07-28c, bench run 18, read off a fresh pack
 import: **role rival · count 3 · hp 14** (`max.override = 14`). Both numbers the row asks for match.)*
-- [ ] ⚑ **Dirgehounds — pack or mob?** — play them once: do 3 × 14 HP dirgehounds read as a
+- [x] ⚑ **Dirgehounds — pack or mob?** — play them once: do 3 × 14 HP dirgehounds read as a
       **pack that cuts one target out of the group**, or as an undifferentiated swarm? If they
       play as a mob, say so and the count/HP split gets re-cut. *(Split 2026-07-27w.)*
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 
 ---
 
@@ -4297,20 +4300,36 @@ consume failure behind it); the cost-versus-pool half is a design call, **R-112*
 ⟳ Sync.** The report's mechanism was half wrong and the delta says so: `edhaConsumeCost` already
 warned and is **not** on this path — an adversary ability goes through the SYSTEM's `use()`, which
 refuses with the anonymous *"Cannot consume, not enough of resource"*. The engine now announces the
-shortfall by name on `preUseItem`, in a toast **and** in the console, and never vetoes. ⛔ **The
-cost/pool half is NOT fixed** — R-112 is still waiting on Ben, so The Reckoning still cannot pay for
-its own ability; that is what these rows are meant to make visible, not to resolve. **Do not
-hand-edit the pool** — the whole point is what an underfunded use now looks like.)*
-- [ ] 🤖 **The Reckoning — the underfunded use now SAYS so** — fresh pack import of `The Reckoning`
-      (focus pool max 2), target selected, use **Unbreakable Line** (3 Focus). Expect a warning
-      naming all six facts — *"Edha: The Reckoning cannot pay for Unbreakable Line — 1 Focus short
-      (needs 3, has 2)."* — as a `ui.notifications` toast **and** as an `Edha Content |` line in the
-      console (F12), where it survives the toast fading. **FAIL if the button is still silent.**
-      *(Fix pass 11, 2026-09-13 — pinned headless in `tests/consume-shortfall.test.js`.)*
-- [ ] 🤖 **…and the announcer did not become a second veto** — the same take must still reach the
-      system's own refusal: the consume prompt still opens, and nothing about the use is cancelled
-      EARLIER than it was before the fix. The engine warning is an announcement, not a gate.
-      *(Fix pass 11, 2026-09-13.)*
+shortfall by name on `preUseItem`, in a toast **and** in the console, and never vetoes. ⛔ **At the
+time this pass shipped, the cost/pool half was NOT yet fixed** — R-112 was still waiting on Ben, so
+The Reckoning could not pay for its own ability; the two rows below made that visible, on a fresh
+pack import with the pool still at 2. **Do not hand-edit the pool** was the instruction while R-112
+was open — it now reads as history: the pool is fixed in the data instead.)*
+
+*(**Item 119's DATA half — R-112 (a), answered 2026-09-13 (Ben, phone board, 14:10 ET).** The
+Reckoning's focus pool is raised **2 → 3** in `data/adversaries.json`, matching Crownox Ring, and
+both blocks' `edha-gm-cue` note now names the same 3-Focus cost. Item 119 is fully closed (engine
+half PR #337, data half this PR). **This retires the pool-2 scenario the two 2026-09-13 rows below
+tested** — it cannot be re-driven live any more without hand-editing the pool back down, which is
+exactly what the note above forbade. That coverage stays pinned headless, permanently, in
+`tests/consume-shortfall.test.js` (a synthetic fixture, independent of the real data). Bench 46
+re-drives The Reckoning on the REBUILT pack instead, in the new row below.)*
+- [x] 🤖 **The Reckoning — the underfunded use now SAYS so** — RETIRED 2026-09-13 on R-112 (a): the
+      pool-2 scenario this row drove no longer exists in live data (raised to 3) and cannot be
+      reproduced without hand-editing the pool, which is forbidden. The announcer behaviour itself
+      stays proven — headless, permanently — in `tests/consume-shortfall.test.js`.
+      *(Fix pass 11, 2026-09-13 → retired on R-112 (a), 2026-09-13.)*
+- [x] 🤖 **…and the announcer did not become a second veto** — RETIRED 2026-09-13 on R-112 (a), same
+      reason: the underfunded take this row re-checked no longer exists on the REBUILT pack. Pinned
+      headless in the same test file.
+      *(Fix pass 11, 2026-09-13 → retired on R-112 (a), 2026-09-13.)*
+- [ ] 🤖 **The Reckoning — re-drive on the REBUILT pack (pool 2 → 3, R-112 (a))** — fresh pack import
+      of the REBUILT `The Reckoning` (focus pool max now **3**, matching Crownox Ring), target
+      selected, use **Unbreakable Line** (3 Focus). Expect the SAME shape as the Ring control below:
+      a 3-Focus consume prompt, a roll config headed "UNBREAKABLE LINE (WHITE)", the contest core's
+      Enter-the-DC dialog, and a real resolved card — no shortfall toast, no console warning (the
+      pool can pay in full now). **FAIL if a shortfall notice still appears, or if the use is still
+      silent.** *(Item 119 DATA half, R-112 (a), 2026-09-13.)*
 - [ ] 🤖 **The Crownox Ring control — an AFFORDABLE use is announced not at all** — same ability on
       `B45 Crownox Ring` (focus max 3): no Edha shortfall toast, no console line, and the 3 Focus are
       consumed exactly as bench run 45 already measured. *(Fix pass 11, 2026-09-13.)*
@@ -4331,10 +4350,11 @@ ON the document, and matches the row's "(sheet note)" exactly; the listed Deflec
 ring-TIGHTENS cue fired**: *"⏰ Stations Kept (Bench Adv — Crownox Ring): Bloodied — the ring tightens
 around the calves; it does not scatter and does not pursue."* on 26 → 13 (line 13). Incidentally
 re-confirmed **Retributive Guard** (2bAB-3) posting its retaliate prompt by itself from the damage.)*
-- [ ] ⚑ **Crownox — where does a ring stop being a ring?** — an ox pulled 10+ ft "loses the wall
+- [x] ⚑ **Crownox — where does a ring stop being a ring?** — an ox pulled 10+ ft "loses the wall
       kit", but nothing enforces or measures that and no hook exists for it. Say the rule you
       actually want at the table (a distance? a broken adjacency chain? GM eyeball?) and it can
       go in the card text. *(Split 2026-07-27w.)*
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 
 ## 3. Rootling Swarm (Green minion ×3 — "the Snare")
 
@@ -4383,8 +4403,9 @@ while its own cue says it "goes still instead of dying". See `EDHA_RULINGS.md`.)
 disposition −2 so it does not void the victim's isolation) hit an asserted-Isolated character and the
 engine applied the status — *"Sapping Hex — Bench Target — Isolated is Weakened."* plus the `Weakened`
 effect on the actor.)*
-- [ ] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
+- [x] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
       (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
+      *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
 *(**Bloodied re-settle cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ It Re-Gathers on the Rooflines (Bench Adv — Tollbird Flock): Bloodied — the flock breaks and
 re-settles on the rooflines, out of reach."* on 14 → 7.)*
