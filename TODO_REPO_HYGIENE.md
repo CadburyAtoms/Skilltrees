@@ -25,7 +25,7 @@ opening CLAUDE.md.
 
 ---
 
-## 2. [~] Remove committed binaries — especially the copyrighted Stormlight PDF
+## 2. [x] Remove committed binaries — especially the copyrighted Stormlight PDF — DONE 2026-09-13: the PM deleted 117 remote branches on Ben's word ("I'll let you handle since main is caught up"); `docs/BRANCH_CLEANUP.md` carries the record; only the two YOUR-CALL branches remain
 > **2026-09-05 status: the history purge has effectively HAPPENED — as the 2026-07-28 restart.** Main's
 > root commit is `aed1a76` (07-28); the PDF is unreachable from `main` and survives only through the
 > **57 orphaned pre-restart branches** (plus the 2026-07-06 working-tree half, which is done).
@@ -2670,7 +2670,7 @@ per-card audit table. ENGINE + likely REBUILD (PM decides from the PR's card lis
 
 ---
 
-## 82. [ ] Bestiary statting standard gains an explicit senses + movement line per block
+## 82. [~] Bestiary statting standard gains an explicit senses + movement line per block — SHELVED 2026-09-13 into item 121 (Ben: the bestiary will be redone; the invented senses/speed batch waits for that scoping)
 
 **Why:** Ben, 2026-09-07 (dashboard), verbatim: *"We should update the bestiary lore-forge skill
 to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T19:31:59.725Z",
+  "generatedAt": "2026-09-13T20:25:19.561Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "80ad5d3708",
-    "commit": "bb6607d",
-    "branch": "pm/board-2026-09-13c",
+    "hash": "42ab69bd48",
+    "commit": "9edb3b1",
+    "branch": "pm/board-2026-09-13d",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,13 +42,40 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: 11 PRs merged. Bench 46 retired 10 of 11 rows on the deploy the PM ran itself; the bench declined the bulk adversary sync after finding your live combat on \"Playtest Map (Copy)\" (R-113 asks whether that scene is the bench's). Nothing is running. Yours: R-113 (default: guard the bulk sync), and say whether to keep spending today — four small Sonnet items are ready.",
-    "waitingOn": "R-113 (tap the default) · a budget word: keep going today, or stop until tonight/next weekend?",
+    "status": "awake",
+    "note": "Sunday session: your three answers are in. Item 123 (agents get a guarded bulk adversary sync) and the LICENSE are being written; 117 stale remote branches are deleted (the two docs-only ones you may want are still there). Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
+    "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "123",
+      "title": "R-113 (a): edha.syncAllAdversaries gains scope, dry-run and a started-combat refusal; R-113 → §K",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/123-sync-adversaries-scope-guard",
+      "startedAt": "2026-09-13T20:25:00Z",
+      "agent": "Work item 123",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; ENGINE-ONLY (F5) at merge"
+    },
+    {
+      "item": "3",
+      "title": "LICENSE — MIT (code) + CC BY-NC-SA 4.0 (content) + unofficial-fan-content notice",
+      "model": "sonnet",
+      "size": "XS",
+      "lane": "R",
+      "branch": "pm/3-license",
+      "startedAt": "2026-09-13T20:25:00Z",
+      "agent": "Work item 3",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; DOCS-ONLY"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -462,13 +489,13 @@
     {
       "pos": 34,
       "item": "9",
-      "title": "Map fork consolidation",
-      "lane": "H",
+      "title": "Map fork consolidation (region_overlay.py / world_settlement.py onto maplib's helpers) — re-laned 2026-09-13: a Python refactor with no design content; the \"bridge/MST rulings batch\" it was parked on never existed",
+      "lane": "R",
       "model": "opus",
       "size": "M",
-      "deps": "bridge/MST rulings batch",
-      "status": "blocked",
-      "statusDetail": "rulings",
+      "deps": null,
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
@@ -983,8 +1010,8 @@
       "model": "sonnet",
       "size": "M",
       "deps": "83 ✓ · Ben's batch",
-      "status": "blocked",
-      "statusDetail": "Ben's batch",
+      "status": "shelved",
+      "statusDetail": "121",
       "pr": null
     },
     {
@@ -1044,7 +1071,7 @@
       "size": "S",
       "deps": "R-92 (Ben)",
       "status": "blocked",
-      "statusDetail": "R-92",
+      "statusDetail": "R-114 — the Mantle-of-the-Aspirant question was never filed as a ruling; the rulings file's R-92 is the answered \"dropped\" cue; file it as R-114 and put it to Ben",
       "pr": null
     },
     {
@@ -1482,13 +1509,13 @@
     {
       "pos": 118,
       "item": "123",
-      "title": "edha.syncAllAdversaries() is not bench-safe — scope + dry-run + started-combat refusal (ENGINE-ONLY, F5)",
+      "title": "edha.syncAllAdversaries() is not bench-safe — scope + dry-run + started-combat refusal (ENGINE-ONLY, F5). R-113 = (a) (Ben, chat 16:25: \"agents need to be able to sync adversaries for bench runs\"); \"Playtest Map (Copy)\" stays Ben's by default. Dispatched 16:25",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
-      "deps": "R-113",
-      "status": "blocked",
-      "statusDetail": "R-113",
+      "deps": "R-113 ✓",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1538,6 +1565,18 @@
       "status": "queued",
       "statusDetail": "2026-09-13",
       "pr": null
+    },
+    {
+      "pos": 123,
+      "item": "3",
+      "title": "LICENSE — MIT (code) + CC BY-NC-SA 4.0 (content) + the unofficial-fan-content notice; Ben, chat 16:25: \"whatever won't get me in trouble and is most widely applicable\". Dispatched 16:25",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": null,
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -1585,7 +1624,8 @@
     }
   ],
   "benOnly": [
-    "R-113 (default (a)), and a word on whether to keep spending today — 123 / 124 / 125 / 126 are Sonnet XS–S, the design-proposal batch (106 / 107 / 108 / 109 / 114 → R-114+) is Sonnet S, 110 / 113 / 115 are Opus (tomorrow)."
+    "R-114 once filed",
+    "the two YOUR-CALL branches (a drawing brief and a playtest watch sheet — keep or delete) whenever."
   ],
   "inbox": [],
   "foundry": {
@@ -1595,34 +1635,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "13:55",
-      "at": "2026-09-07T17:55:00.000Z",
-      "item": "PM handoff — loop STOPPED: the queue is dry. Day's tally (09:52 → 13:55, Ben's hours by his word): 13 PRs merged (#272 → #285) — board ×6, items 79 / 84 / 85 / 86 / 87 / 89 / 90, bench runs 42 + 43 (48 rows retired on evidence, open 🤖 58 → 5, all five gated on R-90 / R-91 / a rebuild); engine pushed live twice (12:23 item 84, 13:40 item 86; served a23e70d1… = main); Ben F5'd once (12:25) and owes another F5, his ⟳ Sync Talents click, and ONE deploy-to-foundry.bat (item 89). Rulings filed R-86 → R-91; waiting on Ben: R-83, R-56 go/no-go, R-88, R-89, R-90, R-91. Budget: PM-R8 revoked, PM-R16 = 3 Opus / day (3 used: bench 42 16.9M, item 84 1.8M, bench 43 11.1M), Sonnet unlimited (79 6.5M, 85 5.6M, 87 2.8M, 90 2.4M, 86 3.3M, 89 4.1M); PM 13.8M. Next PM: edha-pm-weeknight at 21:00 ET (MODEL GUARD); nothing Opus until 00:00, then 80 → 81 → 62. Iron-rule-6 debt: the PM's own commits on #272 / #273-correction carry the harness trailer; everything after is clean",
-      "itemNo": "272",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "4 h",
-      "weighted": "13.8M (+ 54.7M workers)",
-      "weightedM": 13.8,
-      "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "17:10",
-      "at": "2026-09-07T21:10:00.000Z",
-      "item": "Hand-started Fable PM session (Ben, chat, in his own hours — chat wins: \"You're the new pm session\"); the 09:52 session RETIRED for the day (out of context), told by session message. Step 0: main a278186 clean, no PRs, no worktrees; Foundry up (302); packs rebuilt 17:03 by Ben's bat (item 89 live), F5 pressed, ⟳ Sync Adversaries + Players clicked — nothing owed; engine 6 in sync (a23e70d1…); inbox empty. Ben's dashboard paste 17:11: R-83 (a) → item 70 unblocked; R-88 (a) → item 92; R-89 (a) → item 93; four ⚑ wizard-v2 rows PASS + the done-ticks → item 91; R-56 unchanged (still \"let me know before changing\" → WAITING on his go). Opus 3 of 3 spent today (PM-R16) → Sonnet now (91, 92, 93 in worktrees the moment this PR merges); Opus after 00:00: 70 → 80, push live, then bench 44 (89 (b), 70, 80)",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "items 91–93 filed on this PR; the dispatch rows follow on the next board commit",
-      "pr": 287
-    },
     {
       "date": "2026-09-07",
       "time": "17:20",
@@ -2434,9 +2446,37 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:25",
+      "at": "2026-09-13T20:25:00.000Z",
+      "item": "Ben in chat: R-113 = (a); LICENSE = \"whatever won't get me in trouble and is most widely applicable\"; branch cleanup = \"I'll let you handle\". Dispatched item 123 (sonnet, worktree pm/123-sync-adversaries-scope-guard — scope + dry-run + started-combat refusal on the bulk sync; R-113 → §K) and item 3's LICENSE half (sonnet, worktree pm/3-license — MIT + CC BY-NC-SA 4.0 + fan-content notice). Queue corrections from the blocked-items audit: 9 re-laned R (its rulings batch never existed), 82 shelved into 121, 101's phantom R-92 → R-114 to file",
+      "itemNo": null,
+      "model": "sonnet ×2",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:25",
+      "at": "2026-09-13T20:25:00.000Z",
+      "item": "Branch purge run BY THE PM (item 2's last half, Ben's word): dry run classified 119 remote branches — 106 merged by ancestry, 9 squash-merged via PRs (#97 #101 #102 #109 #228 #241 #274 #327 #335), 2 former KEEPs re-landed (items 33 / 34), 2 YOUR-CALL left — 117 deleted in five git push origin --delete batches, 0 errors; git fetch --prune shows main + the two YOUR-CALL branches. docs/BRANCH_CLEANUP.md carries the closing note; item 2 [x]",
+      "itemNo": "97",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "done",
+      "pr": null
     }
   ],
-  "runLogTotal": 246,
+  "runLogTotal": 248,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {

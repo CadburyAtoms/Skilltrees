@@ -1,11 +1,38 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: 11 PRs merged. Bench 46 retired 10 of 11 rows on the deploy the PM ran itself; the bench declined the bulk adversary sync after finding your live combat on \"Playtest Map (Copy)\" (R-113 asks whether that scene is the bench's). Nothing is running. Yours: R-113 (default: guard the bulk sync), and say whether to keep spending today — four small Sonnet items are ready.",
-    "waitingOn": "R-113 (tap the default) · a budget word: keep going today, or stop until tonight/next weekend?",
+    "status": "awake",
+    "note": "Sunday session: your three answers are in. Item 123 (agents get a guarded bulk adversary sync) and the LICENSE are being written; 117 stale remote branches are deleted (the two docs-only ones you may want are still there). Next for you once filed: R-114 (Mantle of the Aspirant's unwind heal — gate it or declare it the exception; default gate).",
+    "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "123",
+      "title": "R-113 (a): edha.syncAllAdversaries gains scope, dry-run and a started-combat refusal; R-113 → §K",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/123-sync-adversaries-scope-guard",
+      "startedAt": "2026-09-13T20:25:00Z",
+      "agent": "Work item 123",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; ENGINE-ONLY (F5) at merge"
+    },
+    {
+      "item": "3",
+      "title": "LICENSE — MIT (code) + CC BY-NC-SA 4.0 (content) + unofficial-fan-content notice",
+      "model": "sonnet",
+      "size": "XS",
+      "lane": "R",
+      "branch": "pm/3-license",
+      "startedAt": "2026-09-13T20:25:00Z",
+      "agent": "Work item 3",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; DOCS-ONLY"
+    }
+  ],
   "usage": null
 }
