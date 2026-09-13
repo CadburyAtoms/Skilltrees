@@ -4221,7 +4221,7 @@ pool **maxes at 2** (`max.override: 2`) — so it can never be paid, and `item.u
 at all**: no chat card, no `ui.notifications` warning, no log line. The Crownox Ring (max 3) is fine. The
 first take on the Reckoning read exactly like a dead ability; raising its pool to 5 made the identical
 take work and consumed exactly 3. Filed as **TODO item 117** (the cost/pool mismatch, and the silent
-consume failure behind it).)*
+consume failure behind it); the cost-versus-pool half is a design call, **R-112**.)*
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
