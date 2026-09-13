@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T21:27:20.182Z",
+  "generatedAt": "2026-09-13T22:31:28.096Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "7b1003a84b",
-    "commit": "11903b1",
-    "branch": "pm/board-2026-09-13e",
+    "hash": "6ca569adeb",
+    "commit": "0384339",
+    "branch": "pm/board-2026-09-13f",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "waiting",
-    "note": "Sunday session: 15 PRs merged. Seven rulings are waiting for you on the Needs Ben tab — R-92 (a generic dropped-to-0-HP GM cue; it had been hidden in the answered section since 09-09), R-114 (Mantle of the Aspirant's heal), R-115 (False Premise), R-116 (Final Decree), R-117 (Trade Routes), R-118 (three deity gates), R-119 (the Decree moving zone) — each with a default you can tap. Press F5 for item 123. Nothing is running until the next slot at 19:24.",
+    "note": "Sunday session: your 16:13 notes are in — the bench will get its own scenes (PM-R19, item 128 queued) and the loop keeps going inside the weekend cap; next dispatch 19:24 (item 124). Seven rulings wait on the Needs Ben tab (R-92, R-114 … R-119). Press F5 for item 123.",
     "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -1562,6 +1562,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 347
+    },
+    {
+      "pos": 125,
+      "item": "128",
+      "title": "The bench may CREATE its own scenes (PM-R19) — bench skill + runbook licence; roster script gains a standing Bench Arena; the scoped sync targets it; one 🤖 row",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "PM-R19 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
     }
   ],
   "rulings": [
@@ -1621,34 +1633,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "17:20",
-      "at": "2026-09-07T21:20:00.000Z",
-      "item": "Item 93 (NO NAMEABLE HOOK → noHook data flag, R-89 (a)) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "25 min, 299 turns",
-      "weighted": "7.7M",
-      "weightedM": 7.7,
-      "outcome": "merged 17:50 after review, no trailers, no bounce; the PR was CONFLICTING (base b4164c5, three merges behind) so no CI ran — the PM merged origin/main into the branch in the worker's worktree (changelog top: 93 / 91 / 92 newest-first; dashboard regenerated), gates 11/11, CI green on the merge head d42d17c. 16 abilities (not 17 — the item's count included the schema doc line), parity 16 docs / 0 other diffs / 0 roll diffs, two lint mutations pinned (tests/adversary-nohook-flag.test.js mutates the real file and restores bytes), validators type-check the key, docs sweep of 7 files. Found: no extract path round-trips adversary descriptions (source-JSON → build → ⟳ Sync, one-way) — a fact, recorded in the delta. Adversaries REBUILD + ⟳ Sync Adversaries owed",
-      "pr": 291
-    },
-    {
-      "date": "2026-09-07",
-      "time": "17:41",
-      "at": "2026-09-07T21:41:00.000Z",
-      "item": "Item 95 (R-90 / R-91 close-out, the R-62 audience row retired under R-86) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "10 min, 167 turns",
-      "weighted": "2.8M",
-      "weightedM": 2.8,
-      "outcome": "merged 17:56 after review, no trailers, no bounce; CONFLICTING (base 56a44fa, two merges behind) so the PM merged origin/main into the branch (changelog top 95 / 93 / 91 / 92; dashboard regenerated), gates 11/11, CI green on the merge head da5d335. parseOpenRulings 3 → 1 (R-56 alone), open 🤖 6 → 5, the real-doc pin re-pointed to R-56. DOCS-ONLY",
-      "pr": 292
-    },
     {
       "date": "2026-09-07",
       "time": "17:38",
@@ -2460,9 +2444,37 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "16:13",
+      "at": "2026-09-13T20:13:00.000Z",
+      "item": "Phone inbox (seen 18:31): R-113 = (a) again + *\"I also need to give permission to create new scenes specifically for future test bench runs\"* → PM-R19 recorded, item 128 filed (sonnet S, lane B); and \"done\" on the keep-spending question → go-ahead within the caps",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "notes handled",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "18:31",
+      "at": "2026-09-13T22:31:00.000Z",
+      "item": "Wake: clean main 0384339, engine 6 in sync, no worker; two inbox notes handled (above). Cap full until 19:24 — next: 124, then 125 / 126 / 128, one Sonnet at a time; the deploy-cycle first live run after 124; 110 / 113 / 115 Opus tomorrow. Seven rulings still waiting on the phone",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 254,
+  "runLogTotal": 256,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
