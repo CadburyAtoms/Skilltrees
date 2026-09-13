@@ -405,7 +405,7 @@ Three things the verifier raised unasked, carried forward:
 
 ## 9. The rulings this review files
 
-*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, was **R-126** — answered the same day, (a): **Draw Mana now recovers Investiture equal to your highest attuned colour rank** (engine, card and docs changed in PR #TBD; the tier yield had been an implementation default of June 2026). Yardstick 4 is restated above; item 130 (R-121's income clauses) closed as unnecessary.*
+*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, was **R-126** — answered the same day, (a): **Draw Mana now recovers Investiture equal to your highest attuned colour rank** (engine, card and docs changed in PR #353; the tier yield had been an implementation default of June 2026). Yardstick 4 is restated above; item 130 (R-121's income clauses) closed as unnecessary.*
 
 | ruling | tree | recommended default | deploy |
 |---|---|---|---|
