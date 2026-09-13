@@ -4441,7 +4441,10 @@ async function edhaTurnCueSweep(combat, prior, current) {
           const got = edhaHealCutGate(prevTok.actor, heal);
           const line = edhaHealLine(prevTok.actor, heal, got, d => `regains ${d} HP`);
           if (got > 0) await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + got }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
-          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `${line}.`, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
+          // item 120: a GATED tick drops the rule's static note — it was written un-gated and would
+          // print a number the gate never delivered, right next to the parenthetical saying so.
+          const note = edhaDeliveredNote(h.note, line ? `${line}.` : "", heal, got);
+          await edhaPostCueCard(prevTok.actor, tal, { note, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -4775,6 +4778,29 @@ function edhaHealLine(who, requested, delivered, phrase) {
   const info = edhaHealCutInfo(who);
   if (!info) return "";
   return `${who?.name ?? "the target"} ${info.fraction === 0 ? "cannot regain HP" : "has their healing halved"}${info.byName ? ` (${info.byName})` : ""} — no healing lands`;
+}
+/* WHICH sentence a gated payload's card carries (item 120, fix pass 11 — bench run 45). The
+ * announcement helper above composes the truth from what was DELIVERED, but a cue rule can ALSO
+ * carry its own static `note`, authored before the gate existed and therefore un-gated by
+ * construction. The `edha-regen` sweep posted `h.note || line`, so the static note won on exactly
+ * the creatures the gate exists for: a withered Garden Sow's tick read
+ *   "⏰ Nexus-Fed (B45 Garden Sow): Nexus-Fed — the Sow regains 5 HP. (no HP applied — … no healing
+ *    lands.)"
+ * and the GM reads the 5 first. Item 68's contract ("a heal card is built from what was delivered")
+ * was honoured in the parenthetical and broken in the body of the same card.
+ *
+ * The rule: **when less landed than was asked for, the composed line is the only honest sentence**
+ * — the static note is dropped, blocked (0) and halved (some) alike. An UNGATED payload
+ * (delivered === requested, the overwhelmingly common case) keeps the author's note, which is the
+ * whole point of the field. Returns "" when neither has anything to say.
+ * PURE — pinned in tests/gated-note.test.js. Reach for it at ANY card site that holds both a
+ * static note and a delivered-amount line; `h.note || line` at such a site is the bug. */
+function edhaDeliveredNote(note, deliveredLine, requested, delivered) {
+  const asked = Math.max(0, Math.floor(Number(requested) || 0));
+  const got = Math.max(0, Math.floor(Number(delivered) || 0));
+  const line = String(deliveredLine ?? "").trim();
+  if (got < asked) return line;
+  return String(note ?? "").trim() || line;
 }
 async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {

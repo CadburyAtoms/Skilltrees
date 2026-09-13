@@ -3335,6 +3335,19 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   pulse sweep is the group case and counts deliveries instead.
   **`tests/heal-announce-delivered.test.js` counts the call sites**, so a new heal card that skips
   it fails the build.
+- **`edhaDeliveredNote(note, deliveredLine, requested, delivered)`** — **WHICH sentence a gated
+  payload's card carries** (item 120, fix pass 11; bench run 45). PURE, pinned in
+  `tests/gated-note.test.js`. `edhaHealLine` composes the truth; this decides whether a rule's own
+  **static `note`** may override it. When **less landed than was asked for** (blocked *or* halved)
+  the composed line wins and the static note is dropped; an ungated payload keeps the author's
+  note, which is the whole point of the field. `""` when neither has anything to say. Why it
+  exists: the `edha-regen` sweep posted `h.note || line`, so a withered Garden Sow's Nexus-Fed tick
+  read *"…regains 5 HP."* immediately before its own *"(no HP applied — … no healing lands.)"* —
+  item 68's contract honoured in the parenthetical and broken in the body of the same card.
+  **`h.note || line` at any card site that also holds a delivered-amount line is that bug**; reach
+  for this instead. First and only consumer today: the `edha-regen` turn-end sweep (the other
+  eleven `edhaHealLine` callers compose from the line alone, and the triggered-effect dispatcher
+  appends its note as a parenthetical *why* rather than in place of it).
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
