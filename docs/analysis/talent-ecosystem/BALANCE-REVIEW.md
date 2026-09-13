@@ -123,7 +123,7 @@ trees (Power has no Passive at all) with no persistence beyond Destruction's ter
 
 **Outcome, after R-126 (a) (2026-09-13):** with a two-point draw, Power's Draw + `Kneel` + `Warlord's
 Advance` and Destruction's Draw + two Charges are sustainable every turn from level 1 with no income
-at all — the reason for the clause is gone, and item 130 was closed as unnecessary on its own
+at all — the reason for the clause is gone, and item 131 was closed as unnecessary on its own
 Done-when. What follows is the recommendation as it stood before R-126, kept for the record.
 
 **Recommended default (R-121 (a)):** one income clause each, on an existing talent, in the tree's
@@ -405,7 +405,7 @@ Three things the verifier raised unasked, carried forward:
 
 ## 9. The rulings this review files
 
-*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, was **R-126** — answered the same day, (a): **Draw Mana now recovers Investiture equal to your highest attuned colour rank** (engine, card and docs changed in PR #353; the tier yield had been an implementation default of June 2026). Yardstick 4 is restated above; item 130 (R-121's income clauses) closed as unnecessary.*
+*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 130 … 135 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, was **R-126** — answered the same day, (a): **Draw Mana now recovers Investiture equal to your highest attuned colour rank** (engine, card and docs changed in PR #353; the tier yield had been an implementation default of June 2026). Yardstick 4 is restated above; item 131 (R-121's income clauses) closed as unnecessary.*
 
 | ruling | tree | recommended default | deploy |
 |---|---|---|---|

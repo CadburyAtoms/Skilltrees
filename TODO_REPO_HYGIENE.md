@@ -3784,7 +3784,16 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
 
-## 129. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
+## 129. [ ] `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13)
+
+**Why:** the first live `node scripts/deploy-cycle.js --yes` (PM, 2026-09-13 19:41 ET, every guard PASS) threw `EBUSY: resource busy or locked, copyfile '…\\packs\\edha-leyline\\LOCK'` inside `backupPacks()` (`scripts/deploy-cycle.js:232`), which `main()` calls BEFORE step 1 (close Foundry). A running Foundry holds each pack's LevelDB `LOCK`; the copy cannot read it. The failure was SAFE — nothing had been written, Foundry stayed up — but the run did no work, and the stack trace was raw rather than the script's own "step N failed + restore command" message.
+
+**What to do:** (1) move `backupPacks()` to AFTER the close step succeeds (the packs are only readable then) and before any write; (2) make `copyDirRecursive` skip `LOCK` (and any file that throws EBUSY, logging it) — a LevelDB backup does not need the lock file; (3) wrap the backup in the same fail-fast handling as the steps so a failure prints the step name and, since nothing was written yet, says so instead of a stack trace; (4) pin the order with a pure "plan" or a smoke test that asserts the close step precedes the backup in the step list, and a unit test that `copyDirRecursive` skips `LOCK`. Then re-run `--dry-run`; the PM does the next `--yes`.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` lists "backup" after "close"; the PM's next live run gets past the backup.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
+## 130. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
 
 **Why:** the balance review's largest outlier — the repeatable strike multiplies its die by the Insight count (one roll × count, `data/authored/deity-knowledge.json` `amountFormula: "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)"`), about 26 vital per Action at levels 2–5 and 55 at level 7, twice the leyline ceiling and twice the next deity, sustainably. Ben chose (b).
 
@@ -3794,7 +3803,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the authored formula + a mutation run of `balance-turns.js`. Filed 2026-09-13 from R-120.
 
-## 130. [x] (2026-09-13, closed as unnecessary — its own Done-when) R-121 (a) — Power and Destruction gain one Investiture-income clause each (`Warlord's Advance` on a kill, `Concussive Yield` on a multi-hit) — sized after R-126 (DATA, REBUILD deity) (2026-09-13)
+## 131. [x] (2026-09-13, closed as unnecessary — its own Done-when) R-121 (a) — Power and Destruction gain one Investiture-income clause each (`Warlord's Advance` on a kill, `Concussive Yield` on a multi-hit) — sized after R-126 (DATA, REBUILD deity) (2026-09-13)
 
 > **Closed 2026-09-13 with the R-126 arithmetic recorded, PR #353.** R-126 (a) makes Draw Mana yield the highest attuned colour rank — 2 at levels 1–5, 3 from 6. Power's Draw + `Kneel` (1) + `Warlord's Advance` (1) and Destruction's Draw + two Charges (2) are sustainable every turn from level 1 with no income clause; the reason the review gave for the clause ("pay per activation with nothing back, the pool runs dry") no longer holds. No rule shipped. Reopen if Ben wants the clauses as a pure buff.
 
@@ -3806,7 +3815,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps R-126 · verify: validate + read-through. Filed 2026-09-13 from R-121.
 
-## 131. [ ] R-122 (a) — Chaos's Omen cap becomes tier + 1, and `Isolating Pressure` places an Omen on an unmarked target (DATA, REBUILD deity) (2026-09-13)
+## 132. [ ] R-122 (a) — Chaos's Omen cap becomes tier + 1, and `Isolating Pressure` places an Omen on an unmarked target (DATA, REBUILD deity) (2026-09-13)
 
 **Why:** every Omen placement is capped at `@tier` with `evict: "refuse"`, so at levels 1–5 Chaos holds ONE Omen — `Spreading Omen`, `Cascade Collapse` and the capstone are single-target until level 6 — and the Black lane only consumes Omens it cannot make. Ben chose (a).
 
@@ -3816,7 +3825,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate + the rows. Filed 2026-09-13 from R-122.
 
-## 132. [ ] R-123 (a) — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13)
+## 133. [ ] R-123 (a) — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13)
 
 **Why:** Blue's freeze (with `Absolute Stillness` behind it) and Life's signature mutation both sit behind a rank-3 gate — level 6 — and both are the identity their descriptions now sell; the deity guide's first principle forbids the Life one outright. Ben chose (a).
 
@@ -3826,7 +3835,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate-build over the ladders. Filed 2026-09-13 from R-123.
 
-## 133. [ ] R-124 (b) — the deity guide records the Construct's whole-attack Deflect bypass and the two-attack Construct as Civilization's damage ceiling (DOCS-ONLY) (2026-09-13)
+## 134. [ ] R-124 (b) — the deity guide records the Construct's whole-attack Deflect bypass and the two-attack Construct as Civilization's damage ceiling (DOCS-ONLY) (2026-09-13)
 
 **Why:** the review's first reading was that `Tempered Edge`'s "ignore deflect" might be a loose sentence; the verifier found `addTargetDeflect: true` on the rider with an engine hint naming Tempered Edge — deliberate. Ben chose (b): accept and document, the way R-111 documented `Withering Ray`.
 
@@ -3836,7 +3845,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane R · model sonnet · size XS · deps — · verify: read-through. Filed 2026-09-13 from R-124.
 
-## 134. [ ] R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13)
+## 135. [ ] R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13)
 
 **Why:** nothing in the game applies Frightened (three mentions in 365 talents, all reads or immunities; no adversary ability; the engine registers it only as a GM-applied marker nobody documented). Ben chose (a): Disoriented, which seven trees apply, giving the one deity tree without an income a little cross-path synergy.
 
@@ -3846,11 +3855,11 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: validate + the row. Filed 2026-09-13 from R-125.
 
-## 135. [x] (2026-09-13, PR #353) R-126 (a) — Draw Mana recovers Investiture equal to your highest attuned colour rank, not your tier (ENGINE-ONLY for the number, F5; the card text needs REBUILD leyline + adversaries) (2026-09-13)
+## 136. [x] (2026-09-13, PR #353) R-126 (a) — Draw Mana recovers Investiture equal to your highest attuned colour rank, not your tier (ENGINE-ONLY for the number, F5; the card text needs REBUILD leyline + adversaries) (2026-09-13)
 
 **Why:** `edhaDrawMana` recovered `tier` Investiture per Action (one at levels 1–5) from 2026-06-12, and the shipped card said "equal to your Tier" — an implementation default no ruling had set (the initial-atlas design text said only "restores Investiture"). Ben, asked whether it scaled: *"that was not my intent … I like option a- equal to highest color rank."*
 
-**What was done:** `edhaDrawManaYield(actor)` (52-green-instinct.js) — the highest of the five colour ranks via `edhaColorRank` (an adversary's role rank counts), floor 1 — replaces the tier read in the write and the chat line; `foundry-build.js` `drawManaItemDoc` says "equal to your highest leyline rank"; `tests/draw-mana-yield.test.js` pins the helper including a NEGATIVE tier case; ENGINE_INDEX, the leyline guide's Key Mechanic, SYSTEM-PRIMER, the handbook, the handoff reference, BALANCE-REVIEW.md (yardstick 4 restated) and `balance-turns.js` (draw 2 / 2 / 3) updated; item 130 closed as unnecessary. Rows DM-1 / DM-2 in the checklist.
+**What was done:** `edhaDrawManaYield(actor)` (52-green-instinct.js) — the highest of the five colour ranks via `edhaColorRank` (an adversary's role rank counts), floor 1 — replaces the tier read in the write and the chat line; `foundry-build.js` `drawManaItemDoc` says "equal to your highest leyline rank"; `tests/draw-mana-yield.test.js` pins the helper including a NEGATIVE tier case; ENGINE_INDEX, the leyline guide's Key Mechanic, SYSTEM-PRIMER, the handbook, the handoff reference, BALANCE-REVIEW.md (yardstick 4 restated) and `balance-turns.js` (draw 2 / 2 / 3) updated; item 131 closed as unnecessary. Rows DM-1 / DM-2 in the checklist.
 
 **Done when:** DM-1 (engine, F5) and DM-2 (card, after REBUILD) pass on the bench.
 
