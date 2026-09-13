@@ -26,6 +26,14 @@
  * `edhaPostCueCard` call and case 1 below fails with the bench's exact body — "regains 5 HP" on a
  * card whose own parenthetical says no healing lands. Change the helper's `got < asked` to
  * `got <= 0` and case 2 (the HALVED tick) fails the same way, printing 5 where 2 landed.
+ *
+ * FOLLOW-UP — item 124 (bench run 46, same day): the fix above was correct but left one cosmetic
+ * wart — the fully-blocked card's `note` (which `edhaDeliveredNote` returns as the composed line
+ * whenever `got < asked`) and the suffix built from that SAME line both printed, so the mark's
+ * sentence appeared twice on one card. `edhaRegenSuffix` (§1b below) shrinks the suffix to
+ * "(no HP applied.)" exactly when the note it is paired with already IS that sentence; §3 pins the
+ * fixed shape against bench 46's recorded cards (UNMARKED and HALVED byte-identical, WITHERED
+ * fixed) and demonstrates the repeat-suffix mutation failing.
  */
 "use strict";
 const assert = require("assert");
@@ -70,13 +78,43 @@ test("edhaDeliveredNote: a payload that OVER-delivers is not gated (defensive, n
   assert.strictEqual(env.edhaDeliveredNote(NOTE, "regains 7 HP.", 5, 7), NOTE);
 });
 
+/* ---- 1b. item 124: the suffix that pairs with the note above without repeating it ------------- */
+
+test("edhaRegenSuffix: a FULLY-BLOCKED note (the composed line, per edhaDeliveredNote) shrinks the suffix", () => {
+  const env = loadEngine();
+  const line = "B46 Garden Sow cannot regain HP (Withering Touch) — no healing lands";
+  const note = env.edhaDeliveredNote(NOTE, `${line}.`, 5, 0);   // what the call site actually passes
+  assert.strictEqual(note, `${line}.`);   // sanity: this IS the case edhaRegenSuffix must catch
+  assert.strictEqual(env.edhaRegenSuffix(note, line, 5, 0), " <em>(no HP applied.)</em>");
+});
+
+test("edhaRegenSuffix: a HALVED delivery keeps the +N applied clause, unchanged", () => {
+  const env = loadEngine();
+  assert.strictEqual(env.edhaRegenSuffix("regains 2 HP.", "regains 2 HP", 5, 2),
+    " <em>(+2 HP applied, end of turn.)</em>");
+});
+
+test("edhaRegenSuffix: an UNGATED delivery keeps the +N applied clause, unchanged", () => {
+  const env = loadEngine();
+  assert.strictEqual(env.edhaRegenSuffix(NOTE, "regains 5 HP", 5, 5),
+    " <em>(+5 HP applied, end of turn.)</em>");
+});
+
+test("edhaRegenSuffix: defensive fallback — a blocked note that DIFFERS from the composed line keeps the long form", () => {
+  const env = loadEngine();
+  // Not a live call-site shape (edhaDeliveredNote always returns the composed line when blocked),
+  // but the helper must not silently swallow a sentence it did not itself verify is a repeat.
+  assert.strictEqual(env.edhaRegenSuffix("some other note.", "cannot regain HP — no healing lands", 5, 0),
+    " <em>(no HP applied — cannot regain HP — no healing lands.)</em>");
+});
+
 /* ---- 2. the shipped sweep, driven through the real combatTurnChange chain -------------------- */
 
 /* The Garden Sow as the bench built it: hurt (so the clamp has room), carrying `Nexus-Fed` as an
  * `edha-regen` rule with BOTH an amount and its own static note — the shape that produced the bug.
  * `mark` is the healCut flag Withering Touch / Necrotic Grasp write. */
-function sow(mark, { value = 10, max = 30, amount = 5, note = NOTE } = {}) {
-  const actor = mockActor({ name: "B45 Garden Sow", id: "sow", uuid: "Actor.sow", type: "npc",
+function sow(mark, { value = 10, max = 30, amount = 5, note = NOTE, name = "B45 Garden Sow" } = {}) {
+  const actor = mockActor({ name, id: "sow", uuid: "Actor.sow", type: "npc",
     system: { resources: { hea: { value, max: { value: max } } } },
     effects: mark ? [mockEffect({ name: mark.byName, flags: { healCut: mark } })] : [] });
   actor.isOwner = true;
@@ -147,4 +185,47 @@ test("a rule with NO note still composes its card from the delivered line (ungat
   const shut = await turnEnd(sow(WITHERED, { note: "" }));
   assert.ok(!/regains 5 HP/.test(shut[0]) && /no healing lands/.test(shut[0]),
     `a gated, note-less tick reports the gate: ${shut[0]}`);
+});
+
+/* ---- 3. item 124: the fully-blocked card names the mark ONCE ---------------------------------
+ *
+ * Bench run 46 (2026-09-13) retired 70-2's three rows with `B46 Garden Sow` and recorded all three
+ * cards verbatim in EDHA_FOUNDRY_TEST_CHECKLIST.md. The UNMARKED and HALVED cards are pinned here
+ * BYTE-IDENTICAL to that recording — this fix must not touch either. The WITHERED (fully-blocked)
+ * card is pinned to the FIXED shape (the composed sentence once, short suffix) rather than the
+ * recorded defect shape, which read the sentence twice:
+ *   "⏰ Nexus-Fed (B46 Garden Sow): B46 Garden Sow cannot regain HP (Withering Touch) — no healing
+ *    lands. (no HP applied — B46 Garden Sow cannot regain HP (Withering Touch) — no healing lands.)"
+ *
+ * MUTATION: restore the old suffix ternary at the `edhaPostCueCard` call site —
+ *   `got > 0 ? \` <em>(+${got} HP applied, end of turn.)</em>\` : \` <em>(no HP applied — ${line}.)</em>\`
+ * — (equivalently, make `edhaRegenSuffix` always return the long form) and the "names the mark
+ * once" test below fails: the composed sentence's fragment "no healing lands" is counted TWICE on
+ * one card instead of once, and the card no longer matches bench 46's fixed-shape recording. */
+
+test("bench 46, UNMARKED control: card is byte-identical to the recorded card", async () => {
+  const actor = sow(null, { name: "B46 Garden Sow", value: 40, max: 62 });
+  const [card] = await turnEnd(actor);
+  assert.strictEqual(card,
+    "⏰ Nexus-Fed (B46 Garden Sow): Nexus-Fed — the Sow regains 5 HP. (+5 HP applied, end of turn.)");
+  assert.strictEqual(actor.system.resources.hea.value, 45, "40 → 45, as bench 46 recorded");
+});
+
+test("bench 46, HALVED: card is byte-identical to the recorded card", async () => {
+  const actor = sow(HALVED, { name: "B46 Garden Sow", value: 24 });
+  const [card] = await turnEnd(actor);
+  assert.strictEqual(card,
+    "⏰ Nexus-Fed (B46 Garden Sow): regains 2 HP. (+2 HP applied, end of turn.)");
+  assert.strictEqual(actor.system.resources.hea.value, 26, "24 → 26, as bench 46 recorded");
+});
+
+test("bench 46, WITHERED (fully-blocked): the mark's sentence appears exactly once, suffix is the short form", async () => {
+  const actor = sow(WITHERED, { name: "B46 Garden Sow", value: 28 });
+  const [card] = await turnEnd(actor);
+  assert.strictEqual(card,
+    "⏰ Nexus-Fed (B46 Garden Sow): B46 Garden Sow cannot regain HP (Withering Touch) — no healing lands. (no HP applied.)");
+  const occurrences = (card.match(/no healing lands/g) || []).length;
+  assert.strictEqual(occurrences, 1, `the composed sentence must not repeat on the card: ${card}`);
+  assert.ok(!/regains 5 HP/.test(card), `the un-gated 5 must still never appear: ${card}`);
+  assert.strictEqual(actor.system.resources.hea.value, 28, "28 → 28, as bench 46 recorded");
 });
