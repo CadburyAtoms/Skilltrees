@@ -3509,7 +3509,7 @@ green (the doc is not a dashboard source — say so if `--check` disagrees).
 **PM:** lane R · model sonnet · size S · deps — · verify: the grep before/after. Found by item 83;
 filed 2026-09-08 01:1x.
 
-## 104. [ ] R-95 (a) — `Momentum's Edge`: retune the rider to `[Tier][Die]` so it resolves at all (DATA + card text, REBUILD leyline) (2026-09-13)
+## 104. [x] R-95 (a) — `Momentum's Edge`: retune the rider to `[Tier][Die]` so it resolves at all (DATA + card text, REBUILD leyline) (2026-09-13) — DONE 2026-09-13, PR #337 (fix pass 11)
 
 **Why:** the rider is `bonusFormula: "@movement.walk.rate"`, a DerivedValueField object; Foundry 13's `replaceFormulaData` renders it as rune-wrapped JSON and the Strike's damage roll fails whenever the 20 ft trigger is met (CRITIQUE.md §R-95; ECO-2 predicts case 1). Ben chose (a): fix the resolution and retune the payload to `[Tier][Die]`.
 
@@ -3650,7 +3650,7 @@ filed 2026-09-08 01:1x.
 **Done when:** the pin passes and fails on the reversion; `node scripts/pm-state.js` on the real board yields zero Ben-only asks while the current line says nothing is waiting; the PM pushes `pm/state`.
 
 **PM:** lane R · model sonnet · size S · deps 116 ✓ · verify: the pin + a real-board run. Filed 2026-09-13 by the PM at item 116's review.
-## 118. [ ] Four Leybreaker / Ley-surveyor cue cards print the talent name twice (DATA, REBUILD heroic + ⟳ Sync) (2026-09-13)
+## 118. [x] Four Leybreaker / Ley-surveyor cue cards print the talent name twice (DATA, REBUILD heroic + ⟳ Sync) (2026-09-13) — DONE 2026-09-13, PR #337 (fix pass 11)
 
 **Why:** `edha-note` already prefixes its card with the icon and the talent's name, so a rule whose own `text` also opens with `<strong><name></strong>:` renders it twice. Measured live at bench run 45: *"📍 **Mark the Ground**: **Mark the Ground**: for the scene…"*. A sweep of every `handler.text` in `data/authored/` found **exactly four**, all from PR #329 — `Stillstance` and `Saltstance` (`heroic-warrior.json`), `Mark the Ground` and `Steady the Line` (`heroic-scholar.json`). The other 37 note/cue rules in the repo are clean, so this is a new regression, not the house style.
 
@@ -3660,7 +3660,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: the sweep + one bench read. Filed 2026-09-13 from bench run 45.
 
-## 119. [ ] `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2 — and a failed consume is a silent no-op (DATA + ENGINE) (2026-09-13)
+## 119. [ ] `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2 — and a failed consume is a silent no-op (DATA + ENGINE) (2026-09-13) — **ENGINE half DONE 2026-09-13, PR #337** (fix pass 11: the refusal is now announced by name, in a toast and in the console, by `edhaCostShortfalls`/`edhaShortfallText` + a `preUseItem` announcer that never vetoes; `edhaConsumeCost` retrofitted onto the same sentence). ⛔ **STILL OPEN: the cost/pool half — R-112, waiting on Ben.**
 
 **Why:** bench run 45 drove item 89's new `use → edha-def-test` rule on both Unbreakable Line blocks. It works on the Crownox Ring (focus max 3). On `The Reckoning` the ability consumes **3 Focus** while its `resources.foc.max.override` is **2**, so it can never be paid — and `item.use()` then produces **nothing at all**: no chat card, no `ui.notifications` warning, no console line. The first take read exactly like a dead ability; raising the pool to 5 made the identical take work and consumed exactly 3. Item 89 copied the Crownox cost onto a block whose stat line cannot pay it, and the Reckoning's own cue text never promises a focus cost ("the lead may test White (DC = half the damage)").
 
@@ -3670,7 +3670,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size S · deps — · verify: a bench re-drive of the Reckoning row. Filed 2026-09-13 from bench run 45.
 
-## 120. [ ] A gated `edha-regen` cue card still prints its static "regains N HP" note beside "no healing lands" (ENGINE-ONLY, F5) (2026-09-13)
+## 120. [x] A gated `edha-regen` cue card still prints its static "regains N HP" note beside "no healing lands" (ENGINE-ONLY, F5) (2026-09-13) — DONE 2026-09-13, PR #337 (fix pass 11)
 
 **Why:** item 70 gated the regen tick at its emitter and item 68's contract says a heal card is built from what was DELIVERED. The `edha-regen` sweep honours that in its parenthetical but not in its body: it posts the rule's `note` in preference to the composed `line` (`h.note || line`), so a rule that carries its own `note` wins and the card reads *"⏰ Nexus-Fed (B45 Garden Sow): **Nexus-Fed — the Sow regains 5 HP.** (no HP applied — B45 Garden Sow cannot regain HP (Withering Touch) — no healing lands.)"* — measured live at bench run 45. The GM reads "regains 5 HP" first. 70-1's Apex Form card composes from `line` and is correct, which is why only the adversary side shows it.
 
