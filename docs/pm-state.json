@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T18:25:38.507Z",
+  "generatedAt": "2026-09-13T18:44:44.449Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "7a3e21f1d5",
-    "commit": "2ee7c71",
+    "hash": "35bb73d777",
+    "commit": "2bcd117",
     "branch": "pm/board-2026-09-13c",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,26 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: R-112 answered (a) — thanks. A Sonnet worker is raising The Reckoning's pool to 3 and shelving the five bestiary feel rows (bestiary redo later, item 121). When it merges the PM closes Foundry, rebuilds all five packs + pushes the engine, relaunches Foundry (it opens straight into edha) and runs bench 46 as Bench — you only re-join your Gamemaster client afterwards.",
+    "note": "Sunday session: item 119 closed (#339, The Reckoning's pool 3; five bestiary feel rows shelved). The PM ran the deploy itself: Foundry closed, engine + art synced, all five packs rebuilt and validated, Foundry relaunched into edha. Bench 46 is next. Re-join your Gamemaster client whenever you like.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "119",
-      "title": "R-112 (a): The Reckoning's focus pool 2 → 3 + cue text; R-112 → §K; five bestiary feel rows shelved; item 121 placeholder",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/119-reckoning-pool-r112",
-      "startedAt": "2026-09-13T18:24:00Z",
-      "agent": "Work item 119 data + shelving",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; adversaries REBUILD rides the PM's deploy cycle"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1465,9 +1451,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-112 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 339
     }
   ],
   "rulings": [
@@ -1523,34 +1509,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "12:30",
-      "at": "2026-09-07T16:30:00.000Z",
-      "item": "Bench run 43 (the 20 remaining 🤖 rows + item 84's cue re-test) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "54 min, 403 turns",
-      "weighted": "11.1M",
-      "weightedM": 11.1,
-      "outcome": "merged 13:23 after review (gh mergedAt 17:23Z), one themed commit, no trailers; open 🤖 20 → 10, all gated — queue drained; items 88 / 89 + R-90 / R-91; the harness-only recommendation → item 90; world diff EMPTY. DOCS-ONLY, no deploy owed",
-      "pr": 280
-    },
-    {
-      "date": "2026-09-07",
-      "time": "13:22",
-      "at": "2026-09-07T17:22:00.000Z",
-      "item": "Dispatched item 86 (sonnet, worktree — engine-only, the last edhaIsTalent harvest loop) and, once #280 landed, item 90 (sonnet, worktree — the five harness-only retirements). Opus 3 of 3 spent for the calendar day",
-      "itemNo": "280",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "two Sonnet workers in flight; the PM's own cost this session ≈ 4M so far",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "13:28",
@@ -2362,9 +2320,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:24",
+      "at": "2026-09-13T18:24:00.000Z",
+      "item": "Item 119 data half (R-112 (a): The Reckoning's pool 2 → 3, cue text aligned, R-112 → §K.9) + Ben's shelving (five bestiary feel ⚑ rows SHELVED, item 121 placeholder) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "13 min, 106 tool uses",
+      "weighted": "4.4M",
+      "weightedM": 4.4,
+      "outcome": "merged 14:38 after review, no trailers; CI green on d595a64, gates 12/12 + --ci 14/14 (pack-build-validate: both blocks Foc 3). Open ⚑ 7 → 2; open rulings 1 → 0; the two pool-2 announcer rows retired (coverage pinned headless), one re-drive row for bench 46. DATA → adversaries REBUILD — ridden by the PM's own deploy cycle (next row)",
+      "pr": 339
+    },
+    {
+      "date": "2026-09-13",
+      "time": "14:44",
+      "at": "2026-09-13T18:44:00.000Z",
+      "item": "Deploy cycle run BY THE PM (Ben, chat 14:2x: \"I would love if you could handle that for me\") — 14:41:21 → 14:41:31 ET from main @ 5bfa8ff: Foundry closed gracefully (CloseMainWindow on the main process, 5 → 0 processes in under 20 s), module-src-sync.js 6 in sync / 0 hand-edited (push copied nothing — the engine was already live), sync-art.js current, all five packs rebuilt (stamps 18:41:25Z; deity 110 items, adversaries 52 blocks / 336 embeds, items 113), validate-packs.js + validate-adversaries.js PASSED (0 issues), Foundry relaunched from the exe and answered HTTP 302 → /join (world Edha) within 3 s, served engine sha 921132b0… = main. Nothing owed to Ben's machine; bench 46 (11 open 🤖 rows) is next, at 15:30 when the trailing-5h cap clears (or on Ben's word).",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "deployed",
+      "pr": null
     }
   ],
-  "runLogTotal": 240,
+  "runLogTotal": 242,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3032,6 +3018,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-13T18:24:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 339
     }
   ],
   "statusVocab": [
