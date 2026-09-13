@@ -1,11 +1,25 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday session: your 16:13 notes are in — the bench will get its own scenes (PM-R19, item 128 queued) and the loop keeps going inside the weekend cap; next dispatch 19:24 (item 124). Seven rulings wait on the Needs Ben tab (R-92, R-114 … R-119). Press F5 for item 123.",
+    "status": "awake",
+    "note": "Sunday evening: item 124 (the doubled sentence on a blocked regen card) is being fixed. After it merges the PM runs the new deploy script for real for the first time (Foundry will close and relaunch; re-join your client after). Seven rulings still wait on the Needs Ben tab.",
     "waitingOn": "F5 (item 123 is live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "124",
+      "title": "A fully-blocked edha-regen card prints its sentence twice — pure suffix helper, pinned",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/124-regen-card-no-repeat",
+      "startedAt": "2026-09-13T23:26:00Z",
+      "agent": "Work item 124",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; ENGINE-ONLY (F5) at merge"
+    }
+  ],
   "usage": null
 }
