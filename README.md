@@ -37,6 +37,14 @@ Or use the npm aliases: `npm run gates` / `npm run gates:ci` (see `package.json`
 one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit hook that runs the
 relevant checks automatically.
 
+## License
+
+The code (`scripts/`, `module-src/`, `tests/`, `.github/`, build tooling) is MIT licensed.
+The content (talent trees, card text, lore canon, campaign material, and the rest of the
+project's docs) is licensed CC BY-NC-SA 4.0, since it is unofficial fan content for the
+Cosmere RPG and is not for sale. See [`LICENSE`](LICENSE) for the exact split and the
+full text of both.
+
 ## Where to read more
 
 - **`EDHA_FOUNDRY_HANDOFF.md`** — the knowledge base: how the Foundry port works, the
