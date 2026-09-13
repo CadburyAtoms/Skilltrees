@@ -186,6 +186,15 @@ if (typeof game !== "undefined") (async () => {
         "Vigilant Stance", "Stillstance", "Vinestance", "Saltstance", "Flamestance", "Ironstance",
         "Practiced Kata", "Feinting Strike", "Cheap Shot", "Startling Blow",
         "Break the Draw", "Sever the Line", "Subtle Takedown", "Breaker's Charge", "Anatomical Insight",
+        // Warrior/Leybreaker — the rest of the 2026-09-13 specialty (HS-1 … HS-10). The swap commit
+        // added five of the eight; these two were missed, so HS-5 (Turn the Working) had nothing to
+        // drive on Bench — Heroic at bench run 45. "Mighty" is deliberately absent: it collides
+        // across five heroic trees and no row needs it.
+        "Ley-tempered", "Turn the Working",
+        // Scholar/Ley-surveyor — the second new specialty (HS-7 … HS-10). "Overwhelm with Details"
+        // is the kept node and is already carried in the Agent + Scholar block below.
+        "Ley-sense", "Read the Draw", "Surveyor's Eye", "Mark the Ground", "Fault in the Line",
+        "Steady the Line", "Read the Weave",
         // Agent + Scholar — CAE / Opportunity / contests (2bC, 2bD, 2bE, 2bQ-5)
         // (a name that collides across heroic trees is written ["name", "Group"])
         "Fast Talker", "Quick Analysis", "Trickster's Hand", "Cautious Advance", "Backstep",
@@ -280,13 +289,24 @@ if (typeof game !== "undefined") (async () => {
     for (const k of ["str", "spd", "int", "wil", "awa", "pre"]) upd[`system.attributes.${k}.value`] = 2;
     for (const [k, v] of Object.entries({ ath: 2, agi: 2, sur: 2, dis: 1, prc: 1 })) upd[`system.skills.${k}.rank`] = v;
     await a.update(upd);
-    await a.update({ "prototypeToken.disposition": T.disp, "prototypeToken.actorLink": true, "prototypeToken.displayBars": 30 });
+    // Same R-2 / R-56 stamp the PCs get above, and for the same reason: `preCreateActor` froze these
+    // fixtures at whatever the ladder said when they were first made, and nothing has re-stamped them
+    // since. Bench run 45 measured three of them (Adjacent A, Floater, Isolated) still carrying
+    // prototype sight **20** — the old Edha table — against a derived sheet value of 10, i.e. four
+    // bench fixtures quietly violating R-56 (a)'s sheet/token parity invariant while 83-5 was passing
+    // on the PCs. AWA is set to 2 in `upd` just above, so the ladder value is 10.
+    await a.update({ "prototypeToken.disposition": T.disp, "prototypeToken.actorLink": true,
+                     "prototypeToken.displayBars": 30, "prototypeToken.sight.range": 10 });
   }
   { // adversary-typed, Physical defense only — the fail-open dummy
     const a = await ensureActor("Bench Target — Undefended", fTgt.id, "adversary", {});
+    // AWA 0 → the cosmere ladder's first rung, **5 ft** (this fixture read 10 until bench run 45 —
+    // it is the one bench actor the world `⟳ Sync Adversaries from Pack` cannot reach, because it
+    // has no pack twin, so the roster script is the only thing that can keep it in parity).
     await a.update({ "system.tier": 2, "system.defenses.phy.override": 12, "system.defenses.phy.useOverride": true,
                      "system.resources.hea.max.override": 30, "system.resources.hea.max.useOverride": true, "system.resources.hea.value": 30,
-                     "prototypeToken.disposition": -1, "prototypeToken.actorLink": true });
+                     "prototypeToken.disposition": -1, "prototypeToken.actorLink": true,
+                     "prototypeToken.sight.range": 5 });
   }
 
   // ---- tokens on the EXISTING playtest scene (never created, never activated) --------------
