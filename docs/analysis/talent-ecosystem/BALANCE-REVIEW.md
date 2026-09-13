@@ -397,6 +397,8 @@ Three things the verifier raised unasked, carried forward:
 
 ## 9. The rulings this review files
 
+*Answered 2026-09-13 (Ben, chat): "I’ve read it and agree with recommended changes" — every recommended default below is the answer; the work is TODO items 129 … 134 (§K.11 of `EDHA_RULINGS.md`). Ben’s one reservation, whether Draw Mana was ever meant to yield one Investiture per Action at tier 1, is **R-126** (§C): the engine and the card recover Investiture equal to your **tier** (1 / 2 / 3), the design texts never set an amount, and the number was an implementation default of June 2026. Yardstick 4 and item 130 are sized after it.*
+
 | ruling | tree | recommended default | deploy |
 |---|---|---|---|
 | R-120 | Knowledge | (b) `Predatory Strike` = one `[Tier][Die]` + Tier per Insight; the cash-outs keep the dice multiplier | DATA, REBUILD deity |

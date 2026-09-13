@@ -3783,3 +3783,63 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the skill + runbook carry the licence with Ben's words; the roster script creates the arena idempotently (a headless pin on the pure spec/plan if any); the 🤖 row is filed.
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
+
+## 129. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
+
+**Why:** the balance review's largest outlier — the repeatable strike multiplies its die by the Insight count (one roll × count, `data/authored/deity-knowledge.json` `amountFormula: "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)"`), about 26 vital per Action at levels 2–5 and 55 at level 7, twice the leyline ceiling and twice the next deity, sustainably. Ben chose (b).
+
+**What to do:** `Predatory Strike`'s `edha-damage-bonus` `amountFormula` → `((@tier)d(2 * @colorRank + 2)) + @tier * max(@counter, 1)`; card text (`data/domain.json` + the authored description) → "deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target"; `Killing Blow` / `The Final Study` unchanged in effect. Remove the decoy item-level `damage.formula` (and `grazeOverrideFormula`) on all three cards, or keep them only if the rider cannot roll without one — the verifier flagged them as a double-count surface (`BALANCE-REVIEW.md` §7). Re-run `balance-turns.js`'s Knowledge lines (expected 34 / 36 / 59 sustained). 🤖 row: a 5-Insight strike at level 7 adds 2d8 + 10, not 2d8 × 5.
+
+**Done when:** the formula and both card texts ship; validate + tests green; the row filed; pack rebuilt by Ben.
+
+**PM:** lane B · model sonnet · size S · deps — · verify: the authored formula + a mutation run of `balance-turns.js`. Filed 2026-09-13 from R-120.
+
+## 130. [ ] R-121 (a) — Power and Destruction gain one Investiture-income clause each (`Warlord's Advance` on a kill, `Concussive Yield` on a multi-hit) — sized after R-126 (DATA, REBUILD deity) (2026-09-13)
+
+**Why:** five deity trees carry a passive Investiture refund and five do not; Power (100% Action-costed, no Passive) and Destruction (one Investiture per Charge) are the two that pay per activation with nothing back. Ben chose (a) — and asked, the same day, whether Draw Mana was ever meant to yield one per Action at tier 1 (**R-126**). Size this after R-126: with a two-point draw the clause may be unnecessary.
+
+**What to do:** once R-126 is answered — `Warlord's Advance`: "…you gain temporary HP equal to your tier, **recover 1 Investiture**, and may move up to 10 ft as a Free Action"; `Concussive Yield`: "…**Once per round, when a Charge you set detonates and hits two or more characters, recover 1 Investiture.**" Both as one authored rule on the existing card using the Investiture-recovery handler the five income passives already use (`edha-focus {op: gain, resource: inv}` or the marked-damage trigger shape). If R-126 lands on (a)/(b)/(c), re-check the need with `balance-turns.js` before shipping; if it makes the clause redundant, close this item with that note.
+
+**Done when:** either both rules ship with card text and 🤖 rows, or the item is closed as unnecessary with the R-126 arithmetic recorded.
+
+**PM:** lane B · model sonnet · size S · deps R-126 · verify: validate + read-through. Filed 2026-09-13 from R-121.
+
+## 131. [ ] R-122 (a) — Chaos's Omen cap becomes tier + 1, and `Isolating Pressure` places an Omen on an unmarked target (DATA, REBUILD deity) (2026-09-13)
+
+**Why:** every Omen placement is capped at `@tier` with `evict: "refuse"`, so at levels 1–5 Chaos holds ONE Omen — `Spreading Omen`, `Cascade Collapse` and the capstone are single-target until level 6 — and the Black lane only consumes Omens it cannot make. Ben chose (a).
+
+**What to do:** `data/authored/deity-chaos.json`: `capFormula: "@tier"` → `"@tier + 1"` on `EntropyStrikeOme`, both `Spreading Omen` place rules, and `UnravelFill00000`; card text on `Entropy Strike` ("up to tier + 1 Omens"). `Isolating Pressure`: add a place rule on success that fires only when the target bears no Omen (same list, same cap), and the card gains "If the target bears no Omen, place one." 🤖 rows: two Omens held at tier 1; Cascade Collapse hits both; Isolating Pressure on an unmarked target places one and does not also remove it.
+
+**Done when:** the four caps and the new rule ship; validate + tests green; rows filed; pack rebuilt by Ben.
+
+**PM:** lane B · model sonnet · size S · deps — · verify: validate + the rows. Filed 2026-09-13 from R-122.
+
+## 132. [ ] R-123 (a) — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13)
+
+**Why:** Blue's freeze (with `Absolute Stillness` behind it) and Life's signature mutation both sit behind a rank-3 gate — level 6 — and both are the identity their descriptions now sell; the deity guide's first principle forbids the Life one outright. Ben chose (a).
+
+**What to do:** `data/leyline.json` Ghostly Walls `prerequisites: "Blue 3+"` → `"Blue 2+"` (Absolute Stillness stays "Ghostly Walls; Blue 3+"; Counterspell stays 3+); `data/domain.json` Adaptive Mutation `"Green 3+; Life Surge"` → `"Green 2+; Life Surge"`; mirror both in the authored overlays' description headers if the prereq is printed there. Run `scripts/validate-build.py` on the nine level-up ladders (`docs/levelup-builds.json`) — a Blue or Life ladder may now legally take the talent earlier, which is the point, not a defect. 🤖 row: a level-4 Blue character can take Ghostly Walls; a level-2 Life disciple can take Adaptive Mutation.
+
+**Done when:** both prereqs ship; validate + tests + validate-build green; row filed; packs rebuilt by Ben.
+
+**PM:** lane B · model sonnet · size S · deps — · verify: validate-build over the ladders. Filed 2026-09-13 from R-123.
+
+## 133. [ ] R-124 (b) — the deity guide records the Construct's whole-attack Deflect bypass and the two-attack Construct as Civilization's damage ceiling (DOCS-ONLY) (2026-09-13)
+
+**Why:** the review's first reading was that `Tempered Edge`'s "ignore deflect" might be a loose sentence; the verifier found `addTargetDeflect: true` on the rider with an engine hint naming Tempered Edge — deliberate. Ben chose (b): accept and document, the way R-111 documented `Withering Ray`.
+
+**What to do:** `.claude/skills/deity-revision-guide/SKILL.md` PART 4 Civilization entry: one paragraph — the Construct's melee attack (base + energy rider) lands as if Deflect were 0 by design; Siege Cannon excluded; with `Arsenal` the Construct is ~14 a round at levels 3–5 and ~36 at level 7 for nothing, and that is the tree's ceiling to measure new Civilization talents against. Cross-reference `BALANCE-REVIEW.md` finding 7.
+
+**Done when:** the paragraph is findable in the guide.
+
+**PM:** lane R · model sonnet · size XS · deps — · verify: read-through. Filed 2026-09-13 from R-124.
+
+## 134. [ ] R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13)
+
+**Why:** nothing in the game applies Frightened (three mentions in 365 talents, all reads or immunities; no adversary ability; the engine registers it only as a GM-applied marker nobody documented). Ben chose (a): Disoriented, which seven trees apply, giving the one deity tree without an income a little cross-path synergy.
+
+**What to do:** `data/domain.json` both card texts ("Compelled, Disoriented, or Weakened"); `data/authored/deity-power.json` `requireTargetStatus: "compelled,frightened,weakened"` → `"compelled,disoriented,weakened"` and the same on `whenTargetStatus`; leave `Risen Servant`'s immunity list alone (BR-1 checks whether the custom ids bind); update the engine registry comment on `frightened` in `01-shared-core.js` to say no talent reads it now (comment only). 🤖 row: Kneel's advantage fires against a Disoriented target; Absolute Authority accepts a Disoriented target.
+
+**Done when:** both cards and both status lists ship; validate + tests green; row filed; pack rebuilt by Ben.
+
+**PM:** lane B · model sonnet · size XS · deps — · verify: validate + the row. Filed 2026-09-13 from R-125.
