@@ -1,7 +1,9 @@
-{ "pm": { "status": "awake", "note": "Sunday session: items 116 (#331, this page is three tabs) and 117 (#333, the stale Yours-to-do cards are gone) merged. Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; its fixes (if any) go to test-pass-fixes next.",
+{ "pm": { "status": "awake", "note": "Sunday session: items 116 (#331, this page is three tabs) and 117 (#333, the stale Yours-to-do cards are gone) merged. Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; item 112 (four rulings into the guides + the cancel line on two heroic cards) runs beside it.",
           "waitingOn": null, "nextWakeAt": null, "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)" },
   "workers": [
     { "item": "bench-45", "title": "Bench run 45 — step zero ⟳ Sync Talents (PM-R17 refresh) + ⟳ Sync Adversaries, then HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox, Predator's Due, 3 card-text rows", "model": "opus", "size": "L", "lane": "B",
-      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" }
+      "branch": "pm/bench-45", "startedAt": "2026-09-13T14:30:00Z", "agent": "Bench run 45", "phase": "working", "pr": null, "note": "worktree; owns the Browser pane" },
+    { "item": "112", "title": "R-105/108/110/111 into the revision guides; Fatal Thrust + Defensive Position gain the cancel line (REBUILD heroic owed)", "model": "sonnet", "size": "S", "lane": "R",
+      "branch": "pm/112-guides-four-rulings-cancel-line", "startedAt": "2026-09-13T15:24:00Z", "agent": "Work item 112", "phase": "working", "pr": null, "note": "worktree; no checklist edits" }
   ],
   "usage": null }

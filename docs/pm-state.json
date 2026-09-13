@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T15:19:04.638Z",
+  "generatedAt": "2026-09-13T15:20:52.935Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a82b4e7d18",
-    "commit": "51cb5f3",
+    "hash": "a89058d502",
+    "commit": "f91e66c",
     "branch": "pm/board-2026-09-13b",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: items 116 (#331, this page is three tabs) and 117 (#333, the stale Yours-to-do cards are gone) merged. Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; its fixes (if any) go to test-pass-fixes next.",
+    "note": "Sunday session: items 116 (#331, this page is three tabs) and 117 (#333, the stale Yours-to-do cards are gone) merged. Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; item 112 (four rulings into the guides + the cancel line on two heroic cards) runs beside it.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -61,6 +61,19 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; owns the Browser pane"
+    },
+    {
+      "item": "112",
+      "title": "R-105/108/110/111 into the revision guides; Fatal Thrust + Defensive Position gain the cancel line (REBUILD heroic owed)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/112-guides-four-rulings-cancel-line",
+      "startedAt": "2026-09-13T15:24:00Z",
+      "agent": "Work item 112",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; no checklist edits"
     }
   ],
   "usage": null,
@@ -1381,8 +1394,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": null,
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1499,20 +1512,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "19:48",
-      "at": "2026-09-06T23:48:00.000Z",
-      "item": "Item 66 (negative rider join) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "8 min, 57 turns",
-      "weighted": "1.0M",
-      "weightedM": 1,
-      "outcome": "reported 19:57, in review (PR #229): one pure edhaJoinRiderTerm beside edhaTidyFormula, both paths call it, positive damage riders byte-identical by design; 7 pins incl. a source scan; gates 10/10. The worker wrote its own TODO 66 entry (the PM's was still uncommitted in the main checkout) — the PM keeps the worker's on merge. Open question logged: label positive damage riders too? (a ruling if wanted — default no, keep byte-identity). Merged 20:00 (gh mergedAt 23:59:48Z), 1.0M / 57 turns / 8 min",
-      "pr": 229
-    },
     {
       "date": "2026-09-07",
       "time": "09:52",
@@ -2338,10 +2337,24 @@
       "weightedM": 3.3,
       "outcome": "merged 11:17 after review, no trailers; CI green on 8aa02e1, gates 12/12 in the worktree (1087 tests). Root cause two-fold: the label regex demanded : (so Waiting on Ben: nothing. never matched and the scan fell through to a REPLACED paragraph) + no marker cut-off. Proof: real board 2 stale asks → []; the reverted body fails the pin naming both stale strings. pm/state pushed after merge — the phone's stale Yours-to-do cards cleared",
       "pr": 333
+    },
+    {
+      "date": "2026-09-13",
+      "time": "11:20",
+      "at": "2026-09-13T15:20:00.000Z",
+      "item": "Dispatched item 112 (sonnet, worktree pm/112-guides-four-rulings-cancel-line — R-105 (c) / R-108 (a) / R-110 (d) / R-111 (b) into the two revision guides; Fatal Thrust + Defensive Position gain the cancel line in data/cosmere.json + the authored overlay → REBUILD heroic owed; told NOT to touch the checklist while the bench runs). Picked over 104 (rewrites ECO-2, which bench 45 is driving), 105 (files 🤖 rows) and 110 (may touch the roster script). Trailing-5h dispatches: 4 of the weekend 6",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 231,
-  "runLogFrom": "2026-09-06",
+  "runLogTotal": 232,
+  "runLogFrom": "2026-09-07",
   "dispatches": [
     {
       "at": "2026-09-04T22:41:00.000Z",
@@ -2972,6 +2985,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 333
+    },
+    {
+      "at": "2026-09-13T15:20:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
