@@ -460,7 +460,7 @@ async function edhaTurnCueSweep(combat, prior, current) {
           // item 120: a GATED tick drops the rule's static note — it was written un-gated and would
           // print a number the gate never delivered, right next to the parenthetical saying so.
           const note = edhaDeliveredNote(h.note, line ? `${line}.` : "", heal, got);
-          await edhaPostCueCard(prevTok.actor, tal, { note, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
+          await edhaPostCueCard(prevTok.actor, tal, { note, trigger: "turn-end" }, edhaRegenSuffix(note, line, heal, got));
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -817,6 +817,24 @@ function edhaDeliveredNote(note, deliveredLine, requested, delivered) {
   const line = String(deliveredLine ?? "").trim();
   if (got < asked) return line;
   return String(note ?? "").trim() || line;
+}
+/* WHICH parenthetical pairs with `edhaDeliveredNote`'s note without repeating it (item 124, fix
+ * pass 11's follow-up defect; bench run 46). A FULLY-BLOCKED tick (delivered 0, requested > 0)
+ * always has `got < asked`, so the note above is ALREADY the composed line — and the sweep's old
+ * suffix, ` (no HP applied — ${line}.)`, printed that exact sentence a second time on the same
+ * card: *"…Withering Touch) — no healing lands. (no HP applied — …Withering Touch) — no healing
+ * lands.)"*. A HALVED tick never collided: its suffix is the "+N HP applied" clause, a different
+ * sentence from the note. This composes the identical `${line}.` shape `edhaDeliveredNote` would
+ * have used as its fallback and only shrinks the suffix when the note actually IS that sentence —
+ * a defensive fallback keeps the old, safe (if repetitive) wording for any future caller whose
+ * note diverges from the composed line while still delivering less than asked.
+ * PURE — pinned in tests/gated-note.test.js. */
+function edhaRegenSuffix(note, line, requested, delivered) {
+  const got = Math.max(0, Math.floor(Number(delivered) || 0));
+  if (got > 0) return ` <em>(+${got} HP applied, end of turn.)</em>`;
+  const composedLine = line ? `${line}.` : "";
+  if (composedLine && String(note ?? "").trim() === composedLine) return ` <em>(no HP applied.)</em>`;
+  return ` <em>(no HP applied — ${line}.)</em>`;
 }
 async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {
