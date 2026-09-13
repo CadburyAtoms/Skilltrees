@@ -1613,7 +1613,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
 - ⚠️ **A failed `consume` is a totally silent no-op** — no chat card, no `ui.notifications`, no console
   line. `The Reckoning`'s Unbreakable Line costs 3 Focus against a pool that maxes at 2, and the take
   read as a dead ability until its pool was raised. **Before recording "nothing happened", print the
-  actor's pool against the item's `activation.consume` value.** Filed as item 117.
+  actor's pool against the item's `activation.consume` value.** Filed as item 119.
 - ⚠️ **Adding an item to a bench PC needs `edha.skipBudget(true)`** — `createEmbeddedDocuments("Item",
   …)` otherwise returns `[]` with no error, because the talent-budget gate refuses it. Set it, do the
   work, and **reset it to `false` in cleanup** (it is a global).
