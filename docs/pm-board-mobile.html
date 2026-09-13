@@ -5,6 +5,23 @@
   Artifact tool wraps it in the doctype/head/body skeleton at publish time, so it carries no
   <html>/<head>/<body> of its own.
 
+  THREE TABS (item 116, 2026-09-13 — Ben: "the 'deployed' section is gigantic and taking up the
+  whole artifact. Really the artifact just needs a tab for bench rows, a tab for 'needs Ben' and an
+  overview of the project tab"):
+    Overview   — PM state + running worker with its elapsed clock, the snapshot tiles (open/total
+                 per desktop tab, ⚑ and 🤖 counts), the deploy state as ONE line, the budget
+                 window, the queue (open rows by default), the run-log tail.
+    Bench rows — the 🤖 queue: every open bench row grouped by its checklist section, with the
+                 section's deploy chips. An agent's work, never Ben's — read-only plus "reply".
+    Needs Ben  — every open ruling (item 43's cards), Ben-only asks, blocked queue items, deploy /
+                 Foundry-window asks, every ⚑ row grouped by tab › section, and the inbox composer
+                 + Ben's own notes. This is how he answers rulings from his phone.
+  The page opens on Needs Ben (item 43's choice) and remembers the last tab in localStorage.
+  What LEFT the page with item 116: the full desktop-dashboard mirror (every tab, section and row,
+  search, filters), the DEPLOY STATE section's prose (27 blocks of history), the per-row usage
+  bars and the live pm-usage measure, the "For Ben" summary card that pointed at dashboard tabs.
+  The desktop dashboard (EDHA_DASHBOARD.html) is unchanged.
+
   DATA FLOW. The board stays the source of truth. `node scripts/pm-state.js` projects it into JSON;
   the PM pushes that JSON into the artifact's `pm/state` document (Artifact tool → write_db) on
   every state change, and this page subscribes to it live (`claude.use("db")`). The
@@ -13,21 +30,19 @@
   arrives, or when the runtime is absent (a saved copy, a preview). NEVER commit a filled slot:
   the tracked file keeps `{}` so the board's every edit does not churn this file.
 
+  THE DASHBOARD INDEX. The tiles, the deploy line, the bench rows and the ⚑ rows come from ONE
+  store document, `dash/index` — scripts/pm-state.js --dashboard-dir, built from the desktop
+  dashboard's own tab model (scripts/build-dashboard.js mobileSnapshot(): same row ids, so the
+  phone can never show a row the desktop does not). Since item 116 the index carries each mirror
+  ref's row (text, label, update log) and each open ruling's full card, so no chunk documents are
+  fetched or written any more. The script#pm-dashboard slot holds the at-rest copy ({index}).
+
   INBOX. Notes Ben types here land in the `inbox` collection (status "new"); the PM reads them
   with read_db on every wake, acts, and marks them "seen" — the phone-side half of the board's
-  "Inbox from Ben" channel. Everything read from the store is data, rendered escaped.
-
-  DASHBOARD (added 2026-09-05 — "a full project snapshot on my phone"). The Snapshot tiles and the
-  Dashboard section are EDHA_DASHBOARD.html's content: every tab, section and row, the ⚑ For Ben
-  and 🤖 Bench queue mirrors, the DEPLOY STATE banner — the same tab model the desktop is built
-  from (scripts/build-dashboard.js mobileSnapshot(), same row ids), so the phone can never show a
-  row the desktop does not. It is too big for one store document, so scripts/pm-state.js shards
-  it: `dash/index` (tabs, sections with counts, mirrors, deploy banner) + `dash/c0`, `dash/c1`, …
-  (whole sections each). The page subscribes to the index and fetches the chunks it names; the
-  script#pm-dashboard slot holds the at-rest copy ({index, chunks}) filled at publish. Read-only
-  by design: marks live in the desktop browser and the board is the status channel, so a row's
-  "reply" button just pre-fills the inbox with the row's name. The Project tab is not repeated —
-  this page IS the board.
+  "Inbox from Ben" channel. A ruling / ⚑ row / Ben-only card whose reply Ben already sent shows
+  "Sent ✓" (status new) or "Recorded by PM ✓" + the PM's action line (status seen) instead of its
+  buttons — derived from the inbox docs in memory, never from the DOM (item 94). Everything read
+  from the store is data, rendered escaped.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -40,7 +55,6 @@
     --good: #1f8f4e; --good-soft: #dcf2e4; --warn: #b0761c; --warn-soft: #f8ecd6; --bad: #c9404d; --bad-soft: #f9dfe2;
     --info: #2a78d6; --info-soft: #dce9fa; --violet: #4a3aa7; --violet-soft: #e6e1f7;
     --m-sonnet: #2a78d6; --m-opus: #eb6834; --m-fable: #4a3aa7;
-    --bar: #2a78d6;
     --shadow: 0 1px 2px rgba(20, 26, 43, .06), 0 6px 20px rgba(20, 26, 43, .06);
     --sans: "Public Sans", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -54,7 +68,6 @@
       --good: #4fc57e; --good-soft: #1b3a2a; --warn: #e0a84f; --warn-soft: #3a2f1b; --bad: #e2606c; --bad-soft: #3d2229;
       --info: #5598e7; --info-soft: #1e2d4a; --violet: #9085e9; --violet-soft: #29264a;
       --m-sonnet: #3987e5; --m-opus: #d95926; --m-fable: #9085e9;
-      --bar: #3987e5;
       --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
     }
   }
@@ -66,20 +79,19 @@
     --good: #4fc57e; --good-soft: #1b3a2a; --warn: #e0a84f; --warn-soft: #3a2f1b; --bad: #e2606c; --bad-soft: #3d2229;
     --info: #5598e7; --info-soft: #1e2d4a; --violet: #9085e9; --violet-soft: #29264a;
     --m-sonnet: #3987e5; --m-opus: #d95926; --m-fable: #9085e9;
-    --bar: #3987e5;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
   }
 
   * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
   body { margin: 0; background: var(--bg); color: var(--txt); font: 15px/1.45 var(--sans); -webkit-text-size-adjust: 100%; }
   a { color: var(--info); text-decoration: none; }
   a:hover, a:focus-visible { text-decoration: underline; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
   button { font: inherit; color: inherit; }
   .mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
-  .num { font-variant-numeric: tabular-nums; }
 
-  /* ---- header ---- */
+  /* ---- header + the three tabs ---- */
   .top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .top-in { max-width: 680px; margin: 0 auto; padding: 10px 16px 0; }
   .brand { display: flex; align-items: center; gap: 10px; }
@@ -93,54 +105,30 @@
   .dot.busy::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--good); opacity: .6; animation: ring 1.8s ease-out infinite; }
   @keyframes ring { from { transform: scale(.6); opacity: .7; } to { transform: scale(1.5); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .dot.busy::after { animation: none; opacity: .35; } }
-  .jump { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 10px; scrollbar-width: none; }
-  .jump::-webkit-scrollbar { display: none; }
-  .jump a { flex: none; font-size: 12.5px; font-weight: 500; color: var(--dim); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); }
-  .jump a:hover { color: var(--txt); text-decoration: none; border-color: var(--line-strong); }
+  .tabs { display: flex; gap: 6px; padding: 8px 0 10px; }
+  .tabs button { flex: 1 1 0; min-width: 0; font-size: 13px; font-weight: 600; color: var(--dim); padding: 7px 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 6px; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #141a2b; }
+  .tabs button .n { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 8px; background: var(--panel2); color: var(--dim); }
+  .tabs button[aria-selected="true"] .n { background: rgba(20, 26, 43, .18); color: #141a2b; }
+  .tabs button .n:empty { display: none; }
 
   /* ---- layout ---- */
-  main { max-width: 680px; margin: 0 auto; padding: 14px 16px 48px; display: grid; gap: 26px; }
-  section { scroll-margin-top: 96px; min-width: 0; } /* grid items: a horizontal scroller inside (the dashboard tab strip) must not widen the track */
-  .eyebrow { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+  main { max-width: 680px; margin: 0 auto; padding: 14px 16px 48px; }
+  .tabpanel { display: grid; gap: 22px; min-width: 0; }
+  .tabpanel[hidden] { display: none; }
+  .eyebrow { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; flex-wrap: wrap; }
   .eyebrow h2 { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin: 0; }
   .eyebrow .sub { font-size: 12.5px; color: var(--faint); }
   .eyebrow .right { margin-left: auto; font-size: 12.5px; color: var(--dim); }
+  .empty { color: var(--dim); font-size: 13.5px; }
+  .empty strong { color: var(--txt); }
+  .srcnote { font-size: 11.5px; color: var(--faint); margin: 0 0 8px; overflow-wrap: anywhere; }
 
-  /* ---- NEEDS YOU (item 43 — everything else lives behind More) ---- */
-  .status-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; padding: 2px 0 12px; }
+  /* ---- status / stale banner ---- */
+  .status-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; padding: 0 0 8px; }
   .status-line .txt { color: var(--dim); }
   .status-line .txt b { color: var(--txt); font-weight: 600; }
   .stale-banner { background: var(--bad-soft); border: 1px solid var(--bad); color: var(--bad); border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-  .nycards { display: grid; gap: 10px; }
-  .nycard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); border-left: 4px solid var(--warn); display: grid; gap: 8px; }
-  .nycard.applied { border-left-color: var(--violet); }
-  .nycard.benonly { border-left-color: var(--accent); }
-  .nycard .ny-k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 8px; }
-  .nycard .ny-badge { font-size: 10.5px; padding: 1px 8px; border-radius: 9px; border: 1px solid var(--line); color: var(--dim); font-weight: 600; white-space: nowrap; margin-left: auto; }
-  .nycard .ny-ask { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
-  .nycard .ny-default { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; }
-  .nycard .ny-default b { color: var(--txt); }
-  .nycard details.ny-full { font-size: 12.5px; color: var(--dim); }
-  .nycard details.ny-full summary { cursor: pointer; text-decoration: underline dotted; }
-  .nycard details.ny-full .body { margin-top: 6px; background: var(--panel2); border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; }
-  .nycard .ny-pmaction { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; margin-top: 2px; }
-  .nyacts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .nyacts .btn2 { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--panel2); color: var(--txt); font-weight: 600; font-size: 13px; cursor: pointer; }
-  .nyacts .btn2.primary { background: var(--accent); border-color: var(--accent); color: #141a2b; }
-  .nyother { display: none; gap: 6px; }
-  .nyother.show { display: grid; }
-  .nyother textarea { width: 100%; min-height: 56px; resize: vertical; font: inherit; color: var(--txt); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; }
-  .nyempty { color: var(--dim); font-size: 13.5px; background: var(--panel); border: 1px dashed var(--line); border-radius: 10px; padding: 12px; }
-  .nyflags { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--dim); }
-  .nyflags .linkbtn { font-weight: 600; }
-
-  /* ---- MORE (the old full board, collapsed by default) ---- */
-  #more { border: none; }
-  #more > .more-summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 2px; font-size: 13px; font-weight: 600; color: var(--dim); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  #more > .more-summary::-webkit-details-marker { display: none; }
-  #more > .more-summary .tw { color: var(--faint); font-size: 11px; display: inline-block; transition: transform .1s; }
-  #more[open] > .more-summary .tw { transform: rotate(90deg); }
-  #more .more-body { display: grid; gap: 26px; padding-top: 18px; }
 
   /* ---- chips & pills ---- */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -172,8 +160,24 @@
   .worker .title .id { color: var(--accent-ink); font-weight: 600; }
   .worker .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--dim); }
   .worker .elapsed { color: var(--txt); font-weight: 600; }
-  .empty { color: var(--dim); }
-  .empty strong { color: var(--txt); }
+
+  /* ---- SNAPSHOT tiles + the deploy line ---- */
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  @media (min-width: 480px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 2px; text-align: left; color: inherit; font: inherit; min-width: 0; }
+  button.tile { cursor: pointer; }
+  button.tile:hover { border-color: var(--line-strong); }
+  .tile .k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .v { font-size: 22px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile .v small { font-size: 12px; font-weight: 500; color: var(--dim); margin-left: 4px; }
+  .tile .bar { height: 5px; background: var(--panel2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .tile .bar i { display: block; height: 100%; background: var(--good); }
+  .tile.flag { border-left: 4px solid var(--warn); }
+  .tile.bot { border-left: 4px solid var(--info); }
+  .deploy { margin-top: 8px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--good); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--dim); overflow-wrap: anywhere; }
+  .deploy.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+  .deploy b { color: var(--txt); }
+  .deploy .owed { margin-top: 4px; color: var(--warn); font-weight: 600; }
 
   /* ---- BUDGET ---- */
   .meters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -190,24 +194,10 @@
   .slot .k { font-size: 12px; color: var(--dim); }
   .slot .v { font-weight: 600; }
   .slot .why { font-size: 12.5px; color: var(--dim); }
-  .usage { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
-  .usage .hero { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  .usage .hero .big { font-size: 26px; font-weight: 600; line-height: 1; }
-  .usage .hero .big small { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 4px; }
-  .usage .hero .side { font-size: 12.5px; color: var(--dim); }
-  .bars { display: grid; gap: 8px; margin-top: 12px; font-size: 12.5px; }
-  .bar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; align-items: baseline; }
-  .bar-row .l { color: var(--dim); overflow-wrap: anywhere; }
-  .bar-row .l b { color: var(--txt); font-weight: 600; }
-  .bar-row .track { grid-column: 1 / -1; height: 8px; background: var(--panel2); border-radius: 0 4px 4px 0; position: relative; }
-  .bar-row .fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
-  .bar-row .fill.pm { background: var(--m-fable); }
-  .bar-row .v { text-align: right; white-space: nowrap; }
-  .legend { display: flex; gap: 12px; margin-top: 8px; font-size: 11.5px; color: var(--dim); }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; background: var(--bar); }
-  .legend i.pm { background: var(--m-fable); }
-  .measure { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12.5px; color: var(--dim); display: grid; gap: 4px; }
-  .measure b { color: var(--txt); }
+  .usage { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .usage .big { font-size: 24px; font-weight: 600; line-height: 1; }
+  .usage .big small { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 4px; }
+  .usage .side { font-size: 12.5px; color: var(--dim); }
 
   /* ---- QUEUE ---- */
   .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -230,15 +220,44 @@
   .row .tail .deps { margin-left: 2px; }
   .row .tail .pr { margin-left: auto; }
 
-  /* ---- FOR BEN ---- */
+  /* ---- RUN LOG ---- */
+  .log { display: grid; gap: 6px; }
+  .entry { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; display: grid; gap: 4px; }
+  .entry .h { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .entry .when { color: var(--dim); font-size: 12.5px; }
+  .entry .it { font-weight: 600; overflow-wrap: anywhere; }
+  .entry .o { font-size: 13px; color: var(--dim); overflow-wrap: anywhere; }
+  .entry .facts { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--dim); align-items: center; }
+  .entry .facts .w { color: var(--txt); font-weight: 600; }
+
+  /* ---- NEEDS BEN: ruling / Ben-only cards (item 43), asks ---- */
+  .nycards { display: grid; gap: 10px; }
+  .nycard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); border-left: 4px solid var(--warn); display: grid; gap: 8px; }
+  .nycard.applied { border-left-color: var(--violet); }
+  .nycard.benonly { border-left-color: var(--accent); }
+  .nycard .ny-k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .nycard .ny-badge { font-size: 10.5px; padding: 1px 8px; border-radius: 9px; border: 1px solid var(--line); color: var(--dim); font-weight: 600; white-space: nowrap; margin-left: auto; }
+  .nycard .ny-ask { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+  .nycard .ny-default { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; }
+  .nycard .ny-default b { color: var(--txt); }
+  .nycard details.ny-full { font-size: 12.5px; color: var(--dim); }
+  .nycard details.ny-full summary { cursor: pointer; text-decoration: underline dotted; }
+  .nycard details.ny-full .body { margin-top: 6px; background: var(--panel2); border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; }
+  .nycard .ny-pmaction { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; margin-top: 2px; }
+  .nyacts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .nyacts .btn2 { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--panel2); color: var(--txt); font-weight: 600; font-size: 13px; cursor: pointer; }
+  .nyacts .btn2.primary { background: var(--accent); border-color: var(--accent); color: #141a2b; }
+  .nyother { display: none; gap: 6px; }
+  .nyother.show { display: grid; }
+  .nyother textarea { width: 100%; min-height: 56px; resize: vertical; font: inherit; color: var(--txt); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; }
+  .nyempty { color: var(--dim); font-size: 13.5px; background: var(--panel); border: 1px dashed var(--line); border-radius: 10px; padding: 12px; }
   .asks { display: grid; gap: 8px; }
   .ask { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 3px; border-left: 4px solid var(--warn); }
   .ask.bad { border-left-color: var(--bad); }
   .ask.info { border-left-color: var(--info); }
   .ask .k { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
-  .ask .q { font-weight: 500; }
-  .ask .d { font-size: 13px; color: var(--dim); }
-  .linkbtn { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline dotted; cursor: pointer; }
+  .ask .q { font-weight: 500; overflow-wrap: anywhere; }
+  .ask .d { font-size: 13px; color: var(--dim); overflow-wrap: anywhere; }
 
   /* ---- INBOX ---- */
   .composer { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
@@ -256,47 +275,11 @@
   .note .x:hover { color: var(--bad); }
   .offline { font-size: 13px; color: var(--dim); background: var(--panel2); border-radius: 8px; padding: 10px 12px; }
 
-  /* ---- RUN LOG ---- */
-  .log { display: grid; gap: 6px; }
-  .entry { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; display: grid; gap: 4px; }
-  .entry .h { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-  .entry .when { color: var(--dim); font-size: 12.5px; }
-  .entry .it { font-weight: 600; }
-  .entry .o { font-size: 13px; color: var(--dim); overflow-wrap: anywhere; }
-  .entry .facts { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--dim); align-items: center; }
-  .entry .facts .w { color: var(--txt); font-weight: 600; }
-
-  /* ---- SNAPSHOT (the dashboard at a glance) ---- */
-  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  @media (min-width: 480px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 2px; text-align: left; cursor: pointer; }
-  .tile:hover { border-color: var(--line-strong); }
-  .tile .k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tile .v { font-size: 22px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
-  .tile .v small { font-size: 12px; font-weight: 500; color: var(--dim); margin-left: 4px; }
-  .tile .bar { height: 5px; background: var(--panel2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
-  .tile .bar i { display: block; height: 100%; background: var(--good); }
-  .tile.flag { border-left: 4px solid var(--warn); }
-  .tile.bot { border-left: 4px solid var(--info); }
-  .deploy { margin-top: 10px; background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .deploy summary { cursor: pointer; color: var(--warn); font-weight: 600; overflow-wrap: anywhere; }
-  .deploy .prose { margin: 8px 0; color: var(--txt); background: var(--panel); }
-
-  /* ---- DASHBOARD (EDHA_DASHBOARD.html's tabs) ---- */
-  .dtabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
-  .dtabs::-webkit-scrollbar { display: none; }
-  .dtabs button { flex: none; font-size: 12.5px; font-weight: 500; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--dim); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
-  .dtabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #141a2b; font-weight: 600; }
-  .dtabs button .n { font-size: 11px; opacity: .8; }
-  .dtools { display: grid; gap: 8px; margin: 2px 0 10px; }
-  .dtools input[type=search] { width: 100%; font: inherit; color: var(--txt); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-  .dtools input[type=search]::placeholder { color: var(--faint); }
-  .dtools .filters { margin-bottom: 0; align-items: center; }
-  .dtools .filters .sp { flex: 1; }
-  .dtools .filters .link { border: none; background: none; color: var(--dim); text-decoration: underline dotted; padding: 5px 4px; }
-  .srcnote { font-size: 11.5px; color: var(--faint); margin: 0 0 8px; overflow-wrap: anywhere; }
+  /* ---- row groups (bench rows, ⚑ rows) — the desktop dashboard's row treatment ---- */
+  .search { width: 100%; font: inherit; color: var(--txt); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+  .search::placeholder { color: var(--faint); }
   .dsections { display: grid; gap: 8px; }
-  .dsec { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .dsec { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
   .dsec > summary { list-style: none; cursor: pointer; padding: 10px 12px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-weight: 600; color: var(--accent-ink); }
   .dsec > summary::-webkit-details-marker { display: none; }
   .dsec > summary .tw { color: var(--faint); font-size: 11px; display: inline-block; transition: transform .1s; }
@@ -304,8 +287,6 @@
   .dsec > summary .ttl { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
   .dsec > summary .cnt { margin-left: auto; font-size: 12px; color: var(--dim); font-weight: 500; white-space: nowrap; }
   .dsec .body { padding: 2px 12px 10px; border-top: 1px solid var(--line); }
-  .dsec .body h3 { font-size: 12.5px; color: var(--dim); margin: 14px 0 4px; }
-  .prose { color: var(--dim); font-size: 12.5px; background: var(--panel2); border-left: 3px solid var(--line); border-radius: 0 6px 6px 0; padding: 7px 10px; margin: 8px 0; overflow-wrap: anywhere; }
   .dchip { font-size: 10.5px; padding: 1px 8px; border-radius: 9px; border: 1px solid var(--line); color: var(--dim); white-space: nowrap; font-weight: 500; }
   .dchip.warn { color: #141a2b; background: var(--warn); border-color: var(--warn); font-weight: 600; }
   .dchip.ok { color: #141a2b; background: var(--good); border-color: var(--good); font-weight: 600; }
@@ -318,18 +299,16 @@
   .drow .tx { min-width: 0; overflow-wrap: anywhere; }
   .drow .tx code { font-family: var(--mono); font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
   .drow .tx .flag { color: var(--warn); font-weight: 700; }
-  .drow .log { margin-top: 5px; font-size: 12px; color: var(--dim); }
+  .drow .log { margin-top: 5px; font-size: 12px; color: var(--dim); display: block; }
   .drow .log summary { cursor: pointer; text-decoration: underline dotted; }
   .drow .log > div { background: var(--panel); border-left: 3px solid var(--line); border-radius: 0 6px 6px 0; padding: 6px 10px; margin-top: 4px; }
   .drow .refsec { display: block; font-size: 11px; color: var(--dim); margin-bottom: 2px; }
-  .drow .acts { margin-top: 6px; display: flex; gap: 8px; }
+  .drow .acts { margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .drow .acts button { font-size: 12px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--accent-ink); cursor: pointer; }
-  .drow.flash { outline: 2px solid var(--accent); }
-  .mgrp h3 { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin: 14px 0 4px; }
 
-  footer { max-width: 680px; margin: 0 auto; padding: 0 16px 40px; font-size: 12px; color: var(--faint); display: grid; gap: 4px; }
+  footer { max-width: 680px; margin: 0 auto; padding: 0 16px 40px; font-size: 12px; color: var(--faint); display: grid; gap: 4px; overflow-wrap: anywhere; }
   footer a { color: var(--dim); }
-  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--txt); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--txt); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 90vw; }
   .toast.show { opacity: 1; }
   @media (min-width: 560px) { .brand h1 { font-size: 18px; } }
 </style>
@@ -341,77 +320,75 @@
       <h1>Skilltrees PM Board</h1>
       <span class="updated" id="updated">—</span>
     </div>
-    <nav class="jump" aria-label="Sections">
-      <a href="#needsyou">Needs you</a><a href="#now">Now</a><a href="#snapshot">Snapshot</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a><a href="#dash">Dashboard</a>
-    </nav>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Views">
+      <button type="button" role="tab" data-tab="overview" aria-controls="tab-overview">Overview</button>
+      <button type="button" role="tab" data-tab="bench" aria-controls="tab-bench">Bench rows<span class="n" id="n-bench"></span></button>
+      <button type="button" role="tab" data-tab="needs" aria-controls="tab-needs">Needs Ben<span class="n" id="n-needs"></span></button>
+    </div>
   </div>
 </header>
 
 <main>
-  <section id="needsyou" aria-labelledby="h-needsyou">
-    <div class="eyebrow"><h2 id="h-needsyou">Needs you</h2><span class="sub">desktop-dashboard marks land here only after the PM's next push</span><span class="right" id="clock"></span></div>
-    <div id="stale-banner"></div>
-    <div class="status-line" id="status-line"></div>
-    <div class="nycards" id="nycards"></div>
+  <section id="tab-overview" class="tabpanel" role="tabpanel" hidden>
+    <div>
+      <div class="eyebrow"><h2>Now</h2><span class="sub" id="now-sub"></span><span class="right" id="clock"></span></div>
+      <div id="stale-banner"></div>
+      <div class="status-line" id="status-line"></div>
+      <div class="now-panel" id="now-panel"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>Snapshot</h2><span class="sub" id="snap-sub"></span><span class="right" id="snap-age"></span></div>
+      <div class="tiles" id="tiles"></div>
+      <div id="deploy"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>Budget window</h2><span class="sub" id="budget-sub"></span></div>
+      <div class="meters" id="meters"></div>
+      <div class="slot" id="slot"></div>
+      <div class="usage" id="usage"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>Queue</h2><span class="sub" id="queue-sub"></span></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter queue"></div>
+      <div class="rows" id="rows"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>Run log</h2><span class="sub" id="log-sub">newest first</span></div>
+      <div class="log" id="loglist"></div>
+    </div>
   </section>
 
-  <details id="more">
-    <summary class="more-summary"><span class="tw" aria-hidden="true">▶</span><span>More — full dashboard, queue, budget, run log, inbox</span></summary>
-    <div class="more-body">
-      <section id="now" aria-labelledby="h-now">
-        <div class="eyebrow"><h2 id="h-now">Now</h2><span class="sub" id="now-sub"></span></div>
-        <div class="now-panel" id="now-panel"></div>
-      </section>
-
-      <section id="snapshot" aria-labelledby="h-snapshot">
-        <div class="eyebrow"><h2 id="h-snapshot">Snapshot</h2><span class="sub" id="snap-sub"></span><span class="right" id="snap-age"></span></div>
-        <div class="tiles" id="tiles"></div>
-        <div id="deploy"></div>
-      </section>
-
-      <section id="budget" aria-labelledby="h-budget">
-        <div class="eyebrow"><h2 id="h-budget">Budget window</h2><span class="sub" id="budget-sub"></span></div>
-        <div class="meters" id="meters"></div>
-        <div class="slot" id="slot"></div>
-        <div class="usage" id="usage"></div>
-      </section>
-
-      <section id="queue" aria-labelledby="h-queue">
-        <div class="eyebrow"><h2 id="h-queue">Queue</h2><span class="sub" id="queue-sub"></span></div>
-        <div class="filters" id="filters" role="group" aria-label="Filter queue"></div>
-        <div class="rows" id="rows"></div>
-      </section>
-
-      <section id="ben" aria-labelledby="h-ben">
-        <div class="eyebrow"><h2 id="h-ben">For Ben</h2><span class="sub">what only you can unblock</span></div>
-        <div class="asks" id="asks"></div>
-      </section>
-
-      <section id="inbox" aria-labelledby="h-inbox">
-        <div class="eyebrow"><h2 id="h-inbox">Inbox to the PM</h2><span class="sub">read on its next wake</span></div>
-        <form class="composer" id="composer">
-          <textarea id="note" placeholder="Foundry is up tonight 8–10 · skip 20, do 19a next · pause after this one" aria-label="Note to the PM" disabled></textarea>
-          <div class="act"><span class="hint" id="inbox-hint">Connecting…</span><button class="btn" type="submit" id="send" disabled>Send</button></div>
-        </form>
-        <div class="notes" id="notes"></div>
-      </section>
-
-      <section id="log" aria-labelledby="h-log">
-        <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub" id="log-sub">newest first</span></div>
-        <div class="log" id="loglist"></div>
-      </section>
-      <section id="dash" aria-labelledby="h-dash">
-        <div class="eyebrow"><h2 id="h-dash">Dashboard</h2><span class="sub" id="dash-sub"></span></div>
-        <div class="dtabs" id="dtabs" role="tablist" aria-label="Dashboard tabs"></div>
-        <div class="dtools">
-          <input type="search" id="dq" placeholder="search rows on this tab…" aria-label="Search rows">
-          <div class="filters" id="dfilters" role="group" aria-label="Filter rows"></div>
-        </div>
-        <div class="srcnote" id="dsrc"></div>
-        <div class="dsections" id="dsections"></div>
-      </section>
+  <section id="tab-bench" class="tabpanel" role="tabpanel" hidden>
+    <div>
+      <div class="eyebrow"><h2>🤖 Bench rows</h2><span class="sub" id="bench-sub"></span><span class="right" id="bench-age"></span></div>
+      <input type="search" class="search" id="bq" placeholder="search bench rows…" aria-label="Search bench rows">
+      <div class="srcnote">every open 🤖 row on the checklist — needs a live Foundry table, and an agent drives it. Nothing here is yours to do; a section's chips say what its rows need deployed first.</div>
+      <div class="dsections" id="bench-groups"></div>
     </div>
-  </details>
+  </section>
+
+  <section id="tab-needs" class="tabpanel" role="tabpanel" hidden>
+    <div>
+      <div class="eyebrow"><h2>Needs Ben</h2><span class="sub">desktop-dashboard marks land here only after the PM's next push</span></div>
+      <div class="nycards" id="nycards"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>Waiting on you</h2><span class="sub">what only you can unblock</span></div>
+      <div class="asks" id="asks"></div>
+    </div>
+    <div>
+      <div class="eyebrow"><h2>⚑ Rows for your judgment</h2><span class="sub" id="flag-sub"></span></div>
+      <div class="dsections" id="flag-groups"></div>
+    </div>
+    <div id="inbox">
+      <div class="eyebrow"><h2>Inbox to the PM</h2><span class="sub">read on its next wake</span></div>
+      <form class="composer" id="composer">
+        <textarea id="note" placeholder="Foundry is up tonight 8–10 · skip 20, do 19a next · pause after this one" aria-label="Note to the PM" disabled></textarea>
+        <div class="act"><span class="hint" id="inbox-hint">Connecting…</span><button class="btn" type="submit" id="send" disabled>Send</button></div>
+      </form>
+      <div class="notes" id="notes"></div>
+    </div>
+  </section>
 </main>
 <footer id="foot"></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -434,65 +411,36 @@
   if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], benOnly: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, windows: DEFAULT_WINDOWS }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
   var liveDoc = false;   // pm/state arrived from the store
   var dbRef = null;
-  var filter = "all";
+  var filter = "open";   // the queue's default view — merged rows are history, not a phone read
+  var LOG_TAIL = 10;     // run-log rows shown on the Overview
   // item 94: the inbox subscription's last 30 docs, kept in memory — "sent"/"recorded" state on a
   // needs-you card derives from THIS, never from the DOM, so a re-render always agrees with it.
   var inboxDocs = [];
 
-  // ---- the dashboard (EDHA_DASHBOARD.html's content: dash/index + the chunk docs it names) ----
-  var dash = null;        // assembled: { index, sections: {secId: blocks[]}, rows: {id: {row, tab, secId, secTitle, sub}} }
+  // ---- the dashboard index (dash/index: counts, deploy line, the ⚑ / 🤖 mirrors with their rows,
+  // the open rulings) — item 116: ONE document, no chunk fetch. ----
+  var dash = null;        // the index, or null (no snapshot in this copy)
   var dashLive = false;   // came from the store (else the at-rest slot)
-  var dprefs = { tab: "bench", filter: "all" };
-  try { var dp = JSON.parse(localStorage.getItem("edha-mobile-dash") || "{}"); if (dp && dp.tab) dprefs.tab = dp.tab; if (dp && dp.filter) dprefs.filter = dp.filter; } catch (e) {}
-  function savePrefs() { try { localStorage.setItem("edha-mobile-dash", JSON.stringify(dprefs)); } catch (e) {} }
-  var dq = "";            // search needle
-  var dashOpen = {};      // secId -> true while expanded (this page load only)
-  var MIRRORS = { forben: { label: "⚑ For Ben", key: "forBen" }, benchqueue: { label: "🤖 Bench queue", key: "benchQueue" } };
-
-  // ---- item 43: the "Needs you" view is everything above the fold; the old full board (queue,
-  // budget, run log, dashboard, inbox composer) lives under this collapsed toggle, state in
-  // localStorage so a re-open remembers it was expanded. Every access is try/catch'd — a private
-  // window or blocked site data must not break the page (CLAUDE.md "the page still renders with
-  // ... no localStorage").
-  var MORE_KEY = "edha-mobile-more-open";
-  (function () {
-    var more = $("more");
-    try { if (localStorage.getItem(MORE_KEY) === "1") more.open = true; } catch (e) {}
-    more.addEventListener("toggle", function () { try { localStorage.setItem(MORE_KEY, more.open ? "1" : "0"); } catch (e) {} });
-  })();
-  function openMore() { var more = $("more"); if (more && !more.open) { more.open = true; try { localStorage.setItem(MORE_KEY, "1"); } catch (e) {} } }
-
-  /** index + {id: chunk} → the assembled dashboard, or null when a chunk the index names is missing
-   * or carries another stamp (a push in flight — wait for the next snapshot). */
-  function assembleDash(index, chunks) {
-    if (!index || !index.tabs || !index.chunks) return null;
-    var sections = {};
-    for (var i = 0; i < index.chunks.length; i++) {
-      var c = chunks[index.chunks[i].id];
-      if (!c || c.stamp !== index.stamp || !c.sections) return null;
-      for (var k in c.sections) if (Object.prototype.hasOwnProperty.call(c.sections, k)) sections[k] = (c.sections[k] && c.sections[k].blocks) || [];
-    }
-    var rows = {};
-    for (var t = 0; t < index.tabs.length; t++) {
-      var tab = index.tabs[t];
-      for (var j = 0; j < tab.sections.length; j++) {
-        var sec = tab.sections[j];
-        if (!sections[sec.id]) return null;
-        (function walk(blocks, sub) {
-          for (var b = 0; b < blocks.length; b++) {
-            var x = blocks[b];
-            if (x.type === "item") rows[x.id] = { row: x, tab: tab.key, secId: sec.id, secTitle: sec.title, sub: sub };
-            else if (x.type === "sub") walk(x.blocks || [], x.title);
-          }
-        })(sections[sec.id], null);
-      }
-    }
-    return { index: index, sections: sections, rows: rows };
-  }
+  var bq = "";            // bench-row search needle
   try {
     var atRest = JSON.parse($("pm-dashboard").textContent || "{}");
-    if (atRest && atRest.index) dash = assembleDash(atRest.index, atRest.chunks || {});
+    if (atRest && atRest.index && atRest.index.counts) dash = atRest.index;
   } catch (e) { dash = null; }
+
+  // ---- the three tabs (item 116). The last one opened is remembered in localStorage; every
+  // access is try/catch'd — a private window or blocked site data must not break the page. ----
+  var TAB_KEY = "edha-mobile-tab", TABS = ["overview", "bench", "needs"];
+  var tab = "needs"; // item 43's choice: the page opens where Ben's answers are wanted
+  try { var t0 = localStorage.getItem(TAB_KEY); if (t0 && TABS.indexOf(t0) >= 0) tab = t0; } catch (e) {}
+  function setTab(key) {
+    if (TABS.indexOf(key) < 0) return;
+    tab = key;
+    try { localStorage.setItem(TAB_KEY, key); } catch (e) {}
+    var btns = $("tabs").querySelectorAll("button[data-tab]");
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-selected", btns[i].getAttribute("data-tab") === key ? "true" : "false");
+    for (var j = 0; j < TABS.length; j++) $("tab-" + TABS[j]).hidden = TABS[j] !== key;
+  }
+  $("tabs").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) { setTab(b.getAttribute("data-tab")); window.scrollTo(0, 0); } });
 
   // ---- time helpers (all display in the board's zone) ----
   function tz() { return (state.caps && state.caps.timeZone) || state.timeZone || "America/New_York"; }
@@ -528,11 +476,8 @@
     if (m < 1) return "just now"; if (m < 60) return m + "m"; var h = Math.floor(m / 60);
     if (h < 48) return h + "h " + (m % 60) + "m"; return Math.floor(h / 24) + "d";
   }
-  // ---- operating windows (item 31, board ruling PM-R7 — replaces isQuiet/nextQuietEnd; a
-  // weeknight closes and reopens the SAME day, but the weekend is one continuous open span from
-  // Friday night through Monday morning, so this has to work off day-of-week + a calendar span,
-  // not a single wrap-to-next-day range). Mirrors scripts/pm-state.js's inWindow/nextWindowOpen —
-  // same shape, this copy just runs in the browser off `state.caps.windows`.
+  // ---- operating windows (item 31, board ruling PM-R7). Mirrors scripts/pm-state.js's
+  // inWindow/nextWindowOpen — same shape, this copy just runs in the browser off `state.caps.windows`.
   var DOW_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   function addDaysYmd(y, mo, d, n) {
     var dt = new Date(Date.UTC(y, mo - 1, d) + n * 864e5);
@@ -542,8 +487,6 @@
     var noon = wallToInstant(y, mo, d, 12, 0); // noon, not midnight — clear of any DST transition at 00:00
     return DOW_ORDER.indexOf(parts(noon).weekday);
   }
-  /** Every window occurrence whose start day falls within `[today-daysBack, today+daysFwd]`, as
-   * `{ start, end }` epoch-ms pairs. */
   function windowOccurrences(now, daysBack, daysFwd) {
     var p = parts(now), y = +p.year, mo = +p.month, d = +p.day, out = [];
     var windows = (state.caps && state.caps.windows) || DEFAULT_WINDOWS;
@@ -561,15 +504,11 @@
     }
     return out;
   }
-  /** Is `now` inside an operating window? `{ open, changeAt }` — `changeAt` (epoch ms) is when the
-   * open window closes, else null (use nextWindowOpen for when it reopens). */
   function inWindow(now) {
     var occ = windowOccurrences(now, 7, 0), until = null, i;
     for (i = 0; i < occ.length; i++) if (occ[i].start <= now && now < occ[i].end) until = until === null ? occ[i].end : Math.max(until, occ[i].end);
     return until === null ? { open: false, changeAt: null } : { open: true, changeAt: until };
   }
-  /** Epoch ms of the next window that opens strictly after `now` (every entry recurs at least
-   * weekly, so 8 days forward always finds one), or null. */
   function nextWindowOpen(now) {
     var occ = windowOccurrences(now, 0, 8), best = null, i;
     for (i = 0; i < occ.length; i++) if (occ[i].start > now && (best === null || occ[i].start < best)) best = occ[i].start;
@@ -588,10 +527,31 @@
     return { inWin: inWin, used: used, opus: opus, slot: slot, why: why, open: nowWin.open, changeAt: nowWin.changeAt, nextOpenAt: nowWin.open ? null : nextWindowOpen(now) };
   }
 
-  // ---- renderers ----
+  // ---- small renderers ----
   function modelChip(m) { if (!m || m === "ben") return ""; return '<span class="chip model" data-model="' + esc(m) + '"><span class="swatch"></span>' + esc(m) + '</span>'; }
   function pill(s, label) { return '<span class="pill ' + esc(s) + '">' + esc(label || s) + '</span>'; }
   function prLink(n) { return n ? '<a class="pr mono" href="' + REPO_URL + '/pull/' + (+n) + '" target="_blank" rel="noopener">PR #' + (+n) + '</a>' : ""; }
+  /** The dashboard's own inline markdown: escape first, then `code`, **bold**, ~~strike~~, and the
+   * ⚑ span — the same feature set the desktop renders (scripts/lib/md.js inline with strike+flag). */
+  function inl(s) {
+    var h = esc(s);
+    h = h.replace(/`([^`]+)`/g, "<code>$1</code>");
+    h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    h = h.replace(/~~([^~]+)~~/g, "<s>$1</s>");
+    h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
+    return h;
+  }
+  var plainText = function (s) { return String(s == null ? "" : s).replace(/\*\*/g, "").replace(/`/g, ""); };
+  function openRulingsList() { return (dash && dash.openRulings) || []; }
+  function dashCounts() { return (dash && dash.counts) || {}; }
+  function tabLabel(key) {
+    var t = (dash && dash.tabs || []).filter(function (x) { return x.key === key; })[0];
+    return t ? t.label : key;
+  }
+  function sectionMeta(tabKey, secId) {
+    var t = (dash && dash.tabs || []).filter(function (x) { return x.key === tabKey; })[0];
+    return t ? (t.sections || []).filter(function (s) { return s.id === secId; })[0] : null;
+  }
 
   function renderHeader(now) {
     var gen = Date.parse(state.generatedAt), u = $("updated");
@@ -605,9 +565,41 @@
     $("clock").textContent = fmtTime(now) + " " + tz().split("/").pop().replace("_", " ");
   }
 
-  function renderNow(now) {
-    var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), h = [];
+  /** Tab badges: 🤖 rows on Bench, and everything on Needs Ben that wants an answer. textContent
+   * only, so a pm/state push can refresh them without rebuilding a panel. */
+  function renderTabCounts() {
+    var c = dashCounts();
+    var needs = openRulingsList().length + (state.benOnly || []).length + (state.queue || []).filter(function (q) { return q.status === "blocked"; }).length + (c.forBen || 0);
+    $("n-bench").textContent = c.benchQueue ? String(c.benchQueue) : "";
+    $("n-needs").textContent = needs ? String(needs) : "";
+  }
+
+  // ---- OVERVIEW: now (status line + workers), snapshot, budget, queue, run log ----
+  function renderStaleBanner(now) {
+    var gen = Date.parse(state.generatedAt);
+    var stale = !isNaN(gen) && (now - gen) > 60 * 60 * 1000 && state.pm && state.pm.status === "awake";
+    $("stale-banner").innerHTML = stale
+      ? '<div class="stale-banner">⚠ Stale heartbeat — the PM says it is awake, but its last snapshot is <span class="sbage" data-since="' + esc(state.generatedAt) + '">' + esc(ago(state.generatedAt, now)) + '</span> old. It may be frozen on a permission dialog.</div>'
+      : "";
+  }
+  function renderStatusLine(now) {
+    var pm = state.pm || { status: "unknown" }, ws = state.workers || [];
     var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
+    var running = ws.length ? ws.map(function (w) { return '<span class="wrun" data-since="' + esc(w.startedAt || "") + '">#' + esc(w.item) + " (" + esc(w.model || "?") + ', <span class="wago">' + esc(ago(w.startedAt, now)) + "</span>)</span>"; }).join(", ") : "nothing running";
+    var openR = openRulingsList(), benOnly = state.benOnly || [], c = dashCounts();
+    var reasons = [];
+    if (pm.waitingOn) reasons.push(esc(pm.waitingOn));
+    if ((state.queue || []).some(function (q) { return q.status === "blocked"; })) reasons.push("a blocked queue row");
+    if (openR.length) reasons.push(openR.length + " open ruling" + (openR.length === 1 ? "" : "s"));
+    if (benOnly.length) reasons.push(benOnly.length + " Ben-only ask" + (benOnly.length === 1 ? "" : "s"));
+    if (c.forBen) reasons.push(c.forBen + " ⚑ row" + (c.forBen === 1 ? "" : "s"));
+    var blocked = reasons.length ? "Yes — " + reasons.join(", ") : "No";
+    $("status-line").innerHTML = pill(pm.status, stLabel) + '<span class="txt">running: <b>' + running + '</b> &middot; needs you: <b>' + blocked + '</b></span>';
+  }
+  function renderNow(now) {
+    renderStaleBanner(now);
+    renderStatusLine(now);
+    var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), h = [];
     var text = pm.note || "";
     if (!text) {
       if (pm.status === "stopped") { var hw = inWindow(now); text = "Loop handed off; the next session starts " + fmtWhen(hw.open ? nextWindowOpen(hw.changeAt) : nextWindowOpen(now), now) + "."; }
@@ -618,7 +610,7 @@
     if (pm.waitingOn) sub.push("waiting on " + pm.waitingOn);
     if (pm.nextWakeAt && pm.status !== "waiting") sub.push("next wake " + fmtWhen(pm.nextWakeAt, now));
     if (pm.session) sub.push("session " + pm.session);
-    h.push('<div class="pm-line">' + pill(pm.status, stLabel) + '<div class="text">' + esc(text) + (sub.length ? "<small>" + esc(sub.join(" · ")) + "</small>" : "") + "</div></div>");
+    if (text || sub.length) h.push('<div class="pm-line"><div class="text">' + esc(text) + (sub.length ? "<small>" + esc(sub.join(" · ")) + "</small>" : "") + "</div></div>");
 
     var ws = state.workers || [];
     if (!ws.length) {
@@ -641,6 +633,35 @@
   }
   function lookupTitle(item) { var q = (state.queue || []).filter(function (x) { return String(x.item) === String(item); })[0]; return q ? q.title : ""; }
 
+  function renderSnapshot(now) {
+    if (!dash) {
+      $("tiles").innerHTML = '<div class="empty" style="grid-column:1/-1">No dashboard snapshot in this copy — open the page in claude.ai for the live one.</div>';
+      $("deploy").innerHTML = ""; $("snap-sub").textContent = ""; $("snap-age").textContent = ""; return;
+    }
+    var c = dash.counts || {}, h = [];
+    (dash.tabs || []).forEach(function (t) {
+      var k = (c.byTab || {})[t.key] || { total: 0, open: 0, done: 0 };
+      var pct = k.total ? Math.round(100 * k.done / k.total) : 0;
+      h.push('<div class="tile"><span class="k">' + esc(t.label) + '</span><span class="v num">' + k.open + '<small>open of ' + k.total + '</small></span><span class="bar"><i style="width:' + pct + '%"></i></span></div>');
+    });
+    h.push('<button type="button" class="tile flag" data-tab="needs"><span class="k">⚑ For Ben</span><span class="v num">' + (c.forBen || 0) + '<small>need your call</small></span></button>');
+    h.push('<button type="button" class="tile bot" data-tab="bench"><span class="k">🤖 Bench queue</span><span class="v num">' + (c.benchQueue || 0) + '<small>agent-drivable</small></span></button>');
+    $("tiles").innerHTML = h.join("");
+    // item 116: the deploy state is ONE line — the checklist section's title line, the live-engine
+    // fact from the board, and whatever the section says is owed (bounded by mobileSnapshot()).
+    var d = dash.deploy, f = state.foundry || {}, bits = [];
+    if (d && d.line) bits.push(inl(d.line));
+    if (f.deployStale) bits.push("live engine <b>behind main</b>" + (f.liveEngineVersion ? " (" + esc(f.liveEngineVersion) + ")" : ""));
+    var owed = (d && d.owed) || [];
+    $("deploy").innerHTML = (d || f.deployStale)
+      ? '<div class="deploy' + (owed.length || f.deployStale ? " warn" : "") + '"><b>Deploy</b> · ' + (bits.join(" · ") || "state unknown") + (owed.length ? '<div class="owed">' + owed.map(inl).join("<br>") + '</div>' : "") + '</div>'
+      : "";
+    $("snap-sub").textContent = (c.rows || 0) + " rows · @" + (dash.stamp || "?");
+    var gen = Date.parse(dash.generatedAt);
+    var age = (dashLive ? "live" : "snapshot") + (isNaN(gen) ? "" : " · " + (ago(gen, now) === "just now" ? "just now" : ago(gen, now) + " ago"));
+    $("snap-age").textContent = age; $("bench-age").textContent = age;
+  }
+
   function renderBudget(now) {
     var c = state.caps, wf = windowFacts(now), h = [];
     function meter(label, used, cap, segsModels) {
@@ -657,28 +678,14 @@
     $("slot").innerHTML = '<div class="k">Next dispatch possible</div><div class="v">' + (canNow ? "Now" : esc(fmtWhen(wf.slot, now))) + '</div>' + (wf.why.length ? '<div class="why">' + esc(wf.why.join(" → ")) + "</div>" : "") +
       (wf.inWin.length ? '<div class="why">In window: ' + wf.inWin.map(function (d) { return "#" + esc(d.item) + " (" + esc(d.model) + ", " + esc(fmtTime(Date.parse(d.at))) + ")"; }).join(", ") + "</div>" : "");
 
+    // item 116: the per-row usage bars and the live pm-usage measure left the phone — one line.
     var log = (state.runLog || []).filter(function (r) { return r.weightedM != null; });
     var today = log.filter(function (r) { return r.at ? sameDay(Date.parse(r.at), now) : (r.date && r.date === parts(now).year + "-" + parts(now).month + "-" + parts(now).day); });
     var sum = function (rows) { return rows.reduce(function (a, r) { return a + r.weightedM; }, 0); };
-    var u = ['<div class="hero"><div class="big num">' + sum(today).toFixed(1) + '<small>M weighted today</small></div><div class="side">all logged ' + sum(log).toFixed(1) + 'M · workers ' + sum(log.filter(function (r) { return r.isDispatch; })).toFixed(1) + 'M</div></div>'];
-    var max = Math.max.apply(null, log.map(function (r) { return r.weightedM; }).concat([0.1]));
-    if (log.length) {
-      u.push('<div class="bars">');
-      log.slice().reverse().forEach(function (r) {
-        var label = (r.itemNo ? "<b>#" + esc(r.itemNo) + "</b> " : "") + esc(r.item.replace(/^#\d+[a-z]?\s*/, ""));
-        u.push('<div class="bar-row"><div class="l">' + label + '</div><div class="v num">' + r.weightedM.toFixed(1) + 'M · ' + esc(r.model || "") + '</div><div class="track"><div class="fill' + (r.isDispatch ? "" : " pm") + '" style="width:' + (r.weightedM / max * 100).toFixed(1) + '%"></div></div></div>');
-      });
-      u.push('</div><div class="legend"><span><i></i>worker dispatch</span><span><i class="pm"></i>PM / review</span></div>');
-    }
-    var us = state.usage && state.usage.lastSession;
-    if (us) {
-      u.push('<div class="measure"><div>Live measure (pm-usage.py' + (state.usage.measuredAt ? ", " + esc(ago(state.usage.measuredAt, now)) + " ago" : "") + '): <b>' + esc(((us.weighted_total || 0) / 1e6).toFixed(2)) + 'M</b> weighted over <b>' + esc(us.turns || 0) + '</b> PM turns' + (us.subagent_count ? ', ' + esc(us.subagent_count) + ' subagent(s) ' + esc(((us.subagents_weighted_total || 0) / 1e6).toFixed(2)) + 'M' : "") + '</div>' +
-        (us.subagents || []).map(function (s) { return '<div>· <span class="mono">' + esc((s.id || "").slice(0, 12)) + '</span> ' + esc(s.model || "") + ' — ' + esc(s.turns) + ' turns, <b>' + esc(((s.weighted_total || 0) / 1e6).toFixed(2)) + 'M</b></div>'; }).join("") + '</div>');
-    }
-    $("usage").innerHTML = u.join("");
+    $("usage").innerHTML = '<div class="big num">' + sum(today).toFixed(1) + '<small>M weighted today</small></div><div class="side">logged ' + sum(log).toFixed(1) + 'M' + (state.runLogTotal > log.length ? " (last " + log.length + " runs)" : "") + ' · workers ' + sum(log.filter(function (r) { return r.isDispatch; })).toFixed(1) + 'M</div>';
   }
 
-  var FILTERS = [["all", "All"], ["open", "Open"], ["merged", "Merged"], ["blocked", "Blocked"]];
+  var FILTERS = [["open", "Open"], ["all", "All"], ["merged", "Merged"], ["blocked", "Blocked"]];
   function renderQueue() {
     $("filters").innerHTML = FILTERS.map(function (f) { return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (filter === f[0]) + '">' + f[1] + "</button>"; }).join("");
     var q = state.queue || [];
@@ -695,37 +702,12 @@
     }).join("") || '<div class="empty">Nothing in this view.</div>';
   }
 
-  function renderAsks() {
-    var a = [];
-    if (dash && dash.index.counts) {
-      var dc = dash.index.counts;
-      if (dc.forBen || dc.rulingsOpen) a.push('<div class="ask"><div class="k">On the dashboard</div><div class="q"><button type="button" class="linkbtn" data-tab="forben">⚑ ' + esc(dc.forBen || 0) + ' row' + (dc.forBen === 1 ? "" : "s") + ' need your judgment</button>' + (dc.rulingsOpen ? ' · <button type="button" class="linkbtn" data-tab="rulings">⚖ ' + esc(dc.rulingsOpen) + ' ruling' + (dc.rulingsOpen === 1 ? "" : "s") + ' open</button>' : "") + '</div><div class="d">Tap a row\u2019s \u201creply in inbox\u201d to answer from here; marks still live on the desktop dashboard.</div></div>');
-    }
-    (state.rulings || []).filter(function (r) { return r.waiting; }).forEach(function (r) { a.push('<div class="ask"><div class="k">Ruling ' + esc(r.id) + '</div><div class="q">' + esc(r.question) + '</div><div class="d">' + esc(r.ruling) + '</div></div>'); });
-    (state.queue || []).filter(function (q) { return q.status === "blocked"; }).forEach(function (q) { a.push('<div class="ask bad"><div class="k">Blocked · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div><div class="d">' + esc(q.statusDetail ? "waiting on " + q.statusDetail : "") + (q.deps ? " — " + esc(q.deps) : "") + '</div></div>'); });
-    (state.inbox || []).forEach(function (t) { a.push('<div class="ask info"><div class="k">On the board, not yet cleared</div><div class="q">' + esc(t) + '</div></div>'); });
-    var f = state.foundry || {};
-    if (f.deployStale) a.push('<div class="ask"><div class="k">Deploy</div><div class="q">Live engine is behind main' + (f.liveEngineVersion ? " (" + esc(f.liveEngineVersion) + ")" : "") + '</div><div class="d">Run scripts/deploy-to-foundry.bat before any bench run is meaningful.</div></div>');
-    var laneB = (state.queue || []).filter(function (q) { return q.lane === "B" && q.status !== "merged"; }).length;
-    if (!f.scheduled && laneB) a.push('<div class="ask info"><div class="k">Foundry window</div><div class="q">None scheduled · ' + laneB + ' lane-B item' + (laneB === 1 ? "" : "s") + ' will wait on one</div><div class="d">Tell the PM when Foundry is up (inbox below works).</div></div>');
-    var benOnly = (state.queue || []).filter(function (q) { return q.status === "Ben-only"; });
-    benOnly.forEach(function (q) { a.push('<div class="ask"><div class="k">Yours to do · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div></div>'); });
-    $("asks").innerHTML = a.join("") || '<div class="empty">Nothing waiting on you.</div>';
-  }
-
   function renderLog(now) {
-    var rows = (state.runLog || []).slice().reverse();
-    // item 99 (2026-09-08): runLog is a PROJECTION (the newest 60 rows by default) — runLogTotal
-    // is the full parsed count, runLogFrom the oldest date still in the projection. Older states
-    // (or a page not yet republished with this fallback) carry neither field, so fall back to the
-    // pre-cap label rather than claiming a total we don't have.
-    var sub = $("log-sub");
-    if (sub) {
-      var total = state.runLogTotal;
-      sub.textContent = (total != null && total > rows.length)
-        ? "last " + rows.length + " of " + total + (state.runLogFrom ? " · since " + state.runLogFrom : "")
-        : "newest first";
-    }
+    var all = (state.runLog || []).slice().reverse(), rows = all.slice(0, LOG_TAIL);
+    // item 99: runLog is a PROJECTION (the newest 60 rows by default) — runLogTotal is the full
+    // parsed count. The phone shows the tail of that projection; the header says so.
+    var total = state.runLogTotal != null ? state.runLogTotal : all.length;
+    $("log-sub").textContent = total > rows.length ? "last " + rows.length + " of " + total : "newest first";
     $("loglist").innerHTML = rows.map(function (r) {
       var when = r.at ? fmtWhen(Date.parse(r.at), now) : (r.date || "");
       return '<div class="entry"><div class="h"><span class="when num">' + esc(when) + '</span><span class="it">' + esc(r.item) + '</span></div>' +
@@ -740,32 +722,7 @@
       '<div>Generated ' + esc(state.generatedAt || "—") + ' · times shown in ' + esc(tz()) + ' · <a href="' + REPO_URL + '/blob/main/docs/PM_BOARD.md" target="_blank" rel="noopener">open the board</a></div>';
   }
 
-  // ---- dashboard renderers ----
-  /** The dashboard's own inline markdown: escape first, then `code`, **bold**, ~~strike~~, and the
-   * ⚑ span — the same feature set the desktop renders (scripts/lib/md.js inline with strike+flag). */
-  function inl(s) {
-    var h = esc(s);
-    h = h.replace(/`([^`]+)`/g, "<code>$1</code>");
-    h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    h = h.replace(/~~([^~]+)~~/g, "<s>$1</s>");
-    h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
-    return h;
-  }
-  var DFILTERS = [["all", "All"], ["open", "Open"], ["done", "Done"], ["flag", "⚑ Ben"], ["bot", "🤖 queue"]];
-  function rowPasses(x) {
-    var f = dprefs.filter;
-    if (f === "open" && x.done) return false;
-    if (f === "done" && !x.done) return false;
-    if (f === "flag" && (x.done || !x.flags)) return false;
-    if (f === "bot" && (x.done || !x.bots)) return false;
-    if (dq && x.text.toLowerCase().indexOf(dq) < 0 && (x.label || "").toLowerCase().indexOf(dq) < 0) return false;
-    return true;
-  }
-  function tabLabel(key) {
-    if (MIRRORS[key]) return MIRRORS[key].label;
-    var t = (dash && dash.index.tabs || []).filter(function (x) { return x.key === key; })[0];
-    return t ? t.label : key;
-  }
+  // ---- row groups: the ⚑ / 🤖 mirrors, grouped by section (bench) or tab › section (⚑) ----
   function glyph(x) {
     if (x.done) return '<div class="mk done" title="recorded done in the source doc">✓</div>';
     if (x.partial) return '<div class="mk part" title="part-done">◐</div>';
@@ -774,123 +731,70 @@
     if (x.kind === "info") return '<div class="mk" title="status row">·</div>';
     return '<div class="mk">○</div>';
   }
-  function replyLabel(tabKey, secTitle, x) { return "Re " + tabLabel(tabKey).replace(/^[⚑🤖⚖]\s*/, "") + " › " + secTitle.replace(/\*\*/g, "") + " › " + (x.label || "") + ": "; }
-  function rowHtml(x, tabKey, secTitle, refSec, extraActs) {
-    var acts = extraActs || "";
-    if (!x.done && (x.flags > 0 || x.kind === "ruling")) acts += '<button type="button" data-reply="' + esc(replyLabel(tabKey, secTitle, x)) + '">reply in inbox →</button>';
+  function replyLabel(tabKey, secTitle, x) { return "Re " + tabLabel(tabKey).replace(/^[⚑🤖⚖]\s*/, "") + " › " + plainText(secTitle) + " › " + (x.label || "") + ": "; }
+  function rowHtml(x, refSec) {
+    var acts = x.done ? "" : '<button type="button" data-reply="' + esc(replyLabel(x.tab, x.secTitle, x)) + '">reply in inbox →</button>';
     return '<div class="drow k-' + esc(x.kind) + (x.done ? " done" : "") + '" data-id="' + esc(x.id) + '">' + glyph(x) +
       '<div class="tx">' + (refSec ? '<span class="refsec">' + inl(refSec) + '</span>' : "") + inl(x.text) +
       (x.log && x.log.length ? '<details class="log"><summary>update log (' + x.log.length + ')</summary><div>' + x.log.map(inl).join("<br>") + '</div></details>' : "") +
       (acts ? '<div class="acts">' + acts + '</div>' : "") +
       '</div></div>';
   }
-  function blocksHtml(blocks, tabKey, secTitle, filtering, out) {
-    var h = "";
-    for (var i = 0; i < blocks.length; i++) {
-      var b = blocks[i];
-      if (b.type === "prose") { if (!filtering || (dq && b.text.toLowerCase().indexOf(dq) >= 0)) h += '<div class="prose">' + inl(b.text) + '</div>'; }
-      else if (b.type === "item") { if (rowPasses(b)) { out.n++; h += rowHtml(b, tabKey, secTitle, null); } }
-      else if (b.type === "sub") { var inner = blocksHtml(b.blocks || [], tabKey, secTitle, filtering, out); if (inner) h += '<h3>' + inl(b.title) + '</h3>' + inner; }
-    }
-    return h;
-  }
-
-  function renderSnapshot(now) {
-    if (!dash) {
-      $("tiles").innerHTML = '<div class="empty" style="grid-column:1/-1">No dashboard in this copy — open the page in claude.ai for the live one.</div>';
-      $("deploy").innerHTML = ""; $("snap-sub").textContent = ""; $("snap-age").textContent = ""; return;
-    }
-    var ix = dash.index, c = ix.counts || {}, h = [];
-    (ix.tabs || []).forEach(function (t) {
-      var k = (c.byTab || {})[t.key] || { total: 0, open: 0, done: 0 };
-      var pct = k.total ? Math.round(100 * k.done / k.total) : 0;
-      h.push('<button type="button" class="tile" data-tab="' + esc(t.key) + '"><span class="k">' + esc(t.label) + '</span><span class="v num">' + k.open + '<small>open of ' + k.total + '</small></span><span class="bar"><i style="width:' + pct + '%"></i></span></button>');
+  /** refs → <details> per group. `keyOf(ref)` names the group, `titleOf(ref)` its heading; a
+   * ref's `sub` (a `###` under the section) rides as the row's small over-line. */
+  function groupsHtml(refs, keyOf, titleOf, needle) {
+    var h = [], cur = null, n = 0, shown = 0, buf = [];
+    var flush = function () {
+      if (cur === null) return;
+      if (buf.length) h.push('<details class="dsec" open><summary><span class="tw">▶</span><span class="ttl">' + cur.title + '</span>' + cur.chips + '<span class="cnt">' + buf.length + '</span></summary><div class="body">' + buf.join("") + '</div></details>');
+      buf = []; cur = null;
+    };
+    refs.forEach(function (r) {
+      n++;
+      if (needle && (r.text || "").toLowerCase().indexOf(needle) < 0 && (r.secTitle || "").toLowerCase().indexOf(needle) < 0 && (r.sub || "").toLowerCase().indexOf(needle) < 0) return;
+      var k = keyOf(r);
+      if (!cur || cur.key !== k) { flush(); var meta = sectionMeta(r.tab, r.secId); cur = { key: k, title: titleOf(r), chips: ((meta && meta.chips) || []).map(function (ch) { return '<span class="dchip ' + esc(ch[1]) + '">' + esc(ch[0]) + '</span>'; }).join("") }; }
+      shown++;
+      buf.push(rowHtml(r, r.sub || null));
     });
-    h.push('<button type="button" class="tile flag" data-tab="forben"><span class="k">⚑ For Ben</span><span class="v num">' + (c.forBen || 0) + '<small>need your call</small></span></button>');
-    h.push('<button type="button" class="tile bot" data-tab="benchqueue"><span class="k">🤖 Bench queue</span><span class="v num">' + (c.benchQueue || 0) + '<small>agent-drivable</small></span></button>');
-    $("tiles").innerHTML = h.join("");
-    var d = ix.deploy;
-    $("deploy").innerHTML = d ? '<details class="deploy"><summary>DEPLOY STATE — ' + (d.hot && d.hot.length ? inl(d.hot.join(" ")) : "expand for the current deploy state") + '</summary>' + (d.prose || []).map(function (t) { return '<div class="prose">' + inl(t) + '</div>'; }).join("") + '</details>' : "";
-    $("snap-sub").textContent = (c.rows || 0) + " rows · @" + (ix.stamp || "?");
-    var gen = Date.parse(ix.generatedAt);
-    $("snap-age").textContent = (dashLive ? "live" : "snapshot") + (isNaN(gen) ? "" : " · " + (ago(gen, now) === "just now" ? "just now" : ago(gen, now) + " ago"));
+    flush();
+    return { html: h.join(""), shown: shown, total: n };
   }
-
-  function renderDash() {
-    if (!dash) {
-      $("dtabs").innerHTML = ""; $("dfilters").innerHTML = ""; $("dsrc").textContent = "";
-      $("dsections").innerHTML = '<div class="empty">No dashboard in this copy — open the page in claude.ai for the live one.</div>';
-      $("dash-sub").textContent = ""; return;
-    }
-    var ix = dash.index, c = ix.counts || {}, byTab = c.byTab || {};
-    var keys = ix.tabs.map(function (t) { return t.key; }).concat(Object.keys(MIRRORS));
-    if (keys.indexOf(dprefs.tab) < 0) dprefs.tab = keys[0];
-    $("dtabs").innerHTML = ix.tabs.map(function (t) {
-      var k = byTab[t.key] || {};
-      return '<button type="button" role="tab" data-tab="' + esc(t.key) + '" aria-selected="' + (dprefs.tab === t.key) + '">' + esc(t.label) + '<span class="n">' + (k.open || 0) + '</span></button>';
-    }).concat(Object.keys(MIRRORS).map(function (m) {
-      return '<button type="button" role="tab" data-tab="' + m + '" aria-selected="' + (dprefs.tab === m) + '">' + MIRRORS[m].label + '<span class="n">' + (c[MIRRORS[m].key] || 0) + '</span></button>';
-    })).join("");
-    var isMirror = !!MIRRORS[dprefs.tab];
-    $("dfilters").innerHTML = (isMirror ? "" : DFILTERS.map(function (f) { return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (dprefs.filter === f[0]) + '">' + f[1] + "</button>"; }).join("")) +
-      '<span class="sp"></span>' + (isMirror ? "" : '<button type="button" class="link" data-expand="1">expand all</button><button type="button" class="link" data-expand="0">collapse all</button>');
-    var filtering = dprefs.filter !== "all" || !!dq;
-    var h = [], shown = 0;
-    if (isMirror) {
-      var refs = ix[MIRRORS[dprefs.tab].key] || [], cur = "", open = false;
-      refs.forEach(function (r) {
-        var e = dash.rows[r.id]; if (!e) return;
-        if (dq && e.row.text.toLowerCase().indexOf(dq) < 0 && e.secTitle.toLowerCase().indexOf(dq) < 0) return;
-        if (r.tab !== cur) { if (open) h.push("</div>"); cur = r.tab; open = true; h.push('<div class="mgrp"><h3>' + esc(tabLabel(r.tab)) + '</h3>'); }
-        shown++;
-        h.push(rowHtml(e.row, r.tab, e.secTitle, e.secTitle + (e.sub ? " / " + e.sub : ""),
-          '<button type="button" data-go="' + esc(r.id) + '" data-gotab="' + esc(r.tab) + '" data-gosec="' + esc(r.secId) + '">go to row →</button>'));
-      });
-      if (open) h.push("</div>");
-      $("dsrc").textContent = dprefs.tab === "forben"
-        ? "computed: every open ⚑ row on every tab — a judgment only you can make. Standing decisions are on the ⚖ Rulings tab."
-        : "computed: every open 🤖 row — needs a live Foundry table, and an agent drives it. Nothing here is yours to do.";
-    } else {
-      var tab = ix.tabs.filter(function (t) { return t.key === dprefs.tab; })[0];
-      $("dsrc").textContent = "source: " + (tab.srcNote || "");
-      tab.sections.forEach(function (sec) {
-        var blocks = dash.sections[sec.id] || [], out = { n: 0 };
-        var body = blocksHtml(blocks, tab.key, sec.title, filtering, out);
-        if (filtering && out.n === 0) return;
-        shown += out.n;
-        var isOpen = filtering ? true : !!dashOpen[sec.id];
-        var k = sec.counts || {};
-        var cnt = filtering ? out.n + " match" + (out.n === 1 ? "" : "es") : (k.open || 0) + " open" + (k.done ? " · " + k.done + " done" : "") + (k.flags ? " · ⚑" + k.flags : "") + (k.bots ? " · 🤖" + k.bots : "");
-        h.push('<details class="dsec" data-sec="' + esc(sec.id) + '"' + (isOpen ? " open" : "") + '><summary><span class="tw">▶</span><span class="ttl">' + inl(sec.title) + '</span>' +
-          (sec.chips || []).map(function (ch) { return '<span class="dchip ' + esc(ch[1]) + '">' + esc(ch[0]) + '</span>'; }).join("") +
-          '<span class="cnt">' + esc(cnt) + '</span></summary><div class="body">' + (body || '<div class="empty">Nothing here.</div>') + '</div></details>');
-      });
-    }
-    $("dsections").innerHTML = h.join("") || '<div class="empty">Nothing matches on this tab.</div>';
-    $("dash-sub").textContent = filtering ? shown + " matching row" + (shown === 1 ? "" : "s") : (isMirror ? shown + " row" + (shown === 1 ? "" : "s") : (byTab[dprefs.tab] || {}).open + " open · " + ((byTab[dprefs.tab] || {}).done || 0) + " done");
+  function renderBench() {
+    if (!dash) { $("bench-groups").innerHTML = '<div class="empty">No dashboard snapshot in this copy — open the page in claude.ai for the live one.</div>'; $("bench-sub").textContent = ""; return; }
+    var g = groupsHtml(dash.benchQueue || [], function (r) { return r.secId; }, function (r) { return inl(plainText(r.secTitle).replace(/^BENCH\s*—\s*/, "")); }, bq);
+    $("bench-groups").innerHTML = g.html || '<div class="empty">' + (bq ? "No bench row matches." : "The bench queue is empty.") + '</div>';
+    $("bench-sub").textContent = bq ? g.shown + " of " + g.total + " rows match" : g.total + " open row" + (g.total === 1 ? "" : "s");
   }
-  function setDashTab(key) { dprefs.tab = key; savePrefs(); renderDash(); }
-  function gotoRow(id, tabKey, secId) {
-    dprefs.tab = tabKey; dprefs.filter = "all"; dq = ""; $("dq").value = ""; dashOpen[secId] = true; savePrefs(); renderDash();
-    var el = $("dsections").querySelector('.drow[data-id="' + id + '"]'); if (!el) return;
-    el.scrollIntoView({ block: "center" }); el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1600);
+  function renderFlags() {
+    if (!dash) { $("flag-groups").innerHTML = '<div class="empty">No dashboard snapshot in this copy.</div>'; $("flag-sub").textContent = ""; return; }
+    var g = groupsHtml(dash.forBen || [], function (r) { return r.tab + "|" + r.secId; }, function (r) { return esc(tabLabel(r.tab).replace(/^[⚑🤖⚖]\s*/, "")) + " › " + inl(plainText(r.secTitle).replace(/^BENCH\s*—\s*/, "")); }, "");
+    $("flag-groups").innerHTML = g.html || '<div class="empty">No ⚑ rows open.</div>';
+    $("flag-sub").textContent = g.total + " row" + (g.total === 1 ? "" : "s") + " · a judgment only you can make; marks still live on the desktop dashboard";
   }
   function replyTo(label) {
+    setTab("needs");
     var ta = $("note"); ta.value = label; $("inbox").scrollIntoView({ block: "start" });
     if (ta.disabled) toast("Open this page in claude.ai to send inbox notes"); else { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
   }
 
-  // ---- item 43: "Needs you" — one status line, a stale-heartbeat banner, and a card per open
-  // ruling / board (waiting) ruling / Ben-only ask. Everything else moved under #more. openRulings
-  // and benOnly can both be missing (an old cached snapshot, or the tracked page's empty `{}`
-  // slots) — every read below falls back to [] rather than throwing.
-  var lastIndex = null; // dash/index, set the moment it arrives — openRulings needs no chunk fetch
-  function openRulingsList() { return (lastIndex && lastIndex.openRulings) || (dash && dash.index && dash.index.openRulings) || []; }
-  var plainText = function (s) { return String(s == null ? "" : s).replace(/\*\*/g, "").replace(/`/g, ""); };
+  // ---- NEEDS BEN: asks (blocked / deploy / Foundry window / board inbox / Ben-only queue rows) ----
+  function renderAsks() {
+    var a = [];
+    (state.rulings || []).filter(function (r) { return r.waiting; }).forEach(function (r) { a.push('<div class="ask"><div class="k">Ruling ' + esc(r.id) + '</div><div class="q">' + esc(r.question) + '</div><div class="d">' + esc(r.ruling) + '</div></div>'); });
+    (state.queue || []).filter(function (q) { return q.status === "blocked"; }).forEach(function (q) { a.push('<div class="ask bad"><div class="k">Blocked · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div><div class="d">' + esc(q.statusDetail ? "waiting on " + q.statusDetail : "") + (q.deps ? " — " + esc(q.deps) : "") + '</div></div>'); });
+    (state.inbox || []).forEach(function (t) { a.push('<div class="ask info"><div class="k">On the board, not yet cleared</div><div class="q">' + esc(t) + '</div></div>'); });
+    var f = state.foundry || {};
+    if (f.deployStale) a.push('<div class="ask"><div class="k">Deploy</div><div class="q">Live engine is behind main' + (f.liveEngineVersion ? " (" + esc(f.liveEngineVersion) + ")" : "") + '</div><div class="d">Run scripts/deploy-to-foundry.bat before any bench run is meaningful.</div></div>');
+    var laneB = (state.queue || []).filter(function (q) { return q.lane === "B" && q.status !== "merged"; }).length;
+    if (!f.scheduled && laneB) a.push('<div class="ask info"><div class="k">Foundry window</div><div class="q">None scheduled · ' + laneB + ' lane-B item' + (laneB === 1 ? "" : "s") + ' will wait on one</div><div class="d">Tell the PM when Foundry is up (the inbox below works).</div></div>');
+    (state.queue || []).filter(function (q) { return q.status === "Ben-only"; }).forEach(function (q) { a.push('<div class="ask"><div class="k">Yours to do · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div></div>'); });
+    $("asks").innerHTML = a.join("") || '<div class="empty">Nothing waiting on you.</div>';
+  }
 
-  /** Shared with the Inbox composer under More: one inbox note, written the same way no matter
-   * which control asked for it. Resolves true/false so a caller can react without duplicating the
-   * disabled/toast dance. */
+  // ---- NEEDS BEN: the ruling / Ben-only cards (item 43) and their sent marks (item 94) ----
+  /** One inbox note, written the same way no matter which control asked for it. Resolves
+   * true/false so a caller can react without duplicating the disabled/toast dance. */
   function sendNote(text) {
     if (!dbRef) { toast("Open this page in claude.ai to send inbox notes"); return Promise.resolve(false); }
     var createdAt = new Date().toISOString();
@@ -903,43 +807,6 @@
         return true;
       })
       .catch(function (e) { toast(e && e.code === "quota_exceeded" ? "Inbox is full — delete old notes first" : "Could not send: " + (e && e.message || "unknown error")); return false; });
-  }
-
-  function renderStatusLine(now) {
-    var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), ws = state.workers || [];
-    var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
-    var running = ws.length ? ws.map(function (w) { return '<span class="wrun" data-since="' + esc(w.startedAt || "") + '">#' + esc(w.item) + " (" + esc(w.model || "?") + ', <span class="wago">' + esc(ago(w.startedAt, now)) + "</span>)</span>"; }).join(", ") : "nothing running";
-    var openR = openRulingsList(), benOnly = state.benOnly || [];
-    var reasons = [];
-    if (pm.waitingOn) reasons.push(esc(pm.waitingOn));
-    if ((state.queue || []).some(function (q) { return q.status === "blocked"; })) reasons.push("a blocked queue row");
-    if (openR.length) reasons.push(openR.length + " open ruling" + (openR.length === 1 ? "" : "s"));
-    if (benOnly.length) reasons.push(benOnly.length + " Ben-only ask" + (benOnly.length === 1 ? "" : "s"));
-    var blocked = reasons.length ? "Yes — " + reasons.join(", ") : "No";
-    $("status-line").innerHTML = pill(pm.status, stLabel) + '<span class="txt">running: <b>' + running + '</b> &middot; blocked on you: <b>' + blocked + '</b></span>';
-  }
-
-  function renderStaleBanner(now) {
-    var gen = Date.parse(state.generatedAt);
-    var stale = !isNaN(gen) && (now - gen) > 60 * 60 * 1000 && state.pm && state.pm.status === "awake";
-    $("stale-banner").innerHTML = stale
-      ? '<div class="stale-banner">⚠ Stale heartbeat — the PM says it is awake, but its last snapshot is <span class="sbage" data-since="' + esc(state.generatedAt) + '">' + esc(ago(state.generatedAt, now)) + '</span> old. It may be frozen on a permission dialog.</div>'
-      : "";
-  }
-
-  /** The ruling's full card text, read off the already-loaded ⚖ Rulings tab (item 43's cards carry
-   * only {id, section, ask, default, applied, blocks} — the full text is not duplicated into the
-   * index). Returns null before the rulings chunk has loaded; the card falls back to pointing at
-   * the tab under More rather than blocking on it. */
-  function findRulingFullText(id) {
-    if (!dash || !dash.rows) return null;
-    var re = new RegExp("^\\*\\*" + id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\.");
-    for (var k in dash.rows) {
-      if (!Object.prototype.hasOwnProperty.call(dash.rows, k)) continue;
-      var e = dash.rows[k];
-      if (e.tab === "rulings" && e.row && re.test(e.row.text)) return e.row.text;
-    }
-    return null;
   }
   function rulingReplyPrefix(r) { return "Re Rulings › " + plainText(r.section) + " › " + r.id + ". " + r.ask + ": "; }
   function benOnlyPrefix(ask) { return "Re Waiting on Ben › " + ask + ": "; }
@@ -970,8 +837,8 @@
 
   function rulingCardHtml(r) {
     var hasDefault = r.default && r.default !== "no default stated";
-    var full = findRulingFullText(r.id);
-    var fullHtml = full ? '<details class="ny-full"><summary>full text</summary><div class="body">' + inl(full) + "</div></details>" : '<div class="ny-full">full text: see the ⚖ Rulings tab under More.</div>';
+    // item 116: the full card text rides on the ruling itself (dash/index) — no chunk to fetch.
+    var fullHtml = r.text ? '<details class="ny-full"><summary>full text</summary><div class="body">' + inl(r.text) + "</div></details>" : "";
     var badge = r.blocks ? '<span class="ny-badge">blocks ' + r.blocks + " checklist row" + (r.blocks === 1 ? "" : "s") + " / TODO item" + (r.blocks === 1 ? "" : "s") + "</span>" : "";
     var settled = sentActsHtml(sentStateFor(rulingReplyPrefix(r), inboxDocs));
     if (r.applied) {
@@ -999,20 +866,20 @@
     return '<div class="nycard benonly" data-benonly="' + i + '"><div class="ny-k">Yours to do</div><div class="ny-ask">' + esc(ask) + '</div>' +
       (settled || '<div class="nyacts"><button type="button" class="btn2 primary" data-done="' + i + '">Done</button></div>') + '</div>';
   }
+  /** The Needs Ben tab's store-derived parts: the ruling / Ben-only cards, the ⚑ row groups, the
+   * tab badge. openRulings and benOnly can both be missing (an old cached snapshot, or the tracked
+   * page's empty `{}` slots) — every read falls back to [] rather than throwing. */
   function renderNeedsYou(now) {
-    renderStaleBanner(now);
-    renderStatusLine(now);
     var open = openRulingsList();
     var h = open.filter(function (r) { return !r.applied; }).map(rulingCardHtml)
       .concat(open.filter(function (r) { return r.applied; }).map(rulingCardHtml))
       .concat((state.benOnly || []).map(benOnlyCardHtml));
-    var counts = (lastIndex && lastIndex.counts) || (dash && dash.index && dash.index.counts) || {};
-    if (counts.forBen) h.push('<div class="nyflags">⚑ <button type="button" class="linkbtn" data-tab="forben">' + counts.forBen + " row" + (counts.forBen === 1 ? "" : "s") + " need your judgment</button> — full list under More → Dashboard.</div>");
-    $("nycards").innerHTML = h.join("") || '<div class="nyempty">Nothing needs you right now.</div>';
+    $("nycards").innerHTML = h.join("") || '<div class="nyempty">No ruling waits on you' + (dashCounts().forBen ? " — the ⚑ rows below do." : ".") + '</div>';
+    renderFlags();
+    renderTabCounts();
   }
   $("nycards").addEventListener("click", function (ev) {
     var t = ev.target, btn;
-    if ((btn = t.closest("button[data-tab]"))) { jumpToDash(btn.getAttribute("data-tab")); return; }
     if ((btn = t.closest("button[data-other-open], button[data-veto-open]"))) {
       var id0 = btn.getAttribute("data-other-open") || btn.getAttribute("data-veto-open");
       var box0 = document.getElementById("ny-other-" + id0);
@@ -1050,18 +917,18 @@
   });
 
   // item 94: render() (first paint only) rebuilds everything; renderBoardPanels() is what a
-  // pm/state push triggers — the board panels, never the needs-you cards or the dashboard, so a
-  // "Sent ✓" mark (now derived from inboxDocs, not written into the DOM) is never touched by it
-  // and the big dashboard panel never gets rebuilt out from under a mid-scroll read. tick() goes
-  // further still: it touches no panel's innerHTML at all, only textContent on the elements that
-  // carry a clock or an elapsed/ago time (the data-since spans rendered above).
+  // pm/state push triggers — the board panels, never the needs-you cards or the row groups, so a
+  // "Sent ✓" mark (derived from inboxDocs, not written into the DOM) is never touched by it and a
+  // panel Ben is reading never gets rebuilt out from under him. tick() goes further still: it
+  // touches no panel's innerHTML at all, only textContent on the elements that carry a clock or
+  // an elapsed/ago time (the data-since spans rendered above).
   function renderBoardPanels(now) {
-    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); }
+    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderTabCounts(); }
     catch (e) { console.error(e); }
   }
   function render() {
     var now = Date.now();
-    try { renderHeader(now); renderNeedsYou(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderSnapshot(now); renderDash(); }
+    try { renderHeader(now); renderNow(now); renderSnapshot(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderBench(); renderNeedsYou(now); }
     catch (e) { console.error(e); }
   }
   function updateElapsed(now) {
@@ -1078,27 +945,10 @@
   function tick() { var now = Date.now(); try { renderHeader(now); updateElapsed(now); } catch (e) { console.error(e); } }
 
   $("filters").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); renderQueue(); });
-  // dashboard: tabs, filters, search, section toggles, go/reply, tiles
-  $("dtabs").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) setDashTab(b.getAttribute("data-tab")); });
-  $("dfilters").addEventListener("click", function (ev) {
-    var f = ev.target.closest("button[data-f]"), x = ev.target.closest("button[data-expand]");
-    if (f) { dprefs.filter = f.getAttribute("data-f"); savePrefs(); renderDash(); }
-    if (x && dash) { var on = x.getAttribute("data-expand") === "1"; var t = dash.index.tabs.filter(function (q) { return q.key === dprefs.tab; })[0]; if (t) t.sections.forEach(function (sec) { dashOpen[sec.id] = on; }); renderDash(); }
-  });
-  var dqT; $("dq").addEventListener("input", function () { clearTimeout(dqT); dqT = setTimeout(function () { dq = $("dq").value.trim().toLowerCase(); renderDash(); }, 120); });
-  $("dsections").addEventListener("toggle", function (ev) { var d = ev.target; if (d && d.classList && d.classList.contains("dsec") && !(dprefs.filter !== "all" || dq)) dashOpen[d.getAttribute("data-sec")] = d.open; }, true);
-  $("dsections").addEventListener("click", function (ev) {
-    var g = ev.target.closest("button[data-go]"), r = ev.target.closest("button[data-reply]");
-    if (g) gotoRow(g.getAttribute("data-go"), g.getAttribute("data-gotab"), g.getAttribute("data-gosec"));
-    if (r) replyTo(r.getAttribute("data-reply"));
-  });
-  function jumpToDash(key) { openMore(); setDashTab(key); $("dash").scrollIntoView({ block: "start" }); }
-  document.querySelector(".jump").addEventListener("click", function (ev) {
-    var a = ev.target.closest("a[href]"); if (!a || a.getAttribute("href") === "#needsyou") return;
-    openMore();
-  });
-  $("tiles").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
-  $("asks").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
+  $("tiles").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) { setTab(b.getAttribute("data-tab")); window.scrollTo(0, 0); } });
+  var bqT; $("bq").addEventListener("input", function () { clearTimeout(bqT); bqT = setTimeout(function () { bq = $("bq").value.trim().toLowerCase(); renderBench(); }, 120); });
+  $("bench-groups").addEventListener("click", function (ev) { var r = ev.target.closest("button[data-reply]"); if (r) replyTo(r.getAttribute("data-reply")); });
+  $("flag-groups").addEventListener("click", function (ev) { var r = ev.target.closest("button[data-reply]"); if (r) replyTo(r.getAttribute("data-reply")); });
 
   var toastT; function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 2400); }
 
@@ -1123,32 +973,18 @@
       if (snap.exists) { state = snap.data(); liveDoc = true; renderBoardPanels(Date.now()); }
       else { liveDoc = false; renderHeader(Date.now()); }
     }, function (err) { console.warn("pm/state subscription ended", err); liveDoc = false; renderHeader(Date.now()); });
-    // The dashboard: subscribe to the small index, fetch the chunks it names. A chunk whose stamp
-    // is not the index's is a push in flight — one retry, then wait for the next index snapshot.
-    function loadDash(idx, retried) {
-      var ids = (idx.chunks || []).map(function (c) { return c.id; });
-      Promise.all(ids.map(function (id) { return db.doc("dash/" + id).get(); })).then(function (docs) {
-        var chunks = {}; docs.forEach(function (d, i) { if (d.exists) chunks[ids[i]] = d.data(); });
-        var a = assembleDash(idx, chunks);
-        if (a) {
-          dash = a; dashLive = true;
-          var sy = window.scrollY; // dsections can run hundreds of KB — hold the scroll position
-          renderSnapshot(Date.now()); renderDash(); renderAsks(); renderNeedsYou(Date.now());
-          window.scrollTo(0, sy);
-        }
-        else if (!retried) setTimeout(function () { loadDash(idx, true); }, 3000);
-        else console.warn("dash: chunks incomplete for stamp", idx.stamp);
-      }).catch(function (e) { console.warn("dash: chunk load failed", e); });
-    }
+    // item 116: the dashboard is ONE document now — the index carries the mirrors' rows and the
+    // rulings' text, so a snapshot renders the tiles, the bench rows and the needs-you parts
+    // directly. A stamp the page already shows is a no-op.
     db.doc("dash/index").onSnapshot(function (snap) {
       if (!snap.exists) return;
       var idx = snap.data();
-      // openRulings rides in the index itself (item 43) — render the "Needs you" cards right away,
-      // without waiting on the chunk fetch below (that's only needed for the full-text expander).
-      lastIndex = idx;
-      renderNeedsYou(Date.now());
-      if (dashLive && dash && dash.index.stamp === idx.stamp && dash.index.generatedAt === idx.generatedAt) return;
-      loadDash(idx, false);
+      if (!idx || !idx.counts) return;
+      if (dashLive && dash && dash.stamp === idx.stamp && dash.generatedAt === idx.generatedAt) return;
+      dash = idx; dashLive = true;
+      var sy = window.scrollY; // the row groups can run tens of KB — hold the scroll position
+      renderSnapshot(Date.now()); renderBench(); renderNeedsYou(Date.now()); renderAsks();
+      window.scrollTo(0, sy);
     }, function (err) { console.warn("dash/index subscription ended", err); });
     // item 94: the inbox is also the "sent"/"recorded" source of truth now — keep the docs in
     // memory and re-render only the notes list + the needs-you marks, never the board panels.
@@ -1172,6 +1008,7 @@
     try { await dbRef.doc("inbox/" + b.getAttribute("data-del")).delete(); toast("Note deleted"); } catch (e) { toast("Could not delete: " + (e && e.message || "")); }
   });
 
+  setTab(tab);
   render();
   setInterval(tick, 30000);
   connect();
