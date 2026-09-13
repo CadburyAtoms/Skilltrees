@@ -60,6 +60,7 @@ ever need to.
 | `items-dump-console.js`    | Paste-into-Foundry console dump of item/culture/ancestry schemas (read-only, 2026-07-18 §9j) → `source-materials/system-schemas/`; the full read that supersedes `heroic-schema-dump-console.js`'s narrower one |
 | `heroic-schema-dump-console.js` | ⚠ SUPERSEDED (2026-08-10) by `items-dump-console.js` — kept only for provenance of the schemas already committed from it |
 | `deploy-to-foundry.bat`    | Ben's one-click deploy: build all packs + validate + copy into the live module (Foundry must be closed) |
+| `deploy-cycle.js`          | Item 122 (2026-09-13): the agent-run deploy — gated pre-flight guards, timestamped pack backups, the `deploy-to-foundry.bat` steps fail-fast (closes Foundry, pulls, pushes the engine, rebuilds + validates all five packs, relaunches, verifies the served engine against `HEAD`), then records a DEPLOY STATE line. `--dry-run` prints the plan and touches nothing; `--yes` runs it |
 | `run-playtest-build.bat`   | One-click deity+heroic build + validate → `scripts/build-log.txt`   |
 | `pre-commit`               | Thin shim copied into `.git/hooks/` by the installer — execs `pre-commit-body` (data validate, dashboard `--check`, lint-refs + engine tests) so edits to the body are live without reinstalling |
 | `pre-commit-body`          | The actual pre-commit hook logic the shim execs; includes the dashboard-source-doc list (item 21) |
@@ -67,7 +68,8 @@ ever need to.
 | `purge-binaries-from-history.sh` | ⚠ DESTRUCTIVE, one-off: rewrites ALL git history to purge deleted PDFs/PNGs (TODO_REPO_HYGIENE item 2 step 2) and force-pushes `main` — read the file's own warning before ever running it |
 | `engine-idiom-ratchet.json`| Frozen ratchet (2026-08-10) of hand-rolled engine idioms that duplicate canonical helpers already elsewhere in the engine; shrink-only |
 | `name-keyed-allowlist.json`| The iron-rule-2b ratchet: the talent names the engine mentioned in code as of 2026-07-24; shrink-only, enforced by `lint-refs.js` pass 7 |
-| `lib/paths.js`             | Shared location constants (DATA/MODROOT/ATLAS_PACK, env-overridable) for the build/lint/validate scripts |
+| `lib/paths.js`             | Shared location constants (DATA/MODROOT/ATLAS_PACK/FOUNDRY_USERDATA, env-overridable) for the build/lint/validate scripts |
+| `lib/deploy-guards.js`     | Item 122: `deploy-cycle.js`'s pre-flight guards + post-flight verifiers, each a named PURE function (repo-on-main/clean, not hand-edited, no bench worker holding the table, packs exist, world configured, exe exists; pack stamps newer than the run start, served-engine-equals-HEAD, `/`→`/join`) plus the DEPLOY STATE record line formatter/inserter — pinned against fixtures in `tests/deploy-cycle.test.js` with no I/O |
 | `lib/data.js`              | Shared data-loading primitives (`loadJson`, `normRow`, …) for the build/lint/validate scripts |
 | `lib/md.js`                | Shared markdown engine for the three HTML doc builders (`build-dashboard.js` / `build-canon-codex.js` / `build-player-primer.js`) |
 | `lib/build-doc.js`         | Shared `--check`/write/exit skeleton for the generated-doc builders (the same four as above plus `dump-native-vocabulary.js`) |

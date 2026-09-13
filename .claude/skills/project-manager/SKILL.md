@@ -333,7 +333,12 @@ history. Therefore:
 
 When Ben says Foundry is up:
 1. `node scripts/module-src-sync.js status`. If the engine is STALE, the table would test old
-   code — ask Ben to run `scripts/deploy-to-foundry.bat` first and wait.
+   code — since item 122 (2026-09-13) the PM runs the deploy itself: `node scripts/deploy-cycle.js
+   --dry-run` first to see every guard's verdict, then `node scripts/deploy-cycle.js --yes` once
+   they all pass (closes Foundry, pulls, pushes the engine, rebuilds + validates the five packs,
+   relaunches, verifies, and records the DEPLOY STATE line). A guard refusal — a bench worker
+   holding the table, a hand-edited live engine, an unclean tree — needs Ben, not a rerun with the
+   guard ignored.
 2. Collect every `bench-pending` item's 🤖 sections from `EDHA_FOUNDRY_TEST_CHECKLIST.md`.
 3. Dispatch **one** Opus worker whose brief is "invoke `bench-run`" with that list. It records
    results; PASS rows retire.
