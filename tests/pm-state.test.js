@@ -374,7 +374,10 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // items 104–115), so the open set is EMPTY again and the three shape loops go vacuous until the
   // next ruling is filed. The seventeen join the closed list below so a regression that re-opens
   // one is named.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-13, bench run 45: R-112 filed (The Reckoning cannot pay for its own Unbreakable Line —
+  // raise the pool, make it free, or drop the cost), so the set is one again and the three shape
+  // loops are live on it: it must parse an `ask` ending in a question mark and a `default`.
+  const ECOSYSTEM_RULINGS = ["R-112"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
