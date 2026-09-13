@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T15:17:47.059Z",
+  "generatedAt": "2026-09-13T15:19:04.638Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "0c7b3ada77",
-    "commit": "c3e836d",
+    "hash": "a82b4e7d18",
+    "commit": "51cb5f3",
     "branch": "pm/board-2026-09-13b",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday session: item 116 merged #331 (this page is now three tabs). Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; item 117 is fixing the stale Yours-to-do cards below (they will clear when it lands).",
+    "note": "Sunday session: items 116 (#331, this page is three tabs) and 117 (#333, the stale Yours-to-do cards are gone) merged. Bench run 45 is syncing talents + adversaries and driving HS-1…10 + 19 more 🤖 rows; its fixes (if any) go to test-pass-fixes next.",
     "waitingOn": null,
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; owns the Browser pane"
-    },
-    {
-      "item": "117",
-      "title": "parseBenOnly reads only the CURRENT session line — the stale Yours-to-do cards (R-56, the 09-07 bat run) stop resurrecting",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/117-ben-only-current-line",
-      "startedAt": "2026-09-13T15:01:00Z",
-      "agent": "Work item 117",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only"
     }
   ],
   "usage": null,
@@ -1454,9 +1441,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "116 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 333
     }
   ],
   "rulings": [
@@ -1512,20 +1499,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "05:58",
-      "at": "2026-09-07T09:58:00.000Z",
-      "item": "PM handoff — loop STOPPED at the last wake before Ben's hours. Six hourly wakes (00:52 → 05:57) found nothing: clean tree, no PRs, module 6 in sync, served engine = main, inbox empty, no deploy note. Nothing running, nothing queued that a session can take: 70 waits on R-83, 62 reframes after its 🤖 row measures (bench 42), 9 is blocked on the bridge / MST map rulings. First act of the next session: if Ben has run deploy-to-foundry.bat, verify module-src-sync.js status + the served hash, then dispatch bench run 42 (REBUILD rows 34a / 34c / 57 / 58 / 59 / 63 / 55-pack / 56's 2bW-18 + 19 / 67, the map picker, I10b2-1..4, 77-1, fix pass 10's row with the corrected string, the two rider-family rows, R-52 (c)(ii)). Week's PM usage (pm-usage.py, 09-05 evening → now): this session 122.4M PM + 191.4M workers; the three earlier weekend sessions 54.2M PM + 165.0M workers — ≈ 533M weighted in all, the price of ~95 merged PRs across the weekend. Next PM: the edha-pm-weeknight task at 21:00 ET Monday (MODEL GUARD) or Ben's hand-start",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "shift 13 h",
-      "weighted": "122.4M (+191.4M workers)",
-      "weightedM": 122.4,
-      "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
-      "pr": null
-    },
     {
       "date": "2026-09-06",
       "time": "19:48",
@@ -2351,10 +2324,24 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "11:01",
+      "at": "2026-09-13T15:01:00.000Z",
+      "item": "Item 117 (parseBenOnly scoped to the CURRENT session line; a lone \"nothing\" is no ask; mutation pin) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "15 min, 132 turns",
+      "weighted": "3.3M",
+      "weightedM": 3.3,
+      "outcome": "merged 11:17 after review, no trailers; CI green on 8aa02e1, gates 12/12 in the worktree (1087 tests). Root cause two-fold: the label regex demanded : (so Waiting on Ben: nothing. never matched and the scan fell through to a REPLACED paragraph) + no marker cut-off. Proof: real board 2 stale asks → []; the reverted body fails the pin naming both stale strings. pm/state pushed after merge — the phone's stale Yours-to-do cards cleared",
+      "pr": 333
     }
   ],
-  "runLogTotal": 230,
-  "runLogFrom": "2026-09-07",
+  "runLogTotal": 231,
+  "runLogFrom": "2026-09-06",
   "dispatches": [
     {
       "at": "2026-09-04T22:41:00.000Z",
@@ -2979,6 +2966,12 @@
       "model": "sonnet",
       "item": "332",
       "pr": null
+    },
+    {
+      "at": "2026-09-13T15:01:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 333
     }
   ],
   "statusVocab": [
