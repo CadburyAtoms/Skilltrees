@@ -25,7 +25,7 @@ opening CLAUDE.md.
 
 ---
 
-## 2. [~] Remove committed binaries — especially the copyrighted Stormlight PDF
+## 2. [x] Remove committed binaries — especially the copyrighted Stormlight PDF — DONE 2026-09-13: the PM deleted 117 remote branches on Ben's word ("I'll let you handle since main is caught up"); `docs/BRANCH_CLEANUP.md` carries the record; only the two YOUR-CALL branches remain
 > **2026-09-05 status: the history purge has effectively HAPPENED — as the 2026-07-28 restart.** Main's
 > root commit is `aed1a76` (07-28); the PDF is unreachable from `main` and survives only through the
 > **57 orphaned pre-restart branches** (plus the 2026-07-06 working-tree half, which is done).
@@ -2676,7 +2676,7 @@ per-card audit table. ENGINE + likely REBUILD (PM decides from the PR's card lis
 
 ---
 
-## 82. [ ] Bestiary statting standard gains an explicit senses + movement line per block
+## 82. [~] Bestiary statting standard gains an explicit senses + movement line per block — SHELVED 2026-09-13 into item 121 (Ben: the bestiary will be redone; the invented senses/speed batch waits for that scoping)
 
 **Why:** Ben, 2026-09-07 (dashboard), verbatim: *"We should update the bestiary lore-forge skill
 to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries
@@ -3706,7 +3706,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size M · deps — · verify: the PM's first live `--yes` run (🤖 row). Filed 2026-09-13 from Ben's chat request.
 
-## 123. [ ] `edha.syncAllAdversaries()` is not bench-safe: it rewrites every world adversary and pushes prototype token fields onto EVERY scene, including a live combat (ENGINE, F5)
+## 123. [x] `edha.syncAllAdversaries()` is not bench-safe: it rewrites every world adversary and pushes prototype token fields onto EVERY scene, including a live combat (ENGINE, F5) — DONE 2026-09-13, PR #345 (R-113 (a): scope/dry-run/started-combat-refusal guard, ENGINE-ONLY F5)
 
 **Why:** bench run 46 (2026-09-13) was briefed to run `⟳ Sync Adversaries from Pack` as a step-zero refresh after the 14:41 adversaries rebuild, and **declined after reading the source** — the call run 45 learned to make before any world-wide `edha.*` helper. `edhaSyncAllAdversaries` (`module-src/scripts/engine/27-adversary-pack-sync.js:84`) is an unfiltered `game.actors.filter(a => a.type === "adversary")` loop, and for each match `edhaSyncAdversaryActor` replaces `system` **wholesale** (`{recursive: false, diff: false}`) and then walks **`for (const scene of game.scenes)`** pushing the prototype's `texture / sight / disposition / displayName / displayBars / bar1 / bar2 / width / height` onto every token of that actor on every scene. At that moment the world held **42 world adversaries** and a **live, started combat** (`r4j178xQ2X77c1eQ`, 7 combatants, round 1 turn 3) on a scene the bench has no licence for — **"Playtest Map (Copy)"**, which is not the licensed "Playtest Map" — including a Cinderhound sitting at 6/14 HP mid-fight, beside Ishee, Tem parinaem and Soggy Bottom. Unlinked-token HP lives in the delta and would have survived; the token-level display/vision/size fields and all 42 base `system` blocks would not. This is exactly the `edha.fixPcTokens()` shape run 45 filed, one document up: a helper written as *Ben's* post-deploy button, with no scope filter, no dry-run, and no way for a caller to say "only these". **Nothing was lost this run** — the bench's rows used fresh pack imports, which read the pack directly, and neither `The Reckoning` nor `Crownox Ring` exists as a world actor at all, so the sync would have been a no-op for the very blocks it was requested for.
 

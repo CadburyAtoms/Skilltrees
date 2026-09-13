@@ -4,7 +4,19 @@
  * replaces the per-deploy "delete and re-drag every adversary", which lost tokens and their
  * placement every time. Runs from a button on the adversary sheet or in bulk from the actor
  * directory; edhaAdvSyncPlan is the pure add/update/remove diff, kept separate so it is testable.
- * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncAdversaryActor ·
+ *
+ * Item 123 / R-113 (2026-09-13, Ben: "agents need to be able to sync adversaries for bench
+ * runs") — the bulk path (`edhaSyncAllAdversaries`) was an unfiltered `game.actors` loop that
+ * replaced `system` wholesale and pushed prototype token fields onto EVERY scene, including a
+ * scene holding someone else's started combat. It now takes `{folder, actorIds, scenes, dryRun,
+ * allowStartedCombat}`: `dryRun` defaults to true for a bare `edha.syncAllAdversaries()` call
+ * (Ben's two UI buttons pass `dryRun: false` explicitly, so they are unchanged); `folder` /
+ * `actorIds` restrict the actor set; `scenes` restricts which scenes get token writes; and any
+ * candidate token sitting in a STARTED combat (`started === true` or `round > 0`) refuses the
+ * whole call unless `allowStartedCombat: true`. The decision is `edhaSyncPlan`, kept pure (plain
+ * actor/scene/combat shapes in, `{actors, sceneTokens, refusals}` out) so it is testable without
+ * a Foundry world.
+ * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaSyncAdversaryActor ·
  *   edhaSyncAllAdversaries + the renderAdversarySheet and renderActorDirectory buttons.
  * ============================================================================================ */
 
@@ -27,7 +39,25 @@
  * Matching: `_stats.compendiumSource` (stamped on drag; stays valid across rebuilds because pack
  * ids are deterministic) → legacy flags.core.sourceId → exact-name lookup in the adversary pack.
  * Bulk sync SKIPS a world copy whose name differs from its resolved source (a rename = a
- * customized variant); the sheet button syncs whatever it resolves (explicit intent). GM-only. */
+ * customized variant); the sheet button syncs whatever it resolves (explicit intent). GM-only.
+ *
+ * Item 123 / R-113 — the bulk path's scope/dry-run/refusal guard (agent-safe by default):
+ *   - `dryRun` (default true when the options object is omitted, i.e. a bare
+ *     `edha.syncAllAdversaries()`): computes and reports the plan — actors it would touch, and
+ *     per-scene token counts it would stamp — and writes NOTHING. Ben's sheet button and his
+ *     "⟳ Sync Adversaries from Pack" bulk button both pass `dryRun: false` explicitly, so they
+ *     write exactly as they always have.
+ *   - `folder` / `actorIds` narrow the candidate actor set (a bench passes its own folder or the
+ *     ids it imported, never the whole world).
+ *   - `scenes` (an array of scene ids) narrows which scenes get token writes; a scene left out is
+ *     never touched, no matter what it holds.
+ *   - Any candidate token that is a combatant in a STARTED combat (`combat.started === true` or
+ *     `round > 0`) on an in-scope scene REFUSES the whole call — no partial write — naming the
+ *     scene, the combat and the token, unless `allowStartedCombat: true`. This is what would have
+ *     protected bench run 46's near-miss on "Playtest Map (Copy)".
+ *   The decision (which actors, which scene token-counts, which refusals) is the pure
+ *   `edhaSyncPlan(actors, scenes, combats, opts)`; the async wrapper only gathers the world state
+ *   and executes what the plan allows. */
 const EDHA_ADV_PACK_ID = "edha-content.edha-adversaries";
 
 // Pure decision: which owned items does a pack sync replace? Pack-built copies (edha-content-
@@ -43,6 +73,46 @@ function edhaAdvSyncPlan(ownedItems, srcItems) {
   return { drop, keep };
 }
 
+// Pure decision (item 123 / R-113): given the resolved candidate actors, EVERY world scene, and
+// EVERY world combat, decide what a bulk sync would touch — before anything is written. Plain
+// shapes only, so this is testable with no Foundry world:
+//   actors:  [{id, name}, ...]            — already resolved to a valid, non-renamed pack source
+//   scenes:  [{id, name, tokens: [{id, actorId}, ...]}, ...]   — ALL world scenes, unfiltered
+//   combats: [{id, sceneId, started, round, combatantTokenIds: [id, ...]}, ...] — ALL world combats
+//   opts:    {scenes: [id, ...] | null, allowStartedCombat: bool}
+// Returns {actors: [id, ...], sceneTokens: {[sceneId]: count}, refusals: [{sceneId, sceneName,
+// combatId, tokenId, actorId, actorName}, ...]}. No `scenes` filter = every scene with a matching
+// token is in scope (today's unfiltered footprint); a scene left out of `scenes` never appears in
+// `sceneTokens` and can never produce a refusal, no matter what it holds.
+function edhaSyncPlan(actors, scenes, combats, opts = {}) {
+  const sceneFilter = Array.isArray(opts.scenes) ? new Set(opts.scenes) : null;
+  const allowStarted = opts.allowStartedCombat === true;
+  const actorIds = new Set((actors ?? []).map(a => a.id));
+  const actorName = new Map((actors ?? []).map(a => [a.id, a.name]));
+
+  const startedTokenCombat = new Map();   // tokenId -> combat, for started combats only
+  for (const c of combats ?? []) {
+    const isStarted = c.started === true || (typeof c.round === "number" && c.round > 0);
+    if (!isStarted) continue;
+    for (const tid of c.combatantTokenIds ?? []) startedTokenCombat.set(tid, c);
+  }
+
+  const sceneTokens = {};
+  const refusals = [];
+  for (const scene of scenes ?? []) {
+    if (sceneFilter && !sceneFilter.has(scene.id)) continue;   // not in scope for this call at all
+    const matched = (scene.tokens ?? []).filter(t => actorIds.has(t.actorId));
+    if (!matched.length) continue;
+    sceneTokens[scene.id] = matched.length;
+    if (allowStarted) continue;
+    for (const t of matched) {
+      const combat = startedTokenCombat.get(t.id);
+      if (combat) refusals.push({ sceneId: scene.id, sceneName: scene.name, combatId: combat.id, tokenId: t.id, actorId: t.actorId, actorName: actorName.get(t.actorId) });
+    }
+  }
+  return { actors: [...actorIds], sceneTokens, refusals };
+}
+
 async function edhaAdvSrcFor(actor) {
   const pack = game.packs?.get(EDHA_ADV_PACK_ID);
   if (!pack) return null;
@@ -54,7 +124,11 @@ async function edhaAdvSrcFor(actor) {
   return entry ? await pack.getDocument(entry._id) : null;
 }
 
-async function edhaSyncAdversaryActor(actor, src) {
+// `sceneFilter` (a Set of scene ids, or nullish) restricts which scenes get token writes — item
+// 123 / R-113's `scenes` option, threaded through from edhaSyncAllAdversaries. The sheet button
+// calls this with no filter (2 args), same as before item 123: explicit single-actor intent is
+// never scene-scoped.
+async function edhaSyncAdversaryActor(actor, src, sceneFilter) {
   if (!actor || actor.type !== "adversary" || actor.pack) return null;   // world actors only — the compendium doc IS the source
   src ??= await edhaAdvSrcFor(actor);
   if (!src) return { synced: false, name: actor?.name, reason: "no pack source (name not in edha-adversaries)" };
@@ -68,6 +142,7 @@ async function edhaSyncAdversaryActor(actor, src) {
   const proto = so.prototypeToken ?? {};
   let tokens = 0;
   for (const scene of game.scenes ?? []) {
+    if (sceneFilter && !sceneFilter.has(scene.id)) continue;   // out of scope for this call
     const updates = (scene.tokens ?? []).filter(t => t.actorId === actor.id).map(t => ({
       _id: t.id,
       texture: foundry.utils.deepClone(proto.texture),
@@ -81,16 +156,63 @@ async function edhaSyncAdversaryActor(actor, src) {
   return { synced: true, name: actor.name, items: so.items.length, dropped: drop.length, tokens };
 }
 
-async function edhaSyncAllAdversaries() {
+// Item 123 / R-113: `opts` defaults to a DRY RUN (writes nothing, returns the plan) so a bare
+// `edha.syncAllAdversaries()` from the console is always safe. Ben's two UI buttons pass
+// `dryRun: false` explicitly below, so they are unaffected. `folder`/`actorIds` narrow the actor
+// set; `scenes` narrows which scenes get token writes; a candidate token in a STARTED combat
+// refuses the whole call unless `allowStartedCombat: true`.
+async function edhaSyncAllAdversaries(opts = {}) {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: adversary sync is GM-only."); return null; }
   if (!game.packs?.get(EDHA_ADV_PACK_ID)) { ui.notifications?.warn("Edha: the edha-adversaries pack was not found."); return null; }
-  const synced = [], skipped = [], missing = [];
-  for (const a of (game.actors?.filter(a => a.type === "adversary") ?? [])) {
+  const { folder = null, actorIds = null, scenes: sceneFilter = null, dryRun = true, allowStartedCombat = false } = opts;
+
+  let candidates = game.actors?.filter(a => a.type === "adversary") ?? [];
+  if (folder) candidates = candidates.filter(a => a.folder?.id === folder || a.folder?.name === folder);
+  if (Array.isArray(actorIds)) { const idSet = new Set(actorIds); candidates = candidates.filter(a => idSet.has(a.id)); }
+
+  const resolved = [], missing = [], skipped = [];
+  for (const a of candidates) {
     const src = await edhaAdvSrcFor(a);
     if (!src) { missing.push(a.name); continue; }
     if (src.name !== a.name) { skipped.push(`${a.name} (source: ${src.name})`); continue; }   // renamed = customized variant — sheet button syncs it explicitly
-    const r = await edhaSyncAdversaryActor(a, src);
-    if (r?.synced) synced.push(`${a.name} (${r.items} items${r.tokens ? `, ${r.tokens} token${r.tokens === 1 ? "" : "s"}` : ""})`);
+    resolved.push({ actor: a, src });
+  }
+
+  const planScenes = (game.scenes ?? []).map(scene => ({
+    id: scene.id, name: scene.name,
+    tokens: (scene.tokens ?? []).map(t => ({ id: t.id, actorId: t.actorId })),
+  }));
+  const planCombats = (game.combats ?? []).map(c => ({
+    id: c.id, sceneId: c.scene?.id ?? null,
+    started: c.started === true, round: c.round ?? 0,
+    combatantTokenIds: (c.combatants?.contents ?? c.combatants ?? []).map(cb => cb.tokenId).filter(Boolean),
+  }));
+  const plan = edhaSyncPlan(resolved.map(r => ({ id: r.actor.id, name: r.actor.name })), planScenes, planCombats, { scenes: sceneFilter, allowStartedCombat });
+
+  if (plan.refusals.length && !allowStartedCombat) {
+    const r0 = plan.refusals[0];
+    const msg = `Edha: adversary sync REFUSED — ${r0.actorName ?? "an actor"}'s token is in the STARTED combat ${r0.combatId} on scene "${r0.sceneName}" (token ${r0.tokenId}). Nothing was written. Pass allowStartedCombat:true to override.`;
+    console.warn("Edha Content | adversary sync refused (started combat):", plan.refusals);
+    ui.notifications?.error(msg);
+    return { refused: true, refusals: plan.refusals, plan, skipped, missing };
+  }
+
+  if (dryRun) {
+    const names = resolved.map(r => r.actor.name);
+    console.log("Edha Content | adversary sync DRY RUN:", { actors: names, sceneTokens: plan.sceneTokens, skipped, missing });
+    ui.notifications?.info(
+      `Edha: DRY RUN — would sync ${names.length} adversar${names.length === 1 ? "y" : "ies"}` +
+      (Object.keys(plan.sceneTokens).length ? `, stamping tokens on ${Object.keys(plan.sceneTokens).length} scene(s)` : "") +
+      " — nothing written (pass dryRun:false to run for real; details in console)."
+    );
+    return { dryRun: true, actors: names, sceneTokens: plan.sceneTokens, skipped, missing, plan };
+  }
+
+  const sceneFilterSet = Array.isArray(sceneFilter) ? new Set(sceneFilter) : null;
+  const synced = [];
+  for (const { actor, src } of resolved) {
+    const r = await edhaSyncAdversaryActor(actor, src, sceneFilterSet);
+    if (r?.synced) synced.push(`${actor.name} (${r.items} items${r.tokens ? `, ${r.tokens} token${r.tokens === 1 ? "" : "s"}` : ""})`);
   }
   console.log("Edha Content | adversary sync:", { synced, skipped, missing });
   ui.notifications?.info(
@@ -151,7 +273,9 @@ Hooks.on("renderActorDirectory", (app, element) => {
     btn.addEventListener("click", (ev) => {
       ev.preventDefault();
       btn.disabled = true;
-      Promise.resolve(edhaSyncAllAdversaries()).finally(() => { btn.disabled = false; });
+      // item 123 / R-113: the bulk path now DEFAULTS to a dry run — Ben's own button must keep
+      // writing, so it passes dryRun:false explicitly (unscoped, exactly like before this item).
+      Promise.resolve(edhaSyncAllAdversaries({ dryRun: false })).finally(() => { btn.disabled = false; });
     });
     (root.querySelector(".directory-footer") ?? root).append(btn);
   } catch (e) { console.error("Edha Content | adversary sync-all button failed", e); }

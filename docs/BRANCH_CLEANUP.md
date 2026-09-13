@@ -1,5 +1,7 @@
 # Branch cleanup — what can be deleted, with the evidence (2026-09-05)
 
+> **DONE 2026-09-13 (the PM, on Ben's word in chat: "Branch cleanup — I'll let you handle since main is caught up").** The list below was re-derived from live git before anything was deleted: of 119 remote branches beside `main`, **106 were merged by ancestry** (`git branch -r --merged origin/main`), **9 were squash-merged through PRs** (#97, #101, #102, #109, #228, #241, #274, #327, #335 — `git cherry` shows their commits as unique only because of the squash), and the **2 KEEP branches** had their work re-landed by items 33 and 34 (#164, #233) — **117 deleted in five batches, zero errors, `git fetch --prune` confirms**. The two **YOUR CALL** branches (`claude/palewater-ford-battle-map-08r3hg`, `claude/playtest-monitoring-checklist-8lit4b`, one docs-only commit each) are still there for Ben. The SAFE list below is history now: most of its branches had already been pruned by 09-13, and the rest went with this pass.
+
 Written for Ben. **66 remote branches besides `main`.** Verdicts: **62 SAFE to delete**,
 **2 for your decision**, **2 KEEP** (they are the only copy of work that queued items re-land).
 
