@@ -3783,3 +3783,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the skill + runbook carry the licence with Ben's words; the roster script creates the arena idempotently (a headless pin on the pure spec/plan if any); the 🤖 row is filed.
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
+
+## 129. [ ] `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13)
+
+**Why:** the first live `node scripts/deploy-cycle.js --yes` (PM, 2026-09-13 19:41 ET, every guard PASS) threw `EBUSY: resource busy or locked, copyfile '…\\packs\\edha-leyline\\LOCK'` inside `backupPacks()` (`scripts/deploy-cycle.js:232`), which `main()` calls BEFORE step 1 (close Foundry). A running Foundry holds each pack's LevelDB `LOCK`; the copy cannot read it. The failure was SAFE — nothing had been written, Foundry stayed up — but the run did no work, and the stack trace was raw rather than the script's own "step N failed + restore command" message.
+
+**What to do:** (1) move `backupPacks()` to AFTER the close step succeeds (the packs are only readable then) and before any write; (2) make `copyDirRecursive` skip `LOCK` (and any file that throws EBUSY, logging it) — a LevelDB backup does not need the lock file; (3) wrap the backup in the same fail-fast handling as the steps so a failure prints the step name and, since nothing was written yet, says so instead of a stack trace; (4) pin the order with a pure "plan" or a smoke test that asserts the close step precedes the backup in the step list, and a unit test that `copyDirRecursive` skips `LOCK`. Then re-run `--dry-run`; the PM does the next `--yes`.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` lists "backup" after "close"; the PM's next live run gets past the backup.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
