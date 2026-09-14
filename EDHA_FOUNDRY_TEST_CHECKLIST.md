@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T00:05:15.491Z from main @ 3aed769: packs 2026-09-14T00:03:52.960Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: deploy-cycle.js ran all eight steps green from a worktree on main, but its post-flight fetch raced Foundry’s boot — served engine 24d74c96… == HEAD and / → /join both verified by hand two minutes later; the first attempt died on the pack-backup LOCK bug, item 129, with nothing touched.)***
+
+
 **What is live on Ben's machine (2026-07-26):** the full rule-2b migration (passes A→AB — all
 221 talents on their own documents, ratchet 0), the pre-deploy audit fixes, and the 2bAC
 Edit-Event-Rule dialog CSS fix. Evidence: Ben ran the deploy, benched day 1, and confirmed —
