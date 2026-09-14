@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T00:46:31Z from main @ d832ac4: packs 2026-09-14T00:46:39Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: the PM's `deploy-cycle.js --yes` ran all NINE steps ok — close, backup, pull, engine, art, five packs, validators, relaunch — and post-flight PASSED stamps + engine sha; its `/join` check refused on a case mismatch (it compared the world id `edha` to the page title `Edha`; item 139), so the script withheld this line. `/` → `/join` and the title verified by hand at 20:48.)***
+
+
 **What is live on Ben's machine (2026-07-26):** the full rule-2b migration (passes A→AB — all
 221 talents on their own documents, ratchet 0), the pre-deploy audit fixes, and the 2bAC
 Edit-Event-Rule dialog CSS fix. Evidence: Ben ran the deploy, benched day 1, and confirmed —
@@ -903,7 +906,8 @@ it ran BEFORE the close and hit a running Foundry's open LevelDB `LOCK` file (EB
 written and Foundry stayed up. Item 129 fixed the order (backup is now step 2, after the close)
 and made the backup skip `LOCK`/EBUSY/EPERM files; this row stays open for the retry.)*
 
-- [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backup (after the close), the
+- [x] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backup (after the close), the
+      *(✅ RETIRED on evidence 2026-09-13 20:46 ET — the PM's live run: six guards PASS, nine steps ok, packs restamped 00:46:39Z, served engine `24d74c96` = HEAD, Foundry relaunched into Edha (HTTP 302 → /join). The one post-flight REFUSE was the verifier's own case bug (item 139), not the deploy. Earlier the same evening: the 19:41 run died safely on the pack LOCK (item 129) and another session's 20:05 run raced the boot (item 137) — both fixed before this pass.)*
       remaining eight steps, relaunch, verification, the DEPLOY STATE record.
 
 ## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
