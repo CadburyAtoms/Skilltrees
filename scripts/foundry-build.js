@@ -117,7 +117,7 @@ const { applyAuthorable, snapshotDoc, diffUnextractedEdits, readPack, slugify } 
 // imported: classic-level at load + a top-level async IIFE). Do not re-inline it here — see
 // TODO_REPO_HYGIENE #16 (a malformed authored file used to be dropped silently; the shared loader
 // throws, naming the file, instead).
-const { loadAuthoredIndex, authoredOverlayFor, advSensesRangeFt } = require("./foundry-build-parts.js");
+const { loadAuthoredIndex, authoredOverlayFor, advSensesRangeFt, advAttributes, advInvDefault } = require("./foundry-build-parts.js");
 // Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
 // talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
 // events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
@@ -1185,13 +1185,20 @@ function advActorSystem(adv) {
     resources: {
       hea: { value: adv.hp, max: ov(adv.hp) },
       foc: { value: adv.foc || 0, max: ov(adv.foc || 0) },
-      // Attuned adversaries default to the PC derivation, 2 + max(awa, pre), with attributes 0 → 2
-      // (ruling 49: same economy as the players — Draw Mana needs a pool to recover into).
-      // An explicit `inv` in the block always wins.
-      inv: (() => { const n = adv.inv ?? ((adv.leylines || []).length ? 2 : 0); return { value: n, max: ov(n) }; })(),
+      // Attuned adversaries default to the PC derivation, 2 + max(awa, pre) — 2 while a block states
+      // no attributes, more once it does (R-128 (a), 2026-09-14; ruling 49: same economy as the
+      // players — Draw Mana needs a pool to recover into). An explicit `inv` in the block always wins.
+      inv: (() => { const n = adv.inv ?? advInvDefault(adv); return { value: n, max: ov(n) }; })(),
     },
     biography: adv.biography || "",
   };
+  // R-128 (a), 2026-09-14: a block may state `attributes` ({str, spd, int, wil, awa, pre}; omitted
+  // keys are 0). The SYSTEM derives Senses Range from AWA (its own ladder) and the walk rate from SPD
+  // on the sheet; the build mirrors the AWA read onto the prototype token (advSensesRangeFt) so sheet
+  // and token agree, and skill tests roll attribute + rank. Absent the key nothing is written, so the
+  // pack is byte-identical to before R-128 for every block that has not been re-derived yet.
+  const attrs = advAttributes(adv);
+  if (attrs) sys.attributes = attrs;
   if (adv.deflect != null) {
     const t = adv.deflectTypes || ["energy", "impact", "keen"];
     sys.deflect = { override: adv.deflect, useOverride: true, source: "armor",
@@ -1268,11 +1275,17 @@ function advPrototypeToken(adv, token) {
 function buildAdversaries(resolveTalent) {
   const advData = JSON.parse(fs.readFileSync(`${DATA}/adversaries.json`, "utf-8"));
   // Folder layout (W23, Ben requirement #2): entries with a `folder` field are grouped in their own
-  // Actor subfolder under the "Edha Adversaries" root; entries without one keep the legacy
-  // "Playtest Adversaries" top-level folder (the original 9, untouched).
+  // Actor subfolder under the "Edha Adversaries" root; an entry without one falls into the top-level
+  // "Playtest Adversaries" folder. Since R-130 (a) (2026-09-14) every block states a folder — the
+  // original nine test-dungeon blocks sit in "Legacy — Playtest Dungeon" under the root — so the
+  // fallback folder is created only when a block actually lands in it: an empty folder in the pack
+  // would be a claim about the data that the data does not make.
   const playtestFolderId = fid("advfolder:playtest");
   const rootFolderId = fid("advfolder:root");
-  const folders = [folderDoc(playtestFolderId, "Playtest Adversaries", null, "Actor")];
+  const folders = [];
+  const ensurePlaytestFolder = () => {
+    if (!folders.some(f => f._id === playtestFolderId)) folders.push(folderDoc(playtestFolderId, "Playtest Adversaries", null, "Actor"));
+  };
   const groupFolder = {};    // folder name -> folder id
   const actors = [], items = [];
   let sortA = 0, talentEmbeds = 0;
@@ -1288,6 +1301,8 @@ function buildAdversaries(resolveTalent) {
         folders.push(folderDoc(groupFolder[adv.folder], adv.folder, rootFolderId, "Actor"));
       }
       folderId = groupFolder[adv.folder];
+    } else {
+      ensurePlaytestFolder();
     }
     const art = advArt(name);
     const img = art.portrait || adv.img;
@@ -1342,7 +1357,9 @@ function buildAdversaries(resolveTalent) {
       prototypeToken: advPrototypeToken(adv, tokenImg),
       items: myItems.map(it => it._id),
       effects: [], ownership: { default: 0 }, sort: (sortA += 100000),
-      flags: { "edha-content": { playtest: !adv.folder, count: adv.count || 1 } },
+      // `playtest` marks the legacy test-dungeon set — no folder (the pre-R-130 shape) or the
+      // "Legacy — …" folder R-130 (a) gave the nine. No engine reader today; kept for the record.
+      flags: { "edha-content": { playtest: !adv.folder || /^Legacy\b/.test(adv.folder), count: adv.count || 1 } },
       _stats: stats(),
     });
   }

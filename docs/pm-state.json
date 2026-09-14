@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T23:13:12.921Z",
+  "generatedAt": "2026-09-14T23:39:34.669Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "4d7769c164",
-    "commit": "b1c4e0e",
+    "hash": "3632b26a4b",
+    "commit": "2ba58f9",
     "branch": "claude/bestiary-update-planning-8bscnv",
     "repo": "CadburyAtoms/Skilltrees"
   },

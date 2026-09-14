@@ -150,16 +150,45 @@ function sensesRangeFtFromAwa(awa) {
   return SENSES_RANGES_FT[Math.min(Math.max(0, Math.ceil(a / 2)), SENSES_RANGES_FT.length - 1)];
 }
 
+// R-128 (a), 2026-09-14: a block may state `attributes` — the six cosmere attribute ids, integers,
+// omitted keys 0. `advAttributeValues` is the total read (always six numbers); `advAttributes` is
+// what the build WRITES (only the stated keys, `{value}` each — the system's DataModel shape, bonus
+// left to its default) or null when the block states none, so a block without the key builds
+// byte-identically to before R-128.
+const ATTRIBUTE_IDS = ["str", "spd", "int", "wil", "awa", "pre"];
+function advAttributeValues(adv) {
+  const out = {};
+  for (const id of ATTRIBUTE_IDS) out[id] = Number(adv?.attributes?.[id]) || 0;
+  return out;
+}
+function advAttributes(adv) {
+  if (!adv || adv.attributes == null || typeof adv.attributes !== "object") return null;
+  const vals = advAttributeValues(adv);
+  const sys = {};
+  for (const id of ATTRIBUTE_IDS) if (adv.attributes[id] != null) sys[id] = { value: vals[id] };
+  return Object.keys(sys).length ? sys : null;
+}
+// The attuned block's default Investiture pool: the PC derivation 2 + max(AWA, PRE) (ruling 49) —
+// 2 at attributes 0, which every block was before R-128. An unattuned block has no pool.
+function advInvDefault(adv) {
+  if (!(adv?.leylines || []).length) return 0;
+  const v = advAttributeValues(adv);
+  return 2 + Math.max(v.awa, v.pre);
+}
+
 // An adversary block's Senses Range: its explicit `senses` (ft) is the bespoke override and wins;
-// otherwise the ladder. Adversary blocks carry no attributes (they are all 0 — see the README's
-// `inv` note), so the default is ladder(0) = **5 ft** since item 83, the same number the SYSTEM
-// derives on the sheet. The build reads this for the prototype token so pack sheet and token agree
-// (they shipped a FLAT 10 against a derived 5 until item 55 — bench run 22, 52/52 mismatched — then
-// 10/10 under R-56 (a); item 83 takes both to 5).
+// otherwise the ladder at the block's AWA — 0 for every block that states no attributes, so the
+// default is ladder(0) = **5 ft** since item 83, the same number the SYSTEM derives on the sheet;
+// ladder(AWA) once a block states attributes (R-128 (a), 2026-09-14), which is again what the
+// system derives. The build reads this for the prototype token so pack sheet and token agree (they
+// shipped a FLAT 10 against a derived 5 until item 55 — bench run 22, 52/52 mismatched — then 10/10
+// under R-56 (a); item 83 takes both to 5). Senses Range is the radius a token perceives with its
+// primary sense OBSCURED (darkness, dim light); in lit areas it sees as far as the light goes, on
+// PCs and adversaries alike (Ben, R-128's answer).
 function advSensesRangeFt(adv) {
   const explicit = Number(adv?.senses);
   if (Number.isFinite(explicit) && explicit > 0) return explicit;
-  return sensesRangeFtFromAwa(0);
+  return sensesRangeFtFromAwa(advAttributeValues(adv).awa);
 }
 
-module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions, sensesRangeFtFromAwa, advSensesRangeFt };
+module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions, sensesRangeFtFromAwa, advSensesRangeFt, ATTRIBUTE_IDS, advAttributeValues, advAttributes, advInvDefault };

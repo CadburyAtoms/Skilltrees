@@ -5403,3 +5403,21 @@ roster approved with the cinderbrock chosen over the flintram)
 *Settled 2026-07-12 by the map extraction (no longer ⚑):* all nine original nation placements
 (they were guesses in the old §5a; the Procreate political layer is now ground truth), the Black
 Altar Crossing position, and the Vorsk→Lunavar "to the south" raid axis.
+
+### Ruling — 2026-09-14 (Ben, via the bestiary redo's rulings menu — R-132, answered from the phone board)
+
+164. **The second balance pass closes on the census re-count, and the mono-Blue moratorium lifts.**
+    Ruling 109 queued *"a second balance pass after the Red countries"*; Vorsk, Ashkar and Kettavar
+    landed 2026-07-20 → 07-22 and no re-count was ever recorded. The bestiary census
+    (`docs/analysis/bestiary/CENSUS.md`, `scripts/bestiary-census.js`, 2026-09-14) now counts the
+    statted ledger live, a pair counting ½ to each colour: **Blue 11 · Black 9 · Red 8 · White 7.5 ·
+    Green 6.5**, ten unattuned blocks (the nine test-dungeon constructs and the Corvaine Raider).
+    At the 07-20 pass it read Blue 8.5 · Green 6.5 · Black 4.5 · White 3 · Red 3.5; Blue now leads
+    the median by three blocks and White has gone from 3 to 7.5, which is inside ruling 106's bar
+    (*"the ratios don't need to be perfect, but it shouldn't be lopsided"*). Ben's answer (R-132 (a)):
+    **(a) the re-count IS the second balance pass** — recorded here, nothing statted for balance's
+    sake; **(b) ruling 106 (a)'s mono-Blue moratorium (ruling 109: "Blue-only — Green is fully
+    allowed") is LIFTED**; **(c) new entries in the nation passes steer toward Green and White**, the
+    two lowest, the derivation of ruling 108 unchanged; **(d) no third pass needs scheduling** — the
+    census regenerates with every data change and the standard (`bestiary-forge` STANDARD.md §1)
+    reads the ledger from it, so the count can never again go unrecorded. DOCS-ONLY.

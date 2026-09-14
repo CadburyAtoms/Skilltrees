@@ -11,7 +11,9 @@ standard lives"* and the answer was nowhere: four skills each held a layer (conc
 **RULED** (a canon ruling or an `EDHA_RULINGS.md` answer decides it — cite it), **MEASURED** (what
 the 52 blocks do today, read from `docs/analysis/bestiary/CENSUS.md`, not a target), and
 **PENDING R-nnn** (a decision filed for Ben that this standard will absorb once answered). A
-PENDING line is never applied to data before the ruling lands.
+PENDING line is never applied to data before the ruling lands. *(2026-09-14 23:23 ET: the eight
+rulings this standard was filed with — R-128 … R-135 — were all answered (a) from the phone board
+the same night; every PENDING line below is now RULED and says so. `EDHA_RULINGS.md` §K.15.)*
 
 ---
 
@@ -23,8 +25,9 @@ PENDING line is never applied to data before the ruling lands.
 2. **Count the continental colour ledger before proposing a roster** (canon ruling 106 (a)):
    canon §5c entries and statted blocks by colour, a pair counting ½ to each side. The statted
    half is `CENSUS.md` §3 — never re-count it by hand. *"The ratios don't need to be perfect, but
-   it shouldn't be lopsided."* The mono-Blue moratorium of ruling 106/109 is **PENDING R-132**
-   (the ledger no longer reads lopsided; Ben decides whether it lifts).
+   it shouldn't be lopsided."* **RULED R-132 (a), canon ruling 164:** the census re-count closed
+   ruling 109's second balance pass, the mono-Blue moratorium is LIFTED, and new entries steer
+   toward the two lowest colours — Green and White on 2026-09-14 — read live from the census.
 3. **A statable's bespoke actions are a KIT of two to four named talents from its own colour
    tree** (canon ruling 106 (b)): list the tree's 25, pick the ones that make the encounter
    *interesting*, name the kit in the concept so Ben approves mechanics-shape and animal together.
@@ -45,22 +48,23 @@ is the *standard* — which fields a block must carry and where the value comes 
 |---|---|---|---|
 | `role` | yes | the encounter's job: minion / rival / boss | Role is the lever for everything rank-shaped (§3). "Standard" and "Elite" from the old cheatsheet both map to rival. |
 | `tier` | yes | the party level band the block is built for | Tier supplies only the dice COUNT (§3). 45 of 52 are tier 1 (MEASURED). |
-| `folder` | yes | `"<Nation> <Ground> Bestiary"` (e.g. `Thalendor Heartwood Bestiary`), or a campaign folder (`Session 1 — Palewater Ford`) | A block with no folder is a legacy playtest-dungeon block; the nine that remain are **PENDING R-130**. |
+| `folder` | yes | `"<Nation> <Ground> Bestiary"` (e.g. `Thalendor Heartwood Bestiary`), or a campaign folder (`Session 1 — Palewater Ford`) | **RULED R-130 (a):** every block states one; the nine test-dungeon blocks sit in `Legacy — Playtest Dungeon` and keep building as fixtures. A block that omits it is a mistake, not a choice (the build's fallback folder exists only for that mistake). |
 | `size`, `creatureType` / `customType` | yes | the fiction | Large = a 2×2 token (the build). |
 | `count` | yes | how many appear in the reference encounter | Informational; the GM drags this many. Minions come in groups. |
 | `leylines` | when attuned | the derivation (§1) | Each colour writes a skill rank = role rank (§3), auto-embeds its Key, and the block gets Draw Mana (canon ruling 49). |
-| `skills` | when the block rolls | the abilities that roll | **MEASURED:** 41 of 52 carry explicit ranks and attributes are 0 everywhere, so a rank stands in for attribute + rank (Callthief `dec: 4` is above any PC's tier-1 cap). Whether blocks get attributes instead is **PENDING R-128**. |
+| `attributes` | yes, once the block's nation pass re-derives it | the fiction and the role: `{str, spd, int, wil, awa, pre}` | **RULED R-128 (a), 2026-09-14:** the build writes the stated keys (omitted = 0; a block stating none builds exactly as before). AWA gives the darkness-sense radius on the system ladder (5 / 10 / 20 / 50 / 100 ft at ceil(AWA/2)); SPD the walk rate where `movement` is omitted; skill tests roll attribute + rank. **Ben's gloss:** Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in a lit room it sees as far as the light goes, same as the PC actors. Values land nation by nation (R-135), never as a bulk batch. |
+| `skills` | when the block rolls | the abilities that roll | **MEASURED:** 41 of 52 carry explicit ranks and attributes are 0 everywhere, so a rank stands in for attribute + rank (Callthief `dec: 4` is above any PC's tier-1 cap). **RULED R-128 (a):** the nation pass re-derives each to attribute + rank keeping the total (rank 4 → attribute 2 + rank 2). |
 | `defenses` `{phy, cog, spi}` | yes | the role band (§3) + the fiction | Written as overrides; attributes do not derive them. |
 | `deflect` (+ `deflectTypes`) | when armoured or hided | the fiction | Default types energy / impact / keen. Recorded on the card. |
 | `hp` | yes | the role band (§3) | A statted block does not scale with the party (R-48, R-81 (a)). |
 | `foc` | when an ability costs Focus | the abilities | R-112 raised The Reckoning 2 → 3 because a pool must be able to pay its own signature cost. Grazes cost 1 Focus per target (SR p.35): a minion with `foc: 1` grazes once per fight. |
 | `inv` | when attuned | default 2 (the PC derivation at attributes 0) | Explicit wins. |
 | `movement` | **yes — state it** | the fiction; omit only when 25 ft is the intended walk | Item 82's line. **MEASURED:** 46 of 52 state it. |
-| `senses` | **yes when the creature should not see 5 ft** | the fiction | **RULED R-56 final:** the cosmere ladder `[5, 10, 20, 50, 100, ∞][ceil(AWA/2)]` governs every actor type, so an attribute-less block sees **5 ft in the dark** on sheet and token alike (item 83). `senses` is the bespoke override above that. **MEASURED:** 1 of 52 states it (Briar-Gone Grove, 30). Whether the fix is per-block overrides or attributes is **PENDING R-128**; until it lands, no batch of invented values (item 82's gate). |
+| `senses` | only when the fiction beats the ladder | the fiction | **RULED R-56 final:** the cosmere ladder `[5, 10, 20, 50, 100, ∞][ceil(AWA/2)]` governs every actor type, so a block with no attributes sees **5 ft in the dark** on sheet and token alike (item 83). **RULED R-128 (a):** the fix is `attributes` (AWA), not a batch of overrides; `senses` stays the fiction override above the ladder (the eyeless grove at 30 ft). **MEASURED:** 1 of 52 states it (Briar-Gone Grove); the other 51 read 5 ft until their nation pass states AWA. |
 | `conditionImmunities` | when the fiction says so | canon conditions or `EDHA_STATUSES` ids only | An id that is neither is dropped silently by the build; `CENSUS.md` §7 flags `unknown`. |
 | `biography` | yes | GM-facing | What it wants, how it fights, when it withdraws, the **outs** (talk, mercy, surrender), and the tone line ("sad, not evil" where canon says desperate). |
 | `items` | yes | §4 | Every gear attack and natural weapon is `kind: "weapon"` (natural ones `alwaysEquipped`) — item 34a/65's model; attack-riding manoeuvres and Investiture attacks stay actions. |
-| `talents` | humans, and beasts with an as-written talent | `"Tree/Talent Name"` | No prerequisites or rank gates apply (R-94); `python scripts/validate-build.py --adversaries` prints what the pick costs the players, informational. **MEASURED:** 2 of 52 carry any — invested-human adversaries are **PENDING R-131**. |
+| `talents` | humans, and beasts with an as-written talent | `"Tree/Talent Name"` | No prerequisites or rank gates apply (R-94); `python scripts/validate-build.py --adversaries` prints what the pick costs the players, informational. **MEASURED:** 2 of 52 carry any. **RULED R-131 (a):** one invested human per act-1 nation the party reaches, rival role, a kit of two to four as-written talents from a tree the party does not hold, from canon §5b's named factions — concepts at the lore gate, blocks at the statblock gate, one per nation pass (item 158). |
 | `img` | yes | a core-icon placeholder | The build swaps in `art/adversaries/<slug>-portrait.*` / `-token.*` when Ben drops them; add the slugs to `EDHA_ADVERSARY_ART_WISHLIST.md`. |
 
 ## 3. Numbers by role
@@ -83,11 +87,20 @@ the census is authoritative, this is the snapshot the redo started from):
 | rival | 29 | 14 – 65 (avg 27.5) | 11 – 16 (avg 12.6) | 8 – 18 (avg 11.8) | 9 – 16 (avg 11.3) | 0 – 4 (avg 1.3) | 4 – 8 (avg 5.9) | 3.5 – 13 (avg 7) |
 | boss | 8 | 48 – 140 (avg 66) | 13 – 15 (avg 13.9) | 8 – 17 (avg 11.6) | 11 – 17 (avg 12.9) | 1 – 3 (avg 1.9) | 6 – 9 (avg 7.3) | 7.5 – 13 (avg 9.3) |
 
-**PENDING R-134 — the targets.** The bands above are practice, not policy. R-134 asks Ben to fix
-explicit per-role targets against THIS party (Blue / White / Green, two Scholars and an Envoy, no
-fighter, no armour: a level-1 PC has `10 + STR` HP and Deflect 0), so a new block's numbers are
-derived from the target rather than eyeballed against its neighbours. Until R-134 lands, a new
-block sits inside the measured band for its role and says so in its concept proposal.
+**RULED R-134 (a), 2026-09-14 — the targets.** The bands above are practice; these are policy,
+written against THIS party (Blue / White / Green, two Scholars and an Envoy, no fighter, no armour:
+a level-1 PC has `10 + STR` HP and Deflect 0) so a new block's numbers derive from the target
+rather than from its neighbours:
+
+| Role | Average hit, at most | PC Actions to drop | Encounter damage in, per round |
+|---|---|---|---|
+| minion | ⅓ of a level-1 PC's HP (about 4) | one average PC Action | the encounter's expected damage in per round at most **¼ of the party's HP pool** at the "bruise, not wipe" tier |
+| rival | ½ (6 to 7) | two or three | (same) |
+| boss | ⅔ (8 to 9) | six or more | (same) |
+
+The measured bands sit at or a little above these, so **the yardstick fights (item 155) verify
+before any block is retuned — no retune ships on the arithmetic alone.** A new block states which
+row it was derived from in its concept proposal.
 
 **Read every damage number per Action, with the graze.** The ecosystem review's largest error was
 action semantics (a Slow turn is three Actions), and bench run 44's was forgetting that a graze
@@ -107,8 +120,11 @@ points this standard leans on:
 - **The cue vocabulary is CLOSED.** Author against the dispatch table in that section, never by
   copying a neighbouring block — six dead cues shipped that way in July.
 - **MEASURED:** 185 rules on 235 items; 74 are GM cues (28 on an HP line, 17 on hit, 12 on an
-  enemy's turn start), 111 are effects, 64 items roll natively, 16 declare `noHook`. Whether the
-  decision-free cues should become effects is **PENDING R-129**.
+  enemy's turn start), 111 are effects, 64 items roll natively, 16 declare `noHook`. **RULED
+  R-129 (a):** in each nation pass, a cue whose text names no table decision becomes an effect
+  where a hook exists, a cue that names one stays a card, and every rule's `description` is
+  labelled `cue — table call: <what>` or `effect — decision-free`, so the next census can count
+  the split and a lint can one day check it. Conversions ride the nation's REBUILD; no separate pass.
 - **Sole consumers.** `CENSUS.md` §6 lists the handler types only an adversary uses. Check there
   first when a primitive changes.
 - **Renamed adaptations.** Reuse the source talent's authored rule shape on the adaptation (Sudden
@@ -136,3 +152,11 @@ appear? Say so in the proposal.
 - **Bench rows.** One 🤖 row per new or changed block (drive its rules live), and for a new roster
   a **yardstick fight** on copies of the actual PCs recorded on `TURN_LEDGER.md`. ⚑ is reserved
   for feel and design; a row that asks Ben to *decide* is a ruling, not a row.
+
+## 7. The order of the pass (RULED R-135 (a), 2026-09-14)
+
+Corvaine + the Riverlands → Thalendor → Malcurr → the remaining nations in canon order; each nation
+waits only for the rulings it needs (all eight answered); **the first yardstick set — a minion pack,
+a rival pair, a boss on copies of the actual PCs — runs BEFORE Corvaine's pass** so the retune has
+numbers; the `attributes` line and the cue labels land in the same pass as each nation's content.
+Item 156 is the pass; item 155 the fights.

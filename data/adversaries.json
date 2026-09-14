@@ -1,6 +1,6 @@
 {
   "_README": {
-    "purpose": "Source data for the Edha adversary pack — every statted bestiary block (52 on 2026-09-14, in per-nation `folder`s) plus the nine legacy playtest-dungeon blocks with no folder (the 6-room test dungeon this file began as, 2026-07; their fate is ruling R-130). foundry-build.js reads this and writes the `edha-adversaries` Actor compendium: one `adversary` actor per entry with embedded `action`/`trait`/`weapon` items. Modelled on the cosmere-rpg companions-and-adversaries pack schema. Source of truth for a bestiary block = EDHA_CAMPAIGN_CANON.md §5c + its statblock-gate ruling in §9; the statting standard is .claude/skills/bestiary-forge/STANDARD.md and the measured census is docs/analysis/bestiary/CENSUS.md (regenerate with `node scripts/bestiary-census.js --write` after editing this file — the census test fails otherwise).",
+    "purpose": "Source data for the Edha adversary pack — every statted bestiary block (52 on 2026-09-14, in per-nation `folder`s) plus the nine legacy playtest-dungeon blocks in the 'Legacy — Playtest Dungeon' folder (the 6-room test dungeon this file began as, 2026-07; kept as build fixtures by ruling R-130 (a), 2026-09-14). foundry-build.js reads this and writes the `edha-adversaries` Actor compendium: one `adversary` actor per entry with embedded `action`/`trait`/`weapon` items. Modelled on the cosmere-rpg companions-and-adversaries pack schema. Source of truth for a bestiary block = EDHA_CAMPAIGN_CANON.md §5c + its statblock-gate ruling in §9; the statting standard is .claude/skills/bestiary-forge/STANDARD.md and the measured census is docs/analysis/bestiary/CENSUS.md (regenerate with `node scripts/bestiary-census.js --write` after editing this file — the census test fails otherwise).",
     "actor_fields": {
       "role": "minion | rival | boss. PDF 'Standard' and 'Elite' both map to 'rival' (the system has only 3 roles).",
       "size": "small | medium | large.",
@@ -16,13 +16,14 @@
       "foc": "Focus max (override). 0 if none.",
       "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
-      "senses": "Senses Range in ft — the BESPOKE OVERRIDE (Character_Building_Rules §Senses Range; Ben 07-16c sight rule; R-56, items 55 → 83: one rule for PCs and adversaries). Omit = the cosmere system's own ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] (R-56 FINAL, item 83, 2026-09-07: \"Cosmere ladder for everyone\"), so an attribute-less block sees 5 ft — the build stamps that on the prototype token (advSensesRangeFt) and the system derives the same number on the sheet; the two agree. Whether blocks gain attributes instead of per-block overrides is ruling R-128; state `senses` on any creature that should not see 5 ft (bestiary-forge STANDARD.md §2). Set it ONLY for a creature whose fiction justifies unusual senses (Briar-Gone Grove: 30 — a rooted grove-heart has no eyes and perceives through its own soil, so its reach is the arena, not an AWA-0 stare). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
+      "senses": "Senses Range in ft — the BESPOKE OVERRIDE (Character_Building_Rules §Senses Range; Ben 07-16c sight rule; R-56, items 55 → 83: one rule for PCs and adversaries). Omit = the cosmere system's own ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] (R-56 FINAL, item 83, 2026-09-07: \"Cosmere ladder for everyone\"), so an attribute-less block sees 5 ft — the build stamps that on the prototype token (advSensesRangeFt) and the system derives the same number on the sheet; the two agree. R-128 (a) (2026-09-14): blocks gain `attributes`, so once a block states AWA the ladder gives it its darkness-sense radius and `senses` is only the fiction override above that (an eyeless grove that feels through its soil). Until a block is re-derived it still reads 5 ft — state `senses` on any creature that should not (bestiary-forge STANDARD.md §2). Set it ONLY for a creature whose fiction justifies unusual senses (Briar-Gone Grove: 30 — a rooted grove-heart has no eyes and perceives through its own soil, so its reach is the arena, not an AWA-0 stare). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
       "biography": "Sheet bio / GM notes.",
-      "folder": "Optional Actor-subfolder name, grouped under the 'Edha Adversaries' root folder in the pack (e.g. 'Session 1 — Palewater Ford'). Omit = the legacy 'Playtest Adversaries' folder.",
+      "folder": "Actor-subfolder name, grouped under the 'Edha Adversaries' root folder in the pack (e.g. 'Session 1 — Palewater Ford', '<Nation> <Ground> Bestiary'). Every block states one since R-130 (a) (2026-09-14): the nine test-dungeon blocks sit in 'Legacy — Playtest Dungeon'. A block that omits it falls into the build's top-level 'Playtest Adversaries' fallback folder, which the build creates only when something lands in it — treat an omitted folder as a mistake, not a choice.",
       "leylines": "Array of attuned leyline colors (white/blue/black/red/green). Each gets a default skill rank by role — minion 1 / rival 2 / boss 3 (ruling 40; dice d4/d6/d8, Attunement Range 15/30/60 ft); an explicit `skills` entry overrides the default. Ruling 49: each color ALSO auto-embeds its Leyline Attunement Key (as an action-typed twin) and the actor gets the universal Draw Mana action — attuned adversaries run the same leyline economy as PCs (give them an `inv` pool).",
       "skills": "Explicit skill ranks { skillId: rank } — 3-letter core ids (ath/dis/prc/stl/…) or leyline colors. Set each block's 2–3 defensive/contest skills (the §8b lesson: rank 0 means PC opposed tests auto-win).",
+      "attributes": "R-128 (a), 2026-09-14 — the six cosmere attributes {str, spd, int, wil, awa, pre}, integers; omitted keys are 0 (every block before R-128 was all-zero, and a block that states no `attributes` builds byte-identically to before). What they drive: the SYSTEM derives Senses Range from AWA on its ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] and the walk rate from SPD (its own table) on the sheet; the build mirrors the AWA read onto the prototype token (advSensesRangeFt) so token and sheet agree; skill tests roll attribute + rank, so a block that stated an inflated rank to stand in for an attribute (Callthief `dec: 4`) is re-derived to attribute + rank with the same total in its nation's pass (R-135). `senses` stays the fiction override above the ladder; `movement` still overrides SPD's walk rate. Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in lit areas it sees as far as the light goes, same as the PC actors (Ben's gloss on R-128). Values land nation by nation behind the statblock gate, never as a bulk batch.",
       "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
@@ -52,6 +53,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 1,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
     "defenses": {
       "phy": 13,
@@ -99,6 +101,7 @@
     "creatureType": "custom",
     "customType": "Construct",
     "tier": 1,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/commodities/tech/cog-brass.webp",
     "defenses": {
       "phy": 12,
@@ -138,6 +141,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 2,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
     "defenses": {
       "phy": 16,
@@ -234,6 +238,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 2,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/magic/control/energy-stream-link-large-blue.webp",
     "defenses": {
       "phy": 11,
@@ -291,6 +296,7 @@
     "size": "medium",
     "creatureType": "animal",
     "tier": 1,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/magic/fire/flame-burning-creature-skeleton.webp",
     "defenses": {
       "phy": 12,
@@ -368,6 +374,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 2,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/magic/water/snowflake-ice-blue-white.webp",
     "defenses": {
       "phy": 12,
@@ -432,6 +439,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 1,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
     "defenses": {
       "phy": 14,
@@ -508,6 +516,7 @@
     "creatureType": "custom",
     "customType": "Aberration",
     "tier": 3,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/creatures/tentacles/tentacle-eyes-yellow-pink.webp",
     "defenses": {
       "phy": 14,
@@ -630,6 +639,7 @@
     "size": "medium",
     "creatureType": "humanoid",
     "tier": 1,
+    "folder": "Legacy — Playtest Dungeon",
     "img": "icons/creatures/eyes/lizard-single-slit-pink.webp",
     "defenses": {
       "phy": 13,
@@ -2589,7 +2599,7 @@
         "name": "Heat of the Flats",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>Characters who start their turn within 10 ft of it in open glare lose 1 focus — the pan's heat is its second weapon.</p>",
+        "text": "<p>Characters who start their turn within 10 ft of it in open glare lose 1 focus — the pan's heat is its second weapon. Shade negates it: a character with cover from the False Spring, or standing in a roofed square, is not in open glare (the GM's read; R-133 (a), 2026-09-14).</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -2597,7 +2607,7 @@
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
               "rangeFt": 10,
-              "note": "This character loses 1 focus (open glare; shade or full cover negates — table read)."
+              "note": "This character loses 1 focus — unless shaded: cover from the False Spring or a roofed square negates it (GM read, R-133)."
             },
             "description": "GM cue when a hostile starts its turn within 10 ft — the heat pressure (Furnace Heart shape)."
           }
@@ -3012,7 +3022,7 @@
       {
         "name": "The Ring",
         "kind": "trait",
-        "text": "<p>GM-run formation shape, no trigger: the oxen keep adjacent, calves and the old inside, and they do not pursue — the ring holds ground, it does not take it. An ox pulled 10+ ft from every ring-mate fights alone, and every wall talent below stops applying to it by its own adjacency condition.</p>"
+        "text": "<p>GM-run formation shape, no trigger: the oxen keep adjacent, calves and the old inside, and they do not pursue — the ring holds ground, it does not take it. An ox keeps the wall kit while it stands within 5 ft of at least one other ring ox (the engine's 2.5 ft adjacency slack applies, R-52); the moment it is not, it fights alone and every wall talent below stops applying to it — a measured rule, not a GM eyeball (R-133 (a), 2026-09-14).</p>"
       },
       {
         "name": "Shield Wall",

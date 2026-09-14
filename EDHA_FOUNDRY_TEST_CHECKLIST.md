@@ -88,6 +88,8 @@ confirm the sync state before reporting a bug.
 
 ⛔ **A PACK REBUILD IS OWED (filed 2026-09-05, fix pass 2 — only Ben can clear it).** `data/adversaries.json` changed: Reeve-Owl / **Sovereign of Solitude** had one enum value (`edha-triggered-effect target`) that Foundry rejects, which fell the item's WHOLE `system.events` map back to `{}` at load — four authored rules, zero at the table, on a pack whose bytes were correct. Until **Ben** runs `scripts/deploy-to-foundry.bat` (rebuild) and ⟳ Syncs adversaries, that row cannot be driven and any re-test of it will reproduce run 26's failure. Everything else in fix pass 2 is ENGINE-only (⟳ Sync + F5).
 
+⛔ **AN ADVERSARIES REBUILD + ⟳ SYNC ADVERSARIES IS OWED (filed 2026-09-14, the bestiary rulings close-out — an agent's `node scripts/deploy-cycle.js --yes` on Ben's machine or Ben's bat clears it).** `data/adversaries.json` changed twice on the close-out branch: the nine legacy blocks moved into the `Legacy — Playtest Dungeon` folder (R-130 (a)), and two card texts carry their rules — Crownox Ring / The Ring (adjacency) and The False Spring / Heat of the Flats (shade), R-133 (a). No engine change; the build gained `attributes` support (R-128 (a)) that no block uses yet, so nothing else in the pack moves. Until the rebuild runs, the live pack shows the old folder and the old texts — the two R-133 🤖 rows wait on it.
+
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
 never need replacing; PCs need no ⟳ Sync unless a section says a specific pack-baked talent
@@ -4567,6 +4569,13 @@ disposition** — a same-side token starting its turn correctly fires nothing.)*
       (a wall? any cover? only a roofed square?) so the card can carry the answer.
       *(Split 2026-07-27w.)* *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later;
       re-raise with the redo.)*
+      *(RETIRED 2026-09-14 on **R-133 (a)** — shade = cover from the False Spring or a roofed
+      square, the GM's read; on the card AND on the whispered cue's text. Adversaries REBUILD +
+      ⟳ Sync owed; the card check is the 🤖 row below.)*
+- [ ] 🤖 **R-133 (ii) — The False Spring / Heat of the Flats reads the shade clause after ⟳ Sync Adversaries:**
+      open a fresh False Spring from the pack and read Heat of the Flats — the card carries the
+      shade sentence; then start a hostile's turn within 10 ft and read the whispered cue — it says
+      "unless shaded: cover from the False Spring or a roofed square negates it".
 *(**Gone Into the Shimmer cue** — RETIRED on evidence 2026-07-28c, bench run 18, **with its no-re-fire
 control**: the first crossing of 24 (48 → 22) posted "⏰ **Gone Into the Shimmer** (Bench Adv — The
 False Spring): It drops the mirage and disengages into the heat-haze — end of the fight, start of the
@@ -4771,6 +4780,12 @@ re-confirmed **Retributive Guard** (2bAB-3) posting its retaliate prompt by itse
       actually want at the table (a distance? a broken adjacency chain? GM eyeball?) and it can
       go in the card text. *(Split 2026-07-27w.)*
       *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
+      *(RETIRED 2026-09-14 on **R-133 (a)** — the rule is on the card: an ox keeps the wall kit while
+      within 5 ft of at least one other ring ox (R-52's 2.5 ft slack), lost the moment it is not.
+      Adversaries REBUILD + ⟳ Sync owed; the card check is the 🤖 row below.)*
+- [ ] 🤖 **R-133 (i) — Crownox Ring / The Ring reads the adjacency rule after ⟳ Sync Adversaries:**
+      open a fresh Crownox Ring from the pack (or a synced world copy) and read The Ring's card —
+      it names the 5 ft adjacency rule and R-133; the old "pulled 10+ ft" sentence is gone.
 
 ## 3. Rootling Swarm (Green minion ×3 — "the Snare")
 
@@ -4822,6 +4837,8 @@ effect on the actor.)*
 - [x] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
       (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
       *(SHELVED — Ben, 2026-09-13: the bestiary will be redone later; re-raise with the redo.)*
+      *(RETIRED 2026-09-14 on **R-133 (a)(iii)** — the printed rule stands as written, GM-run,
+      with its `noHook` reason kept; nothing changed on the card, nothing to bench.)*
 *(**Bloodied re-settle cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ It Re-Gathers on the Rooflines (Bench Adv — Tollbird Flock): Bloodied — the flock breaks and
 re-settles on the rooflines, out of reach."* on 14 → 7.)*

@@ -50,8 +50,10 @@ test("bestiary-census: the colour ledger halves a pair, counts unattuned blocks,
   const r = c.census(SYNTH, { pcHandlerTypes: new Set(["edha-gm-cue"]), customStatuses: new Set(["weakened"]) });
   assert.deepStrictEqual(r.ledger, { white: 0, blue: 0.5, black: 0, red: 0.5, green: 0 });
   assert.strictEqual(r.totals.unattuned, 1);
-  assert.strictEqual(r.totals.legacy, 1, "a block without a folder is a legacy playtest-dungeon block");
-  assert.ok(Object.keys(r.folders).some((f) => /legacy/.test(f)));
+  assert.strictEqual(r.totals.legacy, 1, "a block without a folder counts as legacy (a mistake since R-130 — every block states one)");
+  const withLegacyFolder = c.census({ ...SYNTH, "Old Construct": { ...SYNTH["Plain Minion"], folder: "Legacy — Playtest Dungeon" } }, {});
+  assert.strictEqual(withLegacyFolder.totals.legacy, 2, "R-130 (a): a block in the Legacy folder is counted apart too");
+  assert.ok(Object.keys(r.folders).some((f) => /no folder/.test(f)));
 });
 
 test("bestiary-census: senses and movement report stated vs derived, and the derivation default is the cosmere ladder's 5 ft", () => {
