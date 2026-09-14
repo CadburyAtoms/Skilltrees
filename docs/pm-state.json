@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T00:44:45.398Z",
+  "generatedAt": "2026-09-14T00:50:51.185Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "5da8c0a59b",
-    "commit": "05b4910",
-    "branch": "pm/board-2026-09-13i",
+    "hash": "00c1eaa86d",
+    "commit": "d832ac4",
+    "branch": "pm/board-2026-09-13j",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,39 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday evening: the deploy script's guards are complete (items 125 + 137 merged). The PM runs it for real next — Foundry closes and relaunches for about a minute; re-join your client afterwards. Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "note": "Sunday evening: the deploy script ran for real at 20:46 — Foundry closed, packs rebuilt, relaunched into Edha; re-join your Gamemaster client. Two workers are running: the bench's own scene (item 128) and two small verifier fixes (138 + 139). Seven rulings still wait on the Needs Ben tab.",
+    "waitingOn": "re-join your Gamemaster client (Foundry relaunched 20:47) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "128",
+      "title": "PM-R19: the bench may create its own scenes — licence in the skill + runbook; a standing Bench Arena in the roster script",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/128-bench-arena-scene",
+      "startedAt": "2026-09-14T00:50:00Z",
+      "agent": "Work item 128",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; DOCS + TOOLING"
+    },
+    {
+      "item": "138+139",
+      "title": "deploy-cycle.js verifier fixes: overlay signal by lane/item/branch; /join check by the world's title, case-insensitive",
+      "model": "sonnet",
+      "size": "XS+XS",
+      "lane": "R",
+      "branch": "pm/138-139-deploy-verifier",
+      "startedAt": "2026-09-14T00:50:00Z",
+      "agent": "Work items 138 + 139",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; TOOLING-only"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1535,8 +1562,8 @@
       "model": "pm",
       "size": null,
       "deps": "129",
-      "status": "blocked",
-      "statusDetail": "137 — the other session's 20:05 run proved steps 1–8; its post-flight raced Foundry's boot; a clean pass closes this",
+      "status": "merged",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1571,8 +1598,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "PM-R19 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1607,8 +1634,20 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "125 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 129,
+      "item": "139",
+      "title": "the post-flight /join check compares the world ID (edha) to the page TITLE (Edha) — refused the PM's good 20:46 deploy; read world.json's title, case-insensitive; pin. Filed by the 138 worker, same PR",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "137 ✓",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     }
   ],
@@ -1669,34 +1708,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "21:56",
-      "at": "2026-09-08T01:56:00.000Z",
-      "item": "Dispatched item 97 (sonnet, worktree pm/97-pc-refresh-rule — the PM-R17 docs sweep) the minute #302 merged",
-      "itemNo": "302",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "21:58",
-      "at": "2026-09-08T01:58:00.000Z",
-      "item": "Ben's second bat run + four phone notes. deploy-to-foundry.bat at 21:52 restamped all five packs (content unchanged — nothing rebuild-class merged since 20:28; engine unchanged, 6 in sync); Foundry DOWN at 21:56–21:58 (bench 44 needs it back). Inbox (21:52–21:54, all seen 21:58 with an action line each): the bat run \"done\"; R-56 \"done\" (answered in chat 21:51); the Ashkar art-backlog row → retire (*\"This can be marked complete. We will revisit the art and session building loop later.\"*); and a question on the campaign-state line *\"Session 1 is ready pending Ben's ⚑ batch\"* (*\"What else is needed from me here? is an updated session forge needed?\"*) — answered in chat: the line is stale (W23 round and capitals DONE; battle-map art is his; the ferry-pair stop needs a session-forge refresh, a sitting with Ben, deferred on his note) → item 98 filed (sonnet S, DOCS-ONLY: the row + the state line), dispatched on this PR's merge",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "board PR + dispatch",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "21:56",
@@ -2508,9 +2519,37 @@
       "weightedM": null,
       "outcome": "idle",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:46",
+      "at": "2026-09-14T00:46:00.000Z",
+      "item": "Deploy cycle run BY THE PM — the first full pass of deploy-cycle.js --yes (main @ d832ac4): guards 6/6, nine steps ok (close → backup → pull → engine → art → five packs → validators → relaunch), packs 00:46:39Z, served engine 24d74c96 = HEAD, / → /join, title Edha. Post-flight: stamps PASS, engine PASS, join REFUSED on the id-vs-title case bug → item 139; DEPLOY STATE line recorded by hand; item-122 first-run 🤖 row retired on evidence",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "deployed",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:50",
+      "at": "2026-09-14T00:50:00.000Z",
+      "item": "Dispatched item 128 (sonnet, worktree pm/128-bench-arena-scene — PM-R19 into the bench skill + runbook, a standing Bench Arena in the roster script, one 🤖 row) and items 138 + 139 (one sonnet worker, worktree pm/138-139-deploy-verifier — overlay signal by lane/item/branch; join check by world title, case-insensitive). Trailing-5h dispatches 6 of 6 (16:53, 19:26, 19:49, 20:13, 20:50 ×2) — next slot 21:53",
+      "itemNo": null,
+      "model": "sonnet ×2",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 265,
+  "runLogTotal": 267,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
