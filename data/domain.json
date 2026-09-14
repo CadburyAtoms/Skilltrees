@@ -27,7 +27,7 @@
     "action": "1 Action",
     "cost": "2 Investiture",
     "prerequisites": "Blue 2+; Black 2+",
-    "description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.",
+    "description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage. If the target bears no Omen, place one.",
     "flavor": "Cut off from aid, the crack becomes a chasm.",
     "atlas": "deity",
     "layout": {
