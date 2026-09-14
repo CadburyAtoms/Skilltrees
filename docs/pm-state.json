@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T03:48:20.445Z",
+  "generatedAt": "2026-09-14T04:03:33.271Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "39f1f40a99",
-    "commit": "cce719d",
-    "branch": "pm/145-rulings-closeout-0913-late",
+    "hash": "51cf4d8784",
+    "commit": "b78ebb8",
+    "branch": "pm/board-2026-09-14a",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,39 @@
   },
   "pm": {
     "status": "awake",
-    "note": "All seven of your phone answers are in the rulings doc (§K.13, #372) — nothing is open there now; items 101 / 106 / 107 / 108 / 109 / 114 are unblocked and R-92's drop cue is item 144. Deployed main @ 31443c5 at 23:14 (Omen cap tier + 1, Power's Disoriented reads live; re-join your Gamemaster client). Bench run 47 (Opus) at the 00:00 reset over the 14 open 🤖 rows, then items 142 + 143 in one Opus worker, then item 101.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test — with item 107 (False Premise denies Reactions, Sonnet) running beside it. All seven of your phone answers are in the rulings doc (§K.13, #372): nothing is open there. After the bench: items 142 + 143 in one Opus worker, then 101; Sonnet 108 after 107. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": "2026-09-14T04:00:00Z",
+    "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-47",
+      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 14 open 🤖 rows + item 124's re-test; Predator's Due stays blocked on 88",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/bench-47",
+      "startedAt": "2026-09-14T04:00:46Z",
+      "agent": "Bench run 47",
+      "phase": "working",
+      "pr": null,
+      "note": "holds the table (Browser pane) — no deploy while this runs"
+    },
+    {
+      "item": "107",
+      "title": "R-115 (a): False Premise denies Reactions (noreactions) instead of duplicating Pattern Recognition's disadvantage (DATA, REBUILD leyline)",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/107-false-premise-noreactions",
+      "startedAt": "2026-09-14T04:01:52Z",
+      "agent": "Work item 107",
+      "phase": "working",
+      "pr": null,
+      "note": "repo-only worker in its own worktree beside the bench; its checklist section merges after the bench"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1302,13 +1329,13 @@
     {
       "pos": 103,
       "item": "107",
-      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn (the engine's existing noreactions timed status) instead of duplicating Pattern Recognition's disadvantage; the approved card text is in §K.13 (DATA, REBUILD leyline); one 🤖 row",
+      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn (the engine's existing noreactions timed status) instead of duplicating Pattern Recognition's disadvantage; the approved card text is in §K.13 (DATA, REBUILD leyline); one 🤖 row. Dispatched 2026-09-14 00:01 (sonnet, worktree pm/107-false-premise-noreactions, beside bench 47; its checklist section merges after the bench)",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-115 ✓ (a, phone 09-13)",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1778,6 +1805,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 372
+    },
+    {
+      "pos": 143,
+      "item": null,
+      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 111-1 / 111-2 / BR-1, DM-1 / DM-2, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, PW-1, 123-1, 128-1 + item 124's paragraph re-test (converted to a row on its verdict); Predator's Due stays blocked on 88. Step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9). Next free ruling R-127, next item 146. Dispatched 2026-09-14 00:00 (opus, worktree pm/bench-47; Opus 1 of 3 for 09-14)",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "deploy 23:14 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -1837,48 +1876,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "10:31",
-      "at": "2026-09-13T14:31:00.000Z",
-      "item": "Item 116 (phone board → three tabs; deploy state one line; dash/index the only dashboard document) — work-item, fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "21 min, 115 turns",
-      "weighted": "3.9M",
-      "weightedM": 3.9,
-      "outcome": "merged 10:56 after review, no trailers; CI green on 5bb2e0e, gates 12/12 in the worktree (1086 tests). Proof: injected page 1,472,749 → 288,614 B; dash/index 80,446 → 51,783 B; chunks 1,143,115 B → none; deploy block 23,920 B → < 1 KB; three 375-px screenshots read by the PM. Dropped as extra: the full dashboard mirror, the deploy prose, the usage bars, the For-Ben→tabs card, the jump nav. Landing tab stays Needs Ben (item 43). Found at review → item 117 (stale Yours-to-do cards: parseBenOnly reads replaced session lines). Page republished + dash/index pushed + orphan chunks deleted after merge",
-      "pr": 331
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:01",
-      "at": "2026-09-13T15:01:00.000Z",
-      "item": "Board PR #332 merged 11:00 (session line, bench 45 + 116 dispatch rows, 116 close, item 117 filed). Dispatched item 117 (sonnet, worktree pm/117-ben-only-current-line — parseBenOnly scoped to the CURRENT session line + a mutation pin; TOOLING-only). Trailing-5h dispatches: 3 (bench 45 opus, 116 fable, 117 sonnet) of the weekend 6; bench 45 still running",
-      "itemNo": "332",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:01",
-      "at": "2026-09-13T15:01:00.000Z",
-      "item": "Item 117 (parseBenOnly scoped to the CURRENT session line; a lone \"nothing\" is no ask; mutation pin) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "15 min, 132 turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 11:17 after review, no trailers; CI green on 8aa02e1, gates 12/12 in the worktree (1087 tests). Root cause two-fold: the label regex demanded : (so Waiting on Ben: nothing. never matched and the scan fell through to a REPLACED paragraph) + no marker cut-off. Proof: real board 2 stale asks → []; the reverted body fails the pin naming both stale strings. pm/state pushed after merge — the phone's stale Yours-to-do cards cleared",
-      "pr": 333
-    },
     {
       "date": "2026-09-13",
       "time": "11:20",
@@ -2676,9 +2673,51 @@
       "weightedM": 5.8,
       "outcome": "reviewed 23:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; gates 12/12 in the worktree (1206 tests). Seven bodies moved verbatim (combined sha256 f91f48e8… before = after), parseOpenRulings() → [] on the real doc, the pin shown failing when a §L stub is re-opened in a scratch copy; items 101 / 106 / 107 / 108 / 109 / 114 re-pointed (109 / 114 → opus; 106's card text gated on Ben's own words); item 144 filed; CLAUDE.md's rulings row R-1 … R-126. Found: parseOpenRulings() skips §J / §K wholesale, so the §L stub — not the ANSWERED marker — is what keeps a moved ruling closed (a fact for the rulings intro, not a defect). DOCS-ONLY",
       "pr": 372
+    },
+    {
+      "date": "2026-09-13",
+      "time": "23:50",
+      "at": "2026-09-14T03:50:00.000Z",
+      "item": "#372 (item 145) merged at 23:50:39 after the PM's bookkeeping commit (CI green on 07e235e); the worker's worktree removed, the local branch deleted; main = b78ebb8, clean; open rulings 0",
+      "itemNo": "372",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 372
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:00",
+      "at": "2026-09-14T04:00:00.000Z",
+      "item": "Dispatched bench run 47 (opus, worktree pm/bench-47 — bench-run on the 23:14 deploy of main @ 31443c5, engine 902ddadb; step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9); the 14 driveable open 🤖 rows + item 124's paragraph re-test; Predator's Due left blocked on 88; next free ruling R-127, next item 146). Opus 1 of 3 for 09-14, at the PM-R16 reset",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:01",
+      "at": "2026-09-14T04:01:00.000Z",
+      "item": "Dispatched item 107 (sonnet, worktree pm/107-false-premise-noreactions — R-115 (a): False Premise's success rule swaps edha-next-test-mod for the noreactions timed status + the approved card text; leyline pack parity with EDHA_DATA pinned; DATA → REBUILD leyline). The one lane-R worker beside the bench (weekend shape); the weekend trailing-5h count reads 8, logged, not binding (PM-R16)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 288,
+  "runLogTotal": 291,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3472,6 +3511,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 372
+    },
+    {
+      "at": "2026-09-14T04:00:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T04:01:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
