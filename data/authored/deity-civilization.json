@@ -409,9 +409,9 @@
       "docId": "RTh7SmuuwNcDX4F5",
       "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>He forged it twice. Once for shape. Once for fury.</em></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>He forged it twice. Once for shape. Once for fury.</em></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage.</p>"
       },
       "activation": {
         "type": "none",
@@ -440,8 +440,7 @@
             "whenDealerItem": "Construct Slam",
             "amountFormula": "(@tier)d(2 * @skills.red.rank + 2)",
             "color": "red",
-            "damageType": "energy",
-            "addTargetDeflect": true
+            "damageType": "energy"
           },
           "order": 0
         }

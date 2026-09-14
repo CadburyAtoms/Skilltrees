@@ -3806,6 +3806,8 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 ## 130. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
 
+> **Held 2026-09-14 pending Ben's re-read.** Ben questioned the finding ("taking every talent in the Knowledge tree, right? … what's the damage curve per-talent-taken?"). The answer is in `docs/analysis/talent-ecosystem/balance-per-talent.js` / `BALANCE-REVIEW.md` §2: the line needs ONE pick (Predatory Strike alone reaches five Insight by turn 2–3) — 52 a turn at tier 1 from the first pick, against Black's 33 and Warrior's 31 — and (b) brings the first pick to 34 / 59. Ship only after Ben confirms on that table.
+
 **Why:** the balance review's largest outlier — the repeatable strike multiplies its die by the Insight count (one roll × count, `data/authored/deity-knowledge.json` `amountFormula: "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)"`), about 26 vital per Action at levels 2–5 and 55 at level 7, twice the leyline ceiling and twice the next deity, sustainably. Ben chose (b).
 
 **What to do:** `Predatory Strike`'s `edha-damage-bonus` `amountFormula` → `((@tier)d(2 * @colorRank + 2)) + @tier * max(@counter, 1)`; card text (`data/domain.json` + the authored description) → "deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target"; `Killing Blow` / `The Final Study` unchanged in effect. Remove the decoy item-level `damage.formula` (and `grazeOverrideFormula`) on all three cards, or keep them only if the rider cannot roll without one — the verifier flagged them as a double-count surface (`BALANCE-REVIEW.md` §7). Re-run `balance-turns.js`'s Knowledge lines (expected 34 / 36 / 59 sustained). 🤖 row: a 5-Insight strike at level 7 adds 2d8 + 10, not 2d8 × 5.
@@ -3836,7 +3838,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate + the rows. Filed 2026-09-13 from R-122.
 
-## 133. [ ] R-123 (a) — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13)
+## 133. [x] (2026-09-14, PR #360) R-123 — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13) — DONE 2026-09-14: Ben ungated both himself ("Level six wall doesn't read to me like a ruling needed. I changed two items"); the repo now carries the decision so a rebuild cannot undo it. 🤖 rows GW-1 / AM-1.
 
 **Why:** Blue's freeze (with `Absolute Stillness` behind it) and Life's signature mutation both sit behind a rank-3 gate — level 6 — and both are the identity their descriptions now sell; the deity guide's first principle forbids the Life one outright. Ben chose (a).
 
@@ -3846,7 +3848,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate-build over the ladders. Filed 2026-09-13 from R-123.
 
-## 134. [ ] R-124 (b) — the deity guide records the Construct's whole-attack Deflect bypass and the two-attack Construct as Civilization's damage ceiling (DOCS-ONLY) (2026-09-13)
+## 134. [x] (2026-09-14, PR #360) R-124 OVERRIDDEN — `Tempered Edge`'s Deflect bypass is CUT: the card loses "and ignore deflect", the authored rider loses `addTargetDeflect` (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-14 on Ben's word ("Construct doesn't need to ignore deflect. That can be cut."). The engine's `addTargetDeflect` hint still names Tempered Edge as its example consumer (comment only); no engine change. 🤖 row TE-1.
 
 **Why:** the review's first reading was that `Tempered Edge`'s "ignore deflect" might be a loose sentence; the verifier found `addTargetDeflect: true` on the rider with an engine hint naming Tempered Edge — deliberate. Ben chose (b): accept and document, the way R-111 documented `Withering Ray`.
 
