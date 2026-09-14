@@ -186,6 +186,121 @@ test("checkNoBenchWorker: a plain non-bench worktree (e.g. main branch) passes",
   assert.strictEqual(v.ok, true);
 });
 
+/* --- checkBranchMergeStatus (item 152: a squash-merged pm/bench-* branch is not a live bench) --
+ *
+ * The guard's ancestry test (`git branch --merged origin/main`) only recognises a real "create a
+ * merge commit" merge — squash and rebase both rewrite commits onto main with new SHAs, so the
+ * branch's own tip is never an ancestor and the ancestry test calls it unmerged forever. These
+ * pins cover the three shapes named in the item plus the offline fallback: a merged PR (passes,
+ * names the PR); an open PR (refuses, names the PR); no PR at all with a COMPLETED lookup
+ * (refuses cleanly, exactly today's wording); and a lookup that could not run at all (refuses,
+ * but says so — "unverified" — rather than silently claiming a confirmed no-PR-found).
+ */
+
+test("checkBranchMergeStatus: mergedByAncestry true passes regardless of any PR fact", () => {
+  const v = guards.checkBranchMergeStatus({ name: "origin/pm/bench-1", mergedByAncestry: true });
+  assert.strictEqual(v.ok, true);
+  assert.strictEqual(v.name, "branch-merge-status");
+});
+
+test("checkBranchMergeStatus: shape 1 — a merged PR passes and names it with its method", () => {
+  const v = guards.checkBranchMergeStatus({
+    name: "origin/pm/bench-47",
+    mergedByAncestry: false,
+    mergedPr: { number: 376, method: "squash" },
+    prLookup: "ok",
+  });
+  assert.strictEqual(v.ok, true);
+  assert.strictEqual(v.message, "origin/pm/bench-47: merged as PR #376 (squash)");
+});
+
+test("checkBranchMergeStatus: shape 2 — an open PR refuses and names it", () => {
+  const v = guards.checkBranchMergeStatus({
+    name: "origin/pm/bench-48",
+    mergedByAncestry: false,
+    openPr: { number: 377 },
+    prLookup: "ok",
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.message, "origin/pm/bench-48: PR #377 is open, not merged");
+});
+
+test("checkBranchMergeStatus: shape 3 — no PR found, lookup completed, refuses cleanly (today's wording, no 'unverified' noise)", () => {
+  const v = guards.checkBranchMergeStatus({
+    name: "origin/pm/bench-49",
+    mergedByAncestry: false,
+    prLookup: "ok",
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.message, "origin/pm/bench-49: not merged");
+});
+
+test("checkBranchMergeStatus: offline fallback — gh unavailable refuses (today's behaviour) but says unverified, never a confirmed no-PR", () => {
+  const v = guards.checkBranchMergeStatus({
+    name: "origin/pm/bench-50",
+    mergedByAncestry: false,
+    prLookup: "unavailable",
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.message, "origin/pm/bench-50: not merged (PR lookup unverified)");
+});
+
+test("checkBranchMergeStatus: an old-shape fact with no prLookup field at all behaves like the offline fallback (backward compatible)", () => {
+  const v = guards.checkBranchMergeStatus({ name: "origin/pm/bench-51", mergedByAncestry: false });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("unverified"), `expected the unverified fallback wording, got: ${v.message}`);
+});
+
+/* --- checkNoBenchWorker + the PR-lookup facts (item 152), through the full guard ---------------- */
+
+test("checkNoBenchWorker: shape 1 — an ancestry-unmerged remote branch with a MERGED pr passes and prints the merged-PR reasoning", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: false, mergedPr: { number: 376, method: "squash" }, prLookup: "ok" }] },
+  });
+  assert.strictEqual(v.ok, true);
+  assert.ok(
+    v.message.includes("origin/pm/bench-47: merged as PR #376 (squash)"),
+    `expected the merged-PR reasoning in the --dry-run-visible pass message, got: ${v.message}`
+  );
+});
+
+test("checkNoBenchWorker: shape 2 — an ancestry-unmerged branch with an OPEN pr refuses and names the PR", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-48", merged: false, openPr: { number: 377 }, prLookup: "ok" }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("origin/pm/bench-48: PR #377 is open, not merged"));
+});
+
+test("checkNoBenchWorker: shape 3 — an ancestry-unmerged branch with no PR found (lookup completed) refuses, no bench worker holding it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { local: [{ name: "pm/bench-49", merged: false, prLookup: "ok" }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("pm/bench-49: not merged"));
+  assert.ok(!v.message.includes("unverified"), "a completed lookup that found nothing must not claim it is unverified");
+});
+
+test("checkNoBenchWorker: offline fallback — gh unavailable keeps today's refusal, worded unverified", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { local: [{ name: "pm/bench-50", merged: false, prLookup: "unavailable" }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("pm/bench-50"));
+  assert.ok(v.message.includes("unverified"), "an offline/failed PR lookup must say so, never silently pass as a confirmed no-PR");
+});
+
+test("checkNoBenchWorker: the reversion (treating any ancestry-false branch as unmerged, ignoring mergedPr) is exactly what this item fixes — REGRESSION GUARD", () => {
+  // This pins the OLD behaviour as a named, visible failure mode rather than re-deriving it: a
+  // reviewer reverting checkBranchMergeStatus's mergedPr handling back to "ancestry or nothing"
+  // makes this exact fixture (a real merged squash PR) refuse again. See the PR description for
+  // the actual before/after test run proving this.
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: false, mergedPr: { number: 376, method: "squash" }, prLookup: "ok" }] },
+  });
+  assert.strictEqual(v.ok, true, "a squash-merged bench branch (merged PR, ancestry-false) must pass, not refuse");
+});
+
 /* --- parseWorktreePorcelain -------------------------------------------------------------------- */
 
 test("parseWorktreePorcelain: extracts path + branch, stripping refs/heads/", () => {
