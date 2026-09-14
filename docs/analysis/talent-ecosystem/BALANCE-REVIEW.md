@@ -129,7 +129,7 @@ hit, so it reaches the cap of five by turn 2–3 with no other pick, and with Dr
 | Life | 1 | Vital Diagnosis | 25.5 | 31.5 | 6 | 12 | the party's +Tier vital on every hit against the mark |
 | Green | 3 | Pack Hunter, Predator's Instinct, Coordinated Hunt | 25.5 | 31.5 | 12 | 18 | +N per hit for N attackers on one target, max = rank |
 
-*(2026-09-14: R-120 (b) shipped in PR #TBD — the "as built" rows above are the pre-reshape numbers; the "R-120 (b)" rows are what is live once the deity pack is rebuilt.)*
+*(2026-09-14: R-120 (b) shipped in PR #366 — the "as built" rows above are the pre-reshape numbers; the "R-120 (b)" rows are what is live once the deity pack is rebuilt.)*
 
 Read down the "picks = 1" rows: Knowledge's first talent is the strongest sustained line in the
 game at both tiers, ahead of Black's first pick (which pays health) by half again and of everyone
