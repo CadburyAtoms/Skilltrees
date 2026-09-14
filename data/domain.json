@@ -1324,7 +1324,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Blue 2+; Green 2+",
-    "description": "Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.",
+    "description": "Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Blue rank.",
     "flavor": "Now I see exactly where you’re weakest.",
     "atlas": "deity",
     "layout": {
