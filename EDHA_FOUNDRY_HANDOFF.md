@@ -289,7 +289,8 @@ literal in the engine's `ready` hook is the authority). Keys today:
 - **Ratchets and pins that live beside the data:** `scripts/name-keyed-allowlist.json` (`talents: []`
   — empty ON PURPOSE; lint pass 7 fails if a talent name appears in engine code), `scripts/engine-idiom-ratchet.json`
   (pass 20, §7), `tests/fixtures/handler-registry.snapshot.json` (the registry, byte-pinned).
-- **Draw Mana riders, the Investiture formula (`2 + max(AWA, PRE)`), `EDHA_HP_BONUS`,
+- **Draw Mana riders, the Draw Mana yield (`edhaDrawManaYield` — highest attuned colour rank since
+  R-126 (a), 2026-09-13; it was the tier before), the Investiture formula (`2 + max(AWA, PRE)`), `EDHA_HP_BONUS`,
   `edhaWalkRateFtFromSpd`, `edhaSensesRangeFtFromAwa`** are hardcoded in the engine (small, fixed
   canon; the wizard preview and the sheet read the same functions).
 
