@@ -3559,7 +3559,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size S · deps R-115 ✓ (a, phone 2026-09-13) · verify: the two rules differ. Filed 2026-09-13 from R-98; design proposal filed as R-115 by item 127 (2026-09-13).
 
-## 108. [ ] R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DATA, REBUILD deity) (2026-09-13)
+## 108. [x] (2026-09-14, PR #375) R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-14: Fate's `Bulwark Ground` `thpFormula`, Destruction's `Cascading Failure` `doubleCaughtFormula` (the overlap-bonus clause only — every other Destruction formula stays on Red), and Life's `Vital Diagnosis` `bonusDamageFormula` now read `@skills.white.rank` / `@skills.blue.rank` / `@skills.blue.rank` instead of the bare `@tier`; card text updated in `data/domain.json` + the authored copies for the two talents that name a rank (Cascading Failure's card never did). `deity-gate-audit.js`: Fate/white 0 → 1 talent, Destruction/blue 1 → 2, Life/blue 1 → 2. Pack parity (scratch `edha-deity`): exactly 3 of 110 documents differ, each in one formula field (+ description copies where the card names a rank), zero other formula diffs anywhere. Pack rebuild + ⟳ Sync Talents is Ben's. 🤖 rows GATE-1/2/3.
 
 **Why:** `deity-gate-audit.js`: Fate's White is read by no talent; Destruction's Blue and Life's Blue by one each. Ben chose (a): a roll, a sized formula, or reach for each; leave the five thin gates alone.
 
