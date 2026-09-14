@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ 8f0c843 at 02:09 ET: fix pass 12's engine is live — ⟳ Sync Talents now refreshes path cards and Draw Mana (click it ONCE on each of your three PCs), the scoped adversary sync keeps its scope, a status card never claims a landing immunity refused; the Knowledge decoys are gone. Running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list) and item 152 (Sonnet — the bench guard vs squash-merged branches). R-127 is yours. The loop stops before 07:00.",
+    "note": "Item 152 merged (#382): the deploy guard reads a squash-merged bench branch as merged. Deployed main @ 8f0c843 at 02:09: fix pass 12's engine is live — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards and Draw Mana refresh. Still running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list); on its merge the PM deploys again, then hands off before 07:00. R-127 is yours.",
     "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs (after the 02:09 deploy) · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -19,19 +19,6 @@
       "phase": "working",
       "pr": null,
       "note": "engine + data worker in its own worktree; never touches the live module — the PM deploys after merge"
-    },
-    {
-      "item": "152",
-      "title": "The deploy cycle's bench guard reads a merged PR as merged, squash included; the squash-merge recipe (TOOLING + DOCS)",
-      "model": "sonnet",
-      "size": "XS",
-      "lane": "R",
-      "branch": "pm/152-squash-merged-bench-branch",
-      "startedAt": "2026-09-14T06:10:30Z",
-      "agent": "Work item 152",
-      "phase": "working",
-      "pr": null,
-      "note": "tooling worker in its own worktree beside the Opus worker; dry-run read-only, never deploys"
     }
   ],
   "usage": null
