@@ -3784,7 +3784,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
 
-## 129. [ ] `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13)
+## 129. [x] (2026-09-13, PR #355) `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13) — script + guards + tests shipped; the PM's next live `--yes` run (🤖 row, `EDHA_FOUNDRY_TEST_CHECKLIST.md`) is the outstanding verify step
 
 **Why:** the first live `node scripts/deploy-cycle.js --yes` (PM, 2026-09-13 19:41 ET, every guard PASS) threw `EBUSY: resource busy or locked, copyfile '…\\packs\\edha-leyline\\LOCK'` inside `backupPacks()` (`scripts/deploy-cycle.js:232`), which `main()` calls BEFORE step 1 (close Foundry). A running Foundry holds each pack's LevelDB `LOCK`; the copy cannot read it. The failure was SAFE — nothing had been written, Foundry stayed up — but the run did no work, and the stack trace was raw rather than the script's own "step N failed + restore command" message.
 

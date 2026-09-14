@@ -198,6 +198,42 @@ test("enginesMatch: genuinely different content fails even after CRLF normalisat
   assert.strictEqual(v.ok, false);
 });
 
+/* --- shouldSkipBackupFile (item 129: LOCK + EBUSY/EPERM) ---------------------------------------- */
+
+test("shouldSkipBackupFile: the LevelDB LOCK file is always skipped", () => {
+  assert.strictEqual(guards.shouldSkipBackupFile("LOCK", null), true);
+});
+
+test("shouldSkipBackupFile: an EBUSY error on an ordinary file is skipped", () => {
+  const err = Object.assign(new Error("busy"), { code: "EBUSY" });
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.log", err), true);
+});
+
+test("shouldSkipBackupFile: an EPERM error is skipped", () => {
+  const err = Object.assign(new Error("perm"), { code: "EPERM" });
+  assert.strictEqual(guards.shouldSkipBackupFile("MANIFEST-000001", err), true);
+});
+
+test("shouldSkipBackupFile: an ordinary file with no error is NOT skipped", () => {
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.ldb", null), false);
+});
+
+test("shouldSkipBackupFile: a different error code is NOT skipped (a real failure must still abort)", () => {
+  const err = Object.assign(new Error("disk full"), { code: "ENOSPC" });
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.ldb", err), false);
+});
+
+/* --- isBackupStepFailure (item 129) -------------------------------------------------------------- */
+
+test("isBackupStepFailure: matches the backup step's name", () => {
+  assert.strictEqual(guards.isBackupStepFailure("2/9 back up packs"), true);
+});
+
+test("isBackupStepFailure: does not match the close or relaunch steps", () => {
+  assert.strictEqual(guards.isBackupStepFailure("1/9 close Foundry"), false);
+  assert.strictEqual(guards.isBackupStepFailure("9/9 relaunch + poll"), false);
+});
+
 /* --- checkJoinRedirect -------------------------------------------------------------------------- */
 
 test("checkJoinRedirect: a /setup redirect fails (no world loaded)", () => {
@@ -295,18 +331,26 @@ test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes n
     }
     for (const stepFragment of [
       "1. Close Foundry",
-      "2. git pull --ff-only",
-      "3. module-src-sync.js status",
-      "4. module-src-sync.js push",
-      "5. sync-art.js",
-      "6. foundry-build.js",
-      "7. validate-packs.js",
-      "8. Relaunch the exe",
+      "2. Back up the five packs",
+      "3. git pull --ff-only",
+      "4. module-src-sync.js status",
+      "5. module-src-sync.js push",
+      "6. sync-art.js",
+      "7. foundry-build.js",
+      "8. validate-packs.js",
+      "9. Relaunch the exe",
     ]) {
       assert.ok(out.includes(stepFragment), `expected step text "${stepFragment}" in dry-run output`);
     }
     assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
     assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
+
+    // item 129: the backup must be PRINTED after the close, not before — this is the step-order
+    // regression the item exists to pin. Reverting the order (backup before close) fails this.
+    const closeIdx = out.indexOf("1. Close Foundry");
+    const backupIdx = out.indexOf("2. Back up the five packs");
+    assert.ok(closeIdx !== -1 && backupIdx !== -1, "both the close and backup step lines must be present");
+    assert.ok(closeIdx < backupIdx, "the close step must be printed BEFORE the backup step");
 
     // Prove it by mutation-adjacent evidence too, not just the printed claim: the checklist file
     // and the backups directory are byte-for-byte / entry-for-entry unchanged.

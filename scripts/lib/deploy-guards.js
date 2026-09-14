@@ -120,6 +120,27 @@ function pickExePath({ argExe, runningProcessPath, defaultPath }) {
   return argExe || runningProcessPath || defaultPath;
 }
 
+// A backup never needs the still-open pack's LevelDB LOCK file (proactively skipped by name), and
+// a file Windows still has an open handle on throws EBUSY/EPERM instead of copying (reactively
+// skipped by the copy error) — either way the file is skipped and logged, never treated as a
+// fatal backup failure (item 129: the first live run backed up BEFORE closing Foundry, so the
+// still-open LOCK file threw EBUSY and killed the whole run). Any OTHER error code is NOT a skip
+// — it is a real failure (disk full, a destination permissions problem, …) and must still abort.
+function shouldSkipBackupFile(name, err) {
+  if (name === "LOCK") return true;
+  if (err && (err.code === "EBUSY" || err.code === "EPERM")) return true;
+  return false;
+}
+
+// Whether a failing step's name is the backup-packs step: Foundry is already closed by then, and
+// backupPacks() only READS from MODROOT (it never writes there), so a failure here means nothing
+// in Foundry's live directories has been touched — unlike a failure during pull/push/rebuild,
+// which DOES write to MODROOT and might leave it half-built. So relaunching Foundry immediately
+// is safe, and kinder than leaving the table down for no reason.
+function isBackupStepFailure(stepName) {
+  return /back ?up/i.test(stepName || "");
+}
+
 /* --- Post-flight verifiers ------------------------------------------------------------------ */
 
 // Every rebuilt pack directory's newest file must be stamped AFTER the run's own start time —
@@ -195,6 +216,8 @@ module.exports = {
   checkWorldConfigured,
   checkFoundryExe,
   pickExePath,
+  shouldSkipBackupFile,
+  isBackupStepFailure,
   stampsNewerThan,
   normalizeCRLF,
   enginesMatch,

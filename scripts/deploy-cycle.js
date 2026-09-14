@@ -9,8 +9,10 @@
  * run the deploy.bat, reopen Foundry, and log in to the GM bench profile? … I would love if you
  * could handle that for me."* — then, after the PM's ad-hoc run: *"Can we test and write a few
  * gates and guardrails that are needed?"* This file is the answer: guards before anything is
- * touched, a timestamped backup before anything is overwritten, the eight steps fail-fast with a
- * log, and a post-flight verification before the run is ever called done.
+ * touched, a timestamped backup of the packs AFTER Foundry has actually closed (item 129: the
+ * first live run backed up BEFORE the close and died on the still-open LevelDB `LOCK` file), the
+ * nine steps fail-fast with a log, and a post-flight verification before the run is ever called
+ * done.
  *
  * Usage:
  *   node scripts/deploy-cycle.js                 same as --dry-run (the safe default)
@@ -208,28 +210,48 @@ function printVerdicts(label, results) {
 
 /* --- Backups ------------------------------------------------------------------------------------
  * Copies the five pack directories into a timestamped folder under tmp/deploy-backups/ (gitignored
- * — `tmp/` is already in .gitignore) before ANYTHING is overwritten. module-src-sync.js push makes
- * its own copy of the engine it replaces under %TEMP%\edha-engine-backups — noted here, not
- * duplicated.
+ * — `tmp/` is already in .gitignore) — step 2, run AFTER Foundry has actually closed (step 1) and
+ * BEFORE anything is overwritten. item 129: the first live run backed up BEFORE the close, so the
+ * copy hit a running Foundry's open LevelDB `LOCK` file and died on EBUSY. copyDirRecursive skips
+ * `LOCK` itself, and any file whose copy throws EBUSY/EPERM (a handle Windows hasn't released
+ * yet) — see `shouldSkipBackupFile` in deploy-guards.js — logging the skip via `onSkip` rather
+ * than aborting the whole backup over a file the restore command never needs anyway.
+ * module-src-sync.js push makes its own copy of the engine it replaces under
+ * %TEMP%\edha-engine-backups — noted here, not duplicated.
  */
 
-function copyDirRecursive(src, dst) {
+function copyDirRecursive(src, dst, onSkip) {
   fs.mkdirSync(dst, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, entry.name);
     const d = path.join(dst, entry.name);
-    if (entry.isDirectory()) copyDirRecursive(s, d);
-    else fs.copyFileSync(s, d);
+    if (entry.isDirectory()) {
+      copyDirRecursive(s, d, onSkip);
+      continue;
+    }
+    if (guards.shouldSkipBackupFile(entry.name, null)) {
+      if (onSkip) onSkip(entry.name, null);
+      continue;
+    }
+    try {
+      fs.copyFileSync(s, d);
+    } catch (err) {
+      if (guards.shouldSkipBackupFile(entry.name, err)) {
+        if (onSkip) onSkip(entry.name, err);
+        continue;
+      }
+      throw err;
+    }
   }
 }
 
-function backupPacks(runTimestamp) {
+function backupPacks(runTimestamp, onSkip) {
   const backupDir = path.join(REPO_ROOT, "tmp", "deploy-backups", runTimestamp);
   let backedUp = 0;
   for (const pack of guards.PACKS) {
     const src = path.join(MODROOT, "packs", pack);
     if (!fs.existsSync(src)) continue;
-    copyDirRecursive(src, path.join(backupDir, "packs", pack));
+    copyDirRecursive(src, path.join(backupDir, "packs", pack), onSkip);
     backedUp++;
   }
   return { backupDir, backedUp };
@@ -259,7 +281,7 @@ function makeLogger(runTimestamp) {
   };
 }
 
-/* --- The eight steps (bat's order) -------------------------------------------------------------- */
+/* --- The nine steps (bat's order, backup moved after the close — item 129) ---------------------- */
 
 function runNode(scriptRelPath, args, logger) {
   const r = spawnSync(process.execPath, [path.join(SCRIPTS_DIR, scriptRelPath), ...args], {
@@ -459,16 +481,17 @@ async function main() {
   const preflight = evaluateGuards(ctx, flags);
   printVerdicts("Pre-flight guards:", preflight);
 
-  console.log("\nThe eight steps (bat's order):");
+  console.log("\nThe nine steps (bat's order, backup moved after the close):");
   const stepList = [
     "1. Close Foundry gracefully (CloseMainWindow, bounded wait, force leftovers, verify zero remain)",
-    "2. git pull --ff-only on main",
-    "3. module-src-sync.js status (refuse on hand-edited exit 2)",
-    "4. module-src-sync.js push (engine backed up to %TEMP%\\edha-engine-backups first)",
-    "5. sync-art.js",
-    "6. foundry-build.js leyline | deity | heroic | adversaries | items",
-    "7. validate-packs.js + validate-adversaries.js",
-    "8. Relaunch the exe, poll http://localhost:30000/ until it answers 302 -> /join",
+    "2. Back up the five packs to tmp/deploy-backups/<run id> (LOCK and other EBUSY/EPERM files skipped)",
+    "3. git pull --ff-only on main",
+    "4. module-src-sync.js status (refuse on hand-edited exit 2)",
+    "5. module-src-sync.js push (engine backed up to %TEMP%\\edha-engine-backups first)",
+    "6. sync-art.js",
+    "7. foundry-build.js leyline | deity | heroic | adversaries | items",
+    "8. validate-packs.js + validate-adversaries.js",
+    "9. Relaunch the exe, poll http://localhost:30000/ until it answers 302 -> /join",
   ];
   for (const s of stepList) console.log(`  ${s}`);
 
@@ -490,25 +513,31 @@ async function main() {
   }
 
   const logger = makeLogger(runTimestamp);
-  const { backupDir, backedUp } = backupPacks(runTimestamp);
-  console.log(`\nBacked up ${backedUp} pack dir(s) to ${backupDir}`);
-  console.log(`Restore command if anything below fails: ${restoreCommand(backupDir)}`);
-  logger.write(`Backed up ${backedUp} pack dir(s) to ${backupDir}`);
+  let backupDir = null; // set once step 2 (backup) completes; used by restoreCommand below
 
   const steps = [
-    ["1/8 close Foundry", () => closeFoundryStep(logger)],
-    ["2/8 git pull --ff-only", () => gitPullStep(logger)],
-    ["3/8 module-src-sync status", () => {
+    ["1/9 close Foundry", () => closeFoundryStep(logger)],
+    ["2/9 back up packs", () => {
+      const backup = backupPacks(runTimestamp, (name, err) =>
+        logger.write(`backup: skipped ${name}${err ? ` (${err.code || err.message})` : ""}`)
+      );
+      backupDir = backup.backupDir;
+      console.log(`  backed up ${backup.backedUp} pack dir(s) to ${backupDir}`);
+      console.log(`  restore command if a later step fails: ${restoreCommand(backupDir)}`);
+      logger.write(`Backed up ${backup.backedUp} pack dir(s) to ${backupDir}`);
+    }],
+    ["3/9 git pull --ff-only", () => gitPullStep(logger)],
+    ["4/9 module-src-sync status", () => {
       const s = moduleSrcSyncStatus();
       const v = guards.checkModuleSrcSync(s.exitCode);
       logger.write(`module-src-sync status: ${v.message}`);
       if (!v.ok) throw new Error(v.message);
     }],
-    ["4/8 module-src-sync push", () => moduleSrcSyncPushStep(logger)],
-    ["5/8 sync-art", () => syncArtStep(logger)],
-    ["6/8 rebuild packs", () => rebuildPacksStep(logger)],
-    ["7/8 validate packs", () => validatePacksStep(logger)],
-    ["8/8 relaunch + poll", () => relaunchAndPollStep(exe.chosen, flags.waitSeconds, logger)],
+    ["5/9 module-src-sync push", () => moduleSrcSyncPushStep(logger)],
+    ["6/9 sync-art", () => syncArtStep(logger)],
+    ["7/9 rebuild packs", () => rebuildPacksStep(logger)],
+    ["8/9 validate packs", () => validatePacksStep(logger)],
+    ["9/9 relaunch + poll", () => relaunchAndPollStep(exe.chosen, flags.waitSeconds, logger)],
   ];
 
   let joinResult = null;
@@ -516,18 +545,33 @@ async function main() {
     console.log(`\n> ${name}`);
     try {
       const out = await fn();
-      if (name.startsWith("8/8")) joinResult = out;
+      if (name.includes("relaunch")) joinResult = out;
       console.log(`  ok`);
     } catch (e) {
       console.error(`\nSTOPPED at step "${name}": ${e.message}`);
       console.error(`Log: ${logger.logPath}`);
-      const isRelaunchStep = name.startsWith("8/8");
-      console.error(
-        isRelaunchStep
-          ? "Foundry relaunch/verification could not be confirmed — check the machine by hand before assuming anything is wrong with the packs."
-          : "Foundry is left CLOSED. Do not relaunch on a half-built pack set."
-      );
-      console.error(`Restore command: ${restoreCommand(backupDir)}`);
+      if (guards.isBackupStepFailure(name)) {
+        // Foundry is already closed and backupPacks() only READS from MODROOT, so a failure here
+        // means nothing in Foundry's live directories has been touched — safe to relaunch now
+        // rather than leaving the table down for no reason.
+        console.error(`Nothing has been written yet — Foundry is closed; relaunching it now: "${exe.chosen}"`);
+        const r = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", `Start-Process -FilePath "${exe.chosen}"`], { encoding: "utf8" });
+        logger.write(`auto-relaunch after backup-step failure:\n${r.stdout || ""}${r.stderr || ""}`);
+        if (r.status !== 0) {
+          console.error(`Automatic relaunch ALSO failed (exit ${r.status}): ${r.stderr}. Relaunch it yourself: "${exe.chosen}"`);
+        }
+      } else {
+        console.error(
+          name.includes("relaunch")
+            ? "Foundry relaunch/verification could not be confirmed — check the machine by hand before assuming anything is wrong with the packs."
+            : "Foundry is left CLOSED. Do not relaunch on a half-built pack set."
+        );
+        console.error(
+          backupDir
+            ? `Restore command: ${restoreCommand(backupDir)}`
+            : "No backup exists yet — nothing has been written that needs restoring."
+        );
+      }
       logger.close();
       process.exit(1);
       return;
