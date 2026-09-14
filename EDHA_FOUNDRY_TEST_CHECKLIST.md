@@ -53,6 +53,8 @@ This file is for tests.
 
 **Agent-run deploy 2026-09-14T00:46:31Z from main @ d832ac4: packs 2026-09-14T00:46:39Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: the PM's `deploy-cycle.js --yes` ran all NINE steps ok — close, backup, pull, engine, art, five packs, validators, relaunch — and post-flight PASSED stamps + engine sha; its `/join` check refused on a case mismatch (it compared the world id `edha` to the page title `Edha`; item 139), so the script withheld this line. `/` → `/join` and the title verified by hand at 20:48.)***
 
+**Agent-run deploy 2026-09-14T00:05:15.491Z from main @ 3aed769: packs 2026-09-14T00:03:52.960Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: deploy-cycle.js ran all eight steps green from a worktree on main, but its post-flight fetch raced Foundry’s boot — served engine 24d74c96… == HEAD and / → /join both verified by hand two minutes later; the first attempt died on the pack-backup LOCK bug, item 129, with nothing touched.)***
+
 
 **What is live on Ben's machine (2026-07-26):** the full rule-2b migration (passes A→AB — all
 221 talents on their own documents, ratchet 0), the pre-deploy audit fixes, and the 2bAC
