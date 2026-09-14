@@ -43,25 +43,59 @@ and **forgot to extract it**, the build **aborts without touching the packs** an
 
 ```
 ✗ ABORT — un-extracted Foundry edits would be destroyed by this build (nothing was written):
-  edha-deity: 1 talent(s)
+  edha-deity: 1 talent(s) with un-extracted CONTENT edits
     - Withering Touch
     save:  node foundry-extract.js deity
 ```
 
-So the failure mode that burned you before ("I edit in Foundry, you rebuild, my work is
-gone") can't happen silently **for the six authorable fields** — the builder stops and points you
-at the fix. To deliberately throw away in-Foundry edits and rebuild from source, pass `--force`.
+Since item 140 (2026-09-14) the same ABORT also fires on a **structural** edit — a tree-node
+prerequisite/connection, a talent's folder, or a rename — with a different remedy, because there
+is nothing to extract:
 
-> **⚠️ THE GUARD'S BLIND SPOT (documented 2026-07-24 — read this before trusting it).**
-> The guard compares `fingerprint(doc)`, which is computed from the *authorable projection*
-> only: `img`, `description`, `activation`, `damage`, `events`, `effects`. **Anything outside
-> that list is invisible to it.** In particular a **prerequisite** you edit in Foundry does not
-> change the fingerprint, so the build does **not** abort — it reports no un-extracted edits and
-> overwrites your change without a word. Same for the node graph, folders, and the talent name.
-> This is the exact case that bit Ben in session 0: prerequisites are simultaneously (a) not
-> editable through the normal Foundry path, (b) not round-tripped by `foundry-extract.js`, and
-> (c) not protected by the guard. **Structure changes go in the source JSON, full stop** — the
-> table above is not a preference, it is the only path that survives a build.
+```
+✗ ABORT — un-extracted Foundry edits would be destroyed by this build (nothing was written):
+  edha-deity: 1 structural edit(s) Foundry cannot save
+    - Ghostly Walls (prerequisites)
+    Structure changes go in the source JSON, full stop — foundry-extract.js does not round-trip this ("The guard" below).
+```
+
+So the failure mode that burned you before ("I edit in Foundry, you rebuild, my work is
+gone") can't happen silently **for the six authorable fields, or for a talent's name/folder, or
+for a tree node's prerequisites/connections** — the builder stops and points you at the fix (or,
+for a structural edit, at the fact that there isn't one — see the blind spot below). To
+deliberately throw away in-Foundry edits and rebuild from source, pass `--force`
+(`deploy-cycle.js`'s equivalent flag is `--force-build`, item 140).
+
+> **⚠️ THE GUARD'S BLIND SPOT — NARROWED 2026-09-14 (item 140; originally documented 2026-07-24).**
+> The guard used to compare ONLY `fingerprint(doc)`, computed from the *authorable projection*
+> (`img`, `description`, `activation`, `damage`, `events`, `effects`) — a **prerequisite**,
+> **connection**, **folder**, or **rename** made in Foundry changed no fingerprint, so the build
+> did **not** abort: it reported no un-extracted edits and overwrote the change without a word.
+> This is the exact case that bit Ben twice — session 0 (a prerequisite) and again 2026-09-13
+> (`Ghostly Walls` / `Adaptive Mutation`, ungated between a ⟳ Sync and an agent-run deploy,
+> silently overwritten by that night's rebuild).
+>
+> **The guard now ALSO fingerprints, per talent, its `name` and `folder`, and, per talent-tree
+> node, its `prerequisites` and `connections`** (`structuralOf` / `snapshotDoc` /
+> `diffUnextractedEdits` in `scripts/edha-pack-io.js`, shared verbatim by both `foundry-build.js`'s
+> own guard and `scripts/deploy-cycle.js`'s PRE-FLIGHT `un-extracted-edits` guard, so the SAME edit
+> is caught before Foundry is even closed, not just at the build step). Any of those four changing
+> since the last extract/build now ABORTS too, naming the talent and the field.
+>
+> **What is STILL blind, and why:**
+> - **A structural ABORT still has no automatic fix.** `foundry-extract.js` does not, and will
+>   not, round-trip prerequisites/connections/folder/name into `data/authored/` — making Foundry
+>   the source of truth for structure is exactly what the split table above rejects.
+>   **Structure changes go in the source JSON, full stop** — the ABORT message only tells you
+>   WHAT to go redo there, same as before item 140.
+> - **Node `position`/`size`** (the tree editor's layout) — a GM may legitimately nudge a node
+>   without changing what it needs or unlocks; fingerprinting layout would only manufacture false
+>   aborts.
+> - **`sort`, the `path` item document, and the tree document's `viewBounds`/`background`** — none
+>   of those are prerequisites, connections, a talent's name, or its folder; they affect only how
+>   the canvas draws, never what a build would silently take away.
+> - **The adversaries and items packs** have no baseline/guard concept at all — see their own
+>   wiring standards (the W23 pipeline below; `lint-refs.js` pass 5 for adversary abilities).
 
 The guard compares the live pack against a baseline stored **beside the packs it describes**, in
 `<module dir>/.baselines/` (moved 2026-07-26c — it used to live in `data/authored/.baselines/`,

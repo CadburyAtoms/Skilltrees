@@ -23,7 +23,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { authorable, fingerprint, readPack, slugify } = require("./edha-pack-io.js");
+const { authorable, snapshotDoc, readPack, slugify } = require("./edha-pack-io.js");
 // DATA/MODROOT/ATLAS_PACK moved to scripts/lib/paths.js (2026-08-10 hygiene campaign). This
 // file's own copies were hardcoded with NO env override — unlike foundry-build.js's EDHA_DATA/
 // EDHA_MODROOT — so a session extracting into a scratch modroot would silently read/write Ben's
@@ -40,12 +40,17 @@ const arg = (process.argv[2] || "all").trim();
 const scope = arg.toLowerCase();
 const baselineOnly = scope === "baseline";
 
-function writeBaseline(pack, talents) {
+// `docs`: talent docs AND (item 140) their tree's talent_tree doc(s) — snapshotDoc() projects
+// each to whatever the un-extracted-edits guard needs to remember for it (a talent's authored
+// content + name/folder; a tree's per-node prerequisites/connections). Callers below always pass
+// the whole pack's talents plus its talent_tree doc(s), never talents alone, so a group-scoped
+// extract still re-arms the guard's structural half for the pack's node graph.
+function writeBaseline(pack, docs) {
   // Merge: keep prior entries, update the ones we just read from disk.
   const file = `${BASELINE_DIR}/${pack}.json`;
   let base = {};
   try { base = JSON.parse(fs.readFileSync(file, "utf8")); } catch {}
-  for (const t of talents) base[t._id] = fingerprint(t);
+  for (const d of docs) base[d._id] = snapshotDoc(d);
   fs.mkdirSync(BASELINE_DIR, { recursive: true });
   fs.writeFileSync(file, JSON.stringify(base, null, 0));
 }
@@ -69,10 +74,14 @@ function writeBaseline(pack, talents) {
     const live = await readPack(packDir);
     if (!live) { console.warn(`  (pack ${pack} not found — skipped)`); continue; }
     const talents = live.items.filter(d => d.type === "talent");
+    // The tree doc(s) carrying this pack's node graph (item 140) — baselined alongside the
+    // talents so the guard's structural half (prerequisites/connections) is re-armed too, even
+    // though this file still does not — and will not — round-trip them into data/authored/.
+    const trees = live.items.filter(d => d.type === "talent_tree");
     if (!talents.length) continue;
 
     if (baselineOnly) {
-      writeBaseline(pack, talents);
+      writeBaseline(pack, [...talents, ...trees]);
       baselinePacks.push(`${pack} (${talents.length})`);
       continue;
     }
@@ -92,7 +101,7 @@ function writeBaseline(pack, talents) {
     // another pack's un-extracted edits as captured. (Whole pack refreshed: an extracted tree's
     // siblings are unchanged on disk, so recording their current fingerprint is correct.)
     const inScope = scope === "all" || ATLAS_PACK[scope] === pack || Object.keys(buckets).length > 0;
-    if (inScope) { writeBaseline(pack, talents); baselinePacks.push(`${pack} (${talents.length})`); }
+    if (inScope) { writeBaseline(pack, [...talents, ...trees]); baselinePacks.push(`${pack} (${talents.length})`); }
 
     for (const { atlas, group, talents: gts } of Object.values(buckets)) {
       matchedAnyGroup = true;

@@ -20,6 +20,11 @@ const cp = require("child_process");
 
 const REPO = path.resolve(__dirname, "..");
 const guards = require(path.join(REPO, "scripts", "lib", "deploy-guards.js"));
+// item 140's un-extracted-edits guard: the DIFF ("what changed") lives in edha-pack-io.js
+// (shared with foundry-build.js's own pre-write guard); deploy-guards.js only turns an
+// already-computed dirty list into a verdict. Both halves are pinned below, no classic-level
+// needed — diffUnextractedEdits/snapshotDoc/structuralOf are pure, plain-data functions.
+const packIO = require(path.join(REPO, "scripts", "edha-pack-io.js"));
 
 /* --- checkOnMainClean ---------------------------------------------------------------------- */
 
@@ -221,6 +226,178 @@ test("checkPacksExist: all five present passes", () => {
   const map = Object.fromEntries(guards.PACKS.map((p) => [p, true]));
   const v = guards.checkPacksExist(map);
   assert.strictEqual(v.ok, true);
+});
+
+/* --- diffUnextractedEdits (item 140: TODO_REPO_HYGIENE — the deploy cycle rebuilds with no
+ * extract step, and the build's own guard's fingerprint was blind to tree-node edits) ----------
+ *
+ * The DIFF ("what changed since the baseline") is a pure, doc-schema-aware function in
+ * edha-pack-io.js — shared verbatim by foundry-build.js's own pre-write guard (guardUnextracted)
+ * and deploy-cycle.js's PRE-FLIGHT `un-extracted-edits` guard, so both refuse on exactly the same
+ * edit. This fixture is a two-document "scratch pack": one `talent` doc (Withering Touch, the
+ * same example AUTHORING_WORKFLOW.md's guard section already uses) and the `talent_tree` doc
+ * whose one node references it — the shape readPack() actually returns, with no LevelDB involved.
+ */
+
+function fixtureDocs() {
+  const talent = {
+    _id: "t-withering-touch",
+    type: "talent",
+    name: "Withering Touch",
+    folder: "folder-deity-death",
+    img: "icon.svg",
+    system: {
+      description: { value: "<p>Original text.</p>" },
+      activation: { cost: { type: "act", value: 1 } },
+      damage: {},
+      events: {},
+    },
+    effects: [],
+  };
+  const tree = {
+    _id: "t-tree-death",
+    type: "talent_tree",
+    name: "Death",
+    system: {
+      nodes: {
+        "node-withering-touch": {
+          talentId: "withering-touch",
+          uuid: "Compendium.edha-content.edha-deity.Item.t-withering-touch",
+          prerequisites: {
+            "pr-1": { id: "pr-1", type: "talent", managed: true, talents: { "some-parent": { id: "some-parent" } } },
+          },
+          connections: { "some-parent-node": { id: "some-parent-node", prerequisiteId: "pr-1" } },
+        },
+      },
+    },
+  };
+  return { talent, tree };
+}
+
+function fixtureBaseline({ talent, tree }) {
+  return { [talent._id]: packIO.snapshotDoc(talent), [tree._id]: packIO.snapshotDoc(tree) };
+}
+
+function clone(doc) {
+  return JSON.parse(JSON.stringify(doc));
+}
+
+test("diffUnextractedEdits: the SAME pack, untouched, against its own baseline is clean (PASS)", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  assert.deepStrictEqual(packIO.diffUnextractedEdits([talent, tree], baseline), []);
+});
+
+test("diffUnextractedEdits: an in-Foundry prerequisite edit is caught as structural (REFUSE), naming the talent and the field", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const editedTree = clone(tree);
+  delete editedTree.system.nodes["node-withering-touch"].prerequisites["pr-1"]; // GM ungated it via the tree editor
+  const dirty = packIO.diffUnextractedEdits([talent, editedTree], baseline);
+  assert.deepStrictEqual(dirty, [{ name: "Withering Touch", field: "prerequisites", kind: "structural" }]);
+});
+
+test("diffUnextractedEdits: a connection edit is caught the same way", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const editedTree = clone(tree);
+  editedTree.system.nodes["node-withering-touch"].connections = {}; // GM removed the drawn edge
+  const dirty = packIO.diffUnextractedEdits([talent, editedTree], baseline);
+  assert.deepStrictEqual(dirty, [{ name: "Withering Touch", field: "connections", kind: "structural" }]);
+});
+
+test("diffUnextractedEdits: a rename is caught as structural, reported under the OLD (baseline) name with the new name in `detail`", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const renamed = clone(talent);
+  renamed.name = "Withered Touch";
+  const dirty = packIO.diffUnextractedEdits([renamed, tree], baseline);
+  assert.strictEqual(dirty.length, 1);
+  assert.strictEqual(dirty[0].field, "name");
+  assert.strictEqual(dirty[0].kind, "structural");
+  assert.strictEqual(dirty[0].name, "Withering Touch");
+  assert.ok(dirty[0].detail.includes("Withered Touch"), `detail should name the new title, got: ${dirty[0].detail}`);
+});
+
+test("diffUnextractedEdits: a folder move is caught as structural", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const moved = clone(talent);
+  moved.folder = "folder-deity-life";
+  const dirty = packIO.diffUnextractedEdits([moved, tree], baseline);
+  assert.deepStrictEqual(dirty, [{ name: "Withering Touch", field: "folder", kind: "structural" }]);
+});
+
+test("diffUnextractedEdits: the ORIGINAL guard's case (un-extracted CONTENT) still works, kind 'content'", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const edited = clone(talent);
+  edited.system.description.value = "<p>Edited live in Foundry, never extracted.</p>";
+  const dirty = packIO.diffUnextractedEdits([edited, tree], baseline);
+  assert.deepStrictEqual(dirty, [{ name: "Withering Touch", field: "content", kind: "content" }]);
+});
+
+test("diffUnextractedEdits: a pre-item-140 baseline (plain fingerprint STRING, no talent_tree entry at all) still catches content drift, and structural drift is silently un-armed rather than a false ABORT", () => {
+  const { talent, tree } = fixtureDocs();
+  const oldBaseline = { [talent._id]: packIO.fingerprint(talent) }; // the shape every baseline had before this item
+  const editedTree = clone(tree);
+  delete editedTree.system.nodes["node-withering-touch"].prerequisites["pr-1"];
+  // The tree doc was never in the old baseline at all -> nothing captured to lose -> not reported.
+  assert.deepStrictEqual(packIO.diffUnextractedEdits([talent, editedTree], oldBaseline), []);
+  // The content half is untouched behaviour from before item 140.
+  const editedContent = clone(talent);
+  editedContent.system.description.value = "<p>changed</p>";
+  assert.deepStrictEqual(
+    packIO.diffUnextractedEdits([editedContent, tree], oldBaseline),
+    [{ name: "Withering Touch", field: "content", kind: "content" }]
+  );
+});
+
+test("diffUnextractedEdits: a brand-new node (absent from the baseline) is not reported — nothing captured to lose", () => {
+  const { talent, tree } = fixtureDocs();
+  const baseline = fixtureBaseline({ talent, tree });
+  const grown = clone(tree);
+  grown.system.nodes["node-new-talent"] = { talentId: "new-talent", uuid: "Compendium.edha-content.edha-deity.Item.t-new", prerequisites: {}, connections: {} };
+  assert.deepStrictEqual(packIO.diffUnextractedEdits([talent, grown], baseline), []);
+});
+
+/* --- checkUnextractedEdits (item 140: the pure verdict wrapper deploy-cycle.js's PRE-FLIGHT
+ * guard calls, given an already-computed dirtyByPack — the same shape gatherUnextractedEditsState
+ * builds from diffUnextractedEdits above, one pack at a time) -----------------------------------
+ */
+
+test("checkUnextractedEdits: no dirty packs passes", () => {
+  const v = guards.checkUnextractedEdits({});
+  assert.strictEqual(v.ok, true);
+  assert.strictEqual(v.name, "un-extracted-edits");
+});
+
+test("checkUnextractedEdits: an empty dirty array for a pack key is still clean", () => {
+  const v = guards.checkUnextractedEdits({ "edha-deity": [] });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkUnextractedEdits: a structural entry refuses, naming the pack/talent/field and the source-JSON remedy (never foundry-extract.js)", () => {
+  const v = guards.checkUnextractedEdits({ "edha-deity": [{ name: "Ghostly Walls", field: "prerequisites", kind: "structural" }] });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "un-extracted-edits");
+  assert.ok(v.message.includes("edha-deity"));
+  assert.ok(v.message.includes("Ghostly Walls"));
+  assert.ok(v.message.includes("prerequisites"));
+  assert.ok(v.message.includes("source JSON"));
+  assert.ok(!v.message.includes("foundry-extract.js"), "a purely structural refusal must not point at extract — extract cannot save it");
+});
+
+test("checkUnextractedEdits: a content entry refuses, naming the foundry-extract.js save command", () => {
+  const v = guards.checkUnextractedEdits({ "edha-deity": [{ name: "Withering Touch", field: "content", kind: "content" }] });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("node scripts/foundry-extract.js deity"));
+});
+
+test("checkUnextractedEdits: --force-build overrides a refusal, passing with a note naming it", () => {
+  const v = guards.checkUnextractedEdits({ "edha-deity": [{ name: "Ghostly Walls", field: "prerequisites", kind: "structural" }] }, true);
+  assert.strictEqual(v.ok, true);
+  assert.ok(v.message.includes("--force-build"));
 });
 
 /* --- checkWorldConfigured ------------------------------------------------------------------- */
@@ -546,9 +723,10 @@ test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes n
 
     assert.ok(out.includes("DRY RUN"), "must announce dry-run mode");
     assert.ok(out.includes("Pre-flight guards:"), "must print the guards section");
-    for (const guardName of ["on-main", "no-bench-worker", "packs-exist", "world-configured", "foundry-exe-exists"]) {
+    for (const guardName of ["on-main", "no-bench-worker", "packs-exist", "un-extracted-edits", "world-configured", "foundry-exe-exists"]) {
       // module-src-sync's guard name varies (module-src-sync vs module-src-hand-edited) — check
-      // the five whose name is fixed regardless of verdict.
+      // the ones whose name is fixed regardless of verdict. item 140: un-extracted-edits must
+      // print PASS here (an empty scratch EDHA_MODROOT has no pack/baseline to compare).
       assert.ok(out.includes(guardName), `expected the ${guardName} guard's verdict line in dry-run output`);
     }
     for (const stepFragment of [

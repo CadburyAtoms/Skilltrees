@@ -20,6 +20,11 @@
  *   node scripts/deploy-cycle.js --yes             actually run it (guards must all pass first)
  *   node scripts/deploy-cycle.js --yes --force-bench   override the "no bench worker" guard (Ben's call)
  *   node scripts/deploy-cycle.js --exe "<path>"        override the resolved Foundry executable path
+ *   node scripts/deploy-cycle.js --yes --force-build   override the "un-extracted Foundry edits"
+ *                                                       guard (item 140) — surfaces foundry-build.js's
+ *                                                       own `--force` as an explicit deploy-cycle
+ *                                                       flag, threaded into step 7 too so the build
+ *                                                       itself does not then refuse the same edits
  *   node scripts/deploy-cycle.js --wait-seconds 90     bound on the post-relaunch poll AND the
  *                                                       post-flight verification's retries (default 90;
  *                                                       item 137 — Foundry answers the relaunch poll's
@@ -39,6 +44,15 @@
  * The five packs this rebuilds/verifies, in build order (bat step 7): leyline, deity, heroic,
  * adversaries, items — see `deploy-guards.js`'s `PACKS` (adversaries/items are actor/item packs,
  * not atlases, but bat step 7 and this script build all five the same way).
+ *
+ * PRE-FLIGHT `un-extracted-edits` (item 140): before step 1 even closes Foundry, this reads each
+ * atlas pack's (leyline/deity/heroic — the three with a talent/talent_tree node-graph baseline;
+ * see `scripts/lib/paths.js`'s `ATLAS_PACK`) live docs read-only (`edha-pack-io.js`'s
+ * `readPack()` — a temp copy, safe with Foundry still open) against `.baselines/<pack>.json`, and
+ * refuses on the SAME comparison (`diffUnextractedEdits`) `foundry-build.js`'s own step-7 guard
+ * runs — so a Foundry edit un-extracted since the last build/extract is caught before the engine
+ * push and the rebuild, not after. `--force-build` overrides it (and is threaded into step 7's
+ * `foundry-build.js` calls as `--force`, so the build itself does not then refuse the same edits).
  */
 "use strict";
 
@@ -48,8 +62,13 @@ const os = require("os");
 const http = require("http");
 const { execFileSync, spawnSync } = require("child_process");
 
-const { REPO_ROOT, MODROOT, FOUNDRY_USERDATA } = require("./lib/paths.js");
+const { REPO_ROOT, MODROOT, FOUNDRY_USERDATA, ATLAS_PACK } = require("./lib/paths.js");
 const guards = require("./lib/deploy-guards.js");
+// Lazy at load (readPack() only resolves classic-level when actually called against an existing
+// pack dir — see edha-pack-io.js's own comment on this), so requiring it here does not newly
+// require classic-level to be installed for `--dry-run` against an empty/scratch EDHA_MODROOT
+// (the existing --dry-run smoke test's scenario).
+const packIO = require("./edha-pack-io.js");
 
 const SCRIPTS_DIR = __dirname;
 const CHECKLIST_PATH = path.join(REPO_ROOT, "EDHA_FOUNDRY_TEST_CHECKLIST.md");
@@ -71,6 +90,7 @@ function parseArgs(argv) {
     yes,
     dryRun: !yes, // --dry-run is the default whenever --yes is not explicitly given
     forceBench: args.includes("--force-bench"),
+    forceBuild: args.includes("--force-build"), // item 140: overrides the un-extracted-edits guard
     exe: flagValue(args, "--exe"),
     waitSeconds: Number(flagValue(args, "--wait-seconds") || 90),
   };
@@ -196,6 +216,32 @@ function packDirExistsMap() {
   return map;
 }
 
+// item 140: the read-only gathering half of the `un-extracted-edits` PRE-FLIGHT guard. Only the
+// three atlas packs carry a talent/talent_tree baseline (guards.PACKS also lists
+// edha-adversaries/edha-items, which have no baseline/guard concept — see edha-pack-io.js's
+// structuralOf comment). A missing baseline or a missing/unreadable pack is treated the same way
+// foundry-build.js's own guard treats it — nothing to compare, not a refusal — so a first-ever
+// build (no baseline yet) or a scratch/empty EDHA_MODROOT (the --dry-run smoke test's scenario)
+// never manufactures a false positive here. `readPack()` copies the pack directory before opening
+// it (skipping the LevelDB `LOCK` file), so this is safe to run with Foundry still open.
+async function gatherUnextractedEditsState() {
+  const dirtyByPack = {};
+  for (const pack of Object.values(ATLAS_PACK)) {
+    const baseline = readJsonSafe(path.join(MODROOT, ".baselines", `${pack}.json`));
+    if (!baseline) continue;
+    let live = null;
+    try {
+      live = await packIO.readPack(path.join(MODROOT, "packs", pack));
+    } catch {
+      live = null; // unreadable (e.g. classic-level not resolvable off-Foundry) — skip, don't refuse
+    }
+    if (!live) continue;
+    const dirty = packIO.diffUnextractedEdits(live.items, baseline);
+    if (dirty.length) dirtyByPack[pack] = dirty;
+  }
+  return dirtyByPack;
+}
+
 function isWindows() {
   return process.platform === "win32";
 }
@@ -251,6 +297,7 @@ function evaluateGuards(ctx, flags) {
   results.push(guards.checkModuleSrcSync(ctx.moduleSrcStatus.exitCode));
   results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench, ctx.benchGuardState));
   results.push(guards.checkPacksExist(ctx.packExists));
+  results.push(guards.checkUnextractedEdits(ctx.unextractedDirtyByPack, flags.forceBuild));
   results.push(guards.checkWorldConfigured(ctx.optionsJson, ctx.expectedWorldTitle));
   results.push(guards.checkFoundryExe(ctx.exe.chosen, ctx.exe.exists));
   return results;
@@ -397,9 +444,14 @@ function syncArtStep(logger) {
   runNode("sync-art.js", [], logger);
 }
 
-function rebuildPacksStep(logger) {
+function rebuildPacksStep(logger, forceBuild) {
+  // item 140: `--force-build` (already honored by the pre-flight `un-extracted-edits` guard
+  // above) is threaded through to foundry-build.js's OWN `--force` here too — otherwise a
+  // deploy the preflight let through on the override would still die at this step, since
+  // foundry-build.js runs the identical comparison again before writing.
+  const extra = forceBuild ? ["--force"] : [];
   for (const scope of ["leyline", "deity", "heroic", "adversaries", "items"]) {
-    runNode("foundry-build.js", [scope], logger);
+    runNode("foundry-build.js", [scope, ...extra], logger);
   }
 }
 
@@ -578,13 +630,14 @@ async function main() {
   const pmLive = readPmLive();
   const benchGuardState = gatherBenchGuardState();
   const packExists = packDirExistsMap();
+  const unextractedDirtyByPack = await gatherUnextractedEditsState();
   const optionsJson = readOptionsJson();
   const worldId = optionsJson && optionsJson.world ? optionsJson.world : null;
   const worldJson = readWorldJson(worldId);
   const expectedWorldTitle = guards.expectedWorldTitle({ worldId, worldJson });
   const exe = resolveExe(flags.exe);
 
-  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, optionsJson, expectedWorldTitle, exe };
+  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, unextractedDirtyByPack, optionsJson, expectedWorldTitle, exe };
   const preflight = evaluateGuards(ctx, flags);
   printVerdicts("Pre-flight guards:", preflight);
 
@@ -647,7 +700,7 @@ async function main() {
     }],
     ["5/9 module-src-sync push", () => moduleSrcSyncPushStep(logger)],
     ["6/9 sync-art", () => syncArtStep(logger)],
-    ["7/9 rebuild packs", () => rebuildPacksStep(logger)],
+    ["7/9 rebuild packs", () => rebuildPacksStep(logger, flags.forceBuild)],
     ["8/9 validate packs", () => validatePacksStep(logger)],
     ["9/9 relaunch + poll", () => relaunchAndPollStep(exe.chosen, flags.waitSeconds, logger)],
   ];
