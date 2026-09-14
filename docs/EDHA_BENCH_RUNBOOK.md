@@ -61,6 +61,16 @@ missing body. So the served-engine and `/join`-title checks now retry with a sho
 to `--wait-seconds` (default 90) before failing, instead of failing on the first miss; `--dry-run`
 names this bound in its post-flight description line.
 
+**The `/join`-title check compares against the world's TITLE, not its id (item 139, 2026-09-13):**
+`Config/options.json` only names the world's ID (`"world": "edha"`); the page Foundry actually
+serves at `/join` prints that world's `title` from `Data/worlds/<id>/world.json` (`"Edha"`). A
+`--dry-run` or `--yes` resolves that title once (falling back to the bare id when `world.json` is
+missing or unreadable) and matches it against the `/join` body case-insensitively — `--dry-run`
+prints the resolved title on the `world-configured` verdict line. The overlay's bench signal is
+similarly narrow (item 138, 2026-09-13): it is `lane === "B"` or an `item`/`branch` id that
+STARTS WITH `bench-` / `pm/bench-`, never a worker's free-text `title` or `agent` field — a
+lane-R worker whose title happens to mention "bench" is not a signal.
+
 ## Bench-created scenes (item 128 / PM-R19, 2026-09-13)
 
 Ben, phone board 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes

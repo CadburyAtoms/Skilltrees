@@ -3876,7 +3876,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.
 
-## 138. [ ] `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
+## 138. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
 
 **Why:** `isBenchWorker` (item 122, `scripts/lib/deploy-guards.js`) treats `lane === "B"` OR the substring `bench` in item / title / agent / branch as a bench signal. The 125 + 137 worker's own overlay entry — *"deploy-cycle.js: bench guard reads worktrees…"* — tripped it, and the PM's 20:44 dry run refused with `bench signal(s) held: 125+137` although that worker never touched Foundry. The worker that built item 125 flagged it in its report.
 
@@ -3885,3 +3885,17 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the pin passes and fails on the reversion; the PM's dry run with a non-bench worker on the overlay passes the guard.
 
 **PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM from the refused dry run.
+
+**What was done:** `isBenchWorker` now only checks `lane === "B"` or an `item`/`branch` STARTING WITH `bench-` / `pm/bench-` (`BENCH_WORKER_ID_RE`); `title` and `agent` are no longer read at all. Six pins in `tests/deploy-cycle.test.js` cover the brief's exact cases (a lane-R worker titled "…bench guard reads worktrees…" now passes; `item: "bench-47"` and `branch: "pm/bench-48"` refuse; an `agent` field naming bench is also not a signal) — all shown failing on the pre-fix reversion (`git stash` back to the old `isBenchWorker`) and passing again after restore.
+
+## 139. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s post-flight `/join` check compares the world ID against the page's TITLE, so it refuses a good deploy (TOOLING + test pin) (2026-09-13)
+
+**Why:** the PM's first live `deploy-cycle.js --yes` run (2026-09-13 20:46 ET, `main` @ `d832ac4`, run id `2026-09-14T00-46-31`) passed all nine steps and both earlier post-flight checks (`stamps-newer-than-start`, `engine-matches-head` on `24d74c96`), then refused: `join-redirect — refused — /join does not name world "edha"`. `deploy-cycle.js` (~L688 pre-fix) passed `optionsJson.world` — the world ID, `edha` — into `checkJoinRedirect` as `worldTitle`, but the `/join` page's `<title>` is the world's TITLE from `<dataPath>/Data/worlds/edha/world.json` (`"title": "Edha"`), and the comparison was case-sensitive besides. Because the refusal kept the run from writing its DEPLOY STATE line, the PM recorded that deploy by hand.
+
+**What to do:** resolve the expected title from `<dataPath>/Data/worlds/<id>/world.json` (`FOUNDRY_USERDATA` in `scripts/lib/paths.js`, same resolution item 122 used for `Config/options.json`) and compare case-insensitively, with the id itself as a fallback when `world.json` is unreadable — a pure `expectedWorldTitle({ worldId, worldJson })` plus a case-insensitive `checkJoinRedirect`, both in `scripts/lib/deploy-guards.js`. `--dry-run` should print the resolved title in the `world-configured` verdict. Pins: id `edha` + world.json title `Edha` → expects "Edha"; a body containing `<title>Edha</title>` passes for id `edha`; no `world.json` → falls back to the id, case-insensitive; the pre-fix behaviour (id vs title, case-sensitive) shown failing on the reversion.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` still lists every step and prints the resolved `/join` title.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run. Filed 2026-09-13 by the PM from its own 20:46 deploy run (same PR as item 138).
+
+**What was done:** `expectedWorldTitle({ worldId, worldJson })` resolves `world.json`'s `title` field, falling back to the id when the file is missing/unreadable or its `title` is not a non-blank string; `deploy-cycle.js` reads `<FOUNDRY_USERDATA>/Data/worlds/<id>/world.json` once (`readWorldJson`) and reuses the resolved title for both the pre-flight `world-configured` verdict (now prints `join title expected: "…"`) and the post-flight `/join` check — no more re-deriving it from `optionsJson.world`. `checkJoinRedirect` compares `joinBody` against `worldTitle` case-insensitively. Ten pins in `tests/deploy-cycle.test.js` cover the resolution, the fallback, the case-insensitive match, and the exact PM-run shape (id `edha`, title `Edha`) — shown failing on the pre-fix reversion and passing again after restore.

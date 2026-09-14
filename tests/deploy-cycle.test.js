@@ -77,10 +77,35 @@ test("checkNoBenchWorker: a lane-B worker on the overlay refuses", () => {
   assert.ok(v.message.includes("45"));
 });
 
-test("checkNoBenchWorker: a worker whose title names bench (no lane) also refuses", () => {
-  const pmLive = { workers: [{ item: "46", title: "bench run 46", lane: "R" }] };
+/* --- checkNoBenchWorker: the overlay signal is lane/item/branch, never title text (item 138) --
+ * Pins named in the brief: a lane-R worker titled "bench guard reads worktrees" passes;
+ * `item: "bench-47"` refuses; `lane: "B"` refuses (covered above); `branch: "pm/bench-48"`
+ * refuses.
+ */
+
+test("checkNoBenchWorker: a lane-R worker whose TITLE names bench passes — title text is not a signal", () => {
+  const pmLive = { workers: [{ item: "125+137", title: "deploy-cycle.js: bench guard reads worktrees and branches", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an item id starting with bench- refuses", () => {
+  const pmLive = { workers: [{ item: "bench-47", title: "some worker", lane: "R" }] };
   const v = guards.checkNoBenchWorker(pmLive, false);
   assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("bench-47"));
+});
+
+test("checkNoBenchWorker: a branch starting with pm/bench- refuses, even with an unrelated item/title", () => {
+  const pmLive = { workers: [{ item: "48", title: "some worker", branch: "pm/bench-48", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+});
+
+test("checkNoBenchWorker: an AGENT field naming bench is not a signal either", () => {
+  const pmLive = { workers: [{ item: "49", title: "ordinary work", agent: "bench-run agent", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
 });
 
 test("checkNoBenchWorker: --force-bench overrides a lane-B worker", () => {
@@ -215,6 +240,55 @@ test("checkWorldConfigured: a configured world passes", () => {
   assert.strictEqual(v.ok, true);
 });
 
+test("checkWorldConfigured: a configured world with a resolved title prints it (item 139, --dry-run visibility)", () => {
+  const v = guards.checkWorldConfigured({ world: "edha" }, "Edha");
+  assert.strictEqual(v.ok, true);
+  assert.ok(v.message.includes("Edha"), "the resolved /join title should appear in the dry-run verdict line");
+});
+
+/* --- expectedWorldTitle (item 139: the /join check compared the world ID against the page's
+ * TITLE, which is read from world.json, not options.json) ------------------------------------ */
+
+test("expectedWorldTitle: world.json's title wins over the id", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "Edha" } });
+  assert.strictEqual(t, "Edha");
+});
+
+test("expectedWorldTitle: a body containing '<title>Edha</title>' is what checkJoinRedirect must pass for id 'edha'", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "Edha" } });
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: t });
+  assert.strictEqual(v.ok, true);
+});
+
+test("expectedWorldTitle: no world.json falls back to the id, case-insensitively matched", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: null });
+  assert.strictEqual(t, "edha");
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: t });
+  assert.strictEqual(v.ok, true, "the id fallback must still match the page's differently-cased title");
+});
+
+test("expectedWorldTitle: a world.json with no usable title string also falls back to the id", () => {
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: {} }), "edha");
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "" } }), "edha");
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "   " } }), "edha");
+});
+
+test("expectedWorldTitle: neither an id nor a title resolves to null", () => {
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: null, worldJson: null }), null);
+});
+
+test("checkJoinRedirect: the pre-fix behaviour (id vs title, case-sensitive) is what item 139 replaces — " +
+  "the real PM run's exact shape (id 'edha', title 'Edha') would have refused under it", () => {
+  // Reproduces the OLD comparison inline (case-sensitive substring of the bare id) to show it is
+  // exactly what refused the PM's 2026-09-13 20:46 run: `joinBody` names the world's TITLE
+  // ("Edha"), but the old code compared against the id ("edha") case-sensitively.
+  const oldWayRefused = !"<title>Edha</title>".includes("edha");
+  assert.strictEqual(oldWayRefused, true, "case-sensitive id-vs-title comparison must fail on this exact body");
+  // The fixed guard, given the correctly-resolved title, passes on the identical body.
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: "Edha" });
+  assert.strictEqual(v.ok, true);
+});
+
 /* --- checkFoundryExe ------------------------------------------------------------------------ */
 
 test("checkFoundryExe: a missing executable refuses", () => {
@@ -337,6 +411,11 @@ test("checkJoinRedirect: /join without the world's title fails", () => {
 
 test("checkJoinRedirect: a proper 302 -> /join naming the world passes", () => {
   const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>edha</title>", worldTitle: "edha" });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkJoinRedirect: matches case-insensitively (item 139 — the id and the served title case need not agree)", () => {
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>EDHA</title>", worldTitle: "edha" });
   assert.strictEqual(v.ok, true);
 });
 

@@ -62,13 +62,17 @@ function checkModuleSrcSync(exitCode) {
 }
 
 // A worker holds the table if the PM's live overlay (docs/pm-live.json) lists it on lane "B", or
-// its item/title/agent/branch names "bench" — either means a bench run may be mid-flight against
-// the same Foundry this script is about to close out from under it.
+// its `item` or `branch` id STARTS WITH the bench-worklist shape (`bench-45`, `pm/bench-46`) —
+// never free-text fields (`title`, `agent`). Item 138: the old check matched the substring
+// "bench" anywhere across item/title/agent/branch joined together, so the 125+137 worker's own
+// title ("deploy-cycle.js: bench guard reads worktrees…") tripped it and refused a live deploy
+// that never touched Foundry.
+const BENCH_WORKER_ID_RE = /^(?:pm\/)?bench-/i;
 function isBenchWorker(worker) {
   if (!worker) return false;
   if (worker.lane === "B") return true;
-  const text = [worker.item, worker.title, worker.agent, worker.branch].filter(Boolean).join(" ").toLowerCase();
-  return /bench/.test(text);
+  const isBenchId = (s) => typeof s === "string" && BENCH_WORKER_ID_RE.test(s.trim());
+  return isBenchId(worker.item) || isBenchId(worker.branch);
 }
 
 // A `pm/bench-*` branch name (local, or `origin/pm/bench-*` remote) is a bench signal regardless
@@ -143,12 +147,27 @@ function checkPacksExist(existsMap) {
 
 // Config/options.json must name a world, or the relaunch stops at the setup screen instead of
 // opening straight into it — catch that before Foundry is even closed, not after the relaunch.
-function checkWorldConfigured(optionsJson) {
+// `expectedTitle` (item 139) is optional and purely informational here — it is the TITLE the
+// post-flight /join check will look for (see `expectedWorldTitle` below), printed so a --dry-run
+// shows what the post-flight check expects before anything is touched.
+function checkWorldConfigured(optionsJson, expectedTitle) {
   const world = optionsJson && optionsJson.world;
   if (!world) {
     return verdict(false, "world-configured", "refused — Config/options.json names no world; a relaunch would stop at the setup screen");
   }
-  return verdict(true, "world-configured", `world "${world}" configured`);
+  const titleNote = expectedTitle ? ` (join title expected: "${expectedTitle}")` : "";
+  return verdict(true, "world-configured", `world "${world}" configured${titleNote}`);
+}
+
+// The /join page prints the world's TITLE (world.json's `title`, e.g. "Edha"), never its id
+// (`"edha"`) — item 139: `deploy-cycle.js` used to pass the id itself as `worldTitle` into
+// `checkJoinRedirect`, so a case-sensitive substring check against the id NEVER matched the
+// page's actual title and refused every otherwise-good deploy. Resolves the title `world.json`
+// declares when it can be read; falls back to the id itself (still checked case-insensitively by
+// `checkJoinRedirect` below) when `world.json` is missing or unreadable.
+function expectedWorldTitle({ worldId, worldJson }) {
+  const title = worldJson && typeof worldJson.title === "string" && worldJson.title.trim();
+  return title || worldId || null;
 }
 
 // The Foundry executable must exist at the resolved path before a relaunch is attempted.
@@ -214,7 +233,10 @@ function enginesMatch(servedText, repoText) {
 
 // `/` must answer 302 to `/join` (never `/setup`, which means no world is loaded), and the join
 // page must name the configured world — catches a relaunch that silently landed on the setup
-// screen or joined the wrong world.
+// screen or joined the wrong world. `worldTitle` (item 139) must already be the world's TITLE
+// (see `expectedWorldTitle` above), not its id — the caller resolves that once; this function's
+// only remaining job is a case-insensitive substring check, since Foundry's `<title>` casing
+// (e.g. "Edha") need not match how the id itself is cased.
 function checkJoinRedirect({ status, location, joinBody, worldTitle }) {
   if (status !== 302) {
     return verdict(false, "join-redirect", `refused — / answered ${status}, not 302`);
@@ -222,7 +244,7 @@ function checkJoinRedirect({ status, location, joinBody, worldTitle }) {
   if (!location || !location.includes("/join")) {
     return verdict(false, "join-redirect", `refused — / redirected to "${location}", not /join`);
   }
-  if (worldTitle && !(joinBody || "").includes(worldTitle)) {
+  if (worldTitle && !String(joinBody || "").toLowerCase().includes(String(worldTitle).toLowerCase())) {
     return verdict(false, "join-redirect", `refused — /join does not name world "${worldTitle}"`);
   }
   return verdict(true, "join-redirect", "/ -> /join, world confirmed");
@@ -316,6 +338,7 @@ module.exports = {
   checkNoBenchWorker,
   checkPacksExist,
   checkWorldConfigured,
+  expectedWorldTitle,
   checkFoundryExe,
   pickExePath,
   shouldSkipBackupFile,
