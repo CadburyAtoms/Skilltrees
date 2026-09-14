@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T06:50:03.557Z",
+  "generatedAt": "2026-09-14T13:28:25.977Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "ecf9d26854",
-    "commit": "90cfce6",
-    "branch": "pm/board-2026-09-14d",
+    "hash": "2f4f6c9bcf",
+    "commit": "62d4c3b",
+    "branch": "pm/board-2026-09-14e",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -37,16 +37,16 @@
     ]
   },
   "windowStatus": {
-    "open": true,
-    "changeAt": "2026-09-14T11:00:00.000Z",
-    "nextOpenAt": null
+    "open": false,
+    "changeAt": null,
+    "nextOpenAt": "2026-09-15T01:00:00.000Z"
   },
   "pm": {
     "status": "stopped",
-    "note": "Handoff 02:55 ET Monday (before your hours): 18 PRs merged overnight, five self-verifying deploys, bench 47 done (13 rows passed; its sync bug is fixed and live), your seven phone answers filed, items 140–152 filed with ten closed. Everything merged is at the table — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards refresh. Next PM is the one you start by hand (Mon 21:00 at the earliest); bench 48 is its first Opus. R-127 is yours on the Needs Ben tab.",
-    "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's batch delete was refused) · the two YOUR-CALL branches",
+    "note": "Your three phone notes (09:20–09:23) are recorded: R-127 = (a) — immunity is a pre-cost gate (item 149's second half, Opus, tonight); the Decree of Ruin card text is approved as proposed (item 106 fully unblocked); the adversary item (82) is parked until the bestiary session and stops asking. Everything merged overnight is at the table — click ⟳ Sync Talents ONCE on each of your three PCs. The session stays stopped in your hours; the next PM is the one you start by hand (Mon 21:00 at the earliest), bench 48 first.",
+    "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs · twelve merged remote branches to delete (the PM's batch delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
-    "session": "2026-09-13 21:58 → 2026-09-14 02:55 ET (hand-started; stopped before Ben's hours)"
+    "session": "2026-09-13 21:58 → 2026-09-14 02:55 ET (hand-started; stopped before Ben's hours; 09:25 answers recorded from chat)"
   },
   "workers": [],
   "usage": null,
@@ -978,13 +978,13 @@
     {
       "pos": 76,
       "item": "82",
-      "title": "Adversary statting standard writes senses + speed per block (Ben 09-07: the bestiary skill should stat them so tokens inherit sight and speed); a lint; the values for the 52 existing blocks are invented content → ONE approval batch to Ben, then an adversaries REBUILD. Re-scoped 2026-09-08 01:1x after item 83 (#313): the default a block gets WITHOUT a senses line is now the system ladder — 5 ft at AWA 0, 10 at 1–2, 20 at 3–4 — not the Edha table's 10; the item's per-block line is the bespoke override above that default (the Grove's senses: 30 shape), and the approval batch's proposals should be read against the ladder. Dep 83 cleared; still gated on Ben's batch",
+      "title": "Adversary statting standard writes senses + speed per block — SHELVED into item 121 (the bestiary redo; Ben 2026-09-13). Ben, phone board 2026-09-14 09:23: \"I'm not sure what's needed for the adversary item other than waiting for the session where we dive into the bestiary again\" — PARKED until that session; nothing is asked of Ben on it, and it does not resurface on the phone",
       "lane": "H",
       "model": "sonnet",
       "size": "M",
-      "deps": "83 ✓ · Ben's batch",
+      "deps": "121 (the bestiary redo session)",
       "status": "blocked",
-      "statusDetail": "shelved into 121 — the bestiary redo; Ben 2026-09-13",
+      "statusDetail": "shelved into 121 — parked, nothing needed from Ben until the bestiary session",
       "pr": null
     },
     {
@@ -1290,13 +1290,13 @@
     {
       "pos": 102,
       "item": "106",
-      "title": "R-97 (a) + R-119 (a) — Sovereignty's Decree zone: H9 edha-die-step gains target: \"radius\" + radiusFt (the turn-start cadence Bulwark Ground / Ordained Ground use; an allySteps / enemySteps ledger entry per creature inside, expiring when it leaves) and Decree of Ruin is retrofitted onto it; the guide's worked example. The mechanism is approved (phone, 21:58); the Decree of Ruin CARD TEXT waits for Ben's own design text or his yes on R-119's proposed text (his chat instruction) — the engine half may go first as its own PR",
+      "title": "R-97 (a) + R-119 (a) — Sovereignty's Decree zone: H9 edha-die-step gains target: \"radius\" + radiusFt (the turn-start cadence Bulwark Ground / Ordained Ground use; an allySteps / enemySteps ledger entry per creature inside, expiring when it leaves) and Decree of Ruin is retrofitted onto it with R-119's proposed card text; the deity guide's worked example. Card text APPROVED (Ben, phone 2026-09-14 09:23: \"Go with your card text for the Sovereignty items\") — fully unblocked; one Opus dispatch (ENGINE-ONLY F5 + DATA, REBUILD deity)",
       "lane": "B",
       "model": "opus",
       "size": "L",
-      "deps": "R-119 ✓ (mechanism) · Ben's card text",
-      "status": "blocked",
-      "statusDetail": "Ben's Decree card text — the H9 engine half may go first",
+      "deps": "R-119 ✓ (a + card text)",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
       "pr": null
     },
     {
@@ -1886,6 +1886,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 382
+    },
+    {
+      "pos": 152,
+      "item": "149",
+      "title": "(second half) R-127 (a) — immunity is a PRE-COST gate: refuse the activation before any cost when every status the talent would apply is one the target is immune to (edhaConditionImmune beside the requireTargetStatus check, the same \"nothing spent\" card); a partly-immune payload still fires and pays with the split card; one generic predicate read from the talent's own rules; pins per branch + the reversion; one 🤖 row (ENGINE-ONLY, F5). Answered from the phone 2026-09-14 09:20; filed 09:30",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "R-127 ✓ (a, phone 09-14) · fix pass 12 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
     }
   ],
   "rulings": [
@@ -1934,8 +1946,6 @@
   ],
   "benOnly": [
     "ONE ⟳ Sync Talents click on each of his three PCs (their owned path cards and Draw Mana refresh only on the click — item 146's fix is not retroactive)",
-    "R-127 (refund on an immune target — the phone card carries the options and the default; item 149's refund half waits on it)",
-    "item 106's Decree of Ruin card text — his own words, or a yes on R-119's proposed text (the H9 radius engine mode does not wait)",
     "the twelve merged remote branches above, to delete whenever",
     "the two YOUR-CALL branches."
   ],
@@ -1947,20 +1957,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "19:41",
-      "at": "2026-09-13T23:41:00.000Z",
-      "item": "First live deploy-cycle.js --yes run (PM) — dry run: 6/6 guards PASS; live run: guards PASS, then FAILED in backupPacks() before step 1 — EBUSY on packs/edha-leyline/LOCK (Foundry holds the LevelDB lock; the backup runs before the close). Nothing written, Foundry up, no half-state. → item 129 filed (Sonnet XS); the 122 first-run row stays open, blocked on 129",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "failed safely",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "19:48",
@@ -2786,9 +2782,23 @@
       "weightedM": 54.1,
       "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
       "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "09:25",
+      "at": "2026-09-14T13:25:00.000Z",
+      "item": "Ben's hours — three phone notes (09:20–09:23 ET) + a chat message; recorded, nothing dispatched. R-127 = (a) (immunity as a PRE-COST gate) → item 149's second half queued (opus S); item 106's Decree of Ruin card text approved as proposed → 106 fully unblocked (opus L); item 82 parked until the bestiary redo session (nothing asked of Ben). Rulings doc: R-127's inline marker (open set [], pin re-set), R-119's approval line; TODO 106 / 149 notes; this board. All seen 09:26 with action lines. The session stays STOPPED; the next PM is Ben's hand start (Mon 21:00 at the earliest)",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~15 min",
+      "weighted": "≈ 1M (PM)",
+      "weightedM": 1,
+      "outcome": "recorded",
+      "pr": null
     }
   ],
-  "runLogTotal": 318,
+  "runLogTotal": 319,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {

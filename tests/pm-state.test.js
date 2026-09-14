@@ -406,13 +406,13 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // now, refund, or leave it to the table). Filed from the BR-1 row; the card half of the same
   // finding is a plain bug and is TODO item 149, not part of the ruling. The length assertion moves
   // from 0 to 1 exactly as the note above said it would.
-  const ECOSYSTEM_RULINGS = ["R-127"]; // 2026-09-14: R-127 open (bench run 47); R-92 and R-114 … R-119 answered (a) from the phone board 2026-09-13 and moved to §K.13
+  const ECOSYSTEM_RULINGS = []; // 2026-09-14 09:20 ET: R-127 answered (a) from the phone board — an inline ANSWERED marker in §L closes it (the §K.14 move rides the next close-out); R-92 and R-114 … R-119 answered 2026-09-13 and moved to §K.13 — nothing left open
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
-      "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119"]) {
+      "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
