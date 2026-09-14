@@ -8,7 +8,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Blue 2+; Black 2+",
-    "description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.",
+    "description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier + 1 Omens active simultaneously; placements beyond this cap are lost.",
     "flavor": "Even the steadiest mind has a fault line — you just found it.",
     "atlas": "deity",
     "layout": {
