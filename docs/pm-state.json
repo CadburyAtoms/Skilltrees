@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T04:50:10.403Z",
+  "generatedAt": "2026-09-14T05:08:48.872Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a4fd3d2181",
-    "commit": "e328b0e",
-    "branch": "pm/108-deity-gates-get-a-job",
+    "hash": "76e7cc7c5f",
+    "commit": "8f264e2",
+    "branch": "pm/bench-47",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,24 +43,24 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Items 107 (#374) and 108 (#375) merged beside it: False Premise denies Reactions and the three deity gate dials read their colour's rank at the next deploy, which the PM runs once the bench is off the table. After the bench: items 142 + 143 in one Opus worker, then 101. The loop stops before 07:00.",
-    "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
+    "note": "Bench run 47 done (#376): 13 rows passed on evidence; the one FAIL is a real bug on your own PCs — ⟳ Sync Talents never refreshes owned path cards or Draw Mana actions (item 146, fix pass 12 next); the scoped adversary sync leaks a sight write across scenes (item 147). R-127 is yours on the Needs Ben tab (refund when the target is immune). Next: the deploy for items 107 + 108, then fix pass 12 (Opus), then items 142 + 143 + 150. Item 140 (Sonnet) is running.",
+    "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [
     {
-      "item": "bench-47",
-      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 14 open 🤖 rows + item 124's re-test; Predator's Due stays blocked on 88",
-      "model": "opus",
-      "size": "L",
-      "lane": "B",
-      "branch": "pm/bench-47",
-      "startedAt": "2026-09-14T04:00:46Z",
-      "agent": "Bench run 47",
+      "item": "140",
+      "title": "The deploy cycle refuses on un-extracted Foundry edits; the build guard's fingerprint reaches tree-node fields (TOOLING + DOCS)",
+      "model": "sonnet",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/140-deploy-extract-guard",
+      "startedAt": "2026-09-14T04:52:00Z",
+      "agent": "Work item 140",
       "phase": "working",
       "pr": null,
-      "note": "holds the table (Browser pane) — no deploy while this runs"
+      "note": "repo-only worker in its own worktree; reads the live packs read-only for its dry run, never deploys"
     }
   ],
   "usage": null,
@@ -1364,7 +1364,7 @@
     {
       "pos": 107,
       "item": "111",
-      "title": "R-104 (a) the prose pass, by atlas — landed by the interactive session (Ben approved every draft opening in TREE-INTENT.md in one pass: all 21 path descriptions, both guides' PART 4, the primer regenerated); deployed 20:03 and again 22:10; 🤖 111-1 / 111-2",
+      "title": "R-104 (a) the prose pass, by atlas — landed by the interactive session (PR #349), deployed 20:03 / 22:10 / 23:14; bench 47: 111-1 PASS (21 / 21 path items carry the approved prose off the packs); 111-2 FAIL — not the data: ⟳ Sync Talents refreshes only talent items, so owned path cards never refresh → item 146; 111-2 re-drives after that fix",
       "lane": "B",
       "model": "— (interactive session)",
       "size": "L",
@@ -1640,7 +1640,7 @@
     {
       "pos": 130,
       "item": "130",
-      "title": "R-120 (b) — Predatory Strike deals one [Tier][Die] plus Tier per Insight; the cash-outs keep the multiplier (DATA + authored formula, REBUILD deity). Landed by the interactive session after Ben re-read the per-talent curve (balance-per-talent.js: the first pick 52 → 34 at tier 1, 111 → 59 at tier 2 — \"Let's do the B reshape for Knowledge, then. I agree.\"); the PM merged it 22:05 after a main merge; deployed 22:10; 🤖 KM-1; the decoy item-level damage formulas → item 141",
+      "title": "R-120 (b) — Predatory Strike deals one [Tier][Die] plus Tier per Insight; the cash-outs keep the multiplier (DATA + authored formula, REBUILD deity). Landed by the interactive session; merged 22:05; deployed 22:10; bench 47 PASS (KM-1: +20 / +18 / +25 at 5 Insight — a sum no × 5 could print; Killing Blow still × 5); its cue card's stale phrasing → item 148; the decoy item-level damage formulas → item 141",
       "lane": "B",
       "model": "— (interactive session)",
       "size": "S",
@@ -1664,12 +1664,12 @@
     {
       "pos": 132,
       "item": "132",
-      "title": "R-122 (a) — the Omen cap half SHIPPED: capFormula @tier + 1 on the four placements (EntropyStrikeOme, both Spreading Omen place rules, UnravelFill00000) + Entropy Strike's card text (DATA, REBUILD deity; pack parity 3 documents / 7 field diffs, 0 elsewhere); 🤖 OM-1 / OM-2. The Isolating Pressure half stopped on an engine-primitive gap — H3 release halts the rule loop on false — correctly under iron rule 2b → item 142. Dispatched 22:13; reviewed 22:47, no corrections; merged on green",
+      "title": "R-122 (a) — the Omen cap half: capFormula @tier + 1 on the four placements + Entropy Strike's card (DATA, REBUILD deity); bench 47 PASS (OM-1: (1/3) → (2/3) → (3/3), a fourth refused \"at your cap of 3\"; OM-2: one shared roll separated the bearers by their own Cognitive) — but the release rules still say @tier, so the release cards print the wrong denominator → item 150; the Isolating Pressure half → item 142 (engine dial)",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-122 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 369
     },
@@ -1700,12 +1700,12 @@
     {
       "pos": 135,
       "item": "135",
-      "title": "R-125 (a) — Kneel and Absolute Authority read Disoriented instead of Frightened (DATA, REBUILD deity; the engine's frightened registry comment only): both cards, both status-list gates, description copies and rule annotations; pack parity exactly 2 documents (89jvxOCpFp5dWuM8, mRZ7n6xlcTRdZfNl), 0 formula diffs, the comment proven comment-only by stripped-source equality; 🤖 PW-1. Dispatched 22:49 (sonnet, worktree — Sonnet is unlimited under PM-R16; the weekend trailing count read 7 with it, logged not binding); reviewed 23:12, no corrections; merged on green. Found: 47-power.js's reset list still clears frightened → item 143",
+      "title": "R-125 (a) — Kneel and Absolute Authority read Disoriented instead of Frightened (DATA, REBUILD deity); bench 47 PASS (PW-1: 1d20+4 → 2d20kh+4 with only Disoriented changing; the gate accepts, and refuses before cost without it); found beside it: a status card claims a landing that immunity refused → item 149, and the economy of a paid, passed test against an immune target → R-127. 47-power.js's reset list → item 143",
       "lane": "B",
       "model": "sonnet",
       "size": "XS",
       "deps": "R-125 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 370
     },
@@ -1796,13 +1796,85 @@
     {
       "pos": 143,
       "item": null,
-      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 111-1 / 111-2 / BR-1, DM-1 / DM-2, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, PW-1, 123-1, 128-1 + item 124's paragraph re-test (converted to a row on its verdict); Predator's Due stays blocked on 88. Step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9). Next free ruling R-127, next item 146. Dispatched 2026-09-14 00:00 (opus, worktree pm/bench-47; Opus 1 of 3 for 09-14)",
+      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 13 rows retired on evidence (111-1, BR-1, DM-1 / DM-2, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, PW-1, 128-1, 124-1 — the item-124 paragraph converted to a retired row), 1 FAIL (111-2: ⟳ Sync Talents refreshes only talent items — 24 of 24 owned path cards and 18 Draw Mana copies frozen at drag-time, Ben's three PCs included; root cause at 26-talent-sync.js:39/:58 → item 146), 1 PARTIAL (123-1: the sync's own loops honour the scene filter, but the updateActor sight hook in 52-green-instinct.js walks game.scenes unfiltered → item 147), Predator's Due still blocked on 88; items 146–151 and R-127 filed; three row texts corrected; the Bench Arena stands (PM-R19); world diff clean (Ben's started combat untouched). Dispatched 00:00, reported 01:04 (64 min, 269 tool uses, 14.4M); reviewed 01:12 — squash-merged trailer-free (its work commit carried a model trailer) after the PM's bookkeeping commit",
       "lane": "B",
       "model": "opus",
       "size": "L",
       "deps": "deploy 23:14 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
+      "pr": 376
+    },
+    {
+      "pos": 144,
+      "item": "146",
+      "title": "⟳ Sync Talents refreshes only talent items — every owned path card and Draw Mana action in the world is frozen at drag-time (24 paths + 18 Draw Mana copies stale, Ben's three PCs included); 26-talent-sync.js:39/:58; a headless pin + the 111-2 re-drive (ENGINE-ONLY, F5) — fix pass 12",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "bench 47 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
+    },
+    {
+      "pos": 145,
+      "item": "147",
+      "title": "the scoped adversary sync leaks: the updateActor sight hook in 52-green-instinct.js re-stamps sight.range on the synced actor's tokens on EVERY scene (it walks game.scenes unfiltered), defeating R-113's scene filter; + 151 folded in (the documented {folder: \"Edha Bench\"} incantation matches zero actors — the filter is exact and non-recursive; four documents print it); a headless pin + the 123-1 re-drive (ENGINE-ONLY, F5 + DOCS) — fix pass 12",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "bench 47 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
+    },
+    {
+      "pos": 146,
+      "item": "148",
+      "title": "Predatory Strike's cue card still says \"[Tier][Die] Vital per Insight\" — the pre-item-130 phrasing, contradicting the card and the shipped formula (DATA, REBUILD deity); rides with item 141 (the Knowledge decoy formulas) on one Sonnet worker",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "130 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
+    },
+    {
+      "pos": 147,
+      "item": "149",
+      "title": "edha-apply-status announces a status that immunity refused (Kneel: \"Risen Servant is Compelled\" while the immunity blocked it) — the card half is unblocked (ENGINE-ONLY, F5) — fix pass 12; the refund half waits on R-127",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "bench 47 ✓ · R-127 (refund half)",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
+    },
+    {
+      "pos": 148,
+      "item": "150",
+      "title": "Chaos's Omen release rules still carry capFormula: \"@tier\" while the place rules say @tier + 1 (item 132 missed them), so the release cards print the wrong denominator (DATA, REBUILD deity); folded into item 142's Opus worker (the same rules)",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "132 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
+      "pr": null
+    },
+    {
+      "pos": 149,
+      "item": "151",
+      "title": "the scoped-sync incantation {folder: \"Edha Bench\"} matches zero actors and says nothing — a child-folder match or a loud empty-match warning, plus the four documents corrected (DOCS + small ENGINE ergonomics); folded into item 147's dispatch",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "147",
+      "status": "queued",
+      "statusDetail": "2026-09-14",
       "pr": null
     }
   ],
@@ -1851,6 +1923,7 @@
     }
   ],
   "benOnly": [
+    "R-127 (refund on an immune target — the phone card carries the options and the default)",
     "item 106's Decree of Ruin card text — his own words, or a yes on R-119's proposed text (the H9 radius engine mode does not wait)",
     "the twelve merged remote branches above, to delete whenever",
     "the two YOUR-CALL branches."
@@ -1863,34 +1936,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "11:52",
-      "at": "2026-09-13T15:52:00.000Z",
-      "item": "Item 105 (R-96 (a) — the Blue/White minimal-change set) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "19 min, 125 tool uses",
-      "weighted": "5.3M",
-      "weightedM": 5.3,
-      "outcome": "merged 12:10 after review, no trailers; CI green on 72a3e07, gates 12/12 in the worktree (1087 tests). Data: Read Intent re-parented Probable Outcome → Forewarned and added as an OR-parent of Pattern Recognition; Interposing Shield rea → spe; Shared Burden 2 → 1 Investiture (consume + costValue + prompt + prose); Ordered Advance 2 → 1 Action — overlay and source prose aligned. Proof: validate 0 warnings, 1087 tests, validate-build.py ALL BUILDS PASS, iron rule 7 read by hand (prose names no parent). Three 🤖 rows (Blue ×1, White ×2) for bench 46. REBUILD leyline + ⟳ Sync Talents owed — one bat run with fix pass 11's",
-      "pr": 336
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:52",
-      "at": "2026-09-13T15:52:00.000Z",
-      "item": "Fix pass 11 (bench 45's defects — 118, 120, 119's engine half, 104) — test-pass-fixes, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "32 min, 165 tool uses",
-      "weighted": "6.3M",
-      "weightedM": 6.3,
-      "outcome": "merged 12:23 after review, no trailers; CI green on fd98620, gates 12/12 + --ci 14/14 (1105 tests, +18 in two new files). 118 DATA (heroic), 104 DATA (leyline), 120 + 119 ENGINE-ONLY — pushed live 12:24 (6 in sync, safety copy kept; F5 owed). Three primitives indexed (edhaDeliveredNote, edhaCostShortfalls, edhaShortfallText); the family check found 120's site the only note",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "12:24",
@@ -2702,9 +2747,37 @@
       "weightedM": 7.4,
       "outcome": "reviewed 00:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, seven themed commits (one per tree, then the paperwork); CI green on e328b0e, gates 12/12 + --ci 14/14 (1206 tests); the worker merged main itself. Gate audit: Fate/White 0 → 1 (Bulwark Ground), Destruction/Blue 1 → 2 (Cascading Failure), Life/Blue 1 → 2 (Vital Diagnosis). Parity: scratch edha-deity before/after, 110 documents, exactly 3 differ (A4QPt3qDPX9MTl0P thpFormula + descriptions; 0XE8eF9aS4uMu6sM doubleCaughtFormula only — its card names no colour; cloJTodAdC0Rb3LG bonusDamageFormula + descriptions), 0 other formula diffs. 🤖 GATE-1 / GATE-2 / GATE-3. One PM correction: the item's Done-when (\"Fate's White ≥ 2 talents or rolled\") outran R-118 (a)'s single-dial scope — reworded on the branch. Found: the three events[].description dev comments still read \"= tier\" (Events-tab documentation, not player text; next touch of those blocks). DATA → REBUILD deity + ⟳ Sync Talents — rides the next deploy with 107",
       "pr": 375
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:52",
+      "at": "2026-09-14T04:52:00.000Z",
+      "item": "#375 (item 108) merged at 00:52:29 (CI green on a420bef); the worker's worktree removed; main = 301a87c. Dispatched item 140 the same minute (sonnet, worktree pm/140-deploy-extract-guard — the deploy cycle's un-extracted-edits pre-flight guard + the build fingerprint reaching tree-node fields; fixture pins; TOOLING + DOCS) as the one lane-R worker beside bench 47",
+      "itemNo": "375",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": 375
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:00",
+      "at": "2026-09-14T04:00:00.000Z",
+      "item": "Bench run 47 (the 23:14 deploy: 14 driveable 🤖 rows + item 124's paragraph re-test) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "64 min, 269 tool uses (445 turns)",
+      "weighted": "14.4M",
+      "weightedM": 14.4,
+      "outcome": "reviewed 01:12 — squash-merged trailer-free after the PM's bookkeeping commit (its one work commit carried a model trailer; iron rule 6); CI green on the merged head; gates 12/12 + --ci 14/14 in the worktree; the worker merged main itself (107 / 108 landed mid-run; changelog counts reconciled to 164). Served hash 902ddadb verified both sides; step zero: both PCs refreshed (only _stats.modifiedTime moved), roster idempotent (67 in / 67 out). 13 PASS retired (111-1 — 21 / 21 path items; BR-1 — all three immunities bind; DM-1 / DM-2 — rank 3 not tier 2, two-colour 3, boss 3, minion 1, 42 embeds one text; GW-1 / AM-1 — prerequisitesMet both ways with negative controls; TE-1 — (14+11) − 2 = 23, deflect subtracts once; KM-1 — +20 / +18 / +25 at 5 Insight, a sum no × 5 could print, Killing Blow still × 5; OM-1 / OM-2; PW-1 — 1d20+4 → 2d20kh+4; 128-1 — the Bench Arena created, found idempotently, 23 tokens, seven rows hosted; 124-1 — the paragraph converted to a retired row), 1 FAIL (111-2 → item 146, root cause at 26-talent-sync.js:39/:58), 1 PARTIAL (123-1 → item 147, the unfiltered game.scenes walk in the sight hook), Predator's Due blocked on 88 (blocker unchanged). Items 146–151 + R-127 filed; three row texts corrected (GW-1, DM-1, KM-1 had been written for tier-1 actors); runbook run-47 lessons. World diff clean: 67 actors, scenes byte-identical on ids / walls / templates, Ben's started combat untouched, the Bench Arena left standing (PM-R19), Bench logged out. DOCS-ONLY",
+      "pr": 376
     }
   ],
-  "runLogTotal": 295,
+  "runLogTotal": 297,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3528,6 +3601,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 375
+    },
+    {
+      "at": "2026-09-14T04:52:00.000Z",
+      "model": "sonnet",
+      "item": "375",
+      "pr": 375
+    },
+    {
+      "at": "2026-09-14T04:00:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 376
     }
   ],
   "statusVocab": [
