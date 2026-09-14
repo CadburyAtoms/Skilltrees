@@ -485,14 +485,14 @@
       "events": {
         "NiiElTqWzyata6Pu": {
           "id": "NiiElTqWzyata6Pu",
-          "description": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Blue rank vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative. Resized off @tier onto @skills.blue.rank by item 108/R-118 (a), 2026-09-14 (Life's Blue gate was a one-talent near-dead colour).",
+          "description": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative.",
           "event": "use",
           "handler": {
             "type": "edha-apply-status",
             "status": "diagnosed",
             "bonusDamageFormula": "@skills.blue.rank",
             "bonusDamageType": "vital",
-            "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Blue rank vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
+            "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
           }
         },
         "VitalDiagReveal0": {
