@@ -66,7 +66,13 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    bench runs"), but ONLY scoped**: read the DRY RUN first (a bare `edha.syncAllAdversaries()` with
    no args always previews — reports the actor list + per-scene token counts, writes nothing),
    then call it for real as `edha.syncAllAdversaries({ folder: "Edha Bench" /* or actorIds */,
-   scenes: [<a licensed scene's id only>], dryRun: false })`. **Never call it unscoped,
+   scenes: [<a licensed scene's id only>], dryRun: false })`. Since **item 151** (fix pass 12,
+   2026-09-14) `folder` matches a folder **or any of its descendants**, so `"Edha Bench"` reaches
+   the roster in `Bench PCs` / `Bench Targets`; before that fix the exact, non-recursive match made
+   this exact incantation a silent no-op returning `{actors: [], sceneTokens: {}}`. A
+   `folder`/`actorIds` filter resolving to **zero candidates now warns** — if you see that warning
+   the call did nothing, so fix the name rather than recording a "scoped sync done".
+   **Never call it unscoped,
    and never pass `allowStartedCombat: true`** — that override is Ben's, not the bench's. A refusal
    (a candidate token in a STARTED combat on an in-scope scene) means the scope was wrong; narrow
    it, do not override it. "Playtest Map (Copy)" is still Ben's scene (R-113's narrower question

@@ -640,8 +640,10 @@ async function edhaMigrateDerivations() {
  * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
  * leak its name to players on hover). Pack-built and imported actors already carry a sight range
  * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
- * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
- * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
+ * placed tokens, single GM applier, every actor type) — SCOPED since item 147 by the caller's
+ * `options.edhaSceneScope` marker (`edhaUpdateSceneScope`), because the watcher's trigger is a
+ * presence test that a wholesale `system` replace also satisfies. `edha.fixPcTokens()` retrofits
+ * EXISTING characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   // AWA read as value + bonus (edhaAwaForSenses), the way the system's own derivation reads it —
@@ -656,13 +658,33 @@ Hooks.on("preCreateActor", (doc, data) => {
     doc.updateSource({ prototypeToken: proto });
   } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
-Hooks.on("updateActor", (actor, changes) => {
+Hooks.on("updateActor", (actor, changes, options) => {
   try {
     if (changes?.system?.attributes?.awa === undefined) return;
+    /* SCOPE — item 147 (bench run 47). The line above is a PRESENCE test, not a change test: a
+     * wholesale `system` replace satisfies it whether or not AWA moved. `edhaSyncAdversaryActor`
+     * does exactly that (`{recursive: false, diff: false}`), so every scoped adversary sync woke
+     * this hook, which then walked `game.scenes` UNFILTERED and stamped `sight.range` on tokens on
+     * scenes the caller's `scenes:` filter had deliberately excluded — measured live: Briar-Gone
+     * Grove's token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map, with
+     * no line in the sync's report. That contradicts R-113's contract outright ("a scene left out
+     * of `scenes` is never touched, no matter what it holds"), and it is the same unfiltered
+     * `game.scenes` shape `edha.fixPcTokens()` was caught with at bench run 45.
+     *
+     * An EMPTY scope is the sync's marker and means MORE than "no scenes": the caller has already
+     * written what this hook would, from a source that outranks it. It stands down completely,
+     * prototype write included. That second half matters on its own — `advSensesRangeFt` honours a
+     * bespoke `senses` override (Briar-Gone Grove: 30 ft) and `edhaPcSightShape`'s AWA ladder does
+     * not, so a scene filter alone would have kept the 30 → 5 corruption and merely confined it to
+     * the in-scope scene. Anything that legitimately wants a NARROWED restamp passes its scene ids
+     * and gets the walk below, scoped. */
+    const scope = edhaUpdateSceneScope(options);
+    if (scope && !scope.size) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
     void actor.update({ "prototypeToken.sight.range": range });
     for (const sc of game.scenes ?? []) {
+      if (scope && !scope.has(sc.id)) continue;
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }

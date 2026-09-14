@@ -6121,6 +6121,61 @@ function edhaConditionLabel(id) {
     ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
   return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
 }
+
+/* --- CONDITION IMMUNITY: does the status land at all? (item 149, bench run 47) -------------------
+ * A creature's `system.immunities.condition` map REFUSES a status outright. The cosmere Actor
+ * overrides `toggleStatusEffect` (systems/cosmere-rpg index.js): `statusId in
+ * this.system.immunities.condition && this.system.immunities.condition[statusId]` →
+ * `ui.notifications.warn("<actor> is immune to <condition>")` and `Promise.resolve(false)`.
+ *
+ * Nothing in Edha read that. Bench 47, driving BR-1: `Bench — Power`'s **Kneel** rolled 25 vs COG
+ * 11, SUCCESS, against a Risen Servant carrying `{compelled: true, …}`. The status was refused —
+ * the notification said so and `statuses` stayed `[]` — and the talent's card posted anyway:
+ * *"🎯 Kneel: Risen Servant is Compelled (by Bench — Power). Next action: move toward the
+ * compeller…"*. A GM reading the chat log rules the servant Compelled and plays the round wrong.
+ * This is the status-side twin of item 120 / item 124 on the healing side, where `edhaDeliveredNote`
+ * was introduced precisely so a card cannot claim a delivery that did not happen.
+ *
+ * PURE, and read BEFORE the write rather than from its return value ON PURPOSE: the GM-RELAY path
+ * (a player marking a GM-owned enemy) goes over a socket and has no return value to read at all.
+ * Pinned in tests/. */
+function edhaConditionImmune(actor, statusId) {
+  try { return !!actor?.system?.immunities?.condition?.[String(statusId ?? "").trim()]; } catch (e) { return false; }
+}
+
+/* The immunity gate for the WRITE sites, with the refusal made visible where it was asked for.
+ * The system raises its own warning inside `toggleStatusEffect`, i.e. on whichever client performs
+ * the write — so a relayed mark refused on the GM's machine tells the PLAYER nothing whatsoever.
+ * Returns true when the status is refused (the caller must then report nothing landed). */
+function edhaStatusRefused(actor, statusId) {
+  if (!edhaConditionImmune(actor, statusId)) return false;
+  ui.notifications?.warn(`Edha: ${actor?.name ?? "the target"} is immune to ${edhaConditionLabel(statusId)} — nothing applied.`);
+  return true;
+}
+
+/* PURE. The apply-status card's sentence, built from what ACTUALLY landed (item 149). `tail` is the
+ * trailing clause a landed status may carry (the bonus-damage rider); `note` is the rule's authored
+ * note. Both are DROPPED on a refusal, for `edhaDeliveredNote`'s reason: when nothing landed, the
+ * only honest sentence is the one saying so — an authored note like "movement ENFORCED" is exactly
+ * as false as the claim above it. Reach for this at ANY site that announces a status it just tried
+ * to apply. Pinned in tests/. */
+function edhaStatusApplyCard(landed, talentName, targetName, label, ownerName, tail = "", note = "") {
+  if (!landed) return `🛡️ <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>immune to ${label}</strong> — no status applied.`;
+  return `🎯 <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>${label}</strong> (by ${ownerName})${tail}.${note}`;
+}
+
+/* PURE. The MULTI-TARGET counterpart (item 149) — the `edha-triggered-effect` status branch applies
+ * one status to a whole target list, so its card has to say which of them took it. An ALL-LANDED
+ * call returns the pre-item-149 wording byte-for-byte (this is the overwhelmingly common case and
+ * the regression guard is on it); the authored note rides the LANDED clause only, for
+ * `edhaDeliveredNote`'s reason. Names are already-resolved strings. Pinned in tests/. */
+function edhaStatusSplitNote(landedNames, refusedNames, label, note = "") {
+  const parts = [];
+  const said = (names, verb, text) => `${names.join(", ")} ${names.length > 1 ? verb[1] : verb[0]} ${text}`;
+  if (landedNames?.length) parts.push(said(landedNames, ["is", "are"], `<strong>${label}</strong>${note}`));
+  if (refusedNames?.length) parts.push(said(refusedNames, ["is", "are"], `<strong>immune to ${label}</strong> — no status applied`));
+  return parts.join("; ");
+}
 /* R-37(2) — the ONE-OF counterpart of edhaConditionLabel. A ledger key is plural by convention
  * ("snares", "charges", "edicts"), and edhaConditionLabel falls back to the bare key when nothing
  * configures a label, so card text that names a SINGLE entry read "the snares on Snare #1 **is**
@@ -6561,6 +6616,11 @@ async function edhaBulwarkClick(ev) {
 // Apply a status with an owner-relative (or self) timed expiry; relays to the GM when we lack perms.
 async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "owner" } = {}) {
   try {
+    // item 149: condition immunity refuses the write, so report that it did not land rather than
+    // stamping an expiry on an effect that was never created. Both paths — the local write below
+    // silently produced no effect, and the relay refused on the GM's client where the asking
+    // player never saw the system's own warning.
+    if (edhaStatusRefused(target, statusId)) return false;
     if (target.isOwner) {
       await target.toggleStatusEffect?.(statusId, { active: true });
       if (expire) {
@@ -10108,12 +10168,15 @@ Hooks.on("renderCharacterSheet", (app, element) => {
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
       edhaBudgetRow("Attr pts",   b.attrSpent,   b.attrGranted)   +
       edhaBudgetRow("Skill rnks", b.skillSpent,  b.skillGranted);
-    // G: one-click "Sync Talents" — re-pull roll data from the packs onto this actor's talents
-    // (fixes stale snapshots after a content rebuild). Lives in the budget bar so it's always visible.
+    // G: one-click "Sync Talents" — re-pull card data from the packs onto this actor's owned Edha
+    // items (fixes stale snapshots after a content rebuild). Lives in the budget bar so it's always
+    // visible. The LABEL stays "⟳ Sync Talents" — it is the name every doc, checklist row and
+    // runbook step uses — but since item 146 it refreshes the path and action cards too, so the
+    // tooltip says so (EDHA_SYNC_TYPES is the authority).
     const syncBtn = document.createElement("button");
     syncBtn.type = "button";
     syncBtn.className = "edha-sync-btn";
-    syncBtn.title = "Re-sync this character's Edha talents from the compendium packs (fixes stale rolls after a content rebuild).";
+    syncBtn.title = "Re-sync this character's Edha cards from the compendium packs — talents, the path items, and Draw Mana (fixes stale text and rolls after a content rebuild).";
     syncBtn.textContent = "⟳ Sync Talents";
     syncBtn.addEventListener("click", (ev) => {
       ev.preventDefault();
@@ -10217,10 +10280,10 @@ Hooks.on("createItem", (item, options, userId) => {
  * character holding a stale snapshot: old description, old events, old img. This section walks
  * the three source packs, matches each owned talent back to its source, and refreshes it in
  * place — which is why a card-text fix needs "REBUILD + ⟳ Sync" and not just a rebuild.
- * Matching is by (atlas | group | name) — edhaSrcKey — with a name-only fallback, so a RENAMED
- * talent does not match and is left alone rather than silently overwritten with the wrong card.
- * Owns: EDHA_SRC_PACKS · edhaSrcKey · edhaBuildSourceMap · edhaSrcFor · edhaSyncActorTalents ·
- *   edhaSyncAllCharacters · edhaSyncNow.
+ * Matching is by (type | atlas | group | name) — edhaSrcKey — with a (type | name) fallback, so a
+ * RENAMED item does not match and is left alone rather than silently overwritten with the wrong card.
+ * Owns: EDHA_SRC_PACKS · EDHA_SYNC_TYPES · edhaSrcKey · edhaSyncTypeLabel · edhaBuildSourceMap ·
+ *   edhaSrcFor · edhaSyncActorTalents · edhaSyncAllCharacters · edhaSyncNow.
  * ============================================================================================ */
 
 /* --- G: "Sync Edha Talents" utility -----------------------------------------------------------
@@ -10232,9 +10295,39 @@ Hooks.on("createItem", (item, options, userId) => {
  */
 const EDHA_SRC_PACKS = ["edha-content.edha-leyline", "edha-content.edha-deity", "edha-content.edha-heroic"];
 
-// Source map for syncing. Keyed two ways: "<atlas>|<group>|<name>" (exact tree identity — 28 talent
-// names collide across trees, so name alone is ambiguous) and plain name as a fallback.
-function edhaSrcKey(atlas, group, name) { return `${atlas ?? ""}|${group ?? ""}|${name}`; }
+/* The pack document types ⟳ Sync refreshes — item 146 (2026-09-14, bench run 47). A rebuild rewrites
+ * the card of EVERY document the three atlases ship, not just the talents: each tree also ships a
+ * `path` item (21 of them) and the leyline pack ships the universal `Draw Mana` `action`. Both sides
+ * of this section used to be gated `type !== "talent"`, so an owned path or Draw Mana copy could
+ * never be matched — measured live at bench 47: **24 of 24 owned path items in the world stale, 0
+ * current** (including all three real PCs), and 18 of 18 owned Draw Mana copies still reading the
+ * pre-R-126 text, with no button in Foundry able to fix either. The toast said "synced 25 talent(s)"
+ * over the top of it, which is how it stayed invisible for a whole deploy cycle.
+ * Add a type here only when a rebuild can change that type's CARD and an owned copy is a snapshot. */
+const EDHA_SYNC_TYPES = ["talent", "path", "action"];
+
+/* Source map for syncing. Keyed two ways: "<type>|<atlas>|<group>|<name>" (exact identity — 28 talent
+ * names collide across trees, so name alone is ambiguous) and "<type>|<name>" as a fallback.
+ * TYPE IS PART OF BOTH KEYS AND IT IS LOAD-BEARING, not defensive (item 146): the deity pack ships a
+ * `path` named **Sovereignty** AND a `talent` named **Sovereignty** (Verdannis's tree and its
+ * capstone). Under the old plain-name fallback the two overwrote each other in the map, so whichever
+ * `pack.getDocuments()` yielded last would have been pulled onto the other — a path card written over
+ * a talent, or the reverse. Nothing else in the three packs collides across types today, and nothing
+ * has to: the key makes the class impossible rather than the instance. */
+function edhaSrcKey(type, atlas, group, name) { return `${type ?? "talent"}|${atlas ?? ""}|${group ?? ""}|${name}`; }
+
+/* PURE. The ⟳ Sync toast's breakdown — "25 talents, 1 path, 1 action" (item 146). The old toast
+ * counted one type and named it for all of them; a count that reads like success while a whole
+ * document type is being skipped is the thing that hid this defect, so the toast now says what it
+ * actually touched. Types print in EDHA_SYNC_TYPES order; zero counts are omitted. Pinned in tests/. */
+function edhaSyncTypeLabel(byType) {
+  const parts = [];
+  for (const t of EDHA_SYNC_TYPES) {
+    const n = Math.max(0, Math.floor(Number(byType?.[t]) || 0));
+    if (n) parts.push(`${n} ${t}${n === 1 ? "" : "s"}`);
+  }
+  return parts.join(", ");
+}
 async function edhaBuildSourceMap() {
   const byName = new Map();
   for (const packId of EDHA_SRC_PACKS) {
@@ -10249,26 +10342,38 @@ async function edhaBuildSourceMap() {
     }
     if (pack.index?.size && docs.length < pack.index.size) console.warn(`Edha Content | sync: ${packId} returned ${docs.length}/${pack.index.size} docs after retries — re-run ⟳ Sync.`);
     for (const d of docs) {
-      if (d.type !== "talent") continue;   // type-strict: compendium source docs are talent-typed
+      if (!EDHA_SYNC_TYPES.includes(d.type)) continue;   // item 146: talents AND the path / action cards a rebuild also rewrites
       const f = d.flags?.["edha-content"] ?? {};
-      byName.set(edhaSrcKey(f.atlas, f.group, d.name), d);
-      byName.set(d.name, d);
+      byName.set(edhaSrcKey(d.type, f.atlas, f.group, d.name), d);
+      byName.set(edhaSrcKey(d.type, null, null, d.name), d);
     }
   }
   return byName;
 }
-// Resolve an owned talent's pack source: exact tree identity first, then name.
+/* Resolve an owned item's pack source: exact identity first, then (type | name). A `path` doc carries
+ * no `group` flag (the build stamps only `{atlas}`), so its exact key degenerates to
+ * "path|<atlas>||<name>" on BOTH sides and matches without a special case; Draw Mana carries neither
+ * and matches on "action|||Draw Mana". The rename guard is unchanged and still the whole point: a
+ * renamed owned item misses both keys, so it is reported missing and left alone rather than
+ * overwritten with the wrong card. */
 function edhaSrcFor(byName, item) {
   const f = item.flags?.["edha-content"] ?? {};
-  return byName.get(edhaSrcKey(f.atlas, f.group, item.name)) ?? byName.get(item.name);
+  return byName.get(edhaSrcKey(item.type, f.atlas, f.group, item.name)) ?? byName.get(edhaSrcKey(item.type, null, null, item.name));
 }
 
 async function edhaSyncActorTalents(actor, byName) {
-  if (!actor) return { updated: 0, missing: [] };
+  if (!actor) return { updated: 0, missing: [], byType: {} };
   byName ??= await edhaBuildSourceMap();
-  const updates = [], missing = [], effectPrunes = [];
+  const updates = [], missing = [], effectPrunes = [], byType = {};
   for (const item of actor.items) {
-    if (item.type !== "talent") continue;   // type-strict: ⟳ Sync snapshots PC talents only (twins re-drag)
+    if (!EDHA_SYNC_TYPES.includes(item.type)) continue;   // item 146: talent + path + action (see EDHA_SYNC_TYPES)
+    /* ONE OWNER PER GRANT (case study §10). An adversary's embedded ability is an `action` carrying
+     * `flags.edha-content.adversary`, and it is the ADVERSARY PACK SYNC's to refresh — it re-creates
+     * every flagged item from `edha-adversaries` with its pack `_id`. Before item 146 the type gate
+     * hid that overlap; now that `action` is in scope, a GM who runs `edha.syncNow()` on a selected
+     * adversary token would otherwise pull its Draw Mana embed from the LEYLINE pack and replace the
+     * `{adversary}` flag with the leyline copy's `{core}` one. Skip them: not this button's items. */
+    if (item.flags?.["edha-content"]?.adversary) continue;
     const src = edhaSrcFor(byName, item);
     if (!src) { missing.push(item.name); continue; }
     const so = src.toObject();             // plain data (not the live DataModel)
@@ -10283,23 +10388,34 @@ async function edhaSyncActorTalents(actor, byName) {
     const srcEffIds = new Set((so.effects ?? []).map(e => e._id));
     const stale = item.effects.filter(e => !srcEffIds.has(e.id)).map(e => e.id);
     if (stale.length) effectPrunes.push({ item, stale });
-    updates.push({
+    const update = {
       _id: item.id,
       img: so.img,
-      "system.activation": so.system.activation,   // cost/consume + skill_test config
-      "system.damage": so.system.damage,           // formula/type → makes the roll fire
-      "system.description": so.system.description,  // refreshed prose
       "system.events": newEvents,                  // native event rules (replaced wholesale via -= deletions)
       effects: so.effects ?? [],                   // passive ActiveEffects (e.g. +Speed); merged by _id
       "flags.edha-content": so.flags?.["edha-content"] ?? {}, // specialty flag (budget Key check)
-    });
+    };
+    /* Only the content fields the SOURCE ITSELF carries (item 146). `activation` and `damage` are
+     * Activatable/Damaging-mixin fields: a talent and an action have both, a `path` has NEITHER, and
+     * writing a key the DataModel does not define is the dead-field trap in its writing direction —
+     * it resolves with no error and leaves junk (or nothing) behind. `description` is guarded the
+     * same way rather than assumed. Spelled out one key at a time ON PURPOSE: a
+     * `update["system." + f]` loop would hide every field name from `lint-refs.js` pass 11, which is
+     * the gate that catches a field the cosmere DataModel does not declare. `system.relationships` is
+     * deliberately absent and always has been — the Parent link drives the Actions grouping. */
+    const ss = so.system ?? {};
+    if ("activation" in ss) update["system.activation"] = ss.activation;    // cost/consume + skill_test config
+    if ("damage" in ss) update["system.damage"] = ss.damage;                // formula/type → makes the roll fire
+    if ("description" in ss) update["system.description"] = ss.description; // refreshed prose
+    updates.push(update);
+    byType[item.type] = (byType[item.type] ?? 0) + 1;
   }
   if (updates.length) await actor.updateEmbeddedDocuments("Item", updates);
   for (const { item, stale } of effectPrunes) {
     try { await item.deleteEmbeddedDocuments("ActiveEffect", stale); }
     catch (e) { console.warn(`Edha Content | could not prune stale effect(s) on ${item.name}`, e); }
   }
-  return { updated: updates.length, missing };
+  return { updated: updates.length, missing, byType };
 }
 
 async function edhaSyncAllCharacters() {
@@ -10318,11 +10434,15 @@ async function edhaSyncNow(actor) {
   actor ??= canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character;
   if (!actor) { ui.notifications?.warn("Edha: select a token (or set a player character) to sync."); return null; }
   const r = await edhaSyncActorTalents(actor);
+  // item 146: "item(s)" + the per-type breakdown, because the button refreshes paths and actions too
+  // and the old "N talent(s)" line read like success while it skipped both.
+  const breakdown = edhaSyncTypeLabel(r.byType);
   ui.notifications?.info(
-    `Edha: synced ${r.updated} talent(s) on ${actor.name}` +
+    `Edha: synced ${r.updated} item(s) on ${actor.name}` +
+    (breakdown ? ` (${breakdown})` : "") +
     (r.missing.length ? ` — ${r.missing.length} not found in packs (see console).` : ".")
   );
-  if (r.missing.length) console.warn("Edha Content | talents not found in any Edha pack:", r.missing);
+  if (r.missing.length) console.warn("Edha Content | items not found in any Edha pack:", r.missing);
   return r;
 }
 
@@ -10344,7 +10464,8 @@ async function edhaSyncNow(actor) {
  * whole call unless `allowStartedCombat: true`. The decision is `edhaSyncPlan`, kept pure (plain
  * actor/scene/combat shapes in, `{actors, sceneTokens, refusals}` out) so it is testable without
  * a Foundry world.
- * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaSyncAdversaryActor ·
+ * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaUpdateSceneScope ·
+ *   edhaFolderChainMatches · edhaActorFolderChain · edhaSyncAdversaryActor ·
  *   edhaSyncAllAdversaries + the renderAdversarySheet and renderActorDirectory buttons.
  * ============================================================================================ */
 
@@ -10441,6 +10562,50 @@ function edhaSyncPlan(actors, scenes, combats, opts = {}) {
   return { actors: [...actorIds], sceneTokens, refusals };
 }
 
+/* PURE (item 147, bench run 47). THE SCENE SCOPE a downstream watcher of an actor update may write
+ * tokens on. `options.edhaSceneScope` is the marker a scoped writer stamps on its own
+ * `actor.update(…)` call; every watcher that walks `game.scenes` in response to an actor update
+ * reads it back through here:
+ *   · absent / null   → `null`      no claim made — the unfiltered footprint, unchanged.
+ *   · an array / Set  → that Set    these scenes and no others.
+ *   · an EMPTY array  → empty Set   NONE: "I have already written whatever you would write, on the
+ *                                   scenes I chose." A watcher seeing this stands down completely.
+ * It exists because `edhaSyncAdversaryActor` replaces `system` WHOLESALE
+ * (`{recursive: false, diff: false}`), which satisfies every downstream watcher's "did this field
+ * change?" PRESENCE test whether or not the field moved — so a call scoped to one scene woke the
+ * Green sight watcher, which then walked every scene in the world (bench 47: Briar-Gone Grove's
+ * token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map), in direct
+ * contradiction of R-113's "a scene left out of `scenes` is never touched, no matter what it holds".
+ * Duck-typed on `.has` rather than `instanceof Set`: a Set built in another realm (a headless test,
+ * another module) is still a Set. Pinned in tests/. */
+function edhaUpdateSceneScope(options) {
+  const s = options?.edhaSceneScope;
+  if (s === null || s === undefined) return null;
+  if (typeof s?.has === "function") return s;
+  return new Set(Array.isArray(s) ? s : []);
+}
+
+/* PURE (item 151, bench run 47). Does an actor's folder CHAIN match the caller's `folder` option?
+ * `chain` is the actor's OWN folder first, then its ancestors outward — plain {id, name} shapes.
+ * The filter used to be `a.folder?.id === folder || a.folder?.name === folder`: exact and
+ * NON-RECURSIVE. No actor sits directly in "Edha Bench" — the roster lives in its children
+ * `Bench PCs` (18) and `Bench Targets` (7) — so the incantation printed in FOUR documents (the
+ * runbook twice, the bench-run skill's hard rule 9, checklist rows 123-1 and 128-1) matched ZERO
+ * actors and returned `{actors: [], sceneTokens: {}}`, which reads exactly like a clean success.
+ * Matching descendants makes "Edha Bench" mean what every one of those documents already assumed.
+ * A blank/absent `folder` matches everything (no filter). Pinned in tests/. */
+function edhaFolderChainMatches(chain, folder) {
+  if (!folder) return true;
+  for (const f of (chain ?? [])) if (f && (f.id === folder || f.name === folder)) return true;
+  return false;
+}
+// The chain above, read off a live actor: own folder first, then Folder#ancestors (parent-first).
+function edhaActorFolderChain(actor) {
+  const f = actor?.folder;
+  if (!f) return [];
+  return [f, ...(f.ancestors ?? [])];
+}
+
 async function edhaAdvSrcFor(actor) {
   const pack = game.packs?.get(EDHA_ADV_PACK_ID);
   if (!pack) return null;
@@ -10464,8 +10629,15 @@ async function edhaSyncAdversaryActor(actor, src, sceneFilter) {
   const { drop } = edhaAdvSyncPlan(actor.items.map(i => ({ id: i.id, name: i.name, flags: i.flags })), so.items);
   if (drop.length) await actor.deleteEmbeddedDocuments("Item", drop);
   if (so.items.length) await actor.createEmbeddedDocuments("Item", so.items, { keepId: true });
-  // Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
-  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false });
+  /* Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
+   * `edhaSceneScope: []` (item 147) tells every downstream actor-update watcher to STAND DOWN: this
+   * update carries the pack's whole `system` and `prototypeToken`, so a watcher's "did AWA change?"
+   * presence test fires on it even when nothing moved, and the token loop below already stamps the
+   * pack's own `sight`/`texture`/… on exactly the scenes this call is scoped to. Empty, not the
+   * scene filter: the PACK is canonical here, and the Green sight watcher's AWA ladder does not
+   * honour a bespoke `senses` override (Briar-Gone Grove's 30 ft), so letting it run on an in-scope
+   * scene would clobber the very value we are restoring. */
+  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false, edhaSceneScope: [] });
   await actor.update({ "flags.edha-content": so.flags?.["edha-content"] ?? {} });
   const proto = so.prototypeToken ?? {};
   let tokens = 0;
@@ -10495,8 +10667,20 @@ async function edhaSyncAllAdversaries(opts = {}) {
   const { folder = null, actorIds = null, scenes: sceneFilter = null, dryRun = true, allowStartedCombat = false } = opts;
 
   let candidates = game.actors?.filter(a => a.type === "adversary") ?? [];
-  if (folder) candidates = candidates.filter(a => a.folder?.id === folder || a.folder?.name === folder);
+  // item 151: `folder` matches a folder OR ANY OF ITS DESCENDANTS. The old exact, non-recursive
+  // match made the documented `{folder: "Edha Bench"}` a silent no-op — see edhaFolderChainMatches.
+  if (folder) candidates = candidates.filter(a => edhaFolderChainMatches(edhaActorFolderChain(a), folder));
   if (Array.isArray(actorIds)) { const idSet = new Set(actorIds); candidates = candidates.filter(a => idSet.has(a.id)); }
+  /* item 151: a scoped call that matches NOTHING must not read like a success. Bench 47 followed the
+   * documented incantation exactly, got `{actors: [], sceneTokens: {}}` back, and only caught it by
+   * counting the world's actors by hand. A filter naming zero candidates is almost always a typo or
+   * the wrong folder, so say so out loud rather than returning an empty plan in silence. */
+  if ((folder || Array.isArray(actorIds)) && !candidates.length) {
+    const named = [folder ? `folder "${folder}"` : null, Array.isArray(actorIds) ? `${actorIds.length} actorId(s)` : null].filter(Boolean).join(" + ");
+    const msg = `Edha: adversary sync — the ${named} filter matched ZERO adversary actors, so nothing will be synced. Check the folder name (it matches a folder or any of its subfolders) or pass actorIds.`;
+    console.warn(`Edha Content | ${msg}`);
+    ui.notifications?.warn(msg);
+  }
 
   const resolved = [], missing = [], skipped = [];
   for (const a of candidates) {
@@ -11819,6 +12003,10 @@ function edhaEffectTargets(owner, eff, ctx) {
 // trigger vs a GM-owned enemy). Mirrors the burst-apply relay pattern.
 async function edhaToggleStatus(actor, statusId, active = true) {
   try {
+    // item 149: condition immunity refuses an APPLY; say so and report that nothing landed. Only
+    // the apply direction is gated — the system refuses a removal on an immune creature too, but
+    // a removal that no-ops on a creature that cannot hold the status changes nothing at the table.
+    if (active && edhaStatusRefused(actor, statusId)) return false;
     if (actor.isOwner) { await actor.toggleStatusEffect?.(statusId, { active }); return true; }
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply ${statusId}.`); return false; }
     game.socket.emit("module.edha-content", { action: "toggle-status", payload: { actorUuid: actor.uuid, statusId, active } });
@@ -11935,9 +12123,14 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
     // (Frost Lance: Slowed until the end of the TARGET's next turn).
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
+    // item 149: the writers report what LANDED, so the card below can too — a target whose condition
+    // immunity refused the status must not be listed among those carrying it.
+    const landedOn = [], refusedBy = [];
     for (const a of targets) {
-      if (eff.statusExpire) await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire });
-      else await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      const ok = eff.statusExpire
+        ? await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire })
+        : await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      (ok === false ? refusedBy : landedOn).push(a.name);
     }
     if (spec.selfResourceGain) {   // e.g. the Hollow Command fallback card also pays Siphoned Will's focus
       const r = spec.selfResourceGain;
@@ -11945,7 +12138,8 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       else await edhaGainResource(owner, r.resource, r.value);
     }
     const label = edhaConditionLabel(eff.statusId);   // 07-27f: same lookup, one helper (see edhaLocalizeLabel)
-    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
+    const body = edhaStatusSplitNote(landedOn, refusedBy, label, spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "");
+    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${body}.</p>` });
     return;
   }
   if (eff.kind === "affliction") {
@@ -13170,8 +13364,16 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
     for (const t of uniq) {
       const opp = await edhaRollOpposedSkill(t.actor, skill);
       const failed = opp < dc;
-      if (failed && onFail) await onFail(t);
-      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${failed ? `<strong>${failText}</strong>` : okText}`);
+      /* item 149, the save-card sibling: `onFail` used to be fire-and-forget, so `failText` — which
+       * for three callers is a CONDITION NAME — was printed whether or not the condition landed.
+       * A callback that returns an explicit `false` (every raw `edhaToggleStatus` onFail does now,
+       * on a condition-immune target) gets said so; a callback that returns nothing keeps the old
+       * wording byte-for-byte, which is every onFail that posts its own card. */
+      const landed = (failed && onFail) ? await onFail(t) : undefined;
+      const outcome = failed
+        ? `<strong>${failText}</strong>${landed === false ? " <em>(immune — nothing applied)</em>" : ""}`
+        : okText;
+      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${outcome}`);
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dcRoll],
       content: `<div class="edha-trigger-card"><p>${icon} <strong>${sourceName}</strong> — ${skillName} vs your ${colorName}:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });
@@ -19005,8 +19207,10 @@ async function edhaMigrateDerivations() {
  * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
  * leak its name to players on hover). Pack-built and imported actors already carry a sight range
  * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
- * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
- * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
+ * placed tokens, single GM applier, every actor type) — SCOPED since item 147 by the caller's
+ * `options.edhaSceneScope` marker (`edhaUpdateSceneScope`), because the watcher's trigger is a
+ * presence test that a wholesale `system` replace also satisfies. `edha.fixPcTokens()` retrofits
+ * EXISTING characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   // AWA read as value + bonus (edhaAwaForSenses), the way the system's own derivation reads it —
@@ -19021,13 +19225,33 @@ Hooks.on("preCreateActor", (doc, data) => {
     doc.updateSource({ prototypeToken: proto });
   } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
-Hooks.on("updateActor", (actor, changes) => {
+Hooks.on("updateActor", (actor, changes, options) => {
   try {
     if (changes?.system?.attributes?.awa === undefined) return;
+    /* SCOPE — item 147 (bench run 47). The line above is a PRESENCE test, not a change test: a
+     * wholesale `system` replace satisfies it whether or not AWA moved. `edhaSyncAdversaryActor`
+     * does exactly that (`{recursive: false, diff: false}`), so every scoped adversary sync woke
+     * this hook, which then walked `game.scenes` UNFILTERED and stamped `sight.range` on tokens on
+     * scenes the caller's `scenes:` filter had deliberately excluded — measured live: Briar-Gone
+     * Grove's token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map, with
+     * no line in the sync's report. That contradicts R-113's contract outright ("a scene left out
+     * of `scenes` is never touched, no matter what it holds"), and it is the same unfiltered
+     * `game.scenes` shape `edha.fixPcTokens()` was caught with at bench run 45.
+     *
+     * An EMPTY scope is the sync's marker and means MORE than "no scenes": the caller has already
+     * written what this hook would, from a source that outranks it. It stands down completely,
+     * prototype write included. That second half matters on its own — `advSensesRangeFt` honours a
+     * bespoke `senses` override (Briar-Gone Grove: 30 ft) and `edhaPcSightShape`'s AWA ladder does
+     * not, so a scene filter alone would have kept the 30 → 5 corruption and merely confined it to
+     * the in-scope scene. Anything that legitimately wants a NARROWED restamp passes its scene ids
+     * and gets the walk below, scoped. */
+    const scope = edhaUpdateSceneScope(options);
+    if (scope && !scope.size) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
     void actor.update({ "prototypeToken.sight.range": range });
     for (const sc of game.scenes ?? []) {
+      if (scope && !scope.has(sc.id)) continue;
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }
@@ -22066,6 +22290,9 @@ async function edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" 
  * like the canonical H1 branch already did. */
 async function edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire = false } = {}) {
   if (!targetActor || !statusId) return false;
+  // item 149: a refused status did not land, so this must not report that it did — and must not
+  // leave a markedBy flag behind for the damage post-pass to read off a creature with no status.
+  if (edhaStatusRefused(targetActor, statusId)) return false;
   if (targetActor.isOwner) {
     await targetActor.toggleStatusEffect?.(statusId, { active: true });
     if (mark) { try { await targetActor.setFlag("edha-content", `markedBy.${statusId}`, mark); } catch (e) {} }
@@ -22097,6 +22324,24 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     const victim = boundVictim ?? edhaUserTargetActor();
     if (!victim) { ui.notifications?.warn(`Edha: target a creature for ${item.name}.`); return; }
     const status = cfg.status || "diagnosed";
+    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
+     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
+     * edhaConditionLabel is the same lookup order PLUS localization. Hoisted above the write at
+     * item 149, because the refusal card below needs it too. */
+    const label = edhaConditionLabel(status);
+    /* IMMUNITY REFUSES IT (item 149, bench run 47). Checked BEFORE anything is written, so the
+     * refusal costs no phantom `markedBy` flag — a marker-owner flag stranded on a creature that
+     * never took the status is what the damage post-pass reads to add a marker's bonus damage.
+     * The card says what happened and claims nothing; the bonus-damage clause and the rule's
+     * authored note go with it, because both describe a condition that is not there.
+     * The COST is deliberately untouched — that half is R-127, still open with Ben. */
+    if (edhaConditionImmune(victim, status)) {
+      ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${edhaStatusApplyCard(false, item.name, victim.name, label, owner.name)}</p>`,
+      });
+      return;
+    }
     const mark = { actorId: owner.id, talent: item.name };
     // `mark: false` applies the status WITHOUT claiming ownership (07-24v) — a buff on an ally must not
     // write markedBy.<status>, which the damage post-pass reads to add a marker-owner's bonus damage.
@@ -22116,15 +22361,12 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
       const ok = await edhaWriteStatusMark(victim, status, wantMark ? mark : null, { combatExpire });
       if (!ok) return;
     }
-    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
-     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
-     * edhaConditionLabel is the same lookup order PLUS localization. */
-    const label = edhaConditionLabel(status);
+    const tail = cfg.bonusDamageFormula
+      ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)`
+      : "";
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🎯 <strong>${item.name}</strong>: <strong>${victim.name}</strong> is <strong>${label}</strong> (by ${owner.name})` +
-        (cfg.bonusDamageFormula ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)` : "") +
-        `.${cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : ""}</p>`,
+      content: `<p>${edhaStatusApplyCard(true, item.name, victim.name, label, owner.name, tail, cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : "")}</p>`,
     });
   } catch (e) { console.error("Edha Content | apply status mark failed", e); }
 }

@@ -2953,6 +2953,9 @@ async function edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" 
  * like the canonical H1 branch already did. */
 async function edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire = false } = {}) {
   if (!targetActor || !statusId) return false;
+  // item 149: a refused status did not land, so this must not report that it did — and must not
+  // leave a markedBy flag behind for the damage post-pass to read off a creature with no status.
+  if (edhaStatusRefused(targetActor, statusId)) return false;
   if (targetActor.isOwner) {
     await targetActor.toggleStatusEffect?.(statusId, { active: true });
     if (mark) { try { await targetActor.setFlag("edha-content", `markedBy.${statusId}`, mark); } catch (e) {} }
@@ -2984,6 +2987,24 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     const victim = boundVictim ?? edhaUserTargetActor();
     if (!victim) { ui.notifications?.warn(`Edha: target a creature for ${item.name}.`); return; }
     const status = cfg.status || "diagnosed";
+    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
+     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
+     * edhaConditionLabel is the same lookup order PLUS localization. Hoisted above the write at
+     * item 149, because the refusal card below needs it too. */
+    const label = edhaConditionLabel(status);
+    /* IMMUNITY REFUSES IT (item 149, bench run 47). Checked BEFORE anything is written, so the
+     * refusal costs no phantom `markedBy` flag — a marker-owner flag stranded on a creature that
+     * never took the status is what the damage post-pass reads to add a marker's bonus damage.
+     * The card says what happened and claims nothing; the bonus-damage clause and the rule's
+     * authored note go with it, because both describe a condition that is not there.
+     * The COST is deliberately untouched — that half is R-127, still open with Ben. */
+    if (edhaConditionImmune(victim, status)) {
+      ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${edhaStatusApplyCard(false, item.name, victim.name, label, owner.name)}</p>`,
+      });
+      return;
+    }
     const mark = { actorId: owner.id, talent: item.name };
     // `mark: false` applies the status WITHOUT claiming ownership (07-24v) — a buff on an ally must not
     // write markedBy.<status>, which the damage post-pass reads to add a marker-owner's bonus damage.
@@ -3003,15 +3024,12 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
       const ok = await edhaWriteStatusMark(victim, status, wantMark ? mark : null, { combatExpire });
       if (!ok) return;
     }
-    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
-     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
-     * edhaConditionLabel is the same lookup order PLUS localization. */
-    const label = edhaConditionLabel(status);
+    const tail = cfg.bonusDamageFormula
+      ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)`
+      : "";
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🎯 <strong>${item.name}</strong>: <strong>${victim.name}</strong> is <strong>${label}</strong> (by ${owner.name})` +
-        (cfg.bonusDamageFormula ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)` : "") +
-        `.${cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : ""}</p>`,
+      content: `<p>${edhaStatusApplyCard(true, item.name, victim.name, label, owner.name, tail, cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : "")}</p>`,
     });
   } catch (e) { console.error("Edha Content | apply status mark failed", e); }
 }

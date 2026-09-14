@@ -422,7 +422,14 @@ Power's line is *"Signature resource: Warlord's Fury — …"*, zero "Bounty"; z
       the general finding covers it. **Second half PASSES:** `edhaParseStartingSkill`, lifted verbatim from the served
       engine and run over the six heroic PACK cards, returns Agent→Insight(ins), Envoy→Discipline(dis),
       Hunter→Perception(prc), Leader→Leadership(lea), Scholar→Lore(lor), Warrior→Athletics(ath) — all six labels and
-      all six CONFIG ids match `tests/starting-skill.test.js`'s table. Re-test after item 146 lands.)*
+      all six CONFIG ids match `tests/starting-skill.test.js`'s table. Re-test after item 146 lands.
+      ✅ **Item 146 LANDED in fix pass 12 (2026-09-14, ENGINE-ONLY → F5, then one ⟳ Sync Talents click per actor).**
+      `EDHA_SYNC_TYPES` now gates both sides with `talent` + `path` + `action`; `edhaSrcKey` carries the document TYPE
+      in the exact key and the name fallback (the deity pack ships a `path` AND a `talent` both named *Sovereignty*);
+      the update writes `system.activation`/`damage`/`description` only where the source declares them (a `path`
+      DataModel has neither of the first two); an adversary-flagged embedded `action` is left to the adversary sync;
+      and the toast reports the per-type breakdown instead of "N talent(s)". Pinned in `tests/sync-item-types.test.js`
+      (11 cases). **This row is the live re-drive** — and the new `SYNC-1` row covers the toast itself.)*
 
 *(✅ **BR-1 RETIRED on evidence, bench run 47 (2026-09-14)** — the row's premise is false at runtime and all three
 immunities bind. `CONFIG.COSMERE.statuses` (the engine's registry) contains `disoriented`, `compelled` **and**
@@ -550,6 +557,15 @@ unchanged at 2.)*
 ## Blue — False Premise denies Reactions (2026-09-14; **REBUILD leyline + ⟳ Sync Talents**)
 
 - [ ] 🤖 **FP-1 — False Premise denies a Reaction instead of duplicating Pattern Recognition's disadvantage:** on Bench — Blue, owning both `Pattern Recognition` and `False Premise`, have a target within Attunement Range succeed a Cognitive test: `Pattern Recognition`'s own `edha-next-test-mod` disadvantage still writes and posts its own card exactly as before — confirm it fires unchanged. Separately, react with `False Premise`, spend 1 Investiture, and test Blue vs. that target's Cognitive defense; on a success confirm the target now carries the `noreactions` status (icon on the token HUD) and cannot take a Reaction until the start of ITS OWN next turn, at which point the status clears itself — not a second disadvantage stack, and not tied to your (the owner's) turn.
+
+## Fix pass 12 — bench run 47's defects (2026-09-14; **ENGINE-ONLY → relaunch / F5**, then ONE ⟳ Sync Talents click per actor for item 146; no pack rebuild)
+
+*(Items 146 / 147 / 149 / 151. 147's and 151's live re-drive is row **123-1**, reworded in place; 146's is
+row **111-2**, which stays open as filed. These two rows are the new surfaces.)*
+
+- [ ] 🤖 **IMM-1 — an immune target's status card says so instead of claiming the condition (item 149):** re-drive bench 47's BR-1 case. On `Bench — Death`, summon a `Risen Servant` (it carries `system.immunities.condition` `{compelled, disoriented, frightened}`); with `Bench — Power`, use **Kneel** against it and succeed the test. Confirm the chat card now reads *"🛡️ **Kneel**: **Risen Servant** is **immune to Compelled** — no status applied."* — it must NOT say "is Compelled", must NOT print Kneel's "movement ENFORCED" rider, and the servant's `flags.edha-content.markedBy.compelled` must stay unset (console-check it: a marker-owner flag on a creature with no status is what the damage post-pass reads). Then the control: the same Kneel against an ordinary `Trooper` posts the unchanged *"🎯 **Kneel**: … is **Compelled** (by Bench — Power). Next action: …"* card and DOES write the mark. ⚠️ The COST is deliberately unchanged either way — whether an immune refusal refunds is **R-127**, still open with Ben; do not read this row as answering it.
+- [ ] 🤖 **INC-1 — the documented `{folder: "Edha Bench"}` incantation actually resolves, and an empty one warns (item 151):** from the console, `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<a licensed scene's id>] })` (dry run, no `dryRun` key). Confirm the returned plan now names the roster living in the CHILD folders `Bench PCs` / `Bench Targets` — `actors` must be non-empty, where before fix pass 12 this exact call returned `{actors: [], sceneTokens: {}}` in silence. Then check the child folder still works on its own (`folder: "Bench Targets"`), and the negative: `edha.syncAllAdversaries({ folder: "No Such Folder" })` must raise a visible warning naming the filter and saying it matched ZERO adversary actors, not return an empty plan quietly. Every call here is a dry run — nothing is written.
+- [ ] 🤖 **SYNC-1 — the ⟳ Sync Talents toast counts what it actually refreshed (item 146):** on `Bench — Black` (or any PC owning a path item), click ⟳ Sync Talents and read the notification: it should now say *"Edha: synced N item(s) on … (25 talents, 1 path, 1 action)"* rather than *"synced 25 talent(s)"*, and the count must include the path and Draw Mana. Then confirm the negative half: `edha.syncActorTalents(<an adversary>)` from the console leaves that adversary's embedded `Draw Mana` (flagged `adversary`) untouched and does NOT list it as missing — those items belong to the adversary pack sync, not this button.
 
 ## The premise (stop if these fail)
 
@@ -1079,13 +1095,18 @@ allowStartedCombat}` to `edhaSyncAllAdversaries`; the pure decision `edhaSyncPla
 `tests/engine-helpers.test.js`, so this row is only what a table can prove: a live call with real
 scope filters, and that a combat elsewhere is genuinely left untouched.)*
 
-- [ ] 🤖 **123-1 — scoped sync on the bench folder + Playtest Map, dry run then real:** with the
+- [ ] 🤖 **123-1 — scoped sync on the bench folder + Playtest Map, dry run then real, and the scope holds:** with the
       bench roster imported, call `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<Playtest
-      Map id>] })` with no `dryRun` — confirm it reports a PLAN (actor list + per-scene token counts)
-      and writes nothing. Then call it again with `dryRun: false` — confirm the same actor/token set
+      Map id>] })` with no `dryRun` — confirm the folder resolves to the roster in its CHILD folders
+      (item 151: a descendant match, and a zero-candidate filter warns instead of returning an empty
+      plan), and that it reports a PLAN (actor list + per-scene token counts) and writes nothing.
+      Then call it again with `dryRun: false` — confirm the same actor/token set
       is synced for real, and that a **started combat Ben is running on a DIFFERENT scene (never one
       the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
-      not read, sync, or touch them at all.
+      not read, sync, or touch them at all. **Then the item 147 half:** snapshot the FULL token
+      signature (id/x/y/size/texture/disposition/**sight**) of every out-of-scope scene before and
+      after the real run and confirm it is byte-identical — and that the in-scope `Briar-Gone Grove`
+      token keeps the pack's bespoke `sight.range` **30**, not the AWA ladder's 5.
       *(⚠️ **PARTIAL, bench run 47 (2026-09-14) — every clause the row names PASSES, but the scene scope is NOT
       airtight. Row stays open until item 147 lands.** Engine hash-verified `902ddadb…` = `HEAD`; two pack adversaries
       imported fresh into `Bench Targets`, one token of one of them placed on the Playtest Map.
@@ -1113,7 +1134,18 @@ scope filters, and that a combat elsewhere is genuinely left untouched.)*
       a.folder?.name === folder`, exact and non-recursive, and **no actor sits directly in "Edha Bench"** — the
       roster lives in its children `Bench PCs` and `Bench Targets`. Use `folder: "Bench Targets"` (or `actorIds`)
       until item 151 fixes it; the same wrong incantation is in row 128-1, `docs/EDHA_BENCH_RUNBOOK.md` and the
-      `bench-run` skill's hard rule 9.)*
+      `bench-run` skill's hard rule 9.
+      ✅ **BOTH fixed repo-side by fix pass 12 (2026-09-14, ENGINE-ONLY → F5) — this row is the live re-drive.**
+      **Item 147:** `edhaSyncAdversaryActor` now stamps `options.edhaSceneScope: []` on its wholesale
+      `system`/`prototypeToken` replace, and the `52-green-instinct.js` sight watcher reads it back through the new
+      pure `edhaUpdateSceneScope` and stands down — completely, prototype write included, because the PACK is
+      canonical during a sync and the watcher's AWA ladder does not honour a bespoke `senses` override (which is why
+      Briar-Gone Grove alone showed 30 → 5: it is the only block in `adversaries.json` with one). Its unfiltered
+      `game.scenes` walk is scoped too, for any future caller that wants a narrowed restamp. **Item 151:** the
+      `folder` option matches a folder **or any of its descendants** (`edhaFolderChainMatches`), so the incantation
+      above now resolves, and a `folder`/`actorIds` filter matching zero candidates warns instead of returning a
+      plan that reads like success. Pinned headless in `tests/sync-scene-scope.test.js` (16 cases, hook-layer for
+      the leak itself); the live half is this row.)*
 
 ## Bench Arena scene creation — item 128 / PM-R19 (2026-09-13 — TOOLING, no pack rebuild, no ⟳ Sync)
 
@@ -1145,7 +1177,10 @@ and none missing; all three pre-existing scenes' token-id sets, counts, wall cou
 Ben's started combat untouched. ⚠️ The row's `folder: "Edha Bench"` incantation matches zero actors — see 123-1's
 correction and **TODO item 151**; the arena-scoped calls above used `folder: "Bench Targets"`. ⚠️ An out-of-scope
 sight-range leak found while driving 123-1 is filed as **TODO item 147** — it never reached a Ben scene in this run
-because the actors involved had no tokens on one.)*
+because the actors involved had no tokens on one. ✅ **Both fixed by fix pass 12 (2026-09-14, ENGINE-ONLY → F5):**
+`folder` now matches a folder or any DESCENDANT and a zero-candidate filter warns (item 151), and the sync stamps
+`edhaSceneScope: []` so the sight watcher stands down (item 147). This row stays RETIRED — row **123-1** carries the
+live re-drive of both.)*
 
 ---
 

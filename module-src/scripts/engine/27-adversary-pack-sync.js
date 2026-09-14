@@ -16,7 +16,8 @@
  * whole call unless `allowStartedCombat: true`. The decision is `edhaSyncPlan`, kept pure (plain
  * actor/scene/combat shapes in, `{actors, sceneTokens, refusals}` out) so it is testable without
  * a Foundry world.
- * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaSyncAdversaryActor ·
+ * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaUpdateSceneScope ·
+ *   edhaFolderChainMatches · edhaActorFolderChain · edhaSyncAdversaryActor ·
  *   edhaSyncAllAdversaries + the renderAdversarySheet and renderActorDirectory buttons.
  * ============================================================================================ */
 
@@ -113,6 +114,50 @@ function edhaSyncPlan(actors, scenes, combats, opts = {}) {
   return { actors: [...actorIds], sceneTokens, refusals };
 }
 
+/* PURE (item 147, bench run 47). THE SCENE SCOPE a downstream watcher of an actor update may write
+ * tokens on. `options.edhaSceneScope` is the marker a scoped writer stamps on its own
+ * `actor.update(…)` call; every watcher that walks `game.scenes` in response to an actor update
+ * reads it back through here:
+ *   · absent / null   → `null`      no claim made — the unfiltered footprint, unchanged.
+ *   · an array / Set  → that Set    these scenes and no others.
+ *   · an EMPTY array  → empty Set   NONE: "I have already written whatever you would write, on the
+ *                                   scenes I chose." A watcher seeing this stands down completely.
+ * It exists because `edhaSyncAdversaryActor` replaces `system` WHOLESALE
+ * (`{recursive: false, diff: false}`), which satisfies every downstream watcher's "did this field
+ * change?" PRESENCE test whether or not the field moved — so a call scoped to one scene woke the
+ * Green sight watcher, which then walked every scene in the world (bench 47: Briar-Gone Grove's
+ * token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map), in direct
+ * contradiction of R-113's "a scene left out of `scenes` is never touched, no matter what it holds".
+ * Duck-typed on `.has` rather than `instanceof Set`: a Set built in another realm (a headless test,
+ * another module) is still a Set. Pinned in tests/. */
+function edhaUpdateSceneScope(options) {
+  const s = options?.edhaSceneScope;
+  if (s === null || s === undefined) return null;
+  if (typeof s?.has === "function") return s;
+  return new Set(Array.isArray(s) ? s : []);
+}
+
+/* PURE (item 151, bench run 47). Does an actor's folder CHAIN match the caller's `folder` option?
+ * `chain` is the actor's OWN folder first, then its ancestors outward — plain {id, name} shapes.
+ * The filter used to be `a.folder?.id === folder || a.folder?.name === folder`: exact and
+ * NON-RECURSIVE. No actor sits directly in "Edha Bench" — the roster lives in its children
+ * `Bench PCs` (18) and `Bench Targets` (7) — so the incantation printed in FOUR documents (the
+ * runbook twice, the bench-run skill's hard rule 9, checklist rows 123-1 and 128-1) matched ZERO
+ * actors and returned `{actors: [], sceneTokens: {}}`, which reads exactly like a clean success.
+ * Matching descendants makes "Edha Bench" mean what every one of those documents already assumed.
+ * A blank/absent `folder` matches everything (no filter). Pinned in tests/. */
+function edhaFolderChainMatches(chain, folder) {
+  if (!folder) return true;
+  for (const f of (chain ?? [])) if (f && (f.id === folder || f.name === folder)) return true;
+  return false;
+}
+// The chain above, read off a live actor: own folder first, then Folder#ancestors (parent-first).
+function edhaActorFolderChain(actor) {
+  const f = actor?.folder;
+  if (!f) return [];
+  return [f, ...(f.ancestors ?? [])];
+}
+
 async function edhaAdvSrcFor(actor) {
   const pack = game.packs?.get(EDHA_ADV_PACK_ID);
   if (!pack) return null;
@@ -136,8 +181,15 @@ async function edhaSyncAdversaryActor(actor, src, sceneFilter) {
   const { drop } = edhaAdvSyncPlan(actor.items.map(i => ({ id: i.id, name: i.name, flags: i.flags })), so.items);
   if (drop.length) await actor.deleteEmbeddedDocuments("Item", drop);
   if (so.items.length) await actor.createEmbeddedDocuments("Item", so.items, { keepId: true });
-  // Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
-  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false });
+  /* Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
+   * `edhaSceneScope: []` (item 147) tells every downstream actor-update watcher to STAND DOWN: this
+   * update carries the pack's whole `system` and `prototypeToken`, so a watcher's "did AWA change?"
+   * presence test fires on it even when nothing moved, and the token loop below already stamps the
+   * pack's own `sight`/`texture`/… on exactly the scenes this call is scoped to. Empty, not the
+   * scene filter: the PACK is canonical here, and the Green sight watcher's AWA ladder does not
+   * honour a bespoke `senses` override (Briar-Gone Grove's 30 ft), so letting it run on an in-scope
+   * scene would clobber the very value we are restoring. */
+  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false, edhaSceneScope: [] });
   await actor.update({ "flags.edha-content": so.flags?.["edha-content"] ?? {} });
   const proto = so.prototypeToken ?? {};
   let tokens = 0;
@@ -167,8 +219,20 @@ async function edhaSyncAllAdversaries(opts = {}) {
   const { folder = null, actorIds = null, scenes: sceneFilter = null, dryRun = true, allowStartedCombat = false } = opts;
 
   let candidates = game.actors?.filter(a => a.type === "adversary") ?? [];
-  if (folder) candidates = candidates.filter(a => a.folder?.id === folder || a.folder?.name === folder);
+  // item 151: `folder` matches a folder OR ANY OF ITS DESCENDANTS. The old exact, non-recursive
+  // match made the documented `{folder: "Edha Bench"}` a silent no-op — see edhaFolderChainMatches.
+  if (folder) candidates = candidates.filter(a => edhaFolderChainMatches(edhaActorFolderChain(a), folder));
   if (Array.isArray(actorIds)) { const idSet = new Set(actorIds); candidates = candidates.filter(a => idSet.has(a.id)); }
+  /* item 151: a scoped call that matches NOTHING must not read like a success. Bench 47 followed the
+   * documented incantation exactly, got `{actors: [], sceneTokens: {}}` back, and only caught it by
+   * counting the world's actors by hand. A filter naming zero candidates is almost always a typo or
+   * the wrong folder, so say so out loud rather than returning an empty plan in silence. */
+  if ((folder || Array.isArray(actorIds)) && !candidates.length) {
+    const named = [folder ? `folder "${folder}"` : null, Array.isArray(actorIds) ? `${actorIds.length} actorId(s)` : null].filter(Boolean).join(" + ");
+    const msg = `Edha: adversary sync — the ${named} filter matched ZERO adversary actors, so nothing will be synced. Check the folder name (it matches a folder or any of its subfolders) or pass actorIds.`;
+    console.warn(`Edha Content | ${msg}`);
+    ui.notifications?.warn(msg);
+  }
 
   const resolved = [], missing = [], skipped = [];
   for (const a of candidates) {

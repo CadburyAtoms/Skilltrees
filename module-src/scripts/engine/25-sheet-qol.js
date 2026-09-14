@@ -158,12 +158,15 @@ Hooks.on("renderCharacterSheet", (app, element) => {
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
       edhaBudgetRow("Attr pts",   b.attrSpent,   b.attrGranted)   +
       edhaBudgetRow("Skill rnks", b.skillSpent,  b.skillGranted);
-    // G: one-click "Sync Talents" — re-pull roll data from the packs onto this actor's talents
-    // (fixes stale snapshots after a content rebuild). Lives in the budget bar so it's always visible.
+    // G: one-click "Sync Talents" — re-pull card data from the packs onto this actor's owned Edha
+    // items (fixes stale snapshots after a content rebuild). Lives in the budget bar so it's always
+    // visible. The LABEL stays "⟳ Sync Talents" — it is the name every doc, checklist row and
+    // runbook step uses — but since item 146 it refreshes the path and action cards too, so the
+    // tooltip says so (EDHA_SYNC_TYPES is the authority).
     const syncBtn = document.createElement("button");
     syncBtn.type = "button";
     syncBtn.className = "edha-sync-btn";
-    syncBtn.title = "Re-sync this character's Edha talents from the compendium packs (fixes stale rolls after a content rebuild).";
+    syncBtn.title = "Re-sync this character's Edha cards from the compendium packs — talents, the path items, and Draw Mana (fixes stale text and rolls after a content rebuild).";
     syncBtn.textContent = "⟳ Sync Talents";
     syncBtn.addEventListener("click", (ev) => {
       ev.preventDefault();

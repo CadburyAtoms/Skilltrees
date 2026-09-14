@@ -360,6 +360,61 @@ function edhaConditionLabel(id) {
     ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
   return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
 }
+
+/* --- CONDITION IMMUNITY: does the status land at all? (item 149, bench run 47) -------------------
+ * A creature's `system.immunities.condition` map REFUSES a status outright. The cosmere Actor
+ * overrides `toggleStatusEffect` (systems/cosmere-rpg index.js): `statusId in
+ * this.system.immunities.condition && this.system.immunities.condition[statusId]` →
+ * `ui.notifications.warn("<actor> is immune to <condition>")` and `Promise.resolve(false)`.
+ *
+ * Nothing in Edha read that. Bench 47, driving BR-1: `Bench — Power`'s **Kneel** rolled 25 vs COG
+ * 11, SUCCESS, against a Risen Servant carrying `{compelled: true, …}`. The status was refused —
+ * the notification said so and `statuses` stayed `[]` — and the talent's card posted anyway:
+ * *"🎯 Kneel: Risen Servant is Compelled (by Bench — Power). Next action: move toward the
+ * compeller…"*. A GM reading the chat log rules the servant Compelled and plays the round wrong.
+ * This is the status-side twin of item 120 / item 124 on the healing side, where `edhaDeliveredNote`
+ * was introduced precisely so a card cannot claim a delivery that did not happen.
+ *
+ * PURE, and read BEFORE the write rather than from its return value ON PURPOSE: the GM-RELAY path
+ * (a player marking a GM-owned enemy) goes over a socket and has no return value to read at all.
+ * Pinned in tests/. */
+function edhaConditionImmune(actor, statusId) {
+  try { return !!actor?.system?.immunities?.condition?.[String(statusId ?? "").trim()]; } catch (e) { return false; }
+}
+
+/* The immunity gate for the WRITE sites, with the refusal made visible where it was asked for.
+ * The system raises its own warning inside `toggleStatusEffect`, i.e. on whichever client performs
+ * the write — so a relayed mark refused on the GM's machine tells the PLAYER nothing whatsoever.
+ * Returns true when the status is refused (the caller must then report nothing landed). */
+function edhaStatusRefused(actor, statusId) {
+  if (!edhaConditionImmune(actor, statusId)) return false;
+  ui.notifications?.warn(`Edha: ${actor?.name ?? "the target"} is immune to ${edhaConditionLabel(statusId)} — nothing applied.`);
+  return true;
+}
+
+/* PURE. The apply-status card's sentence, built from what ACTUALLY landed (item 149). `tail` is the
+ * trailing clause a landed status may carry (the bonus-damage rider); `note` is the rule's authored
+ * note. Both are DROPPED on a refusal, for `edhaDeliveredNote`'s reason: when nothing landed, the
+ * only honest sentence is the one saying so — an authored note like "movement ENFORCED" is exactly
+ * as false as the claim above it. Reach for this at ANY site that announces a status it just tried
+ * to apply. Pinned in tests/. */
+function edhaStatusApplyCard(landed, talentName, targetName, label, ownerName, tail = "", note = "") {
+  if (!landed) return `🛡️ <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>immune to ${label}</strong> — no status applied.`;
+  return `🎯 <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>${label}</strong> (by ${ownerName})${tail}.${note}`;
+}
+
+/* PURE. The MULTI-TARGET counterpart (item 149) — the `edha-triggered-effect` status branch applies
+ * one status to a whole target list, so its card has to say which of them took it. An ALL-LANDED
+ * call returns the pre-item-149 wording byte-for-byte (this is the overwhelmingly common case and
+ * the regression guard is on it); the authored note rides the LANDED clause only, for
+ * `edhaDeliveredNote`'s reason. Names are already-resolved strings. Pinned in tests/. */
+function edhaStatusSplitNote(landedNames, refusedNames, label, note = "") {
+  const parts = [];
+  const said = (names, verb, text) => `${names.join(", ")} ${names.length > 1 ? verb[1] : verb[0]} ${text}`;
+  if (landedNames?.length) parts.push(said(landedNames, ["is", "are"], `<strong>${label}</strong>${note}`));
+  if (refusedNames?.length) parts.push(said(refusedNames, ["is", "are"], `<strong>immune to ${label}</strong> — no status applied`));
+  return parts.join("; ");
+}
 /* R-37(2) — the ONE-OF counterpart of edhaConditionLabel. A ledger key is plural by convention
  * ("snares", "charges", "edicts"), and edhaConditionLabel falls back to the bare key when nothing
  * configures a label, so card text that names a SINGLE entry read "the snares on Snare #1 **is**
