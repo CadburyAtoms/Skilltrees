@@ -35,8 +35,9 @@ seeds, the yardstick, and the redo's plan**, and it is where the four layers mee
    shapes, the sole consumers. Run `node scripts/bestiary-census.js --check` to be sure it is current.
 2. `STANDARD.md` — and note which lines are PENDING a ruling. **A PENDING line is never applied to
    data before its ruling lands.**
-3. `EDHA_RULINGS.md` §G — the open adversary rulings (R-128 … R-135 as of 2026-09-14). Do not build
-   on an unanswered one; build the parts that do not depend on it.
+3. `EDHA_RULINGS.md` §G and §K.15 — the adversary rulings. R-128 … R-135 were all answered (a) on
+   2026-09-14; nothing is open. Do not build on an unanswered ruling; build the parts that do not
+   depend on it.
 4. The nation's canon cluster: `EDHA_CAMPAIGN_CANON.md` §5c "The <nation> …" — the approved
    creatures, their famine arcs, outs and counterplay. Canon creatures come pre-approved as concepts.
 5. `EDHA_CAMPAIGN_STATE.md` §1 "The party as a shape" — Blue / White / Green, two Scholars and an
@@ -94,14 +95,16 @@ any decision Ben still owes. Dated delta at the top of `docs/handoff-changelog/2
    the four layer-skills, the stale lines gone. *Landed 2026-09-14.*
 2. **Measure before redesigning** — the census (landed) and three **yardstick fights** on copies of
    the actual PCs (item 155, 🤖): a minion pack, a rival pair, a boss, recorded on `TURN_LEDGER.md`.
-3. **One rulings menu** — R-128 … R-135 in `EDHA_RULINGS.md` §G, each with a recommended default:
-   attributes vs overrides, cue-vs-effect policy, the legacy nine, invested humans, the colour
-   ledger and moratorium, the three shelved table rules, per-role targets, the order of the pass.
-4. **The data pass, nation by nation**, behind the statblock gate — act-1 nations first (Corvaine
-   and the Riverlands, then Thalendor for session 2's grove, then Malcurr), pending R-135.
+3. **One rulings menu** — R-128 … R-135, each with a recommended default. *All eight answered (a)
+   from the phone board on 2026-09-14, 23:19–23:23 ET (§K.15); R-130's legacy folder, R-133's two
+   card rules and R-128's build support landed the same night (items 157, 159, 160).*
+4. **The data pass, nation by nation**, behind the statblock gate — RULED R-135 (a): Corvaine and
+   the Riverlands, then Thalendor for session 2's grove, then Malcurr, then the rest in canon
+   order; the yardstick fights (item 155) run before Corvaine. Item 156.
 
-**Out of scope unless Ben says otherwise:** inventing senses or speed values for the 52 blocks
-before R-128 lands (item 82's gate), Sylvaneth (no §5c cluster; W20 the Fae is open), art.
+**Out of scope unless Ben says otherwise:** a bulk batch of attribute, senses or speed values
+(R-128 (a) + R-135 (a): they land per nation, behind the statblock gate), Sylvaneth (no §5c
+cluster; W20 the Fae is open), art.
 
 ## Traps — each one shipped at least once
 
@@ -111,8 +114,9 @@ before R-128 lands (item 82's gate), Sylvaneth (no §5c cluster; W20 the Fae is 
   Seeming's engine case was unreachable for two days. Every gate goes through `edhaIsTalent`.
 - **Tier standing in for rank.** Ruling 107 made dice scale with tier; ruling 122 reversed it to
   role, and the older blocks needed a retro sweep (ruling 123). Say the resolution in the rule.
-- **A ranked skill standing in for an attribute.** Attributes are 0 on every block, so `dec: 4`
-  is doing the work of attribute + rank. Honest until R-128 decides; never call it a PC-legal rank.
+- **A ranked skill standing in for an attribute.** Attributes were 0 on every block, so `dec: 4`
+  did the work of attribute + rank. R-128 (a) re-derives each to attribute + rank with the same
+  total in its nation pass; until then, never call it a PC-legal rank.
 - **The 5-ft stare.** An attribute-less block sees 5 ft in the dark on sheet and token alike since
   item 83. A wolf that sees 5 ft is a bug in the block, not in the ladder — state `senses`.
 - **Schema notes drift.** The data file's own `_README` still said "10 ft" a week after item 83

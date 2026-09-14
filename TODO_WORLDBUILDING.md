@@ -575,6 +575,11 @@ downstream items in the playtest-adversary pack.
 
 ### D. Demographics — land budget → population (one nation per session)
 
+      > **2026-09-14 — the second balance pass CLOSED by the census re-count (R-132 (a), canon
+      > ruling 164):** statted ledger Blue 11 · Black 9 · Red 8 · White 7.5 · Green 6.5 (pairs ½,
+      > `docs/analysis/bestiary/CENSUS.md` §3); the mono-Blue moratorium is lifted; new entries in
+      > the nation passes steer Green and White. No third pass is scheduled — the census keeps the
+      > ledger live.
 - [x] **W24 — Per-nation land budget + population — COMPLETE 2026-07-22 (all ten nations,
       the Kettavar dive closing it: rulings 139–149).** (Method: canon ruling 26;
       `lore-forge` Phase 4b.) Thalendor is **done** (~142k km² raw / ~163k effective

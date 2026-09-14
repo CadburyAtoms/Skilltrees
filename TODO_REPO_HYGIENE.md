@@ -2676,7 +2676,7 @@ per-card audit table. ENGINE + likely REBUILD (PM decides from the PR's card lis
 
 ---
 
-## 82. [~] Bestiary statting standard gains an explicit senses + movement line per block — SHELVED 2026-09-13 into item 121 (Ben: the bestiary will be redone; the invented senses/speed batch waits for that scoping)
+## 82. [x] Bestiary statting standard gains an explicit senses + movement line per block — SHELVED 2026-09-13 into item 121, then CLOSED 2026-09-14 as absorbed: the line is `bestiary-forge/STANDARD.md` §2 and R-128 (a) turned the value batch into per-nation `attributes` (item 160 built the support)
 
 **Why:** Ben, 2026-09-07 (dashboard), verbatim: *"We should update the bestiary lore-forge skill
 to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries
@@ -2711,7 +2711,7 @@ its AWA already gives it. Dep item 83 is cleared; the gate is Ben's batch.
 **PM:** lane H (Ben's approval batch is the gate) · model sonnet · size M · deps item 83 (which
 default the explicit value overrides — R-56's ladder or the Edha table).
 
-**2026-09-14 — absorbed by item 121's standard.** The senses + movement line this item asked for is `.claude/skills/bestiary-forge/STANDARD.md` §2 (`movement`: state it, RULED; `senses`: state it when the creature should not see 5 ft, and whether the fix is per-block overrides or attributes is **R-128**). The 52-value batch is exactly R-128's option (b) and waits on that answer; if (a) lands, the build derives sight from AWA and the batch becomes an attributes pass instead. The lint pass follows the ruling the same way. Nothing is asked of Ben here beyond R-128.
+**2026-09-14 — absorbed by item 121's standard, then CLOSED the same night.** The senses + movement line this item asked for is `.claude/skills/bestiary-forge/STANDARD.md` §2. R-128 was answered (a) at 23:21 ET: blocks gain `attributes`, the build derives the token's Senses Range from AWA (item 160), and the 52-value batch this item would have sent Ben is replaced by per-nation re-derivations behind the statblock gate (R-135, item 156). Ben's gloss on what Senses Range means (the obscured-sense radius; lit areas visible beyond it) is in the schema note and the standard. Nothing further is asked of Ben.
 
 ---
 
@@ -3692,7 +3692,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model sonnet · size XS · deps — · verify: the pin + a bench re-drive of 70-2. Filed 2026-09-13 from bench run 45.
 
-## 121. [~] Bestiary redo (Ben, 2026-09-13) — SCOPED 2026-09-14 with Ben; the standard, the census and the rulings menu LANDED; the data pass waits on R-128 … R-135
+## 121. [~] Bestiary redo (Ben, 2026-09-13) — SCOPED 2026-09-14 with Ben; the standard, the census and the rulings menu LANDED; **all eight rulings ANSWERED (a) the same night** — R-130 / R-133 / R-128's build support landed (157, 159, 160); the pass runs 155 → 156 → 158
 
 **Why:** Ben (chat, 2026-09-13): *"The bestiary 'how does this feel' items can all be shelved. We are going to redo the bestiary later."* Five ⚑ feel rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md` (Cold-Fire Cinderbrock's PITIABLE read, Heat of the Flats' SHADE negation, Dirgehounds pack-or-mob, Crownox ring-integrity, Tollbird swarm bookkeeping) were shelved by item 119's PR rather than answered, because the bestiary itself is getting a broader pass, not a row-by-row fix.
 
@@ -3700,11 +3700,11 @@ filed 2026-09-08 01:1x.
 
 **What landed 2026-09-14 (the scoping session's branch):** the `bestiary-forge` skill (item 154: SKILL.md the loop, STANDARD.md with every line RULED / MEASURED / PENDING, DESIGN_SEEDS.md the backlog R-76 asked for, TURN_LEDGER.md the yardstick recording template); the census (item 153: `scripts/bestiary-census.js` → `docs/analysis/bestiary/CENSUS.md`, sync-tested); pointers from lore-forge 4c, session-forge, tree-authoring, ENGINE_INDEX, CLAUDE.md and the handoff, with three stale lines fixed (the "pending" retro sweep that ran 07-20; two ENGINE_INDEX lines still reading TIER for role rank; the data `_README`'s cheatsheet purpose line and its 10-ft senses note); rulings **R-128 … R-135** in `EDHA_RULINGS.md` §G.1 with board rows for the phone.
 
-**What to do next (the sub-items):** **155** the yardstick fights (🤖 — needs no ruling; runs first per R-135 (a)); **156** the nation-by-nation data pass (R-128, R-129, R-134, R-135); **157** the legacy nine (R-130); **158** invested-human adversaries (R-131); **159** the three shelved card rules (R-133). R-132 is DOCS-ONLY when answered (a canon §9 line + STANDARD.md §1). Item 82 is absorbed: its standard line is STANDARD.md §2, its value batch is R-128 (b)'s shape and waits on that answer.
+**What to do next (the sub-items):** **155** the yardstick fights (🤖 — needs no ruling; runs first per R-135 (a)); **156** the nation-by-nation data pass (unblocked: R-128, R-129, R-134, R-135 all answered (a) 2026-09-14; waits only for 155's ledgers); **157** the legacy nine — DONE 2026-09-14 (R-130 (a)); **158** invested-human adversaries (R-131 (a): rides each nation pass, lore gate first); **159** the three shelved card rules — DONE 2026-09-14 (R-133 (a)); **160** the build's `attributes` support — DONE 2026-09-14 (R-128 (a)). R-132 (a) is recorded as canon ruling 164 (DOCS-ONLY). Item 82 is closed as absorbed: its standard line is STANDARD.md §2 and R-128 (a) made its value batch an attributes pass per nation.
 
 **Done when:** every sub-item is done or explicitly parked by Ben; the five shelved feel rows are retired on card text (R-133's three) or re-opened after session play (the two feel rows); the census is green against the final data and its bands are inside R-134's targets or say why not.
 
-**PM:** lane H (Ben's rulings are the gate) · model per sub-item · size L as a programme · deps R-128 … R-135 · PR #386 carries items 153 + 154.
+**PM:** lane H · model per sub-item · size L as a programme · deps NONE open (R-128 … R-135 answered 2026-09-14) · PR #386 carries items 153 + 154; the close-out PR carries 157, 159, 160 and owes an adversaries REBUILD + ⟳ Sync.
 
 
 ## 122. [x] (2026-09-13, PR #340) The agent-run deploy cycle becomes ONE gated script with guardrails, verification and tests (TOOLING + DOCS) (2026-09-13) — script + guards + tests shipped; the PM's first LIVE `--yes` run (🤖 row, `EDHA_FOUNDRY_TEST_CHECKLIST.md`) is the outstanding verify step
@@ -4085,17 +4085,17 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **Done when:** every bestiary folder has had its pass; the census's §4 shows no `(d)` senses on a creature that should see, every rule's description carries its cue-or-effect label, and the bands sit inside R-134's targets or say why not.
 
-**PM:** lane H · model opus per nation (sonnet for a mechanical-only nation) · size L · deps R-128, R-129, R-134, R-135 answered; item 155's ledgers.
+**PM:** lane H · model opus per nation (sonnet for a mechanical-only nation) · size L · deps R-128, R-129, R-134, R-135 — all answered (a) 2026-09-14; item 155's ledgers first (R-135 (a)).
 
-## 157. [ ] The nine legacy playtest-dungeon blocks — per R-130 (DATA, adversaries REBUILD)
+## 157. [x] (2026-09-14, PR #TBD) The nine legacy playtest-dungeon blocks — per R-130 (a): the `Legacy — Playtest Dungeon` folder (DATA, adversaries REBUILD + ⟳ Sync owed)
 
 **Why:** Trooper … Mutated Thrall are the 6-room test dungeon the data file began as, not Thyrcross fauna; they carry no folder, six are the only users of `data/adversary-effects.json`, and three are sole consumers of engine primitives (census §6). R-130 decides their fate.
 
 **What to do:** (a) a `Legacy — Playtest Dungeon` folder (the default: a `folder` field on nine blocks, the census re-run); (b) delete after re-pinning `edha-pack-advantage`, `edha-thorns`, `edha-dark-veil` on a fixture; (c) reskin through the lore gate.
 
-**Done when:** the option Ben picks is applied; `_README`'s purpose line matches; census green.
+**Done when:** the option Ben picks is applied; `_README`'s purpose line matches; census green. — **DONE 2026-09-14 (R-130 (a), answered 23:22 ET):** the nine carry the folder; `foundry-build.js` creates the old top-level fallback only when a block lands in it (none does — the scratch build prints 14 folders, `Legacy — Playtest Dungeon` among them and no `Playtest Adversaries`); the census counts them apart by folder name (a synthetic case pins it); schema notes updated; gates 14/14 with `--ci`.
 
-**PM:** lane B · model sonnet · size S (a) / M (b) / L (c) · deps R-130.
+**PM:** lane B · model — (done by the close-out session) · size S · deps R-130 ✓.
 
 ## 158. [ ] Invested-human adversaries — per R-131 (DATA, adversaries REBUILD; lore gate first)
 
@@ -4105,14 +4105,24 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **Done when:** the humans Ben approved are in their nations' folders with 🤖 rows; the census's "tree talents on blocks" line reflects them.
 
-**PM:** lane H · model opus · size L · deps R-131; rides item 156's nation passes if (a).
+**PM:** lane H · model opus · size L · deps R-131 answered (a) 2026-09-14; rides item 156's nation passes, lore gate first.
 
-## 159. [ ] The three shelved bestiary rows that are card rules — Crownox ring adjacency, Heat of the Flats' shade, swarm bookkeeping — per R-133 (DATA card text, adversaries REBUILD + ⟳ Sync)
+## 159. [x] (2026-09-14, PR #TBD) The three shelved bestiary rows that are card rules — Crownox ring adjacency, Heat of the Flats' shade, swarm bookkeeping — per R-133 (a) (DATA card text, adversaries REBUILD + ⟳ Sync owed)
 
 **Why:** five feel rows were shelved on 2026-09-13; three of them ask for a written rule, not a perception, and can be answered without play. R-133 carries the proposed texts.
 
 **What to do:** put the answered rules on the three cards (Crownox Ring, Heat of the Flats' carrier block, the swarm blocks under the Wake-Eel precedent), keep the `noHook` reasons where no hook exists, retire the three checklist rows on the text landing, leave the two feel rows (Cinderbrock PITIABLE, Dirgehounds pack-or-mob) shelved until a session plays them.
 
-**Done when:** the three cards carry the rules verbatim; lint passes 5/6 green; census green; the three rows retired with the ruling cited.
+**Done when:** the three cards carry the rules verbatim; lint passes 5/6 green; census green; the three rows retired with the ruling cited. — **DONE 2026-09-14 (R-133 (a), answered 23:22 ET):** (i) Crownox Ring / The Ring carries the adjacency rule (within 5 ft of another ring ox, R-52's slack); (ii) The False Spring / Heat of the Flats carries the shade clause on the card and on the whispered cue; (iii) the swarm rule on Tollbird Flock and Wake-Eel Shoal stands as written with its `noHook` — no change. The three checklist rows retired; a 🤖 row checks the two card texts after ⟳ Sync; the two feel rows stay shelved until play.
 
-**PM:** lane B · model sonnet · size S · deps R-133.
+**PM:** lane B · model — (done by the close-out session) · size S · deps R-133 ✓.
+
+## 160. [x] (2026-09-14, PR #TBD) Adversary blocks may state `attributes` — the build derives the token's Senses Range from AWA and the pool from max(AWA, PRE) (R-128 (a); TOOLING, pack byte-identical until a block states them)
+
+**Why:** R-128 (a), answered 2026-09-14 23:21 ET with Ben's gloss (*"Senses range of 20 feet means it can sense things 20 feet away with its primary sense obscured. That is- in dim light. In a normally lit room it should see as far as the light goes."*). Every block had attributes 0, so 51 of 52 saw 5 ft in the dark and 41 of 52 carried skill ranks doing an attribute's work.
+
+**What landed:** `scripts/foundry-build-parts.js` — `ATTRIBUTE_IDS`, `advAttributeValues`, `advAttributes` (only the stated keys, `{value}` each, null when none), `advInvDefault` (2 + max(AWA, PRE) for an attuned block), and `advSensesRangeFt` reading the ladder at the block's AWA with the explicit `senses` override still winning; `scripts/foundry-build.js` writes `sys.attributes` when stated and derives the pool through the helper; `tests/adversary-attributes.test.js` pins the parity shape (no key → nothing written, 5 ft, inv 2) and the derivations; the schema note documents the key and the gloss.
+
+**Done when:** DONE — gates 14/14 with `--ci`. The values are item 156's per-nation work (R-135 (a)), never a bulk batch.
+
+**PM:** lane B · model — (done by the close-out session) · size S.
