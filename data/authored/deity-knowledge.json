@@ -106,11 +106,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "FinalStudyTest00": {
@@ -326,11 +323,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "KillingBlowTest0": {
@@ -528,11 +522,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "PredStrikeArm000": {
@@ -552,13 +543,13 @@
           "order": 1,
           "handler": {
             "type": "edha-note",
-            "text": "make a melee or ranged weapon attack — the next hit auto-adds [Tier][Die] Vital per Insight on the target (min 1), then places 1 Insight on it. Don't also roll the card's damage by hand.",
+            "text": "make a melee or ranged weapon attack — the next hit auto-adds [Tier][Die] plus your Tier per Insight on the target (min 1), then places 1 Insight on it. Don't also roll the card's damage by hand.",
             "icon": "📖"
           },
           "id": "PredStrikeNote00"
         },
         "PredStrikeRider0": {
-          "description": "Knowledge (Gnothis). The armed rider: next WEAPON hit +[Tier][Die red] vital × max(Insight-on-target, 1), consuming predprimed, then 1 Insight placed on the actual hit target (post-pass — a new target becomes the bearer).",
+          "description": "Knowledge (Gnothis). The armed rider: next WEAPON hit +[Tier][Die red] vital plus Tier × max(Insight-on-target, 1), consuming predprimed, then 1 Insight placed on the actual hit target (post-pass — a new target becomes the bearer).",
           "event": "edha-watch-rule",
           "handler": {
             "type": "edha-damage-bonus",
