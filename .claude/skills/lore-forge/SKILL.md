@@ -337,6 +337,11 @@ mechanics-shape together with the animal.
 
 ## Phase 4c — Bestiary → adversary blocks (the statblock gate; Ben 2026-07-19)
 
+> **The statting itself is `bestiary-forge`'s job** (added 2026-09-14, item 121): its `STANDARD.md`
+> says what every block states and where each number comes from, and `docs/analysis/bestiary/CENSUS.md`
+> holds the measured bands and the colour ledger Phase 4b counts. This phase stays the GATE — the
+> concept-then-numbers sequence and who approves what — and hands the block-building to that skill.
+
 A nation or ecology pass that invents creatures does not end at the prose. **When building
 adversaries, after Ben approves a bestiary the next turn is the same bestiary as adversary
 blocks for Foundry** (`data/adversaries.json` schema; wired per `leyline-tree-authoring`

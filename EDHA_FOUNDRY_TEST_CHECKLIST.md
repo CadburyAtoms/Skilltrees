@@ -1101,6 +1101,35 @@ and made the backup skip `LOCK`/EBUSY/EPERM files; this row stays open for the r
       *(✅ RETIRED on evidence 2026-09-13 20:46 ET — the PM's live run: six guards PASS, nine steps ok, packs restamped 00:46:39Z, served engine `24d74c96` = HEAD, Foundry relaunched into Edha (HTTP 302 → /join). The one post-flight REFUSE was the verifier's own case bug (item 139), not the deploy. Earlier the same evening: the 19:41 run died safely on the pack LOCK (item 129) and another session's 20:05 run raced the boot (item 137) — both fixed before this pass.)*
       remaining eight steps, relaunch, verification, the DEPLOY STATE record.
 
+## Bestiary yardstick fights — item 155 (2026-09-14 — DOCS-ONLY: nothing to deploy; three fights on copies of the actual PCs, recorded on `.claude/skills/bestiary-forge/TURN_LEDGER.md`)
+
+*(The bestiary redo's played half (item 121; rulings R-134 / R-135). The census
+(`docs/analysis/bestiary/CENSUS.md`) measures per HIT; these rows measure per TURN — Actions spent,
+hits against the party's real defenses, the graze floor — the way bench run 44 measured the Palewater
+ford (18 damage to the party, 7 to the raiders, two structural causes and neither a statblock). Rules
+of the set: copies of the three PCs, never the players' actors (`scripts/bench-setup-console.js`
+protects them); a licensed scene; numbers exactly as on the cards, no softening, so R-134's targets
+read against the real bands; **charge the graze's Focus (1 per target — a `foc: 1` minion grazes
+once)**; world restored afterwards; each fight recorded on the turn-ledger shape into
+`docs/analysis/bestiary/YARDSTICK-<date>.md`. Anything structural is a `test-pass-fixes` report.)*
+
+- [ ] 🤖 **YARD-1 — a minion pack: Rootling Swarm ×3 (Thalendor Heartwood Bestiary) against the three PC
+      copies, three rounds:** fill the fight header (engine hash, packs stamp, scene, PC copies' HP /
+      defenses / Deflect / ranged-attack yes-no), then per round: damage to the party by source with
+      grazes marked, damage to the swarm by PC, Focus spent on grazes, drops; and every PC Action coded
+      **T** (a talent on the sheet) / **D** (Draw Mana or a standard action) / **N** (nothing useful).
+      Note enemies on the field each round. Census expectation to compare against: three minions at
+      about 5 expected damage per hit into 10–13 HP PCs with Deflect 0.
+- [ ] 🤖 **YARD-2 — a rival pair: Mistheron ×2 (Riverlands Bestiary — session 1's fog fight), same
+      recording:** the Seeming's lightweight `edha-ambush-belief` is part of the fight — note whether
+      the first-attack Perception test fired per target and what it changed. Census expectation: two
+      rivals at about 7 expected damage per hit.
+- [ ] 🤖 **YARD-3 — a boss: Briar-Gone Grove (Thalendor Heartwood Bestiary — session 2's grove seed),
+      same recording:** the grove's briar terrain rides Draw Mana (ENGINE-NATIVE) — note whether the
+      terrain placed and whether it changed a PC's Action choice; it is the one block that states
+      `senses` (30 ft), so the sight half needs no note. Census expectation: one boss at about 9
+      expected damage per hit, 48+ HP, six or more PC Actions to drop.
+
 ## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
 
 *(Bench run 46 declined an unscoped `⟳ Sync Adversaries from Pack` because it would have rewritten
