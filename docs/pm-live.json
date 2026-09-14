@@ -1,25 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Item 152 merged (#382): the deploy guard reads a squash-merged bench branch as merged. Deployed main @ 8f0c843 at 02:09: fix pass 12's engine is live — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards and Draw Mana refresh. Still running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list); on its merge the PM deploys again, then hands off before 07:00. R-127 is yours.",
+    "note": "Items 142 + 143 + 150 merged (#383): Isolating Pressure places an Omen on an unmarked target through one generic engine dial, every Chaos release rule quotes the tier + 1 cap, Power's reset leaves a GM-applied Frightened alone — live at the next deploy, which the PM runs now; then the Monday handoff. Opus is spent for 09-14. Click ⟳ Sync Talents ONCE on each of your three PCs. R-127 is yours.",
     "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs (after the 02:09 deploy) · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [
-    {
-      "item": "142+143+150",
-      "title": "Items 142 + 143 + 150 — the H3 dial so Isolating Pressure places an Omen on an unmarked target; the Chaos release caps to tier + 1; Power's reset list (ENGINE-ONLY F5 + DATA, REBUILD deity)",
-      "model": "opus",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/142-143-150-omen-dial-power-reset",
-      "startedAt": "2026-09-14T06:09:45Z",
-      "agent": "Work items 142 + 143 + 150",
-      "phase": "working",
-      "pr": null,
-      "note": "engine + data worker in its own worktree; never touches the live module — the PM deploys after merge"
-    }
-  ],
+  "workers": [],
   "usage": null
 }

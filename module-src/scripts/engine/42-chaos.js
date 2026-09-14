@@ -58,6 +58,16 @@
  *   Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) — `edha-def-test` (player-rolled)
  *   + H3 `edha-owner-list` + edha-triggered-effect. Pressure/Ruin are the reference for H3's
  *   CONDITIONAL idiom (an `op: release` rule returning false skips the rules after it).
+ *   Isolating Pressure is ALSO the reference for the BRANCHING shape (item 142, 2026-09-14,
+ *   R-122 (a)'s second half): its release carries `onMissing: continue`, so the halt is dropped
+ *   and both outcomes ride their own rules — the damage gated `whenTargetStatus: omen`, the new
+ *   placement gated `unlessTargetStatus: omen`, both read against the ENTRY SNAPSHOT the test-result
+ *   dispatcher takes before any rule runs (edhaTargetStatusesAt). That snapshot is the whole trick:
+ *   without it the placement reads a ledger its own sibling emptied a line earlier and re-marks a
+ *   creature it just shattered, and ordering the placement FIRST makes the release shatter the Omen
+ *   it just placed. The placement uses the same `@tier + 1` cap and `evict: refuse` as the tree's
+ *   other placements; every `op: release` rule in the tree quotes that cap too (item 150) so one
+ *   denominator is printed everywhere.
  *   Spreading Omen (2bU) — H1 + H3 place {victim} + H3 place {near-victim, 10 ft} (the proximity
  *   auto-pick: nearest living enemy not already marked, silent card note when none).
  *   Unweaving (2bU) — H1 black-vs-spi + H6 {source: effects} (the dispel pick, GM-clicked, its

@@ -1095,6 +1095,26 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   set); `capFormula` (usually `@tier`); `target: victim | prompt | self`.
 - **`release` returns `false` when the creature was not on the list** — that is the conditional
   idiom above, not an error path.
+- **`onMissing: "halt" | "continue"` + `whenTargetStatus` / `unlessTargetStatus` (item 142,
+  2026-09-14) — the BRANCHING dial.** The conditional idiom above has exactly one outcome: a rule
+  after the `release` either runs or does not. A talent that must do something ELSE when there was
+  nothing to release could not carry that half on its document at all — order the placement after
+  the release and the halt eats it, order it before and the release shatters the entry it just
+  placed. `onMissing: "continue"` (default `"halt"` = today's behaviour, untouched; honoured by both
+  list and counter mode) keeps the do-nothing and drops the halt; the status pair then gates each
+  sibling so the branches stay mutually exclusive. **Both gates read the ENTRY SNAPSHOT, not the
+  live set** — see `edhaTargetStatusesAt` below. Comma-list = any-of (`edhaStatusCsvMatch`); a
+  gated-out rule returns `undefined`, a silent skip that never stops the rules after it. First
+  consumer: Chaos's Isolating Pressure (shatter an Omen, or place one when there is none).
+- **`edhaTargetStatusesAt(event, tgt)` (item 142) — the ENTRY SNAPSHOT, pinned in `tests/`.**
+  `edhaDispatchTestResult` snapshots the target's status ids ONCE before the first rule of the
+  batch runs (`options.targetStatusesAtEntry = {uuid, statuses}`), and every status gate resolves
+  through this helper: the snapshot when it is for THAT creature, the live `actor.statuses`
+  otherwise (a `self` rule, a re-targeted victim, any dispatch that carried no target). It is what
+  lets a rule ask *what was true when the activation started* rather than what a sibling left
+  behind. `edha-triggered-effect`'s `whenTargetStatus` / `unlessTargetStatus` read through it too —
+  inert for every pre-item-142 consumer, since a snapshot can only differ from the live set when a
+  sibling rule in the same batch mutated the gated status.
 - Pure core **`edhaListPush(list, entry, {cap, evict})` → `{list, evicted, refused}`** (pinned in
   `tests/`; a cap that COMPUTED to 0/NaN refuses rather than emptying a live ledger).
 - **`edhaOwnerListQueue(owner, key, task)` — THE door for any ledger read-modify-write (07-26n,
@@ -3233,6 +3253,12 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   name no talent.
 - Five arming statuses: `warlord` · `momentum` · `fury` · `unstoppable` · `mantled` (cleared by
   `edhaClearPowerState`, whose flag list is legacy-only now).
+  **`edhaClearPowerState`'s status sweep is `compelled` + those five + `crowned` (item 143,
+  2026-09-14).** `frightened` LEFT the list: item 135 / R-125 (a) moved Kneel's standing advantage
+  and Absolute Authority's gate onto Disoriented, so the registry entry is now a GM-APPLIED marker
+  that no talent reads or applies — and the only way it is set today is a GM toggling it by hand,
+  which Power ending combat has no business silently undoing. `compelled` stays: Kneel applies it.
+  Pinned in `tests/scene-reset.test.js`.
 
 ## Pass 2bV (07-25) — the edicts repoint, the prohibition family, the zone verbs, H21
 

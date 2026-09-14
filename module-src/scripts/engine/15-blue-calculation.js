@@ -14,7 +14,11 @@
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
  *   - Pattern Recognition → on use, disadvantage on the target's next test.
  *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
- *   - False Premise (skill_test) → on use (after the Blue test), disadvantage on the target's next test.
+ *   - False Premise (skill_test) → on use (after the Blue test), the target cannot take Reactions
+ *     until the start of ITS next turn — the `noreactions` timed status (`statusExpire: target`),
+ *     the same marker shape as Black's Hollow Command. It banked a disadvantage on the target's
+ *     next test until item 107 / R-115 (a) (2026-09-14, PR #374) re-aimed it: that payload was a
+ *     duplicate of Pattern Recognition's, two rows above.
  *   - Anticipate          → on use, ADVANTAGE on the next test of you or an in-network ally.
  *   - Counterspell (skill_test)  → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test`
  *     blue vs cog, engine-resolved, verdict on the card. Its own roll + cost are native.

@@ -691,6 +691,24 @@ function edhaStatusCsvMatch(csv, statuses) {
   const has = typeof statuses.has === "function" ? (s) => statuses.has(s) : (s) => Array.from(statuses).includes(s);
   return want.some(has);
 }
+/* PURE (pinned in tests/): the ENTRY SNAPSHOT a status gate reads (item 142, 2026-09-14).
+ *
+ * A talent's rules run as a BATCH through one dispatcher, and a gate that reads the target's LIVE
+ * statuses therefore sees whatever an earlier sibling in the same batch already did to it. That is
+ * fine while the gates and the mutations are about different statuses; it is fatal the moment a
+ * rule must ask "what was true when this activation STARTED" — a rule ordered after a marker's
+ * removal reads the world the removal made, so it can never branch on the marker having been there.
+ *
+ * So the dispatcher snapshots the creature's status ids ONCE, before any rule runs, as
+ * `options.targetStatusesAtEntry = { uuid, statuses }`, and every status gate reads through here.
+ * The uuid is the safety: the snapshot is used ONLY for the creature it was taken from, so a rule
+ * that resolves some OTHER victim (a `self` rule, a re-target, a dispatch that carried no target)
+ * falls back to the live read it always had. No snapshot on the event = the live read, unchanged. */
+function edhaTargetStatusesAt(event, tgt) {
+  const snap = event?.options?.targetStatusesAtEntry;
+  if (snap?.statuses && tgt?.uuid && snap.uuid === tgt.uuid) return snap.statuses;
+  return tgt?.statuses ?? null;
+}
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)

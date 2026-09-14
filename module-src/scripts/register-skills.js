@@ -717,6 +717,24 @@ function edhaStatusCsvMatch(csv, statuses) {
   const has = typeof statuses.has === "function" ? (s) => statuses.has(s) : (s) => Array.from(statuses).includes(s);
   return want.some(has);
 }
+/* PURE (pinned in tests/): the ENTRY SNAPSHOT a status gate reads (item 142, 2026-09-14).
+ *
+ * A talent's rules run as a BATCH through one dispatcher, and a gate that reads the target's LIVE
+ * statuses therefore sees whatever an earlier sibling in the same batch already did to it. That is
+ * fine while the gates and the mutations are about different statuses; it is fatal the moment a
+ * rule must ask "what was true when this activation STARTED" — a rule ordered after a marker's
+ * removal reads the world the removal made, so it can never branch on the marker having been there.
+ *
+ * So the dispatcher snapshots the creature's status ids ONCE, before any rule runs, as
+ * `options.targetStatusesAtEntry = { uuid, statuses }`, and every status gate reads through here.
+ * The uuid is the safety: the snapshot is used ONLY for the creature it was taken from, so a rule
+ * that resolves some OTHER victim (a `self` rule, a re-target, a dispatch that carried no target)
+ * falls back to the live read it always had. No snapshot on the event = the live read, unchanged. */
+function edhaTargetStatusesAt(event, tgt) {
+  const snap = event?.options?.targetStatusesAtEntry;
+  if (snap?.statuses && tgt?.uuid && snap.uuid === tgt.uuid) return snap.statuses;
+  return tgt?.statuses ?? null;
+}
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
@@ -2371,13 +2389,23 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
      * H6's click "this talent carried no payload, post the table-run note instead". */
     .filter(r => !(ctx.viaPick && r?.handler?.type === "edha-prompt-pick"))
     .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  /* THE ENTRY SNAPSHOT (item 142, 2026-09-14). Taken once, here, before the first rule runs, and
+   * handed to every rule in the batch: `edhaTargetStatusesAt` resolves a status gate against it
+   * instead of the live set, so a rule can branch on what the creature bore when the activation
+   * STARTED rather than on what an earlier sibling left behind. This is what lets a shatter-or-place
+   * talent carry both branches on its own document (iron rule 2b) without the ordering trap —
+   * place-then-release shatters the entry it just placed, release-then-place reads a marker its own
+   * sibling removed a line earlier. Cheap (a Set copy of a handful of ids) and inert for every
+   * existing consumer: it can only differ from the live read when a sibling rule in THIS batch
+   * mutated the very status being gated on, which no shipped rule does. */
+  const targetStatusesAtEntry = target?.uuid ? { uuid: target.uuid, statuses: new Set(target.statuses ?? []) } : null;
   for (const rule of rules) {
     try {
       // `victim` as well as `target` (07-24p): the trigger family resolves eff.target === "victim"
       // from ctx.victim, and binding the payload to the creature the TEST RESOLVED AGAINST is
       // strictly better than re-reading game.user.targets — with two tokens targeted the test used
       // the first one, and a "prompt" payload would have hit both.
-      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, victim: target, owner, testOk: ok } });
+      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, victim: target, owner, testOk: ok, targetStatusesAtEntry } });
       if (res === false) break;
     } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
   }
@@ -6749,7 +6777,11 @@ Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
  *   - Pattern Recognition → on use, disadvantage on the target's next test.
  *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
- *   - False Premise (skill_test) → on use (after the Blue test), disadvantage on the target's next test.
+ *   - False Premise (skill_test) → on use (after the Blue test), the target cannot take Reactions
+ *     until the start of ITS next turn — the `noreactions` timed status (`statusExpire: target`),
+ *     the same marker shape as Black's Hollow Command. It banked a disadvantage on the target's
+ *     next test until item 107 / R-115 (a) (2026-09-14, PR #374) re-aimed it: that payload was a
+ *     duplicate of Pattern Recognition's, two rows above.
  *   - Anticipate          → on use, ADVANTAGE on the next test of you or an in-network ally.
  *   - Counterspell (skill_test)  → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test`
  *     blue vs cog, engine-resolved, verdict on the card. Its own roll + cost are native.
@@ -14446,6 +14478,16 @@ async function edhaClearLifeState(endedCombat) {
  *   Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) — `edha-def-test` (player-rolled)
  *   + H3 `edha-owner-list` + edha-triggered-effect. Pressure/Ruin are the reference for H3's
  *   CONDITIONAL idiom (an `op: release` rule returning false skips the rules after it).
+ *   Isolating Pressure is ALSO the reference for the BRANCHING shape (item 142, 2026-09-14,
+ *   R-122 (a)'s second half): its release carries `onMissing: continue`, so the halt is dropped
+ *   and both outcomes ride their own rules — the damage gated `whenTargetStatus: omen`, the new
+ *   placement gated `unlessTargetStatus: omen`, both read against the ENTRY SNAPSHOT the test-result
+ *   dispatcher takes before any rule runs (edhaTargetStatusesAt). That snapshot is the whole trick:
+ *   without it the placement reads a ledger its own sibling emptied a line earlier and re-marks a
+ *   creature it just shattered, and ordering the placement FIRST makes the release shatter the Omen
+ *   it just placed. The placement uses the same `@tier + 1` cap and `evict: refuse` as the tree's
+ *   other placements; every `op: release` rule in the tree quotes that cap too (item 150) so one
+ *   denominator is printed everywhere.
  *   Spreading Omen (2bU) — H1 + H3 place {victim} + H3 place {near-victim, 10 ft} (the proximity
  *   auto-pick: nearest living enemy not already marked, silent card note when none).
  *   Unweaving (2bU) — H1 black-vs-spi + H6 {source: effects} (the dispel pick, GM-clicked, its
@@ -16891,7 +16933,13 @@ async function edhaClearPowerState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "power",
     flags: ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed", "kneelBy"],
-    statuses: ["compelled", "frightened", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"],
+    // `frightened` LEFT this list on 2026-09-14 (item 143). Item 135 / R-125 (a) moved Kneel's
+    // standing advantage and Absolute Authority's gate onto Disoriented, and the registry entry now
+    // calls Frightened a GM-APPLIED marker that no talent reads or applies. A status the tree never
+    // writes is not Power's state to reset — and the one way it can be set today is a GM toggling it
+    // by hand, which Power ending combat has no business silently undoing. Compelled stays: Kneel
+    // still applies it. The rest are the tree's own markers.
+    statuses: ["compelled", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"],
     extra: async (a) => {
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "powerMantle")) ?? [];
       if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
@@ -20437,11 +20485,14 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
    * makes a conditional payload work without a new gate field. */
   {
     source: "edha-content", type: "edha-owner-list",
-    label: "Edha: Sustained List (place / release)", description: "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
+    label: "Edha: Sustained List (place / release)", description: "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Set 'When there was nothing to release' to continue and the later rules run anyway, so a talent can BRANCH: gate each one on the status the target already had (Isolating Pressure shatters an Omen, or places one when there was none). Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
     config: { schema: {
       list: new FF.StringField({ required: true, blank: false, initial: "omens", label: "Ledger name", hint: "The owner flag this list lives under, and the marker status id unless you set one below: omens, edicts, remains, charges… (counter mode: insight)" }),
       mode: new FF.StringField({ required: false, initial: "list", choices: choices("list", "counter"), label: "Shape", hint: "list = up to <cap> creatures each bearing one mark (Omen, Covenant) · counter = ONE creature bearing a 0..cap COUNT (Knowledge's Insight — H3b, §9m q6): place SETS the count and transfers the bearer, add moves it by ±N, release clears it." }),
       op: new FF.StringField({ required: true, initial: "place", choices: choices("place", "release", "count", "add", "annotate", "spend"), label: "What to do", hint: "place = add the creature (counter: set the count on it, clearing any prior bearer) · release = remove it and STOP the later rules if it wasn't on the list (counter: clear ALL points — Killing Blow's success) · add = counter mode only: move the bearer's count by ±N (Accumulate +1, Killing Blow's failure −1) · count = just report the total on the card · annotate = flag your MOST RECENT un-flagged entry (Sealed Edict notarizes the last unsealed Edict — the Inevitable-Snare/Pinpoint-Charge shape, H3ann; refused BEFORE cost when none qualifies) · spend = consume your OLDEST entry as a cost (the Remains/Charge convention, 2bW — Risen Servant, Speak with the Fallen; freebie-aware)." }),
+      onMissing: new FF.StringField({ required: false, initial: "halt", choices: choices("halt", "continue"), label: "When there was nothing to release (op = release)", hint: "halt (the default, unchanged) = a release that finds the creature not on your list STOPS the rules ordered after it — the conditional idiom: put a damage rule after the release and it only lands on a real removal. continue = the release still does nothing, but the later rules run; gate them on the status below so each branch fires exactly once. Item 142." }),
+      whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target ALREADY had this status", hint: "Comma-list = any of them. Read against the statuses the creature bore when the activation STARTED, not the live set — so a sibling rule removing the marker earlier in the same use cannot un-gate this one. Blank = no gate; a skip here never stops the later rules. Item 142." }),
+      unlessTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "SKIP when the target ALREADY had this status", hint: "The negation of the gate above, read against the same entry snapshot. Isolating Pressure's placement is `unlessTargetStatus: omen` — it places an Omen only on a creature that did not already bear one, while the shatter branch reads the same snapshot the other way. Item 142." }),
       requireNonEmpty: new FF.BooleanField({ required: false, initial: false, label: "Refuse with the ledger empty (op = spend; checked BEFORE cost)", hint: "ON = an empty ledger vetoes the use before any cost is paid (Risen Servant needs a Harvested Remain — nothing spent). OFF = an empty ledger just skips the spend and the later rules still run (Speak with the Fallen's optional spend)." }),
       confirm: new FF.StringField({ required: false, blank: true, initial: "", label: "Ask before spending (op = spend)", hint: "A DialogV2 confirm shown when the ledger has an entry — declining posts a card and spends nothing, and the later rules still run. Speak with the Fallen: 'Spend a Harvested Remain? (Otherwise…)'. Blank = spend without asking." }),
       sceneFreebie: new FF.BooleanField({ required: false, initial: false, label: "You begin each scene with 1 (this ledger)", hint: "While you carry this rule, an UNSET ledger reads as one spendable freebie entry (Reaper's Harvest: 'You begin each scene with 1'). Spent-to-empty stays empty until the scene cleanup unsets the flag — [] ≠ unset. 2bW." }),
@@ -20473,6 +20524,17 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const key = String(this.list || "").trim(); if (!key) return;
       const status = String(this.status || key).trim();
       const victim = edhaResolveVictim(event);
+      /* THE ENTRY-SNAPSHOT GATE (item 142). Same pair, same semantics and the same silent-skip
+       * return as `edha-triggered-effect`'s — a gated-out rule returns undefined, so the rules
+       * ordered after it still run. The difference is WHICH statuses it reads: the set the creature
+       * bore when the activation began (edhaTargetStatusesAt), so a sibling `release` earlier in the
+       * batch cannot un-gate the branch that was supposed to be mutually exclusive with it. Checked
+       * before `who`, the cap, and every write — nothing has happened yet when the gate decides. */
+      if (this.whenTargetStatus || this.unlessTargetStatus) {
+        const seen = edhaTargetStatusesAt(event, victim);
+        if (this.whenTargetStatus && !edhaStatusCsvMatch(this.whenTargetStatus, seen)) return;
+        if (this.unlessTargetStatus && edhaStatusCsvMatch(this.unlessTargetStatus, seen)) return;
+      }
       const who = this.target === "self" ? owner
         : this.target === "prompt" ? edhaUserTargetActor()
         : this.target === "near-victim" ? edhaNearestListCandidate(owner, victim, Number(this.nearFt) || 10, edhaOwnerList(owner, key, status))
@@ -20490,7 +20552,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
           return;
         }
         if (this.op === "release") {
-          if (!bearer) return false;      // nothing to clear → the dispatcher skips the rules after this one
+          if (!bearer) return this.onMissing === "continue" ? undefined : false;   // nothing to clear → halt (default) or fall through (item 142)
           const had = edhaCounterOn(owner, key, bearer, status);
           await edhaCounterSet(owner, null, 0, opts);
           say(`<p>📖 <strong>${item.name}</strong>: all <strong>${had}</strong> ${label} removed from ${bearer.name}.</p>`);
@@ -20617,7 +20679,12 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         return await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
           const cur = edhaOwnerList(owner, key, status);
           const idx = cur.findIndex(e => e.uuid === who.uuid);
-          if (idx < 0) return false;      // nothing to release → the dispatcher skips the rules after this one
+          /* `false` is the CONDITIONAL idiom: the dispatcher breaks on it, so a damage rule ordered
+           * after this one only ever lands on a real removal. `onMissing: "continue"` (item 142) is
+           * the one dial that keeps the do-nothing but drops the halt, so a talent can carry the
+           * other branch as its own rule — gated on the entry snapshot, which still remembers the
+           * marker this release would have found. */
+          if (idx < 0) return this.onMissing === "continue" ? undefined : false;
           const [gone] = cur.splice(idx, 1);
           await edhaSetOwnerList(owner, key, cur);
           await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: this.multiOwner === true });
@@ -20718,13 +20785,19 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         if (this.whenDamageType && this.whenDamageType !== "any" && dtype && !edhaRiderMatches(this.whenDamageType, dtype)) return;
         // Target-status gate (Predatory Patience: Investiture only on a hit vs a Weakened creature). For
         // deal-damage/use events there's no event victim → fall back to your current target.
+        /* Both gates read the ENTRY SNAPSHOT when the dispatcher took one (item 142) and the live
+         * set otherwise — `edhaTargetStatusesAt` falls back on its own. Inert for every shipped
+         * consumer (audited 2026-09-14: only Unravel Everything gates inside a test-result batch,
+         * on `isolated`, which no sibling of its touches), and it is what makes Isolating Pressure's
+         * damage rule survive its own `release` running first: the marker is gone from the creature
+         * by then, but it is still in the snapshot the activation started from. */
         if (this.whenTargetStatus) {
           const tgt = edhaResolveVictim(event);
-          if (!tgt?.statuses?.has?.(this.whenTargetStatus)) return;
+          if (!edhaTargetStatusesAt(event, tgt)?.has?.(this.whenTargetStatus)) return;
         }
         if (this.unlessTargetStatus) {
           const tgt = edhaResolveVictim(event);
-          if (tgt?.statuses?.has?.(this.unlessTargetStatus)) return;   // silent skip, never a stop
+          if (edhaTargetStatusesAt(event, tgt)?.has?.(this.unlessTargetStatus)) return;   // silent skip, never a stop
         }
         const spec = edhaTrigSpecFromCfg(this);
         const ctx = { victim: event.options?.victim ?? null };

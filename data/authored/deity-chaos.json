@@ -72,7 +72,8 @@
             "list": "omens",
             "op": "release",
             "status": "omen",
-            "target": "victim"
+            "target": "victim",
+            "capFormula": "@tier + 1"
           },
           "order": 1,
           "id": "CascadeRel000000"
@@ -197,9 +198,9 @@
       "docId": "0Nu7omaq1cJiTU3u",
       "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Cut off from aid, the crack becomes a chasm.</em></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Cut off from aid, the crack becomes a chasm.</em></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage. If the target bears no Omen, place one.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage. If the target bears no Omen, place one.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage. If the target bears no Omen, place one.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -264,30 +265,50 @@
         },
         "IsolPressureShat": {
           "id": "IsolPressureShat",
-          "description": "Chaos. THE CONDITIONAL, and the reason H3's `release` returns false: if the target does not bear your Omen there is nothing to release, the handler returns false, and edhaDispatchTestResult stops — so the damage rule ordered after this one never fires. No new gate field needed.",
+          "description": "Chaos. THE SHATTER BRANCH. `onMissing: continue` (item 142, 2026-09-14) is the one dial that keeps the do-nothing and drops the halt: an unmarked target used to make this return false and stop every rule ordered after it, which is exactly why the talent could not also carry the placement (R-122 (a)'s second half). The two branches below gate on the ENTRY SNAPSHOT of the target's statuses, so this removal cannot un-gate either of them.",
           "event": "edha-test-success",
           "handler": {
             "type": "edha-owner-list",
             "list": "omens",
             "op": "release",
+            "onMissing": "continue",
             "status": "omen",
             "target": "victim",
+            "capFormula": "@tier + 1",
             "note": "shattered — the damage below rides this"
           },
           "order": 2
         },
         "IsolPressureDmg0": {
           "id": "IsolPressureDmg0",
-          "description": "Chaos. [Tier][Die] + Awareness vital, reached ONLY when the Omen above was actually shattered.",
+          "description": "Chaos. [Tier][Die] + Awareness vital, reached ONLY when an Omen was actually shattered — `whenTargetStatus: omen` read against the entry snapshot (item 142), so the Omen the release above just removed is still what this rule sees. The card's 'also' clause.",
           "event": "edha-test-success",
           "handler": {
             "type": "edha-triggered-effect",
+            "whenTargetStatus": "omen",
             "kind": "damage",
             "target": "victim",
             "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
             "damageType": "vital"
           },
           "order": 3
+        },
+        "IsolPressurePlc0": {
+          "id": "IsolPressurePlc0",
+          "description": "Chaos. THE PLACEMENT BRANCH (R-122 (a)'s second half, item 142 — 2026-09-14): `unlessTargetStatus: omen` against the same entry snapshot, so it fires exactly when the release above found nothing, and never alongside the damage rule. Same ledger, same `@tier + 1` cap and `evict: refuse` as Entropy Strike's and Spreading Omen's placements — at the cap the Omen simply does not land and the card says so.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "unlessTargetStatus": "omen",
+            "status": "omen",
+            "target": "victim",
+            "capFormula": "@tier + 1",
+            "evict": "refuse",
+            "note": "no Omen to shatter — one is placed instead"
+          },
+          "order": 4
         }
       },
       "effects": []
@@ -384,6 +405,7 @@
             "op": "release",
             "status": "omen",
             "target": "victim",
+            "capFormula": "@tier + 1",
             "note": "shattered — a second instance rides this"
           },
           "order": 3
@@ -615,7 +637,8 @@
             "list": "omens",
             "op": "release",
             "status": "omen",
-            "target": "victim"
+            "target": "victim",
+            "capFormula": "@tier + 1"
           },
           "order": 2,
           "id": "UnravelRel000000"
@@ -739,6 +762,7 @@
             "op": "release",
             "status": "omen",
             "target": "victim",
+            "capFormula": "@tier + 1",
             "note": "shattered — the Disorient below rides this"
           },
           "order": 2,
