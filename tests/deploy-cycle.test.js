@@ -77,10 +77,35 @@ test("checkNoBenchWorker: a lane-B worker on the overlay refuses", () => {
   assert.ok(v.message.includes("45"));
 });
 
-test("checkNoBenchWorker: a worker whose title names bench (no lane) also refuses", () => {
-  const pmLive = { workers: [{ item: "46", title: "bench run 46", lane: "R" }] };
+/* --- checkNoBenchWorker: the overlay signal is lane/item/branch, never title text (item 138) --
+ * Pins named in the brief: a lane-R worker titled "bench guard reads worktrees" passes;
+ * `item: "bench-47"` refuses; `lane: "B"` refuses (covered above); `branch: "pm/bench-48"`
+ * refuses.
+ */
+
+test("checkNoBenchWorker: a lane-R worker whose TITLE names bench passes — title text is not a signal", () => {
+  const pmLive = { workers: [{ item: "125+137", title: "deploy-cycle.js: bench guard reads worktrees and branches", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an item id starting with bench- refuses", () => {
+  const pmLive = { workers: [{ item: "bench-47", title: "some worker", lane: "R" }] };
   const v = guards.checkNoBenchWorker(pmLive, false);
   assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("bench-47"));
+});
+
+test("checkNoBenchWorker: a branch starting with pm/bench- refuses, even with an unrelated item/title", () => {
+  const pmLive = { workers: [{ item: "48", title: "some worker", branch: "pm/bench-48", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+});
+
+test("checkNoBenchWorker: an AGENT field naming bench is not a signal either", () => {
+  const pmLive = { workers: [{ item: "49", title: "ordinary work", agent: "bench-run agent", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
 });
 
 test("checkNoBenchWorker: --force-bench overrides a lane-B worker", () => {

@@ -62,13 +62,17 @@ function checkModuleSrcSync(exitCode) {
 }
 
 // A worker holds the table if the PM's live overlay (docs/pm-live.json) lists it on lane "B", or
-// its item/title/agent/branch names "bench" — either means a bench run may be mid-flight against
-// the same Foundry this script is about to close out from under it.
+// its `item` or `branch` id STARTS WITH the bench-worklist shape (`bench-45`, `pm/bench-46`) —
+// never free-text fields (`title`, `agent`). Item 138: the old check matched the substring
+// "bench" anywhere across item/title/agent/branch joined together, so the 125+137 worker's own
+// title ("deploy-cycle.js: bench guard reads worktrees…") tripped it and refused a live deploy
+// that never touched Foundry.
+const BENCH_WORKER_ID_RE = /^(?:pm\/)?bench-/i;
 function isBenchWorker(worker) {
   if (!worker) return false;
   if (worker.lane === "B") return true;
-  const text = [worker.item, worker.title, worker.agent, worker.branch].filter(Boolean).join(" ").toLowerCase();
-  return /bench/.test(text);
+  const isBenchId = (s) => typeof s === "string" && BENCH_WORKER_ID_RE.test(s.trim());
+  return isBenchId(worker.item) || isBenchId(worker.branch);
 }
 
 // A `pm/bench-*` branch name (local, or `origin/pm/bench-*` remote) is a bench signal regardless
