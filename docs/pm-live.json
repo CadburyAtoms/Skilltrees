@@ -1,9 +1,9 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Item 132 merged (#369): the Omen cap is tier + 1 at the next deploy; Isolating Pressure's placement half needs an engine dial → item 142 (Opus). Nothing is running until the 00:26 slot (item 135), then a deploy and bench run 47 (Opus, after 00:00).",
+    "note": "Items 132 (#369) and 135 (#370) merged — the Omen cap tier + 1 and Power's Disoriented reads go live with the next deploy, which the PM runs the moment #370 lands; then bench run 47 (Opus) at the 00:00 reset over the whole queue. Items 142 + 143 (Chaos's Isolating Pressure dial; Power's reset list) go to one Opus worker after the bench.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": "2026-09-14T04:26:00Z",
+    "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [],

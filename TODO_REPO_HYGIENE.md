@@ -3858,7 +3858,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane R · model sonnet · size XS · deps — · verify: read-through. Filed 2026-09-13 from R-124.
 
-## 135. [ ] R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13)
+## 135. [x] (2026-09-13, PR #370) R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-13: both card texts and both status-list gates (`requireTargetStatus` / `whenTargetStatus`) moved from Frightened to Disoriented, along with the two talents' description copies and rule-description annotations; the engine's `frightened` registry comment now says no talent reads it (comment only — `stripComments` shows zero code difference). `Risen Servant`'s immunity list is untouched (checklist row BR-1's question). Pack parity: of 110 deity-pack documents, exactly these two differ, zero roll-formula drift. Pack rebuild is Ben's. 🤖 row PW-1.
 
 **Why:** nothing in the game applies Frightened (three mentions in 365 talents, all reads or immunities; no adversary ability; the engine registers it only as a GM-applied marker nobody documented). Ben chose (a): Disoriented, which seven trees apply, giving the one deity tree without an income a little cross-path synergy.
 
@@ -3931,3 +3931,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the dial is generic and registered, the talent's own rules express the behaviour, both cases pinned headless, pack parity names exactly Isolating Pressure, the row filed.
 
 **PM:** lane B · model opus · size S · deps R-122 ✓ · 132 ✓ (#369) · verify: headless pins (mutation both ways) + pack parity. Filed 2026-09-13 by the PM from item 132's report; the ruling is answered — this is the engineering, not a new question for Ben.
+
+## 143. [ ] `edhaClearPowerState`'s scene-reset list in `47-power.js` still clears `frightened` — a status no talent reads or applies since item 135 (ENGINE-ONLY, F5; fold into item 142's Opus dispatch) (2026-09-13)
+
+**Why:** item 135 (PR #370) moved Kneel's and Absolute Authority's reads from Frightened to Disoriented and left the `frightened` registry entry as a GM-applied marker with its comment updated. Its worker found, and correctly left alone (the brief allowed one comment as the only engine change), that the Power scene-reset `statuses` array in `edhaClearPowerState` (`module-src/scripts/engine/47-power.js` ~L446) still lists `"frightened"` among the statuses cleared when Power-flavoured combat ends. Harmless today — clearing a status nobody applies is a no-op — but it is the last engine line that treats Frightened as Power's own condition, and a GM who toggles the marker by hand would have Power's reset silently clear it.
+
+**What to do:** decide from the registry comment which way is honest — drop `"frightened"` from the reset list (the marker is GM-applied, so a Power reset should not clear a GM's own toggle; the likely answer) or keep it and say so in the section header — one line either way; re-assemble the engine (`node scripts/engine-assemble.js`, commit both files); a pin in the existing Power reset test or a new headless case that reads the reset list; the `ENGINE_INDEX.md` Power note. Do it inside item 142's Opus dispatch (both are post-balance engine touch-ups on deity trees) unless 142 is delayed.
+
+**Done when:** the reset list matches the registry's statement, pinned; the engine re-assembled; the delta names the deploy class (ENGINE-ONLY, F5).
+
+**PM:** lane R · model opus · size XS · deps 135 ✓ (#370) · verify: the pin + `engine-assemble.js --check`. Filed 2026-09-13 by the PM from item 135's found-out-of-scope note.
