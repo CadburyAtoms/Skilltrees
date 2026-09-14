@@ -16,6 +16,8 @@
  */
 "use strict";
 
+const crypto = require("crypto");
+
 function verdict(ok, name, message) {
   return { ok, name, message };
 }
@@ -69,15 +71,60 @@ function isBenchWorker(worker) {
   return /bench/.test(text);
 }
 
-function checkNoBenchWorker(pmLive, forceBench) {
+// A `pm/bench-*` branch name (local, or `origin/pm/bench-*` remote) is a bench signal regardless
+// of what the CURRENT checkout's tracked docs/pm-live.json says — item 125: that overlay is only
+// as fresh as the checkout it was read from, and a PM that has not yet landed its own board PR
+// (the normal state mid-shift) could otherwise close Foundry out from under a live bench.
+function isBenchBranchName(name) {
+  return /^(?:origin\/)?pm\/bench-/.test(String(name || "").replace(/^refs\/heads\//, ""));
+}
+
+// Parses `git worktree list --porcelain` output into `[{ path, branch }]` — `branch` is null for
+// a detached worktree. Pure text-in/data-out so it can be pinned with no git process at all.
+function parseWorktreePorcelain(text) {
+  return String(text || "")
+    .split(/\r?\n\r?\n/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      let wtPath = null;
+      let branch = null;
+      for (const line of block.split(/\r?\n/)) {
+        if (line.startsWith("worktree ")) wtPath = line.slice("worktree ".length).trim();
+        else if (line.startsWith("branch ")) branch = line.slice("branch ".length).trim().replace(/^refs\/heads\//, "");
+      }
+      return { path: wtPath, branch };
+    });
+}
+
+// `extra.worktrees`: [{ path, branch }] (from parseWorktreePorcelain). `extra.branches`: { local,
+// remote }, each a list of { name, merged } — the caller has already resolved merged-ness via
+// `git branch --merged origin/main` / `git branch -r --merged origin/main`, since that needs a
+// live git process; this function only decides given the plain data. A branch merged into
+// origin/main does NOT count as a bench signal (it is done, not in flight).
+function checkNoBenchWorker(pmLive, forceBench, extra) {
   const workers = (pmLive && Array.isArray(pmLive.workers)) ? pmLive.workers : [];
   const holders = workers.filter(isBenchWorker);
-  if (holders.length && !forceBench) {
-    const names = holders.map((w) => w.item || w.title || "?").join(", ");
-    return verdict(false, "no-bench-worker", `refused — worker(s) holding the table: ${names} (pass --force-bench to override)`);
+
+  const worktrees = (extra && Array.isArray(extra.worktrees)) ? extra.worktrees : [];
+  const benchWorktrees = worktrees.filter((wt) => wt && isBenchBranchName(wt.branch));
+
+  const branches = (extra && extra.branches) || {};
+  const unmergedLocal = (branches.local || []).filter((b) => b && !b.merged);
+  const unmergedRemote = (branches.remote || []).filter((b) => b && !b.merged);
+
+  const names = [
+    ...holders.map((w) => w.item || w.title || "?"),
+    ...benchWorktrees.map((wt) => `worktree ${wt.path} (${wt.branch})`),
+    ...unmergedLocal.map((b) => b.name),
+    ...unmergedRemote.map((b) => b.name),
+  ];
+
+  if (names.length && !forceBench) {
+    return verdict(false, "no-bench-worker", `refused — bench signal(s) held: ${names.join(", ")} (pass --force-bench to override)`);
   }
-  if (holders.length) {
-    return verdict(true, "no-bench-worker", `${holders.length} bench worker(s) present, overridden by --force-bench`);
+  if (names.length) {
+    return verdict(true, "no-bench-worker", `${names.length} bench signal(s) present, overridden by --force-bench`);
   }
   return verdict(true, "no-bench-worker", "no worker holds the table");
 }
@@ -181,6 +228,59 @@ function checkJoinRedirect({ status, location, joinBody, worldTitle }) {
   return verdict(true, "join-redirect", "/ -> /join, world confirmed");
 }
 
+/* --- Post-flight retry policy (item 137: the post-flight verification races Foundry's boot) ----
+ *
+ * Foundry's relaunch poll (`pollUntilRedirect`) only waits for `/` to answer 302 — it says nothing
+ * about whether the world's static files (the engine script, the join page) are fully served yet.
+ * A live run on 2026-09-13 saw exactly that: all eight steps green, but the immediate post-flight
+ * fetch of the engine raced the boot and had to be hand-verified two minutes later. So the
+ * post-flight checks must RETRY with a bounded backoff (`--wait-seconds`, default 90) instead of
+ * failing on the first not-yet-ready response — and only FAIL once that deadline passes.
+ */
+
+function sha256(text) {
+  return crypto.createHash("sha256").update(String(text == null ? "" : text)).digest("hex");
+}
+
+// The same 8-hex-char engine fingerprint used in the DEPLOY STATE record line — one copy so
+// deploy-cycle.js never re-implements the hashing.
+function engineSha8(text) {
+  return sha256(normalizeCRLF(text)).slice(0, 8);
+}
+
+// Generic bounded-retry wrapper: given an already-pure ok/name/message verdict, decides whether
+// the caller should try again ("retry" — not yet a FAIL), stop with success ("pass"), or stop
+// with failure ("fail") because `elapsed` has reached `deadline`. A passing verdict is always an
+// immediate "pass" regardless of elapsed time.
+function retryUntilDeadline(verdictResult, elapsed, deadline) {
+  if (verdictResult.ok) return Object.assign({ outcome: "pass" }, verdictResult);
+  if (elapsed >= deadline) return Object.assign({ outcome: "fail" }, verdictResult);
+  return Object.assign({ outcome: "retry" }, verdictResult);
+}
+
+// The engine-fetch decision: a non-200 status, a fetch error (status 0), or a body whose sha does
+// not match HEAD's engine is NOT YET a failure — it is a retry until `elapsed` reaches `deadline`.
+function checkEngineShaMatches({ status, body, expectedSha }) {
+  if (status !== 200) {
+    return verdict(false, "engine-matches-head", `served status ${status}, not 200`);
+  }
+  const actualSha = engineSha8(body || "");
+  if (actualSha !== expectedSha) {
+    return verdict(false, "engine-matches-head", `served engine sha ${actualSha} != HEAD's ${expectedSha}`);
+  }
+  return verdict(true, "engine-matches-head", `served engine sha ${actualSha} = HEAD's ${expectedSha}`);
+}
+
+function shouldRetryVerify({ status, body, expectedSha, elapsed, deadline }) {
+  return retryUntilDeadline(checkEngineShaMatches({ status, body, expectedSha }), elapsed, deadline);
+}
+
+// The /join-title check, wrapped with the same bounded-retry policy — reuses checkJoinRedirect
+// itself rather than re-deciding what a good /join response looks like.
+function shouldRetryJoin({ status, location, joinBody, worldTitle, elapsed, deadline }) {
+  return retryUntilDeadline(checkJoinRedirect({ status, location, joinBody, worldTitle }), elapsed, deadline);
+}
+
 /* --- The DEPLOY STATE record line (checklist §"⚑ DEPLOY STATE") --------------------------------
  * Pure text formatting/insertion so tests/deploy-cycle.test.js can pin it against a fixture
  * string rather than the real (huge) checklist file.
@@ -211,6 +311,8 @@ module.exports = {
   checkNotBehindOrigin,
   checkModuleSrcSync,
   isBenchWorker,
+  isBenchBranchName,
+  parseWorktreePorcelain,
   checkNoBenchWorker,
   checkPacksExist,
   checkWorldConfigured,
@@ -222,6 +324,10 @@ module.exports = {
   normalizeCRLF,
   enginesMatch,
   checkJoinRedirect,
+  engineSha8,
+  retryUntilDeadline,
+  shouldRetryVerify,
+  shouldRetryJoin,
   formatDeployRecordLine,
   insertDeployStateRecord,
 };

@@ -3728,7 +3728,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps —. Filed 2026-09-13 from bench run 46.
 
-## 125. [ ] `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
+## 125. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
 
 **Why:** at item 122's review the PM dry-ran the script twice. From the main checkout (board branch, live `docs/pm-live.json`) it refused naming bench-46. From a worktree it PASSED the same guard while bench 46 was mid-run — that checkout's `docs/pm-live.json` was `main`'s, and `main` only carries the overlay as of the last merged board PR. The guard is therefore only as fresh as the checkout it runs from, and a PM that has not yet landed its board PR (the normal state mid-shift) could close Foundry under a live bench.
 
@@ -3793,6 +3793,17 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the pins pass and fail on the reversion; `--dry-run` lists "backup" after "close"; the PM's next live run gets past the backup.
 
 **PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
+
+## 137. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s post-flight verification races Foundry's boot (TOOLING + test pin) (2026-09-13)
+
+**Why:** another session's live run on 2026-09-13 ~20:05 ET (its worktree `docs/deploy-record-2026-09-14`, DEPLOY STATE note) ran all eight steps green from a worktree on `main`, but its post-flight fetch raced Foundry's boot — served engine `24d74c96…` == HEAD and `/` → `/join` both had to be verified by hand two minutes later. The relaunch step's poll only waits for `/` to answer 302; Foundry answers that redirect before the world and module files are fully served, so the immediate post-flight fetch of `/modules/edha-content/scripts/register-skills.js` (and possibly `/join`'s title check) can fail or return a partial body.
+
+**What to do:** `postFlightVerify` retries the engine fetch and the `/join` title check with a bounded backoff until `--wait-seconds` (default 90) elapses — a fetch that errors, times out, returns a non-200, or a body whose sha does not match HEAD's is a *retry*, not a FAIL, until the deadline; only then FAIL with the last observed status/sha. Pure decision `shouldRetryVerify({status, body, expectedSha, elapsed, deadline})` in the guards module, pinned: a 404 at 5 s → retry; a wrong sha at 10 s → retry; the right sha → pass; a wrong sha at the deadline → fail. Say in the runbook's agent-run-deploy section that the verification waits up to `--wait-seconds`.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` still lists every step and names the `--wait-seconds` bound on the post-flight description.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run. Filed 2026-09-13 by the PM from the other session's 20:05 deploy record.
+
 ## 130. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
 
 > **Held 2026-09-14 pending Ben's re-read.** Ben questioned the finding ("taking every talent in the Knowledge tree, right? … what's the damage curve per-talent-taken?"). The answer is in `docs/analysis/talent-ecosystem/balance-per-talent.js` / `BALANCE-REVIEW.md` §2: the line needs ONE pick (Predatory Strike alone reaches five Insight by turn 2–3) — 52 a turn at tier 1 from the first pick, against Black's 33 and Warrior's 31 — and (b) brings the first pick to 34 / 59. Ship only after Ben confirms on that table.
@@ -3866,3 +3877,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** DM-1 (engine, F5) and DM-2 (card, after REBUILD) pass on the bench.
 
 **PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.
+
+## 138. [ ] `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
+
+**Why:** `isBenchWorker` (item 122, `scripts/lib/deploy-guards.js`) treats `lane === "B"` OR the substring `bench` in item / title / agent / branch as a bench signal. The 125 + 137 worker's own overlay entry — *"deploy-cycle.js: bench guard reads worktrees…"* — tripped it, and the PM's 20:44 dry run refused with `bench signal(s) held: 125+137` although that worker never touched Foundry. The worker that built item 125 flagged it in its report.
+
+**What to do:** the overlay signal is `lane === "B"` OR an `item` / `branch` that STARTS with `bench` / `pm/bench-` (the real shapes: `bench-45`, `pm/bench-46`); never the title or agent text. Pin: a lane-R worker titled "bench guard reads worktrees" passes; `item: "bench-47"` refuses; `lane: "B"` refuses.
+
+**Done when:** the pin passes and fails on the reversion; the PM's dry run with a non-bench worker on the overlay passes the guard.
+
+**PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM from the refused dry run.

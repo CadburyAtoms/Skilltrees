@@ -47,6 +47,19 @@ a session still cannot "log in and click around" without a live Foundry to join,
 be the one that (re)starts it first. A guard refusal (a bench worker on the overlay, a
 hand-edited engine, an unclean tree) means stop and ask Ben, not `--force-bench` on a hunch.
 
+**The no-bench-worker guard also reads live git state (item 125, 2026-09-14):** on top of the
+checkout's tracked `docs/pm-live.json` overlay (which lags the PM's own unmerged board branch), a
+`--dry-run` or `--yes` refuses if any `git worktree list` entry is checked out on a `pm/bench-*`
+branch, or an unmerged `pm/bench-*` branch exists locally or as `origin/pm/bench-*` on the remote
+(a branch already merged into `origin/main` does not count). Same `--force-bench` override.
+
+**Post-flight verification waits for Foundry to actually finish booting (item 137, 2026-09-14):**
+the relaunch step's poll only waits for `/` to answer 302, which Foundry does before its world and
+module files are fully served — an immediate post-flight fetch can race that and see a partial or
+missing body. So the served-engine and `/join`-title checks now retry with a short backoff for up
+to `--wait-seconds` (default 90) before failing, instead of failing on the first miss; `--dry-run`
+names this bound in its post-flight description line.
+
 ## Per-run checklist (the agent)
 
 > **Deploy-script rule (2026-09-05, learned twice):** `scripts/deploy-to-foundry.bat` pulls `main`

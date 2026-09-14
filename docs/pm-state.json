@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T00:13:49.687Z",
+  "generatedAt": "2026-09-14T00:44:45.398Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "64ac72e118",
-    "commit": "38e3560",
-    "branch": "pm/board-2026-09-13h",
+    "hash": "5da8c0a59b",
+    "commit": "05b4910",
+    "branch": "pm/board-2026-09-13i",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,26 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday evening: item 129 merged (the deploy script backs up after closing Foundry). Your other session deployed at 20:05 — everything merged today is live, no F5 owed. One worker is fixing the script's last two rough edges (bench guard blind spot, boot race). Seven rulings still wait on the Needs Ben tab.",
+    "note": "Sunday evening: the deploy script's guards are complete (items 125 + 137 merged). The PM runs it for real next — Foundry closes and relaunches for about a minute; re-join your client afterwards. Seven rulings still wait on the Needs Ben tab.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "125+137",
-      "title": "deploy-cycle.js: bench guard reads worktrees + pm/bench-* branches; post-flight verification retries until --wait-seconds",
-      "model": "sonnet",
-      "size": "XS+XS",
-      "lane": "R",
-      "branch": "pm/125-137-deploy-guards",
-      "startedAt": "2026-09-14T00:13:00Z",
-      "agent": "Work items 125 + 137",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1525,9 +1511,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "122 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 358
     },
     {
       "pos": 121,
@@ -1609,8 +1595,20 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "129 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
+      "pr": 358
+    },
+    {
+      "pos": 128,
+      "item": "138",
+      "title": "the overlay bench check matches the word \"bench\" in any title — refused the PM's 20:44 dry run on a lane-R worker; match lane B / item or branch prefixes only; pin",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "125 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     }
   ],
@@ -1671,34 +1669,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "21:21",
-      "at": "2026-09-08T01:21:00.000Z",
-      "item": "Ben's 20:30 paste fully answered (20:30 → 21:21): bench 44a #298 + item 96 #300 + board PRs #297 / #299 / this one. Workers 9.6M weighted (all Sonnet: 4.5 + 5.1); PM 7.9M so far this session (203 turns — the two reviews each needed a main merge and a correction). Queue: nothing Sonnet-sized; Opus resumes 00:00 ET — 70 → 80 (or 88), push live + hash check, bench run 44 (now also item 92's flipped keen-hit row and item 93's editor round-trip row, both deployed 20:28). Waiting on Ben: R-56 (asked three times) and his own ⟳ Sync Talents click on his two PCs. Loop idles until 00:00 unless Ben writes; stop before 07:00 with a handoff row",
-      "itemNo": "298",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "51 min",
-      "weighted": "7.9M (PM) + 9.6M workers",
-      "weightedM": 7.9,
-      "outcome": "waiting",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "21:51",
-      "at": "2026-09-08T01:51:00.000Z",
-      "item": "Two rulings from Ben in chat. R-56 = \"Cosmere ladder for everyone.\" → item 83 GO (Opus M; tonight after 00:00 as the second Opus dispatch, after 70; 80 slides a night; the worker records R-56 ANSWERED and moves it to §K). PM-R17 (verbatim on the rulings table): Tem parinaem / Soggy Bottom may be REFRESHED by the PM and agents (⟳ Sync Talents), never EDITED (stats, items, text) → item 97 filed (sonnet S, docs sweep of the \"UNTOUCHABLE\" rule; dispatched on this PR's merge) and bench 44's step zero refreshes both PCs. Waiting on Ben: nothing",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "board PR + dispatch",
-      "pr": null
-    },
     {
       "date": "2026-09-07",
       "time": "21:56",
@@ -2510,9 +2480,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:13",
+      "at": "2026-09-14T00:13:00.000Z",
+      "item": "Items 125 + 137 (deploy-cycle.js: the bench guard reads worktrees + pm/bench-* branches; post-flight retries until --wait-seconds; fetchText headers) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "29 min, 133 tool uses",
+      "weighted": "6.5M",
+      "weightedM": 6.5,
+      "outcome": "merged 20:43 after review, no trailers; CI green on f459cd0, gates 12/12 (1187 tests); both pins shown failing on the reversion. Found: stale local bench branches (deleted by the PM) and the overlay word-match false positive (→ item 138). TOOLING-only",
+      "pr": 358
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:44",
+      "at": "2026-09-14T00:44:00.000Z",
+      "item": "Dry run refused by the new guard on the overlay's word-match (the 125 + 137 title said \"bench guard\"); item 138 filed; overlay emptied here so the live run can go once this board PR lands. Trailing-5h dispatches 5 of 6 (16:53, 19:26, 19:49, 20:13 + the 15:48 pair rolled off at 20:48)",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 263,
+  "runLogTotal": 265,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3252,6 +3250,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-14T00:13:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 358
     }
   ],
   "statusVocab": [
