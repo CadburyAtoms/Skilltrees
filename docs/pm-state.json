@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T06:36:18.174Z",
+  "generatedAt": "2026-09-14T06:45:31.004Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "b94db711e8",
-    "commit": "a66dc5d",
-    "branch": "pm/152-squash-merged-bench-branch",
+    "hash": "13e9a530d8",
+    "commit": "4c312c6",
+    "branch": "pm/142-143-150-omen-dial-power-reset",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,26 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Item 152 merged (#382): the deploy guard reads a squash-merged bench branch as merged. Deployed main @ 8f0c843 at 02:09: fix pass 12's engine is live — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards and Draw Mana refresh. Still running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list); on its merge the PM deploys again, then hands off before 07:00. R-127 is yours.",
+    "note": "Items 142 + 143 + 150 merged (#383): Isolating Pressure places an Omen on an unmarked target through one generic engine dial, every Chaos release rule quotes the tier + 1 cap, Power's reset leaves a GM-applied Frightened alone — live at the next deploy, which the PM runs now; then the Monday handoff. Opus is spent for 09-14. Click ⟳ Sync Talents ONCE on each of your three PCs. R-127 is yours.",
     "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs (after the 02:09 deploy) · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [
-    {
-      "item": "142+143+150",
-      "title": "Items 142 + 143 + 150 — the H3 dial so Isolating Pressure places an Omen on an unmarked target; the Chaos release caps to tier + 1; Power's reset list (ENGINE-ONLY F5 + DATA, REBUILD deity)",
-      "model": "opus",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/142-143-150-omen-dial-power-reset",
-      "startedAt": "2026-09-14T06:09:45Z",
-      "agent": "Work items 142 + 143 + 150",
-      "phase": "working",
-      "pr": null,
-      "note": "engine + data worker in its own worktree; never touches the live module — the PM deploys after merge"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1748,26 +1734,26 @@
     {
       "pos": 139,
       "item": "142",
-      "title": "R-122 (a)'s second half — Isolating Pressure places an Omen on an unmarked target: ONE generic non-halting dial on H3 release + pre-mutation status gates on the sibling rules (ENGINE-ONLY primitive + DATA, REBUILD deity). Dispatched 02:09 with 143 + 150 in one Opus worker (worktree pm/142-143-150-omen-dial-power-reset; Opus 3 of 3 for 09-14)",
+      "title": "R-122 (a)'s second half SHIPPED — ONE generic H3 dial onMissing: halt / continue (default halt = byte-identical), plus whenTargetStatus / unlessTargetStatus on H3 reading edhaTargetStatusesAt (an entry snapshot the test-result dispatcher stamps before the batch's first rule, uuid-keyed, degrading to the live read); Isolating Pressure carries release (continue) → damage (when omen) → place (unless omen, @tier + 1) on its own document and the card says \"If the target bears no Omen, place one.\" (ENGINE-ONLY F5 + DATA, REBUILD deity); six pins by reversion (a null snapshot flips the MARKED case into placing); parity exactly 5 documents (Isolating Pressure + four release carriers); 🤖 OM-3 / OM-4 / OM-5. With 143 + 150 in one Opus worker, dispatched 02:09; reviewed 02:44, no corrections; merged on green",
       "lane": "B",
       "model": "opus",
       "size": "S",
       "deps": "R-122 ✓ · 132 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 383
     },
     {
       "pos": 140,
       "item": "143",
-      "title": "edhaClearPowerState's scene-reset list (47-power.js ~L446) still clears frightened, a status no talent reads since 135 (ENGINE-ONLY, F5; one line + a pin) — in the 142 dispatch, 02:09",
+      "title": "edhaClearPowerState no longer clears frightened (a GM-applied marker no talent reads); the reset list pinned (ENGINE-ONLY, F5); 🤖 PW-2. Rode with 142",
       "lane": "R",
       "model": "opus",
       "size": "XS",
       "deps": "135 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 383
     },
     {
       "pos": 141,
@@ -1856,14 +1842,14 @@
     {
       "pos": 148,
       "item": "150",
-      "title": "Chaos's Omen release rules still carry capFormula: \"@tier\" while the place rules say @tier + 1 (item 132 missed them), so the release cards print the wrong denominator (DATA, REBUILD deity) — in the 142 dispatch, 02:09",
+      "title": "every Chaos Omen release rule now states capFormula: \"@tier + 1\" — FIVE carriers, not the two the bench named (the field had been ABSENT, not @tier: the DataModel supplied the schema initial, which is why a grep for the old value found nothing) (DATA, REBUILD deity); rode with 142",
       "lane": "B",
       "model": "opus",
       "size": "S",
       "deps": "132 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 383
     },
     {
       "pos": 149,
@@ -1961,34 +1947,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "17:27",
-      "at": "2026-09-13T21:27:00.000Z",
-      "item": "Nothing running. Open rulings on the phone: R-92, R-114 … R-119. Queue: 124 / 125 / 126 (Sonnet XS) ready; 101 / 106 / 107 / 108 / 109 / 114 wait on their rulings; 110 / 113 / 115 Opus tomorrow; the deploy-cycle first live run after 124. Trailing-5h dispatches: 6 of 6 until 19:24. Waiting on Ben: F5, the seven rulings, the two YOUR-CALL branches",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "idle",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "16:13",
-      "at": "2026-09-13T20:13:00.000Z",
-      "item": "Phone inbox (seen 18:31): R-113 = (a) again + *\"I also need to give permission to create new scenes specifically for future test bench runs\"* → PM-R19 recorded, item 128 filed (sonnet S, lane B); and \"done\" on the keep-spending question → go-ahead within the caps",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "notes handled",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "18:31",
@@ -2800,9 +2758,37 @@
       "weightedM": 5.7,
       "outcome": "reviewed 02:36 — merged on green after the PM's bookkeeping commit on the branch, no trailers, three themed commits, no corrections; CI green on a66dc5d, gates 12/12 + --ci 14/14 (1274 tests); the worker merged main itself. checkBranchMergeStatus (pure) + ghPrLookup (8 s timeout, only for ancestry-unmerged pm/bench-* candidates — zero network calls in the common case); 11 pins, the reversion applied in reverse refuses a squash-merged branch exactly as the bug did; --dry-run PASS (no bench branch exists to show the enriched line — the pins carry that shape). Docs: PM skill step 5 + runbook recipe. TOOLING + DOCS — nothing to deploy",
       "pr": 382
+    },
+    {
+      "date": "2026-09-14",
+      "time": "02:38",
+      "at": "2026-09-14T06:38:00.000Z",
+      "item": "#382 (item 152) merged at 02:38:36 after the PM's bookkeeping commit (CI green on 7b3c4d4); the worktree and the remote branch removed; main = f8dc9ad",
+      "itemNo": "382",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 382
+    },
+    {
+      "date": "2026-09-14",
+      "time": "02:09",
+      "at": "2026-09-14T06:09:00.000Z",
+      "item": "Items 142 + 143 + 150 (+ the Blue header comment) — work-item, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "33 min, 179 tool uses (252 turns)",
+      "weighted": "6.5M",
+      "weightedM": 6.5,
+      "outcome": "reviewed 02:44 — merged on green after the PM's bookkeeping commit on the branch, NO trailers, five themed commits, no corrections; CI green on 4c312c6, gates 12/12 + --ci 14/14 (1270 tests); the worker merged main itself. Engine: onMissing: halt / continue on H3 edha-owner-list (list and counter mode; default halt, byte-identical), whenTargetStatus / unlessTargetStatus on H3, edhaTargetStatusesAt + the dispatcher's targetStatusesAtEntry snapshot (04-black-ritual.js), edhaClearPowerState minus frightened; the registry snapshot and lint-refs 9b's FIELDS gain the two names (unlessTargetStatus had never been enumerated). Data: Isolating Pressure's three rules + card; five release carriers' capFormula. Parity 123 documents, exactly 5 differ. Six pins in tests/omen-branch-dial.test.js through the real registered executors, four reversions shown failing (a null snapshot, a disabled gate block, the restored frightened, the deleted dial). The worker's one judgment: the snapshot over an up-front gate pass — one gating mechanism per handler, no skip flag. 🤖 OM-3 / OM-4 / OM-5 (REBUILD) + PW-2 (F5). ENGINE-ONLY F5 + DATA REBUILD deity — the PM deploys next",
+      "pr": 383
     }
   ],
-  "runLogTotal": 313,
+  "runLogTotal": 315,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3686,6 +3672,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 382
+    },
+    {
+      "at": "2026-09-14T06:09:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 383
     }
   ],
   "statusVocab": [
