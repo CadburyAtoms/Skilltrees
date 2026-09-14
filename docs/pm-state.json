@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T00:50:51.185Z",
+  "generatedAt": "2026-09-14T01:09:09.830Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "00c1eaa86d",
-    "commit": "d832ac4",
-    "branch": "pm/board-2026-09-13j",
+    "hash": "cdd08874a1",
+    "commit": "0481268",
+    "branch": "pm/board-2026-09-13k",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,25 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Sunday evening: the deploy script ran for real at 20:46 — Foundry closed, packs rebuilt, relaunched into Edha; re-join your Gamemaster client. Two workers are running: the bench's own scene (item 128) and two small verifier fixes (138 + 139). Seven rulings still wait on the Needs Ben tab.",
+    "note": "Sunday evening: item 128 merged — the next bench run can create its own Bench Arena scene. One worker left (two small deploy-verifier fixes). The deploy ran for real at 20:46; re-join your Gamemaster client if you have not. Seven rulings still wait on the Needs Ben tab.",
     "waitingOn": "re-join your Gamemaster client (Foundry relaunched 20:47) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
   "workers": [
-    {
-      "item": "128",
-      "title": "PM-R19: the bench may create its own scenes — licence in the skill + runbook; a standing Bench Arena in the roster script",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/128-bench-arena-scene",
-      "startedAt": "2026-09-14T00:50:00Z",
-      "agent": "Work item 128",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS + TOOLING"
-    },
     {
       "item": "138+139",
       "title": "deploy-cycle.js verifier fixes: overlay signal by lane/item/branch; /join check by the world's title, case-insensitive",
@@ -1598,9 +1585,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "PM-R19 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 362
     },
     {
       "pos": 126,
@@ -1708,20 +1695,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "21:56",
-      "at": "2026-09-08T01:56:00.000Z",
-      "item": "Item 97 (PM-R17 — the two PCs refresh-only, never edited; the \"UNTOUCHABLE\" rule rewritten at every live statement) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "16 min, 185 turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 22:13 after review, no trailers; the worker merged main itself after #303 landed (dashboard regenerated), CI green on the merge head 7244e2c, gates 11/11 re-run by the PM in the worktree. Four live statements rewritten + the runbook's new \"Refresh the two PCs\" step 2 (steps renumbered, one cross-ref fixed) + R-8's pointer; script guard and orphan test untouched; grep proof clean (remaining hits historical). DOCS-ONLY",
-      "pr": 304
-    },
     {
       "date": "2026-09-07",
       "time": "22:02",
@@ -2547,9 +2520,23 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:50",
+      "at": "2026-09-14T00:50:00.000Z",
+      "item": "Item 128 (PM-R19: the bench may create its own scenes — licence in the skill + runbook; a standing Bench Arena via USE_ARENA, pure spec + plan pinned; row 128-1) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "17 min, 80 tool uses",
+      "weighted": "3.6M",
+      "weightedM": 3.6,
+      "outcome": "merged 21:07 after review, no trailers; CI green on 3420b7e, gates 12/12 (1195 tests). DOCS + TOOLING — nothing to deploy; the arena is created by the next bench run",
+      "pr": 362
     }
   ],
-  "runLogTotal": 267,
+  "runLogTotal": 268,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3295,6 +3282,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 358
+    },
+    {
+      "at": "2026-09-14T00:50:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 362
     }
   ],
   "statusVocab": [
