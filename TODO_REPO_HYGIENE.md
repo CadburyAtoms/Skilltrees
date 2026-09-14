@@ -3549,7 +3549,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model opus · size L · deps R-119 ✓ (a, phone 2026-09-13) · verify: the H9 pin, then the bench; card text gated on Ben's own text. Filed 2026-09-13 from R-97; design proposal filed as R-119 by item 127 (2026-09-13); mechanism approved via phone board same day, card text still gated.
 
-## 107. [ ] R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DATA, REBUILD leyline) (2026-09-13)
+## 107. [x] (2026-09-14, PR #374) R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DATA, REBUILD leyline) (2026-09-13) — DONE 2026-09-14: `False Premise`'s card text (`data/leyline.json` + `data/authored/leyline-blue.json`) now reads R-115 (a)'s approved text, and its `FalsePremMod0000` rule swapped from `edha-next-test-mod` to the engine's existing `noreactions` timed status (`statusExpire: "target"`, same shape as Hollow Command's `noactions`); `Pattern Recognition` untouched. Pack parity (scratch `edha-leyline`): of 136 leyline-pack documents, exactly one — `False Premise` — differs, zero roll-formula drift anywhere. Pack rebuild + ⟳ Sync Talents is Ben's. 🤖 row FP-1.
 
 **Why:** both rules write `edha-next-test-mod {victim, disadvantage}` and fold to one. Ben chose (a).
 
