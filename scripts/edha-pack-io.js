@@ -115,6 +115,134 @@ function stableStringify(v) {
 }
 const fingerprint = doc => stableStringify(authorable(doc));
 
+// ---------------------------------------------------------------------------------------------
+// STRUCTURAL projection (TODO_REPO_HYGIENE item 140). `authorable()`/`fingerprint()` above are
+// what a GM edits in Foundry and what foundry-extract.js round-trips into data/authored/ — the
+// six fields. Everything else on a pack document is generator-owned per AUTHORING_WORKFLOW.md's
+// split table (talent name, prerequisites, folder, the node graph -> source JSON, never Foundry).
+// But a GM CAN still change some of those fields from inside Foundry — rename a talent, drag it
+// to a different folder, add/remove a tree-node prerequisite or connection with the system's own
+// tree editor — and until item 140 none of that moved the fingerprint at all, so the un-extracted-
+// edits guard (below, and guardUnextracted() in foundry-build.js) never saw it: this is the exact
+// blind spot AUTHORING_WORKFLOW.md's guard note has documented since 2026-07-24, and the one that
+// bit Ben again 2026-09-13 (`Ghostly Walls` / `Adaptive Mutation`, ungated between a ⟳ Sync and an
+// agent-run deploy — TODO_REPO_HYGIENE item 140's "Why").
+//
+// This does NOT close the round-trip gap — foundry-extract.js still cannot save a structural edit
+// back into data/authored/ (structure stays source-JSON-owned, full stop; see AUTHORING_WORKFLOW.md
+// "The guard") — it only lets the guard NOTICE one and abort instead of silently overwriting it.
+//
+// Deliberately NOT covered (stays blind — see AUTHORING_WORKFLOW.md's blind-spot note): a node's
+// `position`/`size` (the tree editor's layout, which a GM may legitimately nudge without meaning
+// anything structural), `sort`, the `path` item document, and the tree document's
+// `viewBounds`/`background` — none of those change what a talent needs or unlocks, only how the
+// canvas draws it, so fingerprinting them would only manufacture false aborts. The adversaries and
+// items packs have no baseline/guard concept at all (their own wiring standards apply instead).
+function structuralOf(doc) {
+  if (doc.type === "talent") return { name: doc.name ?? null, folder: doc.folder ?? null };
+  if (doc.type === "talent_tree") {
+    const nodes = (doc.system && doc.system.nodes) || {};
+    const out = {};
+    for (const [nodeId, node] of Object.entries(nodes)) {
+      out[nodeId] = {
+        prerequisites: stableStringify(node?.prerequisites ?? {}),
+        connections: stableStringify(node?.connections ?? {}),
+      };
+    }
+    return out;
+  }
+  return null; // no structural projection defined for this doc type (e.g. "path")
+}
+
+// Everything the un-extracted-edits guard needs to remember about ONE pack document, so a later
+// build (foundry-build.js) or deploy pre-flight (deploy-cycle.js) can notice a Foundry edit it
+// would otherwise silently lose. `authored` exists only for a `talent` (the six round-tripped
+// fields, unchanged shape/behaviour from before item 140); `structural` exists for either doc
+// type this module knows how to project (structuralOf above) and is omitted for anything else.
+// This is what both foundry-build.js's post-write baseline refresh and foundry-extract.js's
+// writeBaseline() store per document — replacing the plain fingerprint-string baseline entry a
+// pre-item-140 checkout may still have on disk (see diffUnextractedEdits below for how that old
+// shape is still read safely rather than misread as "everything changed").
+function snapshotDoc(doc) {
+  const snap = {};
+  if (doc.type === "talent") snap.authored = fingerprint(doc);
+  const s = structuralOf(doc);
+  if (s !== null) snap.structural = s;
+  return snap;
+}
+
+// A talent-tree node only carries `uuid`/`talentId` (a compendium UUID and a slug) — never a
+// display name — so a report a human reads has to resolve one. `byId`: docId -> live doc, built
+// by the caller from the SAME live.items list being diffed (readPack's talent docs and the tree
+// doc that references them always come from one pack, so this always resolves when the ref is
+// valid).
+function nodeTalentName(node, byId) {
+  const m = /\.Item\.([^.]+)$/.exec(String(node?.uuid || ""));
+  const doc = m && byId[m[1]];
+  return (doc && doc.name) || node?.talentId || "(unknown talent)";
+}
+
+// THE shared comparison: live pack documents vs. their stored baseline snapshot (snapshotDoc
+// above) -> every un-captured Foundry edit, named and classified by what fixes it. Used by BOTH
+// foundry-build.js's own pre-write guard (guardUnextracted) and deploy-cycle.js's PRE-FLIGHT
+// `un-extracted-edits` guard (scripts/lib/deploy-guards.js's checkUnextractedEdits) — one
+// definition of "dirty" for both call sites, read-only (never mutates `liveDocs`).
+//
+//   kind: "content"    — one of the six authorable fields changed; `node foundry-extract.js
+//                         <tree>` saves it, same remedy as before item 140.
+//   kind: "structural" — name / folder / a node's prerequisites / a node's connections changed;
+//                         NOT round-tripped by foundry-extract.js — the fix is hand-editing the
+//                         source JSON (AUTHORING_WORKFLOW.md: "Structure changes go in the source
+//                         JSON, full stop").
+//
+// A baseline value written before item 140 is a plain fingerprint STRING (the old shape) rather
+// than `{authored, structural}` — treated like "doc not in baseline" for the structural half: the
+// content comparison still runs (the string IS the old `authored` fingerprint), but there is no
+// structural baseline to compare against yet, so nothing structural is reported for that doc until
+// the next build/extract re-arms it. This mirrors guardUnextracted's existing "no baseline -> warn,
+// don't abort" philosophy rather than flagging every pre-existing talent dirty the first time this
+// ships.
+function diffUnextractedEdits(liveDocs, baseline) {
+  const dirty = []; // { name, field, kind, detail? }
+  if (!baseline) return dirty;
+  const byId = {};
+  for (const d of liveDocs) if (d && d._id) byId[d._id] = d;
+
+  for (const d of liveDocs) {
+    const base = baseline[d._id];
+    if (base === undefined) continue; // not in baseline (new doc, or a type the old baseline never wrote) — nothing captured to lose
+    const baseAuthored = typeof base === "string" ? base : base.authored;
+    const baseStructural = typeof base === "string" ? undefined : base.structural;
+
+    if (d.type === "talent") {
+      if (baseAuthored !== undefined && fingerprint(d) !== baseAuthored) {
+        dirty.push({ name: d.name, field: "content", kind: "content" });
+      }
+      if (baseStructural) {
+        const cur = structuralOf(d);
+        if (cur.name !== baseStructural.name) {
+          dirty.push({ name: baseStructural.name ?? d.name, field: "name", kind: "structural", detail: `renamed to "${cur.name}"` });
+        }
+        if (cur.folder !== baseStructural.folder) {
+          dirty.push({ name: cur.name, field: "folder", kind: "structural" });
+        }
+      }
+    } else if (d.type === "talent_tree" && baseStructural) {
+      const nodes = (d.system && d.system.nodes) || {};
+      for (const [nodeId, node] of Object.entries(nodes)) {
+        const baseNode = baseStructural[nodeId];
+        if (!baseNode) continue; // new node — nothing captured to lose
+        const talentName = nodeTalentName(node, byId);
+        const curPrereq = stableStringify(node?.prerequisites ?? {});
+        const curConn = stableStringify(node?.connections ?? {});
+        if (curPrereq !== baseNode.prerequisites) dirty.push({ name: talentName, field: "prerequisites", kind: "structural" });
+        if (curConn !== baseNode.connections) dirty.push({ name: talentName, field: "connections", kind: "structural" });
+      }
+    }
+  }
+  return dirty;
+}
+
 // Read a pack by copying it to a temp dir first (skipping the LOCK file), so it
 // works even while Foundry holds the lock. Returns { items:[], folders:[] } or null
 // by default — see options below for the other consumer shape.
@@ -189,4 +317,4 @@ async function readPack(packDir, options = {}) {
 // slugify shared with the generator (kept identical so authored filenames are stable).
 const slugify = s => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-module.exports = { authorable, authorableEffect, applyAuthorable, isEmptyAuthored, stableStringify, fingerprint, readPack, slugify, AUTHORABLE_SYSTEM, requireClassicLevel };
+module.exports = { authorable, authorableEffect, applyAuthorable, isEmptyAuthored, stableStringify, fingerprint, structuralOf, snapshotDoc, diffUnextractedEdits, readPack, slugify, AUTHORABLE_SYSTEM, requireClassicLevel };
