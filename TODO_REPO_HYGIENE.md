@@ -3875,3 +3875,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** DM-1 (engine, F5) and DM-2 (card, after REBUILD) pass on the bench.
 
 **PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.
+
+## 138. [ ] `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
+
+**Why:** `isBenchWorker` (item 122, `scripts/lib/deploy-guards.js`) treats `lane === "B"` OR the substring `bench` in item / title / agent / branch as a bench signal. The 125 + 137 worker's own overlay entry — *"deploy-cycle.js: bench guard reads worktrees…"* — tripped it, and the PM's 20:44 dry run refused with `bench signal(s) held: 125+137` although that worker never touched Foundry. The worker that built item 125 flagged it in its report.
+
+**What to do:** the overlay signal is `lane === "B"` OR an `item` / `branch` that STARTS with `bench` / `pm/bench-` (the real shapes: `bench-45`, `pm/bench-46`); never the title or agent text. Pin: a lane-R worker titled "bench guard reads worktrees" passes; `item: "bench-47"` refuses; `lane: "B"` refuses.
+
+**Done when:** the pin passes and fails on the reversion; the PM's dry run with a non-bench worker on the overlay passes the guard.
+
+**PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM from the refused dry run.
