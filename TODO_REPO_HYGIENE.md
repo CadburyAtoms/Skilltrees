@@ -3728,7 +3728,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps —. Filed 2026-09-13 from bench run 46.
 
-## 125. [ ] `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
+## 125. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
 
 **Why:** at item 122's review the PM dry-ran the script twice. From the main checkout (board branch, live `docs/pm-live.json`) it refused naming bench-46. From a worktree it PASSED the same guard while bench 46 was mid-run — that checkout's `docs/pm-live.json` was `main`'s, and `main` only carries the overlay as of the last merged board PR. The guard is therefore only as fresh as the checkout it runs from, and a PM that has not yet landed its board PR (the normal state mid-shift) could close Foundry under a live bench.
 
@@ -3794,7 +3794,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
 
-## 137. [ ] `deploy-cycle.js`'s post-flight verification races Foundry's boot (TOOLING + test pin) (2026-09-13)
+## 137. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s post-flight verification races Foundry's boot (TOOLING + test pin) (2026-09-13)
 
 **Why:** another session's live run on 2026-09-13 ~20:05 ET (its worktree `docs/deploy-record-2026-09-14`, DEPLOY STATE note) ran all eight steps green from a worktree on `main`, but its post-flight fetch raced Foundry's boot — served engine `24d74c96…` == HEAD and `/` → `/join` both had to be verified by hand two minutes later. The relaunch step's poll only waits for `/` to answer 302; Foundry answers that redirect before the world and module files are fully served, so the immediate post-flight fetch of `/modules/edha-content/scripts/register-skills.js` (and possibly `/join`'s title check) can fail or return a partial body.
 
