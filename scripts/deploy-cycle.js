@@ -9,8 +9,10 @@
  * run the deploy.bat, reopen Foundry, and log in to the GM bench profile? … I would love if you
  * could handle that for me."* — then, after the PM's ad-hoc run: *"Can we test and write a few
  * gates and guardrails that are needed?"* This file is the answer: guards before anything is
- * touched, a timestamped backup before anything is overwritten, the eight steps fail-fast with a
- * log, and a post-flight verification before the run is ever called done.
+ * touched, a timestamped backup of the packs AFTER Foundry has actually closed (item 129: the
+ * first live run backed up BEFORE the close and died on the still-open LevelDB `LOCK` file), the
+ * nine steps fail-fast with a log, and a post-flight verification before the run is ever called
+ * done.
  *
  * Usage:
  *   node scripts/deploy-cycle.js                 same as --dry-run (the safe default)
@@ -18,7 +20,13 @@
  *   node scripts/deploy-cycle.js --yes             actually run it (guards must all pass first)
  *   node scripts/deploy-cycle.js --yes --force-bench   override the "no bench worker" guard (Ben's call)
  *   node scripts/deploy-cycle.js --exe "<path>"        override the resolved Foundry executable path
- *   node scripts/deploy-cycle.js --wait-seconds 90     bound on the post-relaunch poll (default 90)
+ *   node scripts/deploy-cycle.js --wait-seconds 90     bound on the post-relaunch poll AND the
+ *                                                       post-flight verification's retries (default 90;
+ *                                                       item 137 — Foundry answers the relaunch poll's
+ *                                                       302 before its world/module files are fully
+ *                                                       served, so the post-flight engine/join checks
+ *                                                       retry with backoff until this many seconds have
+ *                                                       elapsed, rather than failing on the first miss)
  *
  * ARCHITECTURE. Every refuse/pass/fail DECISION is a named pure function imported from
  * `scripts/lib/deploy-guards.js` — this file's only job is to gather the real data (git, fs,
@@ -82,8 +90,8 @@ function git(args) {
   return execFileSync("git", args, { cwd: REPO_ROOT, encoding: "utf8" }).trim();
 }
 
-function sha256(text) {
-  return require("crypto").createHash("sha256").update(text).digest("hex");
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /* --- Gathering real state (the only non-pure code in this file) ------------------------------- */
@@ -104,6 +112,45 @@ function gatherGitState() {
   }
   const sha = git(["rev-parse", "--short", "HEAD"]);
   return { branch, clean, ahead, behind, sha, fetchError };
+}
+
+// item 125: the checkout's tracked docs/pm-live.json (read by readPmLive) is only as fresh as the
+// last merged board PR, so a PM mid-shift on its own unmerged board branch could pass the
+// no-bench-worker guard from a worktree while a bench run is genuinely live. These two
+// checkout-independent signals close that gap: any worktree checked out on a `pm/bench-*` branch,
+// and any `pm/bench-*` branch (local or `origin/pm/bench-*`) not yet merged into `origin/main`.
+// Gathering is the only impure part — `git branch --merged origin/main` needs a real git process
+// — so each branch name is tagged `{ name, merged }` here and the PURE guard decides what counts.
+function gitSafe(args) {
+  try {
+    return git(args);
+  } catch {
+    return "";
+  }
+}
+
+function parseBranchListOutput(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^[*+]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function gatherBenchGuardState() {
+  const worktrees = guards.parseWorktreePorcelain(gitSafe(["worktree", "list", "--porcelain"]));
+
+  const localNames = parseBranchListOutput(gitSafe(["branch", "--list", "pm/bench-*"]));
+  const remoteNames = parseBranchListOutput(gitSafe(["branch", "-r", "--list", "origin/pm/bench-*"]));
+  const localMerged = new Set(parseBranchListOutput(gitSafe(["branch", "--merged", "origin/main"])));
+  const remoteMerged = new Set(parseBranchListOutput(gitSafe(["branch", "-r", "--merged", "origin/main"])));
+
+  return {
+    worktrees,
+    branches: {
+      local: localNames.map((name) => ({ name, merged: localMerged.has(name) })),
+      remote: remoteNames.map((name) => ({ name, merged: remoteMerged.has(name) })),
+    },
+  };
 }
 
 function moduleSrcSyncStatus() {
@@ -129,6 +176,16 @@ function readPmLive() {
 
 function readOptionsJson() {
   return readJsonSafe(path.join(FOUNDRY_USERDATA, "Config", "options.json"));
+}
+
+// The world's own manifest — its `title` is what the /join page actually prints (item 139: the
+// post-flight check used to compare the join body against the world ID from options.json, not
+// this file's title, and refused every otherwise-good deploy). Missing/unreadable is expected
+// off-Foundry (tests, a scratch userdata dir) and is not an error here — `guards.expectedWorldTitle`
+// falls back to the id itself.
+function readWorldJson(worldId) {
+  if (!worldId) return null;
+  return readJsonSafe(path.join(FOUNDRY_USERDATA, "Data", "worlds", worldId, "world.json"));
 }
 
 function packDirExistsMap() {
@@ -192,9 +249,9 @@ function evaluateGuards(ctx, flags) {
   const results = [];
   results.push(guards.checkOnMainClean({ branch: ctx.git.branch, clean: ctx.git.clean }));
   results.push(guards.checkModuleSrcSync(ctx.moduleSrcStatus.exitCode));
-  results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench));
+  results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench, ctx.benchGuardState));
   results.push(guards.checkPacksExist(ctx.packExists));
-  results.push(guards.checkWorldConfigured(ctx.optionsJson));
+  results.push(guards.checkWorldConfigured(ctx.optionsJson, ctx.expectedWorldTitle));
   results.push(guards.checkFoundryExe(ctx.exe.chosen, ctx.exe.exists));
   return results;
 }
@@ -208,28 +265,48 @@ function printVerdicts(label, results) {
 
 /* --- Backups ------------------------------------------------------------------------------------
  * Copies the five pack directories into a timestamped folder under tmp/deploy-backups/ (gitignored
- * — `tmp/` is already in .gitignore) before ANYTHING is overwritten. module-src-sync.js push makes
- * its own copy of the engine it replaces under %TEMP%\edha-engine-backups — noted here, not
- * duplicated.
+ * — `tmp/` is already in .gitignore) — step 2, run AFTER Foundry has actually closed (step 1) and
+ * BEFORE anything is overwritten. item 129: the first live run backed up BEFORE the close, so the
+ * copy hit a running Foundry's open LevelDB `LOCK` file and died on EBUSY. copyDirRecursive skips
+ * `LOCK` itself, and any file whose copy throws EBUSY/EPERM (a handle Windows hasn't released
+ * yet) — see `shouldSkipBackupFile` in deploy-guards.js — logging the skip via `onSkip` rather
+ * than aborting the whole backup over a file the restore command never needs anyway.
+ * module-src-sync.js push makes its own copy of the engine it replaces under
+ * %TEMP%\edha-engine-backups — noted here, not duplicated.
  */
 
-function copyDirRecursive(src, dst) {
+function copyDirRecursive(src, dst, onSkip) {
   fs.mkdirSync(dst, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, entry.name);
     const d = path.join(dst, entry.name);
-    if (entry.isDirectory()) copyDirRecursive(s, d);
-    else fs.copyFileSync(s, d);
+    if (entry.isDirectory()) {
+      copyDirRecursive(s, d, onSkip);
+      continue;
+    }
+    if (guards.shouldSkipBackupFile(entry.name, null)) {
+      if (onSkip) onSkip(entry.name, null);
+      continue;
+    }
+    try {
+      fs.copyFileSync(s, d);
+    } catch (err) {
+      if (guards.shouldSkipBackupFile(entry.name, err)) {
+        if (onSkip) onSkip(entry.name, err);
+        continue;
+      }
+      throw err;
+    }
   }
 }
 
-function backupPacks(runTimestamp) {
+function backupPacks(runTimestamp, onSkip) {
   const backupDir = path.join(REPO_ROOT, "tmp", "deploy-backups", runTimestamp);
   let backedUp = 0;
   for (const pack of guards.PACKS) {
     const src = path.join(MODROOT, "packs", pack);
     if (!fs.existsSync(src)) continue;
-    copyDirRecursive(src, path.join(backupDir, "packs", pack));
+    copyDirRecursive(src, path.join(backupDir, "packs", pack), onSkip);
     backedUp++;
   }
   return { backupDir, backedUp };
@@ -259,7 +336,7 @@ function makeLogger(runTimestamp) {
   };
 }
 
-/* --- The eight steps (bat's order) -------------------------------------------------------------- */
+/* --- The nine steps (bat's order, backup moved after the close — item 129) ---------------------- */
 
 function runNode(scriptRelPath, args, logger) {
   const r = spawnSync(process.execPath, [path.join(SCRIPTS_DIR, scriptRelPath), ...args], {
@@ -374,7 +451,7 @@ function fetchText(urlPath) {
     const req = http.get({ host: "localhost", port: 30000, path: urlPath, timeout: 5000 }, (res) => {
       let body = "";
       res.on("data", (c) => (body += c));
-      res.on("end", () => resolve({ status: res.statusCode, body }));
+      res.on("end", () => resolve({ status: res.statusCode, headers: res.headers, body }));
     });
     req.on("error", reject);
     req.on("timeout", () => {
@@ -384,9 +461,77 @@ function fetchText(urlPath) {
   });
 }
 
-/* --- Post-flight verification -------------------------------------------------------------------- */
+/* --- Post-flight verification --------------------------------------------------------------------
+ * item 137: Foundry's relaunch poll (`pollUntilRedirect`, in the step above) only waits for `/` to
+ * answer 302 — it says nothing about the world/module files themselves being fully served, and a
+ * live run on 2026-09-13 saw the immediate post-flight fetch race that boot (the engine fetch and
+ * the /join title check both needed a hand re-verify two minutes later). So both checks below poll
+ * with a bounded backoff until `waitSeconds` (the `--wait-seconds` flag) elapses — a fetch error,
+ * timeout, non-200, or a body that doesn't match yet is a RETRY, not a FAIL, until the deadline;
+ * only then is it a FAIL, with the last observed status/sha. The pure retry/pass/fail decision for
+ * each poll lives in `deploy-guards.js` (`shouldRetryVerify` / `shouldRetryJoin`) — this function
+ * only does the I/O and the sleep.
+ */
 
-async function postFlightVerify(t0, worldTitle) {
+const POST_FLIGHT_POLL_INTERVAL_MS = 2000;
+
+async function fetchEngineUntilSettled(expectedSha, waitSeconds, logger) {
+  const startedAt = Date.now();
+  const deadline = waitSeconds * 1000;
+  for (;;) {
+    const elapsed = Date.now() - startedAt;
+    let status = 0;
+    let body = "";
+    try {
+      const r = await fetchText(`/modules/edha-content/scripts/register-skills.js?bust=${Date.now()}`);
+      status = r.status;
+      body = r.body;
+    } catch {
+      status = 0;
+      body = "";
+    }
+    const decision = guards.shouldRetryVerify({ status, body, expectedSha, elapsed, deadline });
+    if (logger) logger.write(`post-flight engine check (${elapsed}ms elapsed): ${decision.outcome} — ${decision.message}`);
+    if (decision.outcome !== "retry") {
+      return { ok: decision.ok, name: "engine-matches-head", message: decision.message };
+    }
+    await sleep(POST_FLIGHT_POLL_INTERVAL_MS);
+  }
+}
+
+async function fetchJoinUntilSettled(worldTitle, waitSeconds, logger) {
+  const startedAt = Date.now();
+  const deadline = waitSeconds * 1000;
+  for (;;) {
+    const elapsed = Date.now() - startedAt;
+    let status = 0;
+    let location;
+    let joinBody = "";
+    try {
+      const root = await fetchText("/");
+      status = root.status;
+      location = root.headers ? root.headers.location : undefined;
+      if (status === 302) {
+        try {
+          const join = await fetchText("/join");
+          joinBody = join.body;
+        } catch {
+          /* ignore — shouldRetryJoin below still retries/fails on the missing title */
+        }
+      }
+    } catch {
+      status = 0;
+    }
+    const decision = guards.shouldRetryJoin({ status, location, joinBody, worldTitle, elapsed, deadline });
+    if (logger) logger.write(`post-flight join check (${elapsed}ms elapsed): ${decision.outcome} — ${decision.message}`);
+    if (decision.outcome !== "retry") {
+      return { ok: decision.ok, name: "join-redirect", message: decision.message };
+    }
+    await sleep(POST_FLIGHT_POLL_INTERVAL_MS);
+  }
+}
+
+async function postFlightVerify(t0, worldTitle, waitSeconds, logger) {
   const results = [];
 
   const stats = guards.PACKS.map((pack) => {
@@ -403,31 +548,11 @@ async function postFlightVerify(t0, worldTitle) {
   results.push(guards.stampsNewerThan(stats, t0));
 
   const repoText = fs.readFileSync(ENGINE_REPO_PATH, "utf8");
-  let servedText = "";
-  try {
-    const r = await fetchText(`/modules/edha-content/scripts/register-skills.js?bust=${Date.now()}`);
-    servedText = r.body;
-  } catch (e) {
-    results.push({ ok: false, name: "engine-matches-head", message: `refused — could not fetch served engine: ${e.message}` });
-  }
-  if (servedText) results.push(guards.enginesMatch(servedText, repoText));
+  const expectedSha = guards.engineSha8(repoText);
+  results.push(await fetchEngineUntilSettled(expectedSha, waitSeconds, logger));
+  results.push(await fetchJoinUntilSettled(worldTitle, waitSeconds, logger));
 
-  try {
-    const root = await fetchText("/");
-    let joinBody = "";
-    if (root.status === 302 && root.headers) joinBody = "";
-    try {
-      const join = await fetchText("/join");
-      joinBody = join.body;
-    } catch {
-      /* ignore — checkJoinRedirect below will still fail on missing location if root itself failed */
-    }
-    results.push(guards.checkJoinRedirect({ status: root.status, location: root.headers ? root.headers.location : undefined, joinBody, worldTitle }));
-  } catch (e) {
-    results.push({ ok: false, name: "join-redirect", message: `refused — could not reach localhost:30000: ${e.message}` });
-  }
-
-  return { results, stats, engineSha8: sha256(guards.normalizeCRLF(repoText)).slice(0, 8) };
+  return { results, stats, engineSha8: expectedSha };
 }
 
 /* --- The DEPLOY STATE record ---------------------------------------------------------------------- */
@@ -451,28 +576,38 @@ async function main() {
   const gitState = gatherGitState();
   const moduleSrcStatus = moduleSrcSyncStatus();
   const pmLive = readPmLive();
+  const benchGuardState = gatherBenchGuardState();
   const packExists = packDirExistsMap();
   const optionsJson = readOptionsJson();
+  const worldId = optionsJson && optionsJson.world ? optionsJson.world : null;
+  const worldJson = readWorldJson(worldId);
+  const expectedWorldTitle = guards.expectedWorldTitle({ worldId, worldJson });
   const exe = resolveExe(flags.exe);
 
-  const ctx = { git: gitState, moduleSrcStatus, pmLive, packExists, optionsJson, exe };
+  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, optionsJson, expectedWorldTitle, exe };
   const preflight = evaluateGuards(ctx, flags);
   printVerdicts("Pre-flight guards:", preflight);
 
-  console.log("\nThe eight steps (bat's order):");
+  console.log("\nThe nine steps (bat's order, backup moved after the close):");
   const stepList = [
     "1. Close Foundry gracefully (CloseMainWindow, bounded wait, force leftovers, verify zero remain)",
-    "2. git pull --ff-only on main",
-    "3. module-src-sync.js status (refuse on hand-edited exit 2)",
-    "4. module-src-sync.js push (engine backed up to %TEMP%\\edha-engine-backups first)",
-    "5. sync-art.js",
-    "6. foundry-build.js leyline | deity | heroic | adversaries | items",
-    "7. validate-packs.js + validate-adversaries.js",
-    "8. Relaunch the exe, poll http://localhost:30000/ until it answers 302 -> /join",
+    "2. Back up the five packs to tmp/deploy-backups/<run id> (LOCK and other EBUSY/EPERM files skipped)",
+    "3. git pull --ff-only on main",
+    "4. module-src-sync.js status (refuse on hand-edited exit 2)",
+    "5. module-src-sync.js push (engine backed up to %TEMP%\\edha-engine-backups first)",
+    "6. sync-art.js",
+    "7. foundry-build.js leyline | deity | heroic | adversaries | items",
+    "8. validate-packs.js + validate-adversaries.js",
+    "9. Relaunch the exe, poll http://localhost:30000/ until it answers 302 -> /join",
   ];
   for (const s of stepList) console.log(`  ${s}`);
 
-  console.log("\nPost-flight verification: pack stamps newer than run start; served engine sha256 == HEAD's (CRLF-normalised); / -> /join names the world.");
+  console.log(
+    `\nPost-flight verification: pack stamps newer than run start; served engine sha256 == HEAD's ` +
+      `(CRLF-normalised) and / -> /join names the world — each retried with backoff for up to ` +
+      `--wait-seconds (${flags.waitSeconds}s) before FAILing (item 137: Foundry answers the relaunch ` +
+      `poll's redirect before its files are fully served).`
+  );
 
   const guardsPass = preflight.every((r) => r.ok);
 
@@ -490,25 +625,31 @@ async function main() {
   }
 
   const logger = makeLogger(runTimestamp);
-  const { backupDir, backedUp } = backupPacks(runTimestamp);
-  console.log(`\nBacked up ${backedUp} pack dir(s) to ${backupDir}`);
-  console.log(`Restore command if anything below fails: ${restoreCommand(backupDir)}`);
-  logger.write(`Backed up ${backedUp} pack dir(s) to ${backupDir}`);
+  let backupDir = null; // set once step 2 (backup) completes; used by restoreCommand below
 
   const steps = [
-    ["1/8 close Foundry", () => closeFoundryStep(logger)],
-    ["2/8 git pull --ff-only", () => gitPullStep(logger)],
-    ["3/8 module-src-sync status", () => {
+    ["1/9 close Foundry", () => closeFoundryStep(logger)],
+    ["2/9 back up packs", () => {
+      const backup = backupPacks(runTimestamp, (name, err) =>
+        logger.write(`backup: skipped ${name}${err ? ` (${err.code || err.message})` : ""}`)
+      );
+      backupDir = backup.backupDir;
+      console.log(`  backed up ${backup.backedUp} pack dir(s) to ${backupDir}`);
+      console.log(`  restore command if a later step fails: ${restoreCommand(backupDir)}`);
+      logger.write(`Backed up ${backup.backedUp} pack dir(s) to ${backupDir}`);
+    }],
+    ["3/9 git pull --ff-only", () => gitPullStep(logger)],
+    ["4/9 module-src-sync status", () => {
       const s = moduleSrcSyncStatus();
       const v = guards.checkModuleSrcSync(s.exitCode);
       logger.write(`module-src-sync status: ${v.message}`);
       if (!v.ok) throw new Error(v.message);
     }],
-    ["4/8 module-src-sync push", () => moduleSrcSyncPushStep(logger)],
-    ["5/8 sync-art", () => syncArtStep(logger)],
-    ["6/8 rebuild packs", () => rebuildPacksStep(logger)],
-    ["7/8 validate packs", () => validatePacksStep(logger)],
-    ["8/8 relaunch + poll", () => relaunchAndPollStep(exe.chosen, flags.waitSeconds, logger)],
+    ["5/9 module-src-sync push", () => moduleSrcSyncPushStep(logger)],
+    ["6/9 sync-art", () => syncArtStep(logger)],
+    ["7/9 rebuild packs", () => rebuildPacksStep(logger)],
+    ["8/9 validate packs", () => validatePacksStep(logger)],
+    ["9/9 relaunch + poll", () => relaunchAndPollStep(exe.chosen, flags.waitSeconds, logger)],
   ];
 
   let joinResult = null;
@@ -516,18 +657,33 @@ async function main() {
     console.log(`\n> ${name}`);
     try {
       const out = await fn();
-      if (name.startsWith("8/8")) joinResult = out;
+      if (name.includes("relaunch")) joinResult = out;
       console.log(`  ok`);
     } catch (e) {
       console.error(`\nSTOPPED at step "${name}": ${e.message}`);
       console.error(`Log: ${logger.logPath}`);
-      const isRelaunchStep = name.startsWith("8/8");
-      console.error(
-        isRelaunchStep
-          ? "Foundry relaunch/verification could not be confirmed — check the machine by hand before assuming anything is wrong with the packs."
-          : "Foundry is left CLOSED. Do not relaunch on a half-built pack set."
-      );
-      console.error(`Restore command: ${restoreCommand(backupDir)}`);
+      if (guards.isBackupStepFailure(name)) {
+        // Foundry is already closed and backupPacks() only READS from MODROOT, so a failure here
+        // means nothing in Foundry's live directories has been touched — safe to relaunch now
+        // rather than leaving the table down for no reason.
+        console.error(`Nothing has been written yet — Foundry is closed; relaunching it now: "${exe.chosen}"`);
+        const r = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", `Start-Process -FilePath "${exe.chosen}"`], { encoding: "utf8" });
+        logger.write(`auto-relaunch after backup-step failure:\n${r.stdout || ""}${r.stderr || ""}`);
+        if (r.status !== 0) {
+          console.error(`Automatic relaunch ALSO failed (exit ${r.status}): ${r.stderr}. Relaunch it yourself: "${exe.chosen}"`);
+        }
+      } else {
+        console.error(
+          name.includes("relaunch")
+            ? "Foundry relaunch/verification could not be confirmed — check the machine by hand before assuming anything is wrong with the packs."
+            : "Foundry is left CLOSED. Do not relaunch on a half-built pack set."
+        );
+        console.error(
+          backupDir
+            ? `Restore command: ${restoreCommand(backupDir)}`
+            : "No backup exists yet — nothing has been written that needs restoring."
+        );
+      }
       logger.close();
       process.exit(1);
       return;
@@ -542,8 +698,9 @@ async function main() {
     console.error(`\n${notBehind.message} — deploy proceeded on stale content. Investigate before trusting this run.`);
   }
 
-  const worldTitle = optionsJson && optionsJson.world ? optionsJson.world : null;
-  const verify = await postFlightVerify(t0, worldTitle);
+  // Reuses the title resolved before Foundry was ever touched (item 139: this must be world.json's
+  // TITLE, e.g. "Edha" for id "edha" — never the bare id — see `expectedWorldTitle` above).
+  const verify = await postFlightVerify(t0, expectedWorldTitle, flags.waitSeconds, logger);
   printVerdicts("Post-flight verification:", verify.results);
   const verifyPass = verify.results.every((r) => r.ok);
 

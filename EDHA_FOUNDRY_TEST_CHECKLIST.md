@@ -51,6 +51,8 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T00:46:31Z from main @ d832ac4: packs 2026-09-14T00:46:39Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: the PM's `deploy-cycle.js --yes` ran all NINE steps ok — close, backup, pull, engine, art, five packs, validators, relaunch — and post-flight PASSED stamps + engine sha; its `/join` check refused on a case mismatch (it compared the world id `edha` to the page title `Edha`; item 139), so the script withheld this line. `/` → `/join` and the title verified by hand at 20:48.)***
+
 **Agent-run deploy 2026-09-14T00:05:15.491Z from main @ 3aed769: packs 2026-09-14T00:03:52.960Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: deploy-cycle.js ran all eight steps green from a worktree on main, but its post-flight fetch raced Foundry’s boot — served engine 24d74c96… == HEAD and / → /join both verified by hand two minutes later; the first attempt died on the pack-backup LOCK bug, item 129, with nothing touched.)***
 
 
@@ -398,6 +400,16 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
 - [ ] 🤖 **DM-1 — a leyline character draws its highest colour rank, not its tier:** on Bench — Black (Black rank 2, tier 1), use Draw Mana with Investiture below max − 2: the pool rises by **2** and the chat line reads *"Draws Mana — recover 2 Investiture (highest leyline rank)"*. Then on a two-colour bench actor (any deity roster actor with e.g. Black 2 / Green 3) the draw recovers **3**. Then on a boss adversary with an embedded Draw Mana (role rank 3) it recovers 3, and on a minion 1. The pool still clamps at max.
 - [ ] 🤖 **DM-2 — the rebuilt Draw Mana card says so:** off the rebuilt leyline pack and off a re-imported adversary embed, the Draw Mana action's description reads *"Recover Investiture equal to your highest leyline rank, and trigger your leyline color's Attunement rider"* — no "Tier". Owned copies on existing actors are frozen snapshots until ⟳ Sync / re-drag; the engine's number is live regardless of the card (DM-1).
+
+## Two gates lowered and one bypass cut — Ben's second-round balance answers (2026-09-14; **REBUILD leyline + deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **GW-1 — `Ghostly Walls` is a Blue 2+ talent on the rebuilt pack:** the Blue `talent_tree` node for Ghostly Walls carries the Blue 2+ prerequisite (Absolute Stillness behind it still Blue 3+; Counterspell still 3+); a level-4 Blue bench actor with Blue 2 and Phantom Step can take it, a level-3 one cannot (depth).
+- [ ] 🤖 **AM-1 — `Adaptive Mutation` is a Green 2+ talent on the rebuilt pack:** the Life node carries Green 2+; a level-2 Life disciple (Blue 2 / Green 2, Life Surge owned) can take it.
+- [ ] 🤖 **TE-1 — the Construct's melee attack is deflected normally:** on Bench — Civilization with Tempered Edge, a Construct Slam against a Deflect-2 target shows the system's "− deflect" line actually subtracting (before the cut, `addTargetDeflect` added the deflect back as an extra instance); the card reads "deal an additional [Tier][Die] energy damage." with no "ignore deflect".
+
+## Knowledge's strike reshaped — R-120 (b), item 130 (2026-09-14; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **KM-1 — `Predatory Strike` adds one die plus Tier per Insight, not dice × Insight:** on Bench — Knowledge with 5 Insight on the quarry (Studied Mark, then two hits, or wait two turns of Accumulate), a Predatory Strike hit at tier 1 shows the rider as **1d6 + 5** bonus vital (one die, plus one per Insight), not 1d6 × 5; the card reads "equal to [Tier][Die] plus your Tier per Insight". Then `Killing Blow` on the same quarry still rolls **1d6 × 5** — the cash-outs keep the multiplier.
 
 ## The premise (stop if these fail)
 
@@ -898,13 +910,17 @@ promise. **Control at 0 ft moved, same target, same talent:** the roll succeeded
 
 *(`scripts/deploy-cycle.js` is the gated, tested replacement for the ad-hoc shell chain the PM ran
 by hand at 14:41 ET on 2026-09-13 (`docs/PM_BOARD.md` run log) — guards, timestamped backups, the
-eight `deploy-to-foundry.bat` steps fail-fast, a relaunch + post-flight verification, and (on
+nine `deploy-to-foundry.bat` steps fail-fast, a relaunch + post-flight verification, and (on
 success) a new dated line at the top of this file's `# ⚑ DEPLOY STATE` section (near the top of
 the file), appended by the script itself. Its own guards/verifiers are unit-pinned in
-`tests/deploy-cycle.test.js`; this row is its first LIVE run, which no test can stand in for.)*
+`tests/deploy-cycle.test.js`. The PM's first LIVE run (19:41 ET) died safely at the backup step —
+it ran BEFORE the close and hit a running Foundry's open LevelDB `LOCK` file (EBUSY); nothing was
+written and Foundry stayed up. Item 129 fixed the order (backup is now step 2, after the close)
+and made the backup skip `LOCK`/EBUSY/EPERM files; this row stays open for the retry.)*
 
-- [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backups, eight steps, relaunch,
-      verification, the DEPLOY STATE record.
+- [x] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backup (after the close), the
+      *(✅ RETIRED on evidence 2026-09-13 20:46 ET — the PM's live run: six guards PASS, nine steps ok, packs restamped 00:46:39Z, served engine `24d74c96` = HEAD, Foundry relaunched into Edha (HTTP 302 → /join). The one post-flight REFUSE was the verifier's own case bug (item 139), not the deploy. Earlier the same evening: the 19:41 run died safely on the pack LOCK (item 129) and another session's 20:05 run raced the boot (item 137) — both fixed before this pass.)*
+      remaining eight steps, relaunch, verification, the DEPLOY STATE record.
 
 ## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
 
@@ -922,6 +938,32 @@ scope filters, and that a combat elsewhere is genuinely left untouched.)*
       is synced for real, and that a **started combat Ben is running on a DIFFERENT scene (never one
       the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
       not read, sync, or touch them at all.
+
+## Bench Arena scene creation — item 128 / PM-R19 (2026-09-13 — TOOLING, no pack rebuild, no ⟳ Sync)
+
+*(Ben's phone-board grant, 16:13 ET, on R-113: "I also need to give permission to create new
+scenes specifically for future test bench runs." A bench-created scene named `Bench — <purpose>`
+is now licensed alongside "Playtest Map" — the standing one is `Bench Arena`, found-or-created by
+`scripts/bench-setup-console.js`'s `USE_ARENA` toggle (default off) from a small fixed spec: a
+plain background, a 100 px / 5 ft grid, and a footprint sized for the roster. `benchArenaSpec` /
+`benchArenaPlan` are pinned headless in `tests/bench-arena.test.js`; this row proves the live
+create, the idempotent find, the roster placement, the scoped adversary sync against the new
+scene, and the required byte-identical Ben-scene diff, in one pass.)*
+
+- [ ] 🤖 **128-1 — the Bench Arena is created, found idempotently, hosts a real row, and every Ben
+      scene is untouched:** snapshot every scene's id and, for "Playtest Map" and any other scene
+      Ben has, its token-id set and count. Set `USE_ARENA = true` in `bench-setup-console.js` and
+      paste it — confirm the log line reads `arena: created <id>` and the scene exists (view it,
+      never activate/deactivate — hard rule 3 is unchanged by this grant). Paste the script again
+      unchanged — confirm `arena: found <id>` with the SAME id and no second `Bench Arena` scene.
+      Set `PLACE_TOKENS = true` and run once more — the roster lands on the Bench Arena, not the
+      Playtest Map. Run one cheap engine-wide row there. Then call the scoped adversary sync
+      (item 123) against the arena's id — `edha.syncAllAdversaries({ folder: "Edha Bench", scenes:
+      [<arena id>], dryRun: false })` — and confirm it reports and writes only against that scene.
+      Clean up everything the run created ON the arena (tokens, any combat) — the arena scene
+      itself stays standing for the next run, it is not deleted. Finally confirm the snapshot taken
+      at the start: "Playtest Map"'s token-id set and count, and every other Ben scene, are
+      byte-identical to before — the arena run must leave them exactly as found.
 
 ---
 

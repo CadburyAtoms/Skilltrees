@@ -77,10 +77,35 @@ test("checkNoBenchWorker: a lane-B worker on the overlay refuses", () => {
   assert.ok(v.message.includes("45"));
 });
 
-test("checkNoBenchWorker: a worker whose title names bench (no lane) also refuses", () => {
-  const pmLive = { workers: [{ item: "46", title: "bench run 46", lane: "R" }] };
+/* --- checkNoBenchWorker: the overlay signal is lane/item/branch, never title text (item 138) --
+ * Pins named in the brief: a lane-R worker titled "bench guard reads worktrees" passes;
+ * `item: "bench-47"` refuses; `lane: "B"` refuses (covered above); `branch: "pm/bench-48"`
+ * refuses.
+ */
+
+test("checkNoBenchWorker: a lane-R worker whose TITLE names bench passes — title text is not a signal", () => {
+  const pmLive = { workers: [{ item: "125+137", title: "deploy-cycle.js: bench guard reads worktrees and branches", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an item id starting with bench- refuses", () => {
+  const pmLive = { workers: [{ item: "bench-47", title: "some worker", lane: "R" }] };
   const v = guards.checkNoBenchWorker(pmLive, false);
   assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("bench-47"));
+});
+
+test("checkNoBenchWorker: a branch starting with pm/bench- refuses, even with an unrelated item/title", () => {
+  const pmLive = { workers: [{ item: "48", title: "some worker", branch: "pm/bench-48", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+});
+
+test("checkNoBenchWorker: an AGENT field naming bench is not a signal either", () => {
+  const pmLive = { workers: [{ item: "49", title: "ordinary work", agent: "bench-run agent", lane: "R" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, true);
 });
 
 test("checkNoBenchWorker: --force-bench overrides a lane-B worker", () => {
@@ -98,6 +123,89 @@ test("checkNoBenchWorker: a lane-R worker unrelated to the bench passes", () => 
   const pmLive = { workers: [{ item: "105", title: "R-96 (a) changes", lane: "R" }] };
   const v = guards.checkNoBenchWorker(pmLive, false);
   assert.strictEqual(v.ok, true);
+});
+
+/* --- checkNoBenchWorker: worktrees + branches (item 125) ------------------------------------ */
+
+test("checkNoBenchWorker: a worktree line on pm/bench-46 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+  assert.ok(v.message.includes("pm/bench-46"));
+});
+
+test("checkNoBenchWorker: the same worktree with --force-bench passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, true, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged remote origin/pm/bench-47 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("origin/pm/bench-47"));
+});
+
+test("checkNoBenchWorker: a merged origin/pm/bench-47 passes (merged into origin/main does not count)", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: true }] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged LOCAL pm/bench-* branch also refuses", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { local: [{ name: "pm/bench-50", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("pm/bench-50"));
+});
+
+test("checkNoBenchWorker: the overlay-only case is unchanged when no worktree/branch data is given", () => {
+  const pmLive = { workers: [{ item: "45", title: "bench run 46", lane: "B" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+});
+
+test("checkNoBenchWorker: a plain non-bench worktree (e.g. main branch) passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees", branch: "main" }],
+    branches: { local: [], remote: [] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+/* --- parseWorktreePorcelain -------------------------------------------------------------------- */
+
+test("parseWorktreePorcelain: extracts path + branch, stripping refs/heads/", () => {
+  const text = [
+    "worktree C:/dev/Skilltrees",
+    "HEAD 75629ae0000000000000000000000000000000",
+    "branch refs/heads/main",
+    "",
+    "worktree C:/dev/Skilltrees/.claude/worktrees/agent-x",
+    "HEAD abcdef0000000000000000000000000000000a",
+    "branch refs/heads/pm/bench-46",
+    "",
+  ].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 2);
+  assert.strictEqual(result[0].branch, "main");
+  assert.strictEqual(result[1].branch, "pm/bench-46");
+  assert.strictEqual(result[1].path, "C:/dev/Skilltrees/.claude/worktrees/agent-x");
+});
+
+test("parseWorktreePorcelain: a detached worktree has a null branch", () => {
+  const text = ["worktree C:/somewhere", "HEAD abc123", "detached", ""].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].branch, null);
 });
 
 /* --- checkPacksExist ------------------------------------------------------------------------ */
@@ -129,6 +237,55 @@ test("checkWorldConfigured: null options.json (file absent) refuses", () => {
 
 test("checkWorldConfigured: a configured world passes", () => {
   const v = guards.checkWorldConfigured({ world: "edha" });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkWorldConfigured: a configured world with a resolved title prints it (item 139, --dry-run visibility)", () => {
+  const v = guards.checkWorldConfigured({ world: "edha" }, "Edha");
+  assert.strictEqual(v.ok, true);
+  assert.ok(v.message.includes("Edha"), "the resolved /join title should appear in the dry-run verdict line");
+});
+
+/* --- expectedWorldTitle (item 139: the /join check compared the world ID against the page's
+ * TITLE, which is read from world.json, not options.json) ------------------------------------ */
+
+test("expectedWorldTitle: world.json's title wins over the id", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "Edha" } });
+  assert.strictEqual(t, "Edha");
+});
+
+test("expectedWorldTitle: a body containing '<title>Edha</title>' is what checkJoinRedirect must pass for id 'edha'", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "Edha" } });
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: t });
+  assert.strictEqual(v.ok, true);
+});
+
+test("expectedWorldTitle: no world.json falls back to the id, case-insensitively matched", () => {
+  const t = guards.expectedWorldTitle({ worldId: "edha", worldJson: null });
+  assert.strictEqual(t, "edha");
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: t });
+  assert.strictEqual(v.ok, true, "the id fallback must still match the page's differently-cased title");
+});
+
+test("expectedWorldTitle: a world.json with no usable title string also falls back to the id", () => {
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: {} }), "edha");
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "" } }), "edha");
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: "edha", worldJson: { title: "   " } }), "edha");
+});
+
+test("expectedWorldTitle: neither an id nor a title resolves to null", () => {
+  assert.strictEqual(guards.expectedWorldTitle({ worldId: null, worldJson: null }), null);
+});
+
+test("checkJoinRedirect: the pre-fix behaviour (id vs title, case-sensitive) is what item 139 replaces — " +
+  "the real PM run's exact shape (id 'edha', title 'Edha') would have refused under it", () => {
+  // Reproduces the OLD comparison inline (case-sensitive substring of the bare id) to show it is
+  // exactly what refused the PM's 2026-09-13 20:46 run: `joinBody` names the world's TITLE
+  // ("Edha"), but the old code compared against the id ("edha") case-sensitively.
+  const oldWayRefused = !"<title>Edha</title>".includes("edha");
+  assert.strictEqual(oldWayRefused, true, "case-sensitive id-vs-title comparison must fail on this exact body");
+  // The fixed guard, given the correctly-resolved title, passes on the identical body.
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>Edha</title>", worldTitle: "Edha" });
   assert.strictEqual(v.ok, true);
 });
 
@@ -198,6 +355,42 @@ test("enginesMatch: genuinely different content fails even after CRLF normalisat
   assert.strictEqual(v.ok, false);
 });
 
+/* --- shouldSkipBackupFile (item 129: LOCK + EBUSY/EPERM) ---------------------------------------- */
+
+test("shouldSkipBackupFile: the LevelDB LOCK file is always skipped", () => {
+  assert.strictEqual(guards.shouldSkipBackupFile("LOCK", null), true);
+});
+
+test("shouldSkipBackupFile: an EBUSY error on an ordinary file is skipped", () => {
+  const err = Object.assign(new Error("busy"), { code: "EBUSY" });
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.log", err), true);
+});
+
+test("shouldSkipBackupFile: an EPERM error is skipped", () => {
+  const err = Object.assign(new Error("perm"), { code: "EPERM" });
+  assert.strictEqual(guards.shouldSkipBackupFile("MANIFEST-000001", err), true);
+});
+
+test("shouldSkipBackupFile: an ordinary file with no error is NOT skipped", () => {
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.ldb", null), false);
+});
+
+test("shouldSkipBackupFile: a different error code is NOT skipped (a real failure must still abort)", () => {
+  const err = Object.assign(new Error("disk full"), { code: "ENOSPC" });
+  assert.strictEqual(guards.shouldSkipBackupFile("000123.ldb", err), false);
+});
+
+/* --- isBackupStepFailure (item 129) -------------------------------------------------------------- */
+
+test("isBackupStepFailure: matches the backup step's name", () => {
+  assert.strictEqual(guards.isBackupStepFailure("2/9 back up packs"), true);
+});
+
+test("isBackupStepFailure: does not match the close or relaunch steps", () => {
+  assert.strictEqual(guards.isBackupStepFailure("1/9 close Foundry"), false);
+  assert.strictEqual(guards.isBackupStepFailure("9/9 relaunch + poll"), false);
+});
+
 /* --- checkJoinRedirect -------------------------------------------------------------------------- */
 
 test("checkJoinRedirect: a /setup redirect fails (no world loaded)", () => {
@@ -219,6 +412,71 @@ test("checkJoinRedirect: /join without the world's title fails", () => {
 test("checkJoinRedirect: a proper 302 -> /join naming the world passes", () => {
   const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>edha</title>", worldTitle: "edha" });
   assert.strictEqual(v.ok, true);
+});
+
+test("checkJoinRedirect: matches case-insensitively (item 139 — the id and the served title case need not agree)", () => {
+  const v = guards.checkJoinRedirect({ status: 302, location: "/join", joinBody: "<title>EDHA</title>", worldTitle: "edha" });
+  assert.strictEqual(v.ok, true);
+});
+
+/* --- engineSha8 (item 137) ---------------------------------------------------------------------- */
+
+test("engineSha8: a CRLF-served body hashes the same as its LF twin", () => {
+  const lf = "function edhaFoo() {\n  return 1;\n}\n";
+  const crlf = lf.replace(/\n/g, "\r\n");
+  assert.strictEqual(guards.engineSha8(lf), guards.engineSha8(crlf));
+});
+
+/* --- shouldRetryVerify (item 137: the post-flight verification races Foundry's boot) ------------
+ * Pins named in the brief: a 404 at 5s retries; a wrong sha at 10s retries; the right sha passes;
+ * a wrong sha AT the deadline fails.
+ */
+
+test("shouldRetryVerify: a 404 at 5s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 404, body: "", expectedSha: "abcd1234", elapsed: 5000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: a wrong sha at 10s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "not the engine", expectedSha: "abcd1234", elapsed: 10000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: the right sha passes", () => {
+  const body = "function edhaFoo() { return 1; }\n";
+  const expectedSha = guards.engineSha8(body);
+  const d = guards.shouldRetryVerify({ status: 200, body, expectedSha, elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
+  assert.strictEqual(d.ok, true);
+});
+
+test("shouldRetryVerify: a wrong sha AT the deadline fails, naming the last observed status/sha", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "still wrong", expectedSha: "abcd1234", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+  assert.strictEqual(d.ok, false);
+  assert.ok(d.message.includes("abcd1234"));
+});
+
+test("shouldRetryVerify: a fetch error (status 0) before the deadline retries, not fails", () => {
+  const d = guards.shouldRetryVerify({ status: 0, body: "", expectedSha: "abcd1234", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+/* --- shouldRetryJoin (item 137, the /join title check gets the same bounded-retry policy) ------- */
+
+test("shouldRetryJoin: a /setup redirect before the deadline retries", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryJoin: a /setup redirect AT the deadline fails", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+});
+
+test("shouldRetryJoin: a proper /join naming the world passes immediately", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/join", joinBody: "<title>edha</title>", worldTitle: "edha", elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
 });
 
 /* --- formatDeployRecordLine / insertDeployStateRecord ------------------------------------------ */
@@ -295,18 +553,31 @@ test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes n
     }
     for (const stepFragment of [
       "1. Close Foundry",
-      "2. git pull --ff-only",
-      "3. module-src-sync.js status",
-      "4. module-src-sync.js push",
-      "5. sync-art.js",
-      "6. foundry-build.js",
-      "7. validate-packs.js",
-      "8. Relaunch the exe",
+      "2. Back up the five packs",
+      "3. git pull --ff-only",
+      "4. module-src-sync.js status",
+      "5. module-src-sync.js push",
+      "6. sync-art.js",
+      "7. foundry-build.js",
+      "8. validate-packs.js",
+      "9. Relaunch the exe",
     ]) {
       assert.ok(out.includes(stepFragment), `expected step text "${stepFragment}" in dry-run output`);
     }
     assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
     assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
+
+    // item 137: the post-flight description must say verification retries/waits up to
+    // --wait-seconds, not just checks once.
+    assert.ok(out.includes("--wait-seconds"), "dry-run must mention the post-flight verification's --wait-seconds bound");
+    assert.ok(/retried with backoff/i.test(out), "dry-run must describe the post-flight checks as retried, not one-shot");
+
+    // item 129: the backup must be PRINTED after the close, not before — this is the step-order
+    // regression the item exists to pin. Reverting the order (backup before close) fails this.
+    const closeIdx = out.indexOf("1. Close Foundry");
+    const backupIdx = out.indexOf("2. Back up the five packs");
+    assert.ok(closeIdx !== -1 && backupIdx !== -1, "both the close and backup step lines must be present");
+    assert.ok(closeIdx < backupIdx, "the close step must be printed BEFORE the backup step");
 
     // Prove it by mutation-adjacent evidence too, not just the printed claim: the checklist file
     // and the backups directory are byte-for-byte / entry-for-entry unchanged.

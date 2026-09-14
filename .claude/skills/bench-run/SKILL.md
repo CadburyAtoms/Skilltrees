@@ -35,6 +35,18 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    edit to the actor documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep
    rosters to the actors under test — do not widen a roster beyond what the run's checklist
    section needs.
+
+   **PM-R19 grant (2026-09-13): a bench run may also CREATE its own scenes for test runs.** Ben,
+   phone board 16:13 ET, verbatim: *"I also need to give permission to create new scenes
+   specifically for future test bench runs."* A scene the bench creates must be named
+   `Bench — <purpose>` — the standing one is **`Bench Arena`**, found-or-created idempotently by
+   `scripts/bench-setup-console.js`'s `USE_ARENA` toggle (default off; see item 128). On a
+   bench-created scene the bench may VIEW it (never activate/deactivate — hard rule 3, unchanged),
+   place its roster there, run rows there, and **delete what it created there** (tokens, combats)
+   when it is done — the scene itself stays standing for the next run, it is not torn down.
+   Outside a scene it created, the licence is unchanged: **"Playtest Map"** (this rule) is still
+   the only pre-existing scene the bench may touch — **"Playtest Map (Copy)"** and every other
+   scene remain Ben's (R-113's answer, unaffected by this grant).
 5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta (top of the current month's `docs/handoff-changelog/2026-MM.md`), never there. **Exception (item 122, 2026-09-13):** the one line `scripts/deploy-cycle.js` itself appends on a successful `--yes` run — it is the agent-run deploy's own record, not a bench finding, and it does not need a bench run to add or touch it.
 6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
    snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
@@ -54,11 +66,12 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    bench runs"), but ONLY scoped**: read the DRY RUN first (a bare `edha.syncAllAdversaries()` with
    no args always previews — reports the actor list + per-scene token counts, writes nothing),
    then call it for real as `edha.syncAllAdversaries({ folder: "Edha Bench" /* or actorIds */,
-   scenes: [<the licensed Playtest Map's id only>], dryRun: false })`. **Never call it unscoped,
+   scenes: [<a licensed scene's id only>], dryRun: false })`. **Never call it unscoped,
    and never pass `allowStartedCombat: true`** — that override is Ben's, not the bench's. A refusal
    (a candidate token in a STARTED combat on an in-scope scene) means the scope was wrong; narrow
    it, do not override it. "Playtest Map (Copy)" is still Ben's scene (R-113's narrower question
-   was never answered) — never name it in `scenes`.
+   was never answered) — never name it in `scenes`. A licensed scene is the Playtest Map OR a
+   scene the bench itself created (PM-R19, hard rule 4) — e.g. the standing `Bench Arena`'s id.
 
 ## The loop
 

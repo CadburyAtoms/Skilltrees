@@ -500,9 +500,9 @@
       "docId": "Ijbc9inhfqtIA0Nm",
       "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Every strike teaches something.</em></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Every strike teaches something.</em></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1), then place 1 Insight on the target.</p>"
       },
       "activation": {
         "type": "utility",
@@ -567,7 +567,7 @@
             "consumeSelfStatus": true,
             "weaponOnly": true,
             "counterStatus": "insight",
-            "amountFormula": "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)",
+            "amountFormula": "((@tier)d(2 * @colorRank + 2)) + @tier * max(@counter, 1)",
             "color": "red",
             "damageType": "vital",
             "placeCounter": 1,

@@ -3728,7 +3728,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps —. Filed 2026-09-13 from bench run 46.
 
-## 125. [ ] `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
+## 125. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s no-bench-worker guard reads only the checkout's tracked overlay, which lags the PM's board branch — it must also read `git worktree list` and local `pm/bench-*` branches (TOOLING + test pin) (2026-09-13)
 
 **Why:** at item 122's review the PM dry-ran the script twice. From the main checkout (board branch, live `docs/pm-live.json`) it refused naming bench-46. From a worktree it PASSED the same guard while bench 46 was mid-run — that checkout's `docs/pm-live.json` was `main`'s, and `main` only carries the overlay as of the last merged board PR. The guard is therefore only as fresh as the checkout it runs from, and a PM that has not yet landed its board PR (the normal state mid-shift) could close Foundry under a live bench.
 
@@ -3774,7 +3774,7 @@ scripts/gates.js` green.
 **PM:** lane R · model sonnet · size S · deps — · verify: the parse check + gates. Filed 2026-09-13
 by the PM as the design-proposal batch items 101/106/107/108/109/114 were waiting on.
 
-## 128. [ ] The bench may CREATE its own scenes for test runs (Ben, 2026-09-13) — write the licence into the bench skill and runbook, and give the roster script a standing Bench Arena (DOCS + TOOLING) (2026-09-13)
+## 128. [x] (2026-09-13, PR #362) The bench may CREATE its own scenes for test runs (Ben, 2026-09-13) — write the licence into the bench skill and runbook, and give the roster script a standing Bench Arena (DOCS + TOOLING) (2026-09-13)
 
 **Why:** Ben, phone board 2026-09-13 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes specifically for future test bench runs."* Today the bench's licence is the existing "Playtest Map" (PM-R13, widened 2026-09-06) and it stays off every other scene — bench run 46 found Ben's live combat on "Playtest Map (Copy)" and rightly refused to touch it. A bench-owned scene removes the collision for good: the bench creates and uses its own, and Ben's scenes are never in scope.
 
@@ -3784,7 +3784,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: the pin + the row. Filed 2026-09-13 by the PM from the phone inbox (PM-R19).
 
-## 129. [ ] `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13)
+## 129. [x] (2026-09-13, PR #355) `deploy-cycle.js` backs up the packs BEFORE closing Foundry, so the first live run died on the LevelDB `LOCK` file (EBUSY) — back up after the close, skip lock files, and pin the step order (TOOLING + test pin) (2026-09-13) — script + guards + tests shipped; the PM's next live `--yes` run (🤖 row, `EDHA_FOUNDRY_TEST_CHECKLIST.md`) is the outstanding verify step
 
 **Why:** the first live `node scripts/deploy-cycle.js --yes` (PM, 2026-09-13 19:41 ET, every guard PASS) threw `EBUSY: resource busy or locked, copyfile '…\\packs\\edha-leyline\\LOCK'` inside `backupPacks()` (`scripts/deploy-cycle.js:232`), which `main()` calls BEFORE step 1 (close Foundry). A running Foundry holds each pack's LevelDB `LOCK`; the copy cannot read it. The failure was SAFE — nothing had been written, Foundry stayed up — but the run did no work, and the stack trace was raw rather than the script's own "step N failed + restore command" message.
 
@@ -3793,7 +3793,20 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the pins pass and fail on the reversion; `--dry-run` lists "backup" after "close"; the PM's next live run gets past the backup.
 
 **PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
-## 130. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
+
+## 137. [x] (2026-09-13, PR #358) `deploy-cycle.js`'s post-flight verification races Foundry's boot (TOOLING + test pin) (2026-09-13)
+
+**Why:** another session's live run on 2026-09-13 ~20:05 ET (its worktree `docs/deploy-record-2026-09-14`, DEPLOY STATE note) ran all eight steps green from a worktree on `main`, but its post-flight fetch raced Foundry's boot — served engine `24d74c96…` == HEAD and `/` → `/join` both had to be verified by hand two minutes later. The relaunch step's poll only waits for `/` to answer 302; Foundry answers that redirect before the world and module files are fully served, so the immediate post-flight fetch of `/modules/edha-content/scripts/register-skills.js` (and possibly `/join`'s title check) can fail or return a partial body.
+
+**What to do:** `postFlightVerify` retries the engine fetch and the `/join` title check with a bounded backoff until `--wait-seconds` (default 90) elapses — a fetch that errors, times out, returns a non-200, or a body whose sha does not match HEAD's is a *retry*, not a FAIL, until the deadline; only then FAIL with the last observed status/sha. Pure decision `shouldRetryVerify({status, body, expectedSha, elapsed, deadline})` in the guards module, pinned: a 404 at 5 s → retry; a wrong sha at 10 s → retry; the right sha → pass; a wrong sha at the deadline → fail. Say in the runbook's agent-run-deploy section that the verification waits up to `--wait-seconds`.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` still lists every step and names the `--wait-seconds` bound on the post-flight description.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run. Filed 2026-09-13 by the PM from the other session's 20:05 deploy record.
+
+## 130. [x] (2026-09-14, PR #366) R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier (DATA + authored formula, REBUILD deity) (2026-09-13) — DONE 2026-09-14 after Ben's re-read of the per-talent curve ("Let's do the B reshape for Knowledge, then. I agree."). The rider formula and all card copies reshaped; the cash-outs untouched. **Left open in this item: the decoy item-level `damage` formulas on the three cards** (a double-count surface the verifier flagged) — they still carry their chat note; removing them needs a build + validate-packs check. 🤖 row KM-1.
+
+> **Held 2026-09-14 pending Ben's re-read.** Ben questioned the finding ("taking every talent in the Knowledge tree, right? … what's the damage curve per-talent-taken?"). The answer is in `docs/analysis/talent-ecosystem/balance-per-talent.js` / `BALANCE-REVIEW.md` §2: the line needs ONE pick (Predatory Strike alone reaches five Insight by turn 2–3) — 52 a turn at tier 1 from the first pick, against Black's 33 and Warrior's 31 — and (b) brings the first pick to 34 / 59. Ship only after Ben confirms on that table.
 
 **Why:** the balance review's largest outlier — the repeatable strike multiplies its die by the Insight count (one roll × count, `data/authored/deity-knowledge.json` `amountFormula: "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)"`), about 26 vital per Action at levels 2–5 and 55 at level 7, twice the leyline ceiling and twice the next deity, sustainably. Ben chose (b).
 
@@ -3825,7 +3838,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate + the rows. Filed 2026-09-13 from R-122.
 
-## 133. [ ] R-123 (a) — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13)
+## 133. [x] (2026-09-14, PR #360) R-123 — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13) — DONE 2026-09-14: Ben ungated both himself ("Level six wall doesn't read to me like a ruling needed. I changed two items"); the repo now carries the decision so a rebuild cannot undo it. 🤖 rows GW-1 / AM-1.
 
 **Why:** Blue's freeze (with `Absolute Stillness` behind it) and Life's signature mutation both sit behind a rank-3 gate — level 6 — and both are the identity their descriptions now sell; the deity guide's first principle forbids the Life one outright. Ben chose (a).
 
@@ -3835,7 +3848,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate-build over the ladders. Filed 2026-09-13 from R-123.
 
-## 134. [ ] R-124 (b) — the deity guide records the Construct's whole-attack Deflect bypass and the two-attack Construct as Civilization's damage ceiling (DOCS-ONLY) (2026-09-13)
+## 134. [x] (2026-09-14, PR #360) R-124 OVERRIDDEN — `Tempered Edge`'s Deflect bypass is CUT: the card loses "and ignore deflect", the authored rider loses `addTargetDeflect` (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-14 on Ben's word ("Construct doesn't need to ignore deflect. That can be cut."). The engine's `addTargetDeflect` hint still names Tempered Edge as its example consumer (comment only); no engine change. 🤖 row TE-1.
 
 **Why:** the review's first reading was that `Tempered Edge`'s "ignore deflect" might be a loose sentence; the verifier found `addTargetDeflect: true` on the rider with an engine hint naming Tempered Edge — deliberate. Ben chose (b): accept and document, the way R-111 documented `Withering Ray`.
 
@@ -3864,3 +3877,27 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** DM-1 (engine, F5) and DM-2 (card, after REBUILD) pass on the bench.
 
 **PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.
+
+## 138. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
+
+**Why:** `isBenchWorker` (item 122, `scripts/lib/deploy-guards.js`) treats `lane === "B"` OR the substring `bench` in item / title / agent / branch as a bench signal. The 125 + 137 worker's own overlay entry — *"deploy-cycle.js: bench guard reads worktrees…"* — tripped it, and the PM's 20:44 dry run refused with `bench signal(s) held: 125+137` although that worker never touched Foundry. The worker that built item 125 flagged it in its report.
+
+**What to do:** the overlay signal is `lane === "B"` OR an `item` / `branch` that STARTS with `bench` / `pm/bench-` (the real shapes: `bench-45`, `pm/bench-46`); never the title or agent text. Pin: a lane-R worker titled "bench guard reads worktrees" passes; `item: "bench-47"` refuses; `lane: "B"` refuses.
+
+**Done when:** the pin passes and fails on the reversion; the PM's dry run with a non-bench worker on the overlay passes the guard.
+
+**PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM from the refused dry run.
+
+**What was done:** `isBenchWorker` now only checks `lane === "B"` or an `item`/`branch` STARTING WITH `bench-` / `pm/bench-` (`BENCH_WORKER_ID_RE`); `title` and `agent` are no longer read at all. Six pins in `tests/deploy-cycle.test.js` cover the brief's exact cases (a lane-R worker titled "…bench guard reads worktrees…" now passes; `item: "bench-47"` and `branch: "pm/bench-48"` refuse; an `agent` field naming bench is also not a signal) — all shown failing on the pre-fix reversion (`git stash` back to the old `isBenchWorker`) and passing again after restore.
+
+## 139. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s post-flight `/join` check compares the world ID against the page's TITLE, so it refuses a good deploy (TOOLING + test pin) (2026-09-13)
+
+**Why:** the PM's first live `deploy-cycle.js --yes` run (2026-09-13 20:46 ET, `main` @ `d832ac4`, run id `2026-09-14T00-46-31`) passed all nine steps and both earlier post-flight checks (`stamps-newer-than-start`, `engine-matches-head` on `24d74c96`), then refused: `join-redirect — refused — /join does not name world "edha"`. `deploy-cycle.js` (~L688 pre-fix) passed `optionsJson.world` — the world ID, `edha` — into `checkJoinRedirect` as `worldTitle`, but the `/join` page's `<title>` is the world's TITLE from `<dataPath>/Data/worlds/edha/world.json` (`"title": "Edha"`), and the comparison was case-sensitive besides. Because the refusal kept the run from writing its DEPLOY STATE line, the PM recorded that deploy by hand.
+
+**What to do:** resolve the expected title from `<dataPath>/Data/worlds/<id>/world.json` (`FOUNDRY_USERDATA` in `scripts/lib/paths.js`, same resolution item 122 used for `Config/options.json`) and compare case-insensitively, with the id itself as a fallback when `world.json` is unreadable — a pure `expectedWorldTitle({ worldId, worldJson })` plus a case-insensitive `checkJoinRedirect`, both in `scripts/lib/deploy-guards.js`. `--dry-run` should print the resolved title in the `world-configured` verdict. Pins: id `edha` + world.json title `Edha` → expects "Edha"; a body containing `<title>Edha</title>` passes for id `edha`; no `world.json` → falls back to the id, case-insensitive; the pre-fix behaviour (id vs title, case-sensitive) shown failing on the reversion.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` still lists every step and prints the resolved `/join` title.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run. Filed 2026-09-13 by the PM from its own 20:46 deploy run (same PR as item 138).
+
+**What was done:** `expectedWorldTitle({ worldId, worldJson })` resolves `world.json`'s `title` field, falling back to the id when the file is missing/unreadable or its `title` is not a non-blank string; `deploy-cycle.js` reads `<FOUNDRY_USERDATA>/Data/worlds/<id>/world.json` once (`readWorldJson`) and reuses the resolved title for both the pre-flight `world-configured` verdict (now prints `join title expected: "…"`) and the post-flight `/join` check — no more re-deriving it from `optionsJson.world`. `checkJoinRedirect` compares `joinBody` against `worldTitle` case-insensitively. Ten pins in `tests/deploy-cycle.test.js` cover the resolution, the fallback, the case-insensitive match, and the exact PM-run shape (id `edha`, title `Edha`) — shown failing on the pre-fix reversion and passing again after restore.

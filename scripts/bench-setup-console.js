@@ -7,10 +7,15 @@
  *              talents the surviving bench rows name.
  *   fixtures — hostile target dummies (Isolated / Adjacent A+B / Floater / Undefended) and
  *              two friendly allies, with the skill ranks the `vs: skill` rows roll.
- *   tokens   — placed on the EXISTING "Playtest Map" scene (Ben's ruling 07-26: use the
- *              playtest map, don't create a bench scene). Placement is OFF by default:
- *              view the scene, pick a clear area, set ORIGIN to its top-left pixel and
- *              PLACE_TOKENS = true, then run. RESET_TOKENS re-places existing tokens.
+ *   tokens   — placed on the EXISTING "Playtest Map" scene by default (Ben's ruling 07-26: use
+ *              the playtest map, don't create a bench scene), or on the bench's own standing
+ *              "Bench Arena" scene when USE_ARENA = true (PM-R19 / item 128, 2026-09-13 — Ben's
+ *              phone-board grant: "I also need to give permission to create new scenes
+ *              specifically for future test bench runs"). The arena is found-or-created
+ *              idempotently (a second run finds the same scene, never duplicates it) from a
+ *              small fixed spec — see `benchArenaSpec`/`benchArenaPlan` below. Placement is OFF
+ *              by default: view the scene, pick a clear area, set ORIGIN to its top-left pixel
+ *              and PLACE_TOKENS = true, then run. RESET_TOKENS re-places existing tokens.
  *
  * Idempotent: re-running repairs drift instead of duplicating; nothing outside the
  * "Edha Bench" folders is ever touched, and the only deletions are embedded items on bench
@@ -80,11 +85,54 @@ function benchOrphanPlan(tokens, resolveActor, rosterByName, protectedNames) {
   return { repair, replace, skipped };
 }
 
+/* BENCH_ARENA_NAME — the standing scene PM-R19 (item 128) licenses the bench to create for
+ * itself. Shared between the pure spec/plan below and the console block so the two never name it
+ * differently.
+ */
+const BENCH_ARENA_NAME = "Bench Arena";
+
+/* benchArenaSpec — PURE. The standing Bench Arena's `Scene.create()` data: a plain background,
+ * a 100 px / 5 ft square grid (the checklist's playtest norm), and a footprint sized to the SAME
+ * token layout the placement block below uses — PCs in a column at cx=0, cy=0..pcCount-1;
+ * targets/allies clustered to cx<=9, cy<=9; the Isolated dummy pushed out to cx=24 — so the arena
+ * always fits the roster, including if the roster grows. `origin` mirrors the console's own
+ * ORIGIN default so the two numbers can't drift apart by a hand edit to just one of them.
+ */
+function benchArenaSpec({ pcCount, gridSize = 100, gridDistance = 5, gridUnits = "ft",
+                           origin = { x: 200, y: 200 }, marginCells = 3,
+                           maxCx = 24, maxTargetCy = 9, backgroundColor = "#3a3a3a" } = {}) {
+  const maxCy = Math.max((pcCount || 1) - 1, maxTargetCy);
+  return {
+    name: BENCH_ARENA_NAME,
+    backgroundColor,
+    grid: { type: 1, size: gridSize, distance: gridDistance, units: gridUnits },
+    width: origin.x + gridSize * (maxCx + 1 + marginCells),
+    height: origin.y + gridSize * (maxCy + 1 + marginCells),
+    padding: 0,
+  };
+}
+
+/* benchArenaPlan — PURE. The find-or-create decision for the standing arena: given the world's
+ * current scenes, reuse one already named `Bench Arena` (idempotent — a second run must never
+ * mint a second scene of the same name) or plan to create one from `benchArenaSpec`.
+ * `scenes`: array of {id, name}-shaped objects (or anything with those two props).
+ * Returns {action: "found", id} or {action: "create", spec}.
+ */
+function benchArenaPlan(scenes, specOpts) {
+  const existing = (scenes || []).find((s) => s.name === BENCH_ARENA_NAME);
+  if (existing) return { action: "found", id: existing.id };
+  return { action: "create", spec: benchArenaSpec(specOpts) };
+}
+
 if (typeof game !== "undefined") (async () => {
   const PLACE_TOKENS = false;      // view the scene first, then set true with a clear ORIGIN
   const ORIGIN = { x: 200, y: 200 }; // top-left pixel of a clear area on the Playtest Map
   const RESET_TOKENS = false;
   const SCENE_NAME = "Playtest Map";
+  const USE_ARENA = false;         // PM-R19 / item 128 (2026-09-13): true finds-or-creates the
+                                    // standing "Bench Arena" scene instead of using the Playtest
+                                    // Map — flip this deliberately for an arena run, don't leave
+                                    // it on by accident (the Playtest Map stays the default).
   // Player characters — never write to these (PM-R17). Matched lowercased against the actor
   // name, so a RENAME in Foundry silently un-protects one: if a player renames their actor
   // (Hannah's is still a placeholder), this list has to follow. Confirmed as all three players'
@@ -309,8 +357,17 @@ if (typeof game !== "undefined") (async () => {
                      "prototypeToken.sight.range": 5 });
   }
 
-  // ---- tokens on the EXISTING playtest scene (never created, never activated) --------------
-  const scene = game.scenes.find(s => s.name === SCENE_NAME) ?? game.scenes.find(s => /playtest/i.test(s.name));
+  // ---- scene: the Playtest Map (default, never created), or the bench's own standing Arena
+  // (USE_ARENA = true, PM-R19 / item 128) — found-or-created idempotently, never activated. -----
+  let scene;
+  if (USE_ARENA) {
+    const worldScenes = game.scenes.map(s => ({ id: s.id, name: s.name }));
+    const plan = benchArenaPlan(worldScenes, { pcCount: PCS.length });
+    if (plan.action === "found") { scene = game.scenes.get(plan.id); log.push(`arena: found ${scene.id}`); }
+    else { scene = await Scene.create(plan.spec); log.push(`arena: created ${scene.id}`); }
+  } else {
+    scene = game.scenes.find(s => s.name === SCENE_NAME) ?? game.scenes.find(s => /playtest/i.test(s.name));
+  }
 
   // ---- orphan repair (item 37): runs regardless of PLACE_TOKENS — it only fixes tokens ALREADY
   // on the scene whose actorId resolves to no actor; it never places a new roster member. -------
@@ -373,4 +430,4 @@ if (typeof game !== "undefined") (async () => {
   console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets. Scene: "${scene?.name ?? "NONE"}" (view it, never activate/deactivate). orphans: ${orphansRepaired} repaired, ${orphansReplaced} replaced.`);
 })();
 
-if (typeof module !== "undefined") module.exports = { benchOrphanPlan };
+if (typeof module !== "undefined") module.exports = { benchOrphanPlan, benchArenaSpec, benchArenaPlan, BENCH_ARENA_NAME };

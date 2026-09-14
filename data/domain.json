@@ -422,7 +422,7 @@
     "action": "Passive",
     "cost": "",
     "prerequisites": "Forge Construct",
-    "description": "Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.",
+    "description": "Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage.",
     "flavor": "He forged it twice. Once for shape. Once for fury.",
     "atlas": "deity",
     "layout": {
@@ -1424,7 +1424,7 @@
     "name": "Adaptive Mutation",
     "action": "1 Action",
     "cost": "2 Investiture",
-    "prerequisites": "Green 3+; Life Surge",
+    "prerequisites": "Green 2+; Life Surge",
     "description": "Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.",
     "flavor": "You don’t just survive. You adapt.",
     "atlas": "deity",
@@ -1531,7 +1531,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Red 2+; Green 2+",
-    "description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.",
+    "description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1), then place 1 Insight on the target.",
     "flavor": "Every strike teaches something.",
     "atlas": "deity",
     "layout": {

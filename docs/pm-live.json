@@ -1,10 +1,10 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday evening: item 124 merged and live — press F5 (items 123 + 124). The deploy script's first live run failed SAFELY before it touched anything: it tried to back up the packs while Foundry still held their lock files. Item 129 fixes the step order; the PM re-runs it after. Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "F5 (items 123 + 124 are live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "status": "stopped",
+    "note": "Handoff 21:55 ET (Ben ended the session): 18 PRs merged today, the deploy runs itself now, 117 stale branches gone, LICENSE in. Next PM is the one you start by hand (the scheduled tasks are removed). Seven rulings wait on the Needs Ben tab — each answer unblocks a queued item.",
+    "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
-    "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
+    "session": "2026-09-13 10:26 → 21:55 ET (hand-started; stopped on Ben's word)"
   },
   "workers": [],
   "usage": null
