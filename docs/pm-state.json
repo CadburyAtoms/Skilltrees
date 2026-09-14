@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T01:09:09.830Z",
+  "generatedAt": "2026-09-14T01:19:45.282Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "cdd08874a1",
-    "commit": "0481268",
-    "branch": "pm/board-2026-09-13k",
+    "hash": "5caa96689e",
+    "commit": "bd01de2",
+    "branch": "pm/board-2026-09-13l",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,27 +42,13 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "awake",
-    "note": "Sunday evening: item 128 merged — the next bench run can create its own Bench Arena scene. One worker left (two small deploy-verifier fixes). The deploy ran for real at 20:46; re-join your Gamemaster client if you have not. Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "re-join your Gamemaster client (Foundry relaunched 20:47) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "status": "waiting",
+    "note": "Sunday evening: the deploy script is finished — six items tonight, proven by a live run at 20:46. Nothing is running; one small docs item (126) goes at 21:53, then the shift winds down. Seven rulings wait on the Needs Ben tab; each answer unblocks a queued item for the next shift.",
+    "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "138+139",
-      "title": "deploy-cycle.js verifier fixes: overlay signal by lane/item/branch; /join check by the world's title, case-insensitive",
-      "model": "sonnet",
-      "size": "XS+XS",
-      "lane": "R",
-      "branch": "pm/138-139-deploy-verifier",
-      "startedAt": "2026-09-14T00:50:00Z",
-      "agent": "Work items 138 + 139",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1621,9 +1607,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "125 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 364
     },
     {
       "pos": 129,
@@ -1633,9 +1619,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "137 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 364
     }
   ],
   "rulings": [
@@ -1695,34 +1681,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "22:02",
-      "at": "2026-09-08T02:02:00.000Z",
-      "item": "Item 98 (phone-inbox close-out — the Ashkar art row retired on Ben's word; the stale session-1 state line rewritten) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "15 min, 167 turns",
-      "weighted": "2.6M",
-      "weightedM": 2.6,
-      "outcome": "merged 22:20 after review, no trailers; CONFLICTING at report (base #303) → the PM merged main into the branch (changelog: 98 above 97; dashboard regenerated) and corrected the delta's For-Ben count to the worker's own verified 13 → 11 (its reason: the item's TODO heading quoted \"⚑ batch\" and had counted itself); gates 11/11 in the worktree; CI green on cbc4008. Capitals verified from the map JSON (5 of 35); codex in sync; the Kettavar art row left open on purpose. DOCS-ONLY",
-      "pr": 305
-    },
-    {
-      "date": "2026-09-07",
-      "time": "22:22",
-      "at": "2026-09-08T02:22:00.000Z",
-      "item": "Evening tally (20:30 → 22:22, Ben's hours until 21:00 by his paste, the shift after): 4 items merged (bench 44a #298, 96 #300, 97 #304, 98 #305) + 5 board PRs (#297, #299, #301, #302, #303) = 9 PRs; workers 15.5M weighted (all Sonnet: 4.5 + 5.1 + 3.3 + 2.6); PM 14.6M / 338 turns (four reviews, each with a main merge and a correction; three Ben inputs — a paste, two chat rulings, four phone notes). Rulings closed: R-56 (cosmere ladder → item 83 GO), PM-R17 (PCs refresh-only); the desktop Rulings tab is empty of open rulings. Queue: nothing Sonnet-sized; Opus resumes 00:00 ET — 70 → 83 → push live + hash → bench run 44 (if Foundry is back: DOWN since the 21:52 bat run, last probed 22:20); 80 / 88 / 81 / 62 the night after. Waiting on Ben: only the Foundry relaunch. Loop idles until 00:00 unless Ben writes; stop before 07:00 with a handoff row",
-      "itemNo": "298",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "1 h 52",
-      "weighted": "14.6M (PM) + 15.5M workers",
-      "weightedM": 14.6,
-      "outcome": "waiting",
-      "pr": null
-    },
     {
       "date": "2026-09-08",
       "time": "00:01",
@@ -2534,10 +2492,38 @@
       "weightedM": 3.6,
       "outcome": "merged 21:07 after review, no trailers; CI green on 3420b7e, gates 12/12 (1195 tests). DOCS + TOOLING — nothing to deploy; the arena is created by the next bench run",
       "pr": 362
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:50",
+      "at": "2026-09-14T00:50:00.000Z",
+      "item": "Items 138 + 139 (deploy-cycle.js: overlay bench signal by lane / item / branch id; /join check by world.json's title, case-insensitive; dry run prints the expected title) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "28 min, 163 tool uses",
+      "weighted": "6.9M",
+      "weightedM": 6.9,
+      "outcome": "merged 21:18 after review, no trailers; CI green on f0c55b1, gates 12/12 (1206 tests); both pins shown failing on the reversion; the PM's dry run on clean main passes 6/6 with join title expected: \"Edha\". TOOLING-only",
+      "pr": 364
+    },
+    {
+      "date": "2026-09-13",
+      "time": "21:19",
+      "at": "2026-09-14T01:19:00.000Z",
+      "item": "Nothing running. Deploy-script series closed (122 / 125 / 129 / 137 / 138 / 139). Cap full until 21:53 → item 126 next; then the Sonnet queue is empty (101 / 107 / 109 / 114 wait on R-114 / R-115 / R-116 / R-117; 106 / 108 on R-119 / R-118 are Opus/M; 110 / 113 / 115 Opus tomorrow) → handoff after 126. Trailing-5h dispatches 6 of 6 (16:53, 19:26, 19:49, 20:13, 20:50 ×2)",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "idle",
+      "pr": null
     }
   ],
-  "runLogTotal": 268,
-  "runLogFrom": "2026-09-07",
+  "runLogTotal": 270,
+  "runLogFrom": "2026-09-08",
   "dispatches": [
     {
       "at": "2026-09-04T22:41:00.000Z",
@@ -3288,6 +3274,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 362
+    },
+    {
+      "at": "2026-09-14T00:50:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 364
     }
   ],
   "statusVocab": [

@@ -1,25 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Sunday evening: item 128 merged — the next bench run can create its own Bench Arena scene. One worker left (two small deploy-verifier fixes). The deploy ran for real at 20:46; re-join your Gamemaster client if you have not. Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "re-join your Gamemaster client (Foundry relaunched 20:47) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "status": "waiting",
+    "note": "Sunday evening: the deploy script is finished — six items tonight, proven by a live run at 20:46. Nothing is running; one small docs item (126) goes at 21:53, then the shift winds down. Seven rulings wait on the Needs Ben tab; each answer unblocks a queued item for the next shift.",
+    "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "138+139",
-      "title": "deploy-cycle.js verifier fixes: overlay signal by lane/item/branch; /join check by the world's title, case-insensitive",
-      "model": "sonnet",
-      "size": "XS+XS",
-      "lane": "R",
-      "branch": "pm/138-139-deploy-verifier",
-      "startedAt": "2026-09-14T00:50:00Z",
-      "agent": "Work items 138 + 139",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
