@@ -414,6 +414,13 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
 - [ ] 🤖 **KM-1 — `Predatory Strike` adds one die plus Tier per Insight, not dice × Insight:** on Bench — Knowledge with 5 Insight on the quarry (Studied Mark, then two hits, or wait two turns of Accumulate), a Predatory Strike hit at tier 1 shows the rider as **1d6 + 5** bonus vital (one die, plus one per Insight), not 1d6 × 5; the card reads "equal to [Tier][Die] plus your Tier per Insight". Then `Killing Blow` on the same quarry still rolls **1d6 × 5** — the cash-outs keep the multiplier.
 
+## Chaos — Omen cap tier + 1 (2026-09-13; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **OM-1 — two Omens held at tier 1:** on Bench — Chaos (tier 1), use Entropy Strike on one enemy, then place a second Omen (Entropy Strike or Spreading Omen) on a different enemy: the second placement's card reads **(2/2)**, not (1/1) — `capFormula` is now `@tier + 1` (2 at tier 1, 3 from tier 2). Both bearers keep the status. A third placement in the same state is refused ("you are at your cap of 2").
+- [ ] 🤖 **OM-2 — Cascade Collapse hits both:** with the two Omens from OM-1 still live and both bearers within Blue Attunement Range, use Cascade Collapse: the shared Blue vs. Cognitive roll resolves once, each bearer is gated on its own Cognitive, and every bearer whose test succeeds has its Omen removed — both take [Tier][Die] spirit damage and Disoriented until the start of your next turn, not just one.
+
+*(**R-122's other half — `Isolating Pressure` placing an Omen on an unmarked target — is NOT in this section; see PR for item 132.** The existing shatter idiom on Isolating Pressure is a `release` rule (returns `false`, halting every later-ordered `edha-test-success` rule, when the target bears no Omen) followed by a `damage` rule that rides the halt. A `place` rule fires only when the target does NOT already carry the ledger entry, so it cannot sit after `release` — its `false` would skip the placement in exactly the case that needs it — and it cannot sit before `release` either, since `release` would then find and immediately shatter the entry `place` just added (placed-then-removed, which R-122's own bench wording rules out: "places one and does not also remove it"). Nothing in H3 `edha-owner-list` (`ENGINE_INDEX.md` "Sustained capped ledgers") lets one rule react to what a same-activation sibling rule found BEFORE that sibling mutated the ledger. Left open rather than engine-patched or guessed at — see the PR's Open questions.)*
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —

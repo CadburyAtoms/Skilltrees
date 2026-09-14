@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T02:18:31.128Z",
+  "generatedAt": "2026-09-14T02:46:10.353Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "13d73e9a78",
-    "commit": "61a97d2",
-    "branch": "pm/board-2026-09-13n",
+    "hash": "9f45d9c490",
+    "commit": "67c0a70",
+    "branch": "pm/132-chaos-omen-cap",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,26 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Landed the interactive session's three PRs (#366 with #360, #356) and deployed main @ 61a97d2 at 22:10 ET — the first deploy-cycle run that verified itself end to end; items 130 / 133 / 134 are at the table. Item 132 (Chaos's Omen cap) is running; 135 goes at 00:26; bench 47 (Opus) after 00:00.",
+    "note": "Item 132 merged (#369): the Omen cap is tier + 1 at the next deploy; Isolating Pressure's placement half needs an engine dial → item 142 (Opus). Nothing is running until the 00:26 slot (item 135), then a deploy and bench run 47 (Opus, after 00:00).",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": null,
+    "nextWakeAt": "2026-09-14T04:26:00Z",
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [
-    {
-      "item": "132",
-      "title": "R-122 (a): Chaos's Omen cap becomes tier + 1; Isolating Pressure places an Omen on an unmarked target (DATA, REBUILD deity)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/132-chaos-omen-cap",
-      "startedAt": "2026-09-14T02:13:28Z",
-      "agent": "Work item 132",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only worker in its own worktree; its three 🤖 rows are bench 47's after the next deploy"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1664,14 +1650,14 @@
     {
       "pos": 132,
       "item": "132",
-      "title": "R-122 (a) — Chaos's Omen cap becomes tier + 1 (capFormula on the four placements) and Isolating Pressure places an Omen on an unmarked target (DATA, REBUILD deity); three 🤖 rows. Dispatched 22:13 (sonnet, worktree pm/132-chaos-omen-cap)",
+      "title": "R-122 (a) — the Omen cap half SHIPPED: capFormula @tier + 1 on the four placements (EntropyStrikeOme, both Spreading Omen place rules, UnravelFill00000) + Entropy Strike's card text (DATA, REBUILD deity; pack parity 3 documents / 7 field diffs, 0 elsewhere); 🤖 OM-1 / OM-2. The Isolating Pressure half stopped on an engine-primitive gap — H3 release halts the rule loop on false — correctly under iron rule 2b → item 142. Dispatched 22:13; reviewed 22:47, no corrections; merged on green",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-122 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 369
     },
     {
       "pos": 133,
@@ -1744,6 +1730,18 @@
       "status": "queued",
       "statusDetail": "2026-09-13",
       "pr": null
+    },
+    {
+      "pos": 139,
+      "item": "142",
+      "title": "R-122 (a)'s second half — Isolating Pressure places an Omen on an unmarked target: ONE generic non-halting dial on H3 release + pre-mutation status gates on the sibling rules (ENGINE-ONLY primitive + DATA, REBUILD deity); filed 22:47 from item 132's report — the ruling is answered, this is engineering",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "R-122 ✓ · 132 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
     }
   ],
   "rulings": [
@@ -1803,34 +1801,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-08",
-      "time": "00:35",
-      "at": "2026-09-08T04:35:00.000Z",
-      "item": "Dispatched item 100 (sonnet, worktree pm/100-changelog-gate — the changelog hygiene gate + README index fix) the minute #310 merged; parallel to 83 on disjoint files. Foundry still DOWN at 00:34",
-      "itemNo": "310",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-08",
-      "time": "00:35",
-      "at": "2026-09-08T04:35:00.000Z",
-      "item": "Item 100 (changelog hygiene gate + README index fix) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "17 min, 159 turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 00:54 after review, no trailers; CLEAN (83 had not merged); gates 12/12 in the worktree (the new lint-changelog included), CI green on 871992a. One PM correction on the branch: the gate's count check obliges every delta to bump the month header and the README row, and nothing told workers so — added to the work-item skill, the four month files and the README. Found: handoff-split.js would undo the rule on a re-run → item 102 (sonnet S). TOOLING-only",
-      "pr": 311
-    },
     {
       "date": "2026-09-08",
       "time": "00:58",
@@ -2642,9 +2612,37 @@
       "weightedM": null,
       "outcome": "filed",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "22:13",
+      "at": "2026-09-14T02:13:00.000Z",
+      "item": "Item 132 (R-122 (a): the Omen cap → tier + 1 on the four placements + Entropy Strike's card; the Isolating Pressure half left open) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "29 min, 133 tool uses (241 turns)",
+      "weighted": "8.4M",
+      "weightedM": 8.4,
+      "outcome": "reviewed 22:47 — merged on green after the PM's bookkeeping commit on the branch, no trailers, five themed commits, no corrections; CI green on 67c0a70, gates 12/12 + --ci 14/14 in the worktree (1206 tests), the worker rebased onto main itself. Pack parity: scratch edha-deity before/after, 110 documents both sides, exactly 3 with content diffs (Entropy Strike, Spreading Omen, Unravel Everything — 7 field diffs = the four capFormula + the card's three copies), the other 107 differ only in _stats stamps. Stopped on the placement half with the cause named to the line (edhaDispatchTestResult halts on the first false; release returns false on an unmarked target) — filed by the PM as item 142 (opus S, engine primitive); TODO 132 closed for the cap half with the split recorded. Two 🤖 rows (OM-1 / OM-2). DATA → REBUILD deity + ⟳ Sync Talents — rides the next deploy with item 135",
+      "pr": 369
+    },
+    {
+      "date": "2026-09-13",
+      "time": "22:47",
+      "at": "2026-09-14T02:47:00.000Z",
+      "item": "Nothing running. Session tally 21:58 → 22:47: 5 PRs merged (#366 with #360, #356, #368 board, #369 item 132), one deploy (22:10, the first self-verifying deploy-cycle.js run), items 140 / 141 / 142 filed; workers 8.4M (item 132), PM ≈ 3.5M so far. Trailing-5h dispatches 6 of 6 (19:26, 19:49, 20:13, 20:50 ×2, 22:13) — next slot 00:26 → item 135 (sonnet XS), then deploy-cycle.js for 132 + 135, then bench run 47 (Opus 1 of 3 for 09-14) at ~00:49 over 111-1 / 111-2, DM-1 / DM-2, BR-1, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, 135's row, 128-1, 123-1, 124's regen re-drive, Predator's Due (← 88); item 142 (Opus 2 of 3) after the bench or tomorrow. Seven rulings still on Ben's phone; twelve merged remote branches await his delete",
+      "itemNo": "366",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": "≈ 3.5M (PM)",
+      "weightedM": 3.5,
+      "outcome": "waiting until 00:26",
+      "pr": null
     }
   ],
-  "runLogTotal": 277,
+  "runLogTotal": 279,
   "runLogFrom": "2026-09-08",
   "dispatches": [
     {
@@ -3408,6 +3406,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-14T02:13:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 369
     }
   ],
   "statusVocab": [

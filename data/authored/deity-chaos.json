@@ -112,9 +112,9 @@
       "docId": "fOhtEjkYuEeBd9SS",
       "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Even the steadiest mind has a fault line — you just found it.</em></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Even the steadiest mind has a fault line — you just found it.</em></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier + 1 Omens active simultaneously; placements beyond this cap are lost.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier + 1 Omens active simultaneously; placements beyond this cap are lost.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier + 1 Omens active simultaneously; placements beyond this cap are lost.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -170,7 +170,7 @@
             "type": "edha-owner-list",
             "list": "omens",
             "op": "place",
-            "capFormula": "@tier",
+            "capFormula": "@tier + 1",
             "evict": "refuse",
             "status": "omen",
             "target": "victim"
@@ -511,7 +511,7 @@
             "type": "edha-owner-list",
             "list": "omens",
             "op": "place",
-            "capFormula": "@tier",
+            "capFormula": "@tier + 1",
             "evict": "refuse",
             "status": "omen",
             "target": "victim"
@@ -526,7 +526,7 @@
             "type": "edha-owner-list",
             "list": "omens",
             "op": "place",
-            "capFormula": "@tier",
+            "capFormula": "@tier + 1",
             "evict": "refuse",
             "status": "omen",
             "target": "near-victim",
@@ -584,7 +584,7 @@
             "type": "edha-owner-list",
             "list": "omens",
             "op": "place",
-            "capFormula": "@tier",
+            "capFormula": "@tier + 1",
             "evict": "refuse",
             "status": "omen",
             "target": "enemies-range",
