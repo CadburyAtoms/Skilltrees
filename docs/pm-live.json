@@ -1,10 +1,10 @@
 {
   "pm": {
-    "status": "waiting",
-    "note": "Sunday evening: the deploy script is finished — six items tonight, proven by a live run at 20:46. Nothing is running; one small docs item (126) goes at 21:53, then the shift winds down. Seven rulings wait on the Needs Ben tab; each answer unblocks a queued item for the next shift.",
+    "status": "stopped",
+    "note": "Handoff 21:55 ET (Ben ended the session): 18 PRs merged today, the deploy runs itself now, 117 stale branches gone, LICENSE in. Next PM is the one you start by hand (the scheduled tasks are removed). Seven rulings wait on the Needs Ben tab — each answer unblocks a queued item.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
-    "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
+    "session": "2026-09-13 10:26 → 21:55 ET (hand-started; stopped on Ben's word)"
   },
   "workers": [],
   "usage": null
