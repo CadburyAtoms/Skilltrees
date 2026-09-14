@@ -3952,7 +3952,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model opus · size S · deps R-92 ✓ (a, phone 2026-09-13) · verify: the headless pin. Filed 2026-09-13 by the PM from R-92 (a), answered via phone board.
 
-## 145. [ ] Rulings close-out 2026-09-13 late: R-92 and R-114 … R-119 answered (a) from the phone board; record them, move them to §K, unblock items 101 / 106 / 107 / 108 / 109 / 114; file item 144 (DOCS-ONLY) (2026-09-13)
+## 145. [x] (2026-09-13, PR #372) Rulings close-out 2026-09-13 late: R-92 and R-114 … R-119 answered (a) from the phone board; record them, move them to §K, unblock items 101 / 106 / 107 / 108 / 109 / 114; file item 144 (DOCS-ONLY) (2026-09-13) — DONE 2026-09-13, PR #372 (all seven rulings answered inline and moved verbatim to §K.13, hash-matched before/after; `parseOpenRulings()` → `[]`, re-pinned in `tests/pm-state.test.js`; items 101/106/107/108/109/114 unblocked; item 144 filed; all gates green)
 
 **Why:** Ben answered all seven open design-proposal rulings — R-92 (the 0-HP drop cue) and R-114 … R-119 (item 127's six queued-TODO proposals) — from his phone board at 21:57–21:59 ET on 2026-09-13, each tapping the card's own (a) text; the PM saved the seven notes verbatim to `tmp/pm/inbox-2026-09-13/notes.json` (gitignored). `EDHA_RULINGS.md` §L still showed them open and items 101/106/107/108/109/114 were gated on rulings that were actually settled.
 
