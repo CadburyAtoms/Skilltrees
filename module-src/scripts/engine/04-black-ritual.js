@@ -396,13 +396,23 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
      * H6's click "this talent carried no payload, post the table-run note instead". */
     .filter(r => !(ctx.viaPick && r?.handler?.type === "edha-prompt-pick"))
     .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  /* THE ENTRY SNAPSHOT (item 142, 2026-09-14). Taken once, here, before the first rule runs, and
+   * handed to every rule in the batch: `edhaTargetStatusesAt` resolves a status gate against it
+   * instead of the live set, so a rule can branch on what the creature bore when the activation
+   * STARTED rather than on what an earlier sibling left behind. This is what lets a shatter-or-place
+   * talent carry both branches on its own document (iron rule 2b) without the ordering trap —
+   * place-then-release shatters the entry it just placed, release-then-place reads a marker its own
+   * sibling removed a line earlier. Cheap (a Set copy of a handful of ids) and inert for every
+   * existing consumer: it can only differ from the live read when a sibling rule in THIS batch
+   * mutated the very status being gated on, which no shipped rule does. */
+  const targetStatusesAtEntry = target?.uuid ? { uuid: target.uuid, statuses: new Set(target.statuses ?? []) } : null;
   for (const rule of rules) {
     try {
       // `victim` as well as `target` (07-24p): the trigger family resolves eff.target === "victim"
       // from ctx.victim, and binding the payload to the creature the TEST RESOLVED AGAINST is
       // strictly better than re-reading game.user.targets — with two tokens targeted the test used
       // the first one, and a "prompt" payload would have hit both.
-      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, victim: target, owner, testOk: ok } });
+      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, victim: target, owner, testOk: ok, targetStatusesAtEntry } });
       if (res === false) break;
     } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
   }

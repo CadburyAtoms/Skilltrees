@@ -410,11 +410,14 @@
     {
       "type": "edha-owner-list",
       "label": "Edha: Sustained List (place / release)",
-      "description": "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
+      "description": "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Set 'When there was nothing to release' to continue and the later rules run anyway, so a talent can BRANCH: gate each one on the status the target already had (Isolating Pressure shatters an Omen, or places one when there was none). Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
       "fields": [
         "list",
         "mode",
         "op",
+        "onMissing",
+        "whenTargetStatus",
+        "unlessTargetStatus",
         "requireNonEmpty",
         "confirm",
         "sceneFreebie",

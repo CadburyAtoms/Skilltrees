@@ -443,7 +443,13 @@ async function edhaClearPowerState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "power",
     flags: ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed", "kneelBy"],
-    statuses: ["compelled", "frightened", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"],
+    // `frightened` LEFT this list on 2026-09-14 (item 143). Item 135 / R-125 (a) moved Kneel's
+    // standing advantage and Absolute Authority's gate onto Disoriented, and the registry entry now
+    // calls Frightened a GM-APPLIED marker that no talent reads or applies. A status the tree never
+    // writes is not Power's state to reset — and the one way it can be set today is a GM toggling it
+    // by hand, which Power ending combat has no business silently undoing. Compelled stays: Kneel
+    // still applies it. The rest are the tree's own markers.
+    statuses: ["compelled", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"],
     extra: async (a) => {
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "powerMantle")) ?? [];
       if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }

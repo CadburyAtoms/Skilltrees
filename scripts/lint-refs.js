@@ -943,6 +943,10 @@ engine.split("\n").forEach((lineText, i) => {
       requireSelfStatus: ["status", STATUSES, []],
       requireTargetStatus: ["status", STATUSES, []],
       whenTargetStatus: ["status", STATUSES, []],
+      // Item 142 (2026-09-14): the negated twin was never enumerated, and it reached a second
+      // handler that day (H3 `edha-owner-list` gained the pair). A typo'd id here is the same
+      // silent inertness as its positive sibling's, only inverted — the gate never skips.
+      unlessTargetStatus: ["status", STATUSES, []],
       damageType: ["damage type", DAMAGE, []],
       whenDamageType: ["damage type", DAMAGE, ["any"]],
       def: ["defense", DEFENSES, []],
