@@ -3858,7 +3858,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane R · model sonnet · size XS · deps — · verify: read-through. Filed 2026-09-13 from R-124.
 
-## 135. [ ] R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13)
+## 135. [x] (2026-09-13, PR #370) R-125 (a) — `Kneel` and `Absolute Authority` read Disoriented instead of Frightened (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-13: both card texts and both status-list gates (`requireTargetStatus` / `whenTargetStatus`) moved from Frightened to Disoriented, along with the two talents' description copies and rule-description annotations; the engine's `frightened` registry comment now says no talent reads it (comment only — `stripComments` shows zero code difference). `Risen Servant`'s immunity list is untouched (checklist row BR-1's question). Pack parity: of 110 deity-pack documents, exactly these two differ, zero roll-formula drift. Pack rebuild is Ben's. 🤖 row PW-1.
 
 **Why:** nothing in the game applies Frightened (three mentions in 365 talents, all reads or immunities; no adversary ability; the engine registers it only as a GM-applied marker nobody documented). Ben chose (a): Disoriented, which seven trees apply, giving the one deity tree without an income a little cross-path synergy.
 

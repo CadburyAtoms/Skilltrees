@@ -2410,6 +2410,7 @@ Ask: Tempered Edge's whole-attack Deflect bypass is deliberate and the two-attac
 Ask: Kneel and Absolute Authority read Frightened, which nothing applies and which the engine treats as a GM-applied marker — swap it for Disoriented (a), document it as GM-applied (b), or leave it as a hook (c)?
 > **ANSWERED 2026-09-13 (Ben, chat): "I've read it and agree with recommended changes." — filed as option (a), the recommended default.** → **item 135**.
 > **Confirmed 2026-09-14 (Ben, chat): "Power changing to Disoriented is fine."**
+> **PR #370 (2026-09-13)** — both cards and both status-list gates (`requireTargetStatus` / `whenTargetStatus`) moved from Frightened to Disoriented; the engine's `frightened` registry comment updated to say no talent reads it now (comment only, no code change). `Risen Servant`'s immunity list left alone (BR-1). Item 135 done.
 
 
 ### K.12 — R-126 (Draw Mana's yield, answered 2026-09-13)
