@@ -53,7 +53,7 @@
           "handler": {
             "type": "edha-detonate-list",
             "source": "charges",
-            "doubleCaughtFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "doubleCaughtFormula": "(@tier)d(2 * @skills.blue.rank + 2)",
             "doubleCaughtType": "energy",
             "mergeTerrain": true,
             "mergeWhenAtLeast": 2,

@@ -388,9 +388,9 @@
       "docId": "poLaFQBLEDju9jIx",
       "img": "icons/magic/control/silhouette-aura-energy.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Let them be certain. Certainty is the easiest thing to break.</em></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Let them be certain. Certainty is the easiest thing to break.</em></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, that character cannot take Reactions until the start of its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, that character cannot take Reactions until the start of its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, that character cannot take Reactions until the start of its next turn.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -437,13 +437,16 @@
         },
         "FalsePremMod0000": {
           "id": "FalsePremMod0000",
-          "description": "Blue/Calculation. On a success, disadvantage on the target's next test.",
+          "description": "Blue/Calculation. Item 107/R-115 (a), 2026-09-14: re-aimed off the disadvantage shape (was `edha-next-test-mod {victim, disadvantage}`, a duplicate of Pattern Recognition's own payload) onto the `noreactions` timed status instead, same shape as Hollow Command's `noactions` marker (`data/authored/leyline-black.json`). `statusExpire: target` is the end of the TARGET's ('its') next turn.",
           "event": "edha-test-success",
           "handler": {
-            "type": "edha-next-test-mod",
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "noreactions",
+            "statusExpire": "target",
             "target": "victim",
-            "mode": "disadvantage",
-            "count": 1
+            "formula": "0",
+            "damageType": "energy"
           }
         }
       },

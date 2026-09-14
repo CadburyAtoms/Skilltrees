@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T03:48:20.445Z",
+  "generatedAt": "2026-09-14T04:50:10.403Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "39f1f40a99",
-    "commit": "cce719d",
-    "branch": "pm/145-rulings-closeout-0913-late",
+    "hash": "a4fd3d2181",
+    "commit": "e328b0e",
+    "branch": "pm/108-deity-gates-get-a-job",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,26 @@
   },
   "pm": {
     "status": "awake",
-    "note": "All seven of your phone answers are in the rulings doc (§K.13, #372) — nothing is open there now; items 101 / 106 / 107 / 108 / 109 / 114 are unblocked and R-92's drop cue is item 144. Deployed main @ 31443c5 at 23:14 (Omen cap tier + 1, Power's Disoriented reads live; re-join your Gamemaster client). Bench run 47 (Opus) at the 00:00 reset over the 14 open 🤖 rows, then items 142 + 143 in one Opus worker, then item 101.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Items 107 (#374) and 108 (#375) merged beside it: False Premise denies Reactions and the three deity gate dials read their colour's rank at the next deploy, which the PM runs once the bench is off the table. After the bench: items 142 + 143 in one Opus worker, then 101. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": "2026-09-14T04:00:00Z",
+    "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-47",
+      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 14 open 🤖 rows + item 124's re-test; Predator's Due stays blocked on 88",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/bench-47",
+      "startedAt": "2026-09-14T04:00:46Z",
+      "agent": "Bench run 47",
+      "phase": "working",
+      "pr": null,
+      "note": "holds the table (Browser pane) — no deploy while this runs"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1302,26 +1316,26 @@
     {
       "pos": 103,
       "item": "107",
-      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn (the engine's existing noreactions timed status) instead of duplicating Pattern Recognition's disadvantage; the approved card text is in §K.13 (DATA, REBUILD leyline); one 🤖 row",
+      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn: its FalsePremMod0000 rule swapped from edha-next-test-mod to the noreactions timed status (edha-triggered-effect {kind: status, statusExpire: target}, Hollow Command's noactions shape) + the approved card text (DATA, REBUILD leyline); leyline pack parity exactly ONE document (poLaFQBLEDju9jIx), a pack-wide handler sweep clean; 🤖 FP-1. Dispatched 00:01 (sonnet, worktree, beside bench 47); reviewed 00:20, no corrections; CONFLICTING on the dashboard → the PM merged main; merged on green. Found: 15-blue-calculation.js's header comment still describes the old payload (comment-only → folded into the 142 + 143 Opus dispatch)",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-115 ✓ (a, phone 09-13)",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 374
     },
     {
       "pos": 104,
       "item": "108",
-      "title": "R-99 (a) + R-118 (a) — three deity gates get a job: Fate's Bulwark Ground thpFormula → @skills.white.rank, Destruction's Cascading Failure overlap clause → @skills.blue.rank, Life's Vital Diagnosis bonusDamageFormula → @skills.blue.rank, each with its reworded card line (three existing dials, DATA-only, REBUILD deity); deity-gate-audit.js shows each gate counted; 🤖 rows",
+      "title": "R-99 (a) + R-118 (a) — three deity gates get a job: Fate's Bulwark Ground thpFormula → @skills.white.rank, Destruction's Cascading Failure doubleCaughtFormula (the overlap clause only) → @skills.blue.rank, Life's Vital Diagnosis bonusDamageFormula → @skills.blue.rank, with the two card lines that name a rank reworded (DATA, REBUILD deity); gate audit Fate/White 0 → 1, Destruction/Blue 1 → 2, Life/Blue 1 → 2; deity pack parity exactly THREE documents (A4QPt3qDPX9MTl0P, 0XE8eF9aS4uMu6sM, cloJTodAdC0Rb3LG), 0 other formula diffs; 🤖 GATE-1 / GATE-2 / GATE-3. Dispatched 00:22 (sonnet, worktree, beside bench 47); reviewed 00:50 — one PM correction: the item's Done-when asked Fate's White for \"≥2 talents\", which R-118 (a)'s single dial cannot reach from zero; reworded to the ruling's scope. Found: the three talents' events[].description dev comments still say \"= tier\" (left for the next touch of those blocks)",
       "lane": "B",
       "model": "sonnet",
       "size": "M",
       "deps": "R-118 ✓ (a, phone 09-13)",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 375
     },
     {
       "pos": 105,
@@ -1778,6 +1792,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 372
+    },
+    {
+      "pos": 143,
+      "item": null,
+      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 111-1 / 111-2 / BR-1, DM-1 / DM-2, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, PW-1, 123-1, 128-1 + item 124's paragraph re-test (converted to a row on its verdict); Predator's Due stays blocked on 88. Step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9). Next free ruling R-127, next item 146. Dispatched 2026-09-14 00:00 (opus, worktree pm/bench-47; Opus 1 of 3 for 09-14)",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "deploy 23:14 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -1837,104 +1863,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "10:31",
-      "at": "2026-09-13T14:31:00.000Z",
-      "item": "Item 116 (phone board → three tabs; deploy state one line; dash/index the only dashboard document) — work-item, fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "21 min, 115 turns",
-      "weighted": "3.9M",
-      "weightedM": 3.9,
-      "outcome": "merged 10:56 after review, no trailers; CI green on 5bb2e0e, gates 12/12 in the worktree (1086 tests). Proof: injected page 1,472,749 → 288,614 B; dash/index 80,446 → 51,783 B; chunks 1,143,115 B → none; deploy block 23,920 B → < 1 KB; three 375-px screenshots read by the PM. Dropped as extra: the full dashboard mirror, the deploy prose, the usage bars, the For-Ben→tabs card, the jump nav. Landing tab stays Needs Ben (item 43). Found at review → item 117 (stale Yours-to-do cards: parseBenOnly reads replaced session lines). Page republished + dash/index pushed + orphan chunks deleted after merge",
-      "pr": 331
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:01",
-      "at": "2026-09-13T15:01:00.000Z",
-      "item": "Board PR #332 merged 11:00 (session line, bench 45 + 116 dispatch rows, 116 close, item 117 filed). Dispatched item 117 (sonnet, worktree pm/117-ben-only-current-line — parseBenOnly scoped to the CURRENT session line + a mutation pin; TOOLING-only). Trailing-5h dispatches: 3 (bench 45 opus, 116 fable, 117 sonnet) of the weekend 6; bench 45 still running",
-      "itemNo": "332",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:01",
-      "at": "2026-09-13T15:01:00.000Z",
-      "item": "Item 117 (parseBenOnly scoped to the CURRENT session line; a lone \"nothing\" is no ask; mutation pin) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "15 min, 132 turns",
-      "weighted": "3.3M",
-      "weightedM": 3.3,
-      "outcome": "merged 11:17 after review, no trailers; CI green on 8aa02e1, gates 12/12 in the worktree (1087 tests). Root cause two-fold: the label regex demanded : (so Waiting on Ben: nothing. never matched and the scan fell through to a REPLACED paragraph) + no marker cut-off. Proof: real board 2 stale asks → []; the reverted body fails the pin naming both stale strings. pm/state pushed after merge — the phone's stale Yours-to-do cards cleared",
-      "pr": 333
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:20",
-      "at": "2026-09-13T15:20:00.000Z",
-      "item": "Dispatched item 112 (sonnet, worktree pm/112-guides-four-rulings-cancel-line — R-105 (c) / R-108 (a) / R-110 (d) / R-111 (b) into the two revision guides; Fatal Thrust + Defensive Position gain the cancel line in data/cosmere.json + the authored overlay → REBUILD heroic owed; told NOT to touch the checklist while the bench runs). Picked over 104 (rewrites ECO-2, which bench 45 is driving), 105 (files 🤖 rows) and 110 (may touch the roster script). Trailing-5h dispatches: 4 of the weekend 6",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:20",
-      "at": "2026-09-13T15:20:00.000Z",
-      "item": "Item 112 (R-105 (c) / R-108 (a) / R-110 (d) / R-111 (b) into the two revision guides; Fatal Thrust + Defensive Position gain the cancel line) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "11 min, 69 tool uses",
-      "weighted": "2.8M",
-      "weightedM": 2.8,
-      "outcome": "merged 11:33 after review, no trailers; CI green on c128493, gates 12/12 in the worktree (1087 tests). Data: exactly the two cards (source prose + authored overlays; primer rebuilt). Guides: leyline PART 3 principle 10 (the tier trade + per-Action parity), a new Advantage / Disadvantage section (the printed cancel rule vs the engine's boolean fold), Withering Ray as the leyline damage ceiling; deity: the Special target restated. REBUILD heroic + ⟳ Sync Talents owed — after bench 45. Out of scope: the primer / one-pager carry no tier-trade text",
-      "pr": 334
-    },
-    {
-      "date": "2026-09-13",
-      "time": "10:30",
-      "at": "2026-09-13T14:30:00.000Z",
-      "item": "Bench run 45 (step zero: ⟳ Sync Talents on Tem parinaem / Soggy Bottom as a PM-R17 refresh + the roster + ⟳ Sync Adversaries; then the 29 open 🤖 rows) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "73 min, 362 tool uses",
-      "weighted": "20.4M",
-      "weightedM": 20.4,
-      "outcome": "merged 11:48 (squash) after review — its commits carried model trailers, so the PR was squashed trailer-free; CI green on 79fe9bd after one PM correction (the runbook named the silent-consume defect by its pre-renumber id). Engine hash-verified = HEAD; both PCs refreshed with nothing substantive changed; 41 adversaries synced, 0 changed. 28 of 29 rows retired (HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Unbreakable Line ×2, three R-93 card-text rows); Predator's Due left open, blocked on 88. Two verdicts overturned (Unbreakable Line (b) now real; no PC talent carries edha-regen). Filed items 118 / 119 / 120, R-112 WAITING, item 104's measured error; roster script fixed twice. World diff clean; 138 bench chat messages (Ben may flush). Queue: every lane-B bench-pending row swept to merged (34)",
-      "pr": 335
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:52",
-      "at": "2026-09-13T15:52:00.000Z",
-      "item": "Dispatched fix pass 11 (opus, worktree pm/fix-pass-11 — items 118, 120, 119's engine half, 104; test-pass-fixes; R-112's pool/cost half explicitly excluded) and item 105 (sonnet, worktree pm/105-blue-white-minimal-set — R-96 (a), three 🤖 rows). Opus 2 of the day; trailing-5h dispatches 6 of 6",
-      "itemNo": null,
-      "model": "opus + sonnet",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "11:52",
@@ -2676,9 +2604,107 @@
       "weightedM": 5.8,
       "outcome": "reviewed 23:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; gates 12/12 in the worktree (1206 tests). Seven bodies moved verbatim (combined sha256 f91f48e8… before = after), parseOpenRulings() → [] on the real doc, the pin shown failing when a §L stub is re-opened in a scratch copy; items 101 / 106 / 107 / 108 / 109 / 114 re-pointed (109 / 114 → opus; 106's card text gated on Ben's own words); item 144 filed; CLAUDE.md's rulings row R-1 … R-126. Found: parseOpenRulings() skips §J / §K wholesale, so the §L stub — not the ANSWERED marker — is what keeps a moved ruling closed (a fact for the rulings intro, not a defect). DOCS-ONLY",
       "pr": 372
+    },
+    {
+      "date": "2026-09-13",
+      "time": "23:50",
+      "at": "2026-09-14T03:50:00.000Z",
+      "item": "#372 (item 145) merged at 23:50:39 after the PM's bookkeeping commit (CI green on 07e235e); the worker's worktree removed, the local branch deleted; main = b78ebb8, clean; open rulings 0",
+      "itemNo": "372",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 372
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:00",
+      "at": "2026-09-14T04:00:00.000Z",
+      "item": "Dispatched bench run 47 (opus, worktree pm/bench-47 — bench-run on the 23:14 deploy of main @ 31443c5, engine 902ddadb; step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9); the 14 driveable open 🤖 rows + item 124's paragraph re-test; Predator's Due left blocked on 88; next free ruling R-127, next item 146). Opus 1 of 3 for 09-14, at the PM-R16 reset",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:01",
+      "at": "2026-09-14T04:01:00.000Z",
+      "item": "Dispatched item 107 (sonnet, worktree pm/107-false-premise-noreactions — R-115 (a): False Premise's success rule swaps edha-next-test-mod for the noreactions timed status + the approved card text; leyline pack parity with EDHA_DATA pinned; DATA → REBUILD leyline). The one lane-R worker beside the bench (weekend shape); the weekend trailing-5h count reads 8, logged, not binding (PM-R16)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:05",
+      "at": "2026-09-14T04:05:00.000Z",
+      "item": "#373 (board part 1) merged at 00:05 (CI green on 208c38b); main = ee1afa7, clean; two workers in flight (bench 47, item 107)",
+      "itemNo": "373",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 373
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:01",
+      "at": "2026-09-14T04:01:00.000Z",
+      "item": "Item 107 (R-115 (a): False Premise denies Reactions instead of a duplicate disadvantage) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "17 min, 130 tool uses (222 turns)",
+      "weighted": "5.5M",
+      "weightedM": 5.5,
+      "outcome": "reviewed 00:20 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, five themed commits, no corrections; the PR arrived CONFLICTING (the generated dashboard, two merges behind) with no check runs — main merged in the worktree, dashboard rebuilt, gates 12/12 (1206 tests), CI on the new sha. Data: False Premise (poLaFQBLEDju9jIx) only — the three description copies + FalsePremMod0000 → edha-triggered-effect {kind: status, statusId: noreactions, statusExpire: target} (Hollow Command's noactions shape, noreactions already in EDHA_TIMED_STATUSES); parity 136 documents, exactly one differs, a pack-wide handler sweep finds no other shape collision, 0 formula diffs. 🤖 FP-1. Found: 15-blue-calculation.js's tree-section header comment still describes the old payload (comment-only → folded into 142 + 143). DATA → REBUILD leyline + ⟳ Sync Talents — rides the next deploy after the bench is off the table",
+      "pr": 374
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:22",
+      "at": "2026-09-14T04:22:00.000Z",
+      "item": "#374 (item 107) merged at 00:22:58 after the PM's main merge + bookkeeping commit (CI green on 7d7d262); the worker's worktree removed, the local branch deleted; main = 2d98de4. Dispatched item 108 the same minute (sonnet, worktree pm/108-deity-gates-get-a-job — R-118 (a): the three formula dials + two card lines; the gate audit before/after; deity pack parity with EDHA_DATA pinned; DATA → REBUILD deity) as the one lane-R worker beside bench 47",
+      "itemNo": "374",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": 374
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:22",
+      "at": "2026-09-14T04:22:00.000Z",
+      "item": "Item 108 (R-118 (a): three deity gates get a job) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "26 min, 146 tool uses (267 turns)",
+      "weighted": "7.4M",
+      "weightedM": 7.4,
+      "outcome": "reviewed 00:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, seven themed commits (one per tree, then the paperwork); CI green on e328b0e, gates 12/12 + --ci 14/14 (1206 tests); the worker merged main itself. Gate audit: Fate/White 0 → 1 (Bulwark Ground), Destruction/Blue 1 → 2 (Cascading Failure), Life/Blue 1 → 2 (Vital Diagnosis). Parity: scratch edha-deity before/after, 110 documents, exactly 3 differ (A4QPt3qDPX9MTl0P thpFormula + descriptions; 0XE8eF9aS4uMu6sM doubleCaughtFormula only — its card names no colour; cloJTodAdC0Rb3LG bonusDamageFormula + descriptions), 0 other formula diffs. 🤖 GATE-1 / GATE-2 / GATE-3. One PM correction: the item's Done-when (\"Fate's White ≥ 2 talents or rolled\") outran R-118 (a)'s single-dial scope — reworded on the branch. Found: the three events[].description dev comments still read \"= tier\" (Events-tab documentation, not player text; next touch of those blocks). DATA → REBUILD deity + ⟳ Sync Talents — rides the next deploy with 107",
+      "pr": 375
     }
   ],
-  "runLogTotal": 288,
+  "runLogTotal": 295,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3472,6 +3498,36 @@
       "model": "sonnet",
       "item": null,
       "pr": 372
+    },
+    {
+      "at": "2026-09-14T04:00:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T04:01:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T04:01:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 374
+    },
+    {
+      "at": "2026-09-14T04:22:00.000Z",
+      "model": "sonnet",
+      "item": "374",
+      "pr": 374
+    },
+    {
+      "at": "2026-09-14T04:22:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 375
     }
   ],
   "statusVocab": [
