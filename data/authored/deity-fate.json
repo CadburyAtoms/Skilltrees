@@ -11,9 +11,9 @@
       "docId": "A4QPt3qDPX9MTl0P",
       "img": "icons/magic/defensive/shield-barrier-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>What is foreseen cannot be flanked.</em></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>What is foreseen cannot be flanked.</em></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your White rank. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your White rank. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your White rank. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>"
       },
       "activation": {
         "type": "none",
@@ -37,7 +37,7 @@
           "description": "Fate (Olvarra). 2bX — ONE config rule, both mechanics (Always Active, so no use event exists; config is fine because two engine sweeps read it): the legacy-marker turn-start pass reads thpFormula (Temp HP = tier for an ally beginning its turn on the owner's Ordained square — was `edhaOwnsTalent(owner, \"Bulwark Ground\")`, rule 2b's exact smell), and the defender-keyed pre-roll injector reads noAdvantage (attacks against an ally standing on the owner's square can't benefit from advantage — the inverse of edha-unseen-ward; announced via edhaWatchersOfRule, no name anywhere).",
           "handler": {
             "type": "edha-zone-guard",
-            "thpFormula": "@tier",
+            "thpFormula": "@skills.white.rank",
             "noAdvantage": true
           },
           "order": 0,

@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Item 107 merged (#374): False Premise denies Reactions at the next deploy. Next beside the bench: item 108 (the three deity formula dials, Sonnet). After the bench: items 142 + 143 in one Opus worker, then 101; the deploy for 107 / 108 once the bench is off the table. The loop stops before 07:00.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Items 107 (#374) and 108 (#375) merged beside it: False Premise denies Reactions and the three deity gate dials read their colour's rank at the next deploy, which the PM runs once the bench is off the table. After the bench: items 142 + 143 in one Opus worker, then 101. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"

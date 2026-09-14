@@ -451,9 +451,9 @@
       "docId": "cloJTodAdC0Rb3LG",
       "img": "icons/magic/life/cross-area-circle-green-white.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Now I see exactly where you’re weakest.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Now I see exactly where you’re weakest.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Blue rank.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Blue rank.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Blue rank.</p>"
       },
       "activation": {
         "type": "utility",
@@ -490,7 +490,7 @@
           "handler": {
             "type": "edha-apply-status",
             "status": "diagnosed",
-            "bonusDamageFormula": "@tier",
+            "bonusDamageFormula": "@skills.blue.rank",
             "bonusDamageType": "vital",
             "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
           }
