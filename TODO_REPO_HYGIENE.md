@@ -3440,7 +3440,7 @@ shown failing. TOOLING-only.
 **PM:** lane R · model sonnet · size S · deps — · verify: the two mutations + gates. Filed
 2026-09-08 00:3x after the second displaced heading of the night.
 
-## 101. [ ] R-114 — Mantle of the Aspirant's redirect-unwind heal (`47-power.js` ~L306) is a `hea` writer outside the heal-cut gate, declared nowhere: gate it (a) or declare it the exception (b) (WAITING on Ben)
+## 101. [ ] R-114 (a) — Mantle of the Aspirant's redirect-unwind heal (`47-power.js` ~L306) is a `hea` writer outside the heal-cut gate, declared nowhere: gate it at the emitter (ENGINE-ONLY, F5) (2026-09-13)
 
 **Why:** item 70 (PR #308) gated R-83's three writers and swept for more: the Power tree's Mantle
 of the Aspirant "redirect unwind" heals the WEARER back the amount an ally shouldered, writing `hea`
@@ -3449,22 +3449,22 @@ three, `ENGINE_INDEX.md`'s census — now five call sites, pinned by `tests/drop
 It is arguably a reversal of a transfer (the wearer ends where it stood before shouldering — R-10's
 "a floor / an undo is not regaining" shape) rather than a heal from nothing, which is why it was
 filed as ruling **R-114** (board rulings table) rather than fixed. (Filed as R-114, not R-92 — R-92
-already names a different, unrelated, already-open ruling: the 0-HP "dropped" GM cue.)
+already names a different, unrelated ruling: the 0-HP "dropped" GM cue, also answered 2026-09-13 —
+item 144.)
 
-**What to do (on R-114):** (b) — one declared-exception paragraph in `ENGINE_INDEX.md`'s heal-cut
-rule naming the site and the reason, plus a negative slice in the family test so the census names
-it on purpose (Sonnet S, DOCS + one test line); (a) — gate it at the emitter exactly as item 70 did
-the other three, a pin (withered → 0 and the card names the mark; unmarked unchanged) shown failing
-under reversion, the census 5 → 6 declared, one 🤖 row (Opus S, ENGINE-ONLY F5). `46-civilization.js`
-~L474 (Colossus raising `max.override` and `value` together) was listed by the same sweep as a
-max-HP grant, not a heal — no action.
+**What to do:** R-114 (a), answered 2026-09-13 from the phone board: gate it at the emitter exactly
+as item 70 did the other three — route the redirect-unwind write through `edhaCrossHeal(owner, amt, {})`
+instead of the raw `edhaResourceWrite`; the family census grows 5 → 6 declared call sites, pinned by
+a reversion-sensitive case in `tests/drop-to-one-family.test.js` naming the sixth site by hand; one
+🤖 row. `46-civilization.js` ~L474 (Colossus raising `max.override` and `value` together) was listed
+by the same sweep as a max-HP grant, not a heal — no action.
 
-**Done when:** R-114 is answered and the chosen shape shipped with its pin; the family census names
-the site either way. Deploy class per the answer.
+**Done when:** the gate ships with its pin (withered → 0 and the card names the mark; unmarked
+unchanged) shown failing under reversion; the family census names the sixth site.
 
-**PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-114** · verify: the
-census + the pin. Filed 2026-09-08 00:3x from item 70's report; renumbered R-92 → R-114 by item 127
-(2026-09-13; R-92 already named a different ruling).
+**PM:** lane B · model opus · size S · deps R-114 ✓ (a, phone 2026-09-13) · verify: the census + the
+pin. Filed 2026-09-08 00:3x from item 70's report; renumbered R-92 → R-114 by item 127 (2026-09-13;
+R-92 already named a different ruling).
 
 ## 102. [x] `scripts/handoff-split.js` regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences, and true counts (2026-09-08, PR #315)
 
@@ -3539,45 +3539,45 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size S · deps — · verify: validate + the mutation is the shipped data. Filed 2026-09-13 from R-96.
 
-## 106. [ ] R-97 (a) — Sovereignty's Decree zone, as a radius that moves with the arbiter (DESIGN GATE → engine primitive → DATA) (2026-09-13)
+## 106. [ ] R-97 (a) — Sovereignty's Decree zone, as a radius that moves with the arbiter (ENGINE H9 radius mode + DATA, REBUILD deity) (2026-09-13)
 
-**Why:** both intent sources promise Decree; no talent creates a zone; Sovereignty scores 13, last by four. Ben chose (a). The critique's constraint: `Lay Foundation` and `Ordained Ground` are already the same designate-a-square, so Decree must be a moving radius centred on the arbiter (or a zone that steps dice), not a third square.
+**Why:** both intent sources promise Decree; no talent creates a zone; Sovereignty scores 13, last by four. Ben chose (a) on R-97. The critique's constraint: `Lay Foundation` and `Ordained Ground` are already the same designate-a-square, so Decree must be a moving radius centred on the arbiter, not a third square. R-119 (a), answered 2026-09-13 from the phone board, names the mechanism: retrofit `Decree of Ruin` onto a new radius mode of H9 (`edha-die-step`) — not the `edha-aura` primitive this item originally pointed at.
 
-**What to do:** a deity-revision-guide design pass FIRST (full-text proposals, Ben's yes before any data — the lore approval gate); then the aura primitive (an `edha-aura` shape exists in ENGINE_INDEX — check reuse), then the Sovereignty cards that create/extend it, then bench rows.
+**What to do:** build H9's new `target: "radius"` mode (`radiusFt` field, the same turn-start cadence `Bulwark Ground`/`Ordained Ground` use, `allySteps`/`enemySteps` ledger per R-119's full text in `EDHA_RULINGS.md` §K.13) and retrofit `Decree of Ruin` onto it — the mechanism is approved, so the engine build may proceed without a further design pass. **The CARD TEXT is not yet clear to ship**: Ben said in chat on 2026-09-13 that this item waits on his own design text for the card — the phone tap accepted the mechanism, not final wording — so hold `Decree of Ruin`'s player-facing text for his design text or his explicit yes on R-119's proposed text before the data/rebuild half ships.
 
-**Done when:** Ben approves the design; the primitive and cards ship with pins; Sovereignty rolls White somewhere (the guide's own worked example).
+**Done when:** the H9 radius mode ships with its pin and Sovereignty rolls White somewhere (the guide's own worked example); `Decree of Ruin`'s card text ships only after Ben's design text or his yes on the proposed text.
 
-**PM:** lane B · model opus · size L · deps **R-119** · verify: the design artifact then the bench. Filed 2026-09-13 from R-97; design proposal filed as R-119 by item 127 (2026-09-13).
+**PM:** lane B · model opus · size L · deps R-119 ✓ (a, phone 2026-09-13) · verify: the H9 pin, then the bench; card text gated on Ben's own text. Filed 2026-09-13 from R-97; design proposal filed as R-119 by item 127 (2026-09-13); mechanism approved via phone board same day, card text still gated.
 
-## 107. [ ] R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DESIGN + DATA, REBUILD leyline) (2026-09-13)
+## 107. [ ] R-98 (a) — re-aim `False Premise`'s payload so it no longer duplicates Pattern Recognition's next-test disadvantage (DATA, REBUILD leyline) (2026-09-13)
 
 **Why:** both rules write `edha-next-test-mod {victim, disadvantage}` and fold to one. Ben chose (a).
 
-**What to do:** propose one replacement payload (talent-balance skill; e.g. the target loses its Reaction, or a focus drain) for Ben's yes; then card text + the authored rule.
+**What to do:** R-115 (a), answered 2026-09-13 from the phone board, gives the replacement directly — swap `False Premise`'s success clause for the engine's existing `noreactions` timed status (`EDHA_TIMED_STATUSES`) instead of the duplicate disadvantage; full approved card text in `EDHA_RULINGS.md` §K.13. Ship the authored rule swap + card text.
 
-**Done when:** approved text shipped; the pair no longer collide; one 🤖 row.
+**Done when:** the approved text ships; the pair no longer collide; one 🤖 row.
 
-**PM:** lane B · model sonnet · size S · deps **R-115** · verify: the two rules differ. Filed 2026-09-13 from R-98; design proposal filed as R-115 by item 127 (2026-09-13).
+**PM:** lane B · model sonnet · size S · deps R-115 ✓ (a, phone 2026-09-13) · verify: the two rules differ. Filed 2026-09-13 from R-98; design proposal filed as R-115 by item 127 (2026-09-13).
 
-## 108. [ ] R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DESIGN + DATA, REBUILD deity) (2026-09-13)
+## 108. [ ] R-99 (a) — Fate's White, Destruction's Blue and Life's Blue gates get a real job (DATA, REBUILD deity) (2026-09-13)
 
 **Why:** `deity-gate-audit.js`: Fate's White is read by no talent; Destruction's Blue and Life's Blue by one each. Ben chose (a): a roll, a sized formula, or reach for each; leave the five thin gates alone.
 
-**What to do:** per tree, one proposal (Ordained Ground is the natural White half of Fate; a second Blue-reading talent in Destruction and in Life) for Ben's yes; then data.
+**What to do:** R-118 (a), answered 2026-09-13 from the phone board, gives the three sizing changes directly, all DATA-only: point Fate's `Bulwark Ground` `thpFormula` at `@skills.white.rank`; resize Destruction's `Cascading Failure` overlap-bonus clause onto `@skills.blue.rank`; point Life's `Vital Diagnosis` `bonusDamageFormula` at `@skills.blue.rank` — each with its reworded card line (full text `EDHA_RULINGS.md` §K.13). Ship the three authored formula changes + card text.
 
 **Done when:** the audit shows each of the three colours read by ≥2 talents or rolled.
 
-**PM:** lane B · model sonnet · size M · deps **R-118** · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99; design proposal filed as R-118 by item 127 (2026-09-13).
+**PM:** lane B · model sonnet · size M · deps R-118 ✓ (a, phone 2026-09-13) · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99; design proposal filed as R-118 by item 127 (2026-09-13).
 
-## 109. [ ] R-100 (a) — retune `Final Decree`'s redundant Witness clause; note the two cross-path advantage collisions in the guides (DATA + DOCS, REBUILD deity) (2026-09-13)
+## 109. [ ] R-100 (a) — retune `Final Decree`'s redundant Witness clause; note the two cross-path advantage collisions in the guides (ENGINE-ONLY, F5 + DATA, REBUILD deity) (2026-09-13)
 
 **Why:** Final Decree's Witness advantage is redundant against Order's own Lawkeeper's Eye; Green + Hunter and Order + Power are the two cross-path collisions. Ben chose (a).
 
-**What to do:** replace the Witness clause with a non-advantage payload (proposal for Ben's yes); one authoring note in both revision guides naming the pairings.
+**What to do:** R-116 (a), answered 2026-09-13 from the phone board: replace the hardcoded advantage grant in `edhaDecreeResolve` with a free Reactive Strike offer against the violator, reusing the same free-reaction primitive `Expose`/`Weave the Thread`/`Foreknown Strike` already grant (no new primitive); card text updated to match (full text `EDHA_RULINGS.md` §K.13). Plus one authoring note in both revision guides naming the two cross-path collisions (Green + Hunter; Order + Power) — documented, not changed.
 
-**Done when:** card + rule shipped; guides carry the note.
+**Done when:** card + engine edit shipped; guides carry the note.
 
-**PM:** lane B · model sonnet · size S · deps **R-116** · verify: advantage-classify. Filed 2026-09-13 from R-100; design proposal filed as R-116 by item 127 (2026-09-13).
+**PM:** lane B · model opus · size S · deps R-116 ✓ (a, phone 2026-09-13) · verify: advantage-classify + the engine edit. Filed 2026-09-13 from R-100; design proposal filed as R-116 by item 127 (2026-09-13); model raised sonnet → opus 2026-09-13 — R-116 (a) needs an `edhaDecreeResolve` edit, not pure data.
 
 ## 110. [ ] R-102 (a) — `Composed` / `Focused Mind` / `Clear Mind` become one name and one wording across five trees; settle "max and current" (DATA, REBUILD all three packs) (2026-09-13)
 
@@ -3619,15 +3619,15 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane B · model opus · size S · deps — · verify: the pin + ECO-1. Filed 2026-09-13 from R-107.
 
-## 114. [ ] R-109 (a) — repair `Trade Routes` so it works with one Foundation; write `Forge Construct`'s flat 1 into its card (DATA, REBUILD deity) (2026-09-13)
+## 114. [ ] R-109 (a) — repair `Trade Routes` so it works with one Foundation; write `Forge Construct`'s flat 1 into its card (ENGINE-ONLY, F5 + DATA, REBUILD deity) (2026-09-13)
 
 **Why:** `Trade Routes` reads "choose two of your active Foundations" while the tier cap allows one until level 6 — uncastable for the whole current level range. Ben chose (a): keep the cap, fix the talent.
 
-**What to do:** reword Trade Routes to work from one Foundation (proposal for Ben's yes — e.g. link a Foundation to a point in Attunement Range); Forge Construct's card says "one active Construct" is deliberate.
+**What to do:** R-117 (a), answered 2026-09-13 from the phone board: reword `Trade Routes` to link one active Foundation to a point in Attunement Range (full card text `EDHA_RULINGS.md` §K.13); `edhaZoneLink` gains a second mode that captures a raw canvas point as the other end of the link-ledger entry (today it only pairs two existing zone-ledger entries). `Forge Construct`'s "one active Construct" cap is confirmed deliberate — no action there.
 
-**Done when:** a level-2 Civilization character can cast it; text approved and shipped.
+**Done when:** a level-2 Civilization character can cast `Trade Routes`; the engine mode + text ship.
 
-**PM:** lane B · model sonnet · size S · deps **R-117** · verify: read-through. Filed 2026-09-13 from R-109; design proposal filed as R-117 by item 127 (2026-09-13).
+**PM:** lane B · model opus · size S · deps R-117 ✓ (a, phone 2026-09-13) · verify: read-through + the engine pin. Filed 2026-09-13 from R-109; design proposal filed as R-117 by item 127 (2026-09-13); model raised sonnet → opus 2026-09-13 — R-117 (a) needs a new `edhaZoneLink` mode, not pure data.
 
 ## 115. [ ] Handoff §9k — the four generic primitives that make the Leybreaker / Ley-surveyor cue cards live (ENGINE-ONLY, F5) (2026-09-13)
 
@@ -3941,3 +3941,23 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the reset list matches the registry's statement, pinned; the engine re-assembled; the delta names the deploy class (ENGINE-ONLY, F5).
 
 **PM:** lane R · model opus · size XS · deps 135 ✓ (#370) · verify: the pin + `engine-assemble.js --check`. Filed 2026-09-13 by the PM from item 135's found-out-of-scope note.
+
+## 144. [ ] R-92 (a) — a generic 0-HP drop cue: GM-whispered, names the character, offers the Roll Injury reminder (ENGINE-ONLY, F5) (2026-09-13)
+
+**Why:** R-92 asked whether Edha should notice a character dropping to 0 HP for the GM — leave it manual like the system does (c), whisper a cue (a), or whisper the cue and auto-apply `unconscious` (b). Ben answered (a) from the phone board, 2026-09-13 21:59 ET: a GM-whispered card only, no dice or status change.
+
+**What to do:** compose `edha-apply-watch` → `edha-gm-cue` — the same shape `Cover Their Retreat` already uses for "an ally within 20 ft would drop" — into one small generic handler (iron rule 2a) that fires when any character's health crosses to 0, naming the character and offering the Roll Injury reminder in the card. One small generic handler, not a subsystem; no dice change. Pin it headless; file one 🤖 checklist row.
+
+**Done when:** the cue fires and names the dropped character with the Roll Injury reminder, pinned headless; `ENGINE_INDEX.md` gains the row; one 🤖 row filed in the checklist.
+
+**PM:** lane B · model opus · size S · deps R-92 ✓ (a, phone 2026-09-13) · verify: the headless pin. Filed 2026-09-13 by the PM from R-92 (a), answered via phone board.
+
+## 145. [ ] Rulings close-out 2026-09-13 late: R-92 and R-114 … R-119 answered (a) from the phone board; record them, move them to §K, unblock items 101 / 106 / 107 / 108 / 109 / 114; file item 144 (DOCS-ONLY) (2026-09-13)
+
+**Why:** Ben answered all seven open design-proposal rulings — R-92 (the 0-HP drop cue) and R-114 … R-119 (item 127's six queued-TODO proposals) — from his phone board at 21:57–21:59 ET on 2026-09-13, each tapping the card's own (a) text; the PM saved the seven notes verbatim to `tmp/pm/inbox-2026-09-13/notes.json` (gitignored). `EDHA_RULINGS.md` §L still showed them open and items 101/106/107/108/109/114 were gated on rulings that were actually settled.
+
+**What to do:** in `EDHA_RULINGS.md`, give each of the seven an inline `ANSWERED (a) — Ben, phone board` line and move the seven blocks verbatim into a new `### K.13` at the end of `## K. Settled`, leaving one-line stubs behind in `## L. Waiting`; re-pin `tests/pm-state.test.js`'s `ECOSYSTEM_RULINGS` fixture (previously the seven open ids) to the empty set the real doc now has; update items 101/106/107/108/109/114's heading wording and `deps` lines to `✓ (a, phone 2026-09-13)`, raising 109 and 114 from sonnet to opus (their answers each need a small engine edit); note on 106 that the H9 engine mode may proceed but `Decree of Ruin`'s card text still waits on Ben's own design text; file item 144 (R-92's drop cue); rewrite `CLAUDE.md`'s rulings-doc row (the open set is now empty; ruling span corrected to R-126); a changelog delta; rebuild the dashboard.
+
+**Done when:** `EDHA_RULINGS.md` has zero open rulings in §L (`parseOpenRulings()` → `[]`); the seven moved bodies hash-match before/after the move; items 101/106/107/108/109/114 read `✓` deps; item 144 exists; `node scripts/gates.js` is all green.
+
+**PM:** lane R · model sonnet · size M · deps — · verify: `parseOpenRulings()` → `[]`, the hash proof, gates. Filed 2026-09-13 by the PM from the phone board's seven answers.
