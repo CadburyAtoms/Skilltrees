@@ -209,7 +209,7 @@ region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_T
 | `SHEET PATH SLOTS + THE BUDGET READOUT` | `EDHA_PATH_SLOTS` · **`edhaSheetRoot`** (the SHARED `renderCharacterSheet` entry point — five decorators hang off it; never re-derive the root inline) · `edhaGetBudget`. |
 | `THE CHARACTER-CREATION WIZARD` | ENGINE-OWNED by declaration (multi-step dialog). ~1,000 lines: `edhaCreationWizard` · `edhaCreatorNewCharacter` · the steps (`edhaCreatorWelcomeStep`/`PickStep`/`AttrStep`/`SkillStep`/`BudgetStep`/`NameStep`) · picks (`EDHA_CREATOR_PICKS`, `edhaCreatorApplyPick`, `edhaCreatorChangeSlot`, `edhaCreatorWeaponPick`, `edhaGrantBasicActions`, `edhaCreatorPathRank`) · **undo** (`edhaCreationWipeIds`, `edhaCreatorWipeOriginPicks`, `edhaCreatorWipePathRank`, `edhaCreationRestart` — a new step owes a wipe) · the map picker (`edhaCwMapData`, `edhaCwWireMap`) · expertises (`edhaPickExpertisesDialog`) · the steppers (`edhaCwStepperDialog`, `edhaCwAttrBudget`, `edhaCwSkillBudget`, `edhaCwDerivedPreview`) · `edhaCleanPackCopy` (pack docs are COPIED, never linked). |
 | `SHEET QoL` | `edhaBudgetRow` + four `renderCharacterSheet` decorators, the Readable-Dark `init` stylesheet, the `createItem` refresh. Purely presentational — nothing here writes a rule, status, or damage. |
-| `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `edhaSrcKey` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (atlas\|group\|name), so a RENAMED talent is left alone rather than overwritten. |
+| `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `EDHA_SYNC_TYPES` · `edhaSrcKey` · `edhaSyncTypeLabel` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (**type**\|atlas\|group\|name) with a (type\|name) fallback, so a RENAMED item is left alone rather than overwritten. **Since item 146 it refreshes `talent` + `path` + `action`** — `EDHA_SYNC_TYPES` is the authority, and a rebuild rewrites all three (before it, 24 of 24 owned paths and 18 of 18 owned Draw Mana copies in the world were frozen with no button able to fix them). The TYPE is in the key because the deity pack ships a `path` AND a `talent` both named *Sovereignty*. An adversary-flagged embedded `action` is skipped — the adversary pack sync owns those. |
 | `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · **`edhaSyncPlan`** (item 123/R-113: the pure scope/dry-run/started-combat-refusal decision — `{actors, sceneTokens, refusals}`) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` (`{folder, actorIds, scenes, dryRun, allowStartedCombat}`) + the sheet/directory buttons. |
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
@@ -3378,6 +3378,47 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   `(no HP applied.)` only when the note it is paired with IS the composed line, and falls back to
   the old (safe, if repetitive) long form otherwise — a defensive branch, not a live case today.
   First and only consumer: the `edha-regen` turn-end sweep, same call site as `edhaDeliveredNote`.
+- **`edhaConditionImmune(actor, statusId)` · `edhaStatusRefused(actor, statusId)` ·
+  `edhaStatusApplyCard(landed, talent, target, label, owner, tail, note)` ·
+  `edhaStatusSplitNote(landedNames, refusedNames, label, note)`** — **the STATUS-side twin of the
+  `edhaDeliveredNote` family** (item 149, fix pass 12; bench run 47). All four in
+  `12-contested-roll-resolution.js` beside `edhaConditionLabel`; the two composers and the immunity
+  read are PURE, pinned in `tests/status-immunity-card.test.js`. A creature's
+  `system.immunities.condition` map makes the cosmere Actor's `toggleStatusEffect` override refuse
+  the write and resolve `false`; nothing in Edha read that, so **Kneel** posted *"Risen Servant is
+  **Compelled** … movement ENFORCED"* for a status the immunity had refused. `edhaConditionImmune`
+  is read **BEFORE** the write (the GM-relay path has no return value to read at all, and a refusal
+  must not leave a `markedBy.<status>` flag the damage post-pass will find on a creature with no
+  status). `edhaStatusRefused` is the same check for a WRITE site, plus the warning — the system
+  raises its own on whichever client performs the write, so a relayed refusal is invisible to the
+  player who asked. The composers drop the rider clause AND the authored note on a refusal, for
+  `edhaDeliveredNote`'s reason. **Any site announcing a status it just applied calls one of the two
+  composers**; announcing from the target list instead of from what landed is the bug. Consumers:
+  `edha-apply-status`'s executor, the `edha-triggered-effect` status branch (multi-target), and
+  `edhaFoeSkillVsColor`'s save card, which now reads its `onFail` callback's return value
+  (`false` → *"(immune — nothing applied)"*; anything else keeps the old wording verbatim).
+  The three shared writers — `edhaWriteStatusMark`, `edhaApplyTimedStatus`, `edhaToggleStatus`
+  (apply direction only) — now return **`false`** for a refused status instead of reporting success.
+- **`edhaUpdateSceneScope(options)`** — **the scenes a downstream watcher of an actor update may
+  write tokens on** (item 147, fix pass 12; bench run 47). PURE, in `27-adversary-pack-sync.js`
+  beside `edhaSyncPlan`, pinned in `tests/sync-scene-scope.test.js`. Reads
+  `options.edhaSceneScope`: **absent → `null`** (no claim; the unfiltered footprint), **a list/Set →
+  that Set** (these scenes and no others), **an EMPTY list → an empty Set**, which means *"I have
+  already written whatever you would, on the scenes I chose"* — a watcher seeing it stands down
+  completely, prototype writes included. Duck-typed on `.has`, so a cross-realm Set survives. Why it
+  exists: `edhaSyncAdversaryActor` replaces `system` WHOLESALE (`{recursive: false, diff: false}`),
+  which satisfies every watcher's *"did this field change?"* **presence** test whether or not the
+  field moved — so a sync scoped to one scene woke the Green sight watcher, which walked
+  `game.scenes` unfiltered and rewrote a token's `sight.range` 30 → 5 on a scene the caller had
+  excluded, against R-113's contract. **Any `updateActor` watcher that writes across `game.scenes`
+  reads this first**; the sync stamps `edhaSceneScope: []` on its own update.
+- **`edhaFolderChainMatches(chain, folder)` · `edhaActorFolderChain(actor)`** — **does an actor's
+  folder or any ANCESTOR of it match the caller's `folder` option** (item 151, same pass and file,
+  same pin file). `edhaSyncAllAdversaries`'s filter used to be an exact, non-recursive match on the
+  actor's own folder, so the `{folder: "Edha Bench"}` incantation printed in four documents matched
+  **zero** actors (the roster lives in the child folders `Bench PCs` / `Bench Targets`) and returned
+  a plan that reads like a success. A blank `folder` matches everything. A `folder`/`actorIds`
+  filter resolving to zero candidates now **warns**, so a silent no-op can never read as a clean run.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
