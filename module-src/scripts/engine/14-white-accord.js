@@ -26,6 +26,11 @@
 // Apply a status with an owner-relative (or self) timed expiry; relays to the GM when we lack perms.
 async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "owner" } = {}) {
   try {
+    // item 149: condition immunity refuses the write, so report that it did not land rather than
+    // stamping an expiry on an effect that was never created. Both paths — the local write below
+    // silently produced no effect, and the relay refused on the GM's client where the asking
+    // player never saw the system's own warning.
+    if (edhaStatusRefused(target, statusId)) return false;
     if (target.isOwner) {
       await target.toggleStatusEffect?.(statusId, { active: true });
       if (expire) {

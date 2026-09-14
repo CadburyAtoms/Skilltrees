@@ -140,8 +140,16 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
     for (const t of uniq) {
       const opp = await edhaRollOpposedSkill(t.actor, skill);
       const failed = opp < dc;
-      if (failed && onFail) await onFail(t);
-      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${failed ? `<strong>${failText}</strong>` : okText}`);
+      /* item 149, the save-card sibling: `onFail` used to be fire-and-forget, so `failText` — which
+       * for three callers is a CONDITION NAME — was printed whether or not the condition landed.
+       * A callback that returns an explicit `false` (every raw `edhaToggleStatus` onFail does now,
+       * on a condition-immune target) gets said so; a callback that returns nothing keeps the old
+       * wording byte-for-byte, which is every onFail that posts its own card. */
+      const landed = (failed && onFail) ? await onFail(t) : undefined;
+      const outcome = failed
+        ? `<strong>${failText}</strong>${landed === false ? " <em>(immune — nothing applied)</em>" : ""}`
+        : okText;
+      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${outcome}`);
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dcRoll],
       content: `<div class="edha-trigger-card"><p>${icon} <strong>${sourceName}</strong> — ${skillName} vs your ${colorName}:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });

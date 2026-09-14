@@ -6121,6 +6121,61 @@ function edhaConditionLabel(id) {
     ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
   return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
 }
+
+/* --- CONDITION IMMUNITY: does the status land at all? (item 149, bench run 47) -------------------
+ * A creature's `system.immunities.condition` map REFUSES a status outright. The cosmere Actor
+ * overrides `toggleStatusEffect` (systems/cosmere-rpg index.js): `statusId in
+ * this.system.immunities.condition && this.system.immunities.condition[statusId]` →
+ * `ui.notifications.warn("<actor> is immune to <condition>")` and `Promise.resolve(false)`.
+ *
+ * Nothing in Edha read that. Bench 47, driving BR-1: `Bench — Power`'s **Kneel** rolled 25 vs COG
+ * 11, SUCCESS, against a Risen Servant carrying `{compelled: true, …}`. The status was refused —
+ * the notification said so and `statuses` stayed `[]` — and the talent's card posted anyway:
+ * *"🎯 Kneel: Risen Servant is Compelled (by Bench — Power). Next action: move toward the
+ * compeller…"*. A GM reading the chat log rules the servant Compelled and plays the round wrong.
+ * This is the status-side twin of item 120 / item 124 on the healing side, where `edhaDeliveredNote`
+ * was introduced precisely so a card cannot claim a delivery that did not happen.
+ *
+ * PURE, and read BEFORE the write rather than from its return value ON PURPOSE: the GM-RELAY path
+ * (a player marking a GM-owned enemy) goes over a socket and has no return value to read at all.
+ * Pinned in tests/. */
+function edhaConditionImmune(actor, statusId) {
+  try { return !!actor?.system?.immunities?.condition?.[String(statusId ?? "").trim()]; } catch (e) { return false; }
+}
+
+/* The immunity gate for the WRITE sites, with the refusal made visible where it was asked for.
+ * The system raises its own warning inside `toggleStatusEffect`, i.e. on whichever client performs
+ * the write — so a relayed mark refused on the GM's machine tells the PLAYER nothing whatsoever.
+ * Returns true when the status is refused (the caller must then report nothing landed). */
+function edhaStatusRefused(actor, statusId) {
+  if (!edhaConditionImmune(actor, statusId)) return false;
+  ui.notifications?.warn(`Edha: ${actor?.name ?? "the target"} is immune to ${edhaConditionLabel(statusId)} — nothing applied.`);
+  return true;
+}
+
+/* PURE. The apply-status card's sentence, built from what ACTUALLY landed (item 149). `tail` is the
+ * trailing clause a landed status may carry (the bonus-damage rider); `note` is the rule's authored
+ * note. Both are DROPPED on a refusal, for `edhaDeliveredNote`'s reason: when nothing landed, the
+ * only honest sentence is the one saying so — an authored note like "movement ENFORCED" is exactly
+ * as false as the claim above it. Reach for this at ANY site that announces a status it just tried
+ * to apply. Pinned in tests/. */
+function edhaStatusApplyCard(landed, talentName, targetName, label, ownerName, tail = "", note = "") {
+  if (!landed) return `🛡️ <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>immune to ${label}</strong> — no status applied.`;
+  return `🎯 <strong>${talentName}</strong>: <strong>${targetName}</strong> is <strong>${label}</strong> (by ${ownerName})${tail}.${note}`;
+}
+
+/* PURE. The MULTI-TARGET counterpart (item 149) — the `edha-triggered-effect` status branch applies
+ * one status to a whole target list, so its card has to say which of them took it. An ALL-LANDED
+ * call returns the pre-item-149 wording byte-for-byte (this is the overwhelmingly common case and
+ * the regression guard is on it); the authored note rides the LANDED clause only, for
+ * `edhaDeliveredNote`'s reason. Names are already-resolved strings. Pinned in tests/. */
+function edhaStatusSplitNote(landedNames, refusedNames, label, note = "") {
+  const parts = [];
+  const said = (names, verb, text) => `${names.join(", ")} ${names.length > 1 ? verb[1] : verb[0]} ${text}`;
+  if (landedNames?.length) parts.push(said(landedNames, ["is", "are"], `<strong>${label}</strong>${note}`));
+  if (refusedNames?.length) parts.push(said(refusedNames, ["is", "are"], `<strong>immune to ${label}</strong> — no status applied`));
+  return parts.join("; ");
+}
 /* R-37(2) — the ONE-OF counterpart of edhaConditionLabel. A ledger key is plural by convention
  * ("snares", "charges", "edicts"), and edhaConditionLabel falls back to the bare key when nothing
  * configures a label, so card text that names a SINGLE entry read "the snares on Snare #1 **is**
@@ -6561,6 +6616,11 @@ async function edhaBulwarkClick(ev) {
 // Apply a status with an owner-relative (or self) timed expiry; relays to the GM when we lack perms.
 async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "owner" } = {}) {
   try {
+    // item 149: condition immunity refuses the write, so report that it did not land rather than
+    // stamping an expiry on an effect that was never created. Both paths — the local write below
+    // silently produced no effect, and the relay refused on the GM's client where the asking
+    // player never saw the system's own warning.
+    if (edhaStatusRefused(target, statusId)) return false;
     if (target.isOwner) {
       await target.toggleStatusEffect?.(statusId, { active: true });
       if (expire) {
@@ -11943,6 +12003,10 @@ function edhaEffectTargets(owner, eff, ctx) {
 // trigger vs a GM-owned enemy). Mirrors the burst-apply relay pattern.
 async function edhaToggleStatus(actor, statusId, active = true) {
   try {
+    // item 149: condition immunity refuses an APPLY; say so and report that nothing landed. Only
+    // the apply direction is gated — the system refuses a removal on an immune creature too, but
+    // a removal that no-ops on a creature that cannot hold the status changes nothing at the table.
+    if (active && edhaStatusRefused(actor, statusId)) return false;
     if (actor.isOwner) { await actor.toggleStatusEffect?.(statusId, { active }); return true; }
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply ${statusId}.`); return false; }
     game.socket.emit("module.edha-content", { action: "toggle-status", payload: { actorUuid: actor.uuid, statusId, active } });
@@ -12059,9 +12123,14 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
     // (Frost Lance: Slowed until the end of the TARGET's next turn).
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
+    // item 149: the writers report what LANDED, so the card below can too — a target whose condition
+    // immunity refused the status must not be listed among those carrying it.
+    const landedOn = [], refusedBy = [];
     for (const a of targets) {
-      if (eff.statusExpire) await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire });
-      else await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      const ok = eff.statusExpire
+        ? await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire })
+        : await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      (ok === false ? refusedBy : landedOn).push(a.name);
     }
     if (spec.selfResourceGain) {   // e.g. the Hollow Command fallback card also pays Siphoned Will's focus
       const r = spec.selfResourceGain;
@@ -12069,7 +12138,8 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       else await edhaGainResource(owner, r.resource, r.value);
     }
     const label = edhaConditionLabel(eff.statusId);   // 07-27f: same lookup, one helper (see edhaLocalizeLabel)
-    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
+    const body = edhaStatusSplitNote(landedOn, refusedBy, label, spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "");
+    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${body}.</p>` });
     return;
   }
   if (eff.kind === "affliction") {
@@ -13294,8 +13364,16 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
     for (const t of uniq) {
       const opp = await edhaRollOpposedSkill(t.actor, skill);
       const failed = opp < dc;
-      if (failed && onFail) await onFail(t);
-      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${failed ? `<strong>${failText}</strong>` : okText}`);
+      /* item 149, the save-card sibling: `onFail` used to be fire-and-forget, so `failText` — which
+       * for three callers is a CONDITION NAME — was printed whether or not the condition landed.
+       * A callback that returns an explicit `false` (every raw `edhaToggleStatus` onFail does now,
+       * on a condition-immune target) gets said so; a callback that returns nothing keeps the old
+       * wording byte-for-byte, which is every onFail that posts its own card. */
+      const landed = (failed && onFail) ? await onFail(t) : undefined;
+      const outcome = failed
+        ? `<strong>${failText}</strong>${landed === false ? " <em>(immune — nothing applied)</em>" : ""}`
+        : okText;
+      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${outcome}`);
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dcRoll],
       content: `<div class="edha-trigger-card"><p>${icon} <strong>${sourceName}</strong> — ${skillName} vs your ${colorName}:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });
@@ -22212,6 +22290,9 @@ async function edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" 
  * like the canonical H1 branch already did. */
 async function edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire = false } = {}) {
   if (!targetActor || !statusId) return false;
+  // item 149: a refused status did not land, so this must not report that it did — and must not
+  // leave a markedBy flag behind for the damage post-pass to read off a creature with no status.
+  if (edhaStatusRefused(targetActor, statusId)) return false;
   if (targetActor.isOwner) {
     await targetActor.toggleStatusEffect?.(statusId, { active: true });
     if (mark) { try { await targetActor.setFlag("edha-content", `markedBy.${statusId}`, mark); } catch (e) {} }
@@ -22243,6 +22324,24 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     const victim = boundVictim ?? edhaUserTargetActor();
     if (!victim) { ui.notifications?.warn(`Edha: target a creature for ${item.name}.`); return; }
     const status = cfg.status || "diagnosed";
+    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
+     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
+     * edhaConditionLabel is the same lookup order PLUS localization. Hoisted above the write at
+     * item 149, because the refusal card below needs it too. */
+    const label = edhaConditionLabel(status);
+    /* IMMUNITY REFUSES IT (item 149, bench run 47). Checked BEFORE anything is written, so the
+     * refusal costs no phantom `markedBy` flag — a marker-owner flag stranded on a creature that
+     * never took the status is what the damage post-pass reads to add a marker's bonus damage.
+     * The card says what happened and claims nothing; the bonus-damage clause and the rule's
+     * authored note go with it, because both describe a condition that is not there.
+     * The COST is deliberately untouched — that half is R-127, still open with Ben. */
+    if (edhaConditionImmune(victim, status)) {
+      ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${edhaStatusApplyCard(false, item.name, victim.name, label, owner.name)}</p>`,
+      });
+      return;
+    }
     const mark = { actorId: owner.id, talent: item.name };
     // `mark: false` applies the status WITHOUT claiming ownership (07-24v) — a buff on an ally must not
     // write markedBy.<status>, which the damage post-pass reads to add a marker-owner's bonus damage.
@@ -22262,15 +22361,12 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
       const ok = await edhaWriteStatusMark(victim, status, wantMark ? mark : null, { combatExpire });
       if (!ok) return;
     }
-    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
-     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
-     * edhaConditionLabel is the same lookup order PLUS localization. */
-    const label = edhaConditionLabel(status);
+    const tail = cfg.bonusDamageFormula
+      ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)`
+      : "";
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🎯 <strong>${item.name}</strong>: <strong>${victim.name}</strong> is <strong>${label}</strong> (by ${owner.name})` +
-        (cfg.bonusDamageFormula ? ` — damage against it gains +${edhaEvalSync(cfg.bonusDamageFormula, owner.getRollData())} ${cfg.bonusDamageType || "vital"} (auto-applied)` : "") +
-        `.${cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : ""}</p>`,
+      content: `<p>${edhaStatusApplyCard(true, item.name, victim.name, label, owner.name, tail, cfg.note ? ` <span style="opacity:.8">${cfg.note}</span>` : "")}</p>`,
     });
   } catch (e) { console.error("Edha Content | apply status mark failed", e); }
 }

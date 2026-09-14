@@ -130,6 +130,10 @@ function edhaEffectTargets(owner, eff, ctx) {
 // trigger vs a GM-owned enemy). Mirrors the burst-apply relay pattern.
 async function edhaToggleStatus(actor, statusId, active = true) {
   try {
+    // item 149: condition immunity refuses an APPLY; say so and report that nothing landed. Only
+    // the apply direction is gated — the system refuses a removal on an immune creature too, but
+    // a removal that no-ops on a creature that cannot hold the status changes nothing at the table.
+    if (active && edhaStatusRefused(actor, statusId)) return false;
     if (actor.isOwner) { await actor.toggleStatusEffect?.(statusId, { active }); return true; }
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply ${statusId}.`); return false; }
     game.socket.emit("module.edha-content", { action: "toggle-status", payload: { actorUuid: actor.uuid, statusId, active } });
@@ -246,9 +250,14 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
     // (Frost Lance: Slowed until the end of the TARGET's next turn).
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
+    // item 149: the writers report what LANDED, so the card below can too — a target whose condition
+    // immunity refused the status must not be listed among those carrying it.
+    const landedOn = [], refusedBy = [];
     for (const a of targets) {
-      if (eff.statusExpire) await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire });
-      else await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      const ok = eff.statusExpire
+        ? await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire })
+        : await edhaToggleStatus(a, eff.statusId || "weakened", true);
+      (ok === false ? refusedBy : landedOn).push(a.name);
     }
     if (spec.selfResourceGain) {   // e.g. the Hollow Command fallback card also pays Siphoned Will's focus
       const r = spec.selfResourceGain;
@@ -256,7 +265,8 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       else await edhaGainResource(owner, r.resource, r.value);
     }
     const label = edhaConditionLabel(eff.statusId);   // 07-27f: same lookup, one helper (see edhaLocalizeLabel)
-    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
+    const body = edhaStatusSplitNote(landedOn, refusedBy, label, spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "");
+    ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${body}.</p>` });
     return;
   }
   if (eff.kind === "affliction") {
