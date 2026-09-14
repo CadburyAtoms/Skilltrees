@@ -3793,6 +3793,17 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the pins pass and fail on the reversion; `--dry-run` lists "backup" after "close"; the PM's next live run gets past the backup.
 
 **PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run (the item-122 🤖 row stays open until then). Filed 2026-09-13 by the PM from the first live run.
+
+## 137. [ ] `deploy-cycle.js`'s post-flight verification races Foundry's boot (TOOLING + test pin) (2026-09-13)
+
+**Why:** another session's live run on 2026-09-13 ~20:05 ET (its worktree `docs/deploy-record-2026-09-14`, DEPLOY STATE note) ran all eight steps green from a worktree on `main`, but its post-flight fetch raced Foundry's boot — served engine `24d74c96…` == HEAD and `/` → `/join` both had to be verified by hand two minutes later. The relaunch step's poll only waits for `/` to answer 302; Foundry answers that redirect before the world and module files are fully served, so the immediate post-flight fetch of `/modules/edha-content/scripts/register-skills.js` (and possibly `/join`'s title check) can fail or return a partial body.
+
+**What to do:** `postFlightVerify` retries the engine fetch and the `/join` title check with a bounded backoff until `--wait-seconds` (default 90) elapses — a fetch that errors, times out, returns a non-200, or a body whose sha does not match HEAD's is a *retry*, not a FAIL, until the deadline; only then FAIL with the last observed status/sha. Pure decision `shouldRetryVerify({status, body, expectedSha, elapsed, deadline})` in the guards module, pinned: a 404 at 5 s → retry; a wrong sha at 10 s → retry; the right sha → pass; a wrong sha at the deadline → fail. Say in the runbook's agent-run-deploy section that the verification waits up to `--wait-seconds`.
+
+**Done when:** the pins pass and fail on the reversion; `--dry-run` still lists every step and names the `--wait-seconds` bound on the post-flight description.
+
+**PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pins + the PM's next live run. Filed 2026-09-13 by the PM from the other session's 20:05 deploy record.
+
 ## 130. [ ] R-120 (b) — `Predatory Strike` deals one `[Tier][Die]` plus Tier per Insight; `Killing Blow` and `The Final Study` keep the multiplier; the decoy damage formulas go (DATA + authored formulas, REBUILD deity) (2026-09-13)
 
 **Why:** the balance review's largest outlier — the repeatable strike multiplies its die by the Insight count (one roll × count, `data/authored/deity-knowledge.json` `amountFormula: "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)"`), about 26 vital per Action at levels 2–5 and 55 at level 7, twice the leyline ceiling and twice the next deity, sustainably. Ben chose (b).

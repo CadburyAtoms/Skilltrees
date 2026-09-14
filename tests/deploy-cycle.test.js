@@ -340,6 +340,66 @@ test("checkJoinRedirect: a proper 302 -> /join naming the world passes", () => {
   assert.strictEqual(v.ok, true);
 });
 
+/* --- engineSha8 (item 137) ---------------------------------------------------------------------- */
+
+test("engineSha8: a CRLF-served body hashes the same as its LF twin", () => {
+  const lf = "function edhaFoo() {\n  return 1;\n}\n";
+  const crlf = lf.replace(/\n/g, "\r\n");
+  assert.strictEqual(guards.engineSha8(lf), guards.engineSha8(crlf));
+});
+
+/* --- shouldRetryVerify (item 137: the post-flight verification races Foundry's boot) ------------
+ * Pins named in the brief: a 404 at 5s retries; a wrong sha at 10s retries; the right sha passes;
+ * a wrong sha AT the deadline fails.
+ */
+
+test("shouldRetryVerify: a 404 at 5s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 404, body: "", expectedSha: "abcd1234", elapsed: 5000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: a wrong sha at 10s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "not the engine", expectedSha: "abcd1234", elapsed: 10000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: the right sha passes", () => {
+  const body = "function edhaFoo() { return 1; }\n";
+  const expectedSha = guards.engineSha8(body);
+  const d = guards.shouldRetryVerify({ status: 200, body, expectedSha, elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
+  assert.strictEqual(d.ok, true);
+});
+
+test("shouldRetryVerify: a wrong sha AT the deadline fails, naming the last observed status/sha", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "still wrong", expectedSha: "abcd1234", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+  assert.strictEqual(d.ok, false);
+  assert.ok(d.message.includes("abcd1234"));
+});
+
+test("shouldRetryVerify: a fetch error (status 0) before the deadline retries, not fails", () => {
+  const d = guards.shouldRetryVerify({ status: 0, body: "", expectedSha: "abcd1234", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+/* --- shouldRetryJoin (item 137, the /join title check gets the same bounded-retry policy) ------- */
+
+test("shouldRetryJoin: a /setup redirect before the deadline retries", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryJoin: a /setup redirect AT the deadline fails", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+});
+
+test("shouldRetryJoin: a proper /join naming the world passes immediately", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/join", joinBody: "<title>edha</title>", worldTitle: "edha", elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
+});
+
 /* --- formatDeployRecordLine / insertDeployStateRecord ------------------------------------------ */
 
 test("formatDeployRecordLine: renders the exact shape the checklist/run-log expect", () => {
@@ -427,6 +487,11 @@ test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes n
     }
     assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
     assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
+
+    // item 137: the post-flight description must say verification retries/waits up to
+    // --wait-seconds, not just checks once.
+    assert.ok(out.includes("--wait-seconds"), "dry-run must mention the post-flight verification's --wait-seconds bound");
+    assert.ok(/retried with backoff/i.test(out), "dry-run must describe the post-flight checks as retried, not one-shot");
 
     // item 129: the backup must be PRINTED after the close, not before — this is the step-order
     // regression the item exists to pin. Reverting the order (backup before close) fails this.

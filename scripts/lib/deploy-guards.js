@@ -16,6 +16,7 @@
  */
 "use strict";
 
+const crypto = require("crypto");
 
 function verdict(ok, name, message) {
   return { ok, name, message };
@@ -227,6 +228,59 @@ function checkJoinRedirect({ status, location, joinBody, worldTitle }) {
   return verdict(true, "join-redirect", "/ -> /join, world confirmed");
 }
 
+/* --- Post-flight retry policy (item 137: the post-flight verification races Foundry's boot) ----
+ *
+ * Foundry's relaunch poll (`pollUntilRedirect`) only waits for `/` to answer 302 — it says nothing
+ * about whether the world's static files (the engine script, the join page) are fully served yet.
+ * A live run on 2026-09-13 saw exactly that: all eight steps green, but the immediate post-flight
+ * fetch of the engine raced the boot and had to be hand-verified two minutes later. So the
+ * post-flight checks must RETRY with a bounded backoff (`--wait-seconds`, default 90) instead of
+ * failing on the first not-yet-ready response — and only FAIL once that deadline passes.
+ */
+
+function sha256(text) {
+  return crypto.createHash("sha256").update(String(text == null ? "" : text)).digest("hex");
+}
+
+// The same 8-hex-char engine fingerprint used in the DEPLOY STATE record line — one copy so
+// deploy-cycle.js never re-implements the hashing.
+function engineSha8(text) {
+  return sha256(normalizeCRLF(text)).slice(0, 8);
+}
+
+// Generic bounded-retry wrapper: given an already-pure ok/name/message verdict, decides whether
+// the caller should try again ("retry" — not yet a FAIL), stop with success ("pass"), or stop
+// with failure ("fail") because `elapsed` has reached `deadline`. A passing verdict is always an
+// immediate "pass" regardless of elapsed time.
+function retryUntilDeadline(verdictResult, elapsed, deadline) {
+  if (verdictResult.ok) return Object.assign({ outcome: "pass" }, verdictResult);
+  if (elapsed >= deadline) return Object.assign({ outcome: "fail" }, verdictResult);
+  return Object.assign({ outcome: "retry" }, verdictResult);
+}
+
+// The engine-fetch decision: a non-200 status, a fetch error (status 0), or a body whose sha does
+// not match HEAD's engine is NOT YET a failure — it is a retry until `elapsed` reaches `deadline`.
+function checkEngineShaMatches({ status, body, expectedSha }) {
+  if (status !== 200) {
+    return verdict(false, "engine-matches-head", `served status ${status}, not 200`);
+  }
+  const actualSha = engineSha8(body || "");
+  if (actualSha !== expectedSha) {
+    return verdict(false, "engine-matches-head", `served engine sha ${actualSha} != HEAD's ${expectedSha}`);
+  }
+  return verdict(true, "engine-matches-head", `served engine sha ${actualSha} = HEAD's ${expectedSha}`);
+}
+
+function shouldRetryVerify({ status, body, expectedSha, elapsed, deadline }) {
+  return retryUntilDeadline(checkEngineShaMatches({ status, body, expectedSha }), elapsed, deadline);
+}
+
+// The /join-title check, wrapped with the same bounded-retry policy — reuses checkJoinRedirect
+// itself rather than re-deciding what a good /join response looks like.
+function shouldRetryJoin({ status, location, joinBody, worldTitle, elapsed, deadline }) {
+  return retryUntilDeadline(checkJoinRedirect({ status, location, joinBody, worldTitle }), elapsed, deadline);
+}
+
 /* --- The DEPLOY STATE record line (checklist §"⚑ DEPLOY STATE") --------------------------------
  * Pure text formatting/insertion so tests/deploy-cycle.test.js can pin it against a fixture
  * string rather than the real (huge) checklist file.
@@ -270,6 +324,10 @@ module.exports = {
   normalizeCRLF,
   enginesMatch,
   checkJoinRedirect,
+  engineSha8,
+  retryUntilDeadline,
+  shouldRetryVerify,
+  shouldRetryJoin,
   formatDeployRecordLine,
   insertDeployStateRecord,
 };
