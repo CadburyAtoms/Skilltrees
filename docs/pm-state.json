@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T05:29:46.372Z",
+  "generatedAt": "2026-09-14T05:55:57.703Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "ecdb63ab1f",
-    "commit": "95c0a42",
-    "branch": "pm/140-deploy-extract-guard",
+    "hash": "6de62cb81c",
+    "commit": "02a7726",
+    "branch": "pm/141-148-knowledge-decoys-cue",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Item 140 merged (#378): the deploy cycle now refuses on un-extracted Foundry edits, structural ones included. Fix pass 12 (Opus) is fixing bench 47's engine defects — the sync that never refreshes your PCs' path cards (146), the scoped sync's scene leak (147 + 151), the status card that claimed a landing immunity refused (149). Items 141 + 148 (Knowledge's decoy formulas and cue text, Sonnet) run beside it. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
+    "note": "Items 141 + 148 merged (#379): the Knowledge cards' decoy formulas are gone and Predatory Strike's cue is current — live at the next deploy. Fix pass 12 (Opus) is still fixing bench 47's engine defects (the sync that never refreshes your PCs' path cards; the scoped sync's scene leak; the status card that claimed a landing immunity refused); on its merge the PM deploys (that F5 is the one that fixes ⟳ Sync Talents), then items 142 + 143 + 150. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
     "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "engine worker in its own worktree; never touches the live module — the PM pushes its engine after merge (F5)"
-    },
-    {
-      "item": "141+148",
-      "title": "Items 141 + 148 — the three Knowledge cards lose their decoy item-level damage formulas; Predatory Strike's cue says \"plus your Tier per Insight\" (DATA, REBUILD deity)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/141-148-knowledge-decoys-cue",
-      "startedAt": "2026-09-14T05:28:00Z",
-      "agent": "Work items 141 + 148",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only data worker in its own worktree beside the engine worker"
     }
   ],
   "usage": null,
@@ -1749,14 +1736,14 @@
     {
       "pos": 138,
       "item": "141",
-      "title": "The three Knowledge cards' decoy item-level damage.formula beside their Insight riders — remove, scratch build + validate-packs + read-back parity (DATA, REBUILD deity); one 🤖 row; filed 22:13 from item 130's left-open note",
+      "title": "The three Knowledge cards' decoy item-level damage blocks blanked (formula: null, type: null on Ijbc9inhfqtIA0Nm, 4jDo4hPak4j0KdSH, yrIgDwup7iBdPq07) — each talent's own rule carries its formula and none reads item.system.damage; deity pack parity exactly 3 documents, a pack-wide formula sweep clean, validate-packs PASS on the scratch build (DATA, REBUILD deity); 🤖 KM-2. With item 148 on one Sonnet worker, dispatched 01:28; reviewed 01:56, no corrections; merged on green",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "130 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 379
     },
     {
       "pos": 139,
@@ -1845,14 +1832,14 @@
     {
       "pos": 146,
       "item": "148",
-      "title": "Predatory Strike's cue card still says \"[Tier][Die] Vital per Insight\" — the pre-item-130 phrasing, contradicting the card and the shipped formula (DATA, REBUILD deity); rides with item 141 (the Knowledge decoy formulas) on one Sonnet worker",
+      "title": "Predatory Strike's edha-note cue text and its rider's annotation moved off \"[Tier][Die] Vital per Insight\" onto \"plus your Tier per Insight\" (the item-130 phrasing; the cash-outs' text and the source prose were already right) (DATA, REBUILD deity); 🤖 KM-3. Rode with item 141; merged on green",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "130 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-14",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 379
     },
     {
       "pos": 147,
@@ -1961,34 +1948,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "14:48",
-      "at": "2026-09-13T18:48:00.000Z",
-      "item": "Item 122 (deploy-cycle.js — the agent-run deploy as one gated script: guards, backups, eight steps, relaunch, verification, DEPLOY STATE record, tests, docs) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "21 min, 128 tool uses",
-      "weighted": "5.8M",
-      "weightedM": 5.8,
-      "outcome": "merged 15:11 after review, no trailers; CI green on 3893d9e, gates 12/12 + --ci 14/14 (1139 tests). PM dry-ran it twice: worktree → refuses off main (bench guard blind there — its overlay was main's); main checkout → refuses naming bench-46. Follow-up: the bench guard should also read worktrees/branches. Out of scope reported: scripts/README.md misses three files. First live --yes run = the PM's next deploy (🤖 row)",
-      "pr": 340
-    },
-    {
-      "date": "2026-09-13",
-      "time": "14:48",
-      "at": "2026-09-13T18:48:00.000Z",
-      "item": "Bench run 46 (the 14:41 deploy: items 120 / 105 / 104 / 118 / 119's rows) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "42 min, 219 tool uses",
-      "weighted": "10.3M",
-      "weightedM": 10.3,
-      "outcome": "merged 15:30 after review, no trailers; CI green on 05392e5, gates 12/12 + --ci 14/14. Engine hash-verified = main. 10 of 11 rows retired (Predator's Due blocked on 88). Declined the briefed ⟳ Sync Adversaries on reading its source (world-wide rewrite + a live combat on \"Playtest Map (Copy)\") → items 123 / 124, R-113 WAITING. Both PCs refreshed, zero field changes; world diff clean. Runbook: run-46 lessons (the system's \"not enough special actions\" toast is noise)",
-      "pr": 341
-    },
     {
       "date": "2026-09-13",
       "time": "15:31",
@@ -2800,9 +2759,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "01:33",
+      "at": "2026-09-14T05:33:00.000Z",
+      "item": "#378 (item 140) merged at 01:33:45 after the PM's main merge + bookkeeping commit (CI green on c246f32); the worktree removed. Two PM notes: the merge chain had piped the gates through tail, masking a failing lint-changelog (the resolver counted dated headings, 163, where the gate counts every ##  heading, 165) — caught and recounted before the push, re-gated with the exit code checked; and --delete-branch left the remote branch behind again → deleted by hand with tonight's other five merged PR branches (107, 108, 132, 135, 145); the older twelve remain Ben's",
+      "itemNo": "378",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 378
+    },
+    {
+      "date": "2026-09-14",
+      "time": "01:28",
+      "at": "2026-09-14T05:28:00.000Z",
+      "item": "Items 141 + 148 (Knowledge's decoy item-level damage; Predatory Strike's cue text) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "26 min, 138 tool uses (254 turns)",
+      "weighted": "8.0M",
+      "weightedM": 8,
+      "outcome": "reviewed 01:56 — merged on green after the PM's bookkeeping commit on the branch, no trailers, three themed commits, no corrections; CI green on 02a7726, gates 12/12 + --ci 14/14 (1219 tests); the worker merged main itself. Parity: scratch edha-deity before/after, 110 documents, exactly 3 differ (Killing Blow / The Final Study in system.damage only; Predatory Strike in system.damage + the cue's handler.text + the rider's description), a pack-wide formula sweep clean; validate-packs PASS on the scratch modroot. 🤖 KM-2 / KM-3. DATA → REBUILD deity + ⟳ Sync Talents — rides the fix-pass-12 deploy",
+      "pr": 379
     }
   ],
-  "runLogTotal": 303,
+  "runLogTotal": 305,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3656,6 +3643,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-14T05:28:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 379
     }
   ],
   "statusVocab": [
