@@ -1,25 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Sunday evening: item 129 merged (the deploy script backs up after closing Foundry). Your other session deployed at 20:05 — everything merged today is live, no F5 owed. One worker is fixing the script's last two rough edges (bench guard blind spot, boot race). Seven rulings still wait on the Needs Ben tab.",
+    "note": "Sunday evening: the deploy script's guards are complete (items 125 + 137 merged). The PM runs it for real next — Foundry closes and relaunches for about a minute; re-join your client afterwards. Seven rulings still wait on the Needs Ben tab.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [
-    {
-      "item": "125+137",
-      "title": "deploy-cycle.js: bench guard reads worktrees + pm/bench-* branches; post-flight verification retries until --wait-seconds",
-      "model": "sonnet",
-      "size": "XS+XS",
-      "lane": "R",
-      "branch": "pm/125-137-deploy-guards",
-      "startedAt": "2026-09-14T00:13:00Z",
-      "agent": "Work items 125 + 137",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
