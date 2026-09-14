@@ -1531,7 +1531,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Red 2+; Green 2+",
-    "description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.",
+    "description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1), then place 1 Insight on the target.",
     "flavor": "Every strike teaches something.",
     "atlas": "deity",
     "layout": {

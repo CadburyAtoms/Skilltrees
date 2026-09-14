@@ -405,6 +405,10 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 - [ ] 🤖 **AM-1 — `Adaptive Mutation` is a Green 2+ talent on the rebuilt pack:** the Life node carries Green 2+; a level-2 Life disciple (Blue 2 / Green 2, Life Surge owned) can take it.
 - [ ] 🤖 **TE-1 — the Construct's melee attack is deflected normally:** on Bench — Civilization with Tempered Edge, a Construct Slam against a Deflect-2 target shows the system's "− deflect" line actually subtracting (before the cut, `addTargetDeflect` added the deflect back as an extra instance); the card reads "deal an additional [Tier][Die] energy damage." with no "ignore deflect".
 
+## Knowledge's strike reshaped — R-120 (b), item 130 (2026-09-14; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **KM-1 — `Predatory Strike` adds one die plus Tier per Insight, not dice × Insight:** on Bench — Knowledge with 5 Insight on the quarry (Studied Mark, then two hits, or wait two turns of Accumulate), a Predatory Strike hit at tier 1 shows the rider as **1d6 + 5** bonus vital (one die, plus one per Insight), not 1d6 × 5; the card reads "equal to [Tier][Die] plus your Tier per Insight". Then `Killing Blow` on the same quarry still rolls **1d6 × 5** — the cash-outs keep the multiplier.
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
