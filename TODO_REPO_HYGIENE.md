@@ -3876,7 +3876,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model — (done by the interactive session) · size S · deps — · verify: the test + the two rows. Filed and closed 2026-09-13 from R-126.
 
-## 138. [x] (2026-09-13, PR #PRPLACEHOLDER) `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
+## 138. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s overlay bench check matches the WORD "bench" anywhere in a worker's title, so a non-bench worker whose title mentions the bench guard refuses the deploy (TOOLING + test pin) (2026-09-13)
 
 **Why:** `isBenchWorker` (item 122, `scripts/lib/deploy-guards.js`) treats `lane === "B"` OR the substring `bench` in item / title / agent / branch as a bench signal. The 125 + 137 worker's own overlay entry — *"deploy-cycle.js: bench guard reads worktrees…"* — tripped it, and the PM's 20:44 dry run refused with `bench signal(s) held: 125+137` although that worker never touched Foundry. The worker that built item 125 flagged it in its report.
 
@@ -3888,7 +3888,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **What was done:** `isBenchWorker` now only checks `lane === "B"` or an `item`/`branch` STARTING WITH `bench-` / `pm/bench-` (`BENCH_WORKER_ID_RE`); `title` and `agent` are no longer read at all. Six pins in `tests/deploy-cycle.test.js` cover the brief's exact cases (a lane-R worker titled "…bench guard reads worktrees…" now passes; `item: "bench-47"` and `branch: "pm/bench-48"` refuse; an `agent` field naming bench is also not a signal) — all shown failing on the pre-fix reversion (`git stash` back to the old `isBenchWorker`) and passing again after restore.
 
-## 139. [x] (2026-09-13, PR #PRPLACEHOLDER) `deploy-cycle.js`'s post-flight `/join` check compares the world ID against the page's TITLE, so it refuses a good deploy (TOOLING + test pin) (2026-09-13)
+## 139. [x] (2026-09-13, PR #364) `deploy-cycle.js`'s post-flight `/join` check compares the world ID against the page's TITLE, so it refuses a good deploy (TOOLING + test pin) (2026-09-13)
 
 **Why:** the PM's first live `deploy-cycle.js --yes` run (2026-09-13 20:46 ET, `main` @ `d832ac4`, run id `2026-09-14T00-46-31`) passed all nine steps and both earlier post-flight checks (`stamps-newer-than-start`, `engine-matches-head` on `24d74c96`), then refused: `join-redirect — refused — /join does not name world "edha"`. `deploy-cycle.js` (~L688 pre-fix) passed `optionsJson.world` — the world ID, `edha` — into `checkJoinRedirect` as `worldTitle`, but the `/join` page's `<title>` is the world's TITLE from `<dataPath>/Data/worlds/edha/world.json` (`"title": "Edha"`), and the comparison was case-sensitive besides. Because the refusal kept the run from writing its DEPLOY STATE line, the PM recorded that deploy by hand.
 
