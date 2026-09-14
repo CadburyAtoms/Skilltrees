@@ -4021,3 +4021,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** the incantation in all four documents actually syncs the bench roster; a zero-candidate scoped call warns instead of returning silently; if (b), the recursive match is pinned headless; all gates green.
 
 **PM:** lane B · model sonnet · size S · deps — (fold into item 147 if one worker takes both) · verify: the headless pin or a doc-consistency grep, plus a bench re-drive. Filed 2026-09-14 by bench run 47.
+
+## 152. [ ] `deploy-cycle.js`'s no-bench-worker guard reads a SQUASH-merged `pm/bench-*` branch as a live bench (its tip is outside `main`'s ancestry), and `gh pr merge --squash --delete-branch` left the remote branch in place — the 01:12 deploy refused on `origin/pm/bench-47` after bench 47 had merged (TOOLING + DOCS) (2026-09-14)
+
+**Why:** item 125's guard counts a `pm/bench-*` branch, local or remote, as a live bench unless it is merged into `origin/main` by ancestry. Bench PRs are squash-merged whenever their commits carry model trailers (bench 45, bench 47 — iron rule 6), which leaves the branch tip outside `main`'s ancestry; and on 2026-09-14 `gh pr merge 376 --squash --delete-branch` deleted the local branch but NOT the remote one, so the first deploy after the bench (01:12 ET) refused on `origin/pm/bench-47` until the PM deleted the branch by hand (`git push origin --delete pm/bench-47`) and re-ran. The guard was right by its rule and wrong in fact; a PM that did not know the cause would have reached for `--force-bench`, which is Ben's call.
+
+**What to do:** teach the guard that a bench branch whose PR is MERGED (any merge method) is not a live bench — read `gh pr list --state merged --head <branch> --json number` (or the GitHub API) from the guard, falling back to today's ancestry test when offline — as a pure decision in `scripts/lib/deploy-guards.js` pinned against a fixture (a squash-merged branch with a merged PR → PASS; a branch with an open PR → REFUSE; a branch with no PR and unmerged → REFUSE; the reversion shown failing), and print the reason it decided ("merged as PR #N (squash)"). And make the PM's merge recipe explicit where the PM reads it (`.claude/skills/project-manager/SKILL.md` step 5 and the runbook's agent-run-deploy section): after ANY squash merge, confirm the remote branch is gone (`git ls-remote --heads origin <branch>`) and delete it if it is not — `--delete-branch` is not proof.
+
+**Done when:** the fixture pins pass with the reversion failing; `--dry-run` names a merged squash branch as merged; the two docs carry the recipe.
+
+**PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pins + a `--dry-run` printout. Filed 2026-09-14 by the PM from the 01:12 deploy refusal.
