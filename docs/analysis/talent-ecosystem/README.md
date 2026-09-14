@@ -21,7 +21,9 @@ opening per tree. It is the source for the R-104 prose pass (item 111) and super
 **The balance review that followed the prose pass is `BALANCE-REVIEW.md`** (2026-09-13): each
 tree measured against its now-honest intent at levels 1, 5 and 7 — ten findings ranked, six new
 rulings (R-120 … R-125) filed in `EDHA_RULINGS.md` §D. Its arithmetic is `balance-turns.js`
-(hand-encoded lines with the assumptions at the top; run it, change an assumption, re-run).
+(hand-encoded lines with the assumptions at the top; run it, change an assumption, re-run), and
+`balance-per-talent.js` is the same model as a curve per talent taken (Ben's question on the
+Knowledge finding, 2026-09-14).
 
 **An independent critique of the seventeen rulings is in `CRITIQUE.md`** (2026-09-12): each
 ruling re-derived from the talent text, the engine and the system source, with a verdict —

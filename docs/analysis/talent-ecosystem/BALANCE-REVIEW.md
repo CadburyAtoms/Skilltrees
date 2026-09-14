@@ -96,6 +96,49 @@ tell that the multiplier landed on the wrong talent. (The verifier's shape note:
 with much more swing: a five-Insight strike at level 7 lands anywhere between 10 and 80 bonus
 vital. The item also still carries a decoy `damage` formula beside the rider; see §7.)
 
+**Ben's question (2026-09-14): is this every talent in the tree, at the highest Insight? What is the
+damage curve per talent taken?** It is ONE talent. `Predatory Strike` alone adds an Insight on every
+hit, so it reaches the cap of five by turn 2–3 with no other pick, and with Draw Mana at rank
+(R-126) a Draw plus two strikes is sustainable from level 1. The curve below is steady state
+(turn 3 and later), the cheapest picks that make each line work, at tier 1 (rank 2) and tier 2
+(rank 3); "team" is what the rest of the party gains per round from the character's picks. It is
+`balance-per-talent.js` beside this file.
+
+| tree | picks | which | self T1 | self T2 | team T1 | team T2 | note |
+|---|---|---|---|---|---|---|---|
+| (any) | 0 | none | 25.5 | 31.5 | 0 | 0 | the free floor: three Strikes |
+| Knowledge (as built) | 1 | Predatory Strike | 52 | 111 | 0 | 0 | Draw + 2 strikes; its own +1 per hit reaches 5 Insight by turn 2–3 |
+| Knowledge (as built) | 3 | + Studied Mark, Accumulate | 65 | 138.8 | 0 | 0 | Accumulate's refund lets every other turn be three strikes |
+| Knowledge (as built) | 5 | + Hunter's Discipline, The Pack | 67.5 | 143.8 | 30 | 30 | The Pack: every ally hit +Insight (5) vital |
+| Knowledge (R-120 (b)) | 1 | Predatory Strike | 34 | 59 | 0 | 0 | one die + Tier per Insight |
+| Knowledge (R-120 (b)) | 3 | + Studied Mark, Accumulate | 42.5 | 73.8 | 0 | 0 |  |
+| Knowledge (R-120 (b)) | 5 | + Hunter's Discipline, The Pack | 45 | 78.8 | 30 | 30 | the cash-outs keep [Tier][Die] × Insight as the burst |
+| Black | 1 | Withering Ray | 33 | 72 | 0 | 0 | vital; costs ~half a die of health per cast, no Investiture |
+| Black | 2 | + Blood Price | 37.9 | 82.8 | 0 | 0 | advantage on the next Black test each cast, ~+15% hits |
+| Warrior | 2 | Stillstance, Mighty | 31.5 | 40.5 | 0 | 0 | free, unlimited |
+| Warrior | 3 | + Saltstance | 34.5 | 46.5 | 0 | 0 | free |
+| Red | 1 | Searing Bolt | 15 | 30 | 0 | 0 | Draw + 2 bolts, sustainable under R-126 (a) |
+| Red | 3 | + Arc Flash, Kindle | 26.5 | 51 | 0 | 0 | Kindle +Red mod on every bolt; the arc adds half a die to a second target |
+| Red | 5 | Reckless Advance, Volatile Strike, Momentum's Edge, Mighty (+1 filler) | 36.8 | 54 | 0 | 0 | the charge line, needs a 20 ft approach each turn |
+| Civilization | 1 | Forge Construct | 29 | 40.5 | 0 | 0 | Construct 1 attack/round + the disciple's own Strikes |
+| Civilization | 2 | + Tempered Edge | 32.5 | 49.5 | 0 | 0 | (after Ben's cut: still deflected) |
+| Civilization | 4 | + Siege Form, Arsenal | 39.5 | 67.5 | 0 | 0 | two Construct attacks a round, free after setup |
+| Death | 4 | Withering Touch, Consuming Decay, Necrotic Cascade, Reaper's Harvest + Risen Servant | 32.5 | 49.5 | 0 | 0 | decay tick + servant, after two install turns; the cascade is per death |
+| Power | 1 | Warlord's Advance | 24 | 39 | 0 | 0 | Draw + 2 advances, sustainable under R-126 (a) |
+| Power | 4 | + Momentum of Victory, Unstoppable Advance, Warlord's Fury | 28 | 47 | 0 | 0 | Fury at its cap |
+| Life | 1 | Vital Diagnosis | 25.5 | 31.5 | 6 | 12 | the party's +Tier vital on every hit against the mark |
+| Green | 3 | Pack Hunter, Predator's Instinct, Coordinated Hunt | 25.5 | 31.5 | 12 | 18 | +N per hit for N attackers on one target, max = rank |
+
+*(2026-09-14: R-120 (b) shipped in PR #366 — the "as built" rows above are the pre-reshape numbers; the "R-120 (b)" rows are what is live once the deity pack is rebuilt.)*
+
+Read down the "picks = 1" rows: Knowledge's first talent is the strongest sustained line in the
+game at both tiers, ahead of Black's first pick (which pays health) by half again and of everyone
+else's fourth pick. A player who takes all nine Knowledge talents *should* be powerful — and is,
+in the "team" column and the cash-out bursts — but the outlier is the entry, not the depth. Under
+R-120 (b) the first pick lands at parity with Black's and the cash-outs keep the multiplier as the
+reward for going deep. (R-126's rank-based draw raised every Investiture-costed line; Knowledge
+gains most because its per-cast value is the highest.)
+
 **Recommended default (R-120 (b)):** `Predatory Strike` deals **one `[Tier][Die]` plus your Tier
 per Insight** (level 7: 9 + 10 = 19 bonus per hit — the size of `Withering Ray`, and still the top
 deity single-target line); `Killing Blow` and `The Final Study` keep `[Tier][Die]` per Insight, so
@@ -207,6 +250,10 @@ disadvantage engine with a barricade and a double. Life's signature resource, Mu
 | Order | 1 | 9 | |
 | the other six deities | 0 | 9 | |
 
+**Outcome (2026-09-14):** Ben: *"Level six wall doesn't read to me like a ruling needed. I changed two
+items to ungate them from level six."* The repo carries both (Ghostly Walls Blue 2+, Adaptive
+Mutation Green 2+, PR #360) so a rebuild cannot undo an in-Foundry edit.
+
 **Recommended default (R-123 (a)):** `Ghostly Walls` to Blue 2+ (the freeze becomes a depth-3,
 level-4 play; `Absolute Stillness` stays 3+ behind it; `Counterspell` stays 3+ — a talent-negation
 at level 3 would be too much) and `Adaptive Mutation` to Green 2+ (Life's fantasy on the entry's
@@ -227,6 +274,10 @@ wired to add the target's Deflect back so the *whole* attack lands as if Deflect
 engine's own hint names Tempered Edge as the intended user. It is also the small part of the
 number: a few points a round against the 36 the two attacks deal. Deity power is Radiant-tier by
 design and the Construct absorbs attacks that would otherwise land on the party.
+
+**Outcome (2026-09-14):** Ben overrode the default — *"Construct doesn't need to ignore deflect. That
+can be cut."* — so `Tempered Edge` loses the bypass on the card and the authored rider (PR #360); the
+Construct's attack is turned by armor like everyone else's.
 
 **Recommended default (R-124 (b)):** accept as written and document it — the deity guide's
 Civilization entry says the Construct's melee attack bypasses Deflect and that the two-attack
