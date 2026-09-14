@@ -3704,7 +3704,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** every sub-item is done or explicitly parked by Ben; the five shelved feel rows are retired on card text (R-133's three) or re-opened after session play (the two feel rows); the census is green against the final data and its bands are inside R-134's targets or say why not.
 
-**PM:** lane H · model per sub-item · size L as a programme · deps NONE open (R-128 … R-135 answered 2026-09-14) · PR #386 carries items 153 + 154; the close-out PR carries 157, 159, 160 and owes an adversaries REBUILD + ⟳ Sync.
+**PM:** lane H · model per sub-item · size L as a programme · deps NONE open (R-128 … R-135 answered 2026-09-14) · PR #386 carries items 153 + 154; PR #387 carries 157, 159, 160 and owes an adversaries REBUILD + ⟳ Sync.
 
 
 ## 122. [x] (2026-09-13, PR #340) The agent-run deploy cycle becomes ONE gated script with guardrails, verification and tests (TOOLING + DOCS) (2026-09-13) — script + guards + tests shipped; the PM's first LIVE `--yes` run (🤖 row, `EDHA_FOUNDRY_TEST_CHECKLIST.md`) is the outstanding verify step
@@ -4087,7 +4087,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane H · model opus per nation (sonnet for a mechanical-only nation) · size L · deps R-128, R-129, R-134, R-135 — all answered (a) 2026-09-14; item 155's ledgers first (R-135 (a)).
 
-## 157. [x] (2026-09-14, PR #TBD) The nine legacy playtest-dungeon blocks — per R-130 (a): the `Legacy — Playtest Dungeon` folder (DATA, adversaries REBUILD + ⟳ Sync owed)
+## 157. [x] (2026-09-14, PR #387) The nine legacy playtest-dungeon blocks — per R-130 (a): the `Legacy — Playtest Dungeon` folder (DATA, adversaries REBUILD + ⟳ Sync owed)
 
 **Why:** Trooper … Mutated Thrall are the 6-room test dungeon the data file began as, not Thyrcross fauna; they carry no folder, six are the only users of `data/adversary-effects.json`, and three are sole consumers of engine primitives (census §6). R-130 decides their fate.
 
@@ -4107,7 +4107,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane H · model opus · size L · deps R-131 answered (a) 2026-09-14; rides item 156's nation passes, lore gate first.
 
-## 159. [x] (2026-09-14, PR #TBD) The three shelved bestiary rows that are card rules — Crownox ring adjacency, Heat of the Flats' shade, swarm bookkeeping — per R-133 (a) (DATA card text, adversaries REBUILD + ⟳ Sync owed)
+## 159. [x] (2026-09-14, PR #387) The three shelved bestiary rows that are card rules — Crownox ring adjacency, Heat of the Flats' shade, swarm bookkeeping — per R-133 (a) (DATA card text, adversaries REBUILD + ⟳ Sync owed)
 
 **Why:** five feel rows were shelved on 2026-09-13; three of them ask for a written rule, not a perception, and can be answered without play. R-133 carries the proposed texts.
 
@@ -4117,7 +4117,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model — (done by the close-out session) · size S · deps R-133 ✓.
 
-## 160. [x] (2026-09-14, PR #TBD) Adversary blocks may state `attributes` — the build derives the token's Senses Range from AWA and the pool from max(AWA, PRE) (R-128 (a); TOOLING, pack byte-identical until a block states them)
+## 160. [x] (2026-09-14, PR #387) Adversary blocks may state `attributes` — the build derives the token's Senses Range from AWA and the pool from max(AWA, PRE) (R-128 (a); TOOLING, pack byte-identical until a block states them)
 
 **Why:** R-128 (a), answered 2026-09-14 23:21 ET with Ben's gloss (*"Senses range of 20 feet means it can sense things 20 feet away with its primary sense obscured. That is- in dim light. In a normally lit room it should see as far as the light goes."*). Every block had attributes 0, so 51 of 52 saw 5 ft in the dark and 41 of 52 carried skill ranks doing an attribute's work.
 
