@@ -38,7 +38,8 @@ Before a run, if `node scripts/module-src-sync.js status` reports the live engin
 pack rebuild is owed), the deploy no longer has to wait on Ben typing at his keyboard: run
 `node scripts/deploy-cycle.js --dry-run` first — it prints every pre-flight guard's verdict
 (clean tree on `main`, not hand-edited, no bench worker holding the table, the five packs exist,
-a world is configured, the exe is found) and changes nothing — then `node scripts/deploy-cycle.js
+no un-extracted Foundry edits (item 140), a world is configured, the exe is found) and changes
+nothing — then `node scripts/deploy-cycle.js
 --yes` once they all pass. It closes Foundry gracefully, pulls, pushes the engine, rebuilds and
 validates all five packs, relaunches the exe, polls until Foundry answers, and verifies the served
 engine against `HEAD` before recording a DEPLOY STATE line. This is a DIFFERENT thing from what
@@ -70,6 +71,23 @@ prints the resolved title on the `world-configured` verdict line. The overlay's 
 similarly narrow (item 138, 2026-09-13): it is `lane === "B"` or an `item`/`branch` id that
 STARTS WITH `bench-` / `pm/bench-`, never a worker's free-text `title` or `agent` field — a
 lane-R worker whose title happens to mention "bench" is not a signal.
+
+**A new PRE-FLIGHT guard, `un-extracted-edits`, refuses on a Foundry edit no one has saved (item
+140, 2026-09-14):** before step 1 even closes Foundry, `--dry-run`/`--yes` now also read each
+atlas pack's live docs read-only (a temp copy, same technique `foundry-extract.js` uses — safe
+with Foundry still open, including mid-bench) against `.baselines/<pack>.json`, and refuse if any
+talent's content is un-extracted OR a tree node's prerequisites/connections/folder/name changed
+since the last build/extract — the exact gap that let the 2026-09-13 20:03 ET deploy silently
+overwrite Ben's in-Foundry ungating of `Ghostly Walls` / `Adaptive Mutation` (`foundry-build.js`'s
+own guard only fired at step 7, after Foundry was already closed and the engine already pushed,
+and its fingerprint never covered prerequisites/connections/folder/name at all — see
+`AUTHORING_WORKFLOW.md`'s guard note). `--dry-run` prints its verdict like the other guards; a
+refusal names the pack, the talent(s), and the field, plus the remedy — `node
+scripts/foundry-extract.js <tree>` for un-extracted CONTENT, or "structure changes go in the
+source JSON" for a structural edit (extract still cannot save that back — see the workflow doc's
+remaining blind spot). **`--force-build` overrides it** (surfacing `foundry-build.js`'s own
+`--force`, threaded into step 7 too) — treat it the same as `--force-bench`: stop and ask Ben,
+don't reach for it on a hunch.
 
 ## Bench-created scenes (item 128 / PM-R19, 2026-09-13)
 

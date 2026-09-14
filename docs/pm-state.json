@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T05:15:15.856Z",
+  "generatedAt": "2026-09-14T05:29:46.372Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "2651a224ea",
-    "commit": "d76bf99",
-    "branch": "pm/board-2026-09-14b",
+    "hash": "ecdb63ab1f",
+    "commit": "95c0a42",
+    "branch": "pm/140-deploy-extract-guard",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ d76bf99 at 01:13 ET: False Premise's Reaction denial (107) and the three deity gate dials (108) are at the table; engine unchanged (902ddadb). Bench 47 is merged — 13 rows passed; its one FAIL is item 146 (⟳ Sync Talents never refreshes owned path cards — your own PCs are affected), which fix pass 12 (Opus) is fixing now with 147 / 151 / 149's card. Item 140 (Sonnet) still running. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
+    "note": "Item 140 merged (#378): the deploy cycle now refuses on un-extracted Foundry edits, structural ones included. Fix pass 12 (Opus) is fixing bench 47's engine defects — the sync that never refreshes your PCs' path cards (146), the scoped sync's scene leak (147 + 151), the status card that claimed a landing immunity refused (149). Items 141 + 148 (Knowledge's decoy formulas and cue text, Sonnet) run beside it. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
     "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -63,17 +63,17 @@
       "note": "engine worker in its own worktree; never touches the live module — the PM pushes its engine after merge (F5)"
     },
     {
-      "item": "140",
-      "title": "The deploy cycle refuses on un-extracted Foundry edits; the build guard's fingerprint reaches tree-node fields (TOOLING + DOCS)",
+      "item": "141+148",
+      "title": "Items 141 + 148 — the three Knowledge cards lose their decoy item-level damage formulas; Predatory Strike's cue says \"plus your Tier per Insight\" (DATA, REBUILD deity)",
       "model": "sonnet",
-      "size": "M",
+      "size": "S",
       "lane": "R",
-      "branch": "pm/140-deploy-extract-guard",
-      "startedAt": "2026-09-14T04:52:00Z",
-      "agent": "Work item 140",
+      "branch": "pm/141-148-knowledge-decoys-cue",
+      "startedAt": "2026-09-14T05:28:00Z",
+      "agent": "Work items 141 + 148",
       "phase": "working",
       "pr": null,
-      "note": "repo-only worker in its own worktree; reads the live packs read-only for its dry run, never deploys"
+      "note": "repo-only data worker in its own worktree beside the engine worker"
     }
   ],
   "usage": null,
@@ -1737,14 +1737,14 @@
     {
       "pos": 137,
       "item": "140",
-      "title": "The agent deploy cycle runs no extract and the build's un-extracted-edits guard is blind to tree-node edits (prerequisites, connections, folder, name) — a pre-flight guard in deploy-cycle.js + a wider fingerprint where it can reach (TOOLING + DOCS); filed 22:13 from the #360 session's note",
+      "title": "The deploy cycle refuses on un-extracted Foundry edits, and the build guard's fingerprint reaches tree-node fields: edha-pack-io.js's fingerprint gains a structural half (a talent's name / folder, a tree node's prerequisites / connections) shared by foundry-build.js's own ABORT and a new read-only PRE-FLIGHT guard un-extracted-edits in deploy-cycle.js (a temp copy of each atlas pack, safe with Foundry open); --force-build surfaces the build's --force and is threaded into step 7; a pre-140 plain-string baseline degrades gracefully (content still checked, structural un-armed until the next build re-arms it); 13 pins, the reversion fails exactly the four structural cases; the live --dry-run PASSED read-only during bench 47 (TOOLING + DOCS; the remaining blind spot — node position / size / sort, and no round-trip for structure — named in AUTHORING_WORKFLOW.md). Dispatched 00:52 (sonnet, worktree, beside the bench); reviewed 01:28, no corrections; CONFLICTING three merges behind → the PM merged main in the worktree; merged on green",
       "lane": "R",
       "model": "sonnet",
       "size": "M",
       "deps": "122 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 378
     },
     {
       "pos": 138,
@@ -1961,48 +1961,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "14:24",
-      "at": "2026-09-13T18:24:00.000Z",
-      "item": "Item 119 data half (R-112 (a): The Reckoning's pool 2 → 3, cue text aligned, R-112 → §K.9) + Ben's shelving (five bestiary feel ⚑ rows SHELVED, item 121 placeholder) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "13 min, 106 tool uses",
-      "weighted": "4.4M",
-      "weightedM": 4.4,
-      "outcome": "merged 14:38 after review, no trailers; CI green on d595a64, gates 12/12 + --ci 14/14 (pack-build-validate: both blocks Foc 3). Open ⚑ 7 → 2; open rulings 1 → 0; the two pool-2 announcer rows retired (coverage pinned headless), one re-drive row for bench 46. DATA → adversaries REBUILD — ridden by the PM's own deploy cycle (next row)",
-      "pr": 339
-    },
-    {
-      "date": "2026-09-13",
-      "time": "14:44",
-      "at": "2026-09-13T18:44:00.000Z",
-      "item": "Deploy cycle run BY THE PM (Ben, chat 14:2x: \"I would love if you could handle that for me\") — 14:41:21 → 14:41:31 ET from main @ 5bfa8ff: Foundry closed gracefully (CloseMainWindow on the main process, 5 → 0 processes in under 20 s), module-src-sync.js 6 in sync / 0 hand-edited (push copied nothing — the engine was already live), sync-art.js current, all five packs rebuilt (stamps 18:41:25Z; deity 110 items, adversaries 52 blocks / 336 embeds, items 113), validate-packs.js + validate-adversaries.js PASSED (0 issues), Foundry relaunched from the exe and answered HTTP 302 → /join (world Edha) within 3 s, served engine sha 921132b0… = main. Nothing owed to Ben's machine; bench 46 (11 open 🤖 rows) is next, at 15:30 when the trailing-5h cap clears (or on Ben's word).",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "14:48",
-      "at": "2026-09-13T18:48:00.000Z",
-      "item": "Ben in chat: \"the full bench loop doesn't need me anymore? Can we test and write a few gates and guardrails that are needed\" → PM-R18 (agent-run deploy: yes) recorded; dispatched bench run 46 (opus, worktree pm/bench-46 — the 11 open 🤖 rows on the 14:41 deploy; step zero refreshes both PCs + roster + ⟳ Sync Adversaries) and item 122 (sonnet, worktree pm/122-deploy-cycle-script — deploy-cycle.js with guards, backups, verification, tests, docs). Trailing-5h dispatches 9 of 6 on Ben's direction; Opus 3 of the day (bench 45, fix pass 11, bench 46)",
-      "itemNo": null,
-      "model": "opus + sonnet",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "14:48",
@@ -2800,9 +2758,51 @@
       "weightedM": null,
       "outcome": "deployed",
       "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "01:18",
+      "at": "2026-09-14T05:18:00.000Z",
+      "item": "#377 (board part 2) merged at 01:18 (CI green on 14e79ff); main = 4df8dc7, clean; two workers in flight (fix pass 12, item 140)",
+      "itemNo": "377",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 377
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:52",
+      "at": "2026-09-14T04:52:00.000Z",
+      "item": "Item 140 (the deploy cycle's un-extracted-edits pre-flight guard; the build fingerprint reaches tree-node fields) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "35 min, 148 tool uses (272 turns)",
+      "weighted": "9.5M",
+      "weightedM": 9.5,
+      "outcome": "reviewed 01:28 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, four themed commits, no corrections; CONFLICTING three merges behind with no check runs → main merged in the worktree (changelog kept newest-first and recounted, dashboard rebuilt), gates 12/12, CI on the new sha. edha-pack-io.js structuralOf / snapshotDoc / diffUnextractedEdits (content + structural kinds), foundry-build.js's ABORT split content / structural with the baseline write widened to talent_tree docs, foundry-extract.js's writeBaseline likewise, deploy-guards.js checkUnextractedEdits (pure; --force-build mirrors --force-bench's shape), deploy-cycle.js gathers read-only (temp copy, LOCK skipped) before step 1 and threads --force-build into step 7; 13 pins, the reversion → 4 failures on exactly the structural cases; live --dry-run PASS during bench 47. Docs: AUTHORING_WORKFLOW.md's blind-spot note narrowed to what remains (no round-trip for structure; node position / size / sort unfingerprinted on purpose), runbook. Found: nothing new. TOOLING + DOCS — nothing to deploy; the next deploy re-arms the widened baselines",
+      "pr": 378
+    },
+    {
+      "date": "2026-09-14",
+      "time": "01:28",
+      "at": "2026-09-14T05:28:00.000Z",
+      "item": "Dispatched items 141 + 148 (one sonnet worker, worktree pm/141-148-knowledge-decoys-cue — the three Knowledge cards' decoy item-level damage blocks removed with a scratch build + validate-packs + parity, Predatory Strike's cue text to the item-130 phrasing; DATA → REBUILD deity) as the lane-R worker beside fix pass 12",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 300,
+  "runLogTotal": 303,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3642,6 +3642,18 @@
     {
       "at": "2026-09-14T05:12:00.000Z",
       "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T04:52:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 378
+    },
+    {
+      "at": "2026-09-14T05:28:00.000Z",
+      "model": "sonnet",
       "item": null,
       "pr": null
     }

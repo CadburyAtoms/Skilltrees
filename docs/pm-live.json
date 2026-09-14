@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ d76bf99 at 01:13 ET: False Premise's Reaction denial (107) and the three deity gate dials (108) are at the table; engine unchanged (902ddadb). Bench 47 is merged — 13 rows passed; its one FAIL is item 146 (⟳ Sync Talents never refreshes owned path cards — your own PCs are affected), which fix pass 12 (Opus) is fixing now with 147 / 151 / 149's card. Item 140 (Sonnet) still running. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
+    "note": "Item 140 merged (#378): the deploy cycle now refuses on un-extracted Foundry edits, structural ones included. Fix pass 12 (Opus) is fixing bench 47's engine defects — the sync that never refreshes your PCs' path cards (146), the scoped sync's scene leak (147 + 151), the status card that claimed a landing immunity refused (149). Items 141 + 148 (Knowledge's decoy formulas and cue text, Sonnet) run beside it. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
     "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -21,17 +21,17 @@
       "note": "engine worker in its own worktree; never touches the live module — the PM pushes its engine after merge (F5)"
     },
     {
-      "item": "140",
-      "title": "The deploy cycle refuses on un-extracted Foundry edits; the build guard's fingerprint reaches tree-node fields (TOOLING + DOCS)",
+      "item": "141+148",
+      "title": "Items 141 + 148 — the three Knowledge cards lose their decoy item-level damage formulas; Predatory Strike's cue says \"plus your Tier per Insight\" (DATA, REBUILD deity)",
       "model": "sonnet",
-      "size": "M",
+      "size": "S",
       "lane": "R",
-      "branch": "pm/140-deploy-extract-guard",
-      "startedAt": "2026-09-14T04:52:00Z",
-      "agent": "Work item 140",
+      "branch": "pm/141-148-knowledge-decoys-cue",
+      "startedAt": "2026-09-14T05:28:00Z",
+      "agent": "Work items 141 + 148",
       "phase": "working",
       "pr": null,
-      "note": "repo-only worker in its own worktree; reads the live packs read-only for its dry run, never deploys"
+      "note": "repo-only data worker in its own worktree beside the engine worker"
     }
   ],
   "usage": null

@@ -112,7 +112,7 @@ const { pickTalentIcon } = require("./talent-icons.js");
 // Round-trip helpers: overlay Foundry-authored edits + guard against overwriting them.
 // `slugify` also comes from here now (2026-08-10) — this file used to re-declare a byte-identical
 // copy at what was line 326, despite already requiring this module; that duplicate is gone.
-const { applyAuthorable, fingerprint, readPack, slugify } = require("./edha-pack-io.js");
+const { applyAuthorable, snapshotDoc, diffUnextractedEdits, readPack, slugify } = require("./edha-pack-io.js");
 // loadAuthoredIndex lives in foundry-build-parts.js so tests can require it (this file cannot be
 // imported: classic-level at load + a top-level async IIFE). Do not re-inline it here — see
 // TODO_REPO_HYGIENE #16 (a malformed authored file used to be dropped silently; the shared loader
@@ -716,23 +716,34 @@ function assertRegisteredHandlerTypes(where, docs) {
   }
   if (Object.keys(dirtyByPack).length && !FORCE) {
     console.error(`\n✗ ABORT — un-extracted Foundry edits would be destroyed by this build (nothing was written):`);
-    for (const [pack, names] of Object.entries(dirtyByPack)) {
-      console.error(`  ${pack}: ${names.length} talent(s)`);
-      names.slice(0, 40).forEach(n => console.error("    - " + n));
-      console.error(`    save:  node foundry-extract.js ${pack.replace(/^edha-/, "")}`);
+    for (const [pack, entries] of Object.entries(dirtyByPack)) {
+      const content = entries.filter(e => e.kind === "content");
+      const structural = entries.filter(e => e.kind === "structural");
+      if (content.length) {
+        console.error(`  ${pack}: ${content.length} talent(s) with un-extracted CONTENT edits`);
+        content.slice(0, 40).forEach(e => console.error("    - " + e.name));
+        console.error(`    save:  node foundry-extract.js ${pack.replace(/^edha-/, "")}`);
+      }
+      if (structural.length) {
+        console.error(`  ${pack}: ${structural.length} structural edit(s) Foundry cannot save`);
+        structural.slice(0, 40).forEach(e => console.error(`    - ${e.name} (${e.field}${e.detail ? `, ${e.detail}` : ""})`));
+        console.error(`    Structure changes go in the source JSON, full stop — foundry-extract.js does not round-trip this (AUTHORING_WORKFLOW.md "The guard").`);
+      }
     }
     console.error(`\n  Or discard them and rebuild from source:  re-run with --force`);
     process.exit(1);
   }
   if (Object.keys(dirtyByPack).length && FORCE) {
-    for (const [pack, names] of Object.entries(dirtyByPack)) console.warn(`  [guard] --force: discarding ${names.length} un-extracted Foundry edit(s) in ${pack}.`);
+    for (const [pack, entries] of Object.entries(dirtyByPack)) console.warn(`  [guard] --force: discarding ${entries.length} un-extracted Foundry edit(s) in ${pack}.`);
   }
   for (const [pack, data] of toWrite) {
     const packDir = `${MODROOT}/packs/${pack}`;
     await writePack(packDir, data.items, data.folders);
-    // Refresh the guard baseline = exactly what we just wrote.
+    // Refresh the guard baseline = exactly what we just wrote. Since item 140 this also covers
+    // talent_tree docs (their nodes' prerequisites/connections) — see snapshotDoc() and
+    // diffUnextractedEdits() in edha-pack-io.js.
     const bl = {};
-    for (const d of data.items) if (d.type === "talent") bl[d._id] = fingerprint(d);
+    for (const d of data.items) if (d.type === "talent" || d.type === "talent_tree") bl[d._id] = snapshotDoc(d);
     fs.mkdirSync(BASELINE_DIR, { recursive: true });
     fs.writeFileSync(`${BASELINE_DIR}/${pack}.json`, JSON.stringify(bl, null, 0));
   }
@@ -939,9 +950,14 @@ function generateBackgroundSvg(tree, contentW, contentH, corner, nodes) {
   if (!labels.length) return null;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${contentW}" height="${contentH}" viewBox="0 0 ${contentW} ${contentH}">\n${labels.join("\n")}\n</svg>`;
 }
-// Detect talents whose on-disk authorable content differs from the last build/extract baseline —
-// i.e. edits made directly in Foundry that foundry-extract.js has not yet captured. The builder
-// aborts rather than wipe them. Returns { dirty:[names], hadBaseline }.
+// Detect pack documents whose on-disk content differs from the last build/extract baseline — i.e.
+// edits made directly in Foundry that foundry-extract.js has not yet captured. The builder aborts
+// rather than wipe them. Since item 140 this covers a talent's authorable content (the original
+// six fields) AND, separately, the structural fields a GM can also change in Foundry but that are
+// never round-tripped: a talent's name/folder and a tree node's prerequisites/connections — see
+// diffUnextractedEdits (scripts/edha-pack-io.js) for the shared comparison, and
+// AUTHORING_WORKFLOW.md's guard note for what still stays blind on purpose.
+// Returns { dirty:[{name,field,kind,detail?}], hadBaseline }.
 async function guardUnextracted(pack, packDir, baselineDir) {
   let baseline = null;
   try { baseline = JSON.parse(fs.readFileSync(`${baselineDir}/${pack}.json`, "utf-8")); } catch {}
@@ -953,13 +969,7 @@ async function guardUnextracted(pack, packDir, baselineDir) {
   try { live = await readPack(packDir); }
   catch (e) { console.warn(`  [guard] could not read ${pack} (${e.code || e.message}) — guard skipped for this pack.`); return { dirty: [], hadBaseline: true }; }
   if (!live) return { dirty: [], hadBaseline: true };
-  const dirty = [];
-  for (const d of live.items) {
-    if (d.type !== "talent") continue;
-    const base = baseline[d._id];
-    if (base === undefined) continue;            // doc not in baseline (newly added) — nothing captured to lose
-    if (fingerprint(d) !== base) dirty.push(d.name);
-  }
+  const dirty = diffUnextractedEdits(live.items, baseline);
   return { dirty, hadBaseline: true };
 }
 async function writePack(dir, docs, folders) {
