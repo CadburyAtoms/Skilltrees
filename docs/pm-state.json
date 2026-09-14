@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T06:12:18.511Z",
+  "generatedAt": "2026-09-14T06:36:18.174Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "56a1130618",
-    "commit": "8f0c843",
-    "branch": "pm/board-2026-09-14c",
+    "hash": "b94db711e8",
+    "commit": "a66dc5d",
+    "branch": "pm/152-squash-merged-bench-branch",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ 8f0c843 at 02:09 ET: fix pass 12's engine is live — ⟳ Sync Talents now refreshes path cards and Draw Mana (click it ONCE on each of your three PCs), the scoped adversary sync keeps its scope, a status card never claims a landing immunity refused; the Knowledge decoys are gone. Running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list) and item 152 (Sonnet — the bench guard vs squash-merged branches). R-127 is yours. The loop stops before 07:00.",
+    "note": "Item 152 merged (#382): the deploy guard reads a squash-merged bench branch as merged. Deployed main @ 8f0c843 at 02:09: fix pass 12's engine is live — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards and Draw Mana refresh. Still running: items 142 + 143 + 150 (Opus 3 of 3 — Isolating Pressure's Omen placement, the release caps, Power's reset list); on its merge the PM deploys again, then hands off before 07:00. R-127 is yours.",
     "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs (after the 02:09 deploy) · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "engine + data worker in its own worktree; never touches the live module — the PM deploys after merge"
-    },
-    {
-      "item": "152",
-      "title": "The deploy cycle's bench guard reads a merged PR as merged, squash included; the squash-merge recipe (TOOLING + DOCS)",
-      "model": "sonnet",
-      "size": "XS",
-      "lane": "R",
-      "branch": "pm/152-squash-merged-bench-branch",
-      "startedAt": "2026-09-14T06:10:30Z",
-      "agent": "Work item 152",
-      "phase": "working",
-      "pr": null,
-      "note": "tooling worker in its own worktree beside the Opus worker; dry-run read-only, never deploys"
     }
   ],
   "usage": null,
@@ -1905,14 +1892,14 @@
     {
       "pos": 151,
       "item": "152",
-      "title": "deploy-cycle.js's bench guard reads a merged PR's branch as merged, squash included (an offline fallback keeps today's ancestry test); the squash-merge recipe — confirm the remote branch is gone — in the PM skill and the runbook (TOOLING + DOCS; fixture pins). Dispatched 02:10 (sonnet, worktree pm/152-squash-merged-bench-branch) as the lane-R worker beside the Opus worker",
+      "title": "deploy-cycle.js's bench guard reads a merged PR's branch as merged, squash included — checkBranchMergeStatus (pure: ancestry → merged; a merged PR → merged, naming it; an open PR → refuse naming it; neither → refuse; a gh failure → refuse worded \"unverified\", never a silent pass) fed by a bounded gh pr list lookup that runs only for ancestry-unmerged pm/bench-* candidates; 11 pins, the reversion refuses a squash-merged branch exactly as the bug did; the squash-merge recipe (confirm the remote branch is gone) in the PM skill's step 5 and the runbook (TOOLING + DOCS). Dispatched 02:10 (sonnet, worktree, beside the Opus worker); reviewed 02:36, no corrections; merged on green",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "125 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 382
     }
   ],
   "rulings": [
@@ -1974,34 +1961,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "16:53",
-      "at": "2026-09-13T20:53:00.000Z",
-      "item": "Dispatched item 127 (sonnet, worktree pm/127-design-proposals-rulings — R-114 (item 101's Mantle-of-the-Aspirant heal), R-115 (107 False Premise payload), R-116 (109 Final Decree Witness clause), R-117 (114 Trade Routes), R-118 (108 three deity gates), R-119 (106 Decree moving zone) as WAITING rulings with full proposed text + defaults; DOCS-ONLY). Trailing-5h dispatches 6 of 6 (14:24, 14:48 ×2, 15:48 ×2, 16:53)",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "16:53",
-      "at": "2026-09-13T20:53:00.000Z",
-      "item": "Item 127 (design proposals for 101 / 106 / 107 / 108 / 109 / 114 → WAITING rulings R-114 … R-119 in a new §L; six TODO deps re-pointed; item 101's phantom R-92 → R-114) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "30 min, 121 tool uses",
-      "weighted": "7.0M",
-      "weightedM": 7,
-      "outcome": "merged 17:24 after review, no trailers; CI green on d9eeb0a, gates 12/12 (1149 tests); every Ask line ends in a question mark and every default parses. PM find at review: R-92 was open inside §K Settled since 09-09 (no Ask line, skipped by the parser) → relocated to §L with an Ask line on the board branch; open rulings 6 → 7",
-      "pr": 347
-    },
     {
       "date": "2026-09-13",
       "time": "17:27",
@@ -2813,9 +2772,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "02:14",
+      "at": "2026-09-14T06:14:00.000Z",
+      "item": "#381 (board part 3) merged at 02:14 (CI green on 94e84fa); main = e9268ad, clean; two workers in flight (142 + 143 + 150, item 152)",
+      "itemNo": "381",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 381
+    },
+    {
+      "date": "2026-09-14",
+      "time": "02:10",
+      "at": "2026-09-14T06:10:00.000Z",
+      "item": "Item 152 (the bench guard vs squash-merged branches; the squash-merge recipe) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "24 min, 92 tool uses (179 turns)",
+      "weighted": "5.7M",
+      "weightedM": 5.7,
+      "outcome": "reviewed 02:36 — merged on green after the PM's bookkeeping commit on the branch, no trailers, three themed commits, no corrections; CI green on a66dc5d, gates 12/12 + --ci 14/14 (1274 tests); the worker merged main itself. checkBranchMergeStatus (pure) + ghPrLookup (8 s timeout, only for ancestry-unmerged pm/bench-* candidates — zero network calls in the common case); 11 pins, the reversion applied in reverse refuses a squash-merged branch exactly as the bug did; --dry-run PASS (no bench branch exists to show the enriched line — the pins carry that shape). Docs: PM skill step 5 + runbook recipe. TOOLING + DOCS — nothing to deploy",
+      "pr": 382
     }
   ],
-  "runLogTotal": 311,
+  "runLogTotal": 313,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3693,6 +3680,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-14T06:10:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 382
     }
   ],
   "statusVocab": [

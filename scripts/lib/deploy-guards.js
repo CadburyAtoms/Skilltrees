@@ -101,11 +101,71 @@ function parseWorktreePorcelain(text) {
     });
 }
 
+// --- branch merge status (TODO_REPO_HYGIENE item 152) -----------------------------------------
+//
+// WHY THIS EXISTS. `checkNoBenchWorker`'s ancestry test (`git branch --merged origin/main`) only
+// recognises a real "create a merge commit" merge: the PR branch's own tip commit survives,
+// unchanged, as one of the merge commit's two parents, so it stays an ancestor of `origin/main`.
+// A SQUASH merge (or a rebase merge) rewrites the commits onto `origin/main` with new SHAs, so
+// the original branch tip is never an ancestor of anything — the ancestry test calls it unmerged
+// forever, even years after its PR merged. Bench PRs are squash-merged specifically (to strip
+// iron-rule-6 model trailers before they land — this item's own "Why"; a plain item PR merges
+// normally instead, e.g. PR #364, a genuine two-parent "Merge pull request" commit) — and
+// `gh pr merge --squash --delete-branch` does not reliably delete the REMOTE branch either (this
+// item's "Why": it deleted only the local branch, four times, on 2026-09-14), so the stale
+// `origin/pm/bench-*` ref lingers and the ancestry test refuses a deploy over a bench that is long
+// over.
+//
+// `checkBranchMergeStatus` is the per-branch decision this calls for: given the ancestry result
+// PLUS whatever a `gh pr list` lookup found (gathered in `deploy-cycle.js`, since that needs a
+// real network call), decide whether this ONE branch is still a live bench signal, and say how it
+// decided. `fact`: `{ name, mergedByAncestry, mergedPr, openPr, prLookup }` —
+//   - `mergedByAncestry` (bool): today's existing test.
+//   - `mergedPr`: `{ number, method }` when `gh` found a MERGED pr for this branch's head ref, or
+//     falsy otherwise. `method` is best-effort diagnostic text, not a decision input (see below).
+//   - `openPr`: `{ number }` when `gh` found an OPEN (unmerged) pr instead, or falsy otherwise —
+//     only meaningful when `mergedPr` is falsy.
+//   - `prLookup`: `"ok"` once `gh` has actually answered (merged or not — a confirmed empty
+//     result is still "ok"), or `"unavailable"`/unset when `gh` itself is missing, unauthenticated,
+//     offline, or erred for any other reason. The guard must never fail because a LOOKUP failed —
+//     an unavailable lookup keeps today's ancestry-only refusal, just worded "unverified" rather
+//     than a confirmed "no PR exists" (a real distinction: one says "checked, nothing there", the
+//     other says "could not check at all").
+//
+// This function is only ever called for a branch `mergedByAncestry` already calls unmerged (see
+// `checkNoBenchWorker` below and `gatherBenchGuardState` in deploy-cycle.js, which only spends a
+// `gh` call on those) — so a `mergedPr` reaching this line can only mean squash or rebase, never a
+// plain merge (a plain merge would already have `mergedByAncestry: true`). This repo has not
+// authored or observed a rebase-merged bench branch, so `method` is reported as-given by the
+// gathering side rather than left as an unresolved "squash or rebase" — it is diagnostic text for
+// the `--dry-run` line only, and does not change the pass/refuse decision either way.
+function checkBranchMergeStatus(fact) {
+  const name = (fact && fact.name) || "?";
+  if (fact && fact.mergedByAncestry) {
+    return verdict(true, "branch-merge-status", `${name}: merged into origin/main (ancestry)`);
+  }
+  const mergedPr = fact && fact.mergedPr;
+  if (mergedPr && mergedPr.number) {
+    const method = mergedPr.method ? ` (${mergedPr.method})` : "";
+    return verdict(true, "branch-merge-status", `${name}: merged as PR #${mergedPr.number}${method}`);
+  }
+  const openPr = fact && fact.openPr;
+  if (openPr && openPr.number) {
+    return verdict(false, "branch-merge-status", `${name}: PR #${openPr.number} is open, not merged`);
+  }
+  const verified = fact && fact.prLookup === "ok";
+  const suffix = verified ? "" : " (PR lookup unverified)";
+  return verdict(false, "branch-merge-status", `${name}: not merged${suffix}`);
+}
+
 // `extra.worktrees`: [{ path, branch }] (from parseWorktreePorcelain). `extra.branches`: { local,
-// remote }, each a list of { name, merged } — the caller has already resolved merged-ness via
-// `git branch --merged origin/main` / `git branch -r --merged origin/main`, since that needs a
-// live git process; this function only decides given the plain data. A branch merged into
-// origin/main does NOT count as a bench signal (it is done, not in flight).
+// remote }, each a list of `{ name, merged, mergedPr?, openPr?, prLookup? }` — the caller has
+// already resolved ancestry-mergedness via `git branch --merged origin/main` /
+// `git branch -r --merged origin/main`, and (item 152) a candidate branch's `mergedPr`/`openPr`/
+// `prLookup` via `gh pr list`, since both need a live process this function must stay pure
+// without. Each branch is decided by `checkBranchMergeStatus` above; a branch merged into
+// `origin/main` — by ancestry OR by a `gh`-confirmed merged PR — does NOT count as a bench signal
+// (it is done, not in flight), and the verdict names how it decided either way.
 function checkNoBenchWorker(pmLive, forceBench, extra) {
   const workers = (pmLive && Array.isArray(pmLive.workers)) ? pmLive.workers : [];
   const holders = workers.filter(isBenchWorker);
@@ -114,14 +174,28 @@ function checkNoBenchWorker(pmLive, forceBench, extra) {
   const benchWorktrees = worktrees.filter((wt) => wt && isBenchBranchName(wt.branch));
 
   const branches = (extra && extra.branches) || {};
-  const unmergedLocal = (branches.local || []).filter((b) => b && !b.merged);
-  const unmergedRemote = (branches.remote || []).filter((b) => b && !b.merged);
+  const branchVerdicts = [...(branches.local || []), ...(branches.remote || [])]
+    .filter(Boolean)
+    .map((b) => ({
+      branch: b,
+      verdict: checkBranchMergeStatus({
+        name: b.name,
+        mergedByAncestry: b.merged,
+        mergedPr: b.mergedPr,
+        openPr: b.openPr,
+        prLookup: b.prLookup,
+      }),
+    }));
+  const stillBenchBranches = branchVerdicts.filter((bv) => !bv.verdict.ok);
+  // "Cleared" = worth mentioning even on a PASS: ancestry called it unmerged, but the PR lookup
+  // cleared it anyway. The plain, boring case (ancestry already says merged) is left out so the
+  // common "nothing to see here" pass stays a one-liner.
+  const clearedBranches = branchVerdicts.filter((bv) => bv.verdict.ok && !bv.branch.merged);
 
   const names = [
     ...holders.map((w) => w.item || w.title || "?"),
     ...benchWorktrees.map((wt) => `worktree ${wt.path} (${wt.branch})`),
-    ...unmergedLocal.map((b) => b.name),
-    ...unmergedRemote.map((b) => b.name),
+    ...stillBenchBranches.map((bv) => bv.verdict.message),
   ];
 
   if (names.length && !forceBench) {
@@ -130,7 +204,10 @@ function checkNoBenchWorker(pmLive, forceBench, extra) {
   if (names.length) {
     return verdict(true, "no-bench-worker", `${names.length} bench signal(s) present, overridden by --force-bench`);
   }
-  return verdict(true, "no-bench-worker", "no worker holds the table");
+  const clearedNote = clearedBranches.length
+    ? ` (${clearedBranches.map((bv) => bv.verdict.message).join(", ")})`
+    : "";
+  return verdict(true, "no-bench-worker", `no worker holds the table${clearedNote}`);
 }
 
 // The five compendium packs this deploy rebuilds — shared with deploy-cycle.js so both files name
@@ -382,6 +459,7 @@ module.exports = {
   isBenchWorker,
   isBenchBranchName,
   parseWorktreePorcelain,
+  checkBranchMergeStatus,
   checkNoBenchWorker,
   checkPacksExist,
   checkUnextractedEdits,

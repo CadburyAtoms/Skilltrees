@@ -89,6 +89,23 @@ remaining blind spot). **`--force-build` overrides it** (surfacing `foundry-buil
 `--force`, threaded into step 7 too) — treat it the same as `--force-bench`: stop and ask Ben,
 don't reach for it on a hunch.
 
+**The no-bench-worker guard also asks GitHub, not just ancestry, for a `pm/bench-*` branch the
+ancestry test calls unmerged (item 152, 2026-09-14):** `git branch --merged origin/main` only
+recognises a real "create a merge commit" merge — a SQUASH or a rebase merge rewrites the commits
+onto `main` with new SHAs, so the branch's own tip is never an ancestor and looks unmerged forever,
+even after its PR lands (bench PRs merge `--squash` specifically, to strip iron-rule-6 model
+trailers — a plain item PR merges normally instead). So for a branch ancestry alone calls
+unmerged, `--dry-run`/`--yes` now also ask `gh pr list --head <branch>` (merged, then open) before
+refusing: a MERGED pr passes and names it (`origin/pm/bench-47: merged as PR #376 (squash)`); an
+OPEN pr still refuses, naming it instead of a bare "not merged"; nothing found refuses exactly as
+before. **`gh` missing, unauthenticated, or offline is never a reason to fail the guard** — that
+case keeps today's ancestry-only refusal, worded "(PR lookup unverified)" rather than a false
+"confirmed no PR". And **`--delete-branch` on a squash merge is not proof the remote branch is
+gone** — the same run that motivated this fix found `gh pr merge --squash --delete-branch`
+deleting only the LOCAL branch, four times: after any squash merge, confirm with
+`git ls-remote --heads origin <branch>` and `git push origin --delete <branch>` if it still lists
+one (`.claude/skills/project-manager/SKILL.md` step 5 carries the same two commands).
+
 ## Bench-created scenes (item 128 / PM-R19, 2026-09-13)
 
 Ben, phone board 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes
