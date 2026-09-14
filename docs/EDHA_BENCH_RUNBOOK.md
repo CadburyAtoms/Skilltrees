@@ -17,9 +17,10 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
 ## Ben's standing rulings (2026-07-26)
 
 - **Scene:** use the EXISTING **"Playtest Map"** scene (it is the active scene — view it,
-  never activate/deactivate). Do NOT create a bench scene. The setup script places tokens
-  only when its `PLACE_TOKENS` flag is set, offset from an `ORIGIN` you choose after looking
-  at the map for a clear area.
+  never activate/deactivate). Do NOT create a bench scene *outside the PM-R19 grant below* — the
+  setup script places tokens only when its `PLACE_TOKENS` flag is set, offset from an `ORIGIN`
+  you choose after looking at the map for a clear area. (**Superseded in part 2026-09-13** — see
+  "Bench-created scenes" below: the bench may now also create and use its own scenes.)
 - **Player characters "Tem parinaem" and "Soggy Bottom" may be REFRESHED, never EDITED
   (PM-R17)** — a REFRESH (the sheet's `⟳ Sync Talents` button, or an equivalent pull of their
   owned talent copies from the pack) is allowed for the PM and for agents; a hand write to
@@ -60,6 +61,36 @@ missing body. So the served-engine and `/join`-title checks now retry with a sho
 to `--wait-seconds` (default 90) before failing, instead of failing on the first miss; `--dry-run`
 names this bound in its post-flight description line.
 
+## Bench-created scenes (item 128 / PM-R19, 2026-09-13)
+
+Ben, phone board 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes
+specifically for future test bench runs."* This does not replace the Playtest Map licence above —
+it adds a second, bench-owned option next to it:
+
+- A scene the bench creates is named `Bench — <purpose>`. The standing one is **`Bench Arena`**,
+  built (or found, on a later run) by `scripts/bench-setup-console.js`'s `USE_ARENA` toggle
+  (default `false` — flip it deliberately for an arena run; the Playtest Map stays the default).
+  Its create-data comes from the pure `benchArenaSpec()` in that script: a plain background
+  colour, a 100 px / 5 ft square grid, and a footprint sized to fit the roster's placement layout
+  (the PC column plus the target/ally cluster plus the far-out Isolated dummy) — regenerated
+  every time, so it grows automatically if the roster grows. `benchArenaPlan()` is the
+  find-or-create decision: a scene already named `Bench Arena` is reused, never duplicated — the
+  script logs `arena: found <id>` or `arena: created <id>` accordingly. Both are pinned headless
+  in `tests/bench-arena.test.js` (no Foundry needed to verify the spec/idempotency logic; the
+  live create call itself is still the checklist's 128-1 row).
+- On a scene it created, the bench may **view** it (never activate/deactivate — unchanged), place
+  its roster there (`PLACE_TOKENS = true` places on whichever scene `USE_ARENA` resolved to), run
+  checklist rows there, and **delete what it created there** (tokens, any combat) at the end of
+  the run — the scene itself stays standing for the next run rather than being torn down.
+- Outside a scene it created, nothing changes: **"Playtest Map"** is still the only pre-existing
+  scene the bench may touch, and **"Playtest Map (Copy)"** and every other scene remain Ben's.
+- The scoped adversary sync (item 123 / R-113) can target a bench-created scene the same way it
+  targets the Playtest Map — `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<the
+  arena's id>], dryRun: false })` — dry-run first, as always (bench-run hard rule 9).
+- **Snapshot the arena's scene id (and, if newly created, that fact) alongside the usual
+  ids/flags/effects snapshot (hard rule 6)** so cleanup at the end of the run can prove what was
+  created on it and delete exactly that — never the scene document itself.
+
 ## Per-run checklist (the agent)
 
 > **Deploy-script rule (2026-09-05, learned twice):** `scripts/deploy-to-foundry.bat` pulls `main`
@@ -89,7 +120,9 @@ names this bound in its post-flight description line.
    and confirm idempotency (no new creations, `orphans: 0 repaired, 0 replaced`). Then **view**
    "Playtest Map", find a clear area, set `ORIGIN` + `PLACE_TOKENS = true`, and run once more to
    place the bench tokens. Never *activate/deactivate* a scene (it yanks every connected client,
-   including Ben's).
+   including Ben's). **Or, for an arena run (PM-R19 / item 128):** set `USE_ARENA = true` instead —
+   see "Bench-created scenes" above for the licence, the idempotent find-or-create, and the scoped
+   sync's scene-id target.
 5. **Run order:** `BENCH — Engine-wide` first — if **2bA-7** (the edit-round-trip) fails, stop
    the whole run and report; everything rides on it. Then White → Blue → Black → Red → Green,
    the ten deities, Heroic, then whatever non-tree sections are console-runnable.
