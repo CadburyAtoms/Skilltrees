@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-13T23:42:35.257Z",
+  "generatedAt": "2026-09-14T00:13:49.687Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "c82b86606f",
-    "commit": "1674382",
-    "branch": "pm/board-2026-09-13g",
+    "hash": "64ac72e118",
+    "commit": "38e3560",
+    "branch": "pm/board-2026-09-13h",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,13 +42,27 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "Sunday evening: item 124 merged and live — press F5 (items 123 + 124). The deploy script's first live run failed SAFELY before it touched anything: it tried to back up the packs while Foundry still held their lock files. Item 129 fixes the step order; the PM re-runs it after. Seven rulings still wait on the Needs Ben tab.",
-    "waitingOn": "F5 (items 123 + 124 are live) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
+    "status": "awake",
+    "note": "Sunday evening: item 129 merged (the deploy script backs up after closing Foundry). Your other session deployed at 20:05 — everything merged today is live, no F5 owed. One worker is fixing the script's last two rough edges (bench guard blind spot, boot race). Seven rulings still wait on the Needs Ben tab.",
+    "waitingOn": "seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "125+137",
+      "title": "deploy-cycle.js: bench guard reads worktrees + pm/bench-* branches; post-flight verification retries until --wait-seconds",
+      "model": "sonnet",
+      "size": "XS+XS",
+      "lane": "R",
+      "branch": "pm/125-137-deploy-guards",
+      "startedAt": "2026-09-14T00:13:00Z",
+      "agent": "Work items 125 + 137",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; TOOLING-only"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1511,8 +1525,8 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "122 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -1536,7 +1550,7 @@
       "size": null,
       "deps": "129",
       "status": "blocked",
-      "statusDetail": "129 — the first live run died on the pack LOCK file before step 1; nothing changed",
+      "statusDetail": "137 — the other session's 20:05 run proved steps 1–8; its post-flight raced Foundry's boot; a clean pass closes this",
       "pr": null
     },
     {
@@ -1583,8 +1597,20 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "122 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 355
+    },
+    {
+      "pos": 127,
+      "item": "137",
+      "title": "deploy-cycle.js post-flight verification races Foundry's boot (another session's live run, 20:05: steps 1–8 green, the engine fetch failed until two minutes later) — retry the engine fetch + /join title with backoff until --wait-seconds; pure shouldRetryVerify, pinned. Filed by the 125 worker; in the same PR",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "129 ✓",
+      "status": "running",
+      "statusDetail": null,
       "pr": null
     }
   ],
@@ -1645,62 +1671,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-07",
-      "time": "20:30",
-      "at": "2026-09-08T00:30:00.000Z",
-      "item": "Resume — hand-started by Ben's third dashboard paste; this session takes the session of record (the 21:03 task stands down on the board line). Clean tree, no PRs; five stale worktrees (items 91–95, all merged) removed; Foundry up (302); bat run 20:28 (all five packs) → items 89 / 92 / 93's REBUILDs live; engine 6 in sync; phone inbox empty. Paste → bench 44a (the authorized bulk click) + item 96 (rulings §K sweep, filed); R-56 unchanged (the same saved note, not a new answer)",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "board PR",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "20:39",
-      "at": "2026-09-08T00:39:00.000Z",
-      "item": "Dispatched bench run 44a (sonnet, worktree pm/bench-44a) — the two Adversary pack sync rows: snapshot every world adversary + token, predict synced / skipped / missing, ONE DOM click on the bulk button (Ben's authorization verbatim in the brief), diff against the snapshot, a differential from the 20:28 pack (item 93's noHook flag) as row 1's proof, delete only what the snapshot proves it created, never undo the sync. DOCS-ONLY PR",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-07",
-      "time": "20:39",
-      "at": "2026-09-08T00:39:00.000Z",
-      "item": "Bench run 44a (the authorized bulk ⟳ Sync Adversaries click; the two Adversary pack sync rows) — bench-run, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "20 min, 192 turns",
-      "weighted": "4.5M",
-      "weightedM": 4.5,
-      "outcome": "merged 21:01 after review, no trailers; CI green on the corrected head e50dd02 — the PM restored the item 94 delta heading the bench delta had displaced (a one-line review correction; gates 11/11 in the worktree). Both rows retired on evidence: served hash = HEAD; synced 45 / skipped 1 / missing 1; 40 placed tokens kept position + HP; the renamed fixture byte-identical after; no stale-copy differential existed (all 45 already matched the 20:28 pack — Ben had synced), recorded as a fact; world diff 0. The toast faded before capture — its text is a derived fact in the delta, not an observed one. DOCS-ONLY",
-      "pr": 298
-    },
-    {
-      "date": "2026-09-07",
-      "time": "20:45",
-      "at": "2026-09-08T00:45:00.000Z",
-      "item": "Item 96 (rulings §K sweep + parseRulings() reads the body) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "30 min, 190 turns",
-      "weighted": "5.1M",
-      "weightedM": 5.1,
-      "outcome": "merged 21:20 after review, no trailers; CONFLICTING at report (base 865f5c9, two merges behind) so the PM merged main into the branch (changelog top: 96 above 44a; dashboard regenerated — the three-file price of a parallel worker again) and made two corrections on the branch: F-2 SETTLED on Ben's two ✓ DONE ticks and moved to K.7 (the worker had correctly refused to force a body with no marker — §J is skipped by the phone parser, which is why it never showed there), plus a note on the delta; gates 11/11 in the worktree; CI green on 4d1fec7. 45 bodies moved verbatim (sha256 2ac31129… before = after), ## K. split K.1–K.7 by size, the done flag mutation-pinned; desktop Rulings tab 48 → 1 open (R-56); parseOpenRulings = [R-56] unchanged. Found: changelog README says 94 deltas for 2026-09 vs the file's 97 (pre-existing). DOCS + TOOLING-only",
-      "pr": 300
-    },
     {
       "date": "2026-09-07",
       "time": "21:21",
@@ -2484,9 +2454,65 @@
       "weightedM": null,
       "outcome": "failed safely",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "19:48",
+      "at": "2026-09-13T23:48:00.000Z",
+      "item": "Wake + dispatched item 129 (sonnet, worktree pm/129-deploy-backup-after-close — backup after the close, skip lock files, fail-fast message, order + skip pins; TOOLING). Inbox empty. Trailing-5h dispatches 5 of 6 (15:48 ×2, 16:53, 19:26, 19:48)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "19:49",
+      "at": "2026-09-13T23:49:00.000Z",
+      "item": "Item 129 (deploy-cycle.js: backup after the close, LOCK/EBUSY skipped, backup-step failure relaunches; order + skip pinned) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "17 min, 67 tool uses",
+      "weighted": "2.9M",
+      "weightedM": 2.9,
+      "outcome": "merged 20:11 after review; the PR was CONFLICTING after another session's #353 (no CI runs on a conflicting PR) → the PM merged main into the branch, recounted the changelog to 153, regenerated the dashboard; gates 12/12 (1169 tests), CI green on 96c61ff. TOOLING-only",
+      "pr": 355
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:05",
+      "at": "2026-09-14T00:05:00.000Z",
+      "item": "Deploy run by ANOTHER session (Ben's engine/draw-mana-rank session, recorded on its unmerged docs/deploy-record-2026-09-14 worktree): deploy-cycle.js from a worktree on main @ 3aed769 — first attempt died on the LOCK bug (item 129, nothing touched), second ran steps 1–8 green; post-flight raced Foundry's boot, verified by hand: packs 00:03:52Z, engine 24d74c96 = HEAD, / → /join. Items 111 + 136 + my 123 / 124 are live; F5 no longer owed; the PM's re-run held",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "deployed (other session)",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "20:13",
+      "at": "2026-09-14T00:13:00.000Z",
+      "item": "Dispatched items 125 + 137 (one sonnet worker, worktree pm/125-137-deploy-guards — the bench guard reads git worktree list + pm/bench-* branches; post-flight verification retries until --wait-seconds; both pinned by mutation; TOOLING). Trailing-5h dispatches 6 of 6 (15:48 ×2, 16:53, 19:26, 19:49, 20:13) — next slot 20:48",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 259,
+  "runLogTotal": 263,
   "runLogFrom": "2026-09-07",
   "dispatches": [
     {
@@ -3208,6 +3234,24 @@
       "model": "sonnet",
       "item": null,
       "pr": 352
+    },
+    {
+      "at": "2026-09-13T23:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-13T23:49:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 355
+    },
+    {
+      "at": "2026-09-14T00:13:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
