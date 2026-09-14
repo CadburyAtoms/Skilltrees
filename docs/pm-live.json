@@ -1,8 +1,8 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ 31443c5 at 23:14 ET (deploy-cycle.js, all guards and post-flight checks PASS): the Omen cap tier + 1 (item 132) and Power's Disoriented reads (item 135) are at the table with the Knowledge reshape and the two lowered gates; engine 902ddadb = HEAD. Foundry is up — re-join your Gamemaster client. Bench run 47 (Opus) goes at the 00:00 reset over the whole queue; then items 142 + 143 in one Opus worker.",
-    "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
+    "note": "All seven of your phone answers are in the rulings doc (§K.13, #372) — nothing is open there now; items 101 / 106 / 107 / 108 / 109 / 114 are unblocked and R-92's drop cue is item 144. Deployed main @ 31443c5 at 23:14 (Omen cap tier + 1, Power's Disoriented reads live; re-join your Gamemaster client). Bench run 47 (Opus) at the 00:00 reset over the 14 open 🤖 rows, then items 142 + 143 in one Opus worker, then item 101.",
+    "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": "2026-09-14T04:00:00Z",
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
