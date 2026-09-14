@@ -1,12 +1,25 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 done (#376): 13 rows passed on evidence; the one FAIL is a real bug on your own PCs — ⟳ Sync Talents never refreshes owned path cards or Draw Mana actions (item 146, fix pass 12 next); the scoped adversary sync leaks a sight write across scenes (item 147). R-127 is yours on the Needs Ben tab (refund when the target is immune). Next: the deploy for items 107 + 108, then fix pass 12 (Opus), then items 142 + 143 + 150. Item 140 (Sonnet) is running.",
+    "note": "Deployed main @ d76bf99 at 01:13 ET: False Premise's Reaction denial (107) and the three deity gate dials (108) are at the table; engine unchanged (902ddadb). Bench 47 is merged — 13 rows passed; its one FAIL is item 146 (⟳ Sync Talents never refreshes owned path cards — your own PCs are affected), which fix pass 12 (Opus) is fixing now with 147 / 151 / 149's card. Item 140 (Sonnet) still running. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
     "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [
+    {
+      "item": "fix-pass-12",
+      "title": "Fix pass 12 — bench 47's engine defects: 146 (sync refreshes only talents), 147 + 151 (the scoped sync's scene leak, the dead folder incantation), 149's card half (ENGINE-ONLY, F5)",
+      "model": "opus",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/fix-pass-12",
+      "startedAt": "2026-09-14T05:12:00Z",
+      "agent": "Fix pass 12",
+      "phase": "working",
+      "pr": null,
+      "note": "engine worker in its own worktree; never touches the live module — the PM pushes its engine after merge (F5)"
+    },
     {
       "item": "140",
       "title": "The deploy cycle refuses on un-extracted Foundry edits; the build guard's fingerprint reaches tree-node fields (TOOLING + DOCS)",
