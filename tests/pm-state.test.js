@@ -406,7 +406,15 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // now, refund, or leave it to the table). Filed from the BR-1 row; the card half of the same
   // finding is a plain bug and is TODO item 149, not part of the ruling. The length assertion moves
   // from 0 to 1 exactly as the note above said it would.
-  const ECOSYSTEM_RULINGS = []; // 2026-09-14 09:20 ET: R-127 answered (a) from the phone board — an inline ANSWERED marker in §L closes it (the §K.14 move rides the next close-out); R-92 and R-114 … R-119 answered 2026-09-13 and moved to §K.13 — nothing left open
+  // 2026-09-14, the bestiary redo's scoping session (item 121, Ben: "This looks good. Continue."):
+  // EIGHT rulings filed at once in §G.1 — R-128 (attributes vs overrides on blocks), R-129 (which
+  // GM cues become effects), R-130 (the nine legacy dungeon blocks), R-131 (invested-human
+  // adversaries), R-132 (the colour ledger and the mono-Blue moratorium), R-133 (three shelved
+  // feel rows that are really card rules), R-134 (per-role numeric targets against this party),
+  // R-135 (the order of the nation-by-nation pass). All WAITING on Ben; each carries a recommended
+  // default and an Ask line, as the shape contract below requires. The open set is exactly these
+  // eight until he answers; the length assertion moves 0 → 8.
+  const ECOSYSTEM_RULINGS = ["R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
