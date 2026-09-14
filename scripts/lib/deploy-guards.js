@@ -145,6 +145,53 @@ function checkPacksExist(existsMap) {
   return verdict(true, "packs-exist", "all five pack directories exist");
 }
 
+// --- un-extracted-edits (TODO_REPO_HYGIENE item 140) --------------------------------------------
+//
+// step 7 (rebuildPacksStep) runs `foundry-build.js`, whose OWN pre-write guard already refuses to
+// overwrite a talent's un-extracted Foundry edits — but only at step 7, AFTER Foundry has already
+// been closed (step 1) and the engine already pushed (step 5). This is the same check moved to
+// PRE-FLIGHT, before anything is touched: deploy-cycle.js reads each atlas pack's LIVE docs
+// read-only (a temp copy, same as foundry-extract.js — safe with Foundry still open) and its
+// `.baselines/<pack>.json`, and hands the diff (edha-pack-io.js's diffUnextractedEdits — the
+// IDENTICAL comparison foundry-build.js's guardUnextracted runs) to this function.
+//
+// A structural edit (a talent's name/folder, or a tree node's prerequisites/connections) has no
+// automatic fix — foundry-extract.js does not and will not round-trip those into data/authored/,
+// per AUTHORING_WORKFLOW.md's split table — so its remedy is always "go edit the source JSON",
+// never a save command.
+const STRUCTURAL_REMEDY = 'structure changes go in the source JSON, not Foundry (AUTHORING_WORKFLOW.md "The guard")';
+
+// `dirtyByPack`: { [pack]: [{name, field, kind: "content"|"structural", detail?}] }, or {}/null
+// when nothing is dirty. `forceBuild` mirrors `--force-bench`'s override shape (checkNoBenchWorker
+// above): dirty entries with the flag set still PASS, but the verdict says so and names them —
+// this is `foundry-build.js`'s existing `--force`, surfaced as deploy-cycle.js's own
+// `--force-build` flag (also threaded into step 7 so the build itself does not then refuse).
+function checkUnextractedEdits(dirtyByPack, forceBuild) {
+  const packs = Object.keys(dirtyByPack || {}).filter((p) => (dirtyByPack[p] || []).length);
+  if (!packs.length) {
+    return verdict(true, "un-extracted-edits", "no un-extracted Foundry edits in any pack's baseline");
+  }
+  const parts = packs.map((pack) => {
+    const entries = dirtyByPack[pack];
+    const content = entries.filter((e) => e.kind === "content");
+    const structural = entries.filter((e) => e.kind === "structural");
+    const bits = [];
+    if (content.length) {
+      const tree = pack.replace(/^edha-/, "");
+      bits.push(`${content.length} content [${content.map((e) => e.name).join(", ")}] — node scripts/foundry-extract.js ${tree}`);
+    }
+    if (structural.length) {
+      const named = structural.map((e) => `${e.name} (${e.field})`).join(", ");
+      bits.push(`${structural.length} structural [${named}] — ${STRUCTURAL_REMEDY}`);
+    }
+    return `${pack}: ${bits.join("; ")}`;
+  });
+  if (forceBuild) {
+    return verdict(true, "un-extracted-edits", `${packs.length} pack(s) have un-extracted Foundry edits, overridden by --force-build: ${parts.join(" | ")}`);
+  }
+  return verdict(false, "un-extracted-edits", `refused — un-extracted Foundry edits would be destroyed by a rebuild (pass --force-build to discard, or save/fix them first): ${parts.join(" | ")}`);
+}
+
 // Config/options.json must name a world, or the relaunch stops at the setup screen instead of
 // opening straight into it — catch that before Foundry is even closed, not after the relaunch.
 // `expectedTitle` (item 139) is optional and purely informational here — it is the TITLE the
@@ -337,6 +384,7 @@ module.exports = {
   parseWorktreePorcelain,
   checkNoBenchWorker,
   checkPacksExist,
+  checkUnextractedEdits,
   checkWorldConfigured,
   expectedWorldTitle,
   checkFoundryExe,
