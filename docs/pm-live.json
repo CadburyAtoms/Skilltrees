@@ -1,10 +1,10 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Items 142 + 143 + 150 merged (#383): Isolating Pressure places an Omen on an unmarked target through one generic engine dial, every Chaos release rule quotes the tier + 1 cap, Power's reset leaves a GM-applied Frightened alone — live at the next deploy, which the PM runs now; then the Monday handoff. Opus is spent for 09-14. Click ⟳ Sync Talents ONCE on each of your three PCs. R-127 is yours.",
-    "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs (after the 02:09 deploy) · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
+    "status": "stopped",
+    "note": "Handoff 02:55 ET Monday (before your hours): 18 PRs merged overnight, five self-verifying deploys, bench 47 done (13 rows passed; its sync bug is fixed and live), your seven phone answers filed, items 140–152 filed with ten closed. Everything merged is at the table — click ⟳ Sync Talents ONCE on each of your three PCs so their path cards refresh. Next PM is the one you start by hand (Mon 21:00 at the earliest); bench 48 is its first Opus. R-127 is yours on the Needs Ben tab.",
+    "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs · R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's batch delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
-    "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
+    "session": "2026-09-13 21:58 → 2026-09-14 02:55 ET (hand-started; stopped before Ben's hours)"
   },
   "workers": [],
   "usage": null
