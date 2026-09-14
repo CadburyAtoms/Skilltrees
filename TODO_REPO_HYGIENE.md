@@ -3828,7 +3828,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps R-126 · verify: validate + read-through. Filed 2026-09-13 from R-121.
 
-## 132. [ ] R-122 (a) — Chaos's Omen cap becomes tier + 1, and `Isolating Pressure` places an Omen on an unmarked target (DATA, REBUILD deity) (2026-09-13) — PARTIAL, PR #EDHA_PR_PENDING (2026-09-13): the four `capFormula` → `@tier + 1` changes and Entropy Strike's card text SHIPPED (🤖 rows OM-1/OM-2). `Isolating Pressure`'s new place rule is OPEN — H3 `edha-owner-list` cannot express "place only when a same-activation `release` found nothing" without an engine change (see `EDHA_RULINGS.md` §K.11 and the PR's Open questions).
+## 132. [ ] R-122 (a) — Chaos's Omen cap becomes tier + 1, and `Isolating Pressure` places an Omen on an unmarked target (DATA, REBUILD deity) (2026-09-13) — PARTIAL, PR #369 (2026-09-13): the four `capFormula` → `@tier + 1` changes and Entropy Strike's card text SHIPPED (🤖 rows OM-1/OM-2). `Isolating Pressure`'s new place rule is OPEN — H3 `edha-owner-list` cannot express "place only when a same-activation `release` found nothing" without an engine change (see `EDHA_RULINGS.md` §K.11 and the PR's Open questions).
 
 **Why:** every Omen placement is capped at `@tier` with `evict: "refuse"`, so at levels 1–5 Chaos holds ONE Omen — `Spreading Omen`, `Cascade Collapse` and the capstone are single-target until level 6 — and the Black lane only consumes Omens it cannot make. Ben chose (a).
 
