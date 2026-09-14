@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Item 140 merged (#378): the deploy cycle now refuses on un-extracted Foundry edits, structural ones included. Fix pass 12 (Opus) is fixing bench 47's engine defects — the sync that never refreshes your PCs' path cards (146), the scoped sync's scene leak (147 + 151), the status card that claimed a landing immunity refused (149). Items 141 + 148 (Knowledge's decoy formulas and cue text, Sonnet) run beside it. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
+    "note": "Items 141 + 148 merged (#379): the Knowledge cards' decoy formulas are gone and Predatory Strike's cue is current — live at the next deploy. Fix pass 12 (Opus) is still fixing bench 47's engine defects (the sync that never refreshes your PCs' path cards; the scoped sync's scene leak; the status card that claimed a landing immunity refused); on its merge the PM deploys (that F5 is the one that fixes ⟳ Sync Talents), then items 142 + 143 + 150. R-127 is yours on the Needs Ben tab. The loop stops before 07:00.",
     "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -19,19 +19,6 @@
       "phase": "working",
       "pr": null,
       "note": "engine worker in its own worktree; never touches the live module — the PM pushes its engine after merge (F5)"
-    },
-    {
-      "item": "141+148",
-      "title": "Items 141 + 148 — the three Knowledge cards lose their decoy item-level damage formulas; Predatory Strike's cue says \"plus your Tier per Insight\" (DATA, REBUILD deity)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/141-148-knowledge-decoys-cue",
-      "startedAt": "2026-09-14T05:28:00Z",
-      "agent": "Work items 141 + 148",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only data worker in its own worktree beside the engine worker"
     }
   ],
   "usage": null

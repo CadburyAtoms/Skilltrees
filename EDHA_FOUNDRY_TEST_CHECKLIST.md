@@ -501,6 +501,11 @@ vital … **(2d8) \* 5** → 8 + 7 = 15 → 75"*, followed by *"📖 Killing Blo
 [Tier][Die] Vital **per Insight**"* — the pre-item-130 multiplicative phrasing, contradicting its own description and
 the shipped formula. Filed as **TODO item 148** (DATA, REBUILD deity).)*
 
+## Knowledge — decoy formulas gone, cue text current — items 141 + 148 (2026-09-14; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **KM-2 — the card's damage button no longer offers a second roll; the rider's bonus still lands on the hit:** on Bench — Knowledge, use each of Predatory Strike, Killing Blow and The Final Study and open the posted item card — confirm there is no "Damage" roll button on any of the three (`system.damage.formula` is now `null` on all three docIds — `Ijbc9inhfqtIA0Nm`, `4jDo4hPak4j0KdSH`, `yrIgDwup7iBdPq07`), while the bonus damage still lands exactly as KM-1 measured it: Predatory Strike's armed rider (`PredStrikeRider0`) auto-adds its bonus on the next weapon hit, and Killing Blow / The Final Study's own test rules (`KillingBlowHit00`/`KillingBlowFDmg0`, `FinalStudyHit000`/`FinalStudyFDmg00`) still apply their per-Insight multiplier on success/failure.
+- [ ] 🤖 **KM-3 — Predatory Strike's cue card reads the current phrasing:** on Bench — Knowledge, use Predatory Strike and read the arm card posted to chat — confirm it says *"the next hit auto-adds [Tier][Die] plus your Tier per Insight on the target (min 1)"*, not *"[Tier][Die] Vital per Insight"*, and still ends with *"Don't also roll the card's damage by hand."*
+
 ## Chaos — Omen cap tier + 1 (2026-09-13; **REBUILD deity + ⟳ Sync Talents**)
 
 *(✅ **OM-1 AND OM-2 BOTH RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…`.
