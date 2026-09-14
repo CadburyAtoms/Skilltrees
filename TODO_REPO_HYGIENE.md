@@ -3827,7 +3827,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate + the rows. Filed 2026-09-13 from R-122.
 
-## 133. [x] (2026-09-14, PR #TBD) R-123 — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13) — DONE 2026-09-14: Ben ungated both himself ("Level six wall doesn't read to me like a ruling needed. I changed two items"); the repo now carries the decision so a rebuild cannot undo it. 🤖 rows GW-1 / AM-1.
+## 133. [x] (2026-09-14, PR #360) R-123 — `Ghostly Walls` → Blue 2+ and `Adaptive Mutation` → Green 2+ (DATA, REBUILD leyline + deity) (2026-09-13) — DONE 2026-09-14: Ben ungated both himself ("Level six wall doesn't read to me like a ruling needed. I changed two items"); the repo now carries the decision so a rebuild cannot undo it. 🤖 rows GW-1 / AM-1.
 
 **Why:** Blue's freeze (with `Absolute Stillness` behind it) and Life's signature mutation both sit behind a rank-3 gate — level 6 — and both are the identity their descriptions now sell; the deity guide's first principle forbids the Life one outright. Ben chose (a).
 
@@ -3837,7 +3837,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps — · verify: validate-build over the ladders. Filed 2026-09-13 from R-123.
 
-## 134. [x] (2026-09-14, PR #TBD) R-124 OVERRIDDEN — `Tempered Edge`'s Deflect bypass is CUT: the card loses "and ignore deflect", the authored rider loses `addTargetDeflect` (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-14 on Ben's word ("Construct doesn't need to ignore deflect. That can be cut."). The engine's `addTargetDeflect` hint still names Tempered Edge as its example consumer (comment only); no engine change. 🤖 row TE-1.
+## 134. [x] (2026-09-14, PR #360) R-124 OVERRIDDEN — `Tempered Edge`'s Deflect bypass is CUT: the card loses "and ignore deflect", the authored rider loses `addTargetDeflect` (DATA, REBUILD deity) (2026-09-13) — DONE 2026-09-14 on Ben's word ("Construct doesn't need to ignore deflect. That can be cut."). The engine's `addTargetDeflect` hint still names Tempered Edge as its example consumer (comment only); no engine change. 🤖 row TE-1.
 
 **Why:** the review's first reading was that `Tempered Edge`'s "ignore deflect" might be a loose sentence; the verifier found `addTargetDeflect: true` on the rider with an engine hint naming Tempered Edge — deliberate. Ben chose (b): accept and document, the way R-111 documented `Withering Ray`.
 

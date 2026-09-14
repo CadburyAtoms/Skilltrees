@@ -250,7 +250,7 @@ disadvantage engine with a barricade and a double. Life's signature resource, Mu
 
 **Outcome (2026-09-14):** Ben: *"Level six wall doesn't read to me like a ruling needed. I changed two
 items to ungate them from level six."* The repo carries both (Ghostly Walls Blue 2+, Adaptive
-Mutation Green 2+, PR #TBD) so a rebuild cannot undo an in-Foundry edit.
+Mutation Green 2+, PR #360) so a rebuild cannot undo an in-Foundry edit.
 
 **Recommended default (R-123 (a)):** `Ghostly Walls` to Blue 2+ (the freeze becomes a depth-3,
 level-4 play; `Absolute Stillness` stays 3+ behind it; `Counterspell` stays 3+ — a talent-negation
@@ -274,7 +274,7 @@ number: a few points a round against the 36 the two attacks deal. Deity power is
 design and the Construct absorbs attacks that would otherwise land on the party.
 
 **Outcome (2026-09-14):** Ben overrode the default — *"Construct doesn't need to ignore deflect. That
-can be cut."* — so `Tempered Edge` loses the bypass on the card and the authored rider (PR #TBD); the
+can be cut."* — so `Tempered Edge` loses the bypass on the card and the authored rider (PR #360); the
 Construct's attack is turned by armor like everyone else's.
 
 **Recommended default (R-124 (b)):** accept as written and document it — the deity guide's
