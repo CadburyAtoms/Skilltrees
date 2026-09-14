@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T04:03:33.271Z",
+  "generatedAt": "2026-09-14T04:20:40.743Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "51cf4d8784",
-    "commit": "b78ebb8",
-    "branch": "pm/board-2026-09-14a",
+    "hash": "c28a6e600b",
+    "commit": "a2392f0",
+    "branch": "pm/107-false-premise-noreactions",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test — with item 107 (False Premise denies Reactions, Sonnet) running beside it. All seven of your phone answers are in the rulings doc (§K.13, #372): nothing is open there. After the bench: items 142 + 143 in one Opus worker, then 101; Sonnet 108 after 107. The loop stops before 07:00.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Item 107 merged (#374): False Premise denies Reactions at the next deploy. Next beside the bench: item 108 (the three deity formula dials, Sonnet). After the bench: items 142 + 143 in one Opus worker, then 101; the deploy for 107 / 108 once the bench is off the table. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -61,19 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "holds the table (Browser pane) — no deploy while this runs"
-    },
-    {
-      "item": "107",
-      "title": "R-115 (a): False Premise denies Reactions (noreactions) instead of duplicating Pattern Recognition's disadvantage (DATA, REBUILD leyline)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/107-false-premise-noreactions",
-      "startedAt": "2026-09-14T04:01:52Z",
-      "agent": "Work item 107",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only worker in its own worktree beside the bench; its checklist section merges after the bench"
     }
   ],
   "usage": null,
@@ -1329,14 +1316,14 @@
     {
       "pos": 103,
       "item": "107",
-      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn (the engine's existing noreactions timed status) instead of duplicating Pattern Recognition's disadvantage; the approved card text is in §K.13 (DATA, REBUILD leyline); one 🤖 row. Dispatched 2026-09-14 00:01 (sonnet, worktree pm/107-false-premise-noreactions, beside bench 47; its checklist section merges after the bench)",
+      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn: its FalsePremMod0000 rule swapped from edha-next-test-mod to the noreactions timed status (edha-triggered-effect {kind: status, statusExpire: target}, Hollow Command's noactions shape) + the approved card text (DATA, REBUILD leyline); leyline pack parity exactly ONE document (poLaFQBLEDju9jIx), a pack-wide handler sweep clean; 🤖 FP-1. Dispatched 00:01 (sonnet, worktree, beside bench 47); reviewed 00:20, no corrections; CONFLICTING on the dashboard → the PM merged main; merged on green. Found: 15-blue-calculation.js's header comment still describes the old payload (comment-only → folded into the 142 + 143 Opus dispatch)",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-115 ✓ (a, phone 09-13)",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 374
     },
     {
       "pos": 104,
@@ -1876,34 +1863,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "11:20",
-      "at": "2026-09-13T15:20:00.000Z",
-      "item": "Dispatched item 112 (sonnet, worktree pm/112-guides-four-rulings-cancel-line — R-105 (c) / R-108 (a) / R-110 (d) / R-111 (b) into the two revision guides; Fatal Thrust + Defensive Position gain the cancel line in data/cosmere.json + the authored overlay → REBUILD heroic owed; told NOT to touch the checklist while the bench runs). Picked over 104 (rewrites ECO-2, which bench 45 is driving), 105 (files 🤖 rows) and 110 (may touch the roster script). Trailing-5h dispatches: 4 of the weekend 6",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:20",
-      "at": "2026-09-13T15:20:00.000Z",
-      "item": "Item 112 (R-105 (c) / R-108 (a) / R-110 (d) / R-111 (b) into the two revision guides; Fatal Thrust + Defensive Position gain the cancel line) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "11 min, 69 tool uses",
-      "weighted": "2.8M",
-      "weightedM": 2.8,
-      "outcome": "merged 11:33 after review, no trailers; CI green on c128493, gates 12/12 in the worktree (1087 tests). Data: exactly the two cards (source prose + authored overlays; primer rebuilt). Guides: leyline PART 3 principle 10 (the tier trade + per-Action parity), a new Advantage / Disadvantage section (the printed cancel rule vs the engine's boolean fold), Withering Ray as the leyline damage ceiling; deity: the Special target restated. REBUILD heroic + ⟳ Sync Talents owed — after bench 45. Out of scope: the primer / one-pager carry no tier-trade text",
-      "pr": 334
-    },
     {
       "date": "2026-09-13",
       "time": "10:30",
@@ -2715,9 +2674,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:05",
+      "at": "2026-09-14T04:05:00.000Z",
+      "item": "#373 (board part 1) merged at 00:05 (CI green on 208c38b); main = ee1afa7, clean; two workers in flight (bench 47, item 107)",
+      "itemNo": "373",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 373
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:01",
+      "at": "2026-09-14T04:01:00.000Z",
+      "item": "Item 107 (R-115 (a): False Premise denies Reactions instead of a duplicate disadvantage) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "17 min, 130 tool uses (222 turns)",
+      "weighted": "5.5M",
+      "weightedM": 5.5,
+      "outcome": "reviewed 00:20 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, five themed commits, no corrections; the PR arrived CONFLICTING (the generated dashboard, two merges behind) with no check runs — main merged in the worktree, dashboard rebuilt, gates 12/12 (1206 tests), CI on the new sha. Data: False Premise (poLaFQBLEDju9jIx) only — the three description copies + FalsePremMod0000 → edha-triggered-effect {kind: status, statusId: noreactions, statusExpire: target} (Hollow Command's noactions shape, noreactions already in EDHA_TIMED_STATUSES); parity 136 documents, exactly one differs, a pack-wide handler sweep finds no other shape collision, 0 formula diffs. 🤖 FP-1. Found: 15-blue-calculation.js's tree-section header comment still describes the old payload (comment-only → folded into 142 + 143). DATA → REBUILD leyline + ⟳ Sync Talents — rides the next deploy after the bench is off the table",
+      "pr": 374
     }
   ],
-  "runLogTotal": 291,
+  "runLogTotal": 293,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3523,6 +3510,12 @@
       "model": "sonnet",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-14T04:01:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 374
     }
   ],
   "statusVocab": [
