@@ -88,15 +88,16 @@ override.)
 
 **Draw Mana** — the leyline economy, and the number most power arguments turn on:
 
-> 1 Action: recover Investiture **equal to your Tier**, and trigger your colour's Attunement rider.
+> 1 Action: recover Investiture **equal to your highest attuned colour rank**, and trigger your colour's Attunement rider. *(R-126 (a), 2026-09-13. Until then it was your Tier — one per Action at levels 1–5 — an implementation default the balance review surfaced; every paragraph below that says "tier" for the draw was written under the old rule.)*
 
 (`module-src/scripts/engine/52-green-instinct.js` `edhaDrawMana`, and
 `.claude/skills/leyline-revision-guide/SKILL.md` §Key Mechanic.)
 
-So at **Tier 1 (levels 1–5), Draw Mana converts 1 Action into 1 Investiture.** A leyline character
-whose kit costs 1 Investiture per Action can spend their starting pool (~4) and then sustains at
-best **50% uptime** — one Action drawing, one Action spending. At Tier 2 it is 1 Action for 2
-Investiture, so 2/3 uptime. Bonus-regen talents are the lever that breaks this; count them.
+So at **rank 2 (levels 1–5), Draw Mana converts 1 Action into 2 Investiture** and at rank 3 (level 6+)
+into 3. A leyline character whose kit costs 1 Investiture per Action can spend their starting pool
+(~4) and then sustains at **2/3 uptime** — one Action drawing, two Actions spending — and 3/4 from
+level 6. Bonus-regen talents are worth about half an Action a round on top; count them. *(Rewritten
+for R-126 (a); the old text said 1 Action → 1 Investiture at tier 1, 50% uptime.)*
 
 The five Attunement Keys are Always Active, cost nothing, and are granted free with the path:
 

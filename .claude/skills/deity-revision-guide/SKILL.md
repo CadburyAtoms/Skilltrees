@@ -114,67 +114,67 @@ Skill-rank gates beyond the entry-node `2+` requirement are rare in deity trees.
 
 ## PART 4: DEITY IDENTITIES
 
-The 10 confirmed identities, with each deity's color split for the test rule.
+The 10 identities **as built** (rewritten 2026-09-13 under R-104 (a); the readable per-tree read is `docs/analysis/talent-ecosystem/TREE-INTENT.md`). The **colour split** records what the talents actually roll and size. Where a gate colour buys nothing — no test, no die, no number — the entry says so and names the item that gives it a job, so that the next talent written for that tree is the one that fixes it. Where an old line promised a mechanic no talent delivers, the promise is named and retired.
 
 ### 🟢⚫ Morrath — Death (Green + Black)
-- **Fantasy:** Necromancer. Death-touch on the Black entry; corpse-harvest on the Green entry. Harvested Remains fuel the corpse-magic talents.
-- **Color split:** Black tests for curses, vital damage, Death Ward against unwilling targets, and direct diminishment. Green tests rare — most Green talents are placements or interactions with already-dead targets.
-- **Homebrew resource:** Harvested Remain.
-- **Gameplay loop:** Kill (Black) → harvest the corpse (Green) → spend Remains on Bone Garden / Risen Servant / Speak with the Fallen / Raise Dead.
+- **Fantasy:** Necromancer, and an **economy of deaths** first: every drop to 0 HP within range refunds Investiture and leaves a Harvested Remain; the tree converts Remains into scene-long, action-free damage and utility (bone garden, risen servant, corpse interrogation) and, once a scene, the game's only resurrection. Death-touch on the Black entry; corpse-harvest on the Green entry. `Death Ward` is protection, not a kill.
+- **Color split:** Black tests for the ward against unwilling targets; Black rank sizes the curse, the decay and the cascade; Green rank sizes the bone garden and the servant. No Green test — most Green talents are placements or interactions with the already-dead, as designed.
+- **Homebrew resource:** Harvested Remain (5 of 9 by the two-branch design; corpses, not Investiture, are the rate limiter).
+- **Gameplay loop:** Kill (Black) → harvest the corpse (Green) → install decay / cascade / garden → spend Remains on Risen Servant / Speak with the Fallen / Raise Dead.
 
 ### 🔵⚫ Maelith — Chaos (Blue + Black)
-- **Fantasy:** Complication-broker. Force Complications onto enemy tests, then convert them into focus, advantage, or vital damage on Isolated targets.
-- **Color split:** Blue tests for forcing Complications and disrupting cognition; Black tests for vital-damage payloads and exploiting Isolation.
-- **Homebrew resource:** TBD — likely a Complication token banked by the player.
-- **Gameplay loop:** Pressure (Blue) → Complication generated → bank → spend on Isolation-payoff (Black).
+- **Fantasy:** **Mark-and-detonate striker.** An Omen is placed by *landing a Blue test* and spent for the forced reroll (the bearer rerolls and takes the lower result), for Isolate-and-wound, for Disorient-and-dispel, or shattered all at once for area spirit damage. All Chaos damage is spirit or vital — nothing is turned aside by Deflect. *(Corrected 2026-09-13: the old "force Complications onto enemy tests, then convert them into focus, advantage" was never built — no Chaos talent reads a Complication, seizes focus or steals advantage. Do not re-author those; the built identity is the striker.)*
+- **Color split:** Blue tests place, spread and collapse Omens; Black tests isolate, unweave and ruin. Both colours size dice.
+- **Homebrew resource:** Omen (built, 9 of 9). Known structural fault: the Black lane *spends* Omens it cannot *make* — a Chaos disciple who takes only the Black entry plays a weaker tree.
+- **Gameplay loop:** Stamp (Entropy Strike) → spread → spend (Shatter Focus on the roll that matters, Isolating Ruin, Unweaving) → Cascade Collapse / Unravel Everything.
 
 ### ⚪🔵 Tessavain — Order (White + Blue)
-- **Fantasy:** Lawgiver. Declare rules and pacts; punish violation; bind allies in covenant.
-- **Color split:** White tests for binding pacts and group coordination; Blue tests for oath-violation detection, cognitive enforcement, and Lawkeeper foresight.
-- **Homebrew resource:** Sacred Oaths and Binding Clauses (declared rules) function as soft tokens.
-- **Gameplay loop:** Declare law → enemy violates → punish; or swear pact → mutual buff.
+- **Fantasy:** Lawgiver on one lane, oath-brother on the other. Declare Edicts (one prohibited act; the first violation is punished, and an Edict that never fires is an enemy controlled); swear Covenants (a two-way pact that shields both); force the violation with Verdict; bind the whole field with Final Decree.
+- **Color split:** **Every test rolls Blue** and all four damage formulas size on Blue rank. White never tests — it carries **magnitude**: temp HP per round by White rank (`Bear Witness`), damage reduction and shared temp HP by White rank (`Shoulder the Oath`). That is a paid-for gate, not a toll. *(The old "White tests for binding pacts" line is retired.)*
+- **Homebrew resources:** Edict and Covenant (9 of 9 — the tightest spine in the atlas). *(The old "Sacred Oaths and Binding Clauses" name is retired.)*
+- **Gameplay loop:** Edict the enemy who is about to do the thing you cannot allow; Covenant the ally who is about to take the hits → Lawkeeper's Eye / Bear Witness for free → Verdict or Concord → Final Decree.
 
 ### 🟢🔵 Anaveth — Life (Green + Blue)
-- **Fantasy:** Vital surgeon. Healing comes with riders (temp HP, deflect, condition removal); mutations enhance allies; HP knowledge enables precision damage.
-- **Color split:** Green tests for healing, regeneration, and biological mutation; Blue tests for vital-knowledge precision damage and analysis riders.
-- **Homebrew resource:** Mutations- buff allies with natural armor or poison. Plant manipulation if more damage is needed?
-- **Gameplay loop:** Diagnose (Blue) → heal-and-mutate (Green) → ally becomes the engine.
+- **Fantasy:** **Diagnosis-economy healer.** Mark one creature: the party learns its statblock and deals +Tier vital to it, and (`Prognosis`) every wound it takes pays you Investiture. Spend that on the biggest heals in the game, each with a rider (temp HP overflow, stacking Deflect, condition removal, regeneration). **Mutation is the deep end** — `Adaptive Mutation` is Green 3+, level 6 — not the entry. *(Corrected 2026-09-13: the old "reading an ally's anatomy to strike an enemy's" has no talent; `Vital Diagnosis` marks any one creature.)*
+- **Color split as built:** No Green test. One Blue test (`Surgical Precision`, Blue 3+, level 6). Green rank sizes every heal formula; Blue is otherwise a gate — **item 108 (R-99 (a)) gives it a job**; do not describe a Blue mechanic in Life until it lands.
+- **Homebrew resources:** Diagnosis (the entry marker, and the economy) and Mutation (level 6).
+- **Gameplay loop:** Diagnose the enemy the party will fight anyway → heal with the rider the moment needs, funded by the mark → mutate at the deep end → Apex Form.
 
 ### ⚫⚪ Verdannis — Sovereignty (Black + White)
-- **Fantasy:** King-arbiter. Elevate one ally and diminish one enemy at a time.
-- **Color split:** **Black tests for diminish; White tests for elevate.** This is the cleanest example of the color-thematic test rule.
-- **Homebrew resource:** Decree zones (declared laws within a radius).
-- **Gameplay loop:** Diminish target → elevate ally → bring them into Decree.
+- **Fantasy:** **Die-step arbiter.** Censure steps one enemy's damage die down; Exalt steps one ally's up; the scene-long versions and the paired judgments arrive deeper; an enemy under Censure that fails pays the court (Investiture back, a Reactive Strike for its target, temp HP to the party). One creature at a time.
+- **Color split as built:** Every test rolls Black. **White is a pure gate** — no test, no die, no number reads it (**items 106 and 108**). *(The old "cleanest example of the colour-thematic test rule — White tests for elevate" is retired: the elevate half has no test at all.)*
+- **Homebrew resource:** The die-step ladder today. **The Decree zone — a declared law within a radius that moves with the arbiter — is being built under item 106 (R-97 (a)).** Until it lands, no description or talent should refer to a Decree as existing.
+- **Gameplay loop:** Censure the enemy whose blows you fear → Exalt the ally whose blows you want → scene versions → Sovereign's Balance / Edict of the Fallen → Sovereignty.
 
 ### 🔴🟢 Gnothis — Knowledge (Red + Green)
-- **Fantasy:** Predator-scholar. Insight stacks on a studied target escalate damage from you and your allies; the pack shares the hunt.
-- **Color split:** Red tests for the damage payload that comes from accumulated insight; Green tests for stack-generation, observation, and pack-share.
-- **Homebrew resource:** Insight stacks on a marked target.
-- **Gameplay loop:** Study (Green) → stack → strike (Red) → killing blow is a payload.
+- **Fantasy:** Predator-scholar. Insight stacks on one studied target; every Insight multiplies the dice of the payload strike (the only dice-count multiplier in the game); the pack shares the read and the bonus; the kill carries the stack to the next quarry.
+- **Color split as built:** Red tests the payload (`Killing Blow`, `The Final Study`) and sizes every damage die. **Green is a gate** — no Green test, no Green die; `Studied Mark` and `Pack Share` are untested. Green 2+ and Green 3+ are access tolls. *(Old "Green tests for stack-generation, observation, and pack-share" retired; not in item 108's scope — a future Knowledge change should give Green a number.)*
+- **Homebrew resource:** Insight (9 of 9).
+- **Gameplay loop:** Mark → strike the same creature every turn (the repeatable `Predatory Strike` out-damages the cash-out) → pack shares → re-mark on the kill; the verdict is a finisher, not the plan.
 
 ### ⚪🟢 Olvarra — Fate (White + Green)
-- **Fantasy:** Oracle-trapper. Foreknowledge places Snares on predicted squares; allies anchor Ordained Ground positions; the board is set before initiative.
-- **Color split:** White tests for ordained-ground bulwark effects and ally-coordination; Green tests for snare-trigger payloads and trap-spread (Disoriented, etc.).
-- **Homebrew resources:** Ordained Ground (White-flavored, ally-anchored); Snare (Green-flavored, enemy-triggered).
-- **Gameplay loop:** See (Read the Threads) → place (Ordained Ground + Snare) → enemy walks in → trigger.
+- **Fantasy:** **Battlefield engineer.** Ordained Ground where allies will stand (defence, Aid at range, temp HP, no advantage against them); Snares where enemies will step (untested keen damage + Restrained); riders, links, an ally-sprung trigger, and a declared-event capstone. Foresight is one talent (`Read the Threads`), and it acts after placement. *(Corrected 2026-09-13: "the oracle who sets the board before initiative" — every placement costs an Action in combat; nothing places anything pre-initiative.)*
+- **Color split as built:** Green rank sizes every Snare die. **White is a pure gate** — no test, no die, no number (**item 108 (R-99 (a))**). *(Old "White tests for ordained-ground bulwark effects" retired — `Bulwark Ground` is a Passive with no test.)*
+- **Homebrew resources:** Ordained Ground (ally-anchored) and Snare (enemy-triggered), 9 of 9.
+- **Gameplay loop:** Place (ground under the holder, Snare on the approach) → link / read-and-move → allies spring the traps → Thread of Inevitability.
 
 ### 🔴⚪ Kethane — Civilization (Red + White)
-- **Fantasy:** Construct-smith. Build, specialize, repair, and command Combat Constructs across the battlefield.
-- **Color split:** Red tests for Construct combat-attack tests and kinetic damage riders; White tests for community-buff effects and coordination (Trade Routes, Bonds of Community).
-- **Homebrew resource:** Combat Construct (the persistent companion entity).
-- **Gameplay loop:** Build (White-ish setup) → specialize (Red riders) → command and chain.
+- **Fantasy:** Construct-smith. Build one Combat Construct on turn one; **arm** it with a six-talent ladder (tempered edge, siege form, second strike, Colossus); **reforge** it if it falls. Lay Foundations (steady, link as roads, fortify into walls with teeth). *(Corrected 2026-09-13: "repairs and commands it" — nothing repairs, and the Construct acts on its own initiative rather than being commanded turn by turn.)*
+- **Color split as built:** Red rank sizes `Bastion` and `Magnum Opus` dice and their Agility saves. White carries magnitude in one talent (`Bonds of Community` temp HP = White) — a marginal gate, not a pure toll.
+- **Homebrew resources:** Combat Construct (one active) and Foundation (up to tier; `Trade Routes` needs two — item 114 repairs it for the one-Foundation window).
+- **Gameplay loop:** Forge → arm → Foundations under the party → fortify → Magnum Opus.
 
 ### ⚫🔴 Tyrith — Power (Black + Red)
-- **Fantasy:** Conqueror. Dominate enemies into Compelled / Weakened (Black); kills escalate damage and chain (Red).
-- **Color split:** Black tests for Compelled / Weakened / control; Red tests rare — most Red talents are weapon attacks or kinetic riders that don't need a contested test.
-- **Homebrew resource:** Kill-count counter that scales Warlord's Fury.
-- **Gameplay loop:** Kneel (Black) → exploit dominated target → kill → Momentum chain → Mantle.
+- **Fantasy:** Conqueror. **Compelled** (the only source in the game) and the dictated action (`Absolute Authority` takes an enemy's turn and spends it); a melee warlord's riders (extra dice, temp HP and a step on the kill, the free charge on an Opportunity, walking through the line); scene-long amplifiers; the Mantle.
+- **Color split:** Black tests for Compelled / the dictated action / control; Red rank sizes the melee riders. Red tests rare — the weapon attacks and kinetic riders need no contested test.
+- **Homebrew resource:** **`Warlord's Fury`** — a scene-long install whose bonus counts enemies you have *bloodied* (below half) this scene, +1 on a kill, capped at tier × 2, and feeds **melee damage only**. *(Corrected 2026-09-13: there is no "Bounty" tally, it does not feed the domination talents, and it is not passive. Dead keyword: `Kneel` and `Absolute Authority` read Frightened, which no talent in the game applies.)*
+- **Gameplay loop:** Kneel (Black) → Absolute Authority → advance through the line → Warlord's Fury → Mantle.
 
 ### 🔵🔴 Razkael — Destruction (Blue + Red)
-- **Fantasy:** Pyrotechnician / siege engineer. Plant delayed Charges; detonations leave dangerous terrain that keeps doing damage.
-- **Color split:** Blue tests for precision (Pinpoint Charge) and structural targeting; Red tests for kinetic riders (Concussive Yield's Prone save, Fault Line's Speed save).
-- **Homebrew resources:** Charge (Blue-flavored), dangerous terrain (Red-flavored).
-- **Gameplay loop:** Place Charges + Pyre → wait / trigger → detonations chain → capstone detonates everything at once.
+- **Fantasy:** Pyrotechnician / siege engineer on two lanes: **Charges** (declared trigger, detonated on a Free Action, no roll, no save, dangerous terrain left behind) and **fire** (`Pyre` spreads every turn, `Combustion Chain` grows every zone on a death, `Walking Ruin` burns where you walk, `Fault Line` trenches the field). The edge is reliability — almost nothing here can miss or be saved against — and the only control is Prone; nothing pulls enemies into the zones.
+- **Color split as built:** Everything rolls Red — every damage die sizes on Red rank and both saves are vs. Red. Blue sizes exactly one optional rider (`Pinpoint Charge`) and is otherwise a gate (**item 108 (R-99 (a))**). *(Old "Blue tests for precision (Pinpoint Charge)" retired — `Pinpoint Charge` has no test.)*
+- **Homebrew resources:** Charge and dangerous terrain (the only source of the keyword), 9 of 9.
+- **Gameplay loop:** Place Charges + Pyre → wait / trigger → Cascading Failure → The Unmooring detonates everything at once.
 
 ---
 

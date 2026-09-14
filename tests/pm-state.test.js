@@ -390,7 +390,13 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // 114, Trade Routes), R-118 (item 108, the three thin deity gates), R-119 (item 106, Sovereignty's
   // Decree zone) — filed in EDHA_RULINGS.md §L, all WAITING on Ben. The open set is exactly these
   // six until he answers.
-  const ECOSYSTEM_RULINGS = ["R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
+  // 2026-09-13, balance review (after the item-111 prose pass): six filed at once in §D —
+  // R-120 (Knowledge's Insight multiplier), R-121 (deity Investiture income for Power and
+  // Destruction), R-122 (Chaos's Omen cap), R-123 (Blue's freeze and Life's mutation behind the
+  // level-6 wall), R-124 (Tempered Edge's Deflect scope), R-125 (Power's dead Frightened reads).
+  // The pinned set below is whatever the real doc holds open on the day this was last re-pinned;
+  // the PM's item-127 batch (R-114 … R-119, §L "Waiting") is in it when that batch is in the doc.
+  const ECOSYSTEM_RULINGS = ["R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-92"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -399,7 +405,7 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
-    `the open rulings are exactly the pinned set (R-114 … R-119 since item 127 filed them, 2026-09-13) — got [${ids.join(", ")}]`);
+    `the open rulings are exactly the pinned set (re-pinned 2026-09-13 after the balance review) — got [${ids.join(", ")}]`);
   assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
     `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
   // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.
