@@ -2754,15 +2754,17 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   scan: characters + adversary owners from BOTH the actor directory and the canvas (unlinked
   compendium-dropped token copies are in no directory — the W28 Dirgehound's Dread Presence
   shipped dead on exactly this). Widened consumers so far: the **Dread Presence** veto, the
-  **Shield Wall / Devoted Conduit** pre-reduction (adversary dice at rank ≡ TIER, ruling 107),
+  **Shield Wall / Devoted Conduit** pre-reduction (adversary dice at ROLE rank — minion 1 / rival 2 / boss 3, ruling 122; the ruling-107 tier read it shipped with was superseded 07-20),
   and the **focus watcher** (Whispered Doubt / Coercive Pressure / Predatory Insight). Regression
   cases pinned in `tests/engine-helpers.test.js`. Widen per-consumer, never wholesale.
 - **Ranks**: talent formulas read `@skills.<color>.rank` — the build writes leyline ranks from
   `leylines` + role (minion 1 / rival 2 / boss 3, ruling 40). Adversary attributes stay 0, so rolled
-  color tests run at +rank only (deliberate; revisit per-block). `edhaColorRank` (W29, ruling 113)
-  falls back to **tier** for an adversary color with NO written rank (ruling 107) — embedded
-  talents outside the block's `leylines` colors no longer degrade to rank 0 (d2 dice, undefined
-  ranges).
+  color tests run at +rank only (deliberate; whether blocks gain attributes is ruling R-128, 2026-09-14).
+  `edhaColorRank` (W29, ruling 113; re-aimed by ruling 122) falls back to the **ROLE rank** — minion 1 /
+  rival 2 / boss 3 — for an adversary color with NO written rank (never tier: ruling 107's tier read
+  was superseded 07-20) — embedded talents outside the block's `leylines` colors no longer degrade to
+  rank 0 (d2 dice, undefined ranges). The statting standard that reads these facts is
+  `.claude/skills/bestiary-forge/STANDARD.md`; the measured bands are `docs/analysis/bestiary/CENSUS.md`.
 - **Full leyline economy (ruling 49, Ben 07-14)**: each `leylines` color auto-embeds its
   "<Color> Leyline Attunement" Key (twin) and the actor gets the universal **Draw Mana** action —
   the engine rider (`edhaDrawMana`) is name-triggered and disposition-based, so it runs unchanged

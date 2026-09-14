@@ -91,6 +91,7 @@ default and the checklist id it came from. The checklist is for tests.
   Tree content → `leyline-tree-authoring` (engineering) / `leyline-revision-guide`,
   `deity-revision-guide`, `talent-balance`, `phrasing-verifier`, `cosmere-canon-reference` (design).
   Campaign → `session-forge` / `session-debrief`; lore → `lore-forge`; handouts → `handout-forge`;
+  adversaries and the bestiary → `bestiary-forge` (2026-09-14; the census is `docs/analysis/bestiary/CENSUS.md`);
   the repo project → `project-manager` / `work-item`. Read `CLAUDE.md`'s map table for the rest.
 - **The docs that are load-bearing.** `CLAUDE.md` (iron rules 1–7); this reference;
   `EDHA_FOUNDRY_TEST_CHECKLIST.md` (bench rows + the **DEPLOY STATE** section, Ben's);

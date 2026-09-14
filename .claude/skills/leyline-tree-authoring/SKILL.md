@@ -179,6 +179,12 @@ auditor can't see that for you, so check it by hand.
 
 ## Adversary abilities — the same standard, first time (2026-07-16)
 
+> **This section is the WIRING standard for adversary abilities and is still the authority for it.**
+> The STATTING standard (what a block states, where each number comes from, dice by role, senses and
+> movement, the statblock gate) lives in `bestiary-forge` — `.claude/skills/bestiary-forge/STANDARD.md`
+> — with the measured census in `docs/analysis/bestiary/CENSUS.md` (added 2026-09-14, item 121).
+> Stat there, wire here.
+
 Adversaries are authored in `data/adversaries.json` and are subject to the SAME no-silent-manual
 and kill-soft-laziness rules as trees. The Seeming shipped with current card text and a dead engine
 case because none of this was written down — don't repeat it. **Read ENGINE_INDEX §"Talents on
@@ -243,16 +249,19 @@ the dice COUNT**: `[Die]` = `1d(2·rank+2)` (minion d4, rival d6, boss d8), `[Ti
 `(tier)d(2·rank+2)`, a "+<Color> modifier" term = **+rank**. Engine side, `edhaColorRank`'s
 adversary fallback reads the role map (never tier), so off-leyline embedded talents roll
 the same dice as attuned ones. State the resolution in the rule's `description` so the next
-audit can re-derive it. ⚑ Blocks shipped under ruling 107's tier-dice (W28/W29) are a
-pending retro sweep — see the ruling-122 log entry.
+audit can re-derive it. The blocks shipped under ruling 107's tier-dice (W28/W29) were re-derived
+by the ruling-123 retro sweep (canon §9, 2026-07-20 — six live-wrong dice fixed); nothing is
+pending from it. *(This line read "⚑ pending retro sweep" until 2026-09-14 — stale for eight weeks.)*
 
-**Renamed adaptations of engine talents get engine ALIASES, never prose copies (2026-07-19).**
-Ruling 40 renames a beast's adaptation (Herding Antlers ≠ Drive the Prey, Thorn Hedge ≠ Thorn
-Field) — but the engine automation is name-keyed, so the rename silently orphans it. When an
-adaptation's mechanics are an existing talent's mechanics, add the new name to the engine case
-(`edhaOwnsThorn`, the Drive the Prey `item.name` alias) or reuse the talent's authored rule shape
-(Sudden Wall carries Sudden Growth's `edha-burst` rule verbatim). The adaptation's card must say
-which engine path runs it.
+**Renamed adaptations carry the source talent's RULE SHAPE, never a prose copy (2026-07-19; re-cut
+2026-09-14 after the rule-2b migration).** Ruling 40 renames a beast's adaptation (Herding Antlers ≠
+Drive the Prey, Thorn Hedge ≠ Thorn Field). When an adaptation's mechanics are an existing talent's
+mechanics, put the talent's authored `events` rule on the adaptation verbatim (Sudden Wall carries
+Sudden Growth's `edha-burst` rule) — the rule is what runs it, so the rename costs nothing. The
+older route, an engine name-keyed alias for the adaptation's name, is the adversary-surface
+exception lint pass 7 tolerates (adversary bespoke abilities are outside the 2b ratchet); only the
+Fellstag's Herding Antlers still uses it, and no PC-talent engine case exists to alias against any
+more. Either way the adaptation's card must say which engine path runs it.
 
 **Facts that will bite you if you skip the ENGINE_INDEX read:**
 - Adversary abilities are **action-typed**; talent-grade automation reaches them only because the
