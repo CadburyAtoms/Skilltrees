@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T13:28:25.977Z",
+  "generatedAt": "2026-09-14T23:13:12.921Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "2f4f6c9bcf",
-    "commit": "62d4c3b",
-    "branch": "pm/board-2026-09-14e",
+    "hash": "4d7769c164",
+    "commit": "b1c4e0e",
+    "branch": "claude/bestiary-update-planning-8bscnv",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
