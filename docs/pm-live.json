@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test — with item 107 (False Premise denies Reactions, Sonnet) running beside it. All seven of your phone answers are in the rulings doc (§K.13, #372): nothing is open there. After the bench: items 142 + 143 in one Opus worker, then 101; Sonnet 108 after 107. The loop stops before 07:00.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Item 107 merged (#374): False Premise denies Reactions at the next deploy. Next beside the bench: item 108 (the three deity formula dials, Sonnet). After the bench: items 142 + 143 in one Opus worker, then 101; the deploy for 107 / 108 once the bench is off the table. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -19,19 +19,6 @@
       "phase": "working",
       "pr": null,
       "note": "holds the table (Browser pane) — no deploy while this runs"
-    },
-    {
-      "item": "107",
-      "title": "R-115 (a): False Premise denies Reactions (noreactions) instead of duplicating Pattern Recognition's disadvantage (DATA, REBUILD leyline)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/107-false-premise-noreactions",
-      "startedAt": "2026-09-14T04:01:52Z",
-      "agent": "Work item 107",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only worker in its own worktree beside the bench; its checklist section merges after the bench"
     }
   ],
   "usage": null
