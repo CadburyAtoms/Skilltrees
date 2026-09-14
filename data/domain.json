@@ -1007,7 +1007,7 @@
     "action": "Passive",
     "cost": "",
     "prerequisites": "Ordained Ground",
-    "description": "At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.",
+    "description": "At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your White rank. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.",
     "flavor": "What is foreseen cannot be flanked.",
     "atlas": "deity",
     "layout": {
