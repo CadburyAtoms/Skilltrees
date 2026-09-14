@@ -3704,7 +3704,7 @@ filed 2026-09-08 01:1x.
 
 **Done when:** every sub-item is done or explicitly parked by Ben; the five shelved feel rows are retired on card text (R-133's three) or re-opened after session play (the two feel rows); the census is green against the final data and its bands are inside R-134's targets or say why not.
 
-**PM:** lane H (Ben's rulings are the gate) · model per sub-item · size L as a programme · deps R-128 … R-135 · the scoping session's PR carries items 153 + 154.
+**PM:** lane H (Ben's rulings are the gate) · model per sub-item · size L as a programme · deps R-128 … R-135 · PR #386 carries items 153 + 154.
 
 
 ## 122. [x] (2026-09-13, PR #340) The agent-run deploy cycle becomes ONE gated script with guardrails, verification and tests (TOOLING + DOCS) (2026-09-13) — script + guards + tests shipped; the PM's first LIVE `--yes` run (🤖 row, `EDHA_FOUNDRY_TEST_CHECKLIST.md`) is the outstanding verify step
@@ -4047,7 +4047,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane R · model sonnet · size XS · deps 125 ✓ · verify: the pins + a `--dry-run` printout. Filed 2026-09-14 by the PM from the 01:12 deploy refusal.
 
-## 153. [x] (2026-09-14, the bestiary scoping session's PR) Bestiary census — `scripts/bestiary-census.js` → `docs/analysis/bestiary/CENSUS.md`, the 52 blocks measured as one report (TOOLING + DOCS, no rebuild)
+## 153. [x] (2026-09-14, PR #386) Bestiary census — `scripts/bestiary-census.js` → `docs/analysis/bestiary/CENSUS.md`, the 52 blocks measured as one report (TOOLING + DOCS, no rebuild)
 
 **Why:** the bestiary redo (item 121) has to measure before it redesigns, and R-101 (a) lets adversary HP and damage be read as a yardstick — but nothing printed the bestiary as a whole. The lore-forge roster rule counts the colour ledger by hand; the "automation" share was never split into cues vs effects; nobody had listed which blocks inherit the 5-ft sight default or which engine primitives only an adversary consumes.
 
@@ -4057,7 +4057,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model — (done by the scoping session) · size M.
 
-## 154. [x] (2026-09-14, the bestiary scoping session's PR) `bestiary-forge` skill — the adversary surface's one owner: SKILL.md + STANDARD.md + DESIGN_SEEDS.md + TURN_LEDGER.md, pointers from the four layer-skills, three stale lines fixed (DOCS + a schema note, no rebuild)
+## 154. [x] (2026-09-14, PR #386) `bestiary-forge` skill — the adversary surface's one owner: SKILL.md + STANDARD.md + DESIGN_SEEDS.md + TURN_LEDGER.md, pointers from the four layer-skills, three stale lines fixed (DOCS + a schema note, no rebuild)
 
 **Why:** item 82's first sentence — *"find where the bestiary statting standard lives"* — had the answer nowhere. Concepts lived in lore-forge 4b/4c, wiring in leyline-tree-authoring §"Adversary abilities", encounters in session-forge, talent lists in build-forge Phase 5; the numbers were set block by block against the old cheatsheet; two of those sections carried lines eight weeks stale.
 
