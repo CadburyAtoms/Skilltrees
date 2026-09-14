@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T03:16:14.982Z",
+  "generatedAt": "2026-09-14T03:48:20.445Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a0a37dc8e3",
-    "commit": "31443c5",
-    "branch": "pm/board-2026-09-13o",
+    "hash": "39f1f40a99",
+    "commit": "cce719d",
+    "branch": "pm/145-rulings-closeout-0913-late",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Deployed main @ 31443c5 at 23:14 ET (deploy-cycle.js, all guards and post-flight checks PASS): the Omen cap tier + 1 (item 132) and Power's Disoriented reads (item 135) are at the table with the Knowledge reshape and the two lowered gates; engine 902ddadb = HEAD. Foundry is up — re-join your Gamemaster client. Bench run 47 (Opus) goes at the 00:00 reset over the whole queue; then items 142 + 143 in one Opus worker.",
-    "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
+    "note": "All seven of your phone answers are in the rulings doc (§K.13, #372) — nothing is open there now; items 101 / 106 / 107 / 108 / 109 / 114 are unblocked and R-92's drop cue is item 144. Deployed main @ 31443c5 at 23:14 (Omen cap tier + 1, Power's Disoriented reads live; re-join your Gamemaster client). Bench run 47 (Opus) at the 00:00 reset over the 14 open 🤖 rows, then items 142 + 143 in one Opus worker, then item 101.",
+    "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": "2026-09-14T04:00:00Z",
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
@@ -1038,13 +1038,13 @@
     {
       "pos": 97,
       "item": "101",
-      "title": "R-114 — Mantle of the Aspirant's redirect-unwind heal (47-power.js ~L306) is a hea writer outside the heal-cut gate, declared nowhere (found by item 70's sweep). (b) declare it the exception + a census line (sonnet S, DOCS + test) or (a) gate it like the other three (opus S, ENGINE-ONLY). Filed 00:3x",
-      "lane": "R/B",
-      "model": "sonnet/opus",
+      "title": "R-114 (a) — gate Mantle of the Aspirant's redirect-unwind heal (47-power.js ~L306) at its emitter through edhaCrossHeal, the heal-cut census 5 → 6 declared and pinned (a reversion-sensitive case naming the sixth site), one 🤖 row. ENGINE-ONLY (F5). Answered from the phone 2026-09-13 21:57",
+      "lane": "B",
+      "model": "opus",
       "size": "S",
-      "deps": "R-92 (Ben)",
-      "status": "blocked",
-      "statusDetail": "R-114",
+      "deps": "R-114 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
@@ -1290,49 +1290,49 @@
     {
       "pos": 102,
       "item": "106",
-      "title": "R-97 (a) Sovereignty Decree zone (moving radius) — design gate first",
+      "title": "R-97 (a) + R-119 (a) — Sovereignty's Decree zone: H9 edha-die-step gains target: \"radius\" + radiusFt (the turn-start cadence Bulwark Ground / Ordained Ground use; an allySteps / enemySteps ledger entry per creature inside, expiring when it leaves) and Decree of Ruin is retrofitted onto it; the guide's worked example. The mechanism is approved (phone, 21:58); the Decree of Ruin CARD TEXT waits for Ben's own design text or his yes on R-119's proposed text (his chat instruction) — the engine half may go first as its own PR",
       "lane": "B",
       "model": "opus",
       "size": "L",
-      "deps": "R-119",
+      "deps": "R-119 ✓ (mechanism) · Ben's card text",
       "status": "blocked",
-      "statusDetail": "R-119",
+      "statusDetail": "Ben's Decree card text — the H9 engine half may go first",
       "pr": null
     },
     {
       "pos": 103,
       "item": "107",
-      "title": "R-98 (a) re-aim False Premise",
+      "title": "R-98 (a) + R-115 (a) — False Premise denies Reactions until the start of the target's next turn (the engine's existing noreactions timed status) instead of duplicating Pattern Recognition's disadvantage; the approved card text is in §K.13 (DATA, REBUILD leyline); one 🤖 row",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "R-115",
-      "status": "blocked",
-      "statusDetail": "R-115",
+      "deps": "R-115 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
       "pos": 104,
       "item": "108",
-      "title": "R-99 (a) three deity gates get a job",
+      "title": "R-99 (a) + R-118 (a) — three deity gates get a job: Fate's Bulwark Ground thpFormula → @skills.white.rank, Destruction's Cascading Failure overlap clause → @skills.blue.rank, Life's Vital Diagnosis bonusDamageFormula → @skills.blue.rank, each with its reworded card line (three existing dials, DATA-only, REBUILD deity); deity-gate-audit.js shows each gate counted; 🤖 rows",
       "lane": "B",
       "model": "sonnet",
       "size": "M",
-      "deps": "R-118",
-      "status": "blocked",
-      "statusDetail": "R-118",
+      "deps": "R-118 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
       "pos": 105,
       "item": "109",
-      "title": "R-100 (a) Final Decree Witness clause + guide note",
+      "title": "R-100 (a) + R-116 (a) — Final Decree's Witnesses gain [Tier][Die] temporary HP and a free Reactive Strike against the violator: the dead advantage branch leaves edhaDecreeResolve, the existing reactive-strike offer helper is called instead, the card text follows, and both revision guides note the two cross-path advantage collisions (ENGINE-ONLY F5 + DATA, REBUILD deity); one 🤖 row",
       "lane": "B",
-      "model": "sonnet",
+      "model": "opus",
       "size": "S",
-      "deps": "R-116",
-      "status": "blocked",
-      "statusDetail": "R-116",
+      "deps": "R-116 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
@@ -1386,13 +1386,13 @@
     {
       "pos": 110,
       "item": "114",
-      "title": "R-109 (a) Trade Routes repair + Forge Construct card",
+      "title": "R-109 (a) + R-117 (a) — Trade Routes links one Foundation to a point you can see in Attunement Range (a second edhaZoneLink mode capturing a canvas point as the other end of the link-ledger entry; the approved card text is in §K.13) and Forge Construct's card says its flat 1 (ENGINE-ONLY F5 + DATA, REBUILD deity); one 🤖 row",
       "lane": "B",
-      "model": "sonnet",
+      "model": "opus",
       "size": "S",
-      "deps": "R-117",
-      "status": "blocked",
-      "statusDetail": "R-117",
+      "deps": "R-117 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
       "pr": null
     },
     {
@@ -1754,6 +1754,30 @@
       "status": "queued",
       "statusDetail": "2026-09-13",
       "pr": null
+    },
+    {
+      "pos": 141,
+      "item": "144",
+      "title": "R-92 (a) — a generic GM-whispered drop cue when any character's health reaches 0, naming the character and offering the Roll Injury reminder (edha-apply-watch → edha-gm-cue, the shape Cover Their Retreat already uses; no dice change; a headless pin; one 🤖 row). ENGINE-ONLY (F5); filed by item 145 from the phone answer",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "R-92 ✓ (a, phone 09-13)",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 142,
+      "item": "145",
+      "title": "Rulings close-out, late — R-92 + R-114 … R-119 answered (a) from the phone → EDHA_RULINGS.md §K.13 (the seven bodies moved verbatim, combined sha256 f91f48e8… before = after), the open-set pin → [] (shown failing when a §L stub is re-opened), items 101 / 106 / 107 / 108 / 109 / 114 re-pointed with their real deploy classes (109 / 114 → opus), item 144 filed, CLAUDE.md's rulings row (R-1 … R-126, no open set). DOCS-ONLY. Dispatched 23:21 (sonnet, worktree); reviewed 23:50, no corrections; merged on green",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "the seven phone notes",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 372
     }
   ],
   "rulings": [
@@ -1801,7 +1825,7 @@
     }
   ],
   "benOnly": [
-    "the seven rulings on the phone — R-92, R-114 … R-119 (§L, each with a default; 101 ← R-114, 107 ← R-115, 109 ← R-116, 114 ← R-117, 108 ← R-118, 106 ← R-119 plus his design text for the Decree)",
+    "item 106's Decree of Ruin card text — his own words, or a yes on R-119's proposed text (the H9 radius engine mode does not wait)",
     "the twelve merged remote branches above, to delete whenever",
     "the two YOUR-CALL branches."
   ],
@@ -1813,48 +1837,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "10:26",
-      "at": "2026-09-13T14:26:00.000Z",
-      "item": "Resume — Sunday, hand-started by Ben in chat (weekend window). main 1f6ff47, clean, no PRs, no worktrees; engine 6 in sync; Ben's deploy-to-foundry.bat at ~10:24 (five packs stamped 14:24 UTC — the #329 heroic specialties and #330 rulings are the last merges); Foundry 302; inbox empty. No PM rows since 09-08 01:30 — the 09-09 → 09-13 commits were Ben-driven sessions (session-forge, build-forge, ecosystem review, rulings R-95 … R-111 → items 104–115, the specialty swap). Trailing-5h dispatches: 0",
-      "itemNo": "329",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "—",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "10:30",
-      "at": "2026-09-13T14:30:00.000Z",
-      "item": "Dispatched bench run 45 (opus, worktree pm/bench-45 — step zero per Ben: ⟳ Sync Talents on Tem parinaem / Soggy Bottom (PM-R17 refresh) + the roster PCs, ⟳ Sync Adversaries from Pack; then the 29 open 🤖 rows — HS-1…10 first, then 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Crownox Unbreakable Line, Predator's Due, the three card-text rows). Opus 1 of the weekend window; the worker owns the Browser pane",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "10:31",
-      "at": "2026-09-13T14:31:00.000Z",
-      "item": "Dispatched item 116 (fable-worker, worktree pm/116-phone-board-three-tabs — Ben's one-off chat authorization of a Fable agent for this item; the phone page becomes three tabs — Overview · Bench rows · Needs Ben — and the DEPLOY STATE prose collapses to one line; headless-Chrome verification only, the bench owns the Browser pane; the worker files item 116 itself; TOOLING + PM republish). Phone state pushed 10:32, dashboard chunks 10:33 (@ede97d48da)",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "10:31",
@@ -2652,9 +2634,51 @@
       "weightedM": 5,
       "outcome": "waiting until 00:00",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "21:57",
+      "at": "2026-09-14T01:57:00.000Z",
+      "item": "Phone inbox: seven notes (21:57–21:59 ET), all seen 23:21 with an action line each — Ben tapped the (a) text on every open ruling card: R-92 (the generic drop cue), R-114 (gate the unwind heal at its emitter), R-115 (False Premise → Reaction denial), R-116 (Final Decree → a free Reactive Strike), R-117 (Trade Routes → a point link), R-118 (three formula dials onto White / Blue rank), R-119 (the H9 radius Decree). Saved verbatim to tmp/pm/inbox-2026-09-13/notes.json (gitignored) as the worker's source; the notes arrived seconds after this session's 21:58 inbox check and were found at 23:19",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "seven rulings answered (a)",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "23:21",
+      "at": "2026-09-14T03:21:00.000Z",
+      "item": "Dispatched item 145 (sonnet, worktree pm/145-rulings-closeout-0913-late — the seven answers into EDHA_RULINGS.md §K.13 verbatim with a hash proof, the open-set pin → [], the six TODO items unblocked with their real deploy classes, item 144 filed, CLAUDE.md's rulings row; DOCS-ONLY). Sonnet under PM-R16; the weekend trailing-5h count reads 7 (19:49, 20:13, 20:50 ×2, 22:13, 22:49, 23:21), logged, not binding",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "23:21",
+      "at": "2026-09-14T03:21:00.000Z",
+      "item": "Item 145 (rulings close-out, late — the seven phone answers) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "24 min, 98 tool uses (158 turns)",
+      "weighted": "5.8M",
+      "weightedM": 5.8,
+      "outcome": "reviewed 23:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; gates 12/12 in the worktree (1206 tests). Seven bodies moved verbatim (combined sha256 f91f48e8… before = after), parseOpenRulings() → [] on the real doc, the pin shown failing when a §L stub is re-opened in a scratch copy; items 101 / 106 / 107 / 108 / 109 / 114 re-pointed (109 / 114 → opus; 106's card text gated on Ben's own words); item 144 filed; CLAUDE.md's rulings row R-1 … R-126. Found: parseOpenRulings() skips §J / §K wholesale, so the §L stub — not the ANSWERED marker — is what keeps a moved ruling closed (a fact for the rulings intro, not a defect). DOCS-ONLY",
+      "pr": 372
     }
   ],
-  "runLogTotal": 285,
+  "runLogTotal": 288,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3436,6 +3460,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 370
+    },
+    {
+      "at": "2026-09-14T03:21:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T03:21:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 372
     }
   ],
   "statusVocab": [

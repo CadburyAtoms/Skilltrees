@@ -347,7 +347,7 @@ test("build-dashboard: the projected deploy block is bounded — a title line an
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings open in the real EDHA_RULINGS.md", () => {
+test("build-dashboard: parseOpenRulings finds ZERO open rulings in the real EDHA_RULINGS.md (all answered, moved to §K)", () => {
   // item 83 (2026-09-07 21:51 ET): Ben answered R-56 in chat, verbatim "Cosmere ladder for
   // everyone", reversing his own 2026-09-06 (a). R-56 was the SOLE open ruling left in the doc
   // (item 95 had closed R-90 and R-91), so with its ANSWERED (final) marker recorded and the entry
@@ -394,18 +394,24 @@ test("build-dashboard: parseOpenRulings finds the 17 ecosystem-review rulings op
   // R-120 (Knowledge's Insight multiplier), R-121 (deity Investiture income for Power and
   // Destruction), R-122 (Chaos's Omen cap), R-123 (Blue's freeze and Life's mutation behind the
   // level-6 wall), R-124 (Tempered Edge's Deflect scope), R-125 (Power's dead Frightened reads).
-  // The pinned set below is whatever the real doc holds open on the day this was last re-pinned;
-  // the PM's item-127 batch (R-114 … R-119, §L "Waiting") is in it when that batch is in the doc.
-  const ECOSYSTEM_RULINGS = ["R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-92"]; // R-92 relocated from §K to §L on 2026-09-13 (it was open all along)
+  // 2026-09-13, 21:57–21:59 ET, late: Ben answered all seven of the above from the mobile board's
+  // phone — R-92 and R-114 … R-119 — each by tapping the card's own (a) text (item 145's
+  // `tmp/pm/inbox-2026-09-13/notes.json`). All seven now carry an inline ANSWERED (a) marker and
+  // moved verbatim to §K.13. §L keeps its heading with seven one-line stubs and no open body.
+  // The pinned set below is whatever the real doc holds open on the day this was last re-pinned —
+  // today that is the EMPTY SET. The seven join the closed list so a regression that re-opens any
+  // one of them (a stray `**REOPENED …**` with no matching pin update) is named by this test.
+  const ECOSYSTEM_RULINGS = []; // 2026-09-13 late: R-92 and R-114 … R-119 answered (a) from the phone board and moved to §K.13 — nothing left open
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
-      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113"]) {
+      "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
+      "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
-    `the open rulings are exactly the pinned set (re-pinned 2026-09-13 after the balance review) — got [${ids.join(", ")}]`);
+    `the open rulings are exactly the pinned set (re-pinned 2026-09-13 late, after the phone-board close-out) — got [${ids.join(", ")}]`);
   assert.strictEqual(open.length, ECOSYSTEM_RULINGS.length,
     `${ECOSYSTEM_RULINGS.length} rulings are open in the real doc — got ${open.length}: [${ids.join(", ")}]`);
   // The shape contract, live since 2026-09-09: every open ruling must parse an ask and a default.
