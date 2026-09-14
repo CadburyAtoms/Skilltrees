@@ -10404,7 +10404,8 @@ async function edhaSyncNow(actor) {
  * whole call unless `allowStartedCombat: true`. The decision is `edhaSyncPlan`, kept pure (plain
  * actor/scene/combat shapes in, `{actors, sceneTokens, refusals}` out) so it is testable without
  * a Foundry world.
- * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaSyncAdversaryActor ·
+ * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncPlan · edhaUpdateSceneScope ·
+ *   edhaFolderChainMatches · edhaActorFolderChain · edhaSyncAdversaryActor ·
  *   edhaSyncAllAdversaries + the renderAdversarySheet and renderActorDirectory buttons.
  * ============================================================================================ */
 
@@ -10501,6 +10502,50 @@ function edhaSyncPlan(actors, scenes, combats, opts = {}) {
   return { actors: [...actorIds], sceneTokens, refusals };
 }
 
+/* PURE (item 147, bench run 47). THE SCENE SCOPE a downstream watcher of an actor update may write
+ * tokens on. `options.edhaSceneScope` is the marker a scoped writer stamps on its own
+ * `actor.update(…)` call; every watcher that walks `game.scenes` in response to an actor update
+ * reads it back through here:
+ *   · absent / null   → `null`      no claim made — the unfiltered footprint, unchanged.
+ *   · an array / Set  → that Set    these scenes and no others.
+ *   · an EMPTY array  → empty Set   NONE: "I have already written whatever you would write, on the
+ *                                   scenes I chose." A watcher seeing this stands down completely.
+ * It exists because `edhaSyncAdversaryActor` replaces `system` WHOLESALE
+ * (`{recursive: false, diff: false}`), which satisfies every downstream watcher's "did this field
+ * change?" PRESENCE test whether or not the field moved — so a call scoped to one scene woke the
+ * Green sight watcher, which then walked every scene in the world (bench 47: Briar-Gone Grove's
+ * token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map), in direct
+ * contradiction of R-113's "a scene left out of `scenes` is never touched, no matter what it holds".
+ * Duck-typed on `.has` rather than `instanceof Set`: a Set built in another realm (a headless test,
+ * another module) is still a Set. Pinned in tests/. */
+function edhaUpdateSceneScope(options) {
+  const s = options?.edhaSceneScope;
+  if (s === null || s === undefined) return null;
+  if (typeof s?.has === "function") return s;
+  return new Set(Array.isArray(s) ? s : []);
+}
+
+/* PURE (item 151, bench run 47). Does an actor's folder CHAIN match the caller's `folder` option?
+ * `chain` is the actor's OWN folder first, then its ancestors outward — plain {id, name} shapes.
+ * The filter used to be `a.folder?.id === folder || a.folder?.name === folder`: exact and
+ * NON-RECURSIVE. No actor sits directly in "Edha Bench" — the roster lives in its children
+ * `Bench PCs` (18) and `Bench Targets` (7) — so the incantation printed in FOUR documents (the
+ * runbook twice, the bench-run skill's hard rule 9, checklist rows 123-1 and 128-1) matched ZERO
+ * actors and returned `{actors: [], sceneTokens: {}}`, which reads exactly like a clean success.
+ * Matching descendants makes "Edha Bench" mean what every one of those documents already assumed.
+ * A blank/absent `folder` matches everything (no filter). Pinned in tests/. */
+function edhaFolderChainMatches(chain, folder) {
+  if (!folder) return true;
+  for (const f of (chain ?? [])) if (f && (f.id === folder || f.name === folder)) return true;
+  return false;
+}
+// The chain above, read off a live actor: own folder first, then Folder#ancestors (parent-first).
+function edhaActorFolderChain(actor) {
+  const f = actor?.folder;
+  if (!f) return [];
+  return [f, ...(f.ancestors ?? [])];
+}
+
 async function edhaAdvSrcFor(actor) {
   const pack = game.packs?.get(EDHA_ADV_PACK_ID);
   if (!pack) return null;
@@ -10524,8 +10569,15 @@ async function edhaSyncAdversaryActor(actor, src, sceneFilter) {
   const { drop } = edhaAdvSyncPlan(actor.items.map(i => ({ id: i.id, name: i.name, flags: i.flags })), so.items);
   if (drop.length) await actor.deleteEmbeddedDocuments("Item", drop);
   if (so.items.length) await actor.createEmbeddedDocuments("Item", so.items, { keepId: true });
-  // Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
-  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false });
+  /* Wholesale replace = fresh-drag parity (importFromJSON semantics, minus name/folder/ownership).
+   * `edhaSceneScope: []` (item 147) tells every downstream actor-update watcher to STAND DOWN: this
+   * update carries the pack's whole `system` and `prototypeToken`, so a watcher's "did AWA change?"
+   * presence test fires on it even when nothing moved, and the token loop below already stamps the
+   * pack's own `sight`/`texture`/… on exactly the scenes this call is scoped to. Empty, not the
+   * scene filter: the PACK is canonical here, and the Green sight watcher's AWA ladder does not
+   * honour a bespoke `senses` override (Briar-Gone Grove's 30 ft), so letting it run on an in-scope
+   * scene would clobber the very value we are restoring. */
+  await actor.update({ img: so.img, system: so.system, prototypeToken: so.prototypeToken }, { recursive: false, diff: false, edhaSceneScope: [] });
   await actor.update({ "flags.edha-content": so.flags?.["edha-content"] ?? {} });
   const proto = so.prototypeToken ?? {};
   let tokens = 0;
@@ -10555,8 +10607,20 @@ async function edhaSyncAllAdversaries(opts = {}) {
   const { folder = null, actorIds = null, scenes: sceneFilter = null, dryRun = true, allowStartedCombat = false } = opts;
 
   let candidates = game.actors?.filter(a => a.type === "adversary") ?? [];
-  if (folder) candidates = candidates.filter(a => a.folder?.id === folder || a.folder?.name === folder);
+  // item 151: `folder` matches a folder OR ANY OF ITS DESCENDANTS. The old exact, non-recursive
+  // match made the documented `{folder: "Edha Bench"}` a silent no-op — see edhaFolderChainMatches.
+  if (folder) candidates = candidates.filter(a => edhaFolderChainMatches(edhaActorFolderChain(a), folder));
   if (Array.isArray(actorIds)) { const idSet = new Set(actorIds); candidates = candidates.filter(a => idSet.has(a.id)); }
+  /* item 151: a scoped call that matches NOTHING must not read like a success. Bench 47 followed the
+   * documented incantation exactly, got `{actors: [], sceneTokens: {}}` back, and only caught it by
+   * counting the world's actors by hand. A filter naming zero candidates is almost always a typo or
+   * the wrong folder, so say so out loud rather than returning an empty plan in silence. */
+  if ((folder || Array.isArray(actorIds)) && !candidates.length) {
+    const named = [folder ? `folder "${folder}"` : null, Array.isArray(actorIds) ? `${actorIds.length} actorId(s)` : null].filter(Boolean).join(" + ");
+    const msg = `Edha: adversary sync — the ${named} filter matched ZERO adversary actors, so nothing will be synced. Check the folder name (it matches a folder or any of its subfolders) or pass actorIds.`;
+    console.warn(`Edha Content | ${msg}`);
+    ui.notifications?.warn(msg);
+  }
 
   const resolved = [], missing = [], skipped = [];
   for (const a of candidates) {
@@ -19065,8 +19129,10 @@ async function edhaMigrateDerivations() {
  * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
  * leak its name to players on hover). Pack-built and imported actors already carry a sight range
  * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
- * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
- * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
+ * placed tokens, single GM applier, every actor type) — SCOPED since item 147 by the caller's
+ * `options.edhaSceneScope` marker (`edhaUpdateSceneScope`), because the watcher's trigger is a
+ * presence test that a wholesale `system` replace also satisfies. `edha.fixPcTokens()` retrofits
+ * EXISTING characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   // AWA read as value + bonus (edhaAwaForSenses), the way the system's own derivation reads it —
@@ -19081,13 +19147,33 @@ Hooks.on("preCreateActor", (doc, data) => {
     doc.updateSource({ prototypeToken: proto });
   } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
-Hooks.on("updateActor", (actor, changes) => {
+Hooks.on("updateActor", (actor, changes, options) => {
   try {
     if (changes?.system?.attributes?.awa === undefined) return;
+    /* SCOPE — item 147 (bench run 47). The line above is a PRESENCE test, not a change test: a
+     * wholesale `system` replace satisfies it whether or not AWA moved. `edhaSyncAdversaryActor`
+     * does exactly that (`{recursive: false, diff: false}`), so every scoped adversary sync woke
+     * this hook, which then walked `game.scenes` UNFILTERED and stamped `sight.range` on tokens on
+     * scenes the caller's `scenes:` filter had deliberately excluded — measured live: Briar-Gone
+     * Grove's token on the Bench Arena rewritten 30 → 5 by a call scoped to the Playtest Map, with
+     * no line in the sync's report. That contradicts R-113's contract outright ("a scene left out
+     * of `scenes` is never touched, no matter what it holds"), and it is the same unfiltered
+     * `game.scenes` shape `edha.fixPcTokens()` was caught with at bench run 45.
+     *
+     * An EMPTY scope is the sync's marker and means MORE than "no scenes": the caller has already
+     * written what this hook would, from a source that outranks it. It stands down completely,
+     * prototype write included. That second half matters on its own — `advSensesRangeFt` honours a
+     * bespoke `senses` override (Briar-Gone Grove: 30 ft) and `edhaPcSightShape`'s AWA ladder does
+     * not, so a scene filter alone would have kept the 30 → 5 corruption and merely confined it to
+     * the in-scope scene. Anything that legitimately wants a NARROWED restamp passes its scene ids
+     * and gets the walk below, scoped. */
+    const scope = edhaUpdateSceneScope(options);
+    if (scope && !scope.size) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
     void actor.update({ "prototypeToken.sight.range": range });
     for (const sc of game.scenes ?? []) {
+      if (scope && !scope.has(sc.id)) continue;
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }

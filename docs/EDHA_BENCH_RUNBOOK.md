@@ -96,7 +96,12 @@ it adds a second, bench-owned option next to it:
   scene the bench may touch, and **"Playtest Map (Copy)"** and every other scene remain Ben's.
 - The scoped adversary sync (item 123 / R-113) can target a bench-created scene the same way it
   targets the Playtest Map — `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<the
-  arena's id>], dryRun: false })` — dry-run first, as always (bench-run hard rule 9).
+  arena's id>], dryRun: false })` — dry-run first, as always (bench-run hard rule 9). Since
+  **item 151** (fix pass 12, 2026-09-14) `folder` matches a folder **or any of its descendants**,
+  so `"Edha Bench"` reaches the roster in `Bench PCs` / `Bench Targets`; before that fix the same
+  call matched **zero** actors and returned a plan that read like a success. A `folder`/`actorIds`
+  filter that resolves to no candidates now warns out loud — if you see that warning, the name is
+  wrong, and the call did nothing.
 - **Snapshot the arena's scene id (and, if newly created, that fact) alongside the usual
   ids/flags/effects snapshot (hard rule 6)** so cleanup at the end of the run can prove what was
   created on it and delete exactly that — never the scene document itself.
@@ -1652,24 +1657,33 @@ it adds a second, bench-owned option next to it:
 
 ## Operating lessons from run 47 (2026-09-14 — these OVERRIDE older advice where they conflict)
 
-- ⭐⭐ **The documented scoped-sync incantation `{folder: "Edha Bench"}` matches ZERO actors, and says nothing.**
-  `edhaSyncAllAdversaries` filters `a.folder?.id === folder || a.folder?.name === folder` — exact, **non-recursive**
-  — and no actor sits directly in `Edha Bench`; the roster lives in its children `Bench PCs` (18) and
-  `Bench Targets` (7). The call returns `{actors: [], sceneTokens: {}}` and reads like a success. **Use
-  `folder: "Bench Targets"` (or `actorIds`) until item 151 lands** — and the same wrong incantation is in this
-  runbook above, in the `bench-run` skill's hard rule 9, and in checklist rows 123-1 and 128-1.
-- ⭐⭐ **A scoped sync still writes to scenes you excluded — the leak is a hook, not the scope check.**
-  `edha.syncAllAdversaries({scenes: [X], dryRun: false})` rewrote a token's `sight.range` 30 → 5 on a scene that was
-  NOT X. The sync's own token loop honours the filter; the write comes from the `updateActor` hook in
-  `52-green-instinct.js`, which fires because the sync replaces `system` wholesale (so
-  `changes.system.attributes.awa` is always present) and then walks **`for (const sc of game.scenes)`** unfiltered.
-  Filed as item 147. **Until it lands, snapshot every scene's FULL token signature (including `sight`) around any
-  scoped sync, not just the ids** — an id-only diff misses this entirely.
-- ⭐⭐ **⟳ Sync Talents only refreshes `talent` items.** `path` and `action` items are skipped on BOTH sides of
-  `26-talent-sync.js` (the source map never indexes them; the owned loop `continue`s past them), so every owned path
-  card and every owned `Draw Mana` action in the world is frozen at drag-time — 24 of 24 paths stale, 18 of 18
-  Draw Mana copies stale, on Ben's three real PCs included. **A "the card still says the old thing after Sync" report
-  about a path or an action is this bug, not a deploy gap.** Filed as item 146.
+- ⭐⭐ ~~**The documented scoped-sync incantation `{folder: "Edha Bench"}` matches ZERO actors, and says nothing.**~~
+  **FIXED by item 151 (fix pass 12, 2026-09-14 — ENGINE-ONLY, F5).** `edhaSyncAllAdversaries`'s `folder` filter was
+  `a.folder?.id === folder || a.folder?.name === folder` — exact, **non-recursive** — and no actor sits directly in
+  `Edha Bench`; the roster lives in its children `Bench PCs` (18) and `Bench Targets` (7), so the call returned
+  `{actors: [], sceneTokens: {}}` and read like a success. It now matches a folder **or any of its descendants**
+  (`edhaFolderChainMatches`), so `folder: "Edha Bench"` means what this runbook always assumed, and a
+  `folder`/`actorIds` filter that resolves to **zero candidates warns out loud** instead of returning silently.
+  **Standing lesson: a scoped call's empty result is not evidence of an empty scope** — read the warning, and count
+  the candidates before believing a clean-looking plan.
+- ⭐⭐ ~~**A scoped sync still writes to scenes you excluded — the leak is a hook, not the scope check.**~~
+  **FIXED by item 147 (fix pass 12, 2026-09-14 — ENGINE-ONLY, F5).** `edha.syncAllAdversaries({scenes: [X],
+  dryRun: false})` rewrote a token's `sight.range` 30 → 5 on a scene that was NOT X. The sync's own token loop
+  honoured the filter; the write came from the `updateActor` hook in `52-green-instinct.js`, which fired because the
+  sync replaces `system` wholesale (so `changes.system.attributes.awa` is always *present*, changed or not) and then
+  walked `for (const sc of game.scenes)` unfiltered. The sync now stamps `options.edhaSceneScope: []` on its own
+  update and the hook reads it (`edhaUpdateSceneScope`) and stands down — the pack's `prototypeToken` is canonical
+  during a sync, and the hook's AWA ladder does not honour a bespoke `senses` override, so it must not second-guess
+  it even on an in-scope scene. **Standing lesson, unchanged by the fix: snapshot every scene's FULL token signature
+  (including `sight`) around any scoped sync, not just the ids** — an id-only diff misses this whole class.
+- ⭐⭐ ~~**⟳ Sync Talents only refreshes `talent` items.**~~ **FIXED by item 146 (fix pass 12, 2026-09-14 —
+  ENGINE-ONLY, F5, then one ⟳ Sync Talents click per actor).** `path` and `action` items were skipped on BOTH sides
+  of `26-talent-sync.js` (the source map never indexed them; the owned loop `continue`d past them), so every owned
+  path card and every owned `Draw Mana` action in the world was frozen at drag-time — 24 of 24 paths stale, 18 of 18
+  Draw Mana copies stale, Ben's three real PCs included. The sync now covers `talent` + `path` + `action`
+  (`EDHA_SYNC_TYPES`) and the toast reports the per-type breakdown. **Standing lesson: a "the card still says the old
+  thing after Sync" report is a DEPLOY-STATE question first — but check what the button actually refreshes before
+  concluding the repo is right.**
 - ⭐ **A whole talent-shape claim can be made DECISIVE by arithmetic instead of by repetition.** KM-1 asked whether
   Predatory Strike is `die + Tier×Insight` or `dice × Insight`. At 5 Insight the two ranges overlap, so no single
   observation settles it — but `2d8 × 5` can only ever be a **multiple of 5**, and the three measured riders were
@@ -1723,7 +1737,10 @@ it adds a second, bench-owned option next to it:
   `edha.syncAllAdversaries()` (no args) is a DRY RUN by default — it reports the actor list and
   per-scene token counts and writes nothing; read that plan first. Then call it for real **scoped**
   to the bench: `edha.syncAllAdversaries({ folder: "Edha Bench" /* or actorIds: [...] */, scenes:
-  [<the licensed Playtest Map's id only>], dryRun: false })`. **Never call it unscoped** (no
+  [<the licensed Playtest Map's id only>], dryRun: false })` — since **item 151** `folder` matches a
+  folder or any of its **descendants**, so `"Edha Bench"` reaches `Bench PCs` / `Bench Targets`, and
+  a filter matching zero candidates warns instead of returning an empty plan in silence.
+  **Never call it unscoped** (no
   `folder`/`actorIds`/`scenes`) and **never pass `allowStartedCombat: true`** — that flag exists for
   Ben's own workflow, not the bench's. A candidate token sitting in a STARTED combat on an in-scope
   scene refuses the whole call by design; if that happens, the scope was wrong — narrow it, don't

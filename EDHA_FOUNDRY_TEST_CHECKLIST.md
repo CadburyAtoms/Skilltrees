@@ -1071,13 +1071,18 @@ allowStartedCombat}` to `edhaSyncAllAdversaries`; the pure decision `edhaSyncPla
 `tests/engine-helpers.test.js`, so this row is only what a table can prove: a live call with real
 scope filters, and that a combat elsewhere is genuinely left untouched.)*
 
-- [ ] 🤖 **123-1 — scoped sync on the bench folder + Playtest Map, dry run then real:** with the
+- [ ] 🤖 **123-1 — scoped sync on the bench folder + Playtest Map, dry run then real, and the scope holds:** with the
       bench roster imported, call `edha.syncAllAdversaries({ folder: "Edha Bench", scenes: [<Playtest
-      Map id>] })` with no `dryRun` — confirm it reports a PLAN (actor list + per-scene token counts)
-      and writes nothing. Then call it again with `dryRun: false` — confirm the same actor/token set
+      Map id>] })` with no `dryRun` — confirm the folder resolves to the roster in its CHILD folders
+      (item 151: a descendant match, and a zero-candidate filter warns instead of returning an empty
+      plan), and that it reports a PLAN (actor list + per-scene token counts) and writes nothing.
+      Then call it again with `dryRun: false` — confirm the same actor/token set
       is synced for real, and that a **started combat Ben is running on a DIFFERENT scene (never one
       the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
-      not read, sync, or touch them at all.
+      not read, sync, or touch them at all. **Then the item 147 half:** snapshot the FULL token
+      signature (id/x/y/size/texture/disposition/**sight**) of every out-of-scope scene before and
+      after the real run and confirm it is byte-identical — and that the in-scope `Briar-Gone Grove`
+      token keeps the pack's bespoke `sight.range` **30**, not the AWA ladder's 5.
       *(⚠️ **PARTIAL, bench run 47 (2026-09-14) — every clause the row names PASSES, but the scene scope is NOT
       airtight. Row stays open until item 147 lands.** Engine hash-verified `902ddadb…` = `HEAD`; two pack adversaries
       imported fresh into `Bench Targets`, one token of one of them placed on the Playtest Map.
@@ -1105,7 +1110,18 @@ scope filters, and that a combat elsewhere is genuinely left untouched.)*
       a.folder?.name === folder`, exact and non-recursive, and **no actor sits directly in "Edha Bench"** — the
       roster lives in its children `Bench PCs` and `Bench Targets`. Use `folder: "Bench Targets"` (or `actorIds`)
       until item 151 fixes it; the same wrong incantation is in row 128-1, `docs/EDHA_BENCH_RUNBOOK.md` and the
-      `bench-run` skill's hard rule 9.)*
+      `bench-run` skill's hard rule 9.
+      ✅ **BOTH fixed repo-side by fix pass 12 (2026-09-14, ENGINE-ONLY → F5) — this row is the live re-drive.**
+      **Item 147:** `edhaSyncAdversaryActor` now stamps `options.edhaSceneScope: []` on its wholesale
+      `system`/`prototypeToken` replace, and the `52-green-instinct.js` sight watcher reads it back through the new
+      pure `edhaUpdateSceneScope` and stands down — completely, prototype write included, because the PACK is
+      canonical during a sync and the watcher's AWA ladder does not honour a bespoke `senses` override (which is why
+      Briar-Gone Grove alone showed 30 → 5: it is the only block in `adversaries.json` with one). Its unfiltered
+      `game.scenes` walk is scoped too, for any future caller that wants a narrowed restamp. **Item 151:** the
+      `folder` option matches a folder **or any of its descendants** (`edhaFolderChainMatches`), so the incantation
+      above now resolves, and a `folder`/`actorIds` filter matching zero candidates warns instead of returning a
+      plan that reads like success. Pinned headless in `tests/sync-scene-scope.test.js` (16 cases, hook-layer for
+      the leak itself); the live half is this row.)*
 
 ## Bench Arena scene creation — item 128 / PM-R19 (2026-09-13 — TOOLING, no pack rebuild, no ⟳ Sync)
 
@@ -1137,7 +1153,10 @@ and none missing; all three pre-existing scenes' token-id sets, counts, wall cou
 Ben's started combat untouched. ⚠️ The row's `folder: "Edha Bench"` incantation matches zero actors — see 123-1's
 correction and **TODO item 151**; the arena-scoped calls above used `folder: "Bench Targets"`. ⚠️ An out-of-scope
 sight-range leak found while driving 123-1 is filed as **TODO item 147** — it never reached a Ben scene in this run
-because the actors involved had no tokens on one.)*
+because the actors involved had no tokens on one. ✅ **Both fixed by fix pass 12 (2026-09-14, ENGINE-ONLY → F5):**
+`folder` now matches a folder or any DESCENDANT and a zero-candidate filter warns (item 151), and the sync stamps
+`edhaSceneScope: []` so the sight watcher stands down (item 147). This row stays RETIRED — row **123-1** carries the
+live re-drive of both.)*
 
 ---
 
