@@ -159,6 +159,16 @@ git checkout main && git pull --ff-only
 python scripts/pm-usage.py --last          # weighted cost of the dispatch you just closed
 ```
 
+**After a SQUASH merge specifically** (a bench PR — iron rule 6 strips model trailers, so bench
+PRs merge `--squash`, not `--merge`) — `--delete-branch` is not proof the remote branch is gone
+(item 152: it deleted only the LOCAL branch, four times running, on 2026-09-14, and the surviving
+`origin/pm/bench-*` ref made the next `deploy-cycle.js` refuse a bench that had already merged):
+confirm it, and clean up by hand if it lingers —
+```
+git ls-remote --heads origin <branch>                # empty output = actually gone
+git push origin --delete <branch>                    # only if the line above still lists it
+```
+
 Board: queue status `merged` (or `bench-pending`), PR number, run-log row with duration, weighted
 usage, outcome. Push state to the mobile board (the overlay now has no worker). Handoff delta if the worker's is missing or wrong. This bookkeeping is a commit
 **on the next item's branch** or, when nothing is queued, a small `pm/board-<date>` PR.
