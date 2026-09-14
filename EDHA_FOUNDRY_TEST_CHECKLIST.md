@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T02:10:16.397Z from main @ 61a97d2: packs 2026-09-14T02:10:16.397Z, engine 24d74c96 = HEAD, validators PASS**
+
+
 **Agent-run deploy 2026-09-14T00:46:31Z from main @ d832ac4: packs 2026-09-14T00:46:39Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: the PM's `deploy-cycle.js --yes` ran all NINE steps ok — close, backup, pull, engine, art, five packs, validators, relaunch — and post-flight PASSED stamps + engine sha; its `/join` check refused on a case mismatch (it compared the world id `edha` to the page title `Edha`; item 139), so the script withheld this line. `/` → `/join` and the title verified by hand at 20:48.)***
 
 **Agent-run deploy 2026-09-14T00:05:15.491Z from main @ 3aed769: packs 2026-09-14T00:03:52.960Z, engine 24d74c96 = HEAD, validators PASS *(recorded by hand: deploy-cycle.js ran all eight steps green from a worktree on main, but its post-flight fetch raced Foundry’s boot — served engine 24d74c96… == HEAD and / → /join both verified by hand two minutes later; the first attempt died on the pack-backup LOCK bug, item 129, with nothing touched.)***
