@@ -100,6 +100,89 @@ test("checkNoBenchWorker: a lane-R worker unrelated to the bench passes", () => 
   assert.strictEqual(v.ok, true);
 });
 
+/* --- checkNoBenchWorker: worktrees + branches (item 125) ------------------------------------ */
+
+test("checkNoBenchWorker: a worktree line on pm/bench-46 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+  assert.ok(v.message.includes("pm/bench-46"));
+});
+
+test("checkNoBenchWorker: the same worktree with --force-bench passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, true, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged remote origin/pm/bench-47 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("origin/pm/bench-47"));
+});
+
+test("checkNoBenchWorker: a merged origin/pm/bench-47 passes (merged into origin/main does not count)", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: true }] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged LOCAL pm/bench-* branch also refuses", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { local: [{ name: "pm/bench-50", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("pm/bench-50"));
+});
+
+test("checkNoBenchWorker: the overlay-only case is unchanged when no worktree/branch data is given", () => {
+  const pmLive = { workers: [{ item: "45", title: "bench run 46", lane: "B" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+});
+
+test("checkNoBenchWorker: a plain non-bench worktree (e.g. main branch) passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees", branch: "main" }],
+    branches: { local: [], remote: [] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+/* --- parseWorktreePorcelain -------------------------------------------------------------------- */
+
+test("parseWorktreePorcelain: extracts path + branch, stripping refs/heads/", () => {
+  const text = [
+    "worktree C:/dev/Skilltrees",
+    "HEAD 75629ae0000000000000000000000000000000",
+    "branch refs/heads/main",
+    "",
+    "worktree C:/dev/Skilltrees/.claude/worktrees/agent-x",
+    "HEAD abcdef0000000000000000000000000000000a",
+    "branch refs/heads/pm/bench-46",
+    "",
+  ].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 2);
+  assert.strictEqual(result[0].branch, "main");
+  assert.strictEqual(result[1].branch, "pm/bench-46");
+  assert.strictEqual(result[1].path, "C:/dev/Skilltrees/.claude/worktrees/agent-x");
+});
+
+test("parseWorktreePorcelain: a detached worktree has a null branch", () => {
+  const text = ["worktree C:/somewhere", "HEAD abc123", "detached", ""].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].branch, null);
+});
+
 /* --- checkPacksExist ------------------------------------------------------------------------ */
 
 test("checkPacksExist: a missing pack directory refuses and names it", () => {
@@ -257,6 +340,66 @@ test("checkJoinRedirect: a proper 302 -> /join naming the world passes", () => {
   assert.strictEqual(v.ok, true);
 });
 
+/* --- engineSha8 (item 137) ---------------------------------------------------------------------- */
+
+test("engineSha8: a CRLF-served body hashes the same as its LF twin", () => {
+  const lf = "function edhaFoo() {\n  return 1;\n}\n";
+  const crlf = lf.replace(/\n/g, "\r\n");
+  assert.strictEqual(guards.engineSha8(lf), guards.engineSha8(crlf));
+});
+
+/* --- shouldRetryVerify (item 137: the post-flight verification races Foundry's boot) ------------
+ * Pins named in the brief: a 404 at 5s retries; a wrong sha at 10s retries; the right sha passes;
+ * a wrong sha AT the deadline fails.
+ */
+
+test("shouldRetryVerify: a 404 at 5s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 404, body: "", expectedSha: "abcd1234", elapsed: 5000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: a wrong sha at 10s retries", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "not the engine", expectedSha: "abcd1234", elapsed: 10000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryVerify: the right sha passes", () => {
+  const body = "function edhaFoo() { return 1; }\n";
+  const expectedSha = guards.engineSha8(body);
+  const d = guards.shouldRetryVerify({ status: 200, body, expectedSha, elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
+  assert.strictEqual(d.ok, true);
+});
+
+test("shouldRetryVerify: a wrong sha AT the deadline fails, naming the last observed status/sha", () => {
+  const d = guards.shouldRetryVerify({ status: 200, body: "still wrong", expectedSha: "abcd1234", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+  assert.strictEqual(d.ok, false);
+  assert.ok(d.message.includes("abcd1234"));
+});
+
+test("shouldRetryVerify: a fetch error (status 0) before the deadline retries, not fails", () => {
+  const d = guards.shouldRetryVerify({ status: 0, body: "", expectedSha: "abcd1234", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+/* --- shouldRetryJoin (item 137, the /join title check gets the same bounded-retry policy) ------- */
+
+test("shouldRetryJoin: a /setup redirect before the deadline retries", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 1000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "retry");
+});
+
+test("shouldRetryJoin: a /setup redirect AT the deadline fails", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/setup", joinBody: "", worldTitle: "edha", elapsed: 90000, deadline: 90000 });
+  assert.strictEqual(d.outcome, "fail");
+});
+
+test("shouldRetryJoin: a proper /join naming the world passes immediately", () => {
+  const d = guards.shouldRetryJoin({ status: 302, location: "/join", joinBody: "<title>edha</title>", worldTitle: "edha", elapsed: 500, deadline: 90000 });
+  assert.strictEqual(d.outcome, "pass");
+});
+
 /* --- formatDeployRecordLine / insertDeployStateRecord ------------------------------------------ */
 
 test("formatDeployRecordLine: renders the exact shape the checklist/run-log expect", () => {
@@ -344,6 +487,11 @@ test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes n
     }
     assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
     assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
+
+    // item 137: the post-flight description must say verification retries/waits up to
+    // --wait-seconds, not just checks once.
+    assert.ok(out.includes("--wait-seconds"), "dry-run must mention the post-flight verification's --wait-seconds bound");
+    assert.ok(/retried with backoff/i.test(out), "dry-run must describe the post-flight checks as retried, not one-shot");
 
     // item 129: the backup must be PRINTED after the close, not before — this is the step-order
     // regression the item exists to pin. Reverting the order (backup before close) fails this.
