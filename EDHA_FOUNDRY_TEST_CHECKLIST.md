@@ -879,13 +879,16 @@ promise. **Control at 0 ft moved, same target, same talent:** the roll succeeded
 
 *(`scripts/deploy-cycle.js` is the gated, tested replacement for the ad-hoc shell chain the PM ran
 by hand at 14:41 ET on 2026-09-13 (`docs/PM_BOARD.md` run log) — guards, timestamped backups, the
-eight `deploy-to-foundry.bat` steps fail-fast, a relaunch + post-flight verification, and (on
+nine `deploy-to-foundry.bat` steps fail-fast, a relaunch + post-flight verification, and (on
 success) a new dated line at the top of this file's `# ⚑ DEPLOY STATE` section (near the top of
 the file), appended by the script itself. Its own guards/verifiers are unit-pinned in
-`tests/deploy-cycle.test.js`; this row is its first LIVE run, which no test can stand in for.)*
+`tests/deploy-cycle.test.js`. The PM's first LIVE run (19:41 ET) died safely at the backup step —
+it ran BEFORE the close and hit a running Foundry's open LevelDB `LOCK` file (EBUSY); nothing was
+written and Foundry stayed up. Item 129 fixed the order (backup is now step 2, after the close)
+and made the backup skip `LOCK`/EBUSY/EPERM files; this row stays open for the retry.)*
 
-- [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backups, eight steps, relaunch,
-      verification, the DEPLOY STATE record.
+- [ ] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backup (after the close), the
+      remaining eight steps, relaunch, verification, the DEPLOY STATE record.
 
 ## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
 
