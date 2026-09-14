@@ -108,6 +108,45 @@ function gatherGitState() {
   return { branch, clean, ahead, behind, sha, fetchError };
 }
 
+// item 125: the checkout's tracked docs/pm-live.json (read by readPmLive) is only as fresh as the
+// last merged board PR, so a PM mid-shift on its own unmerged board branch could pass the
+// no-bench-worker guard from a worktree while a bench run is genuinely live. These two
+// checkout-independent signals close that gap: any worktree checked out on a `pm/bench-*` branch,
+// and any `pm/bench-*` branch (local or `origin/pm/bench-*`) not yet merged into `origin/main`.
+// Gathering is the only impure part — `git branch --merged origin/main` needs a real git process
+// — so each branch name is tagged `{ name, merged }` here and the PURE guard decides what counts.
+function gitSafe(args) {
+  try {
+    return git(args);
+  } catch {
+    return "";
+  }
+}
+
+function parseBranchListOutput(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^[*+]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function gatherBenchGuardState() {
+  const worktrees = guards.parseWorktreePorcelain(gitSafe(["worktree", "list", "--porcelain"]));
+
+  const localNames = parseBranchListOutput(gitSafe(["branch", "--list", "pm/bench-*"]));
+  const remoteNames = parseBranchListOutput(gitSafe(["branch", "-r", "--list", "origin/pm/bench-*"]));
+  const localMerged = new Set(parseBranchListOutput(gitSafe(["branch", "--merged", "origin/main"])));
+  const remoteMerged = new Set(parseBranchListOutput(gitSafe(["branch", "-r", "--merged", "origin/main"])));
+
+  return {
+    worktrees,
+    branches: {
+      local: localNames.map((name) => ({ name, merged: localMerged.has(name) })),
+      remote: remoteNames.map((name) => ({ name, merged: remoteMerged.has(name) })),
+    },
+  };
+}
+
 function moduleSrcSyncStatus() {
   const r = spawnSync(process.execPath, [path.join(SCRIPTS_DIR, "module-src-sync.js"), "status"], {
     cwd: SCRIPTS_DIR,
@@ -194,7 +233,7 @@ function evaluateGuards(ctx, flags) {
   const results = [];
   results.push(guards.checkOnMainClean({ branch: ctx.git.branch, clean: ctx.git.clean }));
   results.push(guards.checkModuleSrcSync(ctx.moduleSrcStatus.exitCode));
-  results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench));
+  results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench, ctx.benchGuardState));
   results.push(guards.checkPacksExist(ctx.packExists));
   results.push(guards.checkWorldConfigured(ctx.optionsJson));
   results.push(guards.checkFoundryExe(ctx.exe.chosen, ctx.exe.exists));
@@ -473,11 +512,12 @@ async function main() {
   const gitState = gatherGitState();
   const moduleSrcStatus = moduleSrcSyncStatus();
   const pmLive = readPmLive();
+  const benchGuardState = gatherBenchGuardState();
   const packExists = packDirExistsMap();
   const optionsJson = readOptionsJson();
   const exe = resolveExe(flags.exe);
 
-  const ctx = { git: gitState, moduleSrcStatus, pmLive, packExists, optionsJson, exe };
+  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, optionsJson, exe };
   const preflight = evaluateGuards(ctx, flags);
   printVerdicts("Pre-flight guards:", preflight);
 

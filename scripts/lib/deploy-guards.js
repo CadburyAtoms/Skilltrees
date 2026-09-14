@@ -16,6 +16,7 @@
  */
 "use strict";
 
+
 function verdict(ok, name, message) {
   return { ok, name, message };
 }
@@ -69,15 +70,60 @@ function isBenchWorker(worker) {
   return /bench/.test(text);
 }
 
-function checkNoBenchWorker(pmLive, forceBench) {
+// A `pm/bench-*` branch name (local, or `origin/pm/bench-*` remote) is a bench signal regardless
+// of what the CURRENT checkout's tracked docs/pm-live.json says — item 125: that overlay is only
+// as fresh as the checkout it was read from, and a PM that has not yet landed its own board PR
+// (the normal state mid-shift) could otherwise close Foundry out from under a live bench.
+function isBenchBranchName(name) {
+  return /^(?:origin\/)?pm\/bench-/.test(String(name || "").replace(/^refs\/heads\//, ""));
+}
+
+// Parses `git worktree list --porcelain` output into `[{ path, branch }]` — `branch` is null for
+// a detached worktree. Pure text-in/data-out so it can be pinned with no git process at all.
+function parseWorktreePorcelain(text) {
+  return String(text || "")
+    .split(/\r?\n\r?\n/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      let wtPath = null;
+      let branch = null;
+      for (const line of block.split(/\r?\n/)) {
+        if (line.startsWith("worktree ")) wtPath = line.slice("worktree ".length).trim();
+        else if (line.startsWith("branch ")) branch = line.slice("branch ".length).trim().replace(/^refs\/heads\//, "");
+      }
+      return { path: wtPath, branch };
+    });
+}
+
+// `extra.worktrees`: [{ path, branch }] (from parseWorktreePorcelain). `extra.branches`: { local,
+// remote }, each a list of { name, merged } — the caller has already resolved merged-ness via
+// `git branch --merged origin/main` / `git branch -r --merged origin/main`, since that needs a
+// live git process; this function only decides given the plain data. A branch merged into
+// origin/main does NOT count as a bench signal (it is done, not in flight).
+function checkNoBenchWorker(pmLive, forceBench, extra) {
   const workers = (pmLive && Array.isArray(pmLive.workers)) ? pmLive.workers : [];
   const holders = workers.filter(isBenchWorker);
-  if (holders.length && !forceBench) {
-    const names = holders.map((w) => w.item || w.title || "?").join(", ");
-    return verdict(false, "no-bench-worker", `refused — worker(s) holding the table: ${names} (pass --force-bench to override)`);
+
+  const worktrees = (extra && Array.isArray(extra.worktrees)) ? extra.worktrees : [];
+  const benchWorktrees = worktrees.filter((wt) => wt && isBenchBranchName(wt.branch));
+
+  const branches = (extra && extra.branches) || {};
+  const unmergedLocal = (branches.local || []).filter((b) => b && !b.merged);
+  const unmergedRemote = (branches.remote || []).filter((b) => b && !b.merged);
+
+  const names = [
+    ...holders.map((w) => w.item || w.title || "?"),
+    ...benchWorktrees.map((wt) => `worktree ${wt.path} (${wt.branch})`),
+    ...unmergedLocal.map((b) => b.name),
+    ...unmergedRemote.map((b) => b.name),
+  ];
+
+  if (names.length && !forceBench) {
+    return verdict(false, "no-bench-worker", `refused — bench signal(s) held: ${names.join(", ")} (pass --force-bench to override)`);
   }
-  if (holders.length) {
-    return verdict(true, "no-bench-worker", `${holders.length} bench worker(s) present, overridden by --force-bench`);
+  if (names.length) {
+    return verdict(true, "no-bench-worker", `${names.length} bench signal(s) present, overridden by --force-bench`);
   }
   return verdict(true, "no-bench-worker", "no worker holds the table");
 }
@@ -211,6 +257,8 @@ module.exports = {
   checkNotBehindOrigin,
   checkModuleSrcSync,
   isBenchWorker,
+  isBenchBranchName,
+  parseWorktreePorcelain,
   checkNoBenchWorker,
   checkPacksExist,
   checkWorldConfigured,

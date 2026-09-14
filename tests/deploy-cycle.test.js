@@ -100,6 +100,89 @@ test("checkNoBenchWorker: a lane-R worker unrelated to the bench passes", () => 
   assert.strictEqual(v.ok, true);
 });
 
+/* --- checkNoBenchWorker: worktrees + branches (item 125) ------------------------------------ */
+
+test("checkNoBenchWorker: a worktree line on pm/bench-46 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+  assert.ok(v.message.includes("pm/bench-46"));
+});
+
+test("checkNoBenchWorker: the same worktree with --force-bench passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, true, {
+    worktrees: [{ path: "C:/dev/Skilltrees/.claude/worktrees/agent-x", branch: "pm/bench-46" }],
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged remote origin/pm/bench-47 refuses and names it", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("origin/pm/bench-47"));
+});
+
+test("checkNoBenchWorker: a merged origin/pm/bench-47 passes (merged into origin/main does not count)", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { remote: [{ name: "origin/pm/bench-47", merged: true }] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+test("checkNoBenchWorker: an unmerged LOCAL pm/bench-* branch also refuses", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    branches: { local: [{ name: "pm/bench-50", merged: false }] },
+  });
+  assert.strictEqual(v.ok, false);
+  assert.ok(v.message.includes("pm/bench-50"));
+});
+
+test("checkNoBenchWorker: the overlay-only case is unchanged when no worktree/branch data is given", () => {
+  const pmLive = { workers: [{ item: "45", title: "bench run 46", lane: "B" }] };
+  const v = guards.checkNoBenchWorker(pmLive, false);
+  assert.strictEqual(v.ok, false);
+  assert.strictEqual(v.name, "no-bench-worker");
+});
+
+test("checkNoBenchWorker: a plain non-bench worktree (e.g. main branch) passes", () => {
+  const v = guards.checkNoBenchWorker({ workers: [] }, false, {
+    worktrees: [{ path: "C:/dev/Skilltrees", branch: "main" }],
+    branches: { local: [], remote: [] },
+  });
+  assert.strictEqual(v.ok, true);
+});
+
+/* --- parseWorktreePorcelain -------------------------------------------------------------------- */
+
+test("parseWorktreePorcelain: extracts path + branch, stripping refs/heads/", () => {
+  const text = [
+    "worktree C:/dev/Skilltrees",
+    "HEAD 75629ae0000000000000000000000000000000",
+    "branch refs/heads/main",
+    "",
+    "worktree C:/dev/Skilltrees/.claude/worktrees/agent-x",
+    "HEAD abcdef0000000000000000000000000000000a",
+    "branch refs/heads/pm/bench-46",
+    "",
+  ].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 2);
+  assert.strictEqual(result[0].branch, "main");
+  assert.strictEqual(result[1].branch, "pm/bench-46");
+  assert.strictEqual(result[1].path, "C:/dev/Skilltrees/.claude/worktrees/agent-x");
+});
+
+test("parseWorktreePorcelain: a detached worktree has a null branch", () => {
+  const text = ["worktree C:/somewhere", "HEAD abc123", "detached", ""].join("\n");
+  const result = guards.parseWorktreePorcelain(text);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].branch, null);
+});
+
 /* --- checkPacksExist ------------------------------------------------------------------------ */
 
 test("checkPacksExist: a missing pack directory refuses and names it", () => {
