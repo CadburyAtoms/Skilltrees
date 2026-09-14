@@ -421,6 +421,10 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
 *(**R-122's other half — `Isolating Pressure` placing an Omen on an unmarked target — is NOT in this section; see PR for item 132.** The existing shatter idiom on Isolating Pressure is a `release` rule (returns `false`, halting every later-ordered `edha-test-success` rule, when the target bears no Omen) followed by a `damage` rule that rides the halt. A `place` rule fires only when the target does NOT already carry the ledger entry, so it cannot sit after `release` — its `false` would skip the placement in exactly the case that needs it — and it cannot sit before `release` either, since `release` would then find and immediately shatter the entry `place` just added (placed-then-removed, which R-122's own bench wording rules out: "places one and does not also remove it"). Nothing in H3 `edha-owner-list` (`ENGINE_INDEX.md` "Sustained capped ledgers") lets one rule react to what a same-activation sibling rule found BEFORE that sibling mutated the ledger. Left open rather than engine-patched or guessed at — see the PR's Open questions.)*
 
+## Power — Disoriented, not Frightened (2026-09-13; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **PW-1 — Kneel and Absolute Authority read Disoriented, not Frightened:** on Bench — Power, apply Disoriented to a character in Black Attunement Range (any source — an Inevitable Snare, a violated Edict, or the GM's own toggle) and confirm Kneel's standing advantage rider fires against it (attack tests roll with advantage), the same as it already does for a Compelled or Weakened target. Then target that same Disoriented character with Absolute Authority: the `requireTargetStatus` gate accepts it — the talent is usable, not refused for want of a valid target. Off the rebuilt pack, both cards' text reads "Compelled, Disoriented, or Weakened"; neither mentions Frightened. Owned copies are frozen snapshots until ⟳ Sync Talents.
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
