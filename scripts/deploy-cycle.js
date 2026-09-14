@@ -178,6 +178,16 @@ function readOptionsJson() {
   return readJsonSafe(path.join(FOUNDRY_USERDATA, "Config", "options.json"));
 }
 
+// The world's own manifest — its `title` is what the /join page actually prints (item 139: the
+// post-flight check used to compare the join body against the world ID from options.json, not
+// this file's title, and refused every otherwise-good deploy). Missing/unreadable is expected
+// off-Foundry (tests, a scratch userdata dir) and is not an error here — `guards.expectedWorldTitle`
+// falls back to the id itself.
+function readWorldJson(worldId) {
+  if (!worldId) return null;
+  return readJsonSafe(path.join(FOUNDRY_USERDATA, "Data", "worlds", worldId, "world.json"));
+}
+
 function packDirExistsMap() {
   const map = {};
   for (const pack of guards.PACKS) {
@@ -241,7 +251,7 @@ function evaluateGuards(ctx, flags) {
   results.push(guards.checkModuleSrcSync(ctx.moduleSrcStatus.exitCode));
   results.push(guards.checkNoBenchWorker(ctx.pmLive, flags.forceBench, ctx.benchGuardState));
   results.push(guards.checkPacksExist(ctx.packExists));
-  results.push(guards.checkWorldConfigured(ctx.optionsJson));
+  results.push(guards.checkWorldConfigured(ctx.optionsJson, ctx.expectedWorldTitle));
   results.push(guards.checkFoundryExe(ctx.exe.chosen, ctx.exe.exists));
   return results;
 }
@@ -569,9 +579,12 @@ async function main() {
   const benchGuardState = gatherBenchGuardState();
   const packExists = packDirExistsMap();
   const optionsJson = readOptionsJson();
+  const worldId = optionsJson && optionsJson.world ? optionsJson.world : null;
+  const worldJson = readWorldJson(worldId);
+  const expectedWorldTitle = guards.expectedWorldTitle({ worldId, worldJson });
   const exe = resolveExe(flags.exe);
 
-  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, optionsJson, exe };
+  const ctx = { git: gitState, moduleSrcStatus, pmLive, benchGuardState, packExists, optionsJson, expectedWorldTitle, exe };
   const preflight = evaluateGuards(ctx, flags);
   printVerdicts("Pre-flight guards:", preflight);
 
@@ -685,8 +698,9 @@ async function main() {
     console.error(`\n${notBehind.message} — deploy proceeded on stale content. Investigate before trusting this run.`);
   }
 
-  const worldTitle = optionsJson && optionsJson.world ? optionsJson.world : null;
-  const verify = await postFlightVerify(t0, worldTitle, flags.waitSeconds, logger);
+  // Reuses the title resolved before Foundry was ever touched (item 139: this must be world.json's
+  // TITLE, e.g. "Edha" for id "edha" — never the bare id — see `expectedWorldTitle` above).
+  const verify = await postFlightVerify(t0, expectedWorldTitle, flags.waitSeconds, logger);
   printVerdicts("Post-flight verification:", verify.results);
   const verifyPass = verify.results.every((r) => r.ok);
 
