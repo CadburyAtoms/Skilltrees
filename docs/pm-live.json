@@ -1,9 +1,9 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Items 132 (#369) and 135 (#370) merged — the Omen cap tier + 1 and Power's Disoriented reads go live with the next deploy, which the PM runs the moment #370 lands; then bench run 47 (Opus) at the 00:00 reset over the whole queue. Items 142 + 143 (Chaos's Isolating Pressure dial; Power's reset list) go to one Opus worker after the bench.",
+    "note": "Deployed main @ 31443c5 at 23:14 ET (deploy-cycle.js, all guards and post-flight checks PASS): the Omen cap tier + 1 (item 132) and Power's Disoriented reads (item 135) are at the table with the Knowledge reshape and the two lowered gates; engine 902ddadb = HEAD. Foundry is up — re-join your Gamemaster client. Bench run 47 (Opus) goes at the 00:00 reset over the whole queue; then items 142 + 143 in one Opus worker.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": null,
+    "nextWakeAt": "2026-09-14T04:00:00Z",
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [],
