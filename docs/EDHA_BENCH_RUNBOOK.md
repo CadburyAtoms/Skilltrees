@@ -1668,6 +1668,61 @@ it adds a second, bench-owned option next to it:
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 47 (2026-09-14 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **The documented scoped-sync incantation `{folder: "Edha Bench"}` matches ZERO actors, and says nothing.**
+  `edhaSyncAllAdversaries` filters `a.folder?.id === folder || a.folder?.name === folder` — exact, **non-recursive**
+  — and no actor sits directly in `Edha Bench`; the roster lives in its children `Bench PCs` (18) and
+  `Bench Targets` (7). The call returns `{actors: [], sceneTokens: {}}` and reads like a success. **Use
+  `folder: "Bench Targets"` (or `actorIds`) until item 151 lands** — and the same wrong incantation is in this
+  runbook above, in the `bench-run` skill's hard rule 9, and in checklist rows 123-1 and 128-1.
+- ⭐⭐ **A scoped sync still writes to scenes you excluded — the leak is a hook, not the scope check.**
+  `edha.syncAllAdversaries({scenes: [X], dryRun: false})` rewrote a token's `sight.range` 30 → 5 on a scene that was
+  NOT X. The sync's own token loop honours the filter; the write comes from the `updateActor` hook in
+  `52-green-instinct.js`, which fires because the sync replaces `system` wholesale (so
+  `changes.system.attributes.awa` is always present) and then walks **`for (const sc of game.scenes)`** unfiltered.
+  Filed as item 147. **Until it lands, snapshot every scene's FULL token signature (including `sight`) around any
+  scoped sync, not just the ids** — an id-only diff misses this entirely.
+- ⭐⭐ **⟳ Sync Talents only refreshes `talent` items.** `path` and `action` items are skipped on BOTH sides of
+  `26-talent-sync.js` (the source map never indexes them; the owned loop `continue`s past them), so every owned path
+  card and every owned `Draw Mana` action in the world is frozen at drag-time — 24 of 24 paths stale, 18 of 18
+  Draw Mana copies stale, on Ben's three real PCs included. **A "the card still says the old thing after Sync" report
+  about a path or an action is this bug, not a deploy gap.** Filed as item 146.
+- ⭐ **A whole talent-shape claim can be made DECISIVE by arithmetic instead of by repetition.** KM-1 asked whether
+  Predatory Strike is `die + Tier×Insight` or `dice × Insight`. At 5 Insight the two ranges overlap, so no single
+  observation settles it — but `2d8 × 5` can only ever be a **multiple of 5**, and the three measured riders were
+  +20, **+18**, +25. One non-multiple closes the question. Look for a parity/divisibility invariant before spending
+  takes on a distribution.
+- ⭐ **Prove a tree-gate change on a SCRATCH character, not on a bench PC.** `Actor.create({type:"character", folder:
+  "<Bench PCs id>", system:{level, skills:{blue:{rank:2}}}})` + the pack's talents + the tree item, then read
+  `node.prerequisitesMet` — positive and both negative controls in 2–3 calls, with nothing on the roster disturbed
+  (delete the scratch actor in cleanup). `edha.skipBudget(true)` first, `false` in cleanup.
+- ⭐ **`item.use({fastForward: true})` does NOT skip the roll dialog** under cosmere 2.1.0 — `determineConfigurationMode`
+  still opens `.roll-configuration` (a `<dialog>`). Await nothing: fire `item.use(...)` **without awaiting**, sleep,
+  then click by content (`CONSUME RESOURCE` → Continue, then `CONFIGURE ROLLS` → Roll). Awaiting `use()` deadlocks the
+  `javascript_tool` call at 45 s every time.
+- ⭐ **A dealer-side `edha-damage-bonus` rider fires on damage APPLICATION, not on the attack roll.** A clean hit that
+  is never applied produces no rider card and leaves the arming status up, which reads exactly like a dead fix. Apply
+  it honestly with `target.applyDamage([{amount, type}], {originatingItem: <the weapon or talent>, edhaGraze: false})`
+  — the same entry point the card's Apply button uses.
+- ⚠️ **A plain `scene.updateEmbeddedDocuments("Token", [{_id, x, y}])` is pathed by v13 movement and can silently
+  fail or land somewhere else.** Two of three probe moves did not land and one snapped a token back to its original
+  square, with no error and no notification. The runbook already says this (`{teleport: true, animate: false}`) —
+  run 47 lost four calls re-learning it. **Read back x/y after every staging move.**
+- ⚠️ **`Combat.create()` + `createEmbeddedDocuments("Combatant", …)` duplicated a combatant again** (run 46's trap):
+  3 tokens produced 4 combatants. De-duplicate by `tokenId` before setting `turn`.
+- ⚠️ **A `healCut` / "until the end of MY next turn" mark expires on the OWNER's turn-end, which can be BEFORE the
+  victim's.** Staging the mark on the owner's own turn and then stepping to the victim's turn-end silently loses it.
+  Apply the mark **while the victim's turn is current** so the owner's next turn-end falls after the tick you want to
+  read; check `effect.getFlag("edha-content","expireAfter")` against the turn you intend to advance to.
+- ✅ **Density, measured: 13 checklist rows retired on evidence (111-1, BR-1, DM-1, DM-2, GW-1, AM-1, TE-1, KM-1,
+  OM-1, OM-2, PW-1, 128-1, and the item-124 paragraph converted to a retired 124-1 row), 1 row left open FAIL
+  (111-2) and 1 PARTIAL (123-1), 6 defects filed (items 146–151, four with the root cause proven in engine source),
+  1 ruling filed (R-127), 3 row-text corrections, and 1 blocker re-confirmed unchanged (item 88) — in ~90 driving
+  calls. End-of-run diff: 67 actors in and out, all three pre-existing scenes' token-id sets / counts / walls /
+  templates identical, Ben's started combat untouched (7 combatants, started, round 1 turn 3), macros 44/44, the
+  new `Bench Arena` left standing and empty.**
+
 ## Operating lessons from run 46 (2026-09-13 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **`edha.syncAllAdversaries()` is NOT bench-safe either — run 45's `fixPcTokens()` lesson generalises,

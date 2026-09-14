@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T05:13:15.801Z from main @ d76bf99: packs 2026-09-14T05:13:15.801Z, engine 902ddadb = HEAD, validators PASS**
+
+
 **Agent-run deploy 2026-09-14T03:14:26.600Z from main @ 31443c5: packs 2026-09-14T03:14:26.600Z, engine 902ddadb = HEAD, validators PASS**
 
 
@@ -397,36 +400,141 @@ The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approve
 `docs/analysis/talent-ecosystem/TREE-INTENT.md`). Nothing mechanical changed; these rows only
 prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
-- [ ] 🤖 **111-1 — the deployed path items carry the approved openings:** off the rebuilt packs (console, no roster needed), each path item’s `system.description.value` begins with its approved opening — leyline/Black *"Black leyline mages are predators, and the leyline feeds on them"*, heroic/Warrior *"Warriors fight in stances"*, deity/Chaos *"Maelith, the Unmaker of Certainties"* — and three spot checks hold: Black’s Draw Mana line says **5 ft** (not 10), Power’s signature-resource line names **Warlord’s Fury** and not "Bounty", and no heroic description contains "Roshar" or "Stormlight Handbook".
-- [ ] 🤖 **111-2 — an owned path item shows the new text after ⟳ Sync Talents, and the starting-skill parse still holds:** on Bench — Heroic (Warrior) and Bench — Black, the actor’s owned path item shows the new description after Sync (owned copies are frozen snapshots until then); then `edhaParseStartingSkill` over the six heroic path cards read off the pack returns Insight / Discipline / Perception / Leadership / Lore / Athletics (the creation wizard’s fallback — `tests/starting-skill.test.js` pins it against the data file, this pins it against the pack).
+*(✅ **111-1 RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…` = `HEAD`.
+All **21** path items off the rebuilt packs carry the approved prose: the 10 deity and 6 heroic cards are
+**byte-exact** against `data/path-descriptions.json`, and the 5 leyline cards carry it verbatim as a prefix
+followed by the builder's generated `<h3>Key Talent</h3>` block (21/21 prefix-match, 0 mismatches). The three
+named openings read exactly as the row asks. Spot checks: Black's Draw Mana line is *"enemies within range with
+no ally within 5 ft become Weakened"* — one `ft` mention in the whole card and it is **5**, zero `10 ft`;
+Power's line is *"Signature resource: Warlord's Fury — …"*, zero "Bounty"; zero of the 6 heroic cards contain
+"Roshar" or "Stormlight Handbook".)*
 
-- [ ] 🤖 **BR-1 — Risen Servant’s condition immunities bind (balance-review verifier, 2026-09-13):** `data/authored/deity-death.json` sets `conditionImmunities: "frightened, compelled, disoriented"` on the summon spec, while `data/adversaries.json`’s own schema note says `frightened` / `compelled` are Edha-custom and not valid system ids. Raise a Risen Servant on Bench — Death, then apply Disoriented (any source) and Compelled (Bench — Power’s `Kneel`) to it: both must be refused or removed by the immunity, not silently applied. If the custom ids are dropped by the system, the fix is engine-side (map the custom immunities through the Edha status registry) — file it, do not patch the spec.
+- [ ] 🤖 **111-2 — an owned path item shows the new text after ⟳ Sync Talents, and the starting-skill parse still holds:** on Bench — Heroic (Warrior) and Bench — Black, the actor’s owned path item shows the new description after Sync (owned copies are frozen snapshots until then); then `edhaParseStartingSkill` over the six heroic path cards read off the pack returns Insight / Discipline / Perception / Leadership / Lore / Athletics (the creation wizard’s fallback — `tests/starting-skill.test.js` pins it against the data file, this pins it against the pack).
+      *(❌ **FAIL on its first half, bench run 47 (2026-09-14) — root-caused, filed as TODO item 146.** ⟳ Sync Talents
+      **cannot refresh an owned `path` item at all.** `edha.syncNow(Bench — Black)` reported *"Edha: synced 25 talent(s) on
+      Bench — Black."* with `missing: []`, and the owned `Black` path card stayed at its old 1154-char text
+      (*"Black leyline mages are predators. They thrive where others are alone…"*) against the pack's 1857-char new text.
+      Root cause proven in `module-src/scripts/engine/26-talent-sync.js`: line 58 `if (item.type !== "talent") continue;`
+      skips every non-talent owned item, and line 39 does the same on the source side, so a `path` doc is never even
+      indexed. **Blast radius measured: 24 of 24 owned path items in the world are stale, 0 current** — including all
+      three real PCs (Tem parinaem's Scholar/Green/Knowledge, Soggy Bottom's Scholar/White/Fate, Ishee's
+      Envoy/Blue/Chaos). Bench — Heroic owns no path item at all, so the Warrior half could not be driven as written;
+      the general finding covers it. **Second half PASSES:** `edhaParseStartingSkill`, lifted verbatim from the served
+      engine and run over the six heroic PACK cards, returns Agent→Insight(ins), Envoy→Discipline(dis),
+      Hunter→Perception(prc), Leader→Leadership(lea), Scholar→Lore(lor), Warrior→Athletics(ath) — all six labels and
+      all six CONFIG ids match `tests/starting-skill.test.js`'s table. Re-test after item 146 lands.)*
+
+*(✅ **BR-1 RETIRED on evidence, bench run 47 (2026-09-14)** — the row's premise is false at runtime and all three
+immunities bind. `CONFIG.COSMERE.statuses` (the engine's registry) contains `disoriented`, `compelled` **and**
+`frightened`, so `edhaSummonCreateGM`'s `if (CONFIG.COSMERE?.statuses?.[c])` filter drops none of them: a Risen
+Servant raised on Bench — Death came up with `system.immunities.condition` = `{compelled: true, disoriented: true,
+frightened: true, …}`. Live both ways — a GM toggle of Disoriented was **refused** (*"Risen Servant (Bench — Death)
+is immune to Disoriented"*, statuses stayed `[]`) while the control status `slowed` applied normally; Bench — Power's
+`Kneel` rolled 25 vs COG 11 SUCCESS and Compelled was **refused** too (*"… is immune to Compelled"*, statuses `[]`).
+No engine fix needed. ⚠️ One defect found alongside: Kneel's success card still announced *"🎯 Kneel : Risen Servant
+(Bench — Death) is Compelled (by Bench — Power). Next action: move toward the compeller…"* for a status the immunity
+refused — filed as **TODO item 149**, with the cost-refund half as **R-127**.)*
 
 ## Draw Mana yield — R-126 (a) (2026-09-13; **ENGINE-ONLY for the number — relaunch / F5**; the card text needs **REBUILD leyline + adversaries**)
 
-- [ ] 🤖 **DM-1 — a leyline character draws its highest colour rank, not its tier:** on Bench — Black (Black rank 2, tier 1), use Draw Mana with Investiture below max − 2: the pool rises by **2** and the chat line reads *"Draws Mana — recover 2 Investiture (highest leyline rank)"*. Then on a two-colour bench actor (any deity roster actor with e.g. Black 2 / Green 3) the draw recovers **3**. Then on a boss adversary with an embedded Draw Mana (role rank 3) it recovers 3, and on a minion 1. The pool still clamps at max.
-- [ ] 🤖 **DM-2 — the rebuilt Draw Mana card says so:** off the rebuilt leyline pack and off a re-imported adversary embed, the Draw Mana action's description reads *"Recover Investiture equal to your highest leyline rank, and trigger your leyline color's Attunement rider"* — no "Tier". Owned copies on existing actors are frozen snapshots until ⟳ Sync / re-drag; the engine's number is live regardless of the card (DM-1).
+*(✅ **DM-1 AND DM-2 BOTH RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…` = `HEAD`.
+⚠️ **The row's stat line was stale and the correction makes the test STRONGER:** the bench `Bench — Black` is
+**Black rank 3, tier 2** (not rank 2 / tier 1), so rank and tier are different numbers and the card has to name the
+rank. **DM-1, four takes:** Bench — Black, Investiture 0/4 → **3**, card *"Bench — Black Draws Mana — recover 3
+Investiture (highest leyline rank)."* — 3 (the rank), never 2 (the tier). A two-colour actor (Black 2 / **Green 3** /
+Blue 2, **tier 1**) → card says **3** — the highest colour, not the tier and not the lower colour. A **boss** (green 3,
+tier 1) → **3**; a **minion** (black 1, tier 1) → **1** (`edhaDrawManaYield` reads `edhaColorRank`, and the pack's
+own written ranks already follow the role ladder). **The clamp is proven in the same takes:** both tier-1 actors have
+`inv.max` 2, so the pool went 0 → 2 and stopped while the card still said 3. **DM-2:** the leyline pack's `Draw Mana`
+action reads *"Recover Investiture equal to your highest leyline rank, and trigger your leyline color's Attunement
+rider (the effect of each Leyline Key you hold)."*, and all **42** embedded Draw Mana copies across the rebuilt
+adversary pack carry **exactly one distinct text**, byte-identical to it — **zero "Tier" mentions** anywhere.
+⚠️ The row's "owned copies are frozen until ⟳ Sync" line is worse than it reads: **18 of 18** owned Draw Mana copies
+in the world are stale ("equal to your **Tier**") and ⟳ Sync Talents can never fix the 5 on PCs — same root cause as
+111-2, filed as **TODO item 146**. The 13 on adversaries are fixed by the adversary sync.)*
 
 ## Two gates lowered and one bypass cut — Ben's second-round balance answers (2026-09-14; **REBUILD leyline + deity + ⟳ Sync Talents**)
 
-- [ ] 🤖 **GW-1 — `Ghostly Walls` is a Blue 2+ talent on the rebuilt pack:** the Blue `talent_tree` node for Ghostly Walls carries the Blue 2+ prerequisite (Absolute Stillness behind it still Blue 3+; Counterspell still 3+); a level-4 Blue bench actor with Blue 2 and Phantom Step can take it, a level-3 one cannot (depth).
-- [ ] 🤖 **AM-1 — `Adaptive Mutation` is a Green 2+ talent on the rebuilt pack:** the Life node carries Green 2+; a level-2 Life disciple (Blue 2 / Green 2, Life Surge owned) can take it.
-- [ ] 🤖 **TE-1 — the Construct's melee attack is deflected normally:** on Bench — Civilization with Tempered Edge, a Construct Slam against a Deflect-2 target shows the system's "− deflect" line actually subtracting (before the cut, `addTargetDeflect` added the deflect back as an extra instance); the card reads "deal an additional [Tier][Die] energy damage." with no "ignore deflect".
+*(✅ **GW-1, AM-1 AND TE-1 ALL RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…`.
+**GW-1:** the rebuilt Blue tree's `ghostly-walls` node carries a `skill blue rank 2` entry plus the managed
+`phantom-step` talent entry; `absolute-stillness` still reads `blue rank 3` and `counterspell` still `blue rank 3`.
+Live on a scratch level-4 Blue character owning Attunement + Redirect Momentum + Phantom Step and the Blue tree item:
+`node.prerequisitesMet` — Ghostly Walls **true**, Absolute Stillness **false**, Counterspell **false**. Two negative
+controls, both **false**: Blue dropped to rank 1; and Phantom Step removed at Blue 2.
+⚠️ **Row-text correction — "a level-3 one cannot (depth)" is not true as measured** and no longer needs testing: the
+node carries **no level requirement** (every prerequisite entry is `level: 0`), and the same character at
+`system.level` 3 reads `prerequisitesMet: true` for Ghostly Walls, identically to level 4. The budget does not block
+it either — `edhaAllowedTalents` grants **6** talents at level 3 against a 4-talent requirement chain
+(ghostly-walls ← phantom-step ← redirect-momentum ← phantom-double). What the change actually removed is the
+**rank-cap** wall: Blue 3 needs level 6, Blue 2 does not — which is exactly Ben's "level six wall" complaint on R-123.
+**AM-1:** the Life node carries `skill green rank 2` + managed `life-surge`. A scratch **level-2** Life disciple
+(Blue 2 / Green 2, Life Surge owned, Life tree owned) reads Adaptive Mutation `prerequisitesMet: true`; both negative
+controls **false** (Green dropped to 1; Life Surge removed).
+**TE-1:** the rebuilt `Tempered Edge` card reads *"Your Combat Construct's melee attacks deal an additional
+[Tier][Die] energy damage."* — **no "ignore deflect"** — and its `edha-damage-bonus` rule carries
+`addTargetDeflect: false`. Live: Bench — Civilization forged a Combat Construct, whose `Construct Slam` hit the pack
+adversary **Briar-Gone Grove (Deflect 2)** for 14 impact; the rider added *"🐺 Tempered Edge (Bench — Civilization):
++11 energy on Combat Construct's hit."* HP **60 → 37 = 23 applied = (14 + 11) − 2**. The deflect subtracted **once**
+and the rider did not pre-pay it back; the pre-cut behaviour would have applied the full 25.)*
 
 ## Knowledge's strike reshaped — R-120 (b), item 130 (2026-09-14; **REBUILD deity + ⟳ Sync Talents**)
 
-- [ ] 🤖 **KM-1 — `Predatory Strike` adds one die plus Tier per Insight, not dice × Insight:** on Bench — Knowledge with 5 Insight on the quarry (Studied Mark, then two hits, or wait two turns of Accumulate), a Predatory Strike hit at tier 1 shows the rider as **1d6 + 5** bonus vital (one die, plus one per Insight), not 1d6 × 5; the card reads "equal to [Tier][Die] plus your Tier per Insight". Then `Killing Blow` on the same quarry still rolls **1d6 × 5** — the cash-outs keep the multiplier.
+*(✅ **KM-1 RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…`. ⚠️ Stat line stale
+again: `Bench — Knowledge` is **tier 2, Red rank 3**, so `[Tier][Die]` = **2d8** and "your Tier per Insight" = **+2
+each**, i.e. the honest expectation at 5 Insight is `2d8 + 10` ∈ **[12, 26]** — not `1d6 + 5`. The shipped rule is
+`amountFormula: "((@tier)d(2 * @colorRank + 2)) + @tier * max(@counter, 1)"` and the card reads *"deal bonus Vital
+damage equal to [Tier][Die] plus your Tier per Insight on the target (minimum 1)"*. **Live, three takes at 5 Insight**
+(Studied Mark for real → 2 Insight, stacks then staged to 5 — the row's "two turns of Accumulate" equivalent):
+**+20, +18, +25** vital, every one inside [12, 26]. **This is decisive, not suggestive: the old `2d8 × 5` can only
+ever produce a multiple of 5, and 18 is not one.** Insight stayed capped at 5 across all three (the strike's
+`placeCounter: 1` fired each time: *"📖 Predatory Strike : 1 Insight placed … (now 5)"*).
+**Killing Blow keeps the multiplier:** same quarry, same 5 Insight — *"⚡ Killing Blow (Bench — Knowledge) — **75**
+vital … **(2d8) \* 5** → 8 + 7 = 15 → 75"*, followed by *"📖 Killing Blow : all 5 Insight removed"*.
+⚠️ One defect found alongside: Predatory Strike's `edha-note` cue card still reads *"the next hit auto-adds
+[Tier][Die] Vital **per Insight**"* — the pre-item-130 multiplicative phrasing, contradicting its own description and
+the shipped formula. Filed as **TODO item 148** (DATA, REBUILD deity).)*
 
 ## Chaos — Omen cap tier + 1 (2026-09-13; **REBUILD deity + ⟳ Sync Talents**)
 
-- [ ] 🤖 **OM-1 — two Omens held at tier 1:** on Bench — Chaos (tier 1), use Entropy Strike on one enemy, then place a second Omen (Entropy Strike or Spreading Omen) on a different enemy: the second placement's card reads **(2/2)**, not (1/1) — `capFormula` is now `@tier + 1` (2 at tier 1, 3 from tier 2). Both bearers keep the status. A third placement in the same state is refused ("you are at your cap of 2").
-- [ ] 🤖 **OM-2 — Cascade Collapse hits both:** with the two Omens from OM-1 still live and both bearers within Blue Attunement Range, use Cascade Collapse: the shared Blue vs. Cognitive roll resolves once, each bearer is gated on its own Cognitive, and every bearer whose test succeeds has its Omen removed — both take [Tier][Die] spirit damage and Disoriented until the start of your next turn, not just one.
+*(✅ **OM-1 AND OM-2 BOTH RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…`.
+⚠️ Stat line stale: `Bench — Chaos` is **tier 2**, so the cap is **3**, and that is a *stronger* reading of
+`capFormula: "@tier + 1"` than tier 1 would be (3 is neither the tier nor 1). Both Entropy Strike and Spreading
+Omen carry `capFormula: "@tier + 1"` on the rebuilt pack; the card says *"You may have up to tier + 1 Omens active
+simultaneously; placements beyond this cap are lost."*
+**OM-1, four placements:** *"📋 Entropy Strike : Bench Target — Adjacent A bears your Omen **(1/3)**"* →
+*"… Bench Target — Undefended … **(2/3)**"* → *"… Cullwolf Pack … **(3/3)**"* → the fourth, on a successful test
+(9 vs COG 8 SUCCESS), *"📋 Entropy Strike : **no Omen placed on Briar-Gone Grove — you are at your cap of 3.**"*
+All three bearers kept `omen` and the owner's ledger held exactly three entries.
+**OM-2, one take, and it separates the bearers:** Cascade Collapse rolled **one** shared Blue test (13) and gated
+each bearer on its own Cognitive — *"Cascade Collapse — 13, sweeping your omens within Attunement Range (blue):
+Bench Target — Adjacent A: **resists (COG 14)** · Bench Target — Undefended: **affected** · Cullwolf Pack:
+**affected**"*. Both affected bearers took spirit damage **and** Disoriented (*"⚡ … — 15 spirit to Bench Target —
+Undefended"* HP 17 → 2, *"⚡ … — 7 spirit to Cullwolf Pack"* HP 7 → 0, each followed by *"Cascade Collapse —
+… is Disoriented."*), their Omens were released, and the resisting bearer kept its Omen and its HP.
+⚠️ One cosmetic defect found alongside: the release cards print the wrong denominator — *"(2/2 left)"* and
+*"(1/2 left)"* at a cap of 3, because Cascade Collapse's (and Isolating Pressure's) `release` rule still carries
+`capFormula: "@tier"` while the `place` rules use `@tier + 1`. Filed as **TODO item 150** (DATA, REBUILD deity).)*
 
 *(**R-122's other half — `Isolating Pressure` placing an Omen on an unmarked target — is NOT in this section; see PR for item 132.** The existing shatter idiom on Isolating Pressure is a `release` rule (returns `false`, halting every later-ordered `edha-test-success` rule, when the target bears no Omen) followed by a `damage` rule that rides the halt. A `place` rule fires only when the target does NOT already carry the ledger entry, so it cannot sit after `release` — its `false` would skip the placement in exactly the case that needs it — and it cannot sit before `release` either, since `release` would then find and immediately shatter the entry `place` just added (placed-then-removed, which R-122's own bench wording rules out: "places one and does not also remove it"). Nothing in H3 `edha-owner-list` (`ENGINE_INDEX.md` "Sustained capped ledgers") lets one rule react to what a same-activation sibling rule found BEFORE that sibling mutated the ledger. Left open rather than engine-patched or guessed at — see the PR's Open questions.)*
 
 ## Power — Disoriented, not Frightened (2026-09-13; **REBUILD deity + ⟳ Sync Talents**)
 
-- [ ] 🤖 **PW-1 — Kneel and Absolute Authority read Disoriented, not Frightened:** on Bench — Power, apply Disoriented to a character in Black Attunement Range (any source — an Inevitable Snare, a violated Edict, or the GM's own toggle) and confirm Kneel's standing advantage rider fires against it (attack tests roll with advantage), the same as it already does for a Compelled or Weakened target. Then target that same Disoriented character with Absolute Authority: the `requireTargetStatus` gate accepts it — the talent is usable, not refused for want of a valid target. Off the rebuilt pack, both cards' text reads "Compelled, Disoriented, or Weakened"; neither mentions Frightened. Owned copies are frozen snapshots until ⟳ Sync Talents.
+*(✅ **PW-1 RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…`.
+**Text:** off the rebuilt deity pack, `Kneel` reads *"You have an advantage on attack tests against any **Compelled,
+Disoriented, or Weakened** character in Attunement Range."* and `Absolute Authority` *"choose a **Compelled,
+Disoriented, or Weakened** character in Attunement Range"* — **zero "Frightened" on either**, and both rules carry
+the status list `compelled,disoriented,weakened` (`edha-test-rider.whenTargetStatus` / `edha-def-test.
+requireTargetStatus`). Bench — Power's OWNED copies are byte-identical to the pack (⟳ Sync carried them —
+talents sync fine; it is `path`/`action` items that do not, see item 146).
+**Kneel's rider, two takes with only the status changed:** same shooter, same target 46 ft away (inside Black
+Attunement Range 60 ft at rank 3) — undisoriented `preAttackRoll` captured `advantageMode: "none"`, formula
+**`1d20 + 4`**; with Disoriented applied, `advantageMode: "advantage"`, formula **`2d20kh + 4`** (message roll
+options agree).
+**Absolute Authority's gate, both directions:** against the Disoriented target it was **accepted** — consume
+dialog, Black test, *"Absolute Authority : 24 vs Bench Target — Adjacent A's COG 14 — SUCCESS."* + the 👑 note,
+2 Investiture spent (4 → 2). Negative control with every status cleared: **refused before cost** — *"Edha: Bench
+Target — Adjacent A must be compelled / disoriented / weakened for Absolute Authority — nothing spent."*, pool
+unchanged at 2.)*
 
 ## Three deity gates get a job — item 108 (2026-09-14; **REBUILD deity + ⟳ Sync Talents**)
 
@@ -899,14 +1007,22 @@ prints **twice** on one card — `edhaDeliveredNote` returns the line as the not
 then appends it again inside `(no HP applied — …)`. The halved case does not duplicate (its
 parenthetical is the "+2 HP applied" line). Filed as **TODO item 124**.)*
 
-🤖 **Item 124 re-test — the fully-blocked Nexus-Fed tick names the mark once (ENGINE-ONLY, F5; no
-rebuild, no ⟳ Sync).** New pure helper `edhaRegenSuffix` shrinks the blocked suffix to
-`(no HP applied.)` when the note it is paired with already carries the composed sentence. Same
-Sow, same three marks as bench 46 (withered / halved / unmarked control); **advance the round
-between takes** — `edhaPostCueCard` is once per round. Expect: **WITHERED** — the composed
-sentence ("…cannot regain HP (Withering Touch) — no healing lands.") appears exactly ONCE on the
-card, followed by the short `(no HP applied.)` parenthetical, no un-gated 5 anywhere; **HALVED**
-and **UNMARKED control** — byte-identical to bench 46's recorded cards (unchanged by this fix).
+- [x] 🤖 **124-1 — the fully-blocked Nexus-Fed tick names the mark once (ENGINE-ONLY, F5; no rebuild,
+      no ⟳ Sync):** the pure helper `edhaRegenSuffix` shrinks the blocked suffix to `(no HP applied.)`
+      when the note it is paired with already carries the composed sentence. Same Sow, same three marks
+      as bench 46 (withered / halved / unmarked control), a round advanced between takes.
+      *(✅ **RETIRED on evidence, bench run 47 (2026-09-14)** — engine hash-verified `902ddadb…` = `HEAD`. One fresh
+      pack import (`B47 Garden Sow`, 62 HP, same block as bench 46) in one inactive bench combat of three combatants
+      on the Bench Arena, both marks produced **for real** and the round advanced between every take.
+      **WITHERED** — `Withering Touch` armed on `Bench — Death` (`withernext`) then a melee Sidesword hit gave
+      `healCut {fraction: 0, byName: "Withering Touch"}`; HP **28 → 28**, card verbatim: *"⏰ **Nexus-Fed** (B47
+      Garden Sow): B47 Garden Sow cannot regain HP (Withering Touch) — no healing lands. **(no HP applied.)**"* —
+      the composed sentence appears **exactly once**, the short parenthetical follows it, and "regains 5 HP" appears
+      nowhere. Bench 46's duplicate tail (*"(no HP applied — …no healing lands.)"*) is gone.
+      **HALVED** — a `Bench — Black` hit gave `healCut {fraction: 0.5, byName: "Necrotic Grasp"}`; HP **24 → 26**,
+      card *"⏰ Nexus-Fed (B47 Garden Sow): regains 2 HP. (+2 HP applied, end of turn.)"* — byte-identical to bench 46.
+      **UNMARKED control** — HP **40 → 45**, card *"⏰ Nexus-Fed (B47 Garden Sow): Nexus-Fed — the Sow regains 5 HP.
+      (+5 HP applied, end of turn.)"* — byte-identical to bench 46. Item 124's fix is live and did not over-shoot.)*
 
 ## Talent ecosystem review — two observations rulings R-95 and R-107 wait on (2026-09-12 — DOCS-ONLY: nothing to deploy, no rebuild, no ⟳ Sync)
 
@@ -965,6 +1081,34 @@ scope filters, and that a combat elsewhere is genuinely left untouched.)*
       is synced for real, and that a **started combat Ben is running on a DIFFERENT scene (never one
       the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
       not read, sync, or touch them at all.
+      *(⚠️ **PARTIAL, bench run 47 (2026-09-14) — every clause the row names PASSES, but the scene scope is NOT
+      airtight. Row stays open until item 147 lands.** Engine hash-verified `902ddadb…` = `HEAD`; two pack adversaries
+      imported fresh into `Bench Targets`, one token of one of them placed on the Playtest Map.
+      **The dry run reports a plan and writes nothing:** `edha.syncAllAdversaries({folder: "Bench Targets", scenes:
+      [<Playtest Map id>]})` returned `{dryRun: true, actors: ["Cullwolf Pack","Briar-Gone Grove"], sceneTokens:
+      {V0iTbYCyBKF3zBLC: 1}, skipped: [3 renamed variants], missing: ["Bench Target — Undefended"]}` — a deliberately
+      staled owned `Draw Mana` stayed stale and the token's staged `displayName: 40` stayed 40.
+      **The real run syncs the same set:** `dryRun: false` → *"Cullwolf Pack (6 items, 1 token)"*, *"Briar-Gone Grove
+      (11 items)"* (its only token is on an out-of-scope scene, so no token line) — the staled card came back to the
+      current pack text and the Playtest Map token's `displayName` snapped 40 → 20.
+      **Ben's started combat is untouched**, across every call: `r4j178xQ2X77c1eQ` on "Playtest Map (Copy)" stayed
+      `started: true, round 1, turn 3, 7 combatants` with the same combatant token ids, and that scene's full token
+      signature (id/x/y/size/texture/disposition/sight) was byte-identical each time. The **bare, unscoped**
+      `edha.syncAllAdversaries()` correctly **REFUSED** and wrote nothing, naming all four of his combat's adversary
+      tokens (*"Wrenchmaster token 0gMzcFfIislCbVag on 'Playtest Map (Copy)' combat r4j178xQ2X77c1eQ"* + 3
+      Cinderhounds) — the plan it declined would have stamped 17 + 19 + 2 tokens across three scenes.
+      ❌ **The leak:** with `scenes: [<Playtest Map id>]`, a token on the **Bench Arena** — a scene NOT in `scenes` —
+      had its `sight.range` rewritten 30 → 5, reproducibly, with no line in the report. Root cause proven: the
+      `updateActor` hook in `module-src/scripts/engine/52-green-instinct.js` fires because
+      `edhaSyncAdversaryActor` replaces `system` wholesale (`{recursive: false, diff: false}`), so
+      `changes.system.attributes.awa` is always present, and the hook then walks **`for (const sc of game.scenes)`**
+      unfiltered. Filed as **TODO item 147** (ENGINE-ONLY, F5).
+      ⚠️ **Row-text correction — the incantation this row prints does nothing.** `folder: "Edha Bench"` resolves to
+      **zero** candidate actors (`{actors: [], sceneTokens: {}}`): the filter is `a.folder?.id === folder ||
+      a.folder?.name === folder`, exact and non-recursive, and **no actor sits directly in "Edha Bench"** — the
+      roster lives in its children `Bench PCs` and `Bench Targets`. Use `folder: "Bench Targets"` (or `actorIds`)
+      until item 151 fixes it; the same wrong incantation is in row 128-1, `docs/EDHA_BENCH_RUNBOOK.md` and the
+      `bench-run` skill's hard rule 9.)*
 
 ## Bench Arena scene creation — item 128 / PM-R19 (2026-09-13 — TOOLING, no pack rebuild, no ⟳ Sync)
 
@@ -977,20 +1121,26 @@ plain background, a 100 px / 5 ft grid, and a footprint sized for the roster. `b
 create, the idempotent find, the roster placement, the scoped adversary sync against the new
 scene, and the required byte-identical Ben-scene diff, in one pass.)*
 
-- [ ] 🤖 **128-1 — the Bench Arena is created, found idempotently, hosts a real row, and every Ben
-      scene is untouched:** snapshot every scene's id and, for "Playtest Map" and any other scene
-      Ben has, its token-id set and count. Set `USE_ARENA = true` in `bench-setup-console.js` and
-      paste it — confirm the log line reads `arena: created <id>` and the scene exists (view it,
-      never activate/deactivate — hard rule 3 is unchanged by this grant). Paste the script again
-      unchanged — confirm `arena: found <id>` with the SAME id and no second `Bench Arena` scene.
-      Set `PLACE_TOKENS = true` and run once more — the roster lands on the Bench Arena, not the
-      Playtest Map. Run one cheap engine-wide row there. Then call the scoped adversary sync
-      (item 123) against the arena's id — `edha.syncAllAdversaries({ folder: "Edha Bench", scenes:
-      [<arena id>], dryRun: false })` — and confirm it reports and writes only against that scene.
-      Clean up everything the run created ON the arena (tokens, any combat) — the arena scene
-      itself stays standing for the next run, it is not deleted. Finally confirm the snapshot taken
-      at the start: "Playtest Map"'s token-id set and count, and every other Ben scene, are
-      byte-identical to before — the arena run must leave them exactly as found.
+*(✅ **128-1 RETIRED on evidence, bench run 47 (2026-09-14) — the Bench Arena now exists and every other scene came
+through untouched.** Engine hash-verified `902ddadb…` = `HEAD`. **Created:** the first `USE_ARENA = true` run logged
+`arena: created rtek97ETZ7jKHcmJ` — a 3000 × 2100 scene, plain background, square grid `size 100 / distance 5 ft`,
+`active: false`. **Found idempotently:** the same script pasted again logged `arena: found rtek97ETZ7jKHcmJ` — the
+same id, still exactly one scene named `Bench Arena`, world scene count 4. **Roster placed there, not on the
+Playtest Map:** `PLACE_TOKENS = true` → `+23 tokens placed on "Bench Arena"`, while the Playtest Map's token-id set
+and count (33) were unchanged and the ACTIVE scene stayed "Palewater Ford" throughout — the arena was only *viewed*,
+never activated. **Rows hosted there — far more than "one cheap row":** PW-1, KM-1, OM-1, OM-2, TE-1, BR-1 and the
+item-124 re-test (124-1) were all driven on the arena, including a three-combatant inactive combat advanced across
+three rounds. **Scoped sync against the arena id:** `{folder: "Bench Targets", scenes: ["rtek97ETZ7jKHcmJ"],
+dryRun: false}` → *"Cullwolf Pack (6 items, 1 token)"*, *"Briar-Gone Grove (11 items, 1 token)"*; a deliberately
+staled owned `Draw Mana` came back to the pack text and an arena token's `displayName` staged to 40 snapped to the
+pack prototype's 20 — while "Playtest Map", "Playtest Map (Copy)" and "Palewater Ford" were **byte-identical**
+across every one of those calls. **Cleaned up:** all 28 arena tokens and the bench combat deleted; the arena scene
+itself left standing with 0 tokens, as the grant requires. **End-of-run diff:** 67 actors in and out with no extras
+and none missing; all three pre-existing scenes' token-id sets, counts, wall counts and template counts identical;
+Ben's started combat untouched. ⚠️ The row's `folder: "Edha Bench"` incantation matches zero actors — see 123-1's
+correction and **TODO item 151**; the arena-scoped calls above used `folder: "Bench Targets"`. ⚠️ An out-of-scope
+sight-range leak found while driving 123-1 is filed as **TODO item 147** — it never reached a Ben scene in this run
+because the actors involved had no tokens on one.)*
 
 ---
 
