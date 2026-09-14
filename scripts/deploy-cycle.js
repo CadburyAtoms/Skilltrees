@@ -35,11 +35,14 @@
  *
  * ARCHITECTURE. Every refuse/pass/fail DECISION is a named pure function imported from
  * `scripts/lib/deploy-guards.js` — this file's only job is to gather the real data (git, fs,
- * PowerShell for process control ONLY, plain `http` for the localhost poll) and hand it to those
- * functions. That split is what lets `tests/deploy-cycle.test.js` pin every guard against a
+ * PowerShell for process control ONLY, plain `http` for the localhost poll, and — item 152, the
+ * no-bench-worker guard only — `gh pr list` for a candidate branch's merge status) and hand it to
+ * those functions. That split is what lets `tests/deploy-cycle.test.js` pin every guard against a
  * fixture with no Foundry, no live git remote, and no Windows (CI is `ubuntu-latest`) — the ONLY
  * thing CI's smoke test does with this file itself is spawn it with `--dry-run`, which never
- * calls PowerShell, never touches the module dir, and never writes outside `tmp/`.
+ * calls PowerShell, never touches the module dir, and never writes outside `tmp/` (the `gh` call
+ * is skipped entirely unless a `pm/bench-*` branch the ancestry test calls unmerged actually
+ * exists, and is bounded + never fatal either way — see `ghPrLookup`).
  *
  * The five packs this rebuilds/verifies, in build order (bat step 7): leyline, deity, heroic,
  * adversaries, items — see `deploy-guards.js`'s `PACKS` (adversaries/items are actor/item packs,
@@ -156,6 +159,53 @@ function parseBranchListOutput(text) {
     .filter(Boolean);
 }
 
+// item 152: gh CLI lookup for ONE candidate branch's PR — spawned only for a branch the ancestry
+// test above already called unmerged (see `withPrLookup` below), since `gh` is a real network
+// call and an ancestry-merged branch is already known-good with no need to spend one. Two
+// targeted queries rather than one broad one, so the common/important case (the brief's own
+// suggested command) is used verbatim: first the MERGED lookup: if that finds a PR, this branch
+// is done, full stop. Only when it finds nothing do we ask whether an OPEN pr exists at all, so a
+// refusal can name it instead of just saying "not merged" with no further clue.
+//
+// Returns `{ mergedPr, openPr, prLookup }` — `prLookup: "ok"` once `gh` has genuinely answered
+// (merged, open, or neither), `"unavailable"` when `gh` is missing, unauthenticated, offline, or
+// errors/times out for any other reason. `checkBranchMergeStatus` (deploy-guards.js) is the pure
+// decision that reads this; this function only gathers.
+const GH_LOOKUP_TIMEOUT_MS = 8000;
+
+function ghPrLookup(branchName) {
+  // `gh pr list --head` wants the branch's own short name — never an `origin/` remote prefix.
+  const head = String(branchName || "").replace(/^origin\//, "");
+  const ghJson = (state, fields) => {
+    const out = execFileSync(
+      "gh",
+      ["pr", "list", "--state", state, "--head", head, "--json", fields, "--limit", "1"],
+      { cwd: REPO_ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: GH_LOOKUP_TIMEOUT_MS }
+    );
+    return JSON.parse(out || "[]");
+  };
+  try {
+    const merged = ghJson("merged", "number,mergeCommit");
+    if (merged.length) {
+      // Only ever reached for a branch the ancestry test already called unmerged — a plain
+      // "create a merge commit" merge keeps the branch's own tip as an ancestor, so a MERGED pr
+      // surviving to here can only be a squash or a rebase merge. See checkBranchMergeStatus's
+      // own comment for why this repo's bench branches specifically are squash, not rebase.
+      return { mergedPr: { number: merged[0].number, method: "squash" }, openPr: null, prLookup: "ok" };
+    }
+    const open = ghJson("open", "number");
+    if (open.length) {
+      return { mergedPr: null, openPr: { number: open[0].number }, prLookup: "ok" };
+    }
+    return { mergedPr: null, openPr: null, prLookup: "ok" };
+  } catch {
+    // `gh` not on PATH, not authenticated, offline, rate-limited, or any other error — never fail
+    // the guard over a lookup it could not make; the caller keeps today's ancestry-only refusal,
+    // just worded "unverified" (checkBranchMergeStatus) instead of a confirmed "no PR exists".
+    return { mergedPr: null, openPr: null, prLookup: "unavailable" };
+  }
+}
+
 function gatherBenchGuardState() {
   const worktrees = guards.parseWorktreePorcelain(gitSafe(["worktree", "list", "--porcelain"]));
 
@@ -164,11 +214,13 @@ function gatherBenchGuardState() {
   const localMerged = new Set(parseBranchListOutput(gitSafe(["branch", "--merged", "origin/main"])));
   const remoteMerged = new Set(parseBranchListOutput(gitSafe(["branch", "-r", "--merged", "origin/main"])));
 
+  const withPrLookup = (name, merged) => (merged ? { name, merged } : { name, merged, ...ghPrLookup(name) });
+
   return {
     worktrees,
     branches: {
-      local: localNames.map((name) => ({ name, merged: localMerged.has(name) })),
-      remote: remoteNames.map((name) => ({ name, merged: remoteMerged.has(name) })),
+      local: localNames.map((name) => withPrLookup(name, localMerged.has(name))),
+      remote: remoteNames.map((name) => withPrLookup(name, remoteMerged.has(name))),
     },
   };
 }
