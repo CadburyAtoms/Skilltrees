@@ -13,6 +13,16 @@ The open questions are filed as rulings **R-95 … R-111** in `EDHA_RULINGS.md` 
 added 2026-09-12 from the cross-cut's problem ledger), not as checklist rows, because they ask Ben
 to *decide*, not to *look*.
 
+**The readable per-tree read is `TREE-INTENT.md`** (2026-09-13): what each of the 21 trees actually
+is, from its cards — feel, playstyle, specialties as built, where the prose is wrong, and a draft
+opening per tree. It is the source for the R-104 prose pass (item 111) and supersedes the raw
+`profiles/` for that purpose (three profiles are stale against the cards after PRs #329 and #337).
+
+**The balance review that followed the prose pass is `BALANCE-REVIEW.md`** (2026-09-13): each
+tree measured against its now-honest intent at levels 1, 5 and 7 — ten findings ranked, six new
+rulings (R-120 … R-125) filed in `EDHA_RULINGS.md` §D. Its arithmetic is `balance-turns.js`
+(hand-encoded lines with the assumptions at the top; run it, change an assumption, re-run).
+
 **An independent critique of the seventeen rulings is in `CRITIQUE.md`** (2026-09-12): each
 ruling re-derived from the talent text, the engine and the system source, with a verdict —
 11 HOLD, 4 WEAKENED (R-96, R-98, R-106's sub-count, R-111), 2 WRONG on a load-bearing claim

@@ -1223,7 +1223,7 @@ function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
     img: "icons/magic/light/explosion-star-glow-blue.webp",
     system: {
       id: "draw-mana", type: "basic",
-      description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
+      description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your highest leyline rank, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
       activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
       damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
     },

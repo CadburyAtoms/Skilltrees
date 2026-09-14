@@ -18527,8 +18527,13 @@ function edhaUnseenWardPreRoll(roll, source, config) {
 for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaUnseenWardPreRoll);
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
- * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
- * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the
+ * Canon (R-126 (a), Ben 2026-09-13): "1 Action: recover Investiture equal to your HIGHEST attuned
+ * leyline rank and trigger your leyline color's Attunement rider." From 2026-06-12 to 2026-09-13 the
+ * amount was the actor's TIER — one per Action at levels 1–5 — which turned out to be an
+ * implementation default no ruling had set (the initial-atlas design text said only "restores
+ * Investiture"); the balance review's yardstick 4 surfaced it and Ben chose the rank. The amount is
+ * `edhaDrawManaYield` below, pinned in tests/draw-mana-yield.test.js. The Draw Mana action is granted
+ * by every leyline path (foundry-build pathEvents); the
  * per-color effect lives on the Key talent — ON ITS OWN DOCUMENT, every one of them, reached by the
  * `edha-draw-mana` event:
  *   Blue/Red → `edha-next-test-mod`, attribute-gated (07-24y); Red's Reaction reminder = `edha-note`.
@@ -18636,13 +18641,21 @@ async function edhaRunPulse(item, h) {
     content: `<p>🕊️ <strong>${item.name}</strong>: healed ${healedCount} of ${inRange.length + self} ${enemies ? "creature" : "ally(ies)"} for <strong>${delivered}</strong> HP within ${ft} ft${h.visibleOnly ? " (visible)" : ""}${skipBits.length && !enemies ? ` — skipped ${skipBits.join(", ")}` : ""}${cutNames.length ? ` — no healing landed on ${cutNames.join(", ")}` : ""}.${note}</p>` });
   await gmAccounting(picked.length);
 }
+/* R-126 (a), 2026-09-13 — the recovered amount: the highest of the five colour ranks, read through
+ * edhaColorRank (so an adversary with no build-written rank in a colour resolves its role rank —
+ * ruling 122's fallback), floor 1. Tier does not enter it. Pure; the test file pins it. */
+function edhaDrawManaYield(actor) {
+  let best = 0;
+  for (const c of EDHA_LEY_COLORS) best = Math.max(best, Number(edhaColorRank(actor, c)) || 0);
+  return Math.max(1, best);
+}
 async function edhaDrawMana(item) {
   try {
     const actor = item?.actor; if (!actor) return;
-    const tier = Number(actor.system?.tier) || 1;
+    const gain = edhaDrawManaYield(actor);
     const inv = actor.system?.resources?.inv;
-    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await edhaResourceWrite(actor, "inv", { value: Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }, edhaBookkeepingTag("Draw Mana (recover Investiture)")); }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${tier} Investiture.</p>` });
+    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await edhaResourceWrite(actor, "inv", { value: Math.min(max ?? ((inv.value || 0) + gain), (inv.value || 0) + gain) }, edhaBookkeepingTag("Draw Mana (recover Investiture)")); }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${gain} Investiture (highest leyline rank).</p>` });
     // …then the document-driven riders (every Key since 2bZ). AFTER the summary card so the
     // recover-Investiture line still reads first; each rule posts its own card.
     await edhaDispatchDrawMana(actor, item);

@@ -838,7 +838,7 @@
     "specialty": "Calculation",
     "name": "Counterspell",
     "action": "Reaction",
-    "cost": "2 Focus; 1 Investiure",
+    "cost": "2 Focus; 1 Investiture",
     "prerequisites": "Blue 3+",
     "description": "When a character within Attunement Range spends Investiture to activate a talent, spend 2 focus and 1 Investiture to test Blue vs. their Cognitive defense. On a success, the talent fails. ",
     "flavor": "Every talent has a flaw in its logic. Find it fast enough, and it unravels.",

@@ -343,7 +343,7 @@ All in `…/Skilltrees/data/`, each keyed by **exact talent name**, each read by
 
 The talent's **text/identity** (name, action, cost, prerequisites, description, flavor, tags, layout, connections) lives in the atlas files: `leyline.json` (5 colors), `domain.json` (10 deities), `cosmere.json` (6 heroic paths). See §10.
 
-> Draw Mana's color riders and the Investiture formula (`2 + max(AWA, PRE)`) are **hardcoded** in `register-skills.js` (small fixed canon), not in a table.
+> Draw Mana's color riders, its yield (Investiture equal to your highest attuned colour rank — R-126 (a), 2026-09-13; `edhaDrawManaYield`) and the Investiture formula (`2 + max(AWA, PRE)`) are **hardcoded** in `register-skills.js` (small fixed canon), not in a table.
 
 ---
 
