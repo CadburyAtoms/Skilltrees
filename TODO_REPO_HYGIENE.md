@@ -3774,7 +3774,7 @@ scripts/gates.js` green.
 **PM:** lane R · model sonnet · size S · deps — · verify: the parse check + gates. Filed 2026-09-13
 by the PM as the design-proposal batch items 101/106/107/108/109/114 were waiting on.
 
-## 128. [ ] The bench may CREATE its own scenes for test runs (Ben, 2026-09-13) — write the licence into the bench skill and runbook, and give the roster script a standing Bench Arena (DOCS + TOOLING) (2026-09-13)
+## 128. [x] (2026-09-13, PR #362) The bench may CREATE its own scenes for test runs (Ben, 2026-09-13) — write the licence into the bench skill and runbook, and give the roster script a standing Bench Arena (DOCS + TOOLING) (2026-09-13)
 
 **Why:** Ben, phone board 2026-09-13 16:13 ET, on R-113: *"a. I also need to give permission to create new scenes specifically for future test bench runs."* Today the bench's licence is the existing "Playtest Map" (PM-R13, widened 2026-09-06) and it stays off every other scene — bench run 46 found Ben's live combat on "Playtest Map (Copy)" and rightly refused to touch it. A bench-owned scene removes the collision for good: the bench creates and uses its own, and Ben's scenes are never in scope.
 

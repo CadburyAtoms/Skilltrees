@@ -1,25 +1,12 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Sunday evening: the deploy script ran for real at 20:46 — Foundry closed, packs rebuilt, relaunched into Edha; re-join your Gamemaster client. Two workers are running: the bench's own scene (item 128) and two small verifier fixes (138 + 139). Seven rulings still wait on the Needs Ben tab.",
+    "note": "Sunday evening: item 128 merged — the next bench run can create its own Bench Arena scene. One worker left (two small deploy-verifier fixes). The deploy ran for real at 20:46; re-join your Gamemaster client if you have not. Seven rulings still wait on the Needs Ben tab.",
     "waitingOn": "re-join your Gamemaster client (Foundry relaunched 20:47) · seven rulings: R-92, R-114 … R-119 · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 10:26 ET hand-started (Ben, desktop, weekend window)"
   },
   "workers": [
-    {
-      "item": "128",
-      "title": "PM-R19: the bench may create its own scenes — licence in the skill + runbook; a standing Bench Arena in the roster script",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/128-bench-arena-scene",
-      "startedAt": "2026-09-14T00:50:00Z",
-      "agent": "Work item 128",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS + TOOLING"
-    },
     {
       "item": "138+139",
       "title": "deploy-cycle.js verifier fixes: overlay signal by lane/item/branch; /join check by the world's title, case-insensitive",
