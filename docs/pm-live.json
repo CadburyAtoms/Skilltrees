@@ -1,25 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Landed the interactive session's three PRs (#366 with #360, #356) and deployed main @ 61a97d2 at 22:10 ET — the first deploy-cycle run that verified itself end to end; items 130 / 133 / 134 are at the table. Item 132 (Chaos's Omen cap) is running; 135 goes at 00:26; bench 47 (Opus) after 00:00.",
+    "note": "Item 132 merged (#369): the Omen cap is tier + 1 at the next deploy; Isolating Pressure's placement half needs an engine dial → item 142 (Opus). Nothing is running until the 00:26 slot (item 135), then a deploy and bench run 47 (Opus, after 00:00).",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": null,
+    "nextWakeAt": "2026-09-14T04:26:00Z",
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
-  "workers": [
-    {
-      "item": "132",
-      "title": "R-122 (a): Chaos's Omen cap becomes tier + 1; Isolating Pressure places an Omen on an unmarked target (DATA, REBUILD deity)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/132-chaos-omen-cap",
-      "startedAt": "2026-09-14T02:13:28Z",
-      "agent": "Work item 132",
-      "phase": "working",
-      "pr": null,
-      "note": "repo-only worker in its own worktree; its three 🤖 rows are bench 47's after the next deploy"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
