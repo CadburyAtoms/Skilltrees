@@ -428,6 +428,10 @@ prove the rebuilt packs and the Sync carry the text. Any bench actor works.
 
 - [ ] 🤖 **PW-1 — Kneel and Absolute Authority read Disoriented, not Frightened:** on Bench — Power, apply Disoriented to a character in Black Attunement Range (any source — an Inevitable Snare, a violated Edict, or the GM's own toggle) and confirm Kneel's standing advantage rider fires against it (attack tests roll with advantage), the same as it already does for a Compelled or Weakened target. Then target that same Disoriented character with Absolute Authority: the `requireTargetStatus` gate accepts it — the talent is usable, not refused for want of a valid target. Off the rebuilt pack, both cards' text reads "Compelled, Disoriented, or Weakened"; neither mentions Frightened. Owned copies are frozen snapshots until ⟳ Sync Talents.
 
+## Blue — False Premise denies Reactions (2026-09-14; **REBUILD leyline + ⟳ Sync Talents**)
+
+- [ ] 🤖 **FP-1 — False Premise denies a Reaction instead of duplicating Pattern Recognition's disadvantage:** on Bench — Blue, owning both `Pattern Recognition` and `False Premise`, have a target within Attunement Range succeed a Cognitive test: `Pattern Recognition`'s own `edha-next-test-mod` disadvantage still writes and posts its own card exactly as before — confirm it fires unchanged. Separately, react with `False Premise`, spend 1 Investiture, and test Blue vs. that target's Cognitive defense; on a success confirm the target now carries the `noreactions` status (icon on the token HUD) and cannot take a Reaction until the start of ITS OWN next turn, at which point the status clears itself — not a second disadvantage stack, and not tied to your (the owner's) turn.
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
