@@ -1,24 +1,24 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Items 107 (#374) and 108 (#375) merged beside it: False Premise denies Reactions and the three deity gate dials read their colour's rank at the next deploy, which the PM runs once the bench is off the table. After the bench: items 142 + 143 in one Opus worker, then 101. The loop stops before 07:00.",
-    "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
+    "note": "Bench run 47 done (#376): 13 rows passed on evidence; the one FAIL is a real bug on your own PCs — ⟳ Sync Talents never refreshes owned path cards or Draw Mana actions (item 146, fix pass 12 next); the scoped adversary sync leaks a sight write across scenes (item 147). R-127 is yours on the Needs Ben tab (refund when the target is immune). Next: the deploy for items 107 + 108, then fix pass 12 (Opus), then items 142 + 143 + 150. Item 140 (Sonnet) is running.",
+    "waitingOn": "R-127 (refund on an immune target — the card carries the options) · item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [
     {
-      "item": "bench-47",
-      "title": "Bench run 47 — the 23:14 deploy (main @ 31443c5, engine 902ddadb): 14 open 🤖 rows + item 124's re-test; Predator's Due stays blocked on 88",
-      "model": "opus",
-      "size": "L",
-      "lane": "B",
-      "branch": "pm/bench-47",
-      "startedAt": "2026-09-14T04:00:46Z",
-      "agent": "Bench run 47",
+      "item": "140",
+      "title": "The deploy cycle refuses on un-extracted Foundry edits; the build guard's fingerprint reaches tree-node fields (TOOLING + DOCS)",
+      "model": "sonnet",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/140-deploy-extract-guard",
+      "startedAt": "2026-09-14T04:52:00Z",
+      "agent": "Work item 140",
       "phase": "working",
       "pr": null,
-      "note": "holds the table (Browser pane) — no deploy while this runs"
+      "note": "repo-only worker in its own worktree; reads the live packs read-only for its dry run, never deploys"
     }
   ],
   "usage": null

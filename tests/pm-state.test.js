@@ -347,7 +347,7 @@ test("build-dashboard: the projected deploy block is bounded — a title line an
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings finds ZERO open rulings in the real EDHA_RULINGS.md (all answered, moved to §K)", () => {
+test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the real EDHA_RULINGS.md (R-127, opened by bench run 47)", () => {
   // item 83 (2026-09-07 21:51 ET): Ben answered R-56 in chat, verbatim "Cosmere ladder for
   // everyone", reversing his own 2026-09-06 (a). R-56 was the SOLE open ruling left in the doc
   // (item 95 had closed R-90 and R-91), so with its ANSWERED (final) marker recorded and the entry
@@ -401,7 +401,12 @@ test("build-dashboard: parseOpenRulings finds ZERO open rulings in the real EDHA
   // The pinned set below is whatever the real doc holds open on the day this was last re-pinned —
   // today that is the EMPTY SET. The seven join the closed list so a regression that re-opens any
   // one of them (a stray `**REOPENED …**` with no matching pin update) is named by this test.
-  const ECOSYSTEM_RULINGS = []; // 2026-09-13 late: R-92 and R-114 … R-119 answered (a) from the phone board and moved to §K.13 — nothing left open
+  // 2026-09-14, bench run 47: ONE new ruling opened — R-127 (a talent that pays its cost and passes
+  // its test against a target immune to the condition it was buying: gate before cost, charge as
+  // now, refund, or leave it to the table). Filed from the BR-1 row; the card half of the same
+  // finding is a plain bug and is TODO item 149, not part of the ruling. The length assertion moves
+  // from 0 to 1 exactly as the note above said it would.
+  const ECOSYSTEM_RULINGS = ["R-127"]; // 2026-09-14: R-127 open (bench run 47); R-92 and R-114 … R-119 answered (a) from the phone board 2026-09-13 and moved to §K.13
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
