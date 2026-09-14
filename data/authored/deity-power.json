@@ -11,9 +11,9 @@
       "docId": "mRZ7n6xlcTRdZfNl",
       "img": "icons/equipment/head/crown-gold-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Choice is a privilege. He withdraws it.</em></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Choice is a privilege. He withdraws it.</em></p><p>Spend 2 Investiture and choose a Compelled, Disoriented, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Disoriented, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Disoriented, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -47,7 +47,7 @@
       "events": {
         "AbsAuthTest00000": {
           "id": "AbsAuthTest00000",
-          "description": "Power. 07-24q: replaced a preUseItem TAKEOVER (iron rule 2b). Black vs the target's Cognitive, player-rolled per Ben's ruling. `requireTargetStatus` is H1's new field and it is what made this talent convertible — the compelled/frightened/weakened gate is enforced BEFORE cost, so the hand-rolled \"nothing spent\" guarantee survives.",
+          "description": "Power. 07-24q: replaced a preUseItem TAKEOVER (iron rule 2b). Black vs the target's Cognitive, player-rolled per Ben's ruling. `requireTargetStatus` is H1's new field and it is what made this talent convertible — the compelled/disoriented/weakened gate is enforced BEFORE cost, so the hand-rolled \"nothing spent\" guarantee survives.",
           "event": "use",
           "handler": {
             "type": "edha-def-test",
@@ -56,7 +56,7 @@
             "def": "cog",
             "requireTarget": true,
             "rangeColor": "black",
-            "requireTargetStatus": "compelled,frightened,weakened"
+            "requireTargetStatus": "compelled,disoriented,weakened"
           },
           "order": 0
         },
@@ -267,9 +267,9 @@
       "docId": "89jvxOCpFp5dWuM8",
       "img": "icons/equipment/head/crown-gold-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He does not raise his voice. The voice is enough.</em></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He does not raise his voice. The voice is enough.</em></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Disoriented, or Weakened character in Attunement Range.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Disoriented, or Weakened character in Attunement Range.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Disoriented, or Weakened character in Attunement Range.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -329,13 +329,13 @@
           "id": "KneelComp0000000"
         },
         "KneelAdv00000000": {
-          "description": "Power. The standing advantage of OWNING Kneel: attack tests vs a Compelled/Frightened/Weakened target within Black Attunement Range roll with advantage. The comma-list + range gate are the H13 widenings (2bU).",
+          "description": "Power. The standing advantage of OWNING Kneel: attack tests vs a Compelled/Disoriented/Weakened target within Black Attunement Range roll with advantage. The comma-list + range gate are the H13 widenings (2bU).",
           "event": "edha-pre-test",
           "handler": {
             "type": "edha-test-rider",
             "appliesTo": "attack",
             "mode": "advantage",
-            "whenTargetStatus": "compelled,frightened,weakened",
+            "whenTargetStatus": "compelled,disoriented,weakened",
             "rangeColor": "black"
           },
           "order": 2,

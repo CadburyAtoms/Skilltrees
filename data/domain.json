@@ -1136,7 +1136,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Black 2+; Red 2+",
-    "description": "Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.",
+    "description": "Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Disoriented, or Weakened character in Attunement Range.",
     "flavor": "He does not raise his voice. The voice is enough.",
     "atlas": "deity",
     "layout": {
@@ -1195,7 +1195,7 @@
     "action": "2 Actions",
     "cost": "2 Investiture",
     "prerequisites": "Kneel",
-    "description": "Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.",
+    "description": "Spend 2 Investiture and choose a Compelled, Disoriented, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.",
     "flavor": "Choice is a privilege. He withdraws it.",
     "atlas": "deity",
     "layout": {
