@@ -923,6 +923,32 @@ scope filters, and that a combat elsewhere is genuinely left untouched.)*
       the bench licenses) is untouched** — that combat and its tokens are his, and the bench must
       not read, sync, or touch them at all.
 
+## Bench Arena scene creation — item 128 / PM-R19 (2026-09-13 — TOOLING, no pack rebuild, no ⟳ Sync)
+
+*(Ben's phone-board grant, 16:13 ET, on R-113: "I also need to give permission to create new
+scenes specifically for future test bench runs." A bench-created scene named `Bench — <purpose>`
+is now licensed alongside "Playtest Map" — the standing one is `Bench Arena`, found-or-created by
+`scripts/bench-setup-console.js`'s `USE_ARENA` toggle (default off) from a small fixed spec: a
+plain background, a 100 px / 5 ft grid, and a footprint sized for the roster. `benchArenaSpec` /
+`benchArenaPlan` are pinned headless in `tests/bench-arena.test.js`; this row proves the live
+create, the idempotent find, the roster placement, the scoped adversary sync against the new
+scene, and the required byte-identical Ben-scene diff, in one pass.)*
+
+- [ ] 🤖 **128-1 — the Bench Arena is created, found idempotently, hosts a real row, and every Ben
+      scene is untouched:** snapshot every scene's id and, for "Playtest Map" and any other scene
+      Ben has, its token-id set and count. Set `USE_ARENA = true` in `bench-setup-console.js` and
+      paste it — confirm the log line reads `arena: created <id>` and the scene exists (view it,
+      never activate/deactivate — hard rule 3 is unchanged by this grant). Paste the script again
+      unchanged — confirm `arena: found <id>` with the SAME id and no second `Bench Arena` scene.
+      Set `PLACE_TOKENS = true` and run once more — the roster lands on the Bench Arena, not the
+      Playtest Map. Run one cheap engine-wide row there. Then call the scoped adversary sync
+      (item 123) against the arena's id — `edha.syncAllAdversaries({ folder: "Edha Bench", scenes:
+      [<arena id>], dryRun: false })` — and confirm it reports and writes only against that scene.
+      Clean up everything the run created ON the arena (tokens, any combat) — the arena scene
+      itself stays standing for the next run, it is not deleted. Finally confirm the snapshot taken
+      at the start: "Playtest Map"'s token-id set and count, and every other Ben scene, are
+      byte-identical to before — the arena run must leave them exactly as found.
+
 ---
 
 # BENCH — White (leyline)
