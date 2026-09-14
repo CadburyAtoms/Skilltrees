@@ -183,7 +183,7 @@ function census(data, ctx = {}) {
     for (const s of immunities) (statusUse[s] = statusUse[s] || new Set()).add(name);
 
     blocks.push({
-      name, folder: a.folder || null, legacy: !a.folder, role: a.role || "rival", tier: a.tier ?? 1, size: a.size || "medium",
+      name, folder: a.folder || null, legacy: !a.folder || /^Legacy\b/.test(a.folder), role: a.role || "rival", tier: a.tier ?? 1, size: a.size || "medium",
       creatureType: a.creatureType || "humanoid", count: a.count || 1, leylines,
       hp: a.hp, phy: a.defenses && a.defenses.phy, cog: a.defenses && a.defenses.cog, spi: a.defenses && a.defenses.spi,
       deflect: a.deflect || 0, foc: a.foc || 0, inv: a.inv ?? (leylines.length ? 2 : 0),
@@ -213,7 +213,7 @@ function census(data, ctx = {}) {
     kind: CANON_CONDITIONS.has(id) ? "canon" : custom.has(id) ? "edha-custom" : "unknown",
   }));
   const folders = {};
-  for (const b of blocks) { const f = b.folder || "(no folder — legacy playtest dungeon)"; (folders[f] = folders[f] || []).push(b.name); }
+  for (const b of blocks) { const f = b.folder || "(no folder — a mistake since R-130: every block states one)"; (folders[f] = folders[f] || []).push(b.name); }
 
   return {
     stamps: ctx.stamps || null,
@@ -248,7 +248,7 @@ function renderMarkdown(r) {
 
   L.push("## 1. The roster", "");
   L.push("| | |", "|---|---|");
-  L.push(`| Blocks | ${t.blocks} in ${t.folders} folders (${t.legacy} legacy playtest-dungeon blocks carry no folder) |`);
+  L.push(`| Blocks | ${t.blocks} in ${t.folders} folders (${t.legacy} legacy playtest-dungeon blocks, kept apart in the \`Legacy — Playtest Dungeon\` folder since R-130 (a)) |`);
   L.push(`| Roles | ${ROLES.map((x) => `${t.roles[x]} ${x}`).join(", ")} |`);
   L.push(`| Tiers | ${Object.entries(t.tiers).sort().map(([k, v]) => `${v} at tier ${k}`).join(", ")} |`);
   L.push(`| Bespoke items | ${t.items}: ${t.native} roll natively (attack / damage / heal), ${t.rules} event rules (${t.cues} GM cues, ${t.effects} effects), ${t.noHook} declare \`noHook\` |`);
