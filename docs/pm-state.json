@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T02:46:10.353Z",
+  "generatedAt": "2026-09-14T03:11:31.643Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "9f45d9c490",
-    "commit": "67c0a70",
-    "branch": "pm/132-chaos-omen-cap",
+    "hash": "808637e120",
+    "commit": "56b28e3",
+    "branch": "pm/135-power-disoriented",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,9 +43,9 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Item 132 merged (#369): the Omen cap is tier + 1 at the next deploy; Isolating Pressure's placement half needs an engine dial → item 142 (Opus). Nothing is running until the 00:26 slot (item 135), then a deploy and bench run 47 (Opus, after 00:00).",
+    "note": "Items 132 (#369) and 135 (#370) merged — the Omen cap tier + 1 and Power's Disoriented reads go live with the next deploy, which the PM runs the moment #370 lands; then bench run 47 (Opus) at the 00:00 reset over the whole queue. Items 142 + 143 (Chaos's Isolating Pressure dial; Power's reset list) go to one Opus worker after the bench.",
     "waitingOn": "seven rulings: R-92, R-114 … R-119 (106 also wants your Decree design text) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
-    "nextWakeAt": "2026-09-14T04:26:00Z",
+    "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
   },
   "workers": [],
@@ -1686,14 +1686,14 @@
     {
       "pos": 135,
       "item": "135",
-      "title": "R-125 (a) — Kneel and Absolute Authority read Disoriented instead of Frightened (DATA, REBUILD deity; the engine's frightened registry comment only); one 🤖 row. Next Sonnet slot (00:26), after 132",
+      "title": "R-125 (a) — Kneel and Absolute Authority read Disoriented instead of Frightened (DATA, REBUILD deity; the engine's frightened registry comment only): both cards, both status-list gates, description copies and rule annotations; pack parity exactly 2 documents (89jvxOCpFp5dWuM8, mRZ7n6xlcTRdZfNl), 0 formula diffs, the comment proven comment-only by stripped-source equality; 🤖 PW-1. Dispatched 22:49 (sonnet, worktree — Sonnet is unlimited under PM-R16; the weekend trailing count read 7 with it, logged not binding); reviewed 23:12, no corrections; merged on green. Found: 47-power.js's reset list still clears frightened → item 143",
       "lane": "B",
       "model": "sonnet",
       "size": "XS",
       "deps": "R-125 ✓",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 370
     },
     {
       "pos": 136,
@@ -1739,6 +1739,18 @@
       "model": "opus",
       "size": "S",
       "deps": "R-122 ✓ · 132 ✓",
+      "status": "queued",
+      "statusDetail": "2026-09-13",
+      "pr": null
+    },
+    {
+      "pos": 140,
+      "item": "143",
+      "title": "edhaClearPowerState's scene-reset list (47-power.js ~L446) still clears frightened, a status no talent reads since 135 (ENGINE-ONLY, F5; one line + a pin) — folded into item 142's Opus dispatch; filed 23:12 from item 135's report",
+      "lane": "R",
+      "model": "opus",
+      "size": "XS",
+      "deps": "135 ✓",
       "status": "queued",
       "statusDetail": "2026-09-13",
       "pr": null
@@ -1801,48 +1813,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-08",
-      "time": "00:58",
-      "at": "2026-09-08T04:58:00.000Z",
-      "item": "Dispatched item 102 (sonnet, worktree pm/102-handoff-split-template — the split script learns item 100's rule; one shared source for the gate and the generator; idempotence proof) the minute #312 merged; parallel to 83. Foundry still DOWN at 00:57",
-      "itemNo": "312",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-08",
-      "time": "00:32",
-      "at": "2026-09-08T04:32:00.000Z",
-      "item": "Item 83 (R-56 final — the cosmere senses ladder for every actor type) — work-item, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "35 min, 288 turns",
-      "weighted": "6.5M",
-      "weightedM": 6.5,
-      "outcome": "merged 01:07 after review, no trailers; the worker merged main itself (CLEAN), gates 12/12 locally + its own --ci 14, CI green on a2d1d9d. The sheet half is a deletion (the system already derives the ladder on both models — cited to index.js:8455 / :8534), four non-derived surfaces re-tabled, AWA read as value + bonus for token/sheet parity (the worker's one judgment, pinned); pack read-back 51 tokens 10 → 5, Grove 30, 0 other diffs; R-56 moved to §K → zero open rulings; six 🤖 rows. Pushed live 01:08, hash match; Foundry still DOWN — Ben owes F5 + a bat run + ⟳ Sync Adversaries + edha.fixPcTokens(). Found: item 82 re-scoped (default now 5 ft); ACTOR_STAT_DERIVATION.md §1/§3 stale on R-54's +1 → item 103. ENGINE (F5) + adversaries REBUILD",
-      "pr": 313
-    },
-    {
-      "date": "2026-09-08",
-      "time": "01:12",
-      "at": "2026-09-08T05:12:00.000Z",
-      "item": "Dispatched item 103 (sonnet, worktree pm/103-actor-stat-derivation-hp — the derivation doc's stale +1) the minute #314 merged; parallel to 102. Foundry still DOWN at 01:11; bench 44 (Opus 3 of 3) held — if Foundry is still down by ~05:00 the slot goes to item 88 (R-90 (a), engine-only) instead, else it stays for the bench",
-      "itemNo": "314",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-08",
       "time": "00:58",
@@ -2640,9 +2610,51 @@
       "weightedM": 3.5,
       "outcome": "waiting until 00:26",
       "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "22:48",
+      "at": "2026-09-14T02:48:00.000Z",
+      "item": "#369 (item 132) merged at 22:48:40 after the PM's bookkeeping commit (CI green on 681d3d3); the worker's worktree record pruned and its folder removed (git worktree remove said Permission denied on the directory — the known node_modules wrinkle; rm -rf cleared it)",
+      "itemNo": "369",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 369
+    },
+    {
+      "date": "2026-09-13",
+      "time": "22:49",
+      "at": "2026-09-14T02:49:00.000Z",
+      "item": "Dispatched item 135 (sonnet, worktree pm/135-power-disoriented — R-125 (a): both Power cards + both status-list gates to Disoriented, the frightened registry comment, one 🤖 row, deity pack parity with EDHA_DATA pinned). Dispatched under PM-R16 (Sonnet unlimited — the board's binding cap) on Ben's \"132 and 135 are ready to dispatch\" rather than idling until 00:26; the weekend trailing-5h count reads 7 (19:26, 19:49, 20:13, 20:50 ×2, 22:13, 22:49), logged, not binding",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-13",
+      "time": "22:49",
+      "at": "2026-09-14T02:49:00.000Z",
+      "item": "Item 135 (R-125 (a): Kneel + Absolute Authority read Disoriented) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "19 min, 125 tool uses (223 turns)",
+      "weighted": "5.4M",
+      "weightedM": 5.4,
+      "outcome": "reviewed 23:12 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; CI green on 56b28e3, gates 12/12 + --ci 14/14 in the worktree (1206 tests). Parity: scratch edha-deity before/after, 110 documents, exactly 2 differ (Kneel 89jvxOCpFp5dWuM8, Absolute Authority mRZ7n6xlcTRdZfNl — descriptions, one rule annotation, one status-list field each), 0 formula diffs anywhere; the engine comment proven comment-only by stripComments equality on both the source and the assembled file. 🤖 PW-1. Found: edhaClearPowerState's reset list still clears frightened → item 143 (opus XS, folded into 142). DATA → REBUILD deity + ⟳ Sync Talents — the PM deploys next",
+      "pr": 370
     }
   ],
-  "runLogTotal": 279,
+  "runLogTotal": 282,
   "runLogFrom": "2026-09-08",
   "dispatches": [
     {
@@ -3412,6 +3424,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 369
+    },
+    {
+      "at": "2026-09-14T02:49:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-14T02:49:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 370
     }
   ],
   "statusVocab": [
