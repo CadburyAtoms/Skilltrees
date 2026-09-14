@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-14T04:20:40.743Z",
+  "generatedAt": "2026-09-14T04:50:10.403Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "c28a6e600b",
-    "commit": "a2392f0",
-    "branch": "pm/107-false-premise-noreactions",
+    "hash": "a4fd3d2181",
+    "commit": "e328b0e",
+    "branch": "pm/108-deity-gates-get-a-job",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Item 107 merged (#374): False Premise denies Reactions at the next deploy. Next beside the bench: item 108 (the three deity formula dials, Sonnet). After the bench: items 142 + 143 in one Opus worker, then 101; the deploy for 107 / 108 once the bench is off the table. The loop stops before 07:00.",
+    "note": "Bench run 47 (Opus) is driving the 23:14 deploy — the 14 open 🤖 rows plus item 124's re-test. Items 107 (#374) and 108 (#375) merged beside it: False Premise denies Reactions and the three deity gate dials read their colour's rank at the next deploy, which the PM runs once the bench is off the table. After the bench: items 142 + 143 in one Opus worker, then 101. The loop stops before 07:00.",
     "waitingOn": "item 106's Decree of Ruin card text — your own words, or a yes on the R-119 proposal text (the engine radius mode proceeds either way) · twelve merged remote branches to delete (the PM's push --delete was refused) · the two YOUR-CALL branches",
     "nextWakeAt": null,
     "session": "2026-09-13 21:58 ET → (hand-started by Ben; weekend window)"
@@ -1328,14 +1328,14 @@
     {
       "pos": 104,
       "item": "108",
-      "title": "R-99 (a) + R-118 (a) — three deity gates get a job: Fate's Bulwark Ground thpFormula → @skills.white.rank, Destruction's Cascading Failure overlap clause → @skills.blue.rank, Life's Vital Diagnosis bonusDamageFormula → @skills.blue.rank, each with its reworded card line (three existing dials, DATA-only, REBUILD deity); deity-gate-audit.js shows each gate counted; 🤖 rows",
+      "title": "R-99 (a) + R-118 (a) — three deity gates get a job: Fate's Bulwark Ground thpFormula → @skills.white.rank, Destruction's Cascading Failure doubleCaughtFormula (the overlap clause only) → @skills.blue.rank, Life's Vital Diagnosis bonusDamageFormula → @skills.blue.rank, with the two card lines that name a rank reworded (DATA, REBUILD deity); gate audit Fate/White 0 → 1, Destruction/Blue 1 → 2, Life/Blue 1 → 2; deity pack parity exactly THREE documents (A4QPt3qDPX9MTl0P, 0XE8eF9aS4uMu6sM, cloJTodAdC0Rb3LG), 0 other formula diffs; 🤖 GATE-1 / GATE-2 / GATE-3. Dispatched 00:22 (sonnet, worktree, beside bench 47); reviewed 00:50 — one PM correction: the item's Done-when asked Fate's White for \"≥2 talents\", which R-118 (a)'s single dial cannot reach from zero; reworded to the ruling's scope. Found: the three talents' events[].description dev comments still say \"= tier\" (left for the next touch of those blocks)",
       "lane": "B",
       "model": "sonnet",
       "size": "M",
       "deps": "R-118 ✓ (a, phone 09-13)",
-      "status": "queued",
-      "statusDetail": "2026-09-13",
-      "pr": null
+      "status": "bench-pending",
+      "statusDetail": null,
+      "pr": 375
     },
     {
       "pos": 105,
@@ -1863,34 +1863,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "10:30",
-      "at": "2026-09-13T14:30:00.000Z",
-      "item": "Bench run 45 (step zero: ⟳ Sync Talents on Tem parinaem / Soggy Bottom as a PM-R17 refresh + the roster + ⟳ Sync Adversaries; then the 29 open 🤖 rows) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "73 min, 362 tool uses",
-      "weighted": "20.4M",
-      "weightedM": 20.4,
-      "outcome": "merged 11:48 (squash) after review — its commits carried model trailers, so the PR was squashed trailer-free; CI green on 79fe9bd after one PM correction (the runbook named the silent-consume defect by its pre-renumber id). Engine hash-verified = HEAD; both PCs refreshed with nothing substantive changed; 41 adversaries synced, 0 changed. 28 of 29 rows retired (HS-1…10, 70-1…4, ECO-1/2, 92-1, 83-1…6, 93 noHook, Unbreakable Line ×2, three R-93 card-text rows); Predator's Due left open, blocked on 88. Two verdicts overturned (Unbreakable Line (b) now real; no PC talent carries edha-regen). Filed items 118 / 119 / 120, R-112 WAITING, item 104's measured error; roster script fixed twice. World diff clean; 138 bench chat messages (Ben may flush). Queue: every lane-B bench-pending row swept to merged (34)",
-      "pr": 335
-    },
-    {
-      "date": "2026-09-13",
-      "time": "11:52",
-      "at": "2026-09-13T15:52:00.000Z",
-      "item": "Dispatched fix pass 11 (opus, worktree pm/fix-pass-11 — items 118, 120, 119's engine half, 104; test-pass-fixes; R-112's pool/cost half explicitly excluded) and item 105 (sonnet, worktree pm/105-blue-white-minimal-set — R-96 (a), three 🤖 rows). Opus 2 of the day; trailing-5h dispatches 6 of 6",
-      "itemNo": null,
-      "model": "opus + sonnet",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "11:52",
@@ -2702,9 +2674,37 @@
       "weightedM": 5.5,
       "outcome": "reviewed 00:20 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, five themed commits, no corrections; the PR arrived CONFLICTING (the generated dashboard, two merges behind) with no check runs — main merged in the worktree, dashboard rebuilt, gates 12/12 (1206 tests), CI on the new sha. Data: False Premise (poLaFQBLEDju9jIx) only — the three description copies + FalsePremMod0000 → edha-triggered-effect {kind: status, statusId: noreactions, statusExpire: target} (Hollow Command's noactions shape, noreactions already in EDHA_TIMED_STATUSES); parity 136 documents, exactly one differs, a pack-wide handler sweep finds no other shape collision, 0 formula diffs. 🤖 FP-1. Found: 15-blue-calculation.js's tree-section header comment still describes the old payload (comment-only → folded into 142 + 143). DATA → REBUILD leyline + ⟳ Sync Talents — rides the next deploy after the bench is off the table",
       "pr": 374
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:22",
+      "at": "2026-09-14T04:22:00.000Z",
+      "item": "#374 (item 107) merged at 00:22:58 after the PM's main merge + bookkeeping commit (CI green on 7d7d262); the worker's worktree removed, the local branch deleted; main = 2d98de4. Dispatched item 108 the same minute (sonnet, worktree pm/108-deity-gates-get-a-job — R-118 (a): the three formula dials + two card lines; the gate audit before/after; deity pack parity with EDHA_DATA pinned; DATA → REBUILD deity) as the one lane-R worker beside bench 47",
+      "itemNo": "374",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": 374
+    },
+    {
+      "date": "2026-09-14",
+      "time": "00:22",
+      "at": "2026-09-14T04:22:00.000Z",
+      "item": "Item 108 (R-118 (a): three deity gates get a job) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "26 min, 146 tool uses (267 turns)",
+      "weighted": "7.4M",
+      "weightedM": 7.4,
+      "outcome": "reviewed 00:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, seven themed commits (one per tree, then the paperwork); CI green on e328b0e, gates 12/12 + --ci 14/14 (1206 tests); the worker merged main itself. Gate audit: Fate/White 0 → 1 (Bulwark Ground), Destruction/Blue 1 → 2 (Cascading Failure), Life/Blue 1 → 2 (Vital Diagnosis). Parity: scratch edha-deity before/after, 110 documents, exactly 3 differ (A4QPt3qDPX9MTl0P thpFormula + descriptions; 0XE8eF9aS4uMu6sM doubleCaughtFormula only — its card names no colour; cloJTodAdC0Rb3LG bonusDamageFormula + descriptions), 0 other formula diffs. 🤖 GATE-1 / GATE-2 / GATE-3. One PM correction: the item's Done-when (\"Fate's White ≥ 2 talents or rolled\") outran R-118 (a)'s single-dial scope — reworded on the branch. Found: the three events[].description dev comments still read \"= tier\" (Events-tab documentation, not player text; next touch of those blocks). DATA → REBUILD deity + ⟳ Sync Talents — rides the next deploy with 107",
+      "pr": 375
     }
   ],
-  "runLogTotal": 293,
+  "runLogTotal": 295,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3516,6 +3516,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 374
+    },
+    {
+      "at": "2026-09-14T04:22:00.000Z",
+      "model": "sonnet",
+      "item": "374",
+      "pr": 374
+    },
+    {
+      "at": "2026-09-14T04:22:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 375
     }
   ],
   "statusVocab": [

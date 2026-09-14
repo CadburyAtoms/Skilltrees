@@ -3565,7 +3565,7 @@ filed 2026-09-08 01:1x.
 
 **What to do:** R-118 (a), answered 2026-09-13 from the phone board, gives the three sizing changes directly, all DATA-only: point Fate's `Bulwark Ground` `thpFormula` at `@skills.white.rank`; resize Destruction's `Cascading Failure` overlap-bonus clause onto `@skills.blue.rank`; point Life's `Vital Diagnosis` `bonusDamageFormula` at `@skills.blue.rank` — each with its reworded card line (full text `EDHA_RULINGS.md` §K.13). Ship the three authored formula changes + card text.
 
-**Done when:** the audit shows each of the three colours read by ≥2 talents or rolled.
+**Done when:** each of the three gate colours is read by one more talent than before (R-118 (a)'s scope: one sizing dial per tree — Fate's White 0 → 1, Destruction's Blue 1 → 2, Life's Blue 1 → 2 in `deity-gate-audit.js`); the three cards say the rank; validate + tests green; rows filed; pack rebuilt. _(Reworded 2026-09-14 at PM review: the earlier wording asked Fate's White for "≥ 2 talents or rolled", which one dial cannot reach from zero — the ruling's own scope is what Ben approved.)_
 
 **PM:** lane B · model sonnet · size M · deps R-118 ✓ (a, phone 2026-09-13) · verify: `deity-gate-audit.js`. Filed 2026-09-13 from R-99; design proposal filed as R-118 by item 127 (2026-09-13).
 
