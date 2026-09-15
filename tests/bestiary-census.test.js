@@ -45,6 +45,12 @@ const SYNTH = {
     talents: ["White/Guiding Signal"], conditionImmunities: ["frightened"],
     items: [{ name: "Grab", text: "<p>On a hit…</p>", noHook: "a grab writes no damage" }] },
 };
+// R-128 (a): a block that states `attributes` and no `senses` reads the cosmere ladder at its AWA
+// (3 → 20 ft) and the census marks it (awa), not (d); an explicit `senses` still wins over AWA. Kept
+// OUT of SYNTH so the ledger / band / unattuned pins above and below stay exactly what they pin.
+const KEEN_SCOUT = { role: "rival", tier: 1, defenses: { phy: 12, cog: 10, spi: 10 }, hp: 18, folder: "Fixture Bestiary", movement: 30,
+  attributes: { str: 1, spd: 2, int: 0, wil: 1, awa: 3, pre: 0 },
+  items: [{ name: "Jab", kind: "weapon", attack: 4, damage: "1d6", damageType: "keen" }] };
 
 test("bestiary-census: the colour ledger halves a pair, counts unattuned blocks, and folders the legacy blocks apart", () => {
   const r = c.census(SYNTH, { pcHandlerTypes: new Set(["edha-gm-cue"]), customStatuses: new Set(["weakened"]) });
@@ -57,11 +63,22 @@ test("bestiary-census: the colour ledger halves a pair, counts unattuned blocks,
 });
 
 test("bestiary-census: senses and movement report stated vs derived, and the derivation default is the cosmere ladder's 5 ft", () => {
-  const r = c.census(SYNTH, {});
+  const r = c.census({ ...SYNTH, "Keen Scout": KEEN_SCOUT }, {});
   const pair = r.blocks.find((b) => b.name === "Pair Beast");
   const minion = r.blocks.find((b) => b.name === "Plain Minion");
   assert.deepStrictEqual([pair.sensesFt, pair.sensesStated, pair.walkFt, pair.walkStated], [5, false, c.DEFAULT_WALK_FT, false]);
   assert.deepStrictEqual([minion.sensesFt, minion.sensesStated, minion.walkFt, minion.walkStated], [30, true, 40, true]);
+  // R-128 (a), item 156: stated attributes derive the radius through the ladder and count as a
+  // senses SOURCE (the §1 "stated" total includes them), while the row marks them (awa) apart from
+  // a `senses` override; an override beside attributes still wins.
+  const scout = r.blocks.find((b) => b.name === "Keen Scout");
+  assert.deepStrictEqual([scout.sensesFt, scout.sensesStated, scout.sensesFromAwa], [20, false, true]);
+  assert.deepStrictEqual([pair.sensesFromAwa, minion.sensesFromAwa], [false, false]);
+  assert.strictEqual(r.totals.sensesStated, 2, "Plain Minion (senses) + Keen Scout (AWA) count as stated; Pair Beast does not");
+  const overridden = c.census({ ...SYNTH, "Keen Scout": { ...KEEN_SCOUT, senses: 60 } }, {});
+  const ov = overridden.blocks.find((b) => b.name === "Keen Scout");
+  assert.deepStrictEqual([ov.sensesFt, ov.sensesStated, ov.sensesFromAwa], [60, true, false]);
+  assert.ok(/Keen Scout.*\| 20 \(awa\) \|/.test(c.renderMarkdown(r)), "the §4 row prints the AWA-derived radius as `20 (awa)`");
 });
 
 test("bestiary-census: wiring counts split cues / effects / native rolls / noHook, and sole consumers are adversary-only handler types", () => {
