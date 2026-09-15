@@ -878,7 +878,7 @@
     "action": "Reaction",
     "cost": "1 Investiture",
     "prerequisites": "Persuasion 2+",
-    "description": "When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, that character cannot take Reactions until the start of its next turn.",
+    "description": "When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, that character cannot take Reactions until the end of its next turn.",
     "flavor": "",
     "tags": "",
     "layout": {

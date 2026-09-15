@@ -434,7 +434,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // clears at the END of the target's next turn under the engine's timed-status convention, while its
   // R-115 (a) card says the start; R-28 (a) is the precedent its default follows). Filed from checklist
   // row FP-1; the length assertion moves 0 → 1.
-  const ECOSYSTEM_RULINGS = ["R-141"];
+  // 2026-09-15, later the same day (fix pass 13): Ben answered R-141 (a) in chat — "R-141, yeah fix the
+  // card text." — so the engine's END-of-next-turn convention stands and False Premise's card text moved.
+  // The body moved to §K.18 with a §L stub; the open set is EMPTY again and R-141 joins the closed list
+  // below. The length assertion moves 1 → 0.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -442,7 +446,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
-      "R-137", "R-138", "R-139", "R-140"]) {
+      "R-137", "R-138", "R-139", "R-140", "R-141"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
