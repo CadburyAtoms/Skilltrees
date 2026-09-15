@@ -417,7 +417,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // 2026-09-14, 23:19–23:23 ET: Ben answered all eight from the phone board (seven by tapping the
   // card's (a) text, R-128 by (a) plus a gloss on Senses Range); the close-out moved them to §K.15
   // and R-127 to §K.14. The open set is EMPTY again; the eight join the closed list below.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-14, bench run 48 (the yardstick set, item 155): ONE new ruling opened in §L — R-136
+  // (a fooled PC's contest talent resolved against the Mistheron's phantom copy at defenses 0/0/0:
+  // as designed with card text, inherited defenses, or a pre-cost refusal). Filed from the YARD-2
+  // ledger; the length assertion moves 0 → 1.
+  const ECOSYSTEM_RULINGS = ["R-136"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

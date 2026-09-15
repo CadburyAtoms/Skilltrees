@@ -253,6 +253,8 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 
 *(R-112 — The Reckoning's focus pool raised 2 → 3 — ANSWERED 2026-09-13, moved to §K.)*
 
+*(R-136 — a fooled PC's contest resolves against the phantom copy's defenses 0: design, inherited defenses, or a pre-cost refusal? — filed 2026-09-14 from bench run 48's yardstick set; WAITING in §L.)*
+
 ### G.1 — The bestiary redo's menu (filed 2026-09-14 by the session that scoped item 121; all eight ANSWERED (a) from the phone board the same night, 23:19–23:23 ET — moved to §K.15)
 
 *Eight decisions the redo needed before any block changed. Each carried a recommended default; the facts were read from `docs/analysis/bestiary/CENSUS.md` (the measured census of the 52 blocks) and the standard is `.claude/skills/bestiary-forge/STANDARD.md`, whose PENDING lines they answered. Ben, 2026-09-14, on the plan that produced them: "This looks good. Continue." — and, four hours later from his phone, all eight answered (a), R-128 with a gloss on what Senses Range means. The full text lives in §K.15.*
@@ -2598,7 +2600,9 @@ Ask: Order — act-1 nations first, each waiting only on its rulings, with the y
 
 ---
 
-## L. Waiting — EMPTY since 2026-09-14 23:23 ET (R-127 answered and moved to §K.14; the seven design proposals moved to §K.13; the bestiary menu R-128 … R-135 lives in §G.1 → §K.15)
+## L. Waiting — ONE ruling since 2026-09-14 (bench run 48): R-136 below. (R-127 answered and moved to §K.14; the seven design proposals moved to §K.13; the bestiary menu R-128 … R-135 lives in §G.1 → §K.15)
+
+**R-136. A fooled PC's contest talent resolves against the phantom copy it can see — with the copy's defenses 0 / 0 / 0. Is that the seeming working as designed, or should the copy carry its caster's defenses for contests?** Bench run 48, YARD-2 (`docs/analysis/bestiary/YARDSTICK-2026-09-14.md`): Ishee, fooled by a Mistheron's Seeming (Perception 4 vs Cog 14), used Steadfast Challenge on the only Mistheron her client showed her — the "Mistheron (Illusion)" copy — and the contest core resolved Discipline 16 vs the copy's SPI 0: SUCCESS, "Mistheron (Illusion) is Disoriented", the real bird untouched, her Focus spent. The copy is summoned by `edha-illusion-copy` with HP 1 and defenses 0/0/0 (its summon card says so); any HIT breaks it, which is the loop's intended answer to a Strike. A contest is different: it auto-succeeds against 0 and lands its payload on a thing that has no next test. *Recommended default: **(a) as designed, with the card saying so** — the seeming's whole point is that the fooled act on the wrong body; a wasted challenge is the price of failing the Perception test, and the payload landing on the copy is harmless. One sentence on The Seeming / Phantom Double's cards: "A test or talent aimed at the seeming resolves against it (defenses 0) and affects only the seeming." DATA (card text): adversaries REBUILD + ⟳ Sync for the Mistheron, leyline pack rebuild for the PC twin.* (b) the copy inherits its caster's three defenses (still HP 1): a fooled challenge is a real roll and its payload still lands on the copy — the contest feels honest even when aimed wrong; ENGINE-ONLY (`edha-illusion-copy` copies the caster's defenses instead of writing 0), F5. (c) a fooled contest is refused before cost — the engine sees the target is a phantom and vetoes, the R-127 immunity-gate shape; ENGINE-ONLY, F5. *(Bestiary redo, item 155.)*
 
 *(R-127 — immunity is a PRE-COST gate — ANSWERED 2026-09-14, moved to §K.)*
 

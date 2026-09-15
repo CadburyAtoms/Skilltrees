@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-14T23:58:55.686Z from main @ cf85198: packs 2026-09-14T23:58:55.686Z, engine 5e9833a9 = HEAD, validators PASS**
+
+
 **Agent-run deploy 2026-09-14T06:48:17.401Z from main @ 90cfce6: packs 2026-09-14T06:48:17.401Z, engine 5e9833a9 = HEAD, validators PASS**
 
 
@@ -88,7 +91,7 @@ confirm the sync state before reporting a bug.
 
 ⛔ **A PACK REBUILD IS OWED (filed 2026-09-05, fix pass 2 — only Ben can clear it).** `data/adversaries.json` changed: Reeve-Owl / **Sovereign of Solitude** had one enum value (`edha-triggered-effect target`) that Foundry rejects, which fell the item's WHOLE `system.events` map back to `{}` at load — four authored rules, zero at the table, on a pack whose bytes were correct. Until **Ben** runs `scripts/deploy-to-foundry.bat` (rebuild) and ⟳ Syncs adversaries, that row cannot be driven and any re-test of it will reproduce run 26's failure. Everything else in fix pass 2 is ENGINE-only (⟳ Sync + F5).
 
-⛔ **AN ADVERSARIES REBUILD + ⟳ SYNC ADVERSARIES IS OWED (filed 2026-09-14, the bestiary rulings close-out — an agent's `node scripts/deploy-cycle.js --yes` on Ben's machine or Ben's bat clears it).** `data/adversaries.json` changed twice on the close-out branch: the nine legacy blocks moved into the `Legacy — Playtest Dungeon` folder (R-130 (a)), and two card texts carry their rules — Crownox Ring / The Ring (adjacency) and The False Spring / Heat of the Flats (shade), R-133 (a). No engine change; the build gained `attributes` support (R-128 (a)) that no block uses yet, so nothing else in the pack moves. Until the rebuild runs, the live pack shows the old folder and the old texts — the two R-133 🤖 rows wait on it.
+✅ **The adversaries REBUILD + ⟳ Sync Adversaries owed since the bestiary rulings close-out (R-130 (a)'s legacy folder, R-133 (a)'s two card texts) is CLEARED** — the agent-run deploy 2026-09-14T23:58:55Z from main @ cf85198 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS, and bench run 48 read both R-133 cards from the fresh pack and drove the Heat of the Flats cue live (both rows retired; delta 2026-09-14, bench run 48). World adversaries placed before that stamp are snapshots until Ben's ⟳ Sync Adversaries click.
 
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
@@ -1115,22 +1118,19 @@ read against the real bands; **charge the graze's Focus (1 per target — a `foc
 once)**; world restored afterwards; each fight recorded on the turn-ledger shape into
 `docs/analysis/bestiary/YARDSTICK-<date>.md`. Anything structural is a `test-pass-fixes` report.)*
 
-- [ ] 🤖 **YARD-1 — a minion pack: Rootling Swarm ×3 (Thalendor Heartwood Bestiary) against the three PC
-      copies, three rounds:** fill the fight header (engine hash, packs stamp, scene, PC copies' HP /
-      defenses / Deflect / ranged-attack yes-no), then per round: damage to the party by source with
-      grazes marked, damage to the swarm by PC, Focus spent on grazes, drops; and every PC Action coded
-      **T** (a talent on the sheet) / **D** (Draw Mana or a standard action) / **N** (nothing useful).
-      Note enemies on the field each round. Census expectation to compare against: three minions at
-      about 5 expected damage per hit into 10–13 HP PCs with Deflect 0.
-- [ ] 🤖 **YARD-2 — a rival pair: Mistheron ×2 (Riverlands Bestiary — session 1's fog fight), same
-      recording:** the Seeming's lightweight `edha-ambush-belief` is part of the fight — note whether
-      the first-attack Perception test fired per target and what it changed. Census expectation: two
-      rivals at about 7 expected damage per hit.
-- [ ] 🤖 **YARD-3 — a boss: Briar-Gone Grove (Thalendor Heartwood Bestiary — session 2's grove seed),
-      same recording:** the grove's briar terrain rides Draw Mana (ENGINE-NATIVE) — note whether the
-      terrain placed and whether it changed a PC's Action choice; it is the one block that states
-      `senses` (30 ft), so the sight half needs no note. Census expectation: one boss at about 9
-      expected damage per hit, 48+ HP, six or more PC Actions to drop.
+*(**YARD-1 / YARD-2 / YARD-3 — RETIRED on evidence 2026-09-14, bench run 48.** The three fights were
+played on `Bench Arena` on copies of the actual PCs (Ishee L1 HP 11 · Soggy Bottom L1 HP 11 · Tem
+parinaem L1 HP 13), numbers exactly as on the cards, grazes charged, world restored (end-of-run diff
+empty), and recorded on the ledger shape in **`docs/analysis/bestiary/YARDSTICK-2026-09-14.md`**.
+Headlines: the sheet fills 15 % of all PC Actions (21 % of a standing PC's); a rootling took 2–3
+damaging Actions to drop, not one; the Mistheron pair put two PCs down by round 3 (damage in 31 / 37 /
+31 % of the party pool per round) and the fooled PCs never targeted a real bird; the grove took 11
+damaging Actions and dropped two PCs first (37 / 54 / 0 %), its terrain placed on Draw Mana and on
+Sudden Growth's detonate. YARD-2's premise corrected: the Mistheron carries the FULL phantom loop
+(`The Seeming` → `edha-illusion-copy`), not `edha-ambush-belief`; the Perception tests fire per onlooker
+at placement. Four structural defects went to `test-pass-fixes` as TODO items 161–164 (dead owners
+still cue; Green terrain hits its creator; Pack Hunter's advantage has no target gate; the terrain
+square lands off the click); one judgment call is R-136.)*
 
 ## Adversary sync scope guard — item 123 / R-113 (2026-09-13 — ENGINE-ONLY, F5: no pack rebuild, no ⟳ Sync)
 
@@ -4572,10 +4572,12 @@ disposition** — a same-side token starting its turn correctly fires nothing.)*
       *(RETIRED 2026-09-14 on **R-133 (a)** — shade = cover from the False Spring or a roofed
       square, the GM's read; on the card AND on the whispered cue's text. Adversaries REBUILD +
       ⟳ Sync owed; the card check is the 🤖 row below.)*
-- [ ] 🤖 **R-133 (ii) — The False Spring / Heat of the Flats reads the shade clause after ⟳ Sync Adversaries:**
-      open a fresh False Spring from the pack and read Heat of the Flats — the card carries the
-      shade sentence; then start a hostile's turn within 10 ft and read the whispered cue — it says
-      "unless shaded: cover from the False Spring or a roofed square negates it".
+      *(**R-133 (ii)** — RETIRED on evidence 2026-09-14, bench run 48: a fresh False Spring from the
+      rebuilt pack (23:58Z) carries the shade sentence on Heat of the Flats' card, and with a PC copy
+      adjacent (7.5 ft) in a bench combat its turn start whispered "⏰ Heat of the Flats (The False
+      Spring): This character loses 1 focus — unless shaded: cover from the False Spring or a roofed
+      square negates it (GM read, R-133). (Bench Copy — Ishee's turn starts in range.)" to Bench +
+      Gamemaster.)*
 *(**Gone Into the Shimmer cue** — RETIRED on evidence 2026-07-28c, bench run 18, **with its no-re-fire
 control**: the first crossing of 24 (48 → 22) posted "⏰ **Gone Into the Shimmer** (Bench Adv — The
 False Spring): It drops the mirage and disengages into the heat-haze — end of the fight, start of the
@@ -4783,9 +4785,11 @@ re-confirmed **Retributive Guard** (2bAB-3) posting its retaliate prompt by itse
       *(RETIRED 2026-09-14 on **R-133 (a)** — the rule is on the card: an ox keeps the wall kit while
       within 5 ft of at least one other ring ox (R-52's 2.5 ft slack), lost the moment it is not.
       Adversaries REBUILD + ⟳ Sync owed; the card check is the 🤖 row below.)*
-- [ ] 🤖 **R-133 (i) — Crownox Ring / The Ring reads the adjacency rule after ⟳ Sync Adversaries:**
-      open a fresh Crownox Ring from the pack (or a synced world copy) and read The Ring's card —
-      it names the 5 ft adjacency rule and R-133; the old "pulled 10+ ft" sentence is gone.
+      *(**R-133 (i)** — RETIRED on evidence 2026-09-14, bench run 48: The Ring's card on a fresh Crownox
+      Ring from the rebuilt pack (23:58Z) reads "An ox keeps the wall kit while it stands within 5 ft of
+      at least one other ring ox (the engine's 2.5 ft adjacency slack applies, R-52); the moment it is
+      not, it fights alone and every wall talent below stops applying to it — a measured rule, not a GM
+      eyeball (R-133 (a), 2026-09-14)"; no "pulled 10+ ft" sentence remains.)*
 
 ## 3. Rootling Swarm (Green minion ×3 — "the Snare")
 
