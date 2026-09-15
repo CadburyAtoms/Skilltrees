@@ -445,7 +445,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // 2026-09-15, later the same afternoon: the PM files R-143 in §L at Ben's request in chat — should the
   // engine apply attack damage itself (auto-apply a clear hit and prompt only for grazes and plot-die
   // choices, a one-click confirm, or today's card). The length assertion moves 1 → 2.
-  const ECOSYSTEM_RULINGS = ["R-142", "R-143"];
+  // 2026-09-15, that evening: Ben answered both in one chat message — "Confirming 143-a, and with all
+  // caveats. Go on the compatibility check. 142-a is fine as well." R-142 and R-143 moved to §K.19 with
+  // §L stubs, and their builds are TODO items 178 – 181. The open set is EMPTY again; both join the
+  // closed list below. The length assertion moves 2 → 0.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -453,7 +457,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
-      "R-137", "R-138", "R-139", "R-140", "R-141"]) {
+      "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
