@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T18:48:27.728Z",
+  "generatedAt": "2026-09-15T19:08:14.542Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "f9b998ef39",
-    "commit": "fdbf867",
-    "branch": "pm/bench-49b",
+    "hash": "e1029b7a46",
+    "commit": "5394f5a",
+    "branch": "pm/169-decoy-damage-formulas",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Bench run 49b merged as #397: all 22 adversary rows passed, two small defects filed (items 172-173), your combat was already gone and Palewater Ford empty. R-141 is (a); fix pass 13 is fixing the card text along with items 161-164, 168, 170 and 171. PR 395 is merged. Item 169 (decoy damage rolls) was held in review: removing the formula also changes attack detection and colour for ten talents, so it is being narrowed to three and the other ten will come to you as a ruling. No Fable agents today.",
-    "waitingOn": "Ben: may the deploy close and relaunch Foundry this afternoon, or wait for tonight; keep or delete the two July branches",
+    "note": "PM of record since 11:49 ET. You approved the deploy, and it runs as soon as fix pass 13 merges. Item 169 merged narrowed (#396): three talents lose their decoy damage rolls. The other ten wait on your ruling R-142, and so do Killing Blow and The Final Study, which have been hit by the same side effect since yesterday. Bench runs 49a and 49b are merged (36 of 37 rows passed). No Fable agents today.",
+    "waitingOn": "Ben: answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
@@ -58,22 +58,9 @@
       "branch": "pm/fix-pass-13",
       "startedAt": "2026-09-15T18:00:00Z",
       "agent": "Fix pass 13 (engine + card text)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; repo-side"
-    },
-    {
-      "item": "169",
-      "title": "Decoy damage formulas: narrowing to the three talents with no side effects",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/169-decoy-damage-formulas",
-      "startedAt": "2026-09-15T18:05:32Z",
-      "agent": "Work item 169 (decoy damage formulas)",
-      "phase": "bounced",
-      "pr": 396,
-      "note": "restoring ten talents; the ten go to Ben as a ruling"
+      "phase": "in-review",
+      "pr": 398,
+      "note": "PR #398 open; the deploy follows its merge"
     }
   ],
   "usage": null,
@@ -2162,8 +2149,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "bench 49a ✓",
-      "status": "in-review",
-      "statusDetail": null,
+      "status": "blocked",
+      "statusDetail": "R-142",
       "pr": 396
     },
     {
@@ -2210,6 +2197,30 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "bench 49b ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 177,
+      "item": "174",
+      "title": "Killing Blow and The Final Study have rolled their own tests as Item, not Attack, since PR #379 blanked their damage formulas — attack-scoped test riders, aggro and pack advantage skip them; the shape of the fix is R-142's answer. Filed by the PM from the item 169 review",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "R-142",
+      "status": "blocked",
+      "statusDetail": "R-142",
+      "pr": null
+    },
+    {
+      "pos": 178,
+      "item": "175",
+      "title": "42-chaos.js's header comment still says the Chaos talents keep events: {} and read item.system.damage.formula — stale since the 07-24p migration (comment-only, no behaviour change)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": null,
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2260,7 +2271,7 @@
     }
   ],
   "benOnly": [
-    "say whether the deploy that lands fix pass 13 (engine push + leyline and deity rebuilds) may close and relaunch Foundry this afternoon or waits for tonight",
+    "answer R-142 (the decoy damage rolls on ten talents, plus Killing Blow and The Final Study: (a) keep the formulas and let a field on the talent's own rule suppress the system's damage roll — recommended; (b) derive attack context and colour from other fields, then blank the formulas; (c) leave the decoys and restore Killing Blow and The Final Study's formulas)",
     "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)."
   ],
   "inbox": [],
@@ -2271,34 +2282,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "22:49",
-      "at": "2026-09-14T02:49:00.000Z",
-      "item": "Item 135 (R-125 (a): Kneel + Absolute Authority read Disoriented) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "19 min, 125 tool uses (223 turns)",
-      "weighted": "5.4M",
-      "weightedM": 5.4,
-      "outcome": "reviewed 23:12 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; CI green on 56b28e3, gates 12/12 + --ci 14/14 in the worktree (1206 tests). Parity: scratch edha-deity before/after, 110 documents, exactly 2 differ (Kneel 89jvxOCpFp5dWuM8, Absolute Authority mRZ7n6xlcTRdZfNl — descriptions, one rule annotation, one status-list field each), 0 formula diffs anywhere; the engine comment proven comment-only by stripComments equality on both the source and the assembled file. 🤖 PW-1. Found: edhaClearPowerState's reset list still clears frightened → item 143 (opus XS, folded into 142). DATA → REBUILD deity + ⟳ Sync Talents — the PM deploys next",
-      "pr": 370
-    },
-    {
-      "date": "2026-09-13",
-      "time": "23:13",
-      "at": "2026-09-14T03:13:00.000Z",
-      "item": "#370 (item 135) merged at 23:13:46 after the PM's bookkeeping commit (CI green on ccabd42); the worker's worktree removed (record pruned, folder rm -rf'd), the local branch deleted; main = 31443c5, clean",
-      "itemNo": "370",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 370
-    },
     {
       "date": "2026-09-13",
       "time": "23:14",
@@ -3110,9 +3093,37 @@
       "weightedM": 19.2,
       "outcome": "reviewed 14:48 — squash-merged trailer-free after the PM's bookkeeping commit on the branch: all 22 rows 156-1 … 156-22 retired on evidence in two section notes (fresh pack imports on Bench Arena, every roll read off the cards' .dice-formula nodes); items 172 – 173 filed; the players' actors untouched (a zero-path diff); Ben's combat gone and Palewater Ford empty at 17:52Z, so nothing deleted or synced; world diff otherwise empty; docs/BENCH_NEXT_RUN.md rewritten for run 50 (no drivable row until fixes land). CI green on fdbf867; one review correction: DEPLOY STATE's stale \"Palewater Ford holds a started combat\" sentence",
       "pr": 397
+    },
+    {
+      "date": "2026-09-15",
+      "time": "15:00",
+      "at": "2026-09-15T19:00:00.000Z",
+      "item": "Ben (chat, just before 15:00): \"Yes it can close and relaunch Foundry.\" — the deploy that lands fix pass 13 is approved for this afternoon. The PM's 15:00 deploy-cycle.js --dry-run from main @ 779bb5d: on-main-clean, module-src-sync (6 in sync), packs-exist, un-extracted-edits, world-configured and foundry-exe-exists all PASS; no-bench-worker REFUSES on the two running workers (fix pass 13, item 169) by design; the stale 49b worktree and its branches removed",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:45",
+      "at": "2026-09-15T18:45:00.000Z",
+      "item": "Item 169 re-review after the bounce — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "18.6 min, 94 tool uses",
+      "weighted": "≈4M more",
+      "weightedM": 4,
+      "outcome": "reviewed 15:06 — squash-merged after the PM's bookkeeping commit: narrowed to Momentum of Victory, Warlord's Advance and Withering Touch (deity pack parity exactly 3 documents in system.damage, leyline untouched), the other ten restored byte-identical, TODO 169 back to open with the attack-context and colour analysis; the worker also measured that the colour fallback (system.path) is WRONG for four deity talents (Unravel Everything blue → black, Unstoppable Advance red → black, Cascading Failure and The Unmooring red → blue); CI green on 5394f5a; items 174 (Killing Blow and The Final Study's live attack-context exposure) and 175 (the stale 42-chaos.js header) filed; R-142 to Ben",
+      "pr": 396
     }
   ],
-  "runLogTotal": 341,
+  "runLogTotal": 343,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -4056,6 +4067,12 @@
       "model": "opus",
       "item": null,
       "pr": 397
+    },
+    {
+      "at": "2026-09-15T18:45:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 396
     }
   ],
   "statusVocab": [

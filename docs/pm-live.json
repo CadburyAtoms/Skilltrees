@@ -1,8 +1,8 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Bench run 49b merged as #397: all 22 adversary rows passed, two small defects filed (items 172-173), your combat was already gone and Palewater Ford empty. R-141 is (a); fix pass 13 is fixing the card text along with items 161-164, 168, 170 and 171. PR 395 is merged. Item 169 (decoy damage rolls) was held in review: removing the formula also changes attack detection and colour for ten talents, so it is being narrowed to three and the other ten will come to you as a ruling. No Fable agents today.",
-    "waitingOn": "Ben: may the deploy close and relaunch Foundry this afternoon, or wait for tonight; keep or delete the two July branches",
+    "note": "PM of record since 11:49 ET. You approved the deploy, and it runs as soon as fix pass 13 merges. Item 169 merged narrowed (#396): three talents lose their decoy damage rolls. The other ten wait on your ruling R-142, and so do Killing Blow and The Final Study, which have been hit by the same side effect since yesterday. Bench runs 49a and 49b are merged (36 of 37 rows passed). No Fable agents today.",
+    "waitingOn": "Ben: answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
@@ -10,16 +10,15 @@
     {
       "item": "fix-pass-13",
       "title": "Fix pass 13: items 161-164, 168, 170, 171 and the R-141 (a) False Premise card text",
-      "model": "opus", "size": "L", "lane": "B", "branch": "pm/fix-pass-13",
-      "startedAt": "2026-09-15T18:00:00Z", "agent": "Fix pass 13 (engine + card text)",
-      "phase": "working", "pr": null, "note": "worktree; repo-side"
-    },
-    {
-      "item": "169",
-      "title": "Decoy damage formulas: narrowing to the three talents with no side effects",
-      "model": "sonnet", "size": "S", "lane": "B", "branch": "pm/169-decoy-damage-formulas",
-      "startedAt": "2026-09-15T18:05:32Z", "agent": "Work item 169 (decoy damage formulas)",
-      "phase": "bounced", "pr": 396, "note": "restoring ten talents; the ten go to Ben as a ruling"
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/fix-pass-13",
+      "startedAt": "2026-09-15T18:00:00Z",
+      "agent": "Fix pass 13 (engine + card text)",
+      "phase": "in-review",
+      "pr": 398,
+      "note": "PR #398 open; the deploy follows its merge"
     }
   ],
   "usage": null

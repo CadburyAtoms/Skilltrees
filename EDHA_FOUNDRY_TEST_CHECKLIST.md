@@ -1814,7 +1814,6 @@ while **Walking Ruin**'s trail Region, created minutes later by the same actor, 
 `exemptActorUuid: ""` and **did** catch its owner: *"🔥 Bench — Destruction takes 4 energy from
 dangerous terrain"*, HP 42 → 38.)*
 
-
 ---
 
 # BENCH — Life (Anaveth, deity)
@@ -2228,6 +2227,10 @@ Touch"}`; `Bench — Black` landed Withering Ray → `healCut {fraction: 0.5, by
   a started combat (R-4). Bonus, a fourth consumer of the same fix: `Mender's Instinct`'s reaction
   into a still-withered ally announced *"— no healing lands."* with no number.)*
 
+## Death — item 169: one decoy formula gone; Necrotic Cascade held (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-DTH — Withering Touch's ARM card carries no system Apply Damage button; its rider damage still lands:** on Bench — Death, arm Withering Touch and land a melee hit — confirm the ARM card posts no system "Damage" roll/Apply button (`system.damage.formula` is now `null` on `d2IDgKhRwYyxZy6n`), while the armed rider still adds its own [Tier][Die]+Willpower vital (plus the heal-cut) to the next melee hit exactly as before. **Necrotic Cascade is NOT part of this row — PM review held it** (PR #396 bounce): its colour only resolves via its own `damage.formula` (`edhaTalentColor`, `module-src/scripts/engine/35-targeting-attunement-range-aoe-templates.js:31`) and falls through to the deity tree's own `system.path` value (an unrelated coincidence, not a real source) once blanked. Left carrying its original item-level formula pending a ruling on `edhaTalentColor`'s fallback chain.
+
 ---
 
 # BENCH — Civilization (Kethane, deity)
@@ -2441,6 +2444,10 @@ re-derived, and not a new bug.
   dispositions coerce to −1 at create and update), so the whole row retires. The fail-closed
   behaviour is pinned in `tests/disposition-failclosed.test.js` (23 cases), which is the standing
   record.
+
+## Power — item 169: two decoy formulas gone; Unstoppable Advance held (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-PWR — Momentum of Victory and Warlord's Advance's ARM cards carry no system Apply Damage button; their own rider damage still lands:** on Bench — Power, use each in turn — confirm neither posts the system's own "Damage" roll/Apply button (`system.damage.formula` is now `null` on `mzFG2GetTMVxIexS`, `rbkM1FUBk6NkqSRm`), while their armed riders still add their own bonus (+tier impact; +[Tier][Die red] impact plus the kill/survive riders) on the next qualifying melee hit exactly as before. **Unstoppable Advance is NOT part of this row — PM review held it** (PR #396 bounce): its colour resolves ONLY via its `damage.formula` and falls through to the wrong colour (`black` instead of `red`, via the deity tree's own `system.path` value) once blanked — `edhaTalentColor`, `module-src/scripts/engine/35-targeting-attunement-range-aoe-templates.js:31`. Left carrying its original item-level formula pending a ruling.
 
 ---
 
