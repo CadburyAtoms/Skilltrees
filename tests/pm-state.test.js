@@ -421,14 +421,17 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // (a fooled PC's contest talent resolved against the Mistheron's phantom copy at defenses 0/0/0:
   // as designed with card text, inherited defenses, or a pre-cost refusal). Filed from the YARD-2
   // ledger; the length assertion moves 0 → 1.
-  const ECOSYSTEM_RULINGS = ["R-136"];
+  // 2026-09-14, later the same evening: Ben answered R-136 (a) in chat ("Default for R 136 as
+  // well") with the statblock-gate yes; the body moved to §K.16 and the open set is EMPTY again.
+  // R-136 joins the closed list below; the length assertion moves 1 → 0.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
-      "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135"]) {
+      "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),

@@ -93,6 +93,8 @@ confirm the sync state before reporting a bug.
 
 ✅ **The adversaries REBUILD + ⟳ Sync Adversaries owed since the bestiary rulings close-out (R-130 (a)'s legacy folder, R-133 (a)'s two card texts) is CLEARED** — the agent-run deploy 2026-09-14T23:58:55Z from main @ cf85198 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS, and bench run 48 read both R-133 cards from the fresh pack and drove the Heat of the Flats cue live (both rows retired; delta 2026-09-14, bench run 48). World adversaries placed before that stamp are snapshots until Ben's ⟳ Sync Adversaries click.
 
+⛔ **AN ADVERSARIES REBUILD + ⟳ SYNC ADVERSARIES, AND A LEYLINE REBUILD + PC ⟳ SYNC TALENTS, ARE OWED (filed 2026-09-14 by the Corvaine + Riverlands bestiary pass, PR #388 — `node scripts/deploy-cycle.js --yes` after the merge clears both).** `data/adversaries.json` changed on the branch: six blocks re-statted (Corvaine Raider, Line-Caller, Sergeant Roek, Mistheron, Tollbird Flock, Surecat — attributes, cue labels, four retunes) and one new block (Corvaine Well-Warden); the Mistheron's The Seeming card and Phantom Double's card carry the R-136 (a) sentence (`data/leyline.json` + the Blue authored overlay). Until the rebuild runs, the live packs show the old numbers and texts — the section "Corvaine + Riverlands bestiary pass — item 156" rows wait on it; a world Mistheron / Raider / Roek placed before it is a stale snapshot.
+
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
 never need replacing; PCs need no ⟳ Sync unless a section says a specific pack-baked talent
@@ -1105,6 +1107,49 @@ and made the backup skip `LOCK`/EBUSY/EPERM files; this row stays open for the r
 - [x] 🤖 **deploy-cycle.js — first live run by the PM:** guards, backup (after the close), the
       *(✅ RETIRED on evidence 2026-09-13 20:46 ET — the PM's live run: six guards PASS, nine steps ok, packs restamped 00:46:39Z, served engine `24d74c96` = HEAD, Foundry relaunched into Edha (HTTP 302 → /join). The one post-flight REFUSE was the verifier's own case bug (item 139), not the deploy. Earlier the same evening: the 19:41 run died safely on the pack LOCK (item 129) and another session's 20:05 run raced the boot (item 137) — both fixed before this pass.)*
       remaining eight steps, relaunch, verification, the DEPLOY STATE record.
+
+## Corvaine + Riverlands bestiary pass — item 156, first nation (2026-09-14 — DATA: adversaries REBUILD + ⟳ Sync Adversaries scoped to the Session 1, Riverlands and Corvaine River-Plains folders; leyline REBUILD for Phantom Double; PR #388)
+
+*(The first nation pass of the bestiary redo (R-135 (a)), approved by Ben at the statblock gate
+on 2026-09-14 — "Yes on all six numbers and the Line-Warden concept, commit it. Default for R 136
+as well." Every row is a fresh import from the rebuilt pack (never a world snapshot) driven on a
+licensed scene. Numbers: `docs/analysis/bestiary/CENSUS.md`; the reasons: the 2026-09-14 delta and
+`docs/analysis/bestiary/YARDSTICK-2026-09-14.md`.)*
+
+- [ ] 🤖 **156-1 — Corvaine Raider reads the retune:** a fresh import shows HP 10, Deflect 1, Soldier's
+      Crossbow and Shortsword at 1d6+1 keen, the token's sight range 10 ft (AWA 1); a hit that takes
+      it below 5 posts the Break cue, and its two rules' descriptions open with `cue — table call:`.
+- [ ] 🤖 **156-2 — Corvaine Line-Caller reads the retune:** HP 10 / Deflect 1 / 1d6+1, token 10 ft
+      (AWA 2), Investiture 2 on the sheet (not the derived 4); Guiding Signal's picker card lists the
+      PC tokens within 15 ft; The Line Falls Apart cues at 0 HP with the labelled text.
+- [ ] 🤖 **156-3 — Sergeant Halden Roek reads HP 24 and his attributes:** Athletics and Discipline
+      total 2 on the sheet with no rank written (STR 2 / WIL 2), token 10 ft, Investiture 2; the Not a
+      Bandit cue posts on the write that takes him below 8; Press the Line's hit still cues the
+      Raider shot.
+- [ ] 🤖 **156-4 — Mistheron's beak and senses:** Spearing Beak rolls 1d6+2 keen with
+      `(1d6)[Spearing Beak]` appended against a fooled PC copy and its Graze subtotal reads 1d6; token
+      20 ft (AWA 3); Stealth totals 2 with no rank written; The Seeming's card carries the R-136
+      sentence ("resolves against it (defenses 0) and affects only the seeming").
+- [ ] 🤖 **156-5 — Tollbird Flock's senses and effects:** token 20 ft, Perception 3 with no rank
+      written; a PC copy spending Focus within 15 ft loses 1 more (Whispered Doubt); an Isolated hit
+      lands Weakened; the bloodied cue's description opens with `cue — table call:`.
+- [ ] 🤖 **156-6 — Surecat's attributes:** Perception 4 and Stealth 3 on the sheet with no ranks
+      written; token 20 ft; Redirect Momentum still rolls Blue at rank 2 vs the target's Athletics;
+      Intercept's confirm pick still queues the disadvantage.
+- [ ] 🤖 **156-7 — Corvaine Well-Warden imports whole:** the block builds with Dread Presence, Hollow
+      Command and Coercive Pressure as action-typed twins plus the Black Key and Draw Mana; HP 22,
+      Phy 12 / Cog 13 / Spi 14, foc 3, inv 3, Deception 4 (PRE 2 + rank 2), token 10 ft; Hollow
+      Command's use rolls Deception vs a PC copy's Spiritual and the success denies its next turn's
+      actions; a Draw Mana leaves an isolated PC copy Weakened and Dread Presence's veto then refuses
+      its move toward an ally; the bloodied cue posts below 11.
+- [ ] 🤖 **156-8 — Phantom Double's card carries the R-136 sentence:** after a leyline rebuild and a
+      ⟳ Sync Talents on `Bench — Blue`, the talent's description, chat and short forms all end with
+      "resolves against it (defenses 0) and affects only the duplicate"; a fooled bench PC's
+      Steadfast Challenge on the copy still succeeds against SPI 0 and marks only the copy.
+- [ ] 🤖 **156-9 — the re-derivations as a set:** one `pack.getDocuments()` pass over the seven blocks
+      confirms every old skill total reappears from the attribute alone (Roek ath 2 / dis 2, Mistheron
+      stl 2, Tollbird prc 3, Surecat prc 4 / stl 3, Well-Warden dec 4) and every prototype token's
+      `sight.range` equals the ladder at its AWA (10 / 10 / 10 / 20 / 20 / 20 / 10).
 
 ## Bestiary yardstick fights — item 155 (2026-09-14 — DOCS-ONLY: nothing to deploy; three fights on copies of the actual PCs, recorded on `.claude/skills/bestiary-forge/TURN_LEDGER.md`)
 

@@ -4085,6 +4085,8 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **Done when:** every bestiary folder has had its pass; the census's §4 shows no `(d)` senses on a creature that should see, every rule's description carries its cue-or-effect label, and the bands sit inside R-134's targets or say why not.
 
+**Progress — 2026-09-14, Corvaine + the Riverlands DONE (PR #388), Ben's yes at the statblock gate ("Yes on all six numbers and the Line-Warden concept, commit it"):** Corvaine Raider / Line-Caller HP 10, Deflect 1, 1d6+1; Roek HP 24; Mistheron's beak 1d6+2; Tollbird Flock and Surecat unchanged in number; all six state `attributes` with every old skill total carried by an attribute and Investiture stated; twenty-four rule descriptions labelled (twelve cues, twelve effects, zero conversions — every cue names a table decision); the census reads a stated AWA; the Corvaine Well-Warden landed (item 158's Corvaine slot). Next nation: **Thalendor** (session 2's grove — the Rootling Swarm and the Briar-Gone Grove carry YARD-1 / YARD-3 evidence: a rootling took 2–3 Actions to drop, the grove's terrain and its own Thorn Field are items 162 / 164), then Malcurr.
+
 **PM:** lane H · model opus per nation (sonnet for a mechanical-only nation) · size L · deps R-128, R-129, R-134, R-135 — all answered (a) 2026-09-14; item 155's ledgers first (R-135 (a)).
 
 ## 157. [x] (2026-09-14, PR #387) The nine legacy playtest-dungeon blocks — per R-130 (a): the `Legacy — Playtest Dungeon` folder (DATA, adversaries REBUILD + ⟳ Sync owed)
@@ -4104,6 +4106,8 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **What to do:** per R-131's answer — concepts from canon §5b's named factions at the lore gate, kits of as-written talents (`python scripts/validate-build.py --adversaries` for the cost print), blocks through the statblock gate, one per nation pass if (a).
 
 **Done when:** the humans Ben approved are in their nations' folders with 🤖 rows; the census's "tree talents on blocks" line reflects them.
+
+**Progress — 2026-09-14, Corvaine's slot filled (PR #388, canon ruling 165):** the **Corvaine Well-Warden** (rival, Black — the riverlands' ground colour and a tree the party lacks; kit Dread Presence / Hollow Command / Coercive Pressure as written) approved at the lore gate and statted at the statblock gate in one yes; row 156-7; the census reads 8 talents on 3 blocks. Thalendor's and Malcurr's humans ride their nation passes.
 
 **PM:** lane H · model opus · size L · deps R-131 answered (a) 2026-09-14; rides item 156's nation passes, lore gate first.
 
