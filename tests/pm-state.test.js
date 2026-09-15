@@ -430,7 +430,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // how R-134's rows read under one modifier), filed on the gate page and answered "defaults on all
   // rulings" in chat the same day. All four sit in §K.17 with stubs in §G and §L; the open set stays
   // EMPTY and the four join the closed list below.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-15, bench run 49a: ONE ruling opened in §L — R-141 (False Premise's Reaction denial
+  // clears at the END of the target's next turn under the engine's timed-status convention, while its
+  // R-115 (a) card says the start; R-28 (a) is the precedent its default follows). Filed from checklist
+  // row FP-1; the length assertion moves 0 → 1.
+  const ECOSYSTEM_RULINGS = ["R-141"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

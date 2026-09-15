@@ -1691,6 +1691,51 @@ it adds a second, bench-owned option next to it:
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 49a (2026-09-15 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **`scene.createEmbeddedDocuments("Token", docs)` does NOT return the documents in input order.** Run 49a placed
+  16 tokens in one call and built its label → token-id map by index; the unlinked Troopers came back shuffled among the
+  linked PCs, so "Trooper A" pointed at Bench — Knowledge's token. A whole Kneel take then resolved, carded and marked
+  Bench — Knowledge — every part of it internally consistent — and for one call read like an engine defect ("the card
+  names the wrong creature") until the map was checked. **Build the map from each created token's `actorId`, and print
+  the resolved target's name on every take.**
+- ⭐⭐ **A click-to-place pick needs `computer hover` at the frame point BEFORE `left_click` there.** A bare `left_click`
+  sends no pointer-move, so `canvas.mousePosition` still held client (0, 0) — world (200, 350) at that pan — and
+  `edhaPickPoint` resolved out of range (*"that point is beyond Attunement Range (60 ft) — cost refunded."*). Hover, then
+  click: `canvas.mousePosition` read the intended world point within 2 px every time after. Run 48's recipe otherwise
+  stands — compute the client point from `canvas.stage.worldTransform` and scale it by frame ÷ viewport (800 ÷ 1600 here).
+- ⭐⭐ **`#chat-notifications` is a full-height column OVER the canvas** — client x 936–1236, y 16–986 at a 1600 × 1000
+  viewport — and a chat card popping into it absorbs a canvas click. Run 49a's second Set Charge click landed on the
+  first placement's fresh *"🧨 Charges set: 1 … Detonate ALL"* card and pressed **Detonate ALL**: the first Charge went off
+  alone, two terrain regions dropped, the target died, and the pick that click was meant for stayed armed. **Pan so every
+  click target sits well outside that column, test `document.elementFromPoint(x, y).closest("#board")` before arming and
+  again right after, and switch the sidebar to Chat (`ui.sidebar.changeTab("chat", "primary")`) so new cards go to the log.**
+- ⭐ **A pick that never got its click stays ARMED and will place on the next canvas click.** Cancel it through the
+  listener's own path — `window.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"}))` — and the engine refunds
+  (*"Set Charge canceled — cost refunded."*). A leftover Attunement-range ring template is the tell that one is pending.
+- ⭐ **With Ben's started combat gone, 123-1's "a started combat elsewhere is untouched" clause was proven on a
+  bench-owned STARTED combat on the Bench Arena** (round 1, one Briar-Gone Grove token), plus the same scoped call aimed
+  at the Arena as a dry run to show the REFUSAL — no unscoped call was needed.
+- ⭐ **The Advanced Cosmere Combat Tracker ordered six combatants by its own rule, not the initiatives written.**
+  Initiatives 30 / 60 / 40 / 50 / 10 / 20 came back as turns Adjacent A, Blue, Ally One, Fate, Ally Two, Power. Read
+  `combat.turns` after setup and plan any turn-dependent row (a turn-start grant, a timed expiry) from it.
+- ⭐ **A timed status "until the start of X's next turn" clears at the END of that turn in this engine** — `expireAfter`
+  is X's next-turn coordinate and the sweep deletes once the sequence passes it (R-28 (a) kept that convention; R-141
+  asks about False Premise). To measure an expiry, step to X's turn start AND to the turn after, and read both.
+- ⚠️ **`deleteCombat` runs every scene-reset family (eleven, `EDHA_SCENE_RESET_FAMILIES`) over every directory actor and
+  every canvas token, the players' actors included.** Before deleting a bench combat, check the non-bench actors'
+  statuses and `edha-content` flags against the families' lists (run 49a: none of the three players' actors carried a
+  matching key; a Ben adversary's `weakened` is in no list), then let the end-of-run diff confirm it.
+- ⚠️ **A skill-test talent that keeps an item `damage.formula` rolls a system `DamageRoll` with Apply buttons on every
+  use**, pass or fail (TODO item 169) — read damage off the engine's ⚡ card, never the system roll, and never press its
+  Apply buttons.
+- ⚠️ **`edha.syncActorTalents` on a real player's actor reports the system's 19 native basic actions as "not found in
+  packs"** (TODO item 168). It is noise, not a failed sync; the bench PCs own none, so their toasts read clean.
+- ✅ **Density, measured: 14 of 15 rows retired on evidence, 1 PARTIAL (FP-1 → R-141), 4 defects filed (items 168–171),
+  2 doc corrections, and the PM-R17 refresh of all three players' actors — in about 55 driving calls.** End-of-run diff:
+  67 actors in and out, the only non-bench changes being the three refreshes (`_stats` on 8 items each), every scene's
+  token hashes and scene document identical, combats 0 → 0, macros 44/44, world settings identical.
+
 ## Operating lessons from run 48 (2026-09-14 — the yardstick set; these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **A click-to-place prompt (`edhaPickPoint` — Draw Mana terrain, bursts, Foundations) is answered with a
