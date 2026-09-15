@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T19:22:22.546Z",
+  "generatedAt": "2026-09-15T20:52:31.553Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "ad4f64a9a8",
-    "commit": "eedc939",
-    "branch": "pm/deploy-record-2026-09-15c",
+    "hash": "a65e9c6ab1",
+    "commit": "60c2dd1",
+    "branch": "pm/r-143-auto-apply",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,26 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Deployed at 15:20: fix pass 13 and item 169's safe part are live in Foundry (engine 80042b86, packs rebuilt). Foundry was relaunched, so rejoin if you were connected. R-142 (the decoy damage rolls) waits on you. The bench run that verifies today's fixes would be a fourth Opus run: today on your word, or tomorrow. No Fable agents today.",
-    "waitingOn": "Ben: bench run 50 today or tomorrow; answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
+    "note": "PM of record since 11:49 ET. Everything from today is deployed (15:20). Bench run 50 is running the 12 rows that verify it. The July branches are deleted. Two rulings are waiting on you: R-142 (the decoy damage cards on ten talents) and R-143 (should the engine apply attack damage itself, so you stop clicking the damage card on most hits). No Fable agents today.",
+    "waitingOn": "Ben: answer R-142 (decoy damage cards, default a) and R-143 (auto-apply attack damage, default a)",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-50",
+      "title": "Bench run 50: fix pass 13's nine rows, FP-1, 169-PWR and 169-DTH on the 15:20 deploy",
+      "model": "opus",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/bench-50",
+      "startedAt": "2026-09-15T19:35:00Z",
+      "agent": "Bench run 50 (fix pass 13 rows)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; the day's fourth Opus run, on Ben's word"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -2210,6 +2224,18 @@
       "status": "queued",
       "statusDetail": null,
       "pr": null
+    },
+    {
+      "pos": 179,
+      "item": null,
+      "title": "Bench run 50 — the 15:20 deploy (main @ eedc939, engine 80042b86): fix pass 13's nine rows (CUE-161, CUE-161b, THORN-162, PACK-163, PACK-163b, SNAP-164, SYNC-168, LBL-171, VD-170), FP-1, 169-PWR and 169-DTH; Predator's Due still blocked on item 88. Dispatched on Ben's word (\"Go ahead and run the bench, it's fine\") as the day's fourth Opus run",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "deploy 15:20 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -2257,9 +2283,8 @@
     }
   ],
   "benOnly": [
-    "say whether bench run 50 runs today (a fourth Opus run) or waits for tomorrow",
     "answer R-142 (the decoy damage rolls on ten talents, plus Killing Blow and The Final Study: (a) keep the formulas and let a field on the talent's own rule suppress the system's damage roll — recommended; (b) derive attack context and colour from other fields, then blank the formulas; (c) leave the decoys and restore Killing Blow and The Final Study's formulas)",
-    "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)."
+    "answer R-143 (should the engine apply attack damage itself: (a) auto-apply a clear single-target hit with Undo and prompt only for the graze or a plot-die choice — recommended; (b) a one-click confirm; (c) keep today's card)."
   ],
   "inbox": [],
   "foundry": {
@@ -2269,48 +2294,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "23:21",
-      "at": "2026-09-14T03:21:00.000Z",
-      "item": "Item 145 (rulings close-out, late — the seven phone answers) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "24 min, 98 tool uses (158 turns)",
-      "weighted": "5.8M",
-      "weightedM": 5.8,
-      "outcome": "reviewed 23:50 — merged on green after the PM's bookkeeping commit on the branch, no trailers, six themed commits, no corrections; gates 12/12 in the worktree (1206 tests). Seven bodies moved verbatim (combined sha256 f91f48e8… before = after), parseOpenRulings() → [] on the real doc, the pin shown failing when a §L stub is re-opened in a scratch copy; items 101 / 106 / 107 / 108 / 109 / 114 re-pointed (109 / 114 → opus; 106's card text gated on Ben's own words); item 144 filed; CLAUDE.md's rulings row R-1 … R-126. Found: parseOpenRulings() skips §J / §K wholesale, so the §L stub — not the ANSWERED marker — is what keeps a moved ruling closed (a fact for the rulings intro, not a defect). DOCS-ONLY",
-      "pr": 372
-    },
-    {
-      "date": "2026-09-13",
-      "time": "23:50",
-      "at": "2026-09-14T03:50:00.000Z",
-      "item": "#372 (item 145) merged at 23:50:39 after the PM's bookkeeping commit (CI green on 07e235e); the worker's worktree removed, the local branch deleted; main = b78ebb8, clean; open rulings 0",
-      "itemNo": "372",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 372
-    },
-    {
-      "date": "2026-09-14",
-      "time": "00:00",
-      "at": "2026-09-14T04:00:00.000Z",
-      "item": "Dispatched bench run 47 (opus, worktree pm/bench-47 — bench-run on the 23:14 deploy of main @ 31443c5, engine 902ddadb; step zero: both PCs refreshed (PM-R17), the roster with the Bench Arena (PM-R19), the scoped ⟳ Sync Adversaries (hard rule 9); the 14 driveable open 🤖 rows + item 124's paragraph re-test; Predator's Due left blocked on 88; next free ruling R-127, next item 146). Opus 1 of 3 for 09-14, at the PM-R16 reset",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "00:01",
@@ -3108,10 +3091,52 @@
       "weightedM": null,
       "outcome": "deployed",
       "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "15:33",
+      "at": "2026-09-15T19:33:00.000Z",
+      "item": "Ben (chat): \"delete the july branches\" → both deleted in one push (claude/playtest-monitoring-checklist-8lit4b @ 59139fa, claude/palewater-ford-battle-map-08r3hg @ 4208a2e; still recoverable from local objects); \"Go ahead and run the bench, it's fine\" → bench run 50; and \"yes\" to writing the damage-card question up → R-143",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "15:35",
+      "at": "2026-09-15T19:35:00.000Z",
+      "item": "Dispatched bench run 50 (opus, worktree pm/bench-50: fix pass 13's nine rows, FP-1, 169-PWR and 169-DTH on the 15:20 deploy). Opus 4 for 09-15 — past PM-R16's three, on Ben's explicit word",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "15:45",
+      "at": "2026-09-15T19:45:00.000Z",
+      "item": "R-143 filed in EDHA_RULINGS.md §L — should the engine apply attack damage itself: (a) auto-apply a clear single-target hit with Undo and prompt only for the graze or a plot-die choice (recommended); (b) a one-click confirm; (c) keep today's card. The open-rulings pin moves to [\"R-142\", \"R-143\"]; bench run 50 told to number any ruling of its own from R-144",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
     }
   ],
-  "runLogTotal": 347,
-  "runLogFrom": "2026-09-13",
+  "runLogTotal": 350,
+  "runLogFrom": "2026-09-14",
   "dispatches": [
     {
       "at": "2026-09-04T22:41:00.000Z",
@@ -4066,6 +4091,12 @@
       "model": "opus",
       "item": null,
       "pr": 398
+    },
+    {
+      "at": "2026-09-15T19:35:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
