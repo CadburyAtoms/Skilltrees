@@ -442,7 +442,10 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // plus Killing Blow and The Final Study (keep the formulas and suppress the system's roll, re-key attack
   // context and colour off the formula, or leave the decoys), from the review of item 169 (PR #396). The
   // length assertion moves 0 → 1.
-  const ECOSYSTEM_RULINGS = ["R-142"];
+  // 2026-09-15, later the same afternoon: the PM files R-143 in §L at Ben's request in chat — should the
+  // engine apply attack damage itself (auto-apply a clear hit and prompt only for grazes and plot-die
+  // choices, a one-click confirm, or today's card). The length assertion moves 1 → 2.
+  const ECOSYSTEM_RULINGS = ["R-142", "R-143"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

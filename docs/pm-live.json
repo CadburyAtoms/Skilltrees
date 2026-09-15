@@ -1,11 +1,19 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Deployed at 15:20: fix pass 13 and item 169's safe part are live in Foundry (engine 80042b86, packs rebuilt). Foundry was relaunched, so rejoin if you were connected. R-142 (the decoy damage rolls) waits on you. The bench run that verifies today's fixes would be a fourth Opus run: today on your word, or tomorrow. No Fable agents today.",
-    "waitingOn": "Ben: bench run 50 today or tomorrow; answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
+    "note": "PM of record since 11:49 ET. Everything from today is deployed (15:20). Bench run 50 is running the 12 rows that verify it. The July branches are deleted. Two rulings are waiting on you: R-142 (the decoy damage cards on ten talents) and R-143 (should the engine apply attack damage itself, so you stop clicking the damage card on most hits). No Fable agents today.",
+    "waitingOn": "Ben: answer R-142 (decoy damage cards, default a) and R-143 (auto-apply attack damage, default a)",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-50",
+      "title": "Bench run 50: fix pass 13's nine rows, FP-1, 169-PWR and 169-DTH on the 15:20 deploy",
+      "model": "opus", "size": "M", "lane": "B", "branch": "pm/bench-50",
+      "startedAt": "2026-09-15T19:35:00Z", "agent": "Bench run 50 (fix pass 13 rows)",
+      "phase": "working", "pr": null, "note": "worktree; the day's fourth Opus run, on Ben's word"
+    }
+  ],
   "usage": null
 }
