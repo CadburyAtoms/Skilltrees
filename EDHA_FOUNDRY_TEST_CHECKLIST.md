@@ -604,6 +604,24 @@ FP-1 above was reworded in place to the END of the target's next turn plus a car
 *(✅ **LBL-171 RETIRED on evidence, bench run 50 (2026-09-15)** — item 171 live. False Premise from Bench — Blue (21 vs COG 14) → *"False Premise — Bench Target — Adjacent A is No Reactions ."*; the effect is named "No Reactions", the token HUD's status icon carries `data-tooltip-text="No Reactions"`, and the expiry card reads *"💢 No Reactions on Bench Target — Adjacent A ends (end of its turn)."* Hollow Command from Bench — Black (11 and 5, then 23 vs SPI 14) → *"Hollow Command — Bench Target — Adjacent B is Cannot Act ."*, effect "Cannot Act", expiry *"💢 Cannot Act on Bench Target — Adjacent B ends (end of its turn)."*)*
 *(✅ **VD-170 RETIRED on evidence, bench run 50 (2026-09-15)** — item 170 live. After the deploy's REBUILD and the roster run's ⟳ Sync (the owned Vital Diagnosis equal to the pack document), Bench — Life's Vital Diagnosis on a fresh Trooper (Investiture 4 → 3) → *"🎯 Vital Diagnosis : Trooper is Diagnosed (by Bench — Life) — damage against it gains +3 vital (auto-applied). Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal additional vital damage equal to your Blue rank - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."* — no "+Tier vital" on it or on the whispered reveal. Bench — Fate's Bulwark Ground sheet, Events tab: *"… thpFormula (Temp HP = your White rank for an ally beginning its turn on the owner's Ordained square …"*; Ordained Ground's placement card later read *"… Temp HP = 3 (Bulwark Ground) …"*.)*
 
+## Fix pass 14 — bench runs 49b + 50's card claims (2026-09-15; **ENGINE-ONLY → relaunch / F5**)
+
+*(Items 172, 173 and 176 — one family, all three in `module-src/scripts/engine/33-triggered-effect-resolution.js`
+(172 also touches `06-edha-prompt-pick.js`'s `edhaGainResource` and `52-green-instinct.js`'s `edhaDrawMana`).
+Root-caused from bench runs 49b and 50 and pinned headless in `tests/resource-gain-delivered.test.js` and
+`tests/no-candidate-no-card.test.js`; these rows are the live half.)*
+
+- [ ] 🤖 **GAIN-172 — a resource-gain card at a full pool** — a Reeve-Owl's Predatory Patience hit on
+      a Weakened creature at 3/3 Focus must post NO gain claim (one below it still says "regains 1
+      Focus"); a Briar-Gone Grove's Draw Mana at a full Investiture pool must say "already at full
+      Investiture" instead of "recover N" (below full, the clamped delta, not the declared yield).
+- [ ] 🤖 **ISO-173 — Sapping Hex on a target that is not Isolated** — a Reeve-Owl / Tollbird Flock
+      hit on a creature that is NOT Isolated must post no Sapping Hex card at all (an Isolated hit
+      still posts "… is Weakened"; a hand-fired card with nothing targeted still asks for a target).
+- [ ] 🤖 **SPLASH-176 — Chain Detonation with nobody in the blast** — a kill with no creature within
+      5 ft of the body must post no damage card and roll no visible number (one with a creature in
+      radius still damages it and names it in the card).
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
