@@ -4166,3 +4166,13 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** a click between two adjacent tokens covers both; gates green.
 
 **PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
+
+## 165. [ ] The bench roster script's PROTECTED list does not name Ishee — Hannah's actor is guarded by a placeholder name that no longer exists (TOOLING, no deploy)
+
+**Why:** `scripts/bench-setup-console.js` refuses writes to `["tem parinaem", "soggy bottom", "temp name hannah character"]`, the names the campaign state doc used when the guard was written. In the world on 2026-09-14 the third player's actor is named **`Ishee`** (`Edha PCs` folder, Envoy · Blue · Chaos, level 1); the placeholder name resolves to nothing. Bench run 48 found it while copying the three PCs for the yardstick fights — the copies were made by hand, so nothing was touched, but any roster or orphan-repair pass that trusts the list would not treat Ishee as protected (PM-R17 covers her like the other two: refresh only, never edit).
+
+**What to do:** add `"ishee"` to `PROTECTED` (keep the placeholder too — a rename back must not unguard her), and make the guard also protect every actor in the `Edha PCs` folder by folder id so the next rename cannot reopen the gap; pin the folder rule in `tests/bench-setup-console.test.js` if that harness exists, else in the script's own pure helper. Update `EDHA_CAMPAIGN_STATE.md` §1's PC-1 heading only if Ben confirms "Ishee" is the settled name (it is marked ⚑ placeholder there).
+
+**Done when:** `bench-setup-console.js` throws on any write aimed at Ishee by name or by folder; gates green.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
