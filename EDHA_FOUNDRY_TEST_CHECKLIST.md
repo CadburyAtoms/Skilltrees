@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-15T01:50:15.860Z from main @ e54bb93: packs 2026-09-15T01:50:15.860Z, engine 5e9833a9 = HEAD, validators PASS**
+
+
 **Agent-run deploy 2026-09-14T23:58:55.686Z from main @ cf85198: packs 2026-09-14T23:58:55.686Z, engine 5e9833a9 = HEAD, validators PASS**
 
 
@@ -93,7 +96,7 @@ confirm the sync state before reporting a bug.
 
 ✅ **The adversaries REBUILD + ⟳ Sync Adversaries owed since the bestiary rulings close-out (R-130 (a)'s legacy folder, R-133 (a)'s two card texts) is CLEARED** — the agent-run deploy 2026-09-14T23:58:55Z from main @ cf85198 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS, and bench run 48 read both R-133 cards from the fresh pack and drove the Heat of the Flats cue live (both rows retired; delta 2026-09-14, bench run 48). World adversaries placed before that stamp are snapshots until Ben's ⟳ Sync Adversaries click.
 
-⛔ **AN ADVERSARIES REBUILD + ⟳ SYNC ADVERSARIES, AND A LEYLINE REBUILD + PC ⟳ SYNC TALENTS, ARE OWED (filed 2026-09-14 by the Corvaine + Riverlands bestiary pass, PR #388 — `node scripts/deploy-cycle.js --yes` after the merge clears both).** `data/adversaries.json` changed on the branch: six blocks re-statted (Corvaine Raider, Line-Caller, Sergeant Roek, Mistheron, Tollbird Flock, Surecat — attributes, cue labels, four retunes) and one new block (Corvaine Well-Warden); the Mistheron's The Seeming card and Phantom Double's card carry the R-136 (a) sentence (`data/leyline.json` + the Blue authored overlay). Until the rebuild runs, the live packs show the old numbers and texts — the section "Corvaine + Riverlands bestiary pass — item 156" rows wait on it; a world Mistheron / Raider / Roek placed before it is a stale snapshot.
+✅ **The rebuilds owed by the Corvaine + Riverlands bestiary pass (PR #388) are CLEARED** — the agent-run deploy 2026-09-15T01:50:15Z from main @ e54bb93 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS: the six re-statted blocks, the Corvaine Well-Warden and the R-136 (a) card texts are live in the packs. World adversaries placed before that stamp are snapshots until a ⟳ Sync Adversaries (Ben's button, or a bench-scoped call); a PC who owns Phantom Double needs one ⟳ Sync Talents. The section "Corvaine + Riverlands bestiary pass — item 156" rows can now be driven.
 
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
