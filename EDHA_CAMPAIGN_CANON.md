@@ -1157,7 +1157,9 @@ Method + numbers: rulings 26–27.)
   noticed. Preachers of the **Lowered Crown** offer two readings, both spreading: the Arbiter
   has *cast Thalendor down* for a sin unnamed — or, whispered, he is *not able*. Districts
   have begun refusing the First Sheaf rite rather than perform it over a vat-loaf. The Mage's
-  alchemy is salvation or blasphemy depending on which reading you hold.
+  alchemy is salvation or blasphemy depending on which reading you hold. *(A preacher of the
+  Lowered Crown is Thalendor's invested human in the bestiary — the White-attuned **Preacher of
+  the Lowered Crown** block, ruling 166, 2026-09-15.)*
 - **GM layer (§3, ruling 2):** the heresy is *onto something* — the acute layer of the famine
   IS their own god's search draining the Root Network. Verdannis's most devout are starving
   *because* of him, and neither side knows. Minority faith note: Kethane keeps a practical
@@ -3316,7 +3318,10 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     the tree UI is a PC concern. **Leyline rank default by role: minion 1 / rival 2 / boss 3**
     per attuned color (dice d4/d6/d8; Attunement Range 15/30/60 ft), explicit per-block
     overrides allowed; rolled color tests run soft for now (adversary attributes stay 0) —
-    revisit if a future boss pulls a rolled attack talent. Terrain-scale/diplomacy-scale
+    revisit if a future boss pulls a rolled attack talent. *(Superseded 2026-09-15 — R-137, `EDHA_RULINGS.md`
+    §K.17: adversaries follow the same rules as the PCs; a block that states attributes rolls
+    attribute + rank on its colour tests AND its attacks — the PC attack model — and ruling 166's
+    block is the first statted that way from birth.)* Terrain-scale/diplomacy-scale
     blocks (grove-heart, skein herd, briar-grove terrain) are **per-session exceptions**:
     flagged in the script audit and designed with Ben before building, never quietly forced
     into the Actor mold.
@@ -5439,3 +5444,26 @@ Altar Crossing position, and the Vorsk→Lunavar "to the south" raid axis.
     line; outs: talk against her Spiritual, a writ, or mercy that costs her the well. Tone: sad, not
     evil. Default name **Warden Idony Kell** (Corvaine commoner naming, §5b's table), Ben's to
     rename. Ledger +1 Black (9 → 10). Numbers at the block; DATA, adversaries REBUILD + ⟳ Sync.
+
+166. **Thalendor's invested human is a preacher of the Lowered Crown — the Preacher of the Lowered
+    Crown block (R-131 (a), second nation pass, items 156 / 158), White-attuned and
+    Sovereignty-aligned.** Ben, 2026-09-15, on the gate page's concept (which had proposed Green):
+    *"You need to change the thalendor invested enemy to be white attuned though. He's from
+    thalendor, but is Sovreighnty aligned, and so needs two ranks in white and black to access that
+    tree. The Corvaine human enemy was black, so this one should be white."* A preacher of the
+    Lowered Crown (§5b's brewing heresy) at rival role: in the most devout nation, starving worst,
+    he preaches the first reading — the Arbiter has cast Thalendor down for a sin unnamed — and his
+    district has stopped performing the First Sheaf over a vat-loaf; the GM layer (ruling 2) is why
+    it lands: the heresy is onto something, with the right symptom and the wrong cause. **White**
+    (the Corvaine human was Black); Sovereignty is Verdannis's own tree and gates on White 2+ and
+    Black 2+, so he carries both ranks — Black as a stated skill, no Black Key. Kit, as written
+    (ruling 40): **Censure**, **Decree of Ruin** (off-tree by Black 3 — R-94's licence), **Expose**,
+    plus the White Key's Draw Mana. The encounter is a sermon before a fight — his district at a
+    shrine-grove the wardens can no longer calm, or at a refused First Sheaf — that becomes a fight
+    only if someone forces the reading; outs: talk against his Spiritual, the drain evidence (§5c's
+    GM layer — the groves sickened in an order that maps a mechanism, not a judgment), or mercy (one
+    true thing on a vat-fed table). Tone: sad, not evil. Default name **Preacher Oswin Hollin**
+    (Merrit Wold the other; §5b's naming table), Ben's to rename. Ledger +1 White (7.5 → 8.5).
+    Numbers at the block, on the PC attack model (R-137 / R-139 (a): STR 0 SPD 1 INT 1 WIL 2 AWA 2
+    PRE 2, defenses derive 11 / 13 / 14, a staff at SPD 1 + Light Weaponry 1 = +2 for 1d6+2). DATA,
+    adversaries REBUILD + ⟳ Sync.

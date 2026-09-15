@@ -177,6 +177,8 @@ session-1 sheet.**)*
 |---|---|
 | 1 | https://claude.ai/code/artifact/9db5c439-01fe-459d-9539-151279764afd |
 
+*(Session 1's script is **owed a republish** since 2026-09-15: the ford's printed statblocks moved onto the PC attack model and derived defenses — R-137 / R-139 (a), TODO item 166. Republish to the URL above, never a second artifact.)*
+
 ## 7. Next session
 
 **Session 1 is ready to run. One ⚑ remains, and it is art.** The **W23

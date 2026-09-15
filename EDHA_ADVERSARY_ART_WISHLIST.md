@@ -201,6 +201,13 @@ A grove gone to briar (ruling 32): a shrine-grove locked in gray-leafed blight, 
 of thorn half-grown across a road, root-boughs dragging at a cart — a warden kneeling barefoot
 at its edge, craft failing. Not evil; wrong. *Token:* the grove's heart-trunk, thorn-crowned.
 
+### Preacher of the Lowered Crown — `preacher-of-the-lowered-crown-portrait.*` / `preacher-of-the-lowered-crown-token.*`
+Preacher Oswin Hollin at a refused First Sheaf (ruling 166, R-131): a gaunt Thalendor man in
+road-worn grey at the edge of a shrine-grove, a walking staff planted, one hand raised over a
+table where a vat-loaf sits unblessed — his district behind him barefoot and silent, the grove's
+leaves greying above them. A crown drawn low on his brow in chalk on cloth. Sad, not evil.
+*Token:* top-down, the staff and the raised hand over the loaf.
+
 ### Tollbird Flock — `tollbird-flock-portrait.*` / `tollbird-flock-token.*`
 The maddened tolling (ruling 33): a whirl of ash-gray crows with wet-slate eyes mobbing low
 over Crossing ground, wrong and shrieking — trees behind them white with the patient thousands
