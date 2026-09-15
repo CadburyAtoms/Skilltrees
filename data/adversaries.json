@@ -679,18 +679,26 @@
     "tier": 1,
     "folder": "Session 1 — Palewater Ford",
     "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
+    "attributes": {
+      "str": 2,
+      "spd": 1,
+      "int": 1,
+      "wil": 1,
+      "awa": 1,
+      "pre": 0
+    },
     "defenses": {
       "phy": 12,
       "cog": 11,
       "spi": 11
     },
-    "deflect": 2,
-    "hp": 12,
+    "deflect": 1,
+    "hp": 10,
     "foc": 1,
     "inv": 0,
     "movement": 25,
     "count": 2,
-    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
+    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / 1d6+1), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 / 1d6+2 back.</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
@@ -698,7 +706,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -708,7 +716,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -724,7 +732,7 @@
               "atFraction": 0.5,
               "note": "Reaction — below half HP: the Raider may immediately Disengage and flee. These are not fanatics."
             },
-            "description": "GM cue at half HP."
+            "description": "cue — table call: the Raider decides to Disengage and flee. GM cue at half HP."
           },
           {
             "event": "edha-apply-watch",
@@ -733,7 +741,7 @@
               "trigger": "ally-drops",
               "note": "Reaction — an ally dropped: the Raider may immediately Disengage and flee."
             },
-            "description": "GM cue when an ally drops."
+            "description": "cue — table call: the Raider decides to Disengage and flee. GM cue when an ally drops."
           }
         ]
       }
@@ -749,13 +757,21 @@
     "leylines": [
       "white"
     ],
+    "attributes": {
+      "str": 1,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 1
+    },
     "defenses": {
       "phy": 12,
       "cog": 11,
       "spi": 11
     },
-    "deflect": 2,
-    "hp": 12,
+    "deflect": 1,
+    "hp": 10,
     "foc": 1,
     "inv": 2,
     "movement": 25,
@@ -764,7 +780,7 @@
       "White/Guiding Signal",
       "White/Ordered Advance"
     ],
-    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p>",
+    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
@@ -772,7 +788,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -782,7 +798,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -798,7 +814,7 @@
               "atFraction": 0.5,
               "note": "Reaction — below half HP: the Line-Caller may immediately Disengage and flee. These are not fanatics."
             },
-            "description": "GM cue at half HP."
+            "description": "cue — table call: the Line-Caller decides to Disengage and flee. GM cue at half HP."
           },
           {
             "event": "edha-apply-watch",
@@ -807,7 +823,7 @@
               "trigger": "ally-drops",
               "note": "Reaction — an ally dropped: the Line-Caller may immediately Disengage and flee."
             },
-            "description": "GM cue when an ally drops."
+            "description": "cue — table call: the Line-Caller decides to Disengage and flee. GM cue when an ally drops."
           }
         ]
       },
@@ -824,7 +840,7 @@
               "atFraction": 0,
               "note": "The Line-Caller is down — the volleys stop: Raiders act individually and Break triggers one round earlier. (Fleeing triggers this too — GM-called.)"
             },
-            "description": "GM cue when the Line-Caller drops."
+            "description": "cue — table call: the GM runs the Raiders individually from here and brings their Break forward a round. GM cue when the Line-Caller drops."
           }
         ]
       }
@@ -840,9 +856,13 @@
     "leylines": [
       "white"
     ],
-    "skills": {
-      "ath": 2,
-      "dis": 2
+    "attributes": {
+      "str": 2,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
     },
     "defenses": {
       "phy": 13,
@@ -850,11 +870,12 @@
       "spi": 12
     },
     "deflect": 2,
-    "hp": 28,
+    "hp": 24,
     "foc": 3,
+    "inv": 2,
     "movement": 25,
     "count": 1,
-    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
+    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 12) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p>",
     "items": [
       {
         "name": "Issued Blade",
@@ -882,7 +903,7 @@
               "trigger": "on-hit",
               "note": "One allied Raider may immediately make a crossbow shot as a Reaction."
             },
-            "description": "GM cue on Press the Line's own hit."
+            "description": "cue — table call: which allied Raider takes the reaction shot, and whether it does. GM cue on Press the Line's own hit."
           }
         ]
       },
@@ -900,7 +921,7 @@
               "rangeFt": 20,
               "note": "Reaction, 1 Focus — Roek may shove them behind cover instead: the drop is prevented and they have disadvantage-to-be-hit until his next turn (GM: roll the drop back if he reacts)."
             },
-            "description": "GM cue when an ally within 20 ft drops."
+            "description": "cue — table call: Roek spends 1 Focus and the GM rolls the drop back. GM cue when an ally within 20 ft drops."
           }
         ]
       },
@@ -922,7 +943,7 @@
               "atFraction": 0.34,
               "note": "Below 1/3 HP — Roek calls the break himself: 'Enough. We're done. Take your grain.' (He also stops for any surrender or fair split.)"
             },
-            "description": "GM morale cue at 1/3 HP."
+            "description": "cue — table call: Roek calls the break, or accepts a surrender or a fair split. GM morale cue at 1/3 HP."
           }
         ]
       }
