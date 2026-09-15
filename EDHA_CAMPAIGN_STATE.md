@@ -17,9 +17,9 @@ RETIRED** — session 1 was written before the party landed and still runs for a
 forge run may now write *to these three* rather than around them.
 
 The three Foundry actors are the **players'**, not the bench's: `Ishee`, `Soggy Bottom`,
-`Tem parinaem`. All three are refresh-only via the sheet's own ⟳ Sync Talents button, never written
-by tooling (PM-R17) — and **treat Ishee as protected even though `scripts/bench-setup-console.js`'s
-PROTECTED guard still names her old placeholder** (TODO_REPO_HYGIENE item 165).
+`Tem parinaem`. All three are PROTECTED in `scripts/bench-setup-console.js` — by name, and by
+their `Edha PCs` folder since item 165 (PR #392) — refresh-only via the sheet's own ⟳ Sync Talents
+button, never written by tooling (PM-R17).
 **When a player adds or changes inventory, talents, or expertises, that lands in §1a**, not here.
 
 ### PC-1 — `Ishee` *(Hannah's character; the actor carried the placeholder `Temp Name Hannah character` until she was named)*
