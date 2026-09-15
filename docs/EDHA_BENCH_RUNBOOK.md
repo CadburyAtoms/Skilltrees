@@ -21,12 +21,13 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
   setup script places tokens only when its `PLACE_TOKENS` flag is set, offset from an `ORIGIN`
   you choose after looking at the map for a clear area. (**Superseded in part 2026-09-13** — see
   "Bench-created scenes" below: the bench may now also create and use its own scenes.)
-- **Player characters "Tem parinaem" and "Soggy Bottom" may be REFRESHED, never EDITED
-  (PM-R17)** — a REFRESH (the sheet's `⟳ Sync Talents` button, or an equivalent pull of their
-  owned talent copies from the pack) is allowed for the PM and for agents; a hand write to
+- **Player characters "Tem parinaem", "Soggy Bottom", and "Ishee" may be REFRESHED, never
+  EDITED (PM-R17)** — a REFRESH (the sheet's `⟳ Sync Talents` button, or an equivalent pull of
+  their owned talent copies from the pack) is allowed for the PM and for agents; a hand write to
   their stats, items, or text, or an effect aimed at writing to them, is still forbidden. The
-  setup script hard-throws on their names — it guards its own write paths, which are edits,
-  never refreshes.
+  setup script hard-throws on their names, and also on any actor it finds sitting in the
+  players' "Edha PCs" folder (or a subfolder of it) regardless of name (item 165, 2026-09-15) —
+  it guards its own write paths, which are edits, never refreshes.
 
 **The next run's paste-ready prompt lives in `docs/BENCH_NEXT_RUN.md`** — each run ends by
 rewriting that file for the run after it (run 1 → run 2 = White+Blue, run 3 = Black+Green,
@@ -151,11 +152,11 @@ it adds a second, bench-owned option next to it:
 
 1. **Join:** browser pane → `http://localhost:30000/join` → select **Bench** → Join (no
    password). If Bench shows as already active, STOP and ask Ben to free the session.
-2. **Refresh the two PCs (PM-R17; this run's "step zero" on the board):** as the GM `Bench`
-   user, open each of "Tem parinaem" and "Soggy Bottom"'s own sheet and click
-   **`⟳ Sync Talents`** — this is the only touch these two documents get from a bench run
+2. **Refresh the three PCs (PM-R17; this run's "step zero" on the board):** as the GM `Bench`
+   user, open each of "Tem parinaem", "Soggy Bottom", and "Ishee"'s own sheet and click
+   **`⟳ Sync Talents`** — this is the only touch these three documents get from a bench run
    (never `bench-setup-console.js`'s write paths, which are for the bench roster, not these
-   two). Record the toast text for each PC in the run's delta/report. This is a REFRESH (pull
+   three). Record the toast text for each PC in the run's delta/report. This is a REFRESH (pull
    their owned talent copies from the pack), never a hand edit to their stats, items, or
    text — see hard rule 1.
 3. **Health check** (console via javascript_tool), screenshot as the run header:
@@ -225,10 +226,10 @@ it adds a second, bench-owned option next to it:
      targets are still imported FRESH from the pack into the bench folder — never Ben's placed
      campaign tokens. The zero-combatant combat `BerbNeuXp4iKduef` may be deleted by the next run —
      record it in the run's world diff as authorised.
-   - No deletion of any OTHER pre-existing document. The two PC actor **documents** (Tem parinaem,
-     Soggy Bottom) stay refresh-only under **PM-R17** — only their **tokens on the Playtest Map
-     scene** fall under the scene licence above, never a hand edit to the actor documents
-     themselves.
+   - No deletion of any OTHER pre-existing document. The three PC actor **documents** (Tem
+     parinaem, Soggy Bottom, Ishee) stay refresh-only under **PM-R17** — only their **tokens on
+     the Playtest Map scene** fall under the scene licence above, never a hand edit to the actor
+     documents themselves.
    - No world-settings changes, no scene activation, DEPLOY STATE untouched (agent findings
      go in the delta; only Ben advances DEPLOY STATE).
    - Chat spam is accepted (Ben's call, 07-26); end the run noting Ben may flush bench chat.
