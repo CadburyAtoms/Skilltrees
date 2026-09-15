@@ -224,8 +224,16 @@ const EDHA_STATUSES = {
   edict:      { label: "Edict-Bound", icon: "icons/svg/padlock.svg", condition: false, _id: "condedict0000000", tint: "#4a7bd0" },  // Order (Tessavain) — bound by a declared Edict / Final Decree (blue padlock; shared across owners, cleared when NO owner's law still binds)
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
   concord:    { label: "Concord (allies' first strike)", icon: "icons/svg/dove.svg", condition: false, _id: "condconcord00000", tint: "#e8e4d8" },  // Order (Tessavain) — 2bV: the scene arm the list-member-hits damage-bonus reads (was the `concordActive` flag; a status so a document rule can set AND read it). Cleared by the Order scene reset.
-  noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
-  noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
+  /* A CONDITION's label names the condition, never a talent (item 171, 2026-09-15). These two were
+   * written 07-05 as "Cannot Act (Hollow Command)" / "No Reactions (Extract Thought)", when each had
+   * a single Black applier. The label is what reaches every applier's card ("… is No Reactions
+   * (Extract Thought)"), the token's status tooltip and the effect's name, so once Blue's False
+   * Premise became a second `noreactions` applier (item 107 / R-115 (a)) every False Premise card
+   * named a Black talent — bench run 49a read it verbatim. Who applies a condition, and when it
+   * expires, lives on the applying RULE (`statusExpire`), not here; tests/status-labels.test.js
+   * fails the build if any condition label carries a tree talent's name again. */
+  noactions:    { label: "Cannot Act",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // applier: Black's Hollow Command (`statusExpire: target` — the end of the TARGET's next turn, Ben 07-05)
+  noreactions:  { label: "No Reactions", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // appliers: Black's Extract Thought (`statusExpire: owner` — the end of the OWNER's next turn, Ben 07-05) · Blue's False Premise (`statusExpire: target` — the end of the TARGET's next turn; R-115 (a), R-141 (a))
   doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
   braced:     { label: "Braced (attacks at disadvantage)", icon: "icons/svg/shield.svg", condition: true,  _id: "condbraced000000" },   // 07-16b playtest pass — Trooper/Captain Brace (timed via explicit edhaApplyTimedStatus stamp) + Frostbinder's PERMANENT Predictive Ward marker; deliberately NOT in EDHA_TIMED_STATUSES (the Ward must never auto-expire)
   diagrammed: { label: "Vital Diagram",                    icon: "icons/svg/blood.svg",  condition: false, _id: "conddiagrammed00", tint: "#d04a4a" },   // 07-16b — the Stitchmother's anatomical mark; Scalpel-Strike's +4 rides whenTargetStatus on it (scene-long, GM-cleared)
@@ -4308,6 +4316,23 @@ async function edhaPostCueCard(owner, item, h, extra = "") {
   ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: owner }),
     content: `<div class="edha-trigger-card"><p>⏰ <strong>${item.name}</strong> (${owner.name}): ${h.note || "trigger met."}${extra}</p></div>` });
 }
+/* PURE (pinned in tests/cue-owner-defeated.test.js): is this creature DEFEATED — out of the fight, so
+ * nothing it owns may react? HP at or below 0 (a readable number), the system's DEFEATED status
+ * (`CONFIG.specialStatusEffects.DEFEATED`, "dead" by default — the HP-sync `updateActor` hook in the
+ * single-target section sets it at 0 on a non-character, and the combat tracker's skull sets it too),
+ * or a combatant marked `defeated`. A MISSING HP resource is a failed read, never a defeat.
+ * ONE definition for the engine: `edhaLootDefeated` delegates here.
+ * Item 161 (2026-09-15, bench run 48 / YARD-1): none of the GM cue sweeps below read any of this, so a
+ * Rootling Swarm dropped in round 1 — `dead` on its token — whispered its enemy-turn-start Reaction cue
+ * at round 2's first hostile turn start, beside the two living rootlings. */
+function edhaActorDefeated(actor, combatant = null) {
+  if (!actor) return false;
+  const hp = Number(actor.system?.resources?.hea?.value);
+  if (Number.isFinite(hp) && hp <= 0) return true;
+  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
+  if (actor.statuses?.has?.(dead)) return true;
+  return combatant?.defeated === true;
+}
 // Pure crossing decision (pinned in tests/): did this write take HP from above maxHp×fraction to at/below it?
 function edhaCueCrossed(prevHp, newHp, maxHp, atFraction) {
   const frac = Number(atFraction);
@@ -4388,7 +4413,11 @@ function edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt) {
 }
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
-    for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
+    /* item 161: the victim's OWN `damaged` cue needs a victim that was alive BEFORE this write. The
+     * wrapper's `dealt` counts damage INSTANCES, not HP that moved, so a corpse caught by an area
+     * reached here and "reacted" to being hit. The killing blow itself (prevHp > 0) still cues.
+     * `hp-below` needs no gate of its own: a crossing already requires prevHp above its line. */
+    if (prevHp > 0) for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
     for (const { item, h } of edhaCueRules(victim, "hp-below")) {
       if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
     }
@@ -4404,6 +4433,7 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
       const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t.actor === victim) continue;
+        if (edhaActorDefeated(t.actor, edhaCombatantOf(t.actor))) continue;   // item 161: a fallen pack-mate does not react to the next one falling
         const oSide = t.document?.disposition;
         if (!edhaAllyDropEligible(vSide, oSide, 0, null)) continue;   // cheap side-only gate; unknown side fires nobody
         for (const { item, h } of edhaCueRules(t.actor, "ally-drops")) {
@@ -4438,6 +4468,10 @@ async function edhaTurnCueSweep(combat, prior, current) {
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t === curTok || !edhaSideHostile(t.document?.disposition, disp)) continue;   // hostiles to the mover only — unknown side fails CLOSED (R-63); this cue STAMPS trigRound, so a spurious match writes to a campaign actor
         if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
+        // item 161: a DEFEATED creature takes no Reactions, so it gets no Reaction cue (bench run 48: a
+        // dropped Rootling Swarm whispered Territorial Instinct beside the living two). Its combatant is
+        // read from THIS combat, so the tracker's defeated toggle counts even before HP says so.
+        if (edhaActorDefeated(t.actor, combat?.combatants?.find?.(c => c?.tokenId === t.document?.id) ?? null)) continue;
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
           if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + EDHA_ADJACENCY_SLACK_FT) continue;   // half-square slack for adjacency reads (R-52: the SAME number edhaAllyDropEligible uses — they disagreed until 2026-09-06)
@@ -4446,7 +4480,9 @@ async function edhaTurnCueSweep(combat, prior, current) {
       }
     }
     const prevTok = tokOf(prior);
-    if (prevTok?.actor) {
+    // item 161: an owner that ends its turn DEFEATED posts no turn-end cue and takes no regen tick (the
+    // regen clamp already refused at HP 0; this also covers a creature the tracker marked defeated).
+    if (prevTok?.actor && !edhaActorDefeated(prevTok.actor, combat?.combatants?.get?.(prior?.combatantId) ?? null)) {
       for (const { item, h } of edhaCueRules(prevTok.actor, "turn-end")) {
         const n = Math.max(1, Number(h.everyNRounds) || 1);
         const round = Number(combat?.round) || 0;
@@ -6359,12 +6395,28 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
  * and Guardian Stance via H7 `edha-aura` (07-25, pass 2bR — the name-keyed pre-pass loops and the
  * guardianStance sweep are gone). Hardy is the lone data-side AE (hea.max.bonus += @level).
  * ============================================================================================ */
+/* PURE (pinned in tests/pack-hunter-target-gate.test.js): do two token FOOTPRINTS touch — share an edge,
+ * share a corner, or overlap? `a` / `b` = {x, y} CENTRE in px and {w, h} size in grid squares (clamped to
+ * at least 1); `gs` = px per square. Per axis, the centres may sit at most the two half-sizes apart, plus
+ * the old 0.05-square epsilon. For two 1×1 tokens that is EXACTLY the rule it replaces — Chebyshev centre
+ * distance ≤ 1.05 squares — written as `dx <= half + 0.05` rather than `dx - half <= 0.05` on purpose:
+ * `1.05 - 1` is 0.050000000000000044 in floating point, which would flip the boundary case.
+ * Item 163 (2026-09-15, bench run 48 / YARD-3): the centre-to-centre rule made a Medium creature touching a
+ * Large (2×2) token's edge — 1.5 squares from its centre — never adjacent, so Pack Hunter counted
+ * "1 hunter(s)" with Ishee beside the Briar-Gone Grove. Every edhaAdjacent consumer had the same blind spot:
+ * Isolation's "no ally adjacent", the touch (`requireAdjacent`) gate, the damage-reduce and damage-react
+ * adjacency gates, and the adjacent-allies aura. */
+function edhaFootprintsTouch(a, b, gs = 100) {
+  const size = (v) => Math.max(1, Number(v) || 1);
+  const dx = Math.abs((Number(a?.x) || 0) - (Number(b?.x) || 0)) / gs;
+  const dy = Math.abs((Number(a?.y) || 0) - (Number(b?.y) || 0)) / gs;
+  return dx <= (size(a?.w) + size(b?.w)) / 2 + 0.05 && dy <= (size(a?.h) + size(b?.h)) / 2 + 0.05;
+}
 function edhaAdjacent(tokA, tokB) {
   if (!tokA || !tokB) return false;
   const gs = (tokA.scene ?? canvas?.scene)?.grid?.size || 100;
-  const dx = Math.abs((tokA.center?.x ?? 0) - (tokB.center?.x ?? 0)) / gs;
-  const dy = Math.abs((tokA.center?.y ?? 0) - (tokB.center?.y ?? 0)) / gs;
-  return Math.max(dx, dy) <= 1.05;   // Chebyshev ≤ 1 square (orthogonal + diagonal), small epsilon
+  const rect = (t) => ({ x: t.center?.x ?? 0, y: t.center?.y ?? 0, w: t.document?.width, h: t.document?.height });
+  return edhaFootprintsTouch(rect(tokA), rect(tokB), gs);
 }
 function edhaAdjacentAllies(ownerTok) {
   const disp = ownerTok?.document?.disposition;
@@ -10315,7 +10367,7 @@ Hooks.on("createItem", (item, options, userId) => {
  * Matching is by (type | atlas | group | name) — edhaSrcKey — with a (type | name) fallback, so a
  * RENAMED item does not match and is left alone rather than silently overwritten with the wrong card.
  * Owns: EDHA_SRC_PACKS · EDHA_SYNC_TYPES · edhaSrcKey · edhaSyncTypeLabel · edhaBuildSourceMap ·
- *   edhaSrcFor · edhaSyncActorTalents · edhaSyncAllCharacters · edhaSyncNow.
+ *   edhaSrcFor · edhaHasEdhaFlags · edhaSyncActorTalents · edhaSyncAllCharacters · edhaSyncNow.
  * ============================================================================================ */
 
 /* --- G: "Sync Edha Talents" utility -----------------------------------------------------------
@@ -10392,6 +10444,18 @@ function edhaSrcFor(byName, item) {
   const f = item.flags?.["edha-content"] ?? {};
   return byName.get(edhaSrcKey(item.type, f.atlas, f.group, item.name)) ?? byName.get(edhaSrcKey(item.type, null, null, item.name));
 }
+/* PURE (item 168, 2026-09-15 — bench run 49a). Did this owned item come from an Edha pack? Every
+ * document the three atlas packs ship carries the build's `edha-content` flag scope with at least one
+ * key — a talent `{atlas, group}`, a path `{atlas}`, and the packs' ONE `action`, Draw Mana,
+ * `{core, drawMana}` (read back from a scratch build on 2026-09-15: leyline ships 1 action, deity and
+ * heroic none). The cosmere system's own basic actions — Dodge, Strike, Grapple and the rest, nineteen
+ * on every real PC — carry no `edha-content` scope at all (measured live on Tem parinaem's Dodge). An
+ * EMPTY scope reads as "not Edha" too: it holds nothing a sync could match on. Pinned in
+ * tests/sync-item-types.test.js. */
+function edhaHasEdhaFlags(item) {
+  const f = item?.flags?.["edha-content"];
+  return !!f && typeof f === "object" && Object.keys(f).length > 0;
+}
 
 async function edhaSyncActorTalents(actor, byName) {
   if (!actor) return { updated: 0, missing: [], byType: {} };
@@ -10406,6 +10470,13 @@ async function edhaSyncActorTalents(actor, byName) {
      * adversary token would otherwise pull its Draw Mana embed from the LEYLINE pack and replace the
      * `{adversary}` flag with the leyline copy's `{core}` one. Skip them: not this button's items. */
     if (item.flags?.["edha-content"]?.adversary) continue;
+    /* item 168 (2026-09-15, bench run 49a): the widening above also swept in the cosmere system's
+     * NATIVE basic actions, which every real character owns and no Edha pack ships. Each missed both
+     * source keys, so every PC's toast read "— 19 not found in packs" — noise, but exactly the noise
+     * that hides a real miss (a renamed talent reads as one more line under nineteen). Nothing was
+     * ever written to them. An owned `action` is a candidate only when it came from an Edha pack;
+     * talents and paths are unchanged, so a flagless talent is still reported missing. */
+    if (item.type === "action" && !edhaHasEdhaFlags(item)) continue;
     const src = edhaSrcFor(byName, item);
     if (!src) { missing.push(item.name); continue; }
     const so = src.toObject();             // plain data (not the live DataModel)
@@ -11318,13 +11389,9 @@ function edhaLootableItems(items, { cache = false } = {}) {
   });
 }
 // PURE (pinned): is this actor defeated? HP ≤ 0, or the system's DEFEATED status (the Dead marker).
-function edhaLootDefeated(actor) {
-  if (!actor) return false;
-  const hp = Number(actor.system?.resources?.hea?.value);
-  if (Number.isFinite(hp) && hp <= 0) return true;
-  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
-  return !!actor.statuses?.has?.(dead);
-}
+// Item 161 (2026-09-15): the body moved to edhaActorDefeated (the GM cue section) so the engine has ONE
+// definition of "defeated"; loot keeps its name and its exact answers (tests/loot-caches.test.js).
+function edhaLootDefeated(actor) { return edhaActorDefeated(actor); }
 // PURE (pinned): is this actor a loot source, and which kind? The cache flag wins; a defeated
 // adversary is a searchable "body"; a downed PC (or a live adversary) is never lootable.
 function edhaLootSourceKind(actor) {
@@ -12553,10 +12620,35 @@ Hooks.on("renderCharacterSheet", (app, element) => {
  */
 const EDHA_BURST_PENDING = {};
 
+/* PURE (pinned in tests/terrain-square-snap.test.js) — item 164 (2026-09-15, bench run 48 / YARD-3).
+ * The snapping mode for a click that an N-cell SQUARE will be centred on: the nearest grid VERTEX when N
+ * is even, the nearest cell CENTRE when N is odd. Read from Foundry's own code (resources/app, read-only):
+ * GRID_SNAPPING_MODES.CENTER is 0x1 and VERTEX is 0xF0 (common/constants.mjs), and
+ * SquareGrid#getSnappedPoint (common/grid/square.mjs) routes CENTER to #snapToCenter,
+ * `round((x - s/2) / s) * s + s/2`, and VERTEX to #snapToVertex.
+ * Every pick used to snap CENTER. That throws away WHERE in its cell the click landed, and a 2-cell square
+ * cannot be centred on a cell centre: edhaSnapCellRect then met an exact .5 tie that Math.round breaks
+ * upward, so the clicked cell was always the square's top-left whatever the click — a 10 ft terrain square
+ * asked for between two PC tokens covered neither. edhaSnapCellRect was already right for a point of the
+ * matching kind. CONST is read when Foundry is loaded; Foundry's own values are the fallback. */
+function edhaSnapModeForCells(cells) {
+  const M = (typeof CONST !== "undefined" && CONST?.GRID_SNAPPING_MODES) || {};
+  const n = Math.max(1, Math.round(Number(cells) || 1));
+  return (n % 2 === 0) ? (M.VERTEX ?? 0xF0) : (M.CENTER ?? 0x1);
+}
+// Snap a raw world point for an N-cell footprint through the grid's own getSnappedPoint (raw point on failure).
+function edhaSnapPoint(p, cells = 1) {
+  try {
+    const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: edhaSnapModeForCells(cells), resolution: 1 });
+    return Number.isFinite(s?.x) ? s : p;
+  } catch (e) { return p; }
+}
 // Click-to-place a point on the canvas (drag-free): resolves a grid-snapped world {x,y}, or null on
 // cancel. Reads canvas.mousePosition (continuously updated to world coords) on a capture-phase pointer
 // down on the #board canvas, so it fires even over tokens without needing the Templates layer active.
-function edhaPickPoint(promptText) {
+// `cells` (item 164): the footprint of the SQUARE the caller will centre on the point. Pass it whenever
+// a square is laid; markers, charges, directions and link points keep the default 1 (cell centre).
+function edhaPickPoint(promptText, { cells = 1 } = {}) {
   return new Promise((resolve) => {
     const view = document.getElementById("board");
     if (!view || !canvas?.ready) { resolve(null); return; }
@@ -12569,10 +12661,7 @@ function edhaPickPoint(promptText) {
       try { window.removeEventListener("keydown", onKey, true); } catch (e) {}
       resolve(pt);
     };
-    const snap = (p) => {
-      try { const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: CONST.GRID_SNAPPING_MODES?.CENTER ?? 1, resolution: 1 }); return Number.isFinite(s?.x) ? s : p; }
-      catch (e) { return p; }
-    };
+    const snap = (p) => edhaSnapPoint(p, cells);
     const onDown = (ev) => {
       if (ev.button === 2) return;                 // right-click handled by contextmenu (cancel)
       if (ev.button !== 0) return;                 // left-click only
@@ -12889,7 +12978,10 @@ async function edhaCastBurst(item, spec) {
     const oy = tok?.center?.y ?? (scene.dimensions?.height ?? 1000) / 2;
     let ring = null;
     try { ring = await edhaDrawCircle(ox, oy, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: a GREEN terrain burst lays a square `sizeFt` wide centred on this point (edhaCreateGreenTerrain),
+    // so the click snaps to where that square can be centred; every other burst keeps the cell-centre snap.
+    const burstCells = (b.terrain && color === "green") ? Math.max(1, Math.round(sizeFt / (scene.grid?.distance || 5))) : 1;
+    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells: burstCells });
     if (!pt) { try { if (ring && scene.templates?.get(ring.id)) void ring.delete()?.catch(() => {}); } catch (e) {} edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
       t: "circle", x: pt.x, y: pt.y, distance: sizeFt, direction: 0, angle: 0,
@@ -18176,7 +18268,13 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt, sourceItem =
       const baked = edhaFoldDieMath(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
       if ((h.moment || "enter-turn-start") === "turn-end")
         turnEnd = { formula: baked, type: h.damageType || "keen", source: `${thornLabel} — ${owner.name}` };
-      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}` } });
+      /* item 162 (2026-09-15, bench run 48 / YARD-3): the creature that grew the terrain is EXEMPT from its
+       * own briar — R-6's generic dial (Fault Line spares its caster). Unfilled, the Briar-Gone Grove took
+       * 1 keen on placement and 3 at its next turn start from a square under its own 2×2 token. Every Green
+       * creator reaches this function (Draw Mana's edha-zone, Sudden Growth's burst, the adversary copies,
+       * and the player relay's GM side), so the exemption needs no socket field. A turn-END rider (the
+       * branch above) is a region flag, not this behaviour, and still catches the owner (Ben's R5). */
+      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}`, exemptActorUuid: owner.uuid } });
     }
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — ${turnEnd ? thornLabel : "Difficult Terrain"}`, color: EDHA_COLOR_HEX.green,
@@ -18638,16 +18736,41 @@ async function edhaReknitClick(ev) {
  * Manual by nature (no Foundry hook): Predator's Instinct (track/fear).
  * ============================================================================================ */
 
-// "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
-async function edhaGrantAdvAttack(actor, source) {
+/* "Advantage on your next attack" flag (Pack Hunter, Scent the Weak, White's rally, the Decree's Witnesses,
+ * Investiture of Command), consumed on the next attack it APPLIES to.
+ * Item 163 (2026-09-15, bench run 48): a grant that names a creature — "advantage on your next attack
+ * against IT" (Pack Hunter, Scent the Weak) — now stamps that creature's TOKEN uuid, and the pre-roll and
+ * the consume below both ask edhaAdvAttackApplies, so the advantage is neither applied nor spent on an
+ * attack against anyone else. Before, the flag held only a name and the next attack against ANY target
+ * took it: Ishee's advantage, banked against a rootling that had since died, rolled 2d20kh on her Staff
+ * against another. A grant with no target keeps the old any-target shape, and a string / `true` flag
+ * banked by an older engine reads as targetless. */
+async function edhaGrantAdvAttack(actor, source, targetUuid = null) {
   try {
-    return await edhaSetEdhaFlag(actor, "advAttackNext", source || true);   // Job 6a: routed through the canonical helper
+    const value = targetUuid ? { source: source || "Pack tactics", targetUuid } : (source || true);
+    return await edhaSetEdhaFlag(actor, "advAttackNext", value);   // Job 6a: routed through the canonical helper
   } catch (e) { return false; }
 }
+// PURE (pinned in tests/pack-hunter-target-gate.test.js): does this banked flag apply to an attack whose
+// user targets are these token uuids? Targetless → any attack; targeted → only one aimed at that token.
+function edhaAdvAttackApplies(flag, targetUuids) {
+  if (!flag) return false;
+  const want = (typeof flag === "object") ? flag.targetUuid : null;
+  if (!want) return true;
+  return Array.isArray(targetUuids) && targetUuids.includes(want);
+}
+// PURE: the name the spend card shows — a string flag, the object shape's source, or the generic label.
+function edhaAdvAttackSourceName(flag) {
+  if (typeof flag === "string") return flag;
+  if (flag && typeof flag === "object" && flag.source) return String(flag.source);
+  return "Pack tactics";
+}
+// The rolling user's targeted token uuids (through the one game.user.targets reader).
+function edhaAdvAttackTargetUuids() { return edhaUserTargetTokens().map(t => t?.document?.uuid).filter(Boolean); }
 function edhaAdvAttackPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "advAttackNext")) return;
+    if (!edhaAdvAttackApplies(actor?.getFlag?.("edha-content", "advAttackNext"), edhaAdvAttackTargetUuids())) return;   // item 163: a banked target gates the grant
     roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -18656,9 +18779,10 @@ function edhaAdvAttackPreRoll(roll, source, config) {
 function edhaAdvAttackConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const src = actor?.getFlag?.("edha-content", "advAttackNext"); if (!src) return;
+    const src = actor?.getFlag?.("edha-content", "advAttackNext");
+    if (!edhaAdvAttackApplies(src, edhaAdvAttackTargetUuids())) return;   // item 163: an advantage banked against another creature stays banked
     void actor.unsetFlag("edha-content", "advAttackNext");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${typeof src === "string" ? src : "Pack tactics"}</strong> — advantage spent on this attack.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${edhaAdvAttackSourceName(src)}</strong> — advantage spent on this attack.</p>` });
   } catch (e) { console.error("Edha Content | adv-attack consume failed", e); }
 }
 for (const ctx of ["attack", "item"]) {
@@ -18966,7 +19090,13 @@ async function edhaZoneFoundation(item, h) {
     // Show Attunement Range while picking the point (same UX as bursts).
     let ring = null;
     if (tok) { try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {} }
-    const pt = await edhaPickPoint(`Click the center of the 10 ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: the rule's square (Lay Foundation: 10 ft) is sized BEFORE the pick, so the click snaps to the
+    // point it can be centred on — a grid vertex for an even square, a cell centre for an odd one.
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
+    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
+    const cells = Math.max(1, Math.round(sizePx / gs));
+    const pt = await edhaPickPoint(`Click the center of the ${sqFt} ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells });
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — Investiture refunded.`); return; }
     if (tok) {
@@ -18974,9 +19104,6 @@ async function edhaZoneFoundation(item, h) {
       const distFt = edhaPointGapFt(pt, tok);   // ruler, not hypot (2026-09-09)
       if (distFt > rangeFt + gd0 / 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is ${Math.round(distFt)} ft away — beyond Attunement Range (${rangeFt} ft). Refunded.`); return; }
     }
-    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
-    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
     const x = Math.round((pt.x - sizePx / 2) / gs) * gs;               // snap so edges sit on grid lines
     const y = Math.round((pt.y - sizePx / 2) / gs) * gs;
     const payload = {
@@ -19537,9 +19664,10 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
       /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
-       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
-       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
-       * the CASTER and nobody else. */
+       * default. Two callers fill it in: Fault Line (its caster — see edhaFaultLine) and, since item
+       * 162 (2026-09-15), Green terrain's enter / turn-start hazard (the creature that grew it — see
+       * edhaCreateGreenTerrain). Every other hazard passes nothing. Allies and enemies inside are
+       * still caught — the dial spares ONE actor and nobody else. */
       exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }
@@ -21373,7 +21501,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       expire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "combat", "owner-turn", "target-turn"), label: "When it wears off", hint: "Blank = stays until removed by hand (every pre-07-24w consumer). combat = cleared when the encounter ends (Rousing Presence, 07-24w). owner-turn / target-turn = timed — expires at the start of YOUR / the end of ITS next turn via the timed-status sweep (Kneel's Compelled is owner-turn; 2bU)." }),
       mark: new FF.BooleanField({ required: false, initial: true, label: "Record you as the mark's owner", hint: "ON (the default) for a DEBUFF you place on an enemy — it writes markedBy.<status>, which is what lets allies' damage read the bonus below. Turn it OFF for a BUFF you place on an ally (Rousing Presence's Determined): an ownership mark on a friend is semantically an enemy-debuff flag and it sits on the shared damage read path. 07-24v." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. A name here is authored data you can edit; the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
-      bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @tier — added to ANY damage applied to the marked creature" }),
+      bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @skills.blue.rank — added to ANY damage applied to the marked creature" }),
       bonusDamageType: new FF.StringField({ required: false, initial: "vital", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Bonus damage type" }),
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown in chat)" }),
     } },
@@ -21681,7 +21809,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const sizeFt = Number(this.sizeFt) > 0 ? Number(this.sizeFt) : (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]);
       let ring = null;
       try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+      // item 164: the square edhaCreateGreenTerrain lays is `cells` wide (the same arithmetic), so the click
+      // snaps to the point that square can be centred on — a grid vertex for an even square.
+      const cells = Math.max(1, Math.round(Number(sizeFt) / (canvas?.scene?.grid?.distance || 5)));
+      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`, { cells });
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
       if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)
@@ -21892,7 +22023,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const low = enemies[0];
         if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
           if (this.once === "round") await edhaCoordOPRMark(actor, item.name, "_adv");
-          void edhaGrantAdvAttack(actor, item.name);
+          void edhaGrantAdvAttack(actor, item.name, low.document?.uuid ?? null);   // item 163: "your first test against IT" — spent only on the weakest enemy named
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low
           ? `<p>🩸 <strong>${item.name}</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>`
@@ -21916,12 +22047,20 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
           : `<p>👑 <strong>${item.name}</strong> (${actor.name}): no valid targeted ally to grant.</p>` });
         return;
       }
-      void edhaGrantAdvAttack(actor, item.name);
+      /* item 163 (2026-09-15, bench run 48): a `pack` grant names the targeted enemy — the card says
+       * "… against <enemy>" — so the owner's flag and every hunter's stamp its token uuid, and only an
+       * attack on it takes the advantage (edhaAdvAttackApplies). A hunter must be standing (a downed ally
+       * was counted in "2 hunter(s)"), and adjacency reads token footprints (edhaAdjacent), so a Medium
+       * hunter beside a Large enemy's edge counts. `self` mode names nobody and stays targetless. */
+      const enemyTok = this.to === "pack" ? edhaUserTargetToken() : null;
+      const enemyUuid = enemyTok?.document?.uuid ?? null;
+      void edhaGrantAdvAttack(actor, item.name, enemyUuid);
       if (this.to === "pack") {
-        const enemyTok = edhaUserTargetToken(); let n = 1;
+        let n = 1;
         if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
           if (t.id === otok.id || !t.actor || !Number.isFinite(t.document?.disposition) || !Number.isFinite(disp) || t.document.disposition !== disp || !edhaAdjacent(t, enemyTok)) continue;
-          void edhaGrantAdvAttack(t.actor, item.name); n++;
+          if (edhaActorDefeated(t.actor)) continue;   // item 163: a hunter at 0 HP is not hunting
+          void edhaGrantAdvAttack(t.actor, item.name, enemyUuid); n++;
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
       } else {

@@ -27,10 +27,35 @@
  */
 const EDHA_BURST_PENDING = {};
 
+/* PURE (pinned in tests/terrain-square-snap.test.js) — item 164 (2026-09-15, bench run 48 / YARD-3).
+ * The snapping mode for a click that an N-cell SQUARE will be centred on: the nearest grid VERTEX when N
+ * is even, the nearest cell CENTRE when N is odd. Read from Foundry's own code (resources/app, read-only):
+ * GRID_SNAPPING_MODES.CENTER is 0x1 and VERTEX is 0xF0 (common/constants.mjs), and
+ * SquareGrid#getSnappedPoint (common/grid/square.mjs) routes CENTER to #snapToCenter,
+ * `round((x - s/2) / s) * s + s/2`, and VERTEX to #snapToVertex.
+ * Every pick used to snap CENTER. That throws away WHERE in its cell the click landed, and a 2-cell square
+ * cannot be centred on a cell centre: edhaSnapCellRect then met an exact .5 tie that Math.round breaks
+ * upward, so the clicked cell was always the square's top-left whatever the click — a 10 ft terrain square
+ * asked for between two PC tokens covered neither. edhaSnapCellRect was already right for a point of the
+ * matching kind. CONST is read when Foundry is loaded; Foundry's own values are the fallback. */
+function edhaSnapModeForCells(cells) {
+  const M = (typeof CONST !== "undefined" && CONST?.GRID_SNAPPING_MODES) || {};
+  const n = Math.max(1, Math.round(Number(cells) || 1));
+  return (n % 2 === 0) ? (M.VERTEX ?? 0xF0) : (M.CENTER ?? 0x1);
+}
+// Snap a raw world point for an N-cell footprint through the grid's own getSnappedPoint (raw point on failure).
+function edhaSnapPoint(p, cells = 1) {
+  try {
+    const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: edhaSnapModeForCells(cells), resolution: 1 });
+    return Number.isFinite(s?.x) ? s : p;
+  } catch (e) { return p; }
+}
 // Click-to-place a point on the canvas (drag-free): resolves a grid-snapped world {x,y}, or null on
 // cancel. Reads canvas.mousePosition (continuously updated to world coords) on a capture-phase pointer
 // down on the #board canvas, so it fires even over tokens without needing the Templates layer active.
-function edhaPickPoint(promptText) {
+// `cells` (item 164): the footprint of the SQUARE the caller will centre on the point. Pass it whenever
+// a square is laid; markers, charges, directions and link points keep the default 1 (cell centre).
+function edhaPickPoint(promptText, { cells = 1 } = {}) {
   return new Promise((resolve) => {
     const view = document.getElementById("board");
     if (!view || !canvas?.ready) { resolve(null); return; }
@@ -43,10 +68,7 @@ function edhaPickPoint(promptText) {
       try { window.removeEventListener("keydown", onKey, true); } catch (e) {}
       resolve(pt);
     };
-    const snap = (p) => {
-      try { const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: CONST.GRID_SNAPPING_MODES?.CENTER ?? 1, resolution: 1 }); return Number.isFinite(s?.x) ? s : p; }
-      catch (e) { return p; }
-    };
+    const snap = (p) => edhaSnapPoint(p, cells);
     const onDown = (ev) => {
       if (ev.button === 2) return;                 // right-click handled by contextmenu (cancel)
       if (ev.button !== 0) return;                 // left-click only

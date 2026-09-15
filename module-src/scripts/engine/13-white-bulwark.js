@@ -7,12 +7,28 @@
  * and Guardian Stance via H7 `edha-aura` (07-25, pass 2bR — the name-keyed pre-pass loops and the
  * guardianStance sweep are gone). Hardy is the lone data-side AE (hea.max.bonus += @level).
  * ============================================================================================ */
+/* PURE (pinned in tests/pack-hunter-target-gate.test.js): do two token FOOTPRINTS touch — share an edge,
+ * share a corner, or overlap? `a` / `b` = {x, y} CENTRE in px and {w, h} size in grid squares (clamped to
+ * at least 1); `gs` = px per square. Per axis, the centres may sit at most the two half-sizes apart, plus
+ * the old 0.05-square epsilon. For two 1×1 tokens that is EXACTLY the rule it replaces — Chebyshev centre
+ * distance ≤ 1.05 squares — written as `dx <= half + 0.05` rather than `dx - half <= 0.05` on purpose:
+ * `1.05 - 1` is 0.050000000000000044 in floating point, which would flip the boundary case.
+ * Item 163 (2026-09-15, bench run 48 / YARD-3): the centre-to-centre rule made a Medium creature touching a
+ * Large (2×2) token's edge — 1.5 squares from its centre — never adjacent, so Pack Hunter counted
+ * "1 hunter(s)" with Ishee beside the Briar-Gone Grove. Every edhaAdjacent consumer had the same blind spot:
+ * Isolation's "no ally adjacent", the touch (`requireAdjacent`) gate, the damage-reduce and damage-react
+ * adjacency gates, and the adjacent-allies aura. */
+function edhaFootprintsTouch(a, b, gs = 100) {
+  const size = (v) => Math.max(1, Number(v) || 1);
+  const dx = Math.abs((Number(a?.x) || 0) - (Number(b?.x) || 0)) / gs;
+  const dy = Math.abs((Number(a?.y) || 0) - (Number(b?.y) || 0)) / gs;
+  return dx <= (size(a?.w) + size(b?.w)) / 2 + 0.05 && dy <= (size(a?.h) + size(b?.h)) / 2 + 0.05;
+}
 function edhaAdjacent(tokA, tokB) {
   if (!tokA || !tokB) return false;
   const gs = (tokA.scene ?? canvas?.scene)?.grid?.size || 100;
-  const dx = Math.abs((tokA.center?.x ?? 0) - (tokB.center?.x ?? 0)) / gs;
-  const dy = Math.abs((tokA.center?.y ?? 0) - (tokB.center?.y ?? 0)) / gs;
-  return Math.max(dx, dy) <= 1.05;   // Chebyshev ≤ 1 square (orthogonal + diagonal), small epsilon
+  const rect = (t) => ({ x: t.center?.x ?? 0, y: t.center?.y ?? 0, w: t.document?.width, h: t.document?.height });
+  return edhaFootprintsTouch(rect(tokA), rect(tokB), gs);
 }
 function edhaAdjacentAllies(ownerTok) {
   const disp = ownerTok?.document?.disposition;

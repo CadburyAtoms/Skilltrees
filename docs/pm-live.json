@@ -1,25 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. You approved the deploy, and it runs as soon as fix pass 13 merges. Item 169 merged narrowed (#396): three talents lose their decoy damage rolls. The other ten wait on your ruling R-142, and so do Killing Blow and The Final Study, which have been hit by the same side effect since yesterday. Bench runs 49a and 49b are merged (36 of 37 rows passed). No Fable agents today.",
+    "note": "PM of record since 11:49 ET. Fix pass 13 merged as #398 and item 169's safe part as #396; R-141 is closed. The deploy you approved runs next: it closes Foundry, pushes the engine, rebuilds the packs and relaunches. R-142 (the decoy damage rolls) is filed for your answer. No Fable agents today.",
     "waitingOn": "Ben: answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [
-    {
-      "item": "fix-pass-13",
-      "title": "Fix pass 13: items 161-164, 168, 170, 171 and the R-141 (a) False Premise card text",
-      "model": "opus",
-      "size": "L",
-      "lane": "B",
-      "branch": "pm/fix-pass-13",
-      "startedAt": "2026-09-15T18:00:00Z",
-      "agent": "Fix pass 13 (engine + card text)",
-      "phase": "in-review",
-      "pr": 398,
-      "note": "PR #398 open; the deploy follows its merge"
-    }
-  ],
+  "workers": [],
   "usage": null
 }

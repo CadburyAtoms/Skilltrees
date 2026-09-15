@@ -209,7 +209,7 @@ region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_T
 | `SHEET PATH SLOTS + THE BUDGET READOUT` | `EDHA_PATH_SLOTS` · **`edhaSheetRoot`** (the SHARED `renderCharacterSheet` entry point — five decorators hang off it; never re-derive the root inline) · `edhaGetBudget`. |
 | `THE CHARACTER-CREATION WIZARD` | ENGINE-OWNED by declaration (multi-step dialog). ~1,000 lines: `edhaCreationWizard` · `edhaCreatorNewCharacter` · the steps (`edhaCreatorWelcomeStep`/`PickStep`/`AttrStep`/`SkillStep`/`BudgetStep`/`NameStep`) · picks (`EDHA_CREATOR_PICKS`, `edhaCreatorApplyPick`, `edhaCreatorChangeSlot`, `edhaCreatorWeaponPick`, `edhaGrantBasicActions`, `edhaCreatorPathRank`) · **undo** (`edhaCreationWipeIds`, `edhaCreatorWipeOriginPicks`, `edhaCreatorWipePathRank`, `edhaCreationRestart` — a new step owes a wipe) · the map picker (`edhaCwMapData`, `edhaCwWireMap`) · expertises (`edhaPickExpertisesDialog`) · the steppers (`edhaCwStepperDialog`, `edhaCwAttrBudget`, `edhaCwSkillBudget`, `edhaCwDerivedPreview`) · `edhaCleanPackCopy` (pack docs are COPIED, never linked). |
 | `SHEET QoL` | `edhaBudgetRow` + four `renderCharacterSheet` decorators, the Readable-Dark `init` stylesheet, the `createItem` refresh. Purely presentational — nothing here writes a rule, status, or damage. |
-| `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `EDHA_SYNC_TYPES` · `edhaSrcKey` · `edhaSyncTypeLabel` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (**type**\|atlas\|group\|name) with a (type\|name) fallback, so a RENAMED item is left alone rather than overwritten. **Since item 146 it refreshes `talent` + `path` + `action`** — `EDHA_SYNC_TYPES` is the authority, and a rebuild rewrites all three (before it, 24 of 24 owned paths and 18 of 18 owned Draw Mana copies in the world were frozen with no button able to fix them). The TYPE is in the key because the deity pack ships a `path` AND a `talent` both named *Sovereignty*. An adversary-flagged embedded `action` is skipped — the adversary pack sync owns those. |
+| `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `EDHA_SYNC_TYPES` · `edhaSrcKey` · `edhaSyncTypeLabel` · `edhaBuildSourceMap` · `edhaSrcFor` · **`edhaHasEdhaFlags`** · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (**type**\|atlas\|group\|name) with a (type\|name) fallback, so a RENAMED item is left alone rather than overwritten. **Since item 146 it refreshes `talent` + `path` + `action`** — `EDHA_SYNC_TYPES` is the authority, and a rebuild rewrites all three (before it, 24 of 24 owned paths and 18 of 18 owned Draw Mana copies in the world were frozen with no button able to fix them). The TYPE is in the key because the deity pack ships a `path` AND a `talent` both named *Sovereignty*. An adversary-flagged embedded `action` is skipped — the adversary pack sync owns those. **Since item 168 (2026-09-15) an owned `action` is a candidate only when it came from an Edha pack** — `edhaHasEdhaFlags(item)` (PURE: an `edha-content` flag scope holding at least one key; the one atlas-pack action, Draw Mana, carries `{core, drawMana}`). The cosmere system's nineteen native basic actions on every real PC carry no scope and are skipped silently, where item 146's widening had listed them as "— 19 not found in packs" on every toast; a flagless talent or path is still reported missing. Pinned in `tests/sync-item-types.test.js`. |
 | `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · **`edhaSyncPlan`** (item 123/R-113: the pure scope/dry-run/started-combat-refusal decision — `{actors, sceneTokens, refusals}`) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` (`{folder, actorIds, scenes, dryRun, allowStartedCombat}`) + the sheet/directory buttons. |
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
@@ -968,12 +968,16 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
 - ⚠️ **`exemptActorUuid` — ONE actor this terrain never burns** (2026-09-06, R-6, item 48). A field
   on the behavior (so it is visible on the Region sheet), blank by default, threaded through
   `edhaDropHazard` → `edhaPlaceHazardRegionGM` **and the player→GM socket relay** — miss the relay
-  half and a player's own cast still burns them. **Fault Line is the only caller that fills it in**,
-  passing the caster's uuid, so every other hazard is byte-identical. Why an exemption and not a
+  half and a player's own cast still burns them. **Fault Line** fills it in with the caster's uuid,
+  and **since item 162 (2026-09-15) so does Green terrain's enter / turn-start hazard**, with the uuid
+  of the creature that grew it (`edhaCreateGreenTerrain` — bench run 48 measured the Briar-Gone Grove
+  taking 1 then 3 keen from a square under its own token). Every other hazard passes nothing. A
+  turn-END hazard (Bone Garden's `moment: "turn-end"`) is a region flag, not this behaviour, and still
+  catches the owner (Ben's R5). Why an exemption and not a
   shifted rectangle (Ben left both open): the rectangle IS the line that was just damaged, and
   moving it a square out would make the terrain and the burst disagree about the same ground.
   Allies and enemies inside are still caught — the ruling spares the caster ALONE. Pinned:
-  `tests/fault-line-caster-exempt.test.js`.
+  `tests/fault-line-caster-exempt.test.js`; Green terrain in `tests/green-terrain-creator-exempt.test.js`.
 - **Ownership/membership — ONE VOCABULARY, and it is GATED (07-27s).** Every hazard/terrain Region
   carries `flags.edha-content.terrain = {ownerUuid, color}`, and **`edhaTerrainOwnerUuid(region)` is
   the only function allowed to know that**; ask it, or ask the spine built on it:
@@ -1688,7 +1692,10 @@ own items); none names a talent.
   terrain also damages on enter / turn-start (`damageFormula` with `@colorRank`/`@tier`, baked at
   placement; `damageType`; `label` blank = talent name). Thorn Field (PC) + the Fellstag's Thorn
   Hedge + the Briar-Gone Grove's verbatim copy (both in `data/adversaries.json`). `edhaOwnsThorn`
-  is DELETED.
+  is DELETED. **The creature that grew the terrain is exempt from its enter / turn-start tick**
+  (item 162, 2026-09-15: the behaviour carries `exemptActorUuid: owner.uuid`, R-6's dial — bench run 48
+  measured the grove taking 1 then 3 keen from its own briar); a `moment: turn-end` rider is a region
+  flag and still catches the owner (R5).
 - **`edha-zone-react`** — config-only, read on `combatTurnChange`: a creature ends its turn in
   your zone → whispered expand offer (`sizeFt` 0 = by rank, `costInv` spent on the CLICK, one
   offer per owner per round). Spreading Roots.
@@ -1698,6 +1705,17 @@ own items); none names a talent.
 - **`edha-adv-attack`** — executor over the existing `advAttackNext` pipeline: `to: self|pack`
   (pack = you + allies adjacent to your targeted enemy — Pack Hunter), `vsLowestHp` +
   `rangeColor` + `once: round` (the Scent the Weak scan; the card names the weakest enemy).
+  ⚠️ **A grant that names a creature is spent only against it** (item 163, 2026-09-15):
+  `edhaGrantAdvAttack(actor, source, targetUuid)` stamps `advAttackNext = {source, targetUuid}` (the
+  TOKEN uuid) for `pack` (the targeted enemy) and Scent mode (the weakest enemy), and the pre-roll and the
+  consume hook both ask the pure **`edhaAdvAttackApplies(flag, targetUuids)`**, so the advantage is neither
+  applied nor spent on an attack against anyone else (bench run 48: an advantage banked against a rootling
+  that had died rolled 2d20kh against a living one). A targetless grant (`self`, `targets`, White's rally,
+  the Decree's Witnesses) and a string / `true` flag from an older engine still apply to any target.
+  `pack` skips a defeated hunter (`edhaActorDefeated`) and reads adjacency on token FOOTPRINTS —
+  **`edhaAdjacent(tokA, tokB)`** now goes through the pure **`edhaFootprintsTouch(a, b, gs)`** (identical for
+  1×1 tokens; a Medium beside a Large or Huge token's edge counts), which every adjacency consumer shares.
+  Pinned in `tests/pack-hunter-target-gate.test.js`.
 - **`edha-strike-window`** — executor: arms the `strikeWindow` flag (renamed from `packPressure` —
   generic) until the start of your next turn; the card text is the rule's editable `note`.
   Read by `edhaStrikeWindowActive`.
@@ -2142,7 +2160,13 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   scene mark — since 07-24p the house `markedBy.doubledipped` shape, read via `edhaMarkOwner`,
   cleared at scene end; the old bespoke `doubleDipBy` flag is gone) + the full
   `EDHA_STATUSES` table. Timed set: `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed, noactions,
-  noreactions}`.
+  noreactions}`. ⚠️ **A `condition: true` status is labelled by the CONDITION, never by a talent**
+  (item 171, 2026-09-15). The label is what every applier's card, the token's status tooltip and the
+  effect's name print, so `noreactions` read "No Reactions (Extract Thought)" on Blue's False Premise
+  the moment it became a second applier (bench run 49a). Now `noactions` = "Cannot Act" and
+  `noreactions` = "No Reactions"; WHO applies a condition and WHEN it expires lives on the applying
+  rule (`statusExpire`), not in the label. Guarded by `tests/status-labels.test.js` — no condition
+  label may carry a tree talent's name.
 
 ## Token movement (engine slides/pushes — all stamp `options.edhaForced`)
 - **`edhaRunMove(item, cfg)`** — `edha-move` executor: slide the CASTER toward their target
@@ -2304,7 +2328,15 @@ the first one lived inside the trample announcer, looked private, and got duplic
   guard) announces; the veil dies with the copy's flags. No advantage rider (dropped, Ben 07-14).
 
 ## Targeting / costs / math utils
-- `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
+- `edhaPickPoint(prompt, {cells})` → grid-snapped `{x,y}` or null (click-to-place). ⚠️ **`cells` = the
+  footprint of a SQUARE the caller centres on the point** (item 164, 2026-09-15): the pure
+  **`edhaSnapModeForCells(cells)`** snaps an even footprint to the nearest grid VERTEX and an odd one to the
+  nearest cell CENTRE, through Foundry's own `SquareGrid#getSnappedPoint` (**`edhaSnapPoint(p, cells)`**).
+  A CENTER snap erased where in its cell the click landed, so an even `edhaSnapCellRect` always grew
+  right/down from the clicked cell (bench run 48: a 10 ft terrain square placed between two PCs covered
+  neither). The square-laying pickers pass it — Green `edha-zone` terrain, Lay Foundation, a Green terrain
+  burst; markers, Charges, directions and link points keep 1. Pinned in `tests/terrain-square-snap.test.js`.
+  `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction),
   `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — the `edha-zone {kind: line}` caught set:
   every LIVE token in the length×width line **except the caster** (excluded by token id and by actor
@@ -2832,6 +2864,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   keys against the engine's own schemas (`scripts/handler-schemas.js`) and native
   `schemaFields` — ⚠ native fields are camelCase (`target`, `changes`, `macro.command`); the
   PascalCase names in lang/en.json are LABEL keys and were never fields.
+- ⚠️ **A DEFEATED owner cues nothing — `edhaActorDefeated(actor, combatant)`** (PURE, item 161,
+  2026-09-15): HP ≤ 0, the system's DEFEATED status, or a combatant marked defeated. It gates every cue
+  OWNER in both sweeps — the `enemy-turn-start` and `turn-end` owners in `edhaTurnCueSweep` (so the
+  `edha-regen` tick too) and the `ally-drops` owners in `edhaGmCueDamageSweep` — and the victim's own
+  `damaged` cue reads the HP it had BEFORE the write (`hp-below` already needed prevHp above its line;
+  the wrapper's `dealt` counts damage instances, so a corpse struck again still reached the sweep).
+  Bench run 48 measured a dropped Rootling Swarm whispering Territorial Instinct beside the living two.
+  `edhaLootDefeated` delegates here — one definition. Pinned in `tests/cue-owner-defeated.test.js`.
 - **`edha-regen`** (event `edha-apply-watch`; 07-20, ruling 98): engine-APPLIED flat heal at the
   end of the owner's turn — not a cue, a write — clamped by pure **`edhaRegenClamp`** (pinned:
   never while down at hp ≤ 0, never past max, 0 on nonsense), then a whispered GM card showing

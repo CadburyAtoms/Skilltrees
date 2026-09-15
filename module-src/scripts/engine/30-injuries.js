@@ -40,13 +40,9 @@ function edhaLootableItems(items, { cache = false } = {}) {
   });
 }
 // PURE (pinned): is this actor defeated? HP ≤ 0, or the system's DEFEATED status (the Dead marker).
-function edhaLootDefeated(actor) {
-  if (!actor) return false;
-  const hp = Number(actor.system?.resources?.hea?.value);
-  if (Number.isFinite(hp) && hp <= 0) return true;
-  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
-  return !!actor.statuses?.has?.(dead);
-}
+// Item 161 (2026-09-15): the body moved to edhaActorDefeated (the GM cue section) so the engine has ONE
+// definition of "defeated"; loot keeps its name and its exact answers (tests/loot-caches.test.js).
+function edhaLootDefeated(actor) { return edhaActorDefeated(actor); }
 // PURE (pinned): is this actor a loot source, and which kind? The cache flag wins; a defeated
 // adversary is a searchable "body"; a downed PC (or a live adversary) is never lootable.
 function edhaLootSourceKind(actor) {

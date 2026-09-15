@@ -152,9 +152,10 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
       /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
-       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
-       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
-       * the CASTER and nobody else. */
+       * default. Two callers fill it in: Fault Line (its caster — see edhaFaultLine) and, since item
+       * 162 (2026-09-15), Green terrain's enter / turn-start hazard (the creature that grew it — see
+       * edhaCreateGreenTerrain). Every other hazard passes nothing. Allies and enemies inside are
+       * still caught — the dial spares ONE actor and nobody else. */
       exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }
@@ -1988,7 +1989,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       expire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "combat", "owner-turn", "target-turn"), label: "When it wears off", hint: "Blank = stays until removed by hand (every pre-07-24w consumer). combat = cleared when the encounter ends (Rousing Presence, 07-24w). owner-turn / target-turn = timed — expires at the start of YOUR / the end of ITS next turn via the timed-status sweep (Kneel's Compelled is owner-turn; 2bU)." }),
       mark: new FF.BooleanField({ required: false, initial: true, label: "Record you as the mark's owner", hint: "ON (the default) for a DEBUFF you place on an enemy — it writes markedBy.<status>, which is what lets allies' damage read the bonus below. Turn it OFF for a BUFF you place on an ally (Rousing Presence's Determined): an ownership mark on a friend is semantically an enemy-debuff flag and it sits on the shared damage read path. 07-24v." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. A name here is authored data you can edit; the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
-      bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @tier — added to ANY damage applied to the marked creature" }),
+      bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @skills.blue.rank — added to ANY damage applied to the marked creature" }),
       bonusDamageType: new FF.StringField({ required: false, initial: "vital", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Bonus damage type" }),
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown in chat)" }),
     } },
@@ -2296,7 +2297,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const sizeFt = Number(this.sizeFt) > 0 ? Number(this.sizeFt) : (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]);
       let ring = null;
       try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+      // item 164: the square edhaCreateGreenTerrain lays is `cells` wide (the same arithmetic), so the click
+      // snaps to the point that square can be centred on — a grid vertex for an even square.
+      const cells = Math.max(1, Math.round(Number(sizeFt) / (canvas?.scene?.grid?.distance || 5)));
+      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`, { cells });
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
       if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)
@@ -2507,7 +2511,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const low = enemies[0];
         if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
           if (this.once === "round") await edhaCoordOPRMark(actor, item.name, "_adv");
-          void edhaGrantAdvAttack(actor, item.name);
+          void edhaGrantAdvAttack(actor, item.name, low.document?.uuid ?? null);   // item 163: "your first test against IT" — spent only on the weakest enemy named
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low
           ? `<p>🩸 <strong>${item.name}</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>`
@@ -2531,12 +2535,20 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
           : `<p>👑 <strong>${item.name}</strong> (${actor.name}): no valid targeted ally to grant.</p>` });
         return;
       }
-      void edhaGrantAdvAttack(actor, item.name);
+      /* item 163 (2026-09-15, bench run 48): a `pack` grant names the targeted enemy — the card says
+       * "… against <enemy>" — so the owner's flag and every hunter's stamp its token uuid, and only an
+       * attack on it takes the advantage (edhaAdvAttackApplies). A hunter must be standing (a downed ally
+       * was counted in "2 hunter(s)"), and adjacency reads token footprints (edhaAdjacent), so a Medium
+       * hunter beside a Large enemy's edge counts. `self` mode names nobody and stays targetless. */
+      const enemyTok = this.to === "pack" ? edhaUserTargetToken() : null;
+      const enemyUuid = enemyTok?.document?.uuid ?? null;
+      void edhaGrantAdvAttack(actor, item.name, enemyUuid);
       if (this.to === "pack") {
-        const enemyTok = edhaUserTargetToken(); let n = 1;
+        let n = 1;
         if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
           if (t.id === otok.id || !t.actor || !Number.isFinite(t.document?.disposition) || !Number.isFinite(disp) || t.document.disposition !== disp || !edhaAdjacent(t, enemyTok)) continue;
-          void edhaGrantAdvAttack(t.actor, item.name); n++;
+          if (edhaActorDefeated(t.actor)) continue;   // item 163: a hunter at 0 HP is not hunting
+          void edhaGrantAdvAttack(t.actor, item.name, enemyUuid); n++;
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
       } else {

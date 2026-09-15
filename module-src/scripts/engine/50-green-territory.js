@@ -55,7 +55,13 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt, sourceItem =
       const baked = edhaFoldDieMath(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
       if ((h.moment || "enter-turn-start") === "turn-end")
         turnEnd = { formula: baked, type: h.damageType || "keen", source: `${thornLabel} — ${owner.name}` };
-      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}` } });
+      /* item 162 (2026-09-15, bench run 48 / YARD-3): the creature that grew the terrain is EXEMPT from its
+       * own briar — R-6's generic dial (Fault Line spares its caster). Unfilled, the Briar-Gone Grove took
+       * 1 keen on placement and 3 at its next turn start from a square under its own 2×2 token. Every Green
+       * creator reaches this function (Draw Mana's edha-zone, Sudden Growth's burst, the adversary copies,
+       * and the player relay's GM side), so the exemption needs no socket field. A turn-END rider (the
+       * branch above) is a region flag, not this behaviour, and still catches the owner (Ben's R5). */
+      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}`, exemptActorUuid: owner.uuid } });
     }
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — ${turnEnd ? thornLabel : "Difficult Terrain"}`, color: EDHA_COLOR_HEX.green,
