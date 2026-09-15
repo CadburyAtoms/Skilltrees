@@ -4316,6 +4316,23 @@ async function edhaPostCueCard(owner, item, h, extra = "") {
   ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: owner }),
     content: `<div class="edha-trigger-card"><p>⏰ <strong>${item.name}</strong> (${owner.name}): ${h.note || "trigger met."}${extra}</p></div>` });
 }
+/* PURE (pinned in tests/cue-owner-defeated.test.js): is this creature DEFEATED — out of the fight, so
+ * nothing it owns may react? HP at or below 0 (a readable number), the system's DEFEATED status
+ * (`CONFIG.specialStatusEffects.DEFEATED`, "dead" by default — the HP-sync `updateActor` hook in the
+ * single-target section sets it at 0 on a non-character, and the combat tracker's skull sets it too),
+ * or a combatant marked `defeated`. A MISSING HP resource is a failed read, never a defeat.
+ * ONE definition for the engine: `edhaLootDefeated` delegates here.
+ * Item 161 (2026-09-15, bench run 48 / YARD-1): none of the GM cue sweeps below read any of this, so a
+ * Rootling Swarm dropped in round 1 — `dead` on its token — whispered its enemy-turn-start Reaction cue
+ * at round 2's first hostile turn start, beside the two living rootlings. */
+function edhaActorDefeated(actor, combatant = null) {
+  if (!actor) return false;
+  const hp = Number(actor.system?.resources?.hea?.value);
+  if (Number.isFinite(hp) && hp <= 0) return true;
+  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
+  if (actor.statuses?.has?.(dead)) return true;
+  return combatant?.defeated === true;
+}
 // Pure crossing decision (pinned in tests/): did this write take HP from above maxHp×fraction to at/below it?
 function edhaCueCrossed(prevHp, newHp, maxHp, atFraction) {
   const frac = Number(atFraction);
@@ -4396,7 +4413,11 @@ function edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt) {
 }
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
-    for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
+    /* item 161: the victim's OWN `damaged` cue needs a victim that was alive BEFORE this write. The
+     * wrapper's `dealt` counts damage INSTANCES, not HP that moved, so a corpse caught by an area
+     * reached here and "reacted" to being hit. The killing blow itself (prevHp > 0) still cues.
+     * `hp-below` needs no gate of its own: a crossing already requires prevHp above its line. */
+    if (prevHp > 0) for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
     for (const { item, h } of edhaCueRules(victim, "hp-below")) {
       if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
     }
@@ -4412,6 +4433,7 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
       const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t.actor === victim) continue;
+        if (edhaActorDefeated(t.actor, edhaCombatantOf(t.actor))) continue;   // item 161: a fallen pack-mate does not react to the next one falling
         const oSide = t.document?.disposition;
         if (!edhaAllyDropEligible(vSide, oSide, 0, null)) continue;   // cheap side-only gate; unknown side fires nobody
         for (const { item, h } of edhaCueRules(t.actor, "ally-drops")) {
@@ -4446,6 +4468,10 @@ async function edhaTurnCueSweep(combat, prior, current) {
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t === curTok || !edhaSideHostile(t.document?.disposition, disp)) continue;   // hostiles to the mover only — unknown side fails CLOSED (R-63); this cue STAMPS trigRound, so a spurious match writes to a campaign actor
         if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
+        // item 161: a DEFEATED creature takes no Reactions, so it gets no Reaction cue (bench run 48: a
+        // dropped Rootling Swarm whispered Territorial Instinct beside the living two). Its combatant is
+        // read from THIS combat, so the tracker's defeated toggle counts even before HP says so.
+        if (edhaActorDefeated(t.actor, combat?.combatants?.find?.(c => c?.tokenId === t.document?.id) ?? null)) continue;
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
           if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + EDHA_ADJACENCY_SLACK_FT) continue;   // half-square slack for adjacency reads (R-52: the SAME number edhaAllyDropEligible uses — they disagreed until 2026-09-06)
@@ -4454,7 +4480,9 @@ async function edhaTurnCueSweep(combat, prior, current) {
       }
     }
     const prevTok = tokOf(prior);
-    if (prevTok?.actor) {
+    // item 161: an owner that ends its turn DEFEATED posts no turn-end cue and takes no regen tick (the
+    // regen clamp already refused at HP 0; this also covers a creature the tracker marked defeated).
+    if (prevTok?.actor && !edhaActorDefeated(prevTok.actor, combat?.combatants?.get?.(prior?.combatantId) ?? null)) {
       for (const { item, h } of edhaCueRules(prevTok.actor, "turn-end")) {
         const n = Math.max(1, Number(h.everyNRounds) || 1);
         const round = Number(combat?.round) || 0;
@@ -11345,13 +11373,9 @@ function edhaLootableItems(items, { cache = false } = {}) {
   });
 }
 // PURE (pinned): is this actor defeated? HP ≤ 0, or the system's DEFEATED status (the Dead marker).
-function edhaLootDefeated(actor) {
-  if (!actor) return false;
-  const hp = Number(actor.system?.resources?.hea?.value);
-  if (Number.isFinite(hp) && hp <= 0) return true;
-  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
-  return !!actor.statuses?.has?.(dead);
-}
+// Item 161 (2026-09-15): the body moved to edhaActorDefeated (the GM cue section) so the engine has ONE
+// definition of "defeated"; loot keeps its name and its exact answers (tests/loot-caches.test.js).
+function edhaLootDefeated(actor) { return edhaActorDefeated(actor); }
 // PURE (pinned): is this actor a loot source, and which kind? The cache flag wins; a defeated
 // adversary is a searchable "body"; a downed PC (or a live adversary) is never lootable.
 function edhaLootSourceKind(actor) {

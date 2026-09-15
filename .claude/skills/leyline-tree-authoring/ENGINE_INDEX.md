@@ -2838,6 +2838,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   keys against the engine's own schemas (`scripts/handler-schemas.js`) and native
   `schemaFields` — ⚠ native fields are camelCase (`target`, `changes`, `macro.command`); the
   PascalCase names in lang/en.json are LABEL keys and were never fields.
+- ⚠️ **A DEFEATED owner cues nothing — `edhaActorDefeated(actor, combatant)`** (PURE, item 161,
+  2026-09-15): HP ≤ 0, the system's DEFEATED status, or a combatant marked defeated. It gates every cue
+  OWNER in both sweeps — the `enemy-turn-start` and `turn-end` owners in `edhaTurnCueSweep` (so the
+  `edha-regen` tick too) and the `ally-drops` owners in `edhaGmCueDamageSweep` — and the victim's own
+  `damaged` cue reads the HP it had BEFORE the write (`hp-below` already needed prevHp above its line;
+  the wrapper's `dealt` counts damage instances, so a corpse struck again still reached the sweep).
+  Bench run 48 measured a dropped Rootling Swarm whispering Territorial Instinct beside the living two.
+  `edhaLootDefeated` delegates here — one definition. Pinned in `tests/cue-owner-defeated.test.js`.
 - **`edha-regen`** (event `edha-apply-watch`; 07-20, ruling 98): engine-APPLIED flat heal at the
   end of the owner's turn — not a cue, a write — clamped by pure **`edhaRegenClamp`** (pinned:
   never while down at hp ≤ 0, never past max, 0 on nonsense), then a whispered GM card showing
