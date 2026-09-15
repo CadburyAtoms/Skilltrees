@@ -1691,6 +1691,52 @@ it adds a second, bench-owned option next to it:
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 50 (2026-09-15 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **Step a combat ONE turn at a time whenever a row reads a turn-start or turn-end tick.** A
+  `combat.update({round, turn})` jump that passed over a combatant's turn fired Thorn Field's turn-start hazard on that
+  skipped combatant — Adjacent B took 6 keen on a jump from round 1 (Advanced Encounters' `turn: null`) to round 2
+  turn 0, and 5 + 4 on a jump from round 2 turn 0 to round 3 turn 1 — while a same-round forward step to its own turn
+  fired exactly once (3) and a round boundary that skipped nobody fired nothing. Foundry core fires `TOKEN_TURN_START`
+  for the one new combatant (`resources/app/client/documents/combat.mjs:1051`), so the extra ticks come from elsewhere
+  (not traced). Run 16's "never step backwards" still holds; add "never skip".
+- ⭐⭐ **Engine functions are module-scoped — not page globals.** `edhaAdjacent(…)` threw a `ReferenceError` from the
+  console, and the page-side task died after staging with Bench Ally — Two already written to 0 HP (the rerun restored
+  it). Compute geometry yourself (a footprint touch is, per axis, centre distance ≤ the two half-sizes + 0.05 squares),
+  call `globalThis.edha.*` for what the module exports, and put a staging write's restore in the same task's `finally`.
+- ⭐ **A dealer-less kill in a started combat belongs to the current combatant.** `edhaResolveKiller` falls back
+  selected token → the user's character → `game.combat.combatant` (run 16), so every `edha-on-defeat` rule that
+  combatant owns fires: a rootling dropped by a bare `applyDamage` while Bench — Red was current posted Red's Chain
+  Detonation (TODO item 176 is that card's empty-splash text). When a row is not about kills, drop creatures with no
+  combat running and nothing controlled.
+- ⭐ **The Advanced Encounters tracker renders the core defeated skull.**
+  `li.combatant[data-combatant-id="<id>"] [data-action="toggleDefeated"]` (`BUTTON.inline-control combatant-control
+  icon fa-solid fa-skull`) — a DOM `.click()` set `combatant.defeated: true` AND the `dead` status. `ui.combat.render(true)`
+  first; the sidebar can stay on Chat.
+- ⭐ **The delete-combat safety check, as a recipe.** Before each bench `combat.delete()`, test the eleven
+  `EDHA_SCENE_RESET_FAMILIES` (`module-src/scripts/engine/49-order.js:823`; each family's `flags` / `statuses` lists sit
+  in its tree file) against every non-bench directory actor, every unlinked token on the other scenes, and the world
+  props two families delete on EVERY scene when no other combat runs (`fateMarker` / `charge` templates, `fateSnare`
+  regions). Run 50 ran it three times with no match — Tem parinaem's banked `advAttackNext: "Pack Hunter"` and Soggy
+  Bottom's empty `markedBy` are in no family's list.
+- ⭐ **A known screenshot frame survives a screenshot timeout.** One `computer screenshot` at scale 0.5 fixed the
+  800×500 frame for the 1600×1000 viewport; a later screenshot timed out ("the page did not finish rendering") with the
+  pane hidden, and every hover + click after it still landed — `canvas.mousePosition` read the intended world point
+  each time. Pan at scale 1 with `canvas.animatePan({x, y, scale: 1, duration: 0})`, take client = world − pan centre +
+  (800, 500), and check that point through `canvas.stage.worldTransform` before arming a pick.
+- ⚠️ **Calculated Patience rolls a slow-turn first test at advantage.** Bench — Blue's False Premise rolled
+  `2d20kh + 5` with no rider card; the tracker puts every new combatant on the slow phase. Read an unexpected `2d20kh`
+  against the tester's own riders before crediting it to the row.
+- ⚠️ **A talent used for a token that is not a combatant, while a combat is active, toasts "does not have enough free
+  actions" (or "actions").** The use proceeded every time — noise, not a refusal.
+- ⚠️ **`#chat-notifications` measured `getBoundingClientRect` x 1236–1536 at 1600×1000 this run** (49a: 936–1236).
+  Measure it each run; run 50's clicks all sat at client x ≤ 730.
+- ✅ **Density, measured: 12 of 12 rows retired on evidence, none kept open, 1 defect filed with its root cause read
+  in source (item 176), 1 harness false signal explained before anything was recorded (the skipped-turn extra ticks),
+  and the PM-R17 refresh of all three players' actors — in about 35 browser calls, several of them multi-step batches.**
+  End-of-run diff: 67 actors in and out, the only non-bench changes the three refreshes (`_stats` on 8 items each),
+  every scene document and embedded hash identical, combats 0 → 0, macros 44 / 44, world settings identical.
+
 ## Operating lessons from run 49b (2026-09-15 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **A `scope: "scene"` watch never fires out of combat — stage it inside one.** Whispered Doubt, Coercive Pressure and
