@@ -4135,7 +4135,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model — (done by the close-out session) · size S.
 
-## 161. [ ] Dead adversaries keep whispering their enemy-turn-start cues — `edhaTurnCueSweep` never checks that the cue's owner is alive (ENGINE-ONLY, F5)
+## 161. [x] (2026-09-15, PR #398) Dead adversaries keep whispering their enemy-turn-start cues — `edhaTurnCueSweep` never checks that the cue's owner is alive (ENGINE-ONLY, F5)
 
 **Why:** bench run 48 (YARD-1): Rootling Swarm (2) dropped to 0 (system status `dead`) in round 1 and still posted "⏰ Territorial Instinct … (Bench Copy — Ishee's turn starts in range.)" at round 2's first hostile turn start, beside the two living rootlings; its Disoriented expiry also announced at its next turn change. Root cause read in source: `module-src/scripts/engine/07-edha-owner-list.js` `edhaTurnCueSweep` (the enemy-turn-start loop over `canvas.tokens.placeables`) filters on hostility and `edhaStillFightingElsewhere` only — no `hp <= 0` / `dead` / `combatant.defeated` check.
 
@@ -4145,7 +4145,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none. Report: bench run 48, `docs/analysis/bestiary/YARDSTICK-2026-09-14.md`.
 
-## 162. [ ] Green terrain's Thorn Field hazard damages its own creator — the region behaviour is built without `exemptActorUuid` (ENGINE-ONLY, F5)
+## 162. [x] (2026-09-15, PR #398) Green terrain's Thorn Field hazard damages its own creator — the region behaviour is built without `exemptActorUuid` (ENGINE-ONLY, F5)
 
 **Why:** bench run 48 (YARD-3): the Briar-Gone Grove's Draw Mana square landed under its own 2×2 token and the card read "Briar-Gone Grove takes 1 keen from dangerous terrain (Thorn Field — Briar-Gone Grove)"; at its next turn start it took 3 keen from the same square. The `edha-content.hazard` behaviour has an `exemptActorUuid` field that `_handleRegionEvent` honours (`53-native-event-system.js`, R-6) and Destruction's placer passes it (`40-destruction.js` `edhaPlaceHazardRegionGM`) — `50-green-territory.js` builds the Thorn Field behaviour with `{damageFormula, damageType, sourceName}` only. The card says "any character entering or starting their turn inside it"; the grove is not a character and the briar is its own body.
 
@@ -4155,7 +4155,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
 
-## 163. [ ] Pack Hunter's banked advantage has no target gate, counts a downed ally, and missed an ally beside a Large token (ENGINE-ONLY, F5)
+## 163. [x] (2026-09-15, PR #398) Pack Hunter's banked advantage has no target gate, counts a downed ally, and missed an ally beside a Large token (ENGINE-ONLY, F5)
 
 **Why:** bench run 48. (a) The card says "2 hunter(s) gain advantage on their next attack against Rootling Swarm (2)"; the flag it writes is `advAttackNext` (`52-green-instinct.js`), consumed by the next attack roll against ANY target — Ishee's banked advantage vs the dead root2 rolled 2d20kh on her Staff vs root1. The talent text says "against it". (b) With Soggy at 0 HP adjacent to root3, Pack Hunter counted "2 hunter(s)". (c) With Ishee adjacent to the grove's 2×2 token (centre gap 7.5 ft) it counted "1 hunter(s)" — the ally-adjacency read fails against a Large token (the medium-token case counted 2). Handler: `edha-adv-attack` `pack` mode in `53-native-event-system.js`.
 
@@ -4165,7 +4165,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
 
-## 164. [ ] The Green 10 ft terrain square lands one cell off the click (ENGINE-ONLY, F5; verify the snap rule before fixing)
+## 164. [x] (2026-09-15, PR #398) The Green 10 ft terrain square lands one cell off the click (ENGINE-ONLY, F5; verify the snap rule before fixing)
 
 **Why:** bench run 48 (YARD-3): the Draw Mana prompt "Click where the 10 ft difficult-terrain square grows" was answered with a real mouse click at world (1348, 1100) — the grid vertex between two PC tokens — and the region landed at rect (1400, 1100) 200×200, cells 14–15 × 11–12: one cell right and half a cell down of the click, under no PC. `edhaSnapCellRect(scene, cx, cy, 2)` (`50-green-territory.js`) anchors an even-sized square from a point the picker snapped to a cell CENTER (`edhaPickPoint`, `GRID_SNAPPING_MODES.CENTER`); a 2-cell square cannot be centred on a cell centre and the vertex case chose the wrong corner. Sudden Growth's burst from a click at (1348, 1000) landed at (1300, 1100) — also not centred. PLAUSIBLE: two observations, no headless proof yet.
 
@@ -4205,7 +4205,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane H · model opus per nation · size L · deps item 166 (landed); rides item 156's remaining nation passes.
 
-## 168. [ ] ⟳ Sync Talents reports the cosmere system's own basic actions as "not found in packs" — every real PC's toast says "— 19 not found" on a clean sync (ENGINE-ONLY, F5) (2026-09-15)
+## 168. [x] (2026-09-15, PR #398) ⟳ Sync Talents reports the cosmere system's own basic actions as "not found in packs" — every real PC's toast says "— 19 not found" on a clean sync (ENGINE-ONLY, F5) (2026-09-15)
 
 **Why:** measured at **bench run 49a (2026-09-15)** doing the PM-R17 refresh. The sheet's own ⟳ Sync Talents button on each of the three players' actors posted *"Edha: synced 8 item(s) on Tem parinaem (4 talents, 3 paths, 1 action) — 19 not found in packs (see console)."* — identical counts on Soggy Bottom and Ishee — and the console listed the same nineteen every time: `Dodge, Common Actions Pack, Gain Advantage, Avoid Danger, Basic Actions Pack, Use A Skill, Drop, Strike, Grapple, Ready, Brace, Aid, Reactive Strike, Move, Recover, Banter, Interact, Shove, Disengage`. Those are the cosmere system's native basic actions (read live on Tem parinaem's `Dodge`: `type: "action"`, no `flags` scope at all, no `_stats.compendiumSource`), not Edha pack items. Root cause in `module-src/scripts/engine/26-talent-sync.js`: item 146 widened `EDHA_SYNC_TYPES` to `["talent", "path", "action"]` (line 31) so Draw Mana would refresh, and `edhaSyncActorTalents` (lines 92–102) now treats EVERY owned `action` as a candidate — the only exclusion is an adversary-flagged embed (line 100) — so each native action misses both source keys in `edhaSrcFor` and lands in `missing`, which the toast prints (line 167). Nothing is written to them (they are skipped, not updated), so this is noise, not damage — but it is the exact noise that hides a real miss: a renamed or pack-deleted talent now reads as one more line under nineteen. The bench PCs never showed it (the roster script's actors own only Draw Mana), which is why fix pass 12's pins and bench run 47 did not see it.
 
@@ -4225,7 +4225,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none (item 141 is the precedent). Filed 2026-09-15 by bench run 49a.
 
-## 170. [ ] Vital Diagnosis's Diagnosed card still tells the table "+Tier vital" right after the engine says "+3" — item 108 moved the bonus to the Blue rank but left the rule's printed note, and two sibling rule texts, on "tier" (DATA, REBUILD deity + ⟳ Sync Talents; one ENGINE-ONLY hint string) (2026-09-15)
+## 170. [x] (2026-09-15, PR #398) Vital Diagnosis's Diagnosed card still tells the table "+Tier vital" right after the engine says "+3" — item 108 moved the bonus to the Blue rank but left the rule's printed note, and two sibling rule texts, on "tier" (DATA, REBUILD deity + ⟳ Sync Talents; one ENGINE-ONLY hint string) (2026-09-15)
 
 **Why:** measured at **bench run 49a (2026-09-15)** driving GATE-3 (which passed — the bonus IS the Blue rank, +3 at tier 2, from the owner and from an ally). The use card on `Bench — Life` read, verbatim: *"🎯 Vital Diagnosis : Trooper is Diagnosed (by Bench — Life) — damage against it gains +3 vital (auto-applied). Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."* The first sentence is `edhaStatusApplyCard`'s tail computed from `bonusDamageFormula: "@skills.blue.rank"`; everything after it is the rule's authored `note`, which `data/authored/deity-life.json` rule `NiiElTqWzyata6Pu` still writes with "+Tier vital" (its `description` says the same). The card text and the formula were changed by item 108; the note printed into chat beside them was not, so the chat log contradicts itself in one message — the same class as item 148 (Predatory Strike's stale cue text). Siblings found reading the same item's rules: Bulwark Ground's `BulwarkGuard0000` description still says "Temp HP = tier" (editor-facing, not printed), and the engine schema hint on `edha-apply-status.bonusDamageFormula` in `module-src/scripts/engine/53-native-event-system.js` (~line 1991) still offers "Vital Diagnosis: @tier" as its worked example.
 
@@ -4235,7 +4235,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size XS · deps none. Filed 2026-09-15 by bench run 49a.
 
-## 171. [ ] The `noreactions` status is still labelled "No Reactions (Extract Thought)", so Blue's False Premise card now reads "Adjacent A is No Reactions (Extract Thought)" — a Black talent's name on a Blue talent's status (ENGINE-ONLY, F5) (2026-09-15)
+## 171. [x] (2026-09-15, PR #398) The `noreactions` status is still labelled "No Reactions (Extract Thought)", so Blue's False Premise card now reads "Adjacent A is No Reactions (Extract Thought)" — a Black talent's name on a Blue talent's status (ENGINE-ONLY, F5) (2026-09-15)
 
 **Why:** measured at **bench run 49a (2026-09-15)** driving FP-1 (which passed): False Premise's success card read, verbatim, *"False Premise — Bench Target — Adjacent A is No Reactions (Extract Thought) ."* The label comes from the status registry in `module-src/scripts/engine/01-shared-core.js` (~line 202): `noreactions: { label: "No Reactions (Extract Thought)", … }`, written 07-05 when Black's Extract Thought was the only applier, with a comment that it "expires end of the OWNER's next turn". Item 107 / R-115 (a) (PR #374) made Blue's `False Premise` a second applier, stamping the TARGET's turn instead (`statusExpire: target`, measured `expireAfter {round 2, turn 0}` = the target's own next turn). The same label shows on the token's status tooltip and the effect's name, so the table sees a Black talent named on every False Premise.
 
