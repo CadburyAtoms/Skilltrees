@@ -213,6 +213,50 @@ negotiation; it needs a gazetteer siting + warden name at prep time. The other l
 north (Malcurr gear / the writ / Roek contact — political) or south (the drain gradient toward
 the Crossing).
 
+**Kickoff brief for the next session-forge run (written 2026-09-15, after PR #390 / #391 — an
+Opus session; the one-line kickoff is "invoke `session-forge`; the brief is
+`EDHA_CAMPAIGN_STATE.md` §7").** Read the files named here rather than exploring; no subagents;
+no bench run.
+
+1. **Where you work.** A git worktree at `$TEMP/edha-session-2` on a new branch
+   `claude/session-2-grove` off `origin/main`. Never edit, build or run gates in
+   `C:\dev\Skilltrees`. Every gates run: `EDHA_DATA` set to the worktree's data folder,
+   output to a log, grep `RESULT: PASS`; never pipe a gate through tail. Commit only after
+   Ben's yes at the skill's gates (the rulings batch; the statblock gate if any new block).
+   Push only with `git push -u origin claude/session-2-grove`, then
+   `gh pr create --draft --base main`. Never merge or deploy.
+2. **Context, true as of 2026-09-15.** The bestiary rerun landed and is deployed (PR #390, #391):
+   adversary attacks derive from attribute + skill rank with dice-only damage, and defenses derive
+   from the attribute pair (R-137, R-139 (a); `EDHA_RULINGS.md` §K.17). Read every adversary
+   number from `node scripts/validate-adversary-model.js` (its derived lines) and
+   `docs/analysis/bestiary/CENSUS.md` — never from memory or an older run-sheet. R-138 (a):
+   the ¼-per-round damage line is the ENCOUNTER's budget, so the run-sheet states how its encounter
+   meets it (count, turn speed, terrain Actions). The party is §1 above (HP 11 / 11 / 13,
+   Physical 14 / 13 / 16, no ranged attack).
+3. **Deliverable 1 — republish session 1's GM script.** `EDHA_SESSION_1_SCRIPT.md`'s printed
+   statblocks changed (Raider, Line-Caller, Roek, Mistheron, the talk-out DC 14 — its header note
+   says so). Regenerate the GM script on the house template (session-forge Phase 11;
+   `.claude/skills/session-forge/GM_SCRIPT_TEMPLATE.html`) and republish TO ITS EXISTING URL
+   in §6 (read it with the Artifact tool first); never mint a second artifact. Then remove the
+   "owed a republish" notes in the script doc and in §6.
+4. **Deliverable 2 — build session 2.** The briar-gone shrine-grove seeded at Withervale (above):
+   rootling skirmishes and a root-warden-craft negotiation, needing a gazetteer siting and a
+   warden name at prep time. Run the skill's phases in order — state → geography first from
+   `source-materials/maps/thyrcross.map.json` via `scripts/map`, never eyeballed →
+   premise stress-test → ONE batched rulings menu with defaults, then STOP and wait for Ben → cast,
+   scenes, stats → clue ledger → close-out → the GM script as a NEW artifact recorded in §6. The
+   blocks are already statted — Rootling Swarm, Briar-Gone Grove, Crownox Ring, Reeve-Owl, Preacher
+   of the Lowered Crown (`data/adversaries.json`, folder "Thalendor Heartwood Bestiary"; the
+   preacher's sermon-before-a-fight and its three outs are in his biography and canon §9 ruling
+   166). Do not re-stat them; a number that needs to move is a ruling, not a change. Canon for the
+   grove: `EDHA_CAMPAIGN_CANON.md` §5c Thalendor and rulings 32, 110. Read
+   `.claude/skills/session-forge/CASE_STUDY.md` before drafting.
+5. **Docs owed at close-out.** The run-sheet on `RUN_SHEET_TEMPLATE.md`; §6 and §7 here
+   updated; the dated delta at the top of `docs/handoff-changelog/2026-09.md` (+1 in its
+   header count and in `README.md`); `node scripts/build-dashboard.js`; gates green.
+   End the turn at each gate with the link and a short summary; write nothing invented into canon
+   before Ben's yes.
+
 **Character creation (2026-07-13):** the players build PCs next. Hand out
 **`EDHA_PLAYER_PRIMER.md`** (player-safe nations/faiths/naming guide, spoiler-checked against
 the session-1 do-NOT-reveal wall; GM culture blocks in canon §5b). When the party exists,
