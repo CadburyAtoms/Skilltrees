@@ -983,7 +983,7 @@
       {
         "name": "The Seeming",
         "cost": "1 Action",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>",
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p><p><em>A test or talent aimed at the seeming resolves against it (defenses 0) and affects only the seeming — the fooled act on the wrong body (R-136 (a), 2026-09-14).</em></p>",
         "events": [
           {
             "event": "use",
@@ -3721,6 +3721,78 @@
               "note": "Bloodied — it leaves. A predator of certainties does not gamble."
             },
             "description": "cue — table call: it leaves; and against a wasting-touched creature the whole foresight kit simply fails. Blue/Foresight. Bloodied break-off cue."
+          }
+        ]
+      }
+    ]
+  },
+  "Corvaine Well-Warden": {
+    "role": "rival",
+    "size": "medium",
+    "creatureType": "humanoid",
+    "tier": 1,
+    "folder": "Corvaine River-Plains Bestiary",
+    "img": "icons/environment/settlement/well-bucket-green.webp",
+    "leylines": [
+      "black"
+    ],
+    "attributes": {
+      "str": 1,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
+    },
+    "skills": {
+      "dec": 2
+    },
+    "defenses": {
+      "phy": 12,
+      "cog": 13,
+      "spi": 14
+    },
+    "hp": 22,
+    "foc": 3,
+    "inv": 3,
+    "movement": 25,
+    "count": 1,
+    "talents": [
+      "Black/Dread Presence",
+      "Black/Hollow Command",
+      "Black/Coercive Pressure"
+    ],
+    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p>",
+    "items": [
+      {
+        "name": "Warden's Hook-Pole",
+        "kind": "weapon",
+        "cost": "1 Action",
+        "attack": 4,
+        "range": "Reach 10 ft.",
+        "damage": "1d6+1",
+        "damageType": "impact",
+        "rider": "The hooked haul-pole every warden carries — it keeps you at the line's length, and it was never meant for this."
+      },
+      {
+        "name": "The Painted Line",
+        "kind": "trait",
+        "text": "<p>GM-run scene truth, no trigger: the yellow paint on the rim, the rope and the bucket is the line; nothing that crosses it comes back. She stands on the clean side with the ladle, and the queue forms at the paint, not at the well. A writ, a fair word or a hand across the line ends the scene without a roll; forcing the line starts the fight, and she fights it as a warden — to hold the paint, never to pursue.</p>"
+      },
+      {
+        "name": "The Well Comes First",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP) she falls back behind the line and calls the parish — the fight ends where the paint is; she does not chase. She never strikes a downed character, and she takes any surrender that keeps hands off the rope.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — she falls back behind the painted line and calls the parish; the fight ends at the paint, she does not pursue."
+            },
+            "description": "cue — table call: she withdraws behind the line and the GM moves the token. Black/Isolation morale cue (the Roek precedent)."
           }
         ]
       }

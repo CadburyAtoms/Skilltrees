@@ -1100,7 +1100,8 @@ doesn't. The army goes unpaid in a country that still has food.)*
   wells. Two years in, the paint has its own arithmetic, and every Corvaini knows it: **no
   painted line in Corvaine has ever moved back.** The lines only go outward, which is why the
   painting is done properly, in oils, like something meant to last. *"Past the paint"* is the
-  idiom for anything beyond saving.
+  idiom for anything beyond saving. *(The well-warden is Corvaine's invested human in the
+  bestiary — the Black-attuned **Corvaine Well-Warden** block, ruling 165, 2026-09-14.)*
 - **Raid culture as duty, not banditry.** Soldiers crossing the Palewater carry **writs of
   requisition** — taking with a writ is lawful duty, taking without one is banditry and hangs.
   Returning raiders **wash in the river before entering their village** ("leave the far bank
@@ -5421,3 +5422,20 @@ Altar Crossing position, and the Vorsk→Lunavar "to the south" raid axis.
     two lowest, the derivation of ruling 108 unchanged; **(d) no third pass needs scheduling** — the
     census regenerates with every data change and the standard (`bestiary-forge` STANDARD.md §1)
     reads the ledger from it, so the count can never again go unrecorded. DOCS-ONLY.
+
+165. **Corvaine's invested human is the well-warden — the Corvaine Well-Warden block (R-131 (a),
+    first nation pass, item 156).** Ben, 2026-09-14, from the statblock-gate page: *"Yes on … the
+    Line-Warden concept, commit it."* The well-warden of a yellow-painted street (§5b — the sworn
+    civic post that pours clean water across the painted line into vessels that never come back) is
+    Corvaine's one invested human at rival role, **Black-attuned**: Black is Corvaine's own
+    riverlands ground colour (ruling 36) and the tree the party does not hold (R-131 asks for one
+    they lack), and the death-sense the tollbirds carry (§5c) in human key — she perceives what is
+    leaving a body and can tell the stuck-dying from the merely sick at the line, which is what her
+    town's water depends on. Kit, as written (ruling 40): **Dread Presence** (the painted line made
+    literal — the Weakened cannot close on the clean side), **Hollow Command** ("stand where you
+    are"), **Coercive Pressure**, plus the Black Key's isolating pour on Draw Mana. The encounter is
+    session-forge's hook — *a well-warden pours across the painted line, and the PCs must hand
+    something (or someone) across* — a negotiation that becomes a fight only if the party forces the
+    line; outs: talk against her Spiritual, a writ, or mercy that costs her the well. Tone: sad, not
+    evil. Default name **Warden Idony Kell** (Corvaine commoner naming, §5b's table), Ben's to
+    rename. Ledger +1 Black (9 → 10). Numbers at the block; DATA, adversaries REBUILD + ⟳ Sync.
