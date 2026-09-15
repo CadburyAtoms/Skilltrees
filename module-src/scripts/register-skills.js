@@ -224,8 +224,16 @@ const EDHA_STATUSES = {
   edict:      { label: "Edict-Bound", icon: "icons/svg/padlock.svg", condition: false, _id: "condedict0000000", tint: "#4a7bd0" },  // Order (Tessavain) — bound by a declared Edict / Final Decree (blue padlock; shared across owners, cleared when NO owner's law still binds)
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
   concord:    { label: "Concord (allies' first strike)", icon: "icons/svg/dove.svg", condition: false, _id: "condconcord00000", tint: "#e8e4d8" },  // Order (Tessavain) — 2bV: the scene arm the list-member-hits damage-bonus reads (was the `concordActive` flag; a status so a document rule can set AND read it). Cleared by the Order scene reset.
-  noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
-  noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
+  /* A CONDITION's label names the condition, never a talent (item 171, 2026-09-15). These two were
+   * written 07-05 as "Cannot Act (Hollow Command)" / "No Reactions (Extract Thought)", when each had
+   * a single Black applier. The label is what reaches every applier's card ("… is No Reactions
+   * (Extract Thought)"), the token's status tooltip and the effect's name, so once Blue's False
+   * Premise became a second `noreactions` applier (item 107 / R-115 (a)) every False Premise card
+   * named a Black talent — bench run 49a read it verbatim. Who applies a condition, and when it
+   * expires, lives on the applying RULE (`statusExpire`), not here; tests/status-labels.test.js
+   * fails the build if any condition label carries a tree talent's name again. */
+  noactions:    { label: "Cannot Act",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // applier: Black's Hollow Command (`statusExpire: target` — the end of the TARGET's next turn, Ben 07-05)
+  noreactions:  { label: "No Reactions", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // appliers: Black's Extract Thought (`statusExpire: owner` — the end of the OWNER's next turn, Ben 07-05) · Blue's False Premise (`statusExpire: target` — the end of the TARGET's next turn; R-115 (a), R-141 (a))
   doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
   braced:     { label: "Braced (attacks at disadvantage)", icon: "icons/svg/shield.svg", condition: true,  _id: "condbraced000000" },   // 07-16b playtest pass — Trooper/Captain Brace (timed via explicit edhaApplyTimedStatus stamp) + Frostbinder's PERMANENT Predictive Ward marker; deliberately NOT in EDHA_TIMED_STATUSES (the Ward must never auto-expire)
   diagrammed: { label: "Vital Diagram",                    icon: "icons/svg/blood.svg",  condition: false, _id: "conddiagrammed00", tint: "#d04a4a" },   // 07-16b — the Stitchmother's anatomical mark; Scalpel-Strike's +4 rides whenTargetStatus on it (scene-long, GM-cleared)

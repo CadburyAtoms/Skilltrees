@@ -2142,7 +2142,13 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   scene mark — since 07-24p the house `markedBy.doubledipped` shape, read via `edhaMarkOwner`,
   cleared at scene end; the old bespoke `doubleDipBy` flag is gone) + the full
   `EDHA_STATUSES` table. Timed set: `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed, noactions,
-  noreactions}`.
+  noreactions}`. ⚠️ **A `condition: true` status is labelled by the CONDITION, never by a talent**
+  (item 171, 2026-09-15). The label is what every applier's card, the token's status tooltip and the
+  effect's name print, so `noreactions` read "No Reactions (Extract Thought)" on Blue's False Premise
+  the moment it became a second applier (bench run 49a). Now `noactions` = "Cannot Act" and
+  `noreactions` = "No Reactions"; WHO applies a condition and WHEN it expires lives on the applying
+  rule (`statusExpire`), not in the label. Guarded by `tests/status-labels.test.js` — no condition
+  label may carry a tree talent's name.
 
 ## Token movement (engine slides/pushes — all stamp `options.edhaForced`)
 - **`edhaRunMove(item, cfg)`** — `edha-move` executor: slide the CASTER toward their target
