@@ -1,19 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Everything from today is deployed (15:20). Bench run 50 is running the 12 rows that verify it. The July branches are deleted. Two rulings are waiting on you: R-142 (the decoy damage cards on ten talents) and R-143 (should the engine apply attack damage itself, so you stop clicking the damage card on most hits). No Fable agents today.",
-    "waitingOn": "Ben: answer R-142 (decoy damage cards, default a) and R-143 (auto-apply attack damage, default a)",
+    "note": "PM of record since 11:49 ET. Bench run 50 merged: all 12 rows passed, so today's fixes are verified live; one small defect filed (item 176). Waiting on you: confirm R-143 as (a) with the four caveats, give the go for the cosmere-rpg 3.1.0 compatibility check (item 177, done on a copy of your world first), and answer R-142. No Fable agents today.",
+    "waitingOn": "Ben: confirm R-143 (a) + four caveats; go for item 177 (3.1.0 check on a copy); answer R-142",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [
-    {
-      "item": "bench-50",
-      "title": "Bench run 50: fix pass 13's nine rows, FP-1, 169-PWR and 169-DTH on the 15:20 deploy",
-      "model": "opus", "size": "M", "lane": "B", "branch": "pm/bench-50",
-      "startedAt": "2026-09-15T19:35:00Z", "agent": "Bench run 50 (fix pass 13 rows)",
-      "phase": "working", "pr": null, "note": "worktree; the day's fourth Opus run, on Ben's word"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
