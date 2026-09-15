@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T19:15:33.384Z",
+  "generatedAt": "2026-09-15T19:22:22.546Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "ccae83fc38",
-    "commit": "683896d",
-    "branch": "pm/fix-pass-13",
+    "hash": "ad4f64a9a8",
+    "commit": "eedc939",
+    "branch": "pm/deploy-record-2026-09-15c",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Fix pass 13 merged as #398 and item 169's safe part as #396; R-141 is closed. The deploy you approved runs next: it closes Foundry, pushes the engine, rebuilds the packs and relaunches. R-142 (the decoy damage rolls) is filed for your answer. No Fable agents today.",
-    "waitingOn": "Ben: answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
+    "note": "PM of record since 11:49 ET. Deployed at 15:20: fix pass 13 and item 169's safe part are live in Foundry (engine 80042b86, packs rebuilt). Foundry was relaunched, so rejoin if you were connected. R-142 (the decoy damage rolls) waits on you. The bench run that verifies today's fixes would be a fourth Opus run: today on your word, or tomorrow. No Fable agents today.",
+    "waitingOn": "Ben: bench run 50 today or tomorrow; answer R-142 (decoy damage rolls, default a); keep or delete the two July branches",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
@@ -2257,6 +2257,7 @@
     }
   ],
   "benOnly": [
+    "say whether bench run 50 runs today (a fourth Opus run) or waits for tomorrow",
     "answer R-142 (the decoy damage rolls on ten talents, plus Killing Blow and The Final Study: (a) keep the formulas and let a field on the talent's own rule suppress the system's damage roll — recommended; (b) derive attack context and colour from other fields, then blank the formulas; (c) leave the decoys and restore Killing Blow and The Final Study's formulas)",
     "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)."
   ],
@@ -2268,20 +2269,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "23:21",
-      "at": "2026-09-14T03:21:00.000Z",
-      "item": "Dispatched item 145 (sonnet, worktree pm/145-rulings-closeout-0913-late — the seven answers into EDHA_RULINGS.md §K.13 verbatim with a hash proof, the open-set pin → [], the six TODO items unblocked with their real deploy classes, item 144 filed, CLAUDE.md's rulings row; DOCS-ONLY). Sonnet under PM-R16; the weekend trailing-5h count reads 7 (19:49, 20:13, 20:50 ×2, 22:13, 22:49, 23:21), logged, not binding",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "23:21",
@@ -3107,9 +3094,23 @@
       "weightedM": null,
       "outcome": "recorded",
       "pr": 398
+    },
+    {
+      "date": "2026-09-15",
+      "time": "15:20",
+      "at": "2026-09-15T19:20:00.000Z",
+      "item": "Deploy cycle run BY THE PM on Ben's approval (\"Yes it can close and relaunch Foundry\") — --dry-run 7/7 PASS, then --yes from main @ eedc939 (19:20:06Z → 19:20:26Z): nine steps ok, the engine pushed (served 80042b86 = HEAD — fix pass 13), packs stamped 19:20:26Z (the leyline and deity rebuilds for #396 and #398), validators PASS, post-flight 3/3 PASS; hand-verified: served sha = repo sha, /join 200, module-src-sync 6 in sync. The merged worktrees for fix pass 13 and item 169 were removed first",
+      "itemNo": "396",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "deployed",
+      "pr": null
     }
   ],
-  "runLogTotal": 346,
+  "runLogTotal": 347,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
