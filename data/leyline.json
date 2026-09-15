@@ -785,7 +785,7 @@
     "action": "2 Actions",
     "cost": "2 Investiture",
     "prerequisites": "Blue 1+",
-    "description": "Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range; it appears adjacent to the original and has 1 health. Each enemy who can see it tests Perception against your Cognitive defense: on a failure they lose track of the original — only the duplicate is real to them; on a success the duplicate is empty air to them. Any hit destroys the duplicate, and the original stands plainly seen again. A test or talent aimed at the duplicate resolves against it (defenses 0) and affects only the duplicate — the fooled act on the wrong body (R-136 (a), 2026-09-14).",
+    "description": "Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range; it appears adjacent to the original and has 1 health. Each enemy who can see it tests Perception against your Cognitive defense: on a failure they lose track of the original — only the duplicate is real to them; on a success the duplicate is empty air to them. Any hit destroys the duplicate, and the original stands plainly seen again. A test or talent aimed at the duplicate resolves against it (defenses 0) and affects only the duplicate — the fooled act on the wrong body.",
     "flavor": "Which one is real? Neither. Both. Does it matter?",
     "tags": "illusion; action",
     "layout": {
