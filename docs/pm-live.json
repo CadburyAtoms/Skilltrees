@@ -1,19 +1,11 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. You confirmed R-143 (a) with all four caveats and R-142 (a); both are filed and no rulings are open. Item 177, the cosmere-rpg 3.1.0 compatibility check, is running (Opus, analysis only: the release zip goes to a temp folder, nothing touches your Foundry data, no restart). The builds for both rulings are filed as items 178–181 and wait on it. No Fable agents today.",
-    "waitingOn": "nothing now — the next ask is the live 3.1.0 upgrade with Ben present, once item 177's breaks are fixed",
+    "note": "PM of record since 11:49 ET. The 3.1.0 compatibility check is done and merged (#403) — and it is bigger than we assumed: 5 blockers, about 9 worker sessions, because 3.0.0 moved every talent's activation and damage onto an embedded action. The six migration PRs are filed as items 182–187. One question for you: R-144 — does your 'upgrade first' caveat still bind the damage-card builds, or do they go dual-mode after one resolver PR and reach your 2.1.0 table as they land (my recommendation, (a))? Item 181 (the Dodge button) is unblocked either way and can start now. Your live world stays on 2.1.0; nothing is owed to it. No Fable agents today.",
+    "waitingOn": "Ben: answer R-144 (does '3.1.0 first' still bind items 178–181, or dual-mode after one resolver PR — default a); and, when the upgrade should proceed, the ~1 hour of Route A (a second Foundry data path on port 30001 with your own license)",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [
-    {
-      "item": "177",
-      "title": "cosmere-rpg 2.1.0 → 3.1.0 compatibility check (static analysis; the release zip in $TEMP only)",
-      "model": "opus", "size": "L", "lane": "B", "branch": "pm/177-cosmere-rpg-3-1-0-check",
-      "startedAt": "2026-09-15T21:43:00Z", "agent": "Work item 177 (cosmere-rpg 3.1.0 check)",
-      "phase": "working", "pr": null, "note": "worktree; the day's fifth Opus run, on Ben's go"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
