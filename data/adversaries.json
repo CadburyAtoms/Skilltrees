@@ -5436,5 +5436,74 @@
         ]
       }
     ]
+  },
+  "Preacher of the Lowered Crown": {
+    "role": "rival",
+    "size": "medium",
+    "creatureType": "humanoid",
+    "tier": 1,
+    "folder": "Thalendor Heartwood Bestiary",
+    "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
+    "leylines": [
+      "white"
+    ],
+    "attributes": {
+      "str": 0,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
+    },
+    "skills": {
+      "white": 2,
+      "black": 2,
+      "lwp": 1
+    },
+    "hp": 20,
+    "foc": 4,
+    "inv": 4,
+    "movement": 25,
+    "count": 1,
+    "talents": [
+      "Sovereignty/Censure",
+      "Sovereignty/Decree of Ruin",
+      "Sovereignty/Expose"
+    ],
+    "biography": "<p>Preacher Oswin Hollin (Ben's to rename; Merrit Wold is the other default) — a preacher of the <strong>Lowered Crown</strong> (canon §5b's brewing heresy; ruling 166, R-131 (a), item 158). In the most devout nation, starving worst, he preaches the first reading: the Arbiter has cast Thalendor down for a sin unnamed, and his district has stopped performing the First Sheaf over a vat-loaf. <strong>White-attuned</strong> (Ben, 2026-09-15: Corvaine's human was Black, so Thalendor's is White) and <strong>Sovereignty-aligned</strong> — Verdannis's own tree, whose grammar is the station-idiom he preaches; the tree's gate is White 2+ and Black 2+, so he carries both ranks (Black as a stated skill, no Black Key). The party holds Chaos, Fate and Knowledge, not this tree.</p><p><strong>Kit, as written (ruling 40):</strong> <em>Censure</em> (1 Action, 1 Investiture, Black vs Cognitive — a creature's damage die steps down one until his next turn: \"I have found you wanting\"), <em>Decree of Ruin</em> (1 Action, 2 Investiture, Black vs Cognitive — the step-down lasts the scene on a success, a turn on a failure, once per creature: the sentence), <em>Expose</em> (a censured creature that fails a test returns 1 Investiture to him; one that fails an attack opens a Reactive Strike for the ally it targeted). Plus the White Key's Draw Mana. Black tests roll PRE 2 + rank 2 = +4; White tests WIL 2 + rank 2 = +4. Against this party the kit costs about a point a hit (d6 → d4): pressure, not threat — a scene meant to be talked down.</p><p><strong>The encounter — a sermon before a fight.</strong> His district at a shrine-grove the wardens can no longer calm, or at a refused First Sheaf, with the sign read aloud. It becomes a fight only if someone forces the reading. Three outs: <em>talk</em> (Persuasion against his Spiritual 14); <em>the drain evidence</em> — the groves sickened in an order that maps a mechanism, not a judgment (§5c's GM layer: the famine's acute layer is the Arbiter's own search draining the Root Network, and neither side knows); <em>mercy</em> — one true thing on a vat-fed table (§5b). Tone: <strong>sad, not evil</strong> — a devout man whose god has gone quiet on him, preaching the only reading that lets the hunger mean something. Where he sits in session 2 is session-forge's call.</p><p><em>Numbers on the PC model (R-137 / R-139 (a)): STR 0 SPD 1 INT 1 WIL 2 AWA 2 PRE 2, which derives Phy 11 / Cog 13 / Spi 14; Focus 4 (2 + WIL) and Investiture 4 (2 + max(AWA, PRE)) stated; senses 10 ft; Pilgrim's Staff SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6. Ledger +1 White.</em></p>",
+    "items": [
+      {
+        "name": "Pilgrim's Staff",
+        "kind": "weapon",
+        "cost": "1 Action",
+        "attackSkill": "lwp",
+        "range": "Reach 5 ft.",
+        "damage": "1d6",
+        "damageType": "impact",
+        "rider": "A walking staff worn smooth by the road between shrine-groves. He would rather not."
+      },
+      {
+        "name": "The Sermon",
+        "kind": "trait",
+        "text": "<p>GM-run scene truth, no trigger: he preaches before anything is fought — the sign read aloud, the vat-loaf named, the First Sheaf refused. Three outs, none of them a blade: <em>talk</em> (Persuasion against his Spiritual 14), <em>the drain evidence</em> (the groves sickened in an order that maps a mechanism, not a judgment — canon §5c's GM layer), or <em>mercy</em> (one true thing on a vat-fed table). Force the reading and it becomes a fight; his district follows his reading, not his fists.</p>"
+      },
+      {
+        "name": "The Crown Lowered",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP) he lowers the crown himself — kneels, stops the sermon, and takes any surrender or any true thing offered. He never strikes a downed character.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — he kneels and the sermon ends; he takes any surrender or any true thing offered, and never strikes a downed character."
+            },
+            "description": "cue — table call: he kneels and the sermon ends — the GM stops the fight and plays the district's reading. White/Sovereignty morale cue (the Roek and Well-Warden precedent)."
+          }
+        ]
+      }
+    ]
   }
 }
