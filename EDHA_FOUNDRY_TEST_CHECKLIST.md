@@ -1696,6 +1696,10 @@ talent:** `floor(2d8 / 2) + ((1 + 2))[Mighty] + 5` = 11 — **no Momentum's Edge
 104's retune is live and the ECO-2 defect (an unresolvable `@movement.walk.rate` that made the whole
 Strike post nothing) is gone.)*
 
+## Red — item 169: Volatile Strike's decoy formula gone (2026-09-15; **REBUILD leyline + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-RED — Volatile Strike's use card has no system Apply Damage button; its ⚡ rider damage still lands:** on Bench — Red, hit with a melee attack and trigger Volatile Strike's optional rider (spend 1 Investiture, test Red vs Physical) — confirm the posted card carries no system "Damage" roll/Apply button (`system.damage.formula` is now `null` on `XVDcyW9BL6U5DGXr`), while the rider rule (`TKmyXVyFhGYWryKv`) still adds its own half-[Tier][Die] impact to the hit exactly as before.
+
 ---
 
 # BENCH — Green (leyline)
@@ -1904,6 +1908,9 @@ while **Walking Ruin**'s trail Region, created minutes later by the same actor, 
 `exemptActorUuid: ""` and **did** catch its owner: *"🔥 Bench — Destruction takes 4 energy from
 dangerous terrain"*, HP 42 → 38.)*
 
+## Destruction — item 169: two decoy formulas gone (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-DES — Cascading Failure and The Unmooring's use cards carry no system Apply Damage button; their own ⚡ detonation damage still lands:** on Bench — Destruction, place two or more Charges and fire each talent in turn — confirm neither posts the system's own "Damage" roll/Apply button (`system.damage.formula` is now `null` on `0XE8eF9aS4uMu6sM`, `Q4D4mYenqAodCMLC`), while `edha-detonate-list` still rolls each Charge's own stored formula (plus Cascading Failure's multi-catch bonus / The Unmooring's `+Intellect`, radius-15, ignores-deflect and merged terrain) exactly as before. `Set Charge`'s own placement-roll decoy is untouched — out of this item's scope (its formula is copied into the Charge ledger at placement; the fix there is moving it into the `edha-zone` rule, not blanking it).
 
 ---
 
@@ -2050,6 +2057,10 @@ condition its own order-0 rule had just relayed.
 ⚠️ **`edhaAwaitLocal` never timed out**: zero `console.warn` relay warnings on **either** client
 across all five casts, so every relayed write landed inside the 3 s budget. No `ui.notifications.warn`
 naming a creature either.)*
+
+## Chaos — item 169: five decoy formulas gone (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-CHA — Entropy Strike, Cascade Collapse, Isolating Pressure, Isolating Ruin and Unravel Everything's use cards carry no system Apply Damage button; their own ⚡ engine damage still lands:** on Bench — Chaos, use each of the five in turn and open its posted card — confirm none offers the system's own "Damage" roll/Apply button (`system.damage.formula` is now `null` on all five: `fOhtEjkYuEeBd9SS`, `VeAzU8EmW6keYOOn`, `0Nu7omaq1cJiTU3u`, `OwrFGrbjea7puoxR`, `sY4ZlOYPL2leyxSE`), while each talent's own `edha-triggered-effect` rule still deals its card's damage exactly as before (Entropy Strike's spirit hit on an Omen placement, Cascade Collapse's per-bearer sweep, Isolating Pressure/Ruin's Omen-shatter vital, Unravel Everything's detonation spirit/vital split).
 
 # BENCH — Fate (Olvarra, deity)
 
@@ -2318,6 +2329,10 @@ Touch"}`; `Bench — Black` landed Withering Ray → `healCut {fraction: 0.5, by
   a started combat (R-4). Bonus, a fourth consumer of the same fix: `Mender's Instinct`'s reaction
   into a still-withered ally announced *"— no healing lands."* with no number.)*
 
+## Death — item 169: two decoy formulas gone (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-DTH — Necrotic Cascade and Withering Touch's use cards carry no system Apply Damage button; their own ⚡/rider damage still lands:** on Bench — Death, arm Necrotic Cascade and let a scene-range defeat trigger its splash, then separately arm Withering Touch and land a melee hit — confirm neither ARM card posts the system's own "Damage" roll/Apply button (`system.damage.formula` is now `null` on `GiG8mKtZyLW8aAYE`, `d2IDgKhRwYyxZy6n`), while Necrotic Cascade's `damage-aoe` rule still splashes [Tier][Die] spirit on nearby enemies and Withering Touch's armed rider still adds its own [Tier][Die]+Willpower vital (plus the heal-cut) to the next melee hit exactly as before.
+
 ---
 
 # BENCH — Civilization (Kethane, deity)
@@ -2531,6 +2546,10 @@ re-derived, and not a new bug.
   dispositions coerce to −1 at create and update), so the whole row retires. The fail-closed
   behaviour is pinned in `tests/disposition-failclosed.test.js` (23 cases), which is the standing
   record.
+
+## Power — item 169: three decoy formulas gone (2026-09-15; **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **169-PWR — Unstoppable Advance, Momentum of Victory and Warlord's Advance's use cards carry no system Apply Damage button; their own ⚡/rider damage still lands:** on Bench — Power, use each in turn — confirm none of the three posts the system's own "Damage" roll/Apply button (`system.damage.formula` is now `null` on `3kxYXxct3NhIpxnb`, `mzFG2GetTMVxIexS`, `rbkM1FUBk6NkqSRm`), while Unstoppable Advance's trample rule still fires its own impact per trampled enemy and Momentum of Victory / Warlord's Advance's armed riders still add their own bonus (+tier impact; +[Tier][Die red] impact plus the kill/survive riders) on the next qualifying melee hit exactly as before.
 
 ---
 
