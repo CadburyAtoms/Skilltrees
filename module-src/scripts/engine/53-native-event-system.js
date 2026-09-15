@@ -2297,7 +2297,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const sizeFt = Number(this.sizeFt) > 0 ? Number(this.sizeFt) : (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]);
       let ring = null;
       try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+      // item 164: the square edhaCreateGreenTerrain lays is `cells` wide (the same arithmetic), so the click
+      // snaps to the point that square can be centred on — a grid vertex for an even square.
+      const cells = Math.max(1, Math.round(Number(sizeFt) / (canvas?.scene?.grid?.distance || 5)));
+      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`, { cells });
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
       if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)

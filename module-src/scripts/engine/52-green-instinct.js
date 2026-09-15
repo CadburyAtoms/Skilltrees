@@ -377,7 +377,13 @@ async function edhaZoneFoundation(item, h) {
     // Show Attunement Range while picking the point (same UX as bursts).
     let ring = null;
     if (tok) { try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {} }
-    const pt = await edhaPickPoint(`Click the center of the 10 ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: the rule's square (Lay Foundation: 10 ft) is sized BEFORE the pick, so the click snaps to the
+    // point it can be centred on — a grid vertex for an even square, a cell centre for an odd one.
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
+    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
+    const cells = Math.max(1, Math.round(sizePx / gs));
+    const pt = await edhaPickPoint(`Click the center of the ${sqFt} ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells });
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — Investiture refunded.`); return; }
     if (tok) {
@@ -385,9 +391,6 @@ async function edhaZoneFoundation(item, h) {
       const distFt = edhaPointGapFt(pt, tok);   // ruler, not hypot (2026-09-09)
       if (distFt > rangeFt + gd0 / 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is ${Math.round(distFt)} ft away — beyond Attunement Range (${rangeFt} ft). Refunded.`); return; }
     }
-    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
-    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
     const x = Math.round((pt.x - sizePx / 2) / gs) * gs;               // snap so edges sit on grid lines
     const y = Math.round((pt.y - sizePx / 2) / gs) * gs;
     const payload = {

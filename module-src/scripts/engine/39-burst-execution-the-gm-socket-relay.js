@@ -38,7 +38,10 @@ async function edhaCastBurst(item, spec) {
     const oy = tok?.center?.y ?? (scene.dimensions?.height ?? 1000) / 2;
     let ring = null;
     try { ring = await edhaDrawCircle(ox, oy, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: a GREEN terrain burst lays a square `sizeFt` wide centred on this point (edhaCreateGreenTerrain),
+    // so the click snaps to where that square can be centred; every other burst keeps the cell-centre snap.
+    const burstCells = (b.terrain && color === "green") ? Math.max(1, Math.round(sizeFt / (scene.grid?.distance || 5))) : 1;
+    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells: burstCells });
     if (!pt) { try { if (ring && scene.templates?.get(ring.id)) void ring.delete()?.catch(() => {}); } catch (e) {} edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
       t: "circle", x: pt.x, y: pt.y, distance: sizeFt, direction: 0, angle: 0,

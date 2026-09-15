@@ -12620,10 +12620,35 @@ Hooks.on("renderCharacterSheet", (app, element) => {
  */
 const EDHA_BURST_PENDING = {};
 
+/* PURE (pinned in tests/terrain-square-snap.test.js) — item 164 (2026-09-15, bench run 48 / YARD-3).
+ * The snapping mode for a click that an N-cell SQUARE will be centred on: the nearest grid VERTEX when N
+ * is even, the nearest cell CENTRE when N is odd. Read from Foundry's own code (resources/app, read-only):
+ * GRID_SNAPPING_MODES.CENTER is 0x1 and VERTEX is 0xF0 (common/constants.mjs), and
+ * SquareGrid#getSnappedPoint (common/grid/square.mjs) routes CENTER to #snapToCenter,
+ * `round((x - s/2) / s) * s + s/2`, and VERTEX to #snapToVertex.
+ * Every pick used to snap CENTER. That throws away WHERE in its cell the click landed, and a 2-cell square
+ * cannot be centred on a cell centre: edhaSnapCellRect then met an exact .5 tie that Math.round breaks
+ * upward, so the clicked cell was always the square's top-left whatever the click — a 10 ft terrain square
+ * asked for between two PC tokens covered neither. edhaSnapCellRect was already right for a point of the
+ * matching kind. CONST is read when Foundry is loaded; Foundry's own values are the fallback. */
+function edhaSnapModeForCells(cells) {
+  const M = (typeof CONST !== "undefined" && CONST?.GRID_SNAPPING_MODES) || {};
+  const n = Math.max(1, Math.round(Number(cells) || 1));
+  return (n % 2 === 0) ? (M.VERTEX ?? 0xF0) : (M.CENTER ?? 0x1);
+}
+// Snap a raw world point for an N-cell footprint through the grid's own getSnappedPoint (raw point on failure).
+function edhaSnapPoint(p, cells = 1) {
+  try {
+    const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: edhaSnapModeForCells(cells), resolution: 1 });
+    return Number.isFinite(s?.x) ? s : p;
+  } catch (e) { return p; }
+}
 // Click-to-place a point on the canvas (drag-free): resolves a grid-snapped world {x,y}, or null on
 // cancel. Reads canvas.mousePosition (continuously updated to world coords) on a capture-phase pointer
 // down on the #board canvas, so it fires even over tokens without needing the Templates layer active.
-function edhaPickPoint(promptText) {
+// `cells` (item 164): the footprint of the SQUARE the caller will centre on the point. Pass it whenever
+// a square is laid; markers, charges, directions and link points keep the default 1 (cell centre).
+function edhaPickPoint(promptText, { cells = 1 } = {}) {
   return new Promise((resolve) => {
     const view = document.getElementById("board");
     if (!view || !canvas?.ready) { resolve(null); return; }
@@ -12636,10 +12661,7 @@ function edhaPickPoint(promptText) {
       try { window.removeEventListener("keydown", onKey, true); } catch (e) {}
       resolve(pt);
     };
-    const snap = (p) => {
-      try { const s = canvas.grid.getSnappedPoint({ x: p.x, y: p.y }, { mode: CONST.GRID_SNAPPING_MODES?.CENTER ?? 1, resolution: 1 }); return Number.isFinite(s?.x) ? s : p; }
-      catch (e) { return p; }
-    };
+    const snap = (p) => edhaSnapPoint(p, cells);
     const onDown = (ev) => {
       if (ev.button === 2) return;                 // right-click handled by contextmenu (cancel)
       if (ev.button !== 0) return;                 // left-click only
@@ -12956,7 +12978,10 @@ async function edhaCastBurst(item, spec) {
     const oy = tok?.center?.y ?? (scene.dimensions?.height ?? 1000) / 2;
     let ring = null;
     try { ring = await edhaDrawCircle(ox, oy, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: a GREEN terrain burst lays a square `sizeFt` wide centred on this point (edhaCreateGreenTerrain),
+    // so the click snaps to where that square can be centred; every other burst keeps the cell-centre snap.
+    const burstCells = (b.terrain && color === "green") ? Math.max(1, Math.round(sizeFt / (scene.grid?.distance || 5))) : 1;
+    const pt = await edhaPickPoint(`Click the ${item.name} burst center (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells: burstCells });
     if (!pt) { try { if (ring && scene.templates?.get(ring.id)) void ring.delete()?.catch(() => {}); } catch (e) {} edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
       t: "circle", x: pt.x, y: pt.y, distance: sizeFt, direction: 0, angle: 0,
@@ -19065,7 +19090,13 @@ async function edhaZoneFoundation(item, h) {
     // Show Attunement Range while picking the point (same UX as bursts).
     let ring = null;
     if (tok) { try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, rangeFt, EDHA_RANGE_RING_HEX, 0); } catch (e) {} }
-    const pt = await edhaPickPoint(`Click the center of the 10 ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`);
+    // item 164: the rule's square (Lay Foundation: 10 ft) is sized BEFORE the pick, so the click snaps to the
+    // point it can be centred on — a grid vertex for an even square, a cell centre for an odd one.
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
+    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
+    const cells = Math.max(1, Math.round(sizePx / gs));
+    const pt = await edhaPickPoint(`Click the center of the ${sqFt} ft Foundation square (right-click to cancel). Attunement Range ${rangeFt} ft.`, { cells });
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — Investiture refunded.`); return; }
     if (tok) {
@@ -19073,9 +19104,6 @@ async function edhaZoneFoundation(item, h) {
       const distFt = edhaPointGapFt(pt, tok);   // ruler, not hypot (2026-09-09)
       if (distFt > rangeFt + gd0 / 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is ${Math.round(distFt)} ft away — beyond Attunement Range (${rangeFt} ft). Refunded.`); return; }
     }
-    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-    const sqFt = Number(h?.sizeFt) > 0 ? Number(h.sizeFt) : 10;        // the rule's square (Lay Foundation: 10 ft)
-    const sizePx = Math.max(gs, Math.round((sqFt / gd) * gs));
     const x = Math.round((pt.x - sizePx / 2) / gs) * gs;               // snap so edges sit on grid lines
     const y = Math.round((pt.y - sizePx / 2) / gs) * gs;
     const payload = {
@@ -21781,7 +21809,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const sizeFt = Number(this.sizeFt) > 0 ? Number(this.sizeFt) : (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]);
       let ring = null;
       try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+      // item 164: the square edhaCreateGreenTerrain lays is `cells` wide (the same arithmetic), so the click
+      // snaps to the point that square can be centred on — a grid vertex for an even square.
+      const cells = Math.max(1, Math.round(Number(sizeFt) / (canvas?.scene?.grid?.distance || 5)));
+      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`, { cells });
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
       if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)

@@ -2328,7 +2328,15 @@ the first one lived inside the trample announcer, looked private, and got duplic
   guard) announces; the veil dies with the copy's flags. No advantage rider (dropped, Ben 07-14).
 
 ## Targeting / costs / math utils
-- `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
+- `edhaPickPoint(prompt, {cells})` → grid-snapped `{x,y}` or null (click-to-place). ⚠️ **`cells` = the
+  footprint of a SQUARE the caller centres on the point** (item 164, 2026-09-15): the pure
+  **`edhaSnapModeForCells(cells)`** snaps an even footprint to the nearest grid VERTEX and an odd one to the
+  nearest cell CENTRE, through Foundry's own `SquareGrid#getSnappedPoint` (**`edhaSnapPoint(p, cells)`**).
+  A CENTER snap erased where in its cell the click landed, so an even `edhaSnapCellRect` always grew
+  right/down from the clicked cell (bench run 48: a 10 ft terrain square placed between two PCs covered
+  neither). The square-laying pickers pass it — Green `edha-zone` terrain, Lay Foundation, a Green terrain
+  burst; markers, Charges, directions and link points keep 1. Pinned in `tests/terrain-square-snap.test.js`.
+  `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction),
   `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — the `edha-zone {kind: line}` caught set:
   every LIVE token in the length×width line **except the caster** (excluded by token id and by actor
