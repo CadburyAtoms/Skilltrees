@@ -228,9 +228,12 @@ async function edhaSenseRevealOnDamage(victim, list) {
       const spec = h.oncePerRound === false ? {} : { oncePerRound: true };
       if (!edhaTriggerAllowed(w.actor, w.item.name, spec)) continue;
       await edhaMarkTriggerUsed(w.actor, w.item.name, spec);
-      await edhaGainResource(w.actor, res, amt);
+      // item 172: report what edhaGainResource actually delivered, not the requested amount.
+      const gained = await edhaGainResource(w.actor, res, amt);
+      const resLabel = EDHA_RES_LABEL[res] || res;
+      const line = gained > 0 ? `${w.actor.name} recovers ${gained} ${resLabel}` : `${w.actor.name} is already at full ${resLabel}`;
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: w.actor }),
-        content: `<p>👁️ <strong>${w.item.name}</strong>: a marked creature (${victim.name}) took damage — ${w.actor.name} recovers ${amt} ${EDHA_RES_LABEL[res] || res}.</p>` });
+        content: `<p>👁️ <strong>${w.item.name}</strong>: a marked creature (${victim.name}) took damage — ${line}.</p>` });
     }
   } catch (e) { console.error("Edha Content | sense-reveal recovery failed", e); }
 }

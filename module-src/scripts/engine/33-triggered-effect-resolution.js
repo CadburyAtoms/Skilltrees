@@ -179,9 +179,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
         try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: healAmt, type: "heal", heal: true }] } }); } catch (e2) {}
       }
     }
+    // item 172: the card must say what the pool actually took, not what the rule declared — a
+    // pool already at max must not print "regains N" when nothing landed (same family as the
+    // heal half above, which already reports through edhaHealLine's delivered amount).
+    let gainedAmt = 0;
     if (eff.resourceGain) {
       const r = eff.resourceGain;
-      await edhaGainResource(owner, r.resource, r.value);
+      gainedAmt = await edhaGainResource(owner, r.resource, r.value);
     }
     // Next-test modifier payoff (Flashpoint: advantage on your next Red test — ENFORCED 07-12; was a
     // "manual reminder" until the nextTestMod primitive was re-checked against it. Generic: any
@@ -197,7 +201,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
      * gain-less card would come out empty (the 07-05 "blank card" case). */
     const healLine = edhaHealLine(healee, amt, healAmt, d => `${healee.name} regains <strong>${d}</strong> health`)
       || (!gainNote ? `${healee.name} regains <strong>0</strong> health` : "");
-    const what = [healLine, gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
+    // item 172: built from gainedAmt (what edhaGainResource actually wrote), never gainNote (the
+    // rule's declared value) — a full pool reads "already at full X", never a "regains N" it didn't get.
+    const gainResLabel = eff.resourceGain ? (EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource) : "";
+    const gainClause = !eff.resourceGain ? "" : (gainedAmt > 0
+      ? `${owner.name} regains <strong>${gainedAmt} ${gainResLabel}</strong>`
+      : `${owner.name} is already at full ${gainResLabel}`);
+    const what = [healLine, gainClause].filter(Boolean).join("; ") + "." + why;
     if (rolled && healAmt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
