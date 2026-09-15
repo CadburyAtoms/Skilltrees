@@ -453,7 +453,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // five blockers and ~9 worker sessions, and found that the engine work can be written dual-mode. The
   // PM files R-144 in §L — does R-143's "3.1.0 first" caveat still bind items 178 – 181, or do they go
   // dual-mode after one resolver PR? The length assertion moves 0 → 1.
-  const ECOSYSTEM_RULINGS = ["R-144"];
+  // 2026-09-15, within the hour: Ben answered R-144 in chat — "we've got session one built in 2.1.0 …
+  // do the full 3.1.0 build on the side. Once I confirm session one has occurred, we can swap to 3.1.0"
+  // — so it moved to §K.20 with a §L stub and joins the closed list below. The length assertion moves
+  // 1 → 0, and the open set is EMPTY again.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -461,7 +465,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
-      "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143"]) {
+      "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
