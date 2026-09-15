@@ -4215,7 +4215,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none. Filed 2026-09-15 by bench run 49a.
 
-## 169. [x] (2026-09-15, PR #396) Seven more talents still carry an item-level `damage.formula` beside the engine rule that deals their damage — the system rolls a decoy with Apply buttons on every use, pass or fail (item 141's defect in Red, Chaos and Power) (DATA, REBUILD leyline + deity + ⟳ Sync Talents) (2026-09-15) — DONE 2026-09-15, PR #396 (the sweep the item invited found five more with the identical shape — Necrotic Cascade, The Unmooring, Withering Touch, Momentum of Victory, Warlord's Advance — thirteen `damage` blocks total blanked to `{formula: null, type: null}`; pack parity: exactly those 13 documents differ, all in `system.damage` only; validate-packs.js green; Set Charge swept and left alone per its own different fix; five 🤖 rows filed, one per tree)
+## 169. [ ] Seven more talents still carry an item-level `damage.formula` beside the engine rule that deals their damage — the system rolls a decoy with Apply buttons on every use, pass or fail (item 141's defect in Red, Chaos and Power) (DATA, REBUILD leyline + deity + ⟳ Sync Talents) (2026-09-15)
 
 **Why:** measured at **bench run 49a (2026-09-15)** while driving OM-3 … OM-5. A `skill_test` talent with a `system.damage.formula` makes the cosmere system roll that formula as a real `DamageRoll` in its own use message, and the card carries the system's **Apply Damage (1 / ½ / 2 / 1) and Reduce Focus buttons** — while the engine's `edha-triggered-effect` damage rule applies the talent's actual damage separately. Live: `Entropy Strike`'s system message rolled `2d8 + 5` = 12 on a FAIL (10 vs COG 11, no damage due at all) and 12 / 14 / 11 beside the engine's own *"⚡ Entropy Strike (Bench — Chaos) — 10 / 8 / 9 spirit"*; `Isolating Pressure` rolled `DamageRoll 2d8 + 2 + 5` (vital) = 10 and 17 on two FAILs, 9 on the placement-branch SUCCESS (where the card says no damage is dealt), and 12 on the shatter take where the engine applied its own 6. The trailing `+ 5` is the skill modifier the system appends to damage (the R-137 finding), so the decoy is not even the card's number. A GM who clicks the system card's Apply button deals the damage twice, at the wrong total. Item 141 fixed exactly this on the three Knowledge cash-outs and scoped itself to them; a read-only scan of the built packs (all three atlases, `system.damage.formula` non-null AND an `edha-triggered-effect {kind: damage}` rule) finds **five `skill_test` talents** — Red's `Volatile Strike`; Chaos's `Isolating Pressure`, `Isolating Ruin`, `Cascade Collapse`, `Entropy Strike` — and **two `utility` talents** whose cards would offer the system's damage button — Power's `Unstoppable Advance`, Chaos's `Unravel Everything`. (52 talents carry a formula in all; the rest either have no engine damage rule or read the formula on purpose — e.g. `Set Charge`'s blast and `Hexmark`/`Inevitable Snare` read their own `system.damage.formula` — and are NOT in scope. **Adjacent, and not fixable the same way:** `Set Charge`'s own use message rolled its blast formula at PLACEMENT — `2d8` = 10 and 11 on two placements at bench run 49a — although nothing is damaged until detonation; its formula cannot simply be blanked because `edhaSetChargeMarker` copies `item.system.damage.formula` into the ledger entry, so the fix there is to move the blast formula into the `edha-zone` rule and read it from the rule. Say which way it went in the PR. **And the scan's criterion under-counts:** it matched only `edha-triggered-effect {kind: damage}` rules, but `Cascading Failure` (Destruction, `utility`) deals its damage through `edha-detonate-list`, which rolls each Charge's stored formula and its own `doubleCaughtFormula` — never the item's — and its use message still rolled the item formula (`2d4` = 7 at bench run 49a, beside the detonation card's own `2d4 / 2d4 / 2d8`). Widen the sweep to every engine damage handler that does not read `item.system.damage.formula`, and add any talent it finds to this item.)
 
@@ -4224,6 +4224,63 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** none of the seven posts a system damage roll or damage button on use; their engine damage still lands; parity stated; one 🤖 row per tree (Entropy Strike's card has no Apply buttons and its ⚡ damage still lands; Volatile Strike the same).
 
 **PM:** lane B · model sonnet · size S · deps none (item 141 is the precedent). Filed 2026-09-15 by bench run 49a.
+
+**Progress (2026-09-15, PR #396, open — bounced back for a narrower re-scope):** the worker's first
+pass blanked all thirteen (the seven named + Cascading Failure + five more the same sweep found:
+Necrotic Cascade, The Unmooring, Withering Touch, Momentum of Victory, Warlord's Advance) and
+proved pack parity — but pack parity only diffs the LevelDB document, and PM review found two
+RUNTIME side effects a document diff cannot show. Three of the thirteen blanked cleanly and stay
+blanked in #396: **Momentum of Victory, Warlord's Advance, Withering Touch** (verified: `utility`
+activation, so no d20 test of their own to reclassify; their `edha-damage-bonus` rider carries its
+own required `amountFormula` and never reads `item.system.damage`; Warlord's Advance/Withering
+Touch also declare an explicit `color` on that same rule, and Momentum of Victory's colour was
+never formula-derived to begin with — a bare `@tier`). The other ten are held, restored
+byte-identical to `main`, pending a ruling:
+- **Attack context (5 talents — Volatile Strike, Cascade Collapse, Entropy Strike, Isolating
+  Pressure, Isolating Ruin):** all `skill_test`. The cosmere system rolls a `skill_test` item's own
+  test through `rollAttack` (context `Attack`) only when the item carries a damage formula, else
+  through `roll()` (context `Item`). `edhaTestCtxMatch`
+  (`module-src/scripts/engine/01-shared-core.js:541`) lets an `appliesTo: "attack"` test rider ride
+  an `Item`-context roll only when the source still carries a damage formula — blank it and that
+  door closes. `edhaAggroRecord` / `edhaPackAdvantageApply`
+  (`01-shared-core.js:781`/`790`) check `system.damage.formula` directly and no-op without it, so a
+  blanked skill_test talent's own roll stops recording aggro and stops being eligible for pack
+  advantage.
+- **Colour (5 talents — Unravel Everything, Unstoppable Advance, Cascading Failure, The Unmooring,
+  Necrotic Cascade):** `edhaTalentColor` (`35-targeting-attunement-range-aoe-templates.js:31`)
+  reads the damage formula FIRST, then `activation.skill`, then a rule's own `color` field, then
+  `item.system.path`. All five are `utility` (no `activation.skill`) with no `color` field on any
+  of their rules (`edha-triggered-effect`/`edha-detonate-list` don't have one), so blanking drops
+  them to the `system.path` fallback — measured (not theorized): this does NOT resolve to null, it
+  resolves to a DIFFERENT, usually WRONG colour, because a deity tree's `system.path` is
+  `tree.color || slugify(group)` and several deity trees carry a `tree.color` unrelated to a given
+  talent's true leyline identity (Destruction's own `tree.color` is `blue` while its red-formula
+  talents are red; Power's is `black` while its red-formula talents are red). Measured before →
+  after: Unravel Everything blue → black, Unstoppable Advance red → black, Cascading Failure /
+  The Unmooring red → blue, Necrotic Cascade black → black (unchanged VALUE, but via the same
+  fragile coincidence — Death's `tree.color` happens to equal its true colour today; nothing pins
+  that). Consumers: the Attunement Range ⊙ preview button
+  (`35-...js:105`/`138`, injected only when `edhaTalentColor` returns non-null) and Necrotic
+  Grasp's heal-cut colour gate (`03-where-an-effect-lives.js:909`).
+
+**A design question for Ben, via the PM:** should `edhaTalentColor`'s fallback chain gain a
+generic per-rule `color` dial (the same shape Warlord's Advance/Withering Touch already declare on
+their `edha-damage-bonus` rule) as the REQUIRED companion whenever a talent's colour was formula-
+derived and the formula is blanked — or should the `system.path` fallback be removed/fixed for
+deity talents instead, since it is not actually a reliable colour source? Either answer unblocks
+restoring the other ten talents' data fix; this item stays open until it lands. Not filed as a
+numbered ruling or a new TODO item per the PM's review — recorded here for the next session.
+
+**Item 141 cross-check (report only, not touched):** of the three Knowledge talents PR #379
+already blanked, `Killing Blow` and `The Final Study` are BOTH `skill_test` (`activation.skill:
+"red"`) and so carry the SAME attack-context exposure already live on `main` — their own test roll
+has resolved through `roll()`/`Item` context, not `rollAttack()`/`Attack`, since #379 merged;
+nothing has audited whether any `appliesTo: "attack"` rider or the aggro/pack-advantage ledger
+ever needed to ride either talent's own roll. Their colour is unaffected (`activation.skill: "red"`
+is EDHA_LEY_COLORS-valid, so `edhaTalentColor` resolves via the 2nd tier regardless of the
+formula). `Predatory Strike` is `utility` with an explicit `color: "red"` on its `edha-damage-bonus`
+rider (`PredStrikeRider0`) — the same protective shape as Warlord's Advance/Withering Touch — so
+it has neither side effect.
 
 ## 170. [ ] Vital Diagnosis's Diagnosed card still tells the table "+Tier vital" right after the engine says "+3" — item 108 moved the bonus to the Blue rank but left the rule's printed note, and two sibling rule texts, on "tier" (DATA, REBUILD deity + ⟳ Sync Talents; one ENGINE-ONLY hint string) (2026-09-15)
 
