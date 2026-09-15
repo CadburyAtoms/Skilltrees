@@ -19,10 +19,13 @@
  *
  * Idempotent: re-running repairs drift instead of duplicating; nothing outside the
  * "Edha Bench" folders is ever touched, and the only deletions are embedded items on bench
- * actors. ⚠️ PLAYER CHARACTERS "Tem parinaem" and "Soggy Bottom" may be REFRESHED (their own
- * sheet's ⟳ Sync Talents button — never through this script), never EDITED (PM-R17). This
- * script performs only edits against the bench roster, so it still throws before ever
- * writing to those two documents (Ben's ruling 07-26; the PROTECTED guard below is unchanged).
+ * actors. ⚠️ PLAYER CHARACTERS "Tem parinaem", "Soggy Bottom" and "Ishee" may be REFRESHED
+ * (their own sheet's ⟳ Sync Talents button — never through this script), never EDITED (PM-R17).
+ * This script performs only edits against the bench roster, so it still throws before ever
+ * writing to those three documents (Ben's ruling 07-26; PROTECTED below is the fixed name list,
+ * widened at runtime by `benchProtectedFolderIds`/`benchProtectedNames` to every actor currently
+ * in the players' "Edha PCs" folder — item 165, 2026-09-15 — so a future rename can't reopen the
+ * gap the way the stale placeholder name did for Ishee).
  *
  * NOTES
  * - PCs are level 7 (the playtest norm the checklist's expected values were written against).
@@ -124,6 +127,71 @@ function benchArenaPlan(scenes, specOpts) {
   return { action: "create", spec: benchArenaSpec(specOpts) };
 }
 
+/* PLAYER_FOLDER_NAME — the players' own Actor folder ("Edha PCs", created by the character-
+ * creation wizard: module-src/scripts/engine/24-the-character-creation-wizard.js). Item 165
+ * (2026-09-15): no folder id is checked into the repo anywhere (ids are per-world and
+ * Foundry-generated, so nothing here could pin one) — the id is resolved at RUNTIME from this
+ * name via `benchProtectedFolderIds` below, every run, the same way `ensureFolder` already
+ * resolves "Edha Bench" by name. Shared between the pure helpers and the console block so the two
+ * can't name it differently.
+ */
+const PLAYER_FOLDER_NAME = "Edha PCs";
+
+/* PROTECTED — the players' own actors, by name. Matched lowercased, so a rename in Foundry
+ * un-protects a stale entry here UNLESS the renamed actor is still sitting in PLAYER_FOLDER_NAME —
+ * which is exactly what `benchProtectedFolderIds` / `benchProtectedNames` below are for: the
+ * console block merges this fixed list with the live name of every actor CURRENTLY inside that
+ * folder (including subfolders) before any write, so the gap the placeholder name "Temp Name
+ * Hannah Character" → "Ishee" opened (bench run 48, TODO item 165) cannot reopen on the next
+ * rename. Keep the placeholder here too — a rename BACK to it must not unguard her either.
+ * PM-R17 covers all three players' actors alike: refresh via the sheet's own ⟳ Sync Talents
+ * button, never edited by this script.
+ */
+const PROTECTED = ["tem parinaem", "soggy bottom", "temp name hannah character", "ishee"];
+
+/* benchProtectedFolderIds — PURE. Resolves `rootFolderName` against the world's current Actor
+ * folders and returns its id plus every descendant subfolder's id, transitively, so nesting a new
+ * folder under the players' folder protects it too without a code change. `folders`: array of
+ * {id, name, folder} — `folder` is that folder's OWN parent folder id, or null/undefined at the
+ * top level (the same shape `ensureFolder` above already reads off `game.folders`). Returns []
+ * when no folder named `rootFolderName` exists (a fresh world, or a fixture that omits it) —
+ * callers must treat that as "nothing extra to protect this run", not an error.
+ */
+function benchProtectedFolderIds(folders, rootFolderName) {
+  const all = folders || [];
+  const root = all.find((f) => f.name === rootFolderName);
+  if (!root) return [];
+  const ids = new Set([root.id]);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const f of all) {
+      const parent = f.folder ?? null;
+      if (parent != null && ids.has(parent) && !ids.has(f.id)) { ids.add(f.id); grew = true; }
+    }
+  }
+  return [...ids];
+}
+
+/* benchProtectedNames — PURE. The complete protected-name set the script must never write
+ * through: the fixed `fixedNames` list unioned with the lowercased name of every actor CURRENTLY
+ * sitting in one of `folderIds` (from `benchProtectedFolderIds` above). This is how a rename
+ * inside the players' folder stays covered without ever touching `PROTECTED` again: folder
+ * membership is read fresh every run, by id, never by the name that happened to be current last
+ * time. `actors`: array of {name, folder} — `folder` is that actor's OWN folder id, or
+ * null/undefined. Returns a lowercased Set — every call site either does `.has()` on it directly
+ * or spreads it into an array for a helper (like `benchOrphanPlan`) that still wants one.
+ */
+function benchProtectedNames(fixedNames, actors, folderIds) {
+  const names = new Set((fixedNames || []).map((n) => String(n).toLowerCase()));
+  const idSet = new Set(folderIds || []);
+  for (const a of actors || []) {
+    const fid = a && (a.folder ?? null);
+    if (fid != null && idSet.has(fid)) names.add(String(a.name).toLowerCase());
+  }
+  return names;
+}
+
 if (typeof game !== "undefined") (async () => {
   const PLACE_TOKENS = false;      // view the scene first, then set true with a clear ORIGIN
   const ORIGIN = { x: 200, y: 200 }; // top-left pixel of a clear area on the Playtest Map
@@ -133,17 +201,28 @@ if (typeof game !== "undefined") (async () => {
                                     // standing "Bench Arena" scene instead of using the Playtest
                                     // Map — flip this deliberately for an arena run, don't leave
                                     // it on by accident (the Playtest Map stays the default).
-  // Player characters — never write to these (PM-R17). Matched lowercased against the actor
-  // name, so a RENAME in Foundry silently un-protects one: if a player renames their actor
-  // (Hannah's is still a placeholder), this list has to follow. Confirmed as all three players'
-  // own actors by Ben, 2026-09-09.
-  const PROTECTED = ["tem parinaem", "soggy bottom", "temp name hannah character"];
   if (game.world.id !== "edha") return console.error("BENCH SETUP: wrong world:", game.world.id);
   if (!game.user.isGM) return console.error("BENCH SETUP: needs a GM user.");
-  const assertNotProtected = (name) => {
-    if (PROTECTED.includes(name.toLowerCase())) throw new Error(`BENCH SETUP: refusing to touch player character "${name}"`);
-  };
   const log = [];
+
+  // Player characters — never write to these (PM-R17). PROTECTED (module scope, above) is the
+  // fixed name list; PROTECTED_NAMES also folds in every actor CURRENTLY sitting in
+  // PLAYER_FOLDER_NAME (including subfolders), by id, so a rename inside that folder can't reopen
+  // the gap the stale placeholder name did for Ishee (item 165, 2026-09-15). Every write path
+  // below checks PROTECTED_NAMES, never the bare PROTECTED list.
+  const protectedFolderIds = benchProtectedFolderIds(
+    game.folders.filter(f => f.type === "Actor").map(f => ({ id: f.id, name: f.name, folder: f.folder?.id ?? f.folder ?? null })),
+    PLAYER_FOLDER_NAME,
+  );
+  if (!protectedFolderIds.length) log.push(`⚠ player folder "${PLAYER_FOLDER_NAME}" not found this run — folder-based protection inactive, the fixed PROTECTED name list still applies`);
+  const PROTECTED_NAMES = benchProtectedNames(
+    PROTECTED,
+    game.actors.map(a => ({ name: a.name, folder: a.folder?.id ?? null })),
+    protectedFolderIds,
+  );
+  const assertNotProtected = (name) => {
+    if (PROTECTED_NAMES.has(String(name).toLowerCase())) throw new Error(`BENCH SETUP: refusing to touch player character "${name}"`);
+  };
 
   // ---- folders ---------------------------------------------------------------------------
   const ensureFolder = async (name, type, parent = null) => {
@@ -377,7 +456,7 @@ if (typeof game !== "undefined") (async () => {
     const rosterByName = new Map(ROSTER_NAMES.map(nm => [nm, game.actors.find(z => z.name === nm && inBench(z)) || null]));
     const resolveActor = (id) => game.actors.get(id) || null;
     const tokenSnapshots = scene.tokens.map(t => ({ id: t.id, name: t.name, actorId: t.actorId, x: t.x, y: t.y }));
-    const plan = benchOrphanPlan(tokenSnapshots, resolveActor, rosterByName, PROTECTED);
+    const plan = benchOrphanPlan(tokenSnapshots, resolveActor, rosterByName, [...PROTECTED_NAMES]);
     for (const name of plan.skipped) log.push(`⚠ orphan token "${name}" is a protected player character — left untouched`);
     for (const r of plan.repair) {
       log.push(`⚠ orphan token "${r.name}" — repairing (re-pointing actorId at the roster actor)`);
@@ -430,4 +509,7 @@ if (typeof game !== "undefined") (async () => {
   console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets. Scene: "${scene?.name ?? "NONE"}" (view it, never activate/deactivate). orphans: ${orphansRepaired} repaired, ${orphansReplaced} replaced.`);
 })();
 
-if (typeof module !== "undefined") module.exports = { benchOrphanPlan, benchArenaSpec, benchArenaPlan, BENCH_ARENA_NAME };
+if (typeof module !== "undefined") module.exports = {
+  benchOrphanPlan, benchArenaSpec, benchArenaPlan, BENCH_ARENA_NAME,
+  benchProtectedFolderIds, benchProtectedNames, PROTECTED, PLAYER_FOLDER_NAME,
+};

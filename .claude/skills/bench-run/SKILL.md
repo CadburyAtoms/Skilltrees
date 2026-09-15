@@ -12,10 +12,12 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
 
 ## Hard rules (before anything else)
 
-1. **Player characters "Tem parinaem" and "Soggy Bottom" may be REFRESHED, never EDITED
-   (PM-R17).** Ben, chat 2026-09-07 21:51 ET, verbatim: *"I'm rewriting the previous rule
+1. **Player characters "Tem parinaem", "Soggy Bottom", and "Ishee" may be REFRESHED, never
+   EDITED (PM-R17).** Ben, chat 2026-09-07 21:51 ET, verbatim: *"I'm rewriting the previous rule
    regarding Tem parinaem and Soggy Bottom — they get refreshes from you and agents but no
-   edits to stats, items, or text."* A REFRESH — the sheet's `⟳ Sync Talents` button, or an
+   edits to stats, items, or text."* PM-R17 covers all three players' own actors alike (item 165,
+   2026-09-15 — Hannah's was still the placeholder "Temp Name Hannah Character" when the rule was
+   written; her actor is now named Ishee). A REFRESH — the sheet's `⟳ Sync Talents` button, or an
    equivalent pull of their owned talent copies from the pack — is allowed for the PM and for
    agents. An EDIT — any hand write to their stats, items, or text, or any effect aimed at
    writing to them — is still forbidden. Their tokens are governed by hard rule 4 (the PM-R13
@@ -29,10 +31,10 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    still imported fresh from the pack into the bench folder. The zero-combatant combat
    `BerbNeuXp4iKduef` may be deleted by the next run — record it in the run's world diff as
    authorised. Bench-created combats/walls/measured-templates are still yours to clean up and MUST
-   be cleaned up when they are NOT part of the licensed scene cleanup above. The two PC actor
-   **documents** (Tem parinaem, Soggy Bottom, hard rule 1) stay refresh-only under **PM-R17** —
-   only their **tokens on the Playtest Map scene** fall under this new licence, never a hand
-   edit to the actor documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep
+   be cleaned up when they are NOT part of the licensed scene cleanup above. The three PC actor
+   **documents** (Tem parinaem, Soggy Bottom, Ishee, hard rule 1) stay refresh-only under
+   **PM-R17** — only their **tokens on the Playtest Map scene** fall under this new licence, never
+   a hand edit to the actor documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep
    rosters to the actors under test — do not widen a roster beyond what the run's checklist
    section needs.
 

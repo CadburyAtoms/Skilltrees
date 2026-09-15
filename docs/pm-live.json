@@ -1,11 +1,25 @@
 {
   "pm": {
-    "status": "stopped",
-    "note": "Your three phone notes (09:20–09:23) are recorded: R-127 = (a) — immunity is a pre-cost gate (item 149's second half, Opus, tonight); the Decree of Ruin card text is approved as proposed (item 106 fully unblocked); the adversary item (82) is parked until the bestiary session and stops asking. Everything merged overnight is at the table — click ⟳ Sync Talents ONCE on each of your three PCs. The session stays stopped in your hours; the next PM is the one you start by hand (Mon 21:00 at the earliest), bench 48 first.",
-    "waitingOn": "ONE ⟳ Sync Talents click on each of your three PCs · twelve merged remote branches to delete (the PM's batch delete was refused) · the two YOUR-CALL branches",
+    "status": "awake",
+    "note": "PM of record since 11:49 ET (Ben, chat). Item 165 is merged as #392: the roster script protects Ishee by name and protects everything in the Edha PCs folder. Bench run 49a (the 15 engine rows) is running. After it: bench run 49b (the 22 adversary rows, removing your started combat, and a scoped sync of the Palewater Ford adversaries), then fix pass 13. The 16 merged remote branches are deleted. No Fable agents today.",
+    "waitingOn": "Ben (no rush): keep or delete the two unmerged July branches; have the Session 1 GM script republish session commit its edits",
     "nextWakeAt": null,
-    "session": "2026-09-13 21:58 → 2026-09-14 02:55 ET (hand-started; stopped before Ben's hours; 09:25 answers recorded from chat)"
+    "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-49a",
+      "title": "Bench run 49a: the 15 engine and talent rows (111-2, 123-1, SYNC-1, INC-1, IMM-1, KM-2/3, OM-3/4/5, PW-2, GATE-1/2/3, FP-1)",
+      "model": "opus",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/bench-49a",
+      "startedAt": "2026-09-15T16:14:00Z",
+      "agent": "Bench run 49a (engine rows)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; Ishee protected in the run's copy of the roster script until #392 is on main"
+    }
+  ],
   "usage": null
 }
