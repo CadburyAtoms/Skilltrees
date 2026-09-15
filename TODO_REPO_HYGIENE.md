@@ -4073,7 +4073,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **What to do:** `bench-run` drives the three rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md` § "Bestiary yardstick fights" (YARD-1 Rootling Swarm ×3, YARD-2 Mistheron ×2, YARD-3 Briar-Gone Grove) against copies of the three PCs on a licensed scene, numbers as on the cards, grazes charged, world restored; records each on `.claude/skills/bestiary-forge/TURN_LEDGER.md`'s shape into `docs/analysis/bestiary/YARDSTICK-<date>.md`; anything structural goes to `test-pass-fixes` as a report.
 
-**Done when:** three ledgers committed; the share of Actions a sheet fills, damage in/out per round over the party HP pool, and enemies per round are stated per fight; R-134's ask carries the measured numbers beside its defaults.
+**Done when:** three ledgers committed; the share of Actions a sheet fills, damage in/out per round over the party HP pool, and enemies per round are stated per fight; R-134's ask carries the measured numbers beside its defaults. — **DONE 2026-09-14 (bench run 48):** the three fights are in `docs/analysis/bestiary/YARDSTICK-2026-09-14.md` on the ledger shape (per-round damage in/out over the pools, every PC Action coded T/D/N, enemies per round, the set read against R-134's targets); R-134's measured numbers sit in the standard's §3 beside its defaults; four structural defects filed as items 161–164; one ruling, R-136.
 
 **PM:** lane B · model opus (`bench-run`) · size M · deps a live Foundry with the current packs; no ruling.
 
@@ -4084,6 +4084,8 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **What to do:** per nation — `bestiary-forge` Phases 1–6: census before, blocks in full to Ben, census diff after, one 🤖 row per changed block, the yardstick ledger consulted for the retune. Start with Corvaine + the Riverlands (session 1's blocks), then Thalendor (session 2's grove), then Malcurr.
 
 **Done when:** every bestiary folder has had its pass; the census's §4 shows no `(d)` senses on a creature that should see, every rule's description carries its cue-or-effect label, and the bands sit inside R-134's targets or say why not.
+
+**Progress — 2026-09-14, Corvaine + the Riverlands DONE (PR #388), Ben's yes at the statblock gate ("Yes on all six numbers and the Line-Warden concept, commit it"):** Corvaine Raider / Line-Caller HP 10, Deflect 1, 1d6+1; Roek HP 24; Mistheron's beak 1d6+2; Tollbird Flock and Surecat unchanged in number; all six state `attributes` with every old skill total carried by an attribute and Investiture stated; twenty-four rule descriptions labelled (twelve cues, twelve effects, zero conversions — every cue names a table decision); the census reads a stated AWA; the Corvaine Well-Warden landed (item 158's Corvaine slot). Next nation: **Thalendor** (session 2's grove — the Rootling Swarm and the Briar-Gone Grove carry YARD-1 / YARD-3 evidence: a rootling took 2–3 Actions to drop, the grove's terrain and its own Thorn Field are items 162 / 164), then Malcurr.
 
 **PM:** lane H · model opus per nation (sonnet for a mechanical-only nation) · size L · deps R-128, R-129, R-134, R-135 — all answered (a) 2026-09-14; item 155's ledgers first (R-135 (a)).
 
@@ -4104,6 +4106,8 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **What to do:** per R-131's answer — concepts from canon §5b's named factions at the lore gate, kits of as-written talents (`python scripts/validate-build.py --adversaries` for the cost print), blocks through the statblock gate, one per nation pass if (a).
 
 **Done when:** the humans Ben approved are in their nations' folders with 🤖 rows; the census's "tree talents on blocks" line reflects them.
+
+**Progress — 2026-09-14, Corvaine's slot filled (PR #388, canon ruling 165):** the **Corvaine Well-Warden** (rival, Black — the riverlands' ground colour and a tree the party lacks; kit Dread Presence / Hollow Command / Coercive Pressure as written) approved at the lore gate and statted at the statblock gate in one yes; row 156-7; the census reads 8 talents on 3 blocks. Thalendor's and Malcurr's humans ride their nation passes.
 
 **PM:** lane H · model opus · size L · deps R-131 answered (a) 2026-09-14; rides item 156's nation passes, lore gate first.
 
@@ -4126,3 +4130,53 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 **Done when:** DONE — gates 14/14 with `--ci`. The values are item 156's per-nation work (R-135 (a)), never a bulk batch.
 
 **PM:** lane B · model — (done by the close-out session) · size S.
+
+## 161. [ ] Dead adversaries keep whispering their enemy-turn-start cues — `edhaTurnCueSweep` never checks that the cue's owner is alive (ENGINE-ONLY, F5)
+
+**Why:** bench run 48 (YARD-1): Rootling Swarm (2) dropped to 0 (system status `dead`) in round 1 and still posted "⏰ Territorial Instinct … (Bench Copy — Ishee's turn starts in range.)" at round 2's first hostile turn start, beside the two living rootlings; its Disoriented expiry also announced at its next turn change. Root cause read in source: `module-src/scripts/engine/07-edha-owner-list.js` `edhaTurnCueSweep` (the enemy-turn-start loop over `canvas.tokens.placeables`) filters on hostility and `edhaStillFightingElsewhere` only — no `hp <= 0` / `dead` / `combatant.defeated` check.
+
+**What to do:** skip owners at 0 HP or carrying `dead` (and a combatant marked `defeated`) in the enemy-turn-start loop and the turn-end / regen branch, through one pure eligibility helper pinned in `tests/` (dead owner → no cue; living owner → cue; removing the check fails the test by mutation). Check whether `edhaGmCueDamageSweep`'s hp-below path needs the same gate.
+
+**Done when:** a dead rootling posts nothing at a hostile's turn start; gates green; ENGINE_INDEX §"GM cue cards" carries one sentence.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48, `docs/analysis/bestiary/YARDSTICK-2026-09-14.md`.
+
+## 162. [ ] Green terrain's Thorn Field hazard damages its own creator — the region behaviour is built without `exemptActorUuid` (ENGINE-ONLY, F5)
+
+**Why:** bench run 48 (YARD-3): the Briar-Gone Grove's Draw Mana square landed under its own 2×2 token and the card read "Briar-Gone Grove takes 1 keen from dangerous terrain (Thorn Field — Briar-Gone Grove)"; at its next turn start it took 3 keen from the same square. The `edha-content.hazard` behaviour has an `exemptActorUuid` field that `_handleRegionEvent` honours (`53-native-event-system.js`, R-6) and Destruction's placer passes it (`40-destruction.js` `edhaPlaceHazardRegionGM`) — `50-green-territory.js` builds the Thorn Field behaviour with `{damageFormula, damageType, sourceName}` only. The card says "any character entering or starting their turn inside it"; the grove is not a character and the briar is its own body.
+
+**What to do:** pass `exemptActorUuid: owner.uuid` where `50-green-territory.js` builds the hazard behaviour (and the Green branch of the burst path in `39-burst-execution-the-gm-socket-relay.js` if it does not already take that route); pin it (owner inside its own zone → no tick; a hostile inside → tick). Decide in the same change whether the hazard should skip DOWNED characters — bench run 48 saw two PCs at 0 HP "take" 2 and 1 keen from Sudden Growth's detonation — a ruling if Ben wants it, otherwise leave.
+
+**Done when:** a grove starting its turn in its own briar takes nothing; gates green; the ENGINE_INDEX line on Green terrain notes the exemption.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
+
+## 163. [ ] Pack Hunter's banked advantage has no target gate, counts a downed ally, and missed an ally beside a Large token (ENGINE-ONLY, F5)
+
+**Why:** bench run 48. (a) The card says "2 hunter(s) gain advantage on their next attack against Rootling Swarm (2)"; the flag it writes is `advAttackNext` (`52-green-instinct.js`), consumed by the next attack roll against ANY target — Ishee's banked advantage vs the dead root2 rolled 2d20kh on her Staff vs root1. The talent text says "against it". (b) With Soggy at 0 HP adjacent to root3, Pack Hunter counted "2 hunter(s)". (c) With Ishee adjacent to the grove's 2×2 token (centre gap 7.5 ft) it counted "1 hunter(s)" — the ally-adjacency read fails against a Large token (the medium-token case counted 2). Handler: `edha-adv-attack` `pack` mode in `53-native-event-system.js`.
+
+**What to do:** stamp the target token's uuid on `advAttackNext` and have `edhaAdvAttackPreRoll` honour it (consume only when the roll's user target matches; keep the targetless form for rules that bank a plain advantage); exclude allies at 0 HP from the pack count; read ally adjacency through the edge-aware helper the ally-drops cue uses (R-52 slack against the token EDGE, not the centre) so a Large target counts adjacent mediums. Pin all three.
+
+**Done when:** the three cases above behave as the card says; gates green; ENGINE_INDEX's `advAttackNext` line names the gate.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
+
+## 164. [ ] The Green 10 ft terrain square lands one cell off the click (ENGINE-ONLY, F5; verify the snap rule before fixing)
+
+**Why:** bench run 48 (YARD-3): the Draw Mana prompt "Click where the 10 ft difficult-terrain square grows" was answered with a real mouse click at world (1348, 1100) — the grid vertex between two PC tokens — and the region landed at rect (1400, 1100) 200×200, cells 14–15 × 11–12: one cell right and half a cell down of the click, under no PC. `edhaSnapCellRect(scene, cx, cy, 2)` (`50-green-territory.js`) anchors an even-sized square from a point the picker snapped to a cell CENTER (`edhaPickPoint`, `GRID_SNAPPING_MODES.CENTER`); a 2-cell square cannot be centred on a cell centre and the vertex case chose the wrong corner. Sudden Growth's burst from a click at (1348, 1000) landed at (1300, 1100) — also not centred. PLAUSIBLE: two observations, no headless proof yet.
+
+**What to do:** read `edhaSnapCellRect` and the picker's snap mode; decide the rule (an even square centred on the nearest VERTEX, an odd square on the nearest cell centre), pin it headless (a click at a vertex covers the four cells around it), and re-drive the placement once on the bench. The feel of template placement stays Ben's (⚑); the cell arithmetic is not.
+
+**Done when:** a click between two adjacent tokens covers both; gates green.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
+
+## 165. [ ] The bench roster script's PROTECTED list does not name Ishee — Hannah's actor is guarded by a placeholder name that no longer exists (TOOLING, no deploy)
+
+**Why:** `scripts/bench-setup-console.js` refuses writes to `["tem parinaem", "soggy bottom", "temp name hannah character"]`, the names the campaign state doc used when the guard was written. In the world on 2026-09-14 the third player's actor is named **`Ishee`** (`Edha PCs` folder, Envoy · Blue · Chaos, level 1); the placeholder name resolves to nothing. Bench run 48 found it while copying the three PCs for the yardstick fights — the copies were made by hand, so nothing was touched, but any roster or orphan-repair pass that trusts the list would not treat Ishee as protected (PM-R17 covers her like the other two: refresh only, never edit).
+
+**What to do:** add `"ishee"` to `PROTECTED` (keep the placeholder too — a rename back must not unguard her), and make the guard also protect every actor in the `Edha PCs` folder by folder id so the next rename cannot reopen the gap; pin the folder rule in `tests/bench-setup-console.test.js` if that harness exists, else in the script's own pure helper. Update `EDHA_CAMPAIGN_STATE.md` §1's PC-1 heading only if Ben confirms "Ishee" is the settled name (it is marked ⚑ placeholder there).
+
+**Done when:** `bench-setup-console.js` throws on any write aimed at Ishee by name or by folder; gates green.
+
+**PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.

@@ -212,6 +212,13 @@ a fence-gap in Corvaine hedge-country — not stalking, WAITING — while in the
 flat-out toward exactly that gap. The horror is the certainty. *Token:* the seated silhouette,
 tail wrapped, eyes forward.
 
+### Corvaine Well-Warden — `corvaine-well-warden-portrait.*` / `corvaine-well-warden-token.*`
+Warden Idony Kell at the painted line (ruling 165, R-131): a lean middle-aged woman on the clean
+side of a rim, rope and bucket all painted hospice yellow, pouring from a long-handled ladle into
+a yellow vessel held up from the far side — hand never meeting hand. Behind her, a queue; behind
+the queue, a street. Nothing in her face is cruel; the hooked haul-pole leans on the well beside
+her. *Token:* top-down, the ladle extended over a painted line that runs across the frame.
+
 ### Brandram — `brandram-portrait.*` / `brandram-token.*`
 The Tempered arriving (ruling 112): a forge-dark hill-ram at full charge down a fell-side
 causeway, snow flashing to steam in its wake, heat-shimmer off the fleece, a lamplit ice-road

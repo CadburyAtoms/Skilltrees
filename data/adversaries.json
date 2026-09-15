@@ -679,18 +679,26 @@
     "tier": 1,
     "folder": "Session 1 — Palewater Ford",
     "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
+    "attributes": {
+      "str": 2,
+      "spd": 1,
+      "int": 1,
+      "wil": 1,
+      "awa": 1,
+      "pre": 0
+    },
     "defenses": {
       "phy": 12,
       "cog": 11,
       "spi": 11
     },
-    "deflect": 2,
-    "hp": 12,
+    "deflect": 1,
+    "hp": 10,
     "foc": 1,
     "inv": 0,
     "movement": 25,
     "count": 2,
-    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
+    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / 1d6+1), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 / 1d6+2 back.</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
@@ -698,7 +706,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -708,7 +716,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -724,7 +732,7 @@
               "atFraction": 0.5,
               "note": "Reaction — below half HP: the Raider may immediately Disengage and flee. These are not fanatics."
             },
-            "description": "GM cue at half HP."
+            "description": "cue — table call: the Raider decides to Disengage and flee. GM cue at half HP."
           },
           {
             "event": "edha-apply-watch",
@@ -733,7 +741,7 @@
               "trigger": "ally-drops",
               "note": "Reaction — an ally dropped: the Raider may immediately Disengage and flee."
             },
-            "description": "GM cue when an ally drops."
+            "description": "cue — table call: the Raider decides to Disengage and flee. GM cue when an ally drops."
           }
         ]
       }
@@ -749,13 +757,21 @@
     "leylines": [
       "white"
     ],
+    "attributes": {
+      "str": 1,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 1
+    },
     "defenses": {
       "phy": 12,
       "cog": 11,
       "spi": 11
     },
-    "deflect": 2,
-    "hp": 12,
+    "deflect": 1,
+    "hp": 10,
     "foc": 1,
     "inv": 2,
     "movement": 25,
@@ -764,7 +780,7 @@
       "White/Guiding Signal",
       "White/Ordered Advance"
     ],
-    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p>",
+    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
@@ -772,7 +788,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -782,7 +798,7 @@
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6+1",
         "damageType": "keen"
       },
       {
@@ -798,7 +814,7 @@
               "atFraction": 0.5,
               "note": "Reaction — below half HP: the Line-Caller may immediately Disengage and flee. These are not fanatics."
             },
-            "description": "GM cue at half HP."
+            "description": "cue — table call: the Line-Caller decides to Disengage and flee. GM cue at half HP."
           },
           {
             "event": "edha-apply-watch",
@@ -807,7 +823,7 @@
               "trigger": "ally-drops",
               "note": "Reaction — an ally dropped: the Line-Caller may immediately Disengage and flee."
             },
-            "description": "GM cue when an ally drops."
+            "description": "cue — table call: the Line-Caller decides to Disengage and flee. GM cue when an ally drops."
           }
         ]
       },
@@ -824,7 +840,7 @@
               "atFraction": 0,
               "note": "The Line-Caller is down — the volleys stop: Raiders act individually and Break triggers one round earlier. (Fleeing triggers this too — GM-called.)"
             },
-            "description": "GM cue when the Line-Caller drops."
+            "description": "cue — table call: the GM runs the Raiders individually from here and brings their Break forward a round. GM cue when the Line-Caller drops."
           }
         ]
       }
@@ -840,9 +856,13 @@
     "leylines": [
       "white"
     ],
-    "skills": {
-      "ath": 2,
-      "dis": 2
+    "attributes": {
+      "str": 2,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
     },
     "defenses": {
       "phy": 13,
@@ -850,11 +870,12 @@
       "spi": 12
     },
     "deflect": 2,
-    "hp": 28,
+    "hp": 24,
     "foc": 3,
+    "inv": 2,
     "movement": 25,
     "count": 1,
-    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
+    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 12) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p>",
     "items": [
       {
         "name": "Issued Blade",
@@ -882,7 +903,7 @@
               "trigger": "on-hit",
               "note": "One allied Raider may immediately make a crossbow shot as a Reaction."
             },
-            "description": "GM cue on Press the Line's own hit."
+            "description": "cue — table call: which allied Raider takes the reaction shot, and whether it does. GM cue on Press the Line's own hit."
           }
         ]
       },
@@ -900,7 +921,7 @@
               "rangeFt": 20,
               "note": "Reaction, 1 Focus — Roek may shove them behind cover instead: the drop is prevented and they have disadvantage-to-be-hit until his next turn (GM: roll the drop back if he reacts)."
             },
-            "description": "GM cue when an ally within 20 ft drops."
+            "description": "cue — table call: Roek spends 1 Focus and the GM rolls the drop back. GM cue when an ally within 20 ft drops."
           }
         ]
       },
@@ -922,7 +943,7 @@
               "atFraction": 0.34,
               "note": "Below 1/3 HP — Roek calls the break himself: 'Enough. We're done. Take your grain.' (He also stops for any surrender or fair split.)"
             },
-            "description": "GM morale cue at 1/3 HP."
+            "description": "cue — table call: Roek calls the break, or accepts a surrender or a fair split. GM morale cue at 1/3 HP."
           }
         ]
       }
@@ -938,8 +959,13 @@
     "leylines": [
       "blue"
     ],
-    "skills": {
-      "stl": 2
+    "attributes": {
+      "str": 2,
+      "spd": 2,
+      "int": 0,
+      "wil": 1,
+      "awa": 3,
+      "pre": 1
     },
     "defenses": {
       "phy": 12,
@@ -949,14 +975,15 @@
     "deflect": 1,
     "hp": 20,
     "foc": 2,
+    "inv": 2,
     "movement": 30,
     "count": 2,
-    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
+    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p>",
     "items": [
       {
         "name": "The Seeming",
         "cost": "1 Action",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>",
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p><p><em>A test or talent aimed at the seeming resolves against it (defenses 0) and affects only the seeming — the fooled act on the wrong body (R-136 (a), 2026-09-14).</em></p>",
         "events": [
           {
             "event": "use",
@@ -970,7 +997,7 @@
               "beliefSkill": "prc",
               "note": "its image stands a pace from its body — 1 health, any hit breaks it. Every enemy who can see it tests Perception against its Cognitive defense."
             },
-            "description": "2bAA — the ruling-40 adaptation on its OWN document. It used to be a name-keyed case in the Blue tree's useItem switch, which that conversion deletes; keying it on the rule keeps its only wiring where the ability lives. copyOf self = targeting is ignored. The label the copy stamps is this item's own name, which is what Spearing Beak's whenTargetFooled rider reads back."
+            "description": "effect — decision-free (the copy is summoned and every onlooker's belief is engine-rolled). 2bAA — the ruling-40 adaptation on its OWN document. It used to be a name-keyed case in the Blue tree's useItem switch, which that conversion deletes; keying it on the rule keeps its only wiring where the ability lives. copyOf self = targeting is ignored. The label the copy stamps is this item's own name, which is what Spearing Beak's whenTargetFooled rider reads back."
           }
         ]
       },
@@ -981,7 +1008,7 @@
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 10 ft.",
-        "damage": "1d8+2",
+        "damage": "1d6+2",
         "damageType": "keen",
         "rider": "+1d6 against a character who is taken in by the seeming.",
         "events": [
@@ -993,7 +1020,7 @@
               "bonusFormula": "1d6",
               "whenTargetFooled": true
             },
-            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming."
+            "description": "effect — decision-free (the +1d6 reads the belief ledger). +1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming."
           }
         ]
       },
@@ -1018,7 +1045,7 @@
               "trigger": "damaged",
               "note": "Reaction, 1 Focus — the bird may move 10 ft without provoking, into fog if possible; once unseen it may raise The Seeming again."
             },
-            "description": "GM cue when the Mistheron takes damage."
+            "description": "cue — table call: the bird spends 1 Focus and moves 10 ft into fog. GM cue when the Mistheron takes damage."
           },
           {
             "event": "edha-apply-watch",
@@ -1027,7 +1054,7 @@
               "trigger": "seeming-break",
               "note": "Reaction, 1 Focus — its seeming broke; it may move 10 ft without provoking, into fog if possible, then raise The Seeming again once unseen."
             },
-            "description": "GM cue when its seeming breaks."
+            "description": "cue — table call: the bird spends 1 Focus and moves 10 ft into fog, then raises The Seeming once unseen. GM cue when its seeming breaks."
           }
         ]
       },
@@ -1044,7 +1071,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — it breaks off into the fog and does not return (its partner breaks too if also bloodied)."
             },
-            "description": "GM morale cue at half HP."
+            "description": "cue — table call: it breaks off into the fog and the GM moves the token. GM morale cue at half HP."
           }
         ]
       }
@@ -3428,8 +3455,13 @@
     "leylines": [
       "black"
     ],
-    "skills": {
-      "prc": 3
+    "attributes": {
+      "str": 0,
+      "spd": 2,
+      "int": 0,
+      "wil": 1,
+      "awa": 3,
+      "pre": 0
     },
     "defenses": {
       "phy": 10,
@@ -3439,9 +3471,10 @@
     "deflect": 0,
     "hp": 14,
     "foc": 2,
+    "inv": 2,
     "movement": 50,
     "count": 1,
-    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p>",
+    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p>",
     "items": [
       {
         "name": "The Tolling Gone Wrong",
@@ -3469,7 +3502,7 @@
               "once": "round-per-target",
               "chain": false
             },
-            "description": "The tree talent's focus-change watch, verbatim (enemy, Black Attunement Range at role rank, once per round per enemy). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+            "description": "effect — decision-free (the focus-change watch). The tree talent's focus-change watch, verbatim (enemy, Black Attunement Range at role rank, once per round per enemy). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
           },
           {
             "event": "edha-test-success",
@@ -3479,7 +3512,7 @@
               "target": "victim",
               "formula": "1"
             },
-            "description": "The watch payload: the spender loses 1 more focus, exactly as the tree twin applies it."
+            "description": "effect — decision-free (the drain lands on the spender). The watch payload: the spender loses 1 more focus, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3502,7 +3535,7 @@
               "target": "victim",
               "radius": 0
             },
-            "description": "Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied)."
+            "description": "effect — decision-free (Weakened on an Isolated hit). Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied)."
           }
         ]
       },
@@ -3535,7 +3568,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — the flock breaks and re-settles on the rooflines, out of reach."
             },
-            "description": "Black/Isolation. Bloodied break-off cue."
+            "description": "cue — table call: the flock re-settles out of reach and the GM moves it. Black/Isolation. Bloodied break-off cue."
           }
         ]
       }
@@ -3551,9 +3584,13 @@
     "leylines": [
       "blue"
     ],
-    "skills": {
-      "prc": 4,
-      "stl": 3
+    "attributes": {
+      "str": 2,
+      "spd": 3,
+      "int": 0,
+      "wil": 1,
+      "awa": 4,
+      "pre": 0
     },
     "defenses": {
       "phy": 14,
@@ -3563,9 +3600,10 @@
     "deflect": 0,
     "hp": 26,
     "foc": 3,
+    "inv": 2,
     "movement": 45,
     "count": 1,
-    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p>",
+    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p>",
     "items": [
       {
         "name": "Forewarned",
@@ -3579,7 +3617,7 @@
               "trigger": "turn-end",
               "note": "Forewarned — silently declare one character + one action type for the coming round (GM note). If it happens: +1 Reaction, and Intercept may fire on it."
             },
-            "description": "Blue/Foresight. The declaration is GM bookkeeping — the turn-end cue is the prompt; Intercept resolves off the same note."
+            "description": "cue — table call: the GM declares one character and one action type for the coming round. Blue/Foresight. The declaration is GM bookkeeping — the turn-end cue is the prompt; Intercept resolves off the same note."
           }
         ]
       },
@@ -3596,7 +3634,7 @@
               "trigger": "turn-end",
               "note": "Intercept standing — if the declared character takes the declared action, 1 Focus imposes disadvantage on it."
             },
-            "description": "Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
+            "description": "cue — table call: the GM reads whether the declared character took the declared action. Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
           },
           {
             "event": "use",
@@ -3609,7 +3647,7 @@
               "relativeTo": "self",
               "once": "no"
             },
-            "description": "The tree talent's confirm-pick, adapted to her Focus cost (the tree twin charges Investiture). Rule-keyed 07-26: the deleted engine name-key left the use path dead."
+            "description": "effect — decision-free (the confirm's Focus is spent and the payload queued). The tree talent's confirm-pick, adapted to her Focus cost (the tree twin charges Investiture). Rule-keyed 07-26: the deleted engine name-key left the use path dead."
           },
           {
             "event": "edha-test-success",
@@ -3619,7 +3657,7 @@
               "mode": "disadvantage",
               "count": 1
             },
-            "description": "The confirm payload: the declared creature's next test runs at disadvantage, exactly as the tree twin applies it."
+            "description": "effect — decision-free (disadvantage on the declared creature's next test). The confirm payload: the declared creature's next test runs at disadvantage, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3644,7 +3682,7 @@
               "requireTarget": true,
               "note": "On a success, reduce the mover's remaining movement by 10 ft, or push it 10 ft in any direction (the GM positions the token)."
             },
-            "description": "Blue vs the mover's Athletics, engine-rolled for the foe. 07-24p: the PC talent it copies moved onto its own document, so this ability carries its own rule now instead of riding that talent's deleted engine branch."
+            "description": "effect — decision-free (engine-rolled Blue vs Athletics; the GM positions the token on a success). Blue vs the mover's Athletics, engine-rolled for the foe. 07-24p: the PC talent it copies moved onto its own document, so this ability carries its own rule now instead of riding that talent's deleted engine branch."
           }
         ]
       },
@@ -3665,7 +3703,7 @@
               "trigger": "on-hit",
               "note": "If the target took the Forewarned-declared action this round: add +1d4 keen — it was already there when they arrived."
             },
-            "description": "Blue/Foresight. The declared-action rider is a table read (GM holds the declaration) — cue is the floor."
+            "description": "cue — table call: did the target take the declared action this round — +1d4 keen if so. Blue/Foresight. The declared-action rider is a table read (GM holds the declaration) — cue is the floor."
           }
         ]
       },
@@ -3682,7 +3720,79 @@
               "atFraction": 0.5,
               "note": "Bloodied — it leaves. A predator of certainties does not gamble."
             },
-            "description": "Blue/Foresight. Bloodied break-off cue."
+            "description": "cue — table call: it leaves; and against a wasting-touched creature the whole foresight kit simply fails. Blue/Foresight. Bloodied break-off cue."
+          }
+        ]
+      }
+    ]
+  },
+  "Corvaine Well-Warden": {
+    "role": "rival",
+    "size": "medium",
+    "creatureType": "humanoid",
+    "tier": 1,
+    "folder": "Corvaine River-Plains Bestiary",
+    "img": "icons/environment/settlement/well-bucket-green.webp",
+    "leylines": [
+      "black"
+    ],
+    "attributes": {
+      "str": 1,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
+    },
+    "skills": {
+      "dec": 2
+    },
+    "defenses": {
+      "phy": 12,
+      "cog": 13,
+      "spi": 14
+    },
+    "hp": 22,
+    "foc": 3,
+    "inv": 3,
+    "movement": 25,
+    "count": 1,
+    "talents": [
+      "Black/Dread Presence",
+      "Black/Hollow Command",
+      "Black/Coercive Pressure"
+    ],
+    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p>",
+    "items": [
+      {
+        "name": "Warden's Hook-Pole",
+        "kind": "weapon",
+        "cost": "1 Action",
+        "attack": 4,
+        "range": "Reach 10 ft.",
+        "damage": "1d6+1",
+        "damageType": "impact",
+        "rider": "The hooked haul-pole every warden carries — it keeps you at the line's length, and it was never meant for this."
+      },
+      {
+        "name": "The Painted Line",
+        "kind": "trait",
+        "text": "<p>GM-run scene truth, no trigger: the yellow paint on the rim, the rope and the bucket is the line; nothing that crosses it comes back. She stands on the clean side with the ladle, and the queue forms at the paint, not at the well. A writ, a fair word or a hand across the line ends the scene without a roll; forcing the line starts the fight, and she fights it as a warden — to hold the paint, never to pursue.</p>"
+      },
+      {
+        "name": "The Well Comes First",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP) she falls back behind the line and calls the parish — the fight ends where the paint is; she does not chase. She never strikes a downed character, and she takes any surrender that keeps hands off the rope.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — she falls back behind the painted line and calls the parish; the fight ends at the paint, she does not pursue."
+            },
+            "description": "cue — table call: she withdraws behind the line and the GM moves the token. Black/Isolation morale cue (the Roek precedent)."
           }
         ]
       }

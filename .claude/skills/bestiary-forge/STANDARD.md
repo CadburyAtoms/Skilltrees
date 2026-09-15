@@ -102,6 +102,26 @@ The measured bands sit at or a little above these, so **the yardstick fights (it
 before any block is retuned — no retune ships on the arithmetic alone.** A new block states which
 row it was derived from in its concept proposal.
 
+**MEASURED — the first yardstick set (bench run 48, 2026-09-14; `docs/analysis/bestiary/YARDSTICK-2026-09-14.md`),
+read beside the targets above.** Copies of the actual PCs (HP 11 / 11 / 13, Deflect 0, pool 35),
+numbers as on the cards, grazes charged:
+
+| Role (fight) | Average landed hit | PC Actions to drop one | Damage in per round ÷ 35 | What decided it |
+|---|---|---|---|---|
+| minion — Rootling Swarm ×3 | 4.2 (card EV 4.5); grazes 2 | **2–3** (target one) | 14 % · 46 % | 12 HP + Deflect 1 behind Phy 11 is more chassis than a minion's card; the party's Actions, not its damage, is what the block taxes |
+| rival — Mistheron ×2 | 12 on fooled targets (EV 9.5 with the rider, 6.5 without); grazes 4–7 | bird 1 bloodied in two and withdrew; bird 2 not dropped in four | 31 % · 37 % · 31 % | the Seeming: the two fooled PCs could not target a real bird all fight; two PCs down by round 3 |
+| boss — Briar-Gone Grove | 6.5 (EV 8.5); grazes 10 and 9 | **11** (target six or more) | 37 % · 54 % · 0 % | reach 15 and a 1d10 graze: two grazes dropped an 11-HP PC from full before the third round |
+
+Across the set the sheet filled **15 % of all PC Actions** (21 % of a standing PC's) — 10 T, 37 D,
+21 N over 68 Actions, every N a downed PC's turn — and the enemies on the field per round were
+3/2/0, 2/1/1, 1/1/1 (R-106's input). **The system's graze is the BASE weapon die only** (the fooled-
+target rider die is excluded; `msg.rolls[1].options.graze`), so the graze floor on these cards is a
+d6 (minion), d8 (rival) or d10 (boss) per paid miss — a boss graze averages what a minion HIT does.
+Read against the targets: hit sizes sit on target for the minion and the boss; **Actions-to-drop is
+over target for the minion and on target for the boss; damage in per round is over the ¼ line in
+every round an adversary acted except the rootlings' first.** What the retune can touch is HP and
+Deflect on the minion chassis and the graze die on the boss weapons; what it cannot is the Seeming.
+
 **Read every damage number per Action, with the graze.** The ecosystem review's largest error was
 action semantics (a Slow turn is three Actions), and bench run 44's was forgetting that a graze
 costs the attacker 1 Focus per target — charged properly, most minion misses are misses. An

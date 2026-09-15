@@ -398,10 +398,12 @@ moment Roek calls it or the fight turns. The statted fight is the sharp end; the
 the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
 
 **Corvaine Raider** — minion, ×2 (see scaling). *humanoid, tier 1.*
-- **Defenses** phy 12 / cog 11 / spi 11. **deflect 2** *(the tell — see below)*. **HP** 12.
-  **foc** 1. **Move** 25 ft.
-- ▶ **Soldier's Crossbow** — attack +4, Range 60 ft., 1d6+2 **keen**.
-- ▶ **Shortsword** — attack +4, Reach 5 ft., 1d6+2 **keen**.
+- **Defenses** phy 12 / cog 11 / spi 11. **deflect 1** *(the too-new gear is still the tell — see
+  below; the stamped blade is the clue in hand)*. **HP** 10. **foc** 1. **Move** 25 ft. Senses 10 ft
+  (AWA 1). *(Retuned 2026-09-14, item 156: the squishy-party line below became the block's default
+  after bench runs 44 and 48 — deflect 2 / HP 12 / 1d6+2 is now the front-line-party variant.)*
+- ▶ **Soldier's Crossbow** — attack +4, Range 60 ft., 1d6+1 **keen**.
+- ▶ **Shortsword** — attack +4, Reach 5 ft., 1d6+1 **keen**.
 - ⟲ **Break** (Reaction, free): when a Raider is first reduced below half HP *or* an ally drops,
   it may immediately Disengage and flee. These are not fanatics.
 
@@ -421,7 +423,8 @@ Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
 - White-attuned **Corvaine ground-stock** (ruling 36) — the ecology confirmed in play.
 
 **Sergeant Halden Roek** — rival, tier 1. *humanoid.*
-- **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 28. **foc** 3. **Move** 25 ft.
+- **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 24 *(was 28; item 156, 2026-09-14 — he
+  calls the break at one third, so 16 is the fight's number)*. **foc** 3. **Move** 25 ft. Senses 10 ft.
 - ▶ **Issued Blade** — attack +5, Reach 5 ft., 1d8+2 **keen**.
 - ▶▶ **Press the Line** — attack +5, Reach 5 ft., 1d8+2 keen; on a hit, one ally Raider may make a
   crossbow shot as a Reaction. *(Costs 1 focus.)*
@@ -470,13 +473,13 @@ this crossing a dozen times and hates it more each time.
 
 - **Default:** Roek + 2 Raiders + 1 Line-Caller (ruling 39's shape: one invested minion at
   the sharp end).
-- ⚠️ **For THIS party, start from the softened numbers below, not these.** Two Scholars and an
-  Envoy, no dedicated fighter (state doc §1): take the squishy/support-heavy line — **Raider
-  deflect 1, HP 10**, and open with Ordered Advance rather than Signal. The fight still has to
-  bruise; it now has to bruise a party with no front line.
-- **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to
-  10, and have the Line-Caller lead with Ordered Advance instead of Signal (mobility reads
-  softer than advantage).
+- ⚠️ **For THIS party the block's printed numbers ARE the softened line** (item 156, 2026-09-14:
+  Raider deflect 1 / HP 10 / 1d6+1 became the default after bench runs 44 and 48). Two Scholars and
+  an Envoy, no dedicated fighter (state doc §1): run them as printed and open with Ordered Advance
+  rather than Signal. The fight still has to bruise; it now has to bruise a party with no front line.
+- **±1 PC:** ±1 Raider. **Front-line party:** take the Raiders back up to deflect 2 / HP 12 / 1d6+2
+  and lead with Signal. **Squishy/support-heavy party:** as printed, and have the Line-Caller lead
+  with Ordered Advance instead of Signal (mobility reads softer than advantage).
 - **Melee-heavy party:** keep the crossbow line in the scrub an extra round and add a fourth
   Raider to punish the wade — the party has to cross the same Slowed water the raiders do.
 - **Ranged/caster-heavy party:** collapse the crossbow line early and send everyone to board —
@@ -556,8 +559,8 @@ always come from where they aren't.
   stands plainly seen. Its *call* sounds from the seeming, never the body. *(It costs the bird
   an Action to raise — a round spent hiding is a round it does not strike. That trade is the
   fight.)*
-- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 **keen**; **+1d6** against a character
-  who is taken in by the seeming.
+- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d6+2 **keen** *(was 1d8+2; item 156, 2026-09-14,
+  after bench run 48's yardstick)*; **+1d6** against a character who is taken in by the seeming.
 - ▶▶ **Snatch and Wade** — attack +5, Reach 5 ft., vs. one Small-or-smaller creature or a
   carried/loose object (the dog; a grain sack): on a hit it grips instead of dealing damage and
   immediately moves its full Speed into the fog. *(This is what it actually wants.)*

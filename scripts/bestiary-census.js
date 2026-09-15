@@ -46,7 +46,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { REPO_ROOT, DATA } = require("./lib/paths.js");
-const { sensesRangeFtFromAwa } = require("./foundry-build-parts.js");
+const { sensesRangeFtFromAwa, advSensesRangeFt } = require("./foundry-build-parts.js");
 
 const REPORT_PATH = path.join(REPO_ROOT, "docs", "analysis", "bestiary", "CENSUS.md");
 const ENGINE_CORE = path.join(REPO_ROOT, "module-src", "scripts", "engine", "01-shared-core.js");
@@ -188,7 +188,7 @@ function census(data, ctx = {}) {
       hp: a.hp, phy: a.defenses && a.defenses.phy, cog: a.defenses && a.defenses.cog, spi: a.defenses && a.defenses.spi,
       deflect: a.deflect || 0, foc: a.foc || 0, inv: a.inv ?? (leylines.length ? 2 : 0),
       skills: a.skills || {}, talents: a.talents || [], immunities,
-      sensesFt: a.senses != null ? Number(a.senses) : sensesRangeFtFromAwa(0), sensesStated: a.senses != null,
+      sensesFt: advSensesRangeFt(a), sensesStated: a.senses != null, sensesFromAwa: a.senses == null && a.attributes?.awa != null,
       walkFt: a.movement != null ? Number(a.movement) : DEFAULT_WALK_FT, walkStated: a.movement != null,
       items: items.length, native, rules, cues, effects, noHook, attackMods, hitEvs,
       bestHitEv: hitEvs.length ? Math.max(...hitEvs) : null, damageTypes: [...types].sort(), ruleShapes,
@@ -226,7 +226,7 @@ function census(data, ctx = {}) {
       cues: blocks.reduce((n, b) => n + b.cues, 0), effects: blocks.reduce((n, b) => n + b.effects, 0),
       native: blocks.reduce((n, b) => n + b.native, 0), noHook: blocks.reduce((n, b) => n + b.noHook, 0),
       talentBlocks: blocks.filter((b) => b.talents.length).length, talents: blocks.reduce((n, b) => n + b.talents.length, 0),
-      sensesStated: blocks.filter((b) => b.sensesStated).length, walkStated: blocks.filter((b) => b.walkStated).length,
+      sensesStated: blocks.filter((b) => b.sensesStated || b.sensesFromAwa).length, walkStated: blocks.filter((b) => b.walkStated).length,
       placeholderArt: blocks.filter((b) => b.placeholderArt).length, unattuned,
     },
     ledger: Object.fromEntries(Object.entries(ledger).map(([c, v]) => [c, Math.round(v * 10) / 10])),
@@ -253,7 +253,7 @@ function renderMarkdown(r) {
   L.push(`| Tiers | ${Object.entries(t.tiers).sort().map(([k, v]) => `${v} at tier ${k}`).join(", ")} |`);
   L.push(`| Bespoke items | ${t.items}: ${t.native} roll natively (attack / damage / heal), ${t.rules} event rules (${t.cues} GM cues, ${t.effects} effects), ${t.noHook} declare \`noHook\` |`);
   L.push(`| Tree talents on blocks | ${t.talents} talents on ${t.talentBlocks} blocks |`);
-  L.push(`| Senses stated / movement stated | ${t.sensesStated} / ${t.walkStated} blocks (the rest inherit AWA 0 → ${sensesRangeFtFromAwa(0)} ft and the ${DEFAULT_WALK_FT} ft walk default) |`);
+  L.push(`| Senses stated / movement stated | ${t.sensesStated} / ${t.walkStated} blocks (a `+"`senses`"+` override or an AWA on the ladder, R-128; the rest inherit AWA 0 → ${sensesRangeFtFromAwa(0)} ft and the ${DEFAULT_WALK_FT} ft walk default) |`);
   L.push(`| Placeholder art in data | ${t.placeholderArt} blocks point at a core icon (the build swaps in real art from \`art/adversaries/\` when Ben drops it) |`, "");
 
   L.push("## 2. Role bands — the R-101 yardstick", "");
@@ -266,10 +266,10 @@ function renderMarkdown(r) {
   L.push(`| ${r.ledger.white} | ${r.ledger.blue} | ${r.ledger.black} | ${r.ledger.red} | ${r.ledger.green} | ${t.unattuned} |`, "");
 
   L.push("## 4. Every block", "");
-  L.push("Senses and Move read **(d)** when the block inherits the derivation default instead of stating a value. Rules read cues / effects / native rolls / `noHook`.", "");
+  L.push("Senses and Move read **(d)** when the block inherits the derivation default instead of stating a value; senses read **(awa)** when the block states `attributes` and the cosmere ladder derives the radius from its AWA (R-128). Rules read cues / effects / native rolls / `noHook`.", "");
   L.push("| Block | Folder | Role · tier | Colours | HP | Phy/Cog/Spi | Dfl | Atk | Best hit EV | Types | Senses | Move | Rules | Talents |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
   for (const b of [...r.blocks].sort((x, y) => (x.folder || "").localeCompare(y.folder || "") || x.name.localeCompare(y.name))) {
-    L.push(`| ${b.name}${b.count > 1 ? ` ×${b.count}` : ""} | ${b.folder || "—"} | ${b.role} · T${b.tier} | ${b.leylines.join("+") || "—"} | ${b.hp} | ${b.phy}/${b.cog}/${b.spi} | ${b.deflect} | ${b.attackMods.length ? [...new Set(b.attackMods)].sort((p, q) => p - q).join("/") : "—"} | ${b.bestHitEv == null ? "—" : b.bestHitEv} | ${b.damageTypes.join(", ") || "—"} | ${b.sensesFt}${b.sensesStated ? "" : " (d)"} | ${b.walkFt}${b.walkStated ? "" : " (d)"} | ${b.cues}/${b.effects}/${b.native}/${b.noHook} | ${b.talents.length ? b.talents.join(", ") : "—"} |`);
+    L.push(`| ${b.name}${b.count > 1 ? ` ×${b.count}` : ""} | ${b.folder || "—"} | ${b.role} · T${b.tier} | ${b.leylines.join("+") || "—"} | ${b.hp} | ${b.phy}/${b.cog}/${b.spi} | ${b.deflect} | ${b.attackMods.length ? [...new Set(b.attackMods)].sort((p, q) => p - q).join("/") : "—"} | ${b.bestHitEv == null ? "—" : b.bestHitEv} | ${b.damageTypes.join(", ") || "—"} | ${b.sensesFt}${b.sensesStated ? "" : b.sensesFromAwa ? " (awa)" : " (d)"} | ${b.walkFt}${b.walkStated ? "" : " (d)"} | ${b.cues}/${b.effects}/${b.native}/${b.noHook} | ${b.talents.length ? b.talents.join(", ") : "—"} |`);
   }
   L.push("");
 

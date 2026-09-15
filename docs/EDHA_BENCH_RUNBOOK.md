@@ -1690,6 +1690,48 @@ it adds a second, bench-owned option next to it:
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 48 (2026-09-14 — the yardstick set; these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **A click-to-place prompt (`edhaPickPoint` — Draw Mana terrain, bursts, Foundations) is answered with a
+  REAL click through the browser pane, never a synthetic event.** `PointerEvent`s dispatched on `#board` leave
+  `canvas.mousePosition` at (0, 0) and the picker resolves nothing. Fire `void item.use()`, wait for the
+  notification prompt, compute the world point's client position with
+  `canvas.stage.worldTransform.apply(new PIXI.Point(wx, wy))` plus the board's bounding rect, take ONE `computer`
+  screenshot (a coordinate click needs its cached frame), scale the client point by (frame ÷ emulated viewport),
+  and `left_click` there. `canvas.mousePosition` then reads the world point back — that is the proof the click
+  landed. A burst additionally needs its card's **Detonate** button clicked before any region exists.
+- ⭐⭐ **The honest graze is the system's own graze roll — `msg.rolls[1].options.graze.total`, the BASE weapon die
+  only.** Summing every die on the damage roll counted a `whenTargetFooled` rider's 1d6 into two Mistheron grazes
+  (9 and 7 instead of 7 and 4) and the fight had to be corrected by a raw HP write. The card's `Graze` subtotal
+  (`div.dice-subtotal.right`) shows the same number; a `1d10+3` boss weapon grazes for a whole 1d10.
+- ⭐ **PC copies for a yardstick:** `toObject()` the player's actor (after its own ⟳ Sync Talents — a refresh,
+  PM-R17), drop `_id`, rename both `name` and `prototypeToken.name`, `actorLink: true`, disposition friendly,
+  `effects: []`, then set `hea` / `foc` / `inv` `.value` from the DERIVED max (`max.derived`, or `max.override`
+  when `useOverride`) — `update({ value: max })` with the max OBJECT silently does nothing. Strip the copy's
+  transient `edha-content` flags between fights (`advAttackNext`, `plotDieMark`, `nextTestMod`, `aggro`,
+  `combatExpire`, `markedBy`): the originals carry stale marks from Ben's own combat and each fight leaves new ones.
+- ⭐ **A strike is one call when the helper reads the card's shape:** `rolls[0]` is the attack (compare `.total` to
+  the victim's defense yourself — nothing on the card says hit or miss), `rolls[1]` the damage; apply with
+  `victim.applyDamage([{ amount, type }], { edhaSource, originatingItem, edhaGraze })` in the same call, and
+  charge the graze's Focus yourself. Two strikes per call stayed under the 45 s wall every time; three did once.
+- ⭐ **The Seeming's phantom actors delete themselves when their tokens go** — a cleanup loop that deletes the
+  actor after the token throws "Actor does not exist" and aborts the rest of the pass; check `game.actors.get(id)`
+  first and make every cleanup idempotent (a Drawing the engine had already removed threw the same way).
+- ⚠️ **`Combat.create()` + one `createEmbeddedDocuments("Combatant", …)` duplicated a combatant on two of four
+  stages** (runs 46 / 47 again). Dedupe by `tokenId` AFTER the add settles, then read `combat.turns` for the
+  indices — and re-read them after any `turnSpeed` change, the tracker re-sorts.
+- ⚠️ **A fooled PC is played as seeing only the copy** — target the illusion token for its Strikes and talents.
+  The contest core resolves a challenge against the copy's defenses 0 and lands the payload on the copy
+  (R-136 asks whether that is design).
+- ⚠️ **`edhaTurnCueSweep` fires a dead adversary's enemy-turn-start cue** (item 161) and **Pack Hunter's banked
+  advantage is consumed by the next attack against ANY target** (item 163) — read a cue's speaker and a roll's
+  `2d20kh` against what was banked before crediting either to the block under test.
+- ✅ **Density, measured: 5 rows retired on evidence (R-133 (i) / (ii), YARD-1 / 2 / 3), 4 defects filed with the
+  root cause read in source (items 161–164), 1 ruling filed (R-136), 1 row-premise correction, three fights of
+  2–3 rounds each — in ~45 driving calls.** End-of-run diff empty: 67 actors in and out, every scene's token
+  signatures identical, Ben's started combat untouched (7 combatants, round 1 turn 3), the 7 actors the run
+  created deleted, `Bench Arena` left standing and empty.
+
 ## Operating lessons from run 47 (2026-09-14 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ ~~**The documented scoped-sync incantation `{folder: "Edha Bench"}` matches ZERO actors, and says nothing.**~~
