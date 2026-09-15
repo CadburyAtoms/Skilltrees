@@ -52,13 +52,13 @@ is the *standard* — which fields a block must carry and where the value comes 
 | `size`, `creatureType` / `customType` | yes | the fiction | Large = a 2×2 token (the build). |
 | `count` | yes | how many appear in the reference encounter | Informational; the GM drags this many. Minions come in groups. |
 | `leylines` | when attuned | the derivation (§1) | Each colour writes a skill rank = role rank (§3), auto-embeds its Key, and the block gets Draw Mana (canon ruling 49). |
-| `attributes` | yes, once the block's nation pass re-derives it | the fiction and the role: `{str, spd, int, wil, awa, pre}` | **RULED R-128 (a), 2026-09-14:** the build writes the stated keys (omitted = 0; a block stating none builds exactly as before). AWA gives the darkness-sense radius on the system ladder (5 / 10 / 20 / 50 / 100 ft at ceil(AWA/2)); SPD the walk rate where `movement` is omitted; skill tests roll attribute + rank. **Ben's gloss:** Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in a lit room it sees as far as the light goes, same as the PC actors. Values land nation by nation (R-135), never as a bulk batch. |
-| `skills` | when the block rolls | the abilities that roll | **MEASURED:** 41 of 52 carry explicit ranks and attributes are 0 everywhere, so a rank stands in for attribute + rank (Callthief `dec: 4` is above any PC's tier-1 cap). **RULED R-128 (a):** the nation pass re-derives each to attribute + rank keeping the total (rank 4 → attribute 2 + rank 2). |
-| `defenses` `{phy, cog, spi}` | yes | the role band (§3) + the fiction | Written as overrides; attributes do not derive them. |
+| `attributes` | yes, once the block's nation pass re-derives it | the fiction and the role: `{str, spd, int, wil, awa, pre}` | **RULED R-128 (a), 2026-09-14:** the build writes the stated keys (omitted = 0; a block stating none builds exactly as before). AWA gives the darkness-sense radius on the system ladder (5 / 10 / 20 / 50 / 100 ft at ceil(AWA/2)); SPD the walk rate where `movement` is omitted; skill tests roll attribute + rank. **Ben's gloss:** Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in a lit room it sees as far as the light goes, same as the PC actors. Values land nation by nation (R-135), never as a bulk batch. **RULED R-137 (Ben, 2026-09-14):** stating attributes ALSO puts the block on the **PC attack model** — see §3 "the attack model". |
+| `skills` | when the block rolls | the abilities that roll | **MEASURED:** 41 of 52 carried explicit ranks while attributes were 0 everywhere, so a rank stood in for attribute + rank (Callthief `dec: 4` is above any PC's tier-1 cap). **RULED R-128 (a):** the nation pass re-derives each to attribute + rank keeping the total (rank 4 → attribute 2 + rank 2). **RULED R-137:** on the PC model the weapon skills (`hwp` / `lwp` / `agi`) are real ranks that the attack roll adds — state them like a PC's; a rank above a tier-1 PC's cap is R-94's latitude (the published pack's Bandit carries Intimidation 3 at tier 1), not a mistake, but say why. |
+| `defenses` `{phy, cog, spi}` | flat model: yes · PC model: derived | flat model: the role band (§3) + the fiction · PC model: **10 + the attribute pair** (Phy STR+SPD, Cog INT+WIL, Spi AWA+PRE) | **RULED R-139 (a), Ben 2026-09-15:** on the PC model the defenses derive — the system's own rule and the published companions-and-adversaries pack's shape on all 20 of its blocks (no overrides, read live 2026-09-15). The build writes no override for such a block; choose the attributes that derive the numbers you want, and omit `defenses` (a stated pair is accepted only as a restatement — the model gate refuses one that disagrees). A flat-model block keeps stating all three as overrides until its nation pass. |
 | `deflect` (+ `deflectTypes`) | when armoured or hided | the fiction | Default types energy / impact / keen. Recorded on the card. |
 | `hp` | yes | the role band (§3) | A statted block does not scale with the party (R-48, R-81 (a)). |
 | `foc` | when an ability costs Focus | the abilities | R-112 raised The Reckoning 2 → 3 because a pool must be able to pay its own signature cost. Grazes cost 1 Focus per target (SR p.35): a minion with `foc: 1` grazes once per fight. |
-| `inv` | when attuned | default 2 (the PC derivation at attributes 0) | Explicit wins. |
+| `inv` | when attuned | default 2 + max(AWA, PRE), the PC derivation (2 while a block states no attributes) | Explicit wins. **RULED R-139 (a):** HP, Focus and Investiture STAY STATED on the PC model (the published pack states all three; its Focus happens to equal 2 + WIL on every block, a good default when nothing argues otherwise). The approved blocks state Investiture 2 rather than let AWA raise it. |
 | `movement` | **yes — state it** | the fiction; omit only when 25 ft is the intended walk | Item 82's line. **MEASURED:** 46 of 52 state it. |
 | `senses` | only when the fiction beats the ladder | the fiction | **RULED R-56 final:** the cosmere ladder `[5, 10, 20, 50, 100, ∞][ceil(AWA/2)]` governs every actor type, so a block with no attributes sees **5 ft in the dark** on sheet and token alike (item 83). **RULED R-128 (a):** the fix is `attributes` (AWA), not a batch of overrides; `senses` stays the fiction override above the ladder (the eyeless grove at 30 ft). **MEASURED:** 1 of 52 states it (Briar-Gone Grove); the other 51 read 5 ft until their nation pass states AWA. |
 | `conditionImmunities` | when the fiction says so | canon conditions or `EDHA_STATUSES` ids only | An id that is neither is dropped silently by the build; `CENSUS.md` §7 flags `unknown`. |
@@ -77,6 +77,50 @@ resolution in the rule's `description` so the next audit can re-derive it.
 
 **RULED — a statted block does not scale.** A distance or a die on a card is canon for that
 block (R-48: `distanceFt: 20`, not `bySize`; R-81 (a) generalised it). Scaling belongs to PCs.
+
+**RULED R-137 (Ben, chat 2026-09-14) — the attack model.** *"Adversaries need to follow the same
+rules as the PCs do, that's how the whole system works. They have attributes, they have skill ranks
+in relevant skills, they have talents right off the talent trees."* The cosmere system rolls an
+adversary's attack exactly as a PC's — `d20 + attribute + skill rank` (`getSkillTestRollData`), the
+same modifier appended to the damage (`rollDamage`, the damage skill falling through to the attack
+skill), the graze the bare dice (`@damage.dice`) — and the published companions-and-adversaries
+pack is written that way on every block: attributes, ranks, dice-only damage, an empty modifier
+formula. So a block on the PC model (it states `attributes`) writes its attacks as **dice + the
+skill it tests**, and the numbers derive:
+
+| The card prints | Derived as | Stored as |
+|---|---|---|
+| Attack +N | attribute + rank of the attack skill (+ `attackBonus` only where the block states one AS a bonus) | `attackSkill` (weapons default by range: ranged → `lwp`/SPD, melee → `hwp`/STR), the rank in `skills` |
+| Hit 1d8+M | the weapon's dice + attribute + rank — **the same modifier as the attack** | `damage: "1d8"` — dice only |
+| Graze 1d8 | the dice | nothing (or a dice-only `graze` override) |
+
+**One skill modifier, not two.** +4 to hit with 1d6+1 is not a PC number (Ishee's Staff is SPD 3 +
+Light Weaponry 1 = +4, and 1d6+4). A block on the model cannot keep the July split: choose the
+attribute, the rank and the die so the pair lands where R-134's row wants the EXPECTED DAMAGE PER
+ATTACK (hit chance × hit EV, grazes charged), and say which row it was read against. A numeric
+`attack`, a `skill` override on an attack, or a flat inside an attack's `damage` on a PC-model
+block is a gate error (`node scripts/validate-adversary-model.js`, gate `adversary-model` — the
+gate July never had; it fails the exact shape PR #388 shipped). The **flat model** — `attack: N`
+in the modifier formula, `1d6+N` in the damage — stays legal ONLY on a block that states no
+attributes (46 of 53 on 2026-09-15; the census §1 counts them) and builds byte-identically until
+its nation pass migrates it. **Why this exists:** R-128's menu said attack modifiers "would not move
+under any option"; the seven PR-#388 blocks stated attributes on the flat numbers and rolled STR /
+SPD on top of both — a STR 2 Raider's +4 / 1d6+1 Shortsword rolled `1d20 + 2 + 4` and `1d6 + 1 + 2`
+on a fresh import (verified live 2026-09-15).
+
+**RULED R-140 (a), Ben 2026-09-15 — R-134's per-hit rows under one modifier.** The rows were
+written for the split; with one modifier a d6 minion at +2 hits for 5.5. So the rows are read as
+**expected damage per attack, grazes charged** — hit chance × hit EV + miss chance × graze EV,
+against the party's Physical 13 / 14 / 16 — which is what the yardstick fights measure: a minion
+at most about 4 per attack, a rival about 6, a boss about 8. A block's proposal prints that
+number beside its line (the 2026-09-15 gate page is the worked example: the Raider's +2 for
+1d6+2 is 4.4 per attack against Phy 14, the approved +4 for 1d6+1 was 4.0).
+
+**RULED R-138 (a), Ben 2026-09-15 — the ¼-per-round line binds the ENCOUNTER, not the card.**
+Cards are statted to the per-hit and Actions-to-drop rows; the per-round line is session-forge's
+budget (count, turn speed, a boss's terrain Actions, Call the Runners), and each run-sheet says
+how its encounter meets it. It sat over target in every round an adversary acted in all three
+yardstick fights, and no card-level retune reaches it without breaking the per-hit rows.
 
 **MEASURED — the bands the 52 blocks occupy today** (from `CENSUS.md` §2 @ data `80e12d5b34fc`;
 the census is authoritative, this is the snapshot the redo started from):

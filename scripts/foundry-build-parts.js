@@ -191,4 +191,103 @@ function advSensesRangeFt(adv) {
   return sensesRangeFtFromAwa(advAttributeValues(adv).awa);
 }
 
-module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions, sensesRangeFtFromAwa, advSensesRangeFt, ATTRIBUTE_IDS, advAttributeValues, advAttributes, advInvDefault };
+// ---------------------------------------------------------------------------------------------
+// R-137 (Ben, chat 2026-09-14): "adversaries need to follow the same rules as the PCs do … They
+// have attributes, they have skill ranks in relevant skills, they have talents right off the talent
+// trees." The cosmere system already rolls an adversary's attack the way it rolls a PC's — the item
+// roll's `@mod` is skill rank + attribute (index.js `getSkillTestRollData`), the damage roll appends
+// the same modifier (`rollDamage` → `${formula} + ${mod}`, the damage skill falling through to the
+// attack skill in `rollAttack`), and the graze is the bare dice (`@damage.dice`). The FLAT model this
+// build carried from July stored the whole attack as `attack: N` in `modifierFormula` and the whole
+// damage as `1d6+N`, which was right only while every block's attributes were 0. Once R-128 let a
+// block state attributes, the seven PR-#388 blocks rolled STR/SPD on top of both numbers (bench-
+// verified 2026-09-15: a STR 2 Raider's Shortsword rolled `1d20 + 2 + 4` and `1d6 + 1 + 2`).
+//
+// THE MODEL, for a block that states `attributes` (the migration marker — a block that states none
+// keeps the flat model and builds byte-identically until its nation pass migrates it):
+//   attack  = d20 + (attribute + skill rank)            [+ `attackBonus`, only when the block states one]
+//   damage  = the weapon's dice + (attribute + skill rank)   — `damage` is written as DICE ONLY
+//   graze   = the dice (or the block's `graze` override)
+// No stored number may double-count the skill modifier: a numeric `attack`, a `skill` override on
+// an attack item, or a flat term inside an attack item's `damage` is a validator error on a
+// migrated block (scripts/validate-adversary-model.js, gate `adversary-model`). The published
+// companions-and-adversaries pack (system 2.1.0, read live 2026-09-15) has exactly this shape on all
+// 20 of its blocks: attributes + ranks, `modifierFormula` empty, damage "1d8", defenses derived.
+//
+// `SKILL_ATTR` is the system's own skill → attribute map (CONFIG.COSMERE.skills[id].attribute at
+// 2.1.0) plus the five leyline colours the engine registers as core skills; `ROLE_LEYLINE_RANK` is
+// canon ruling 122 (an attuned adversary's colour rank is its ROLE — minion 1 / rival 2 / boss 3).
+// Both lived in foundry-build.js until the model needed them here, where tests can reach them.
+const SKILL_ATTR = { white:"wil", blue:"int", black:"pre", red:"str", green:"awa", agi:"spd", ath:"str", hwp:"str", lwp:"spd", stl:"spd", thv:"spd", cra:"int", ded:"int", dis:"wil", inm:"wil", lor:"int", med:"int", dec:"pre", ins:"awa", lea:"pre", prc:"awa", prs:"pre", sur:"awa" };
+const ROLE_LEYLINE_RANK = { minion: 1, rival: 2, boss: 3 };
+
+// The block's skill ranks as the build writes them: each attuned colour at the role rank (canon
+// ruling 122) unless `skills` states it; every explicit `skills` entry as given.
+function advSkills(adv) {
+  const skills = {};
+  for (const c of adv.leylines || []) skills[String(c).toLowerCase()] = { rank: ROLE_LEYLINE_RANK[adv.role || "rival"] || 1 };
+  for (const [id, rank] of Object.entries(adv.skills || {})) skills[id] = { rank: Number(rank) || 0 };
+  return skills;
+}
+
+/** True when the block states `attributes` — i.e. it is on the PC model (R-137). */
+function advOnPcModel(adv) { return advAttributes(adv) != null; }
+
+/** "1d6" / "2d8" / "1d10" → {count, die, ev, text}; a flat term, a sum, or prose → null. */
+function parseDiceOnly(str) {
+  const m = /^\s*(\d+)\s*d\s*(\d+)\s*$/i.exec(String(str ?? ""));
+  return m ? { count: +m[1], die: +m[2], ev: +m[1] * (+m[2] + 1) / 2, text: `${+m[1]}d${+m[2]}` } : null;
+}
+
+/** The skill an attack item tests on the PC model: `attackSkill` if stated, else a weapon's
+ *  default by range (ranged → Light Weaponry, melee → Heavy Weaponry — the flat model's own rule). */
+function advAttackSkill(raw) {
+  if (raw?.attackSkill) return String(raw.attackSkill).toLowerCase();
+  if (raw?.kind === "weapon") return /\brange\b/i.test(raw.range || "") ? "lwp" : "hwp";
+  return null;
+}
+
+/** Is this item an attack? Flat model: it states a numeric `attack`. PC model: it is a weapon or
+ *  it states `attackSkill` (a to-hit-only grab states the skill and no damage). */
+function advIsAttackItem(adv, raw) {
+  if (!raw || typeof raw !== "object") return false;
+  return advOnPcModel(adv) ? (raw.attackSkill != null || raw.kind === "weapon") : raw.attack != null;
+}
+
+/** The derived numbers of an attack item on the PC model, or null when the block is on the flat
+ *  model or the item is not an attack. `mod` is what the system adds to BOTH the d20 and the damage;
+ *  `bonus` (attackBonus) reaches the d20 only, through `modifierFormula`, exactly as a PC talent's
+ *  flat bonus would. `dice` is null when `damage` is not dice-only (the validator's job to refuse). */
+function advAttackModel(adv, raw) {
+  if (!advIsAttackItem(adv, raw) || !advOnPcModel(adv)) return null;
+  const skill = advAttackSkill(raw);
+  const attribute = SKILL_ATTR[skill] || null;
+  const rank = advSkills(adv)[skill]?.rank ?? 0;
+  const attrValue = attribute ? advAttributeValues(adv)[attribute] : 0;
+  const bonus = Number.isInteger(Number(raw.attackBonus)) ? Number(raw.attackBonus) : 0;
+  const dice = raw.damage != null ? parseDiceOnly(raw.damage) : null;
+  const mod = attrValue + rank;
+  return {
+    skill, attribute, rank, attrValue, bonus, mod,
+    attackTotal: mod + bonus,
+    dice,
+    hitFormula: dice ? (mod ? `${dice.text}+${mod}` : dice.text) : null,
+    hitEv: dice ? dice.ev + mod : null,
+    grazeFormula: raw.graze ? String(raw.graze) : (dice ? dice.text : null),
+  };
+}
+
+/** "+4", "+0", "−1" — the card's Attack label. */
+function signed(n) { return (n < 0 ? "−" : "+") + Math.abs(n); }
+
+/** R-139 (a) (Ben, 2026-09-15): on the PC model the three defenses DERIVE — 10 + the attribute pair,
+ *  the system's own rule (index.js prepareSecondaryDerivedData) and the published pack's shape on
+ *  all 20 of its blocks. The build writes no override for such a block; a stated `defenses` there
+ *  must equal this (the model gate refuses one that does not). HP, Focus and Investiture stay stated. */
+function advDefenses(adv) {
+  const v = advAttributeValues(adv);
+  return { phy: 10 + v.str + v.spd, cog: 10 + v.int + v.wil, spi: 10 + v.awa + v.pre };
+}
+
+module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions, sensesRangeFtFromAwa, advSensesRangeFt, ATTRIBUTE_IDS, advAttributeValues, advAttributes, advInvDefault,
+  SKILL_ATTR, ROLE_LEYLINE_RANK, advSkills, advOnPcModel, parseDiceOnly, advAttackSkill, advIsAttackItem, advAttackModel, signed, advDefenses };

@@ -123,6 +123,12 @@ function buildGates(py) {
   });
 
   gates.push({
+    id: "adversary-model",
+    desc: "node scripts/validate-adversary-model.js (R-137: a block that states attributes rolls like a PC — no flat attack, dice-only damage; flat-model blocks counted)",
+    run: () => run("node", ["scripts/validate-adversary-model.js"]),
+  });
+
+  gates.push({
     id: "lint-refs",
     desc: "node scripts/lint-refs.js",
     run: () => run("node", ["scripts/lint-refs.js"]),

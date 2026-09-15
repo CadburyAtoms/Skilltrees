@@ -330,7 +330,13 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
     if (a.size && !ADV_SIZES.has(a.size)) E(`size "${a.size}" not small/medium/large`);
     if (a.creatureType && !ADV_CTYPES.has(a.creatureType)) E(`creatureType "${a.creatureType}" not humanoid/animal/custom`);
     // foundry-build.js reads these unconditionally — a missing one crashes the build on Ben's machine.
-    if (!a.defenses || typeof a.defenses !== 'object' || [a.defenses.phy, a.defenses.cog, a.defenses.spi].some(v => typeof v !== 'number')) E('defenses must be { phy, cog, spi } numbers');
+    // R-139 (a) (2026-09-15): a block on the PC model (it states `attributes`) derives its defenses —
+    // 10 + the attribute pair — so `defenses` is optional there (and, if stated, must equal the
+    // derivation: scripts/validate-adversary-model.js). A flat-model block must state all three.
+    const onPcModel = a.attributes && typeof a.attributes === 'object';
+    if (a.defenses !== undefined || !onPcModel) {
+      if (!a.defenses || typeof a.defenses !== 'object' || [a.defenses.phy, a.defenses.cog, a.defenses.spi].some(v => typeof v !== 'number')) E(onPcModel ? 'defenses, when stated on a PC-model block, must be { phy, cog, spi } numbers (or omit them — they derive)' : 'defenses must be { phy, cog, spi } numbers');
+    }
     if (typeof a.hp !== 'number') E('hp must be a number');
     if (a.folder !== undefined && (typeof a.folder !== 'string' || !a.folder.trim())) E('folder must be a non-empty string');
     if (a.senses !== undefined && (typeof a.senses !== 'number' || a.senses <= 0)) E('senses must be a positive number (ft)');
@@ -356,9 +362,16 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
       if (!it || typeof it !== 'object' || typeof it.name !== 'string' || !it.name.trim()) { E(`items[${i}] has no name`); return; }
       if (it.cost && !ADV_COSTS.has(it.cost)) W(`item "${it.name}": cost "${it.cost}" not a known activation (falls back to Special)`);
       if (it.attack !== undefined && typeof it.attack !== 'number') E(`item "${it.name}": attack must be a number`);
+      // R-137 (2026-09-15): the PC attack model's keys — `attackSkill` names the skill an attack tests
+      // (a core id or a leyline colour), `attackBonus` is the only flat a block may state (an integer).
+      // Whether a block may use them at all (it must state attributes — and then may state neither a
+      // flat `attack` nor a flat inside `damage`) is scripts/validate-adversary-model.js's gate.
+      if (it.attackSkill !== undefined && !(typeof it.attackSkill === 'string' && (CORE_SKILL_IDS.has(it.attackSkill.toLowerCase()) || LEYLINE_IDS.has(it.attackSkill.toLowerCase())))) E(`item "${it.name}": attackSkill "${it.attackSkill}" is not a core 3-letter id or leyline color`);
+      if (it.attackBonus !== undefined && !Number.isInteger(it.attackBonus)) E(`item "${it.name}": attackBonus must be an integer`);
       if (it.damageType && !ADV_DMG.has(it.damageType)) E(`item "${it.name}": damageType "${it.damageType}" invalid`);
       if (it.kind && !['action', 'trait', 'weapon'].includes(it.kind)) E(`item "${it.name}": kind "${it.kind}" not action/trait/weapon`);
-      if (it.kind === 'weapon' && it.attack === undefined) W(`item "${it.name}": kind weapon without an attack bonus — renders in the weapon section but has no roll`);
+      // A weapon on the PC model (the block states attributes) has no `attack` by design — its roll is derived.
+      if (it.kind === 'weapon' && it.attack === undefined && !(a.attributes && typeof a.attributes === 'object')) W(`item "${it.name}": kind weapon without an attack bonus — renders in the weapon section but has no roll`);
       if (it.weaponId !== undefined && it.kind !== 'weapon') E(`item "${it.name}": weaponId only applies to kind "weapon"`);
       if (it.alwaysEquipped !== undefined && (it.kind !== 'weapon' || typeof it.alwaysEquipped !== 'boolean')) E(`item "${it.name}": alwaysEquipped is a boolean for kind "weapon" only (natural weapons — item 34a)`);
       // Item 93 / R-89 (a): the NO NAMEABLE HOOK declaration is this key now, not prose — a
