@@ -235,11 +235,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
-        "grazeOverrideFormula": null,
-        "type": "spirit",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "NecroCascArm0000": {
@@ -621,11 +618,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "WitherArm0000000": {

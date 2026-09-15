@@ -41,11 +41,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
-        "grazeOverrideFormula": null,
-        "type": "spirit",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "CascadeSweep0000": {
@@ -143,11 +140,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
-        "grazeOverrideFormula": null,
-        "type": "spirit",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "EntropyStrikeH10": {
@@ -228,11 +222,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "IsolPressureH100": {
@@ -347,11 +338,8 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "IsolRuinH1000000": {
@@ -592,11 +580,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.awa",
-        "grazeOverrideFormula": null,
-        "type": "spirit",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {
         "UnravelFill00000": {
