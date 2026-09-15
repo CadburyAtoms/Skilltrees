@@ -2,7 +2,7 @@
   "pm": {
     "status": "awake",
     "note": "PM of record since 11:49 ET. Bench run 49a merged as #393: 14 of 15 rows closed, FP-1 waits on your ruling R-141, four defects filed (items 168-171), and it found your combat already gone and Palewater Ford empty. Item 165 merged as #392 (Ishee protected). Next: bench run 49b (the 22 adversary rows). Fix pass 13 waits for your word. No Fable agents today.",
-    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; have the Session 1 GM script republish session commit its edits; say when fix pass 13 runs",
+    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; review PR #395 (session 2 prep); say when fix pass 13 runs",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },

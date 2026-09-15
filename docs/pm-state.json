@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T17:38:45.791Z",
+  "generatedAt": "2026-09-15T17:41:46.295Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "87e0cad0c2",
-    "commit": "fb77ef5",
+    "hash": "fa231391fc",
+    "commit": "404226c",
     "branch": "pm/bench-49a",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -44,7 +44,7 @@
   "pm": {
     "status": "awake",
     "note": "PM of record since 11:49 ET. Bench run 49a merged as #393: 14 of 15 rows closed, FP-1 waits on your ruling R-141, four defects filed (items 168-171), and it found your combat already gone and Palewater Ford empty. Item 165 merged as #392 (Ishee protected). Next: bench run 49b (the 22 adversary rows). Fix pass 13 waits for your word. No Fable agents today.",
-    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; have the Session 1 GM script republish session commit its edits; say when fix pass 13 runs",
+    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; review PR #395 (session 2 prep); say when fix pass 13 runs",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
@@ -2211,7 +2211,7 @@
   "benOnly": [
     "answer R-141 (False Premise's Reaction denial clears at the END of the target's next turn while its card says the START — default (a) keeps the engine's convention and fixes the card text)",
     "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)",
-    "have the \"Session 1 GM script republish\" session commit its uncommitted edits (the edha-session-2 worktree in Temp, branch claude/session-2-grove: the republished script's new link, the Ishee rename in the state doc)."
+    "PR #395 (claude/session-2-grove — session 2 prep, with session 1's GM script republished first) is open from Ben's session, ready for his review (#394, the session-2 kickoff brief, merged at 13:33)."
   ],
   "inbox": [],
   "foundry": {
@@ -2221,20 +2221,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "22:09",
-      "at": "2026-09-14T02:09:00.000Z",
-      "item": "#356 merged — the 00:05 deploy record. CONFLICTING (the checklist's DEPLOY STATE line + the dashboard) → the PM merged main (both deploy lines kept, newest first; dashboard rebuilt); gates 12/12 (1206 tests); CI green on 75729c5",
-      "itemNo": "356",
-      "model": "ben's interactive session",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 356
-    },
     {
       "date": "2026-09-13",
       "time": "22:10",
@@ -3060,9 +3046,23 @@
       "weightedM": 34.5,
       "outcome": "reviewed 13:35 — squash-merged trailer-free after the PM's bookkeeping commit on the branch: 14 of 15 rows retired on evidence (111-2, SYNC-1, INC-1, 123-1, IMM-1, KM-2, KM-3, OM-3, OM-4, OM-5, PW-2, GATE-1 … GATE-3), so items 108, 141, 142, 143, 146, 147, 148, 149 (card half), 150 and 151 are merged; FP-1 PARTIAL → R-141 filed, item 107 blocked(R-141); items 168 – 171 filed; DEPLOY STATE's stale 09-05 ⛔ paragraph retired; docs/BENCH_NEXT_RUN.md rewritten for 49b; runbook lessons (token order, hover before a click, the chat-notifications column); the three players' actors refreshed only (_stats on 8 items each); world diff otherwise empty (67 actors in and out, combats 0 → 0; one stray click on a Charges card's Detonate ALL was cancelled with a refund and its residue removed); Ben's combat already gone at 16:19Z, Palewater Ford empty. CI green on fb77ef5; gates 13/13 locally; one review correction: CLAUDE.md's rulings sentence (141 rulings, open set R-141)",
       "pr": 393
+    },
+    {
+      "date": "2026-09-15",
+      "time": "13:33",
+      "at": "2026-09-15T17:33:00.000Z",
+      "item": "#394 merged — the session-2 kickoff brief (Ben's interactive session, not a PM dispatch): EDHA_CAMPAIGN_STATE.md §7 (DOCS-ONLY). It left #393 conflicting on the generated dashboard alone, so the PM merged main into pm/bench-49a and rebuilt it; PR #395 (session 2 prep, session 1's GM script republished first) is open from the same session",
+      "itemNo": "394",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 394
     }
   ],
-  "runLogTotal": 333,
+  "runLogTotal": 334,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
