@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T16:40:19.789Z",
+  "generatedAt": "2026-09-15T17:38:45.791Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "cfa40a3e5a",
-    "commit": "4b6ca3a",
-    "branch": "pm/165-protect-ishee",
+    "hash": "87e0cad0c2",
+    "commit": "fb77ef5",
+    "branch": "pm/bench-49a",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,26 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET (Ben, chat). Item 165 is merged as #392: the roster script protects Ishee by name and protects everything in the Edha PCs folder. Bench run 49a (the 15 engine rows) is running. After it: bench run 49b (the 22 adversary rows, removing your started combat, and a scoped sync of the Palewater Ford adversaries), then fix pass 13. The 16 merged remote branches are deleted. No Fable agents today.",
-    "waitingOn": "Ben (no rush): keep or delete the two unmerged July branches; have the Session 1 GM script republish session commit its edits",
+    "note": "PM of record since 11:49 ET. Bench run 49a merged as #393: 14 of 15 rows closed, FP-1 waits on your ruling R-141, four defects filed (items 168-171), and it found your combat already gone and Palewater Ford empty. Item 165 merged as #392 (Ishee protected). Next: bench run 49b (the 22 adversary rows). Fix pass 13 waits for your word. No Fable agents today.",
+    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; have the Session 1 GM script republish session commit its edits; say when fix pass 13 runs",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [
-    {
-      "item": "bench-49a",
-      "title": "Bench run 49a: the 15 engine and talent rows (111-2, 123-1, SYNC-1, INC-1, IMM-1, KM-2/3, OM-3/4/5, PW-2, GATE-1/2/3, FP-1)",
-      "model": "opus",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/bench-49a",
-      "startedAt": "2026-09-15T16:14:00Z",
-      "agent": "Bench run 49a (engine rows)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; Ishee protected in the run's copy of the roster script until #392 is on main"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1321,8 +1307,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-115 ✓ (a, phone 09-13)",
-      "status": "bench-pending",
-      "statusDetail": null,
+      "status": "blocked",
+      "statusDetail": "R-141",
       "pr": 374
     },
     {
@@ -1333,7 +1319,7 @@
       "model": "sonnet",
       "size": "M",
       "deps": "R-118 ✓ (a, phone 09-13)",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 375
     },
@@ -1741,7 +1727,7 @@
       "model": "sonnet",
       "size": "S",
       "deps": "130 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 379
     },
@@ -1753,7 +1739,7 @@
       "model": "opus",
       "size": "S",
       "deps": "R-122 ✓ · 132 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 383
     },
@@ -1765,7 +1751,7 @@
       "model": "opus",
       "size": "XS",
       "deps": "135 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 383
     },
@@ -1813,7 +1799,7 @@
       "model": "opus",
       "size": "M",
       "deps": "bench 47 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 380
     },
@@ -1825,7 +1811,7 @@
       "model": "opus",
       "size": "M",
       "deps": "bench 47 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 380
     },
@@ -1837,7 +1823,7 @@
       "model": "sonnet",
       "size": "S",
       "deps": "130 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 379
     },
@@ -1849,7 +1835,7 @@
       "model": "opus",
       "size": "S",
       "deps": "bench 47 ✓ · R-127 (refund half)",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 380
     },
@@ -1861,7 +1847,7 @@
       "model": "opus",
       "size": "S",
       "deps": "132 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 383
     },
@@ -1873,7 +1859,7 @@
       "model": "opus",
       "size": "S",
       "deps": "147 ✓",
-      "status": "bench-pending",
+      "status": "merged",
       "statusDetail": null,
       "pr": 380
     },
@@ -2101,9 +2087,9 @@
       "model": "opus",
       "size": "M",
       "deps": "deploy 07:19 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 393
     },
     {
       "pos": 169,
@@ -2120,11 +2106,59 @@
     {
       "pos": 170,
       "item": null,
-      "title": "Fix pass 13 — test-pass-fixes on items 161 – 164 plus whatever bench 49a and 49b fail (ENGINE-ONLY, F5 expected)",
+      "title": "Fix pass 13 — test-pass-fixes on items 161 – 164 plus whatever bench 49b fails (ENGINE-ONLY, F5 expected); bench 49a's four defects are items 168 – 171, queued separately (rows 171 – 174) and foldable into this pass",
       "lane": "B",
       "model": "opus",
       "size": "M",
       "deps": "bench 49a · bench 49b",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 171,
+      "item": "168",
+      "title": "⟳ Sync Talents counts the cosmere system's 19 native basic actions as \"not found in packs\" on every real PC — gate an owned action on its edha-content flag (ENGINE-ONLY, F5). Filed by bench run 49a",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "bench 49a ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 172,
+      "item": "169",
+      "title": "Seven more talents (Volatile Strike; Isolating Pressure, Isolating Ruin, Cascade Collapse, Entropy Strike; Unstoppable Advance, Unravel Everything) plus Cascading Failure keep an item damage.formula beside the engine rule that deals their damage, so the system rolls a decoy with Apply buttons on every use — item 141's recipe (DATA, leyline + deity REBUILD + ⟳ Sync Talents). Filed by bench run 49a",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "bench 49a ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 173,
+      "item": "170",
+      "title": "Vital Diagnosis's card note still says \"+Tier vital\" beside the engine's \"+3 vital\"; Bulwark Ground's rule description and a schema hint say \"tier\" too (DATA, deity REBUILD + ⟳ Sync Talents; one ENGINE-ONLY hint string). Filed by bench run 49a",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "bench 49a ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 174,
+      "item": "171",
+      "title": "The noreactions status is labelled \"No Reactions (Extract Thought)\", so Blue's False Premise card names a Black talent — relabel it, check noactions (ENGINE-ONLY, F5). Filed by bench run 49a",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "bench 49a ✓",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2175,6 +2209,7 @@
     }
   ],
   "benOnly": [
+    "answer R-141 (False Premise's Reaction denial clears at the END of the target's next turn while its card says the START — default (a) keeps the engine's convention and fixes the card text)",
     "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)",
     "have the \"Session 1 GM script republish\" session commit its uncommitted edits (the edha-session-2 worktree in Temp, branch claude/session-2-grove: the republished script's new link, the Ishee rename in the state doc)."
   ],
@@ -2186,34 +2221,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "21:58",
-      "at": "2026-09-14T01:58:00.000Z",
-      "item": "New PM session of record — hand-started by Ben in chat (Sunday, weekend window). The 10:26 session had stopped: its handoff #367 merged 21:56:44, main e468d92 clean at 21:56:50, no board branch moved after. Step 0: engine 6 in sync (24d74c96 = main), Foundry up (302, processes from 20:46), no worktrees, phone inbox empty; the 09-13/14 deltas read down to \"Tree intent read\"; three of the interactive session's PRs open and CONFLICTING (#366 ⊃ #360, #356)",
-      "itemNo": "367",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "resumed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:05",
-      "at": "2026-09-14T02:05:00.000Z",
-      "item": "#366 merged (it contained #360, which GitHub closed as merged by ancestry at 22:05:18) — R-120 (b) / item 130; #360's items 133 + 134 and Ben's round-two balance answers. CONFLICTING on the dashboard → the PM merged main into the branch (dashboard rebuilt) and moved the round-two delta to the top of the changelog (it sat below a 09-13 delta); gates 12/12; CI green on c63cbd0 (the run on the NEW sha)",
-      "itemNo": "366",
-      "model": "ben's interactive session",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 366
-    },
     {
       "date": "2026-09-13",
       "time": "22:09",
@@ -3025,9 +3032,37 @@
       "weightedM": 4.1,
       "outcome": "reviewed — merged on green after the PM's bookkeeping commit on the branch (this board, the TODO ticks for 155 and 32, the queue reconciled, and one review correction: the bench-marathon skill's standing rule names Ishee too); three themed commits, no trailers; CI green on 4b6ca3a; gates 13/13 locally with 1310 tests; mutation proofs in the PR body (without \"ishee\" 1 test fails, without the folder rule 3 fail)",
       "pr": 392
+    },
+    {
+      "date": "2026-09-15",
+      "time": "12:43",
+      "at": "2026-09-15T16:43:00.000Z",
+      "item": "#392 (item 165) merged at 12:43:53 after the PM's bookkeeping commit (CI green on aca3ee3); the remote branch deleted by hand and confirmed gone; main = de50174",
+      "itemNo": "392",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 392
+    },
+    {
+      "date": "2026-09-15",
+      "time": "12:14",
+      "at": "2026-09-15T16:14:00.000Z",
+      "item": "Bench run 49a (the 15 engine rows) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "1 h 16 min (16:13:59Z → 17:30:20Z), 214 tool uses (359 turns)",
+      "weighted": "34.5M",
+      "weightedM": 34.5,
+      "outcome": "reviewed 13:35 — squash-merged trailer-free after the PM's bookkeeping commit on the branch: 14 of 15 rows retired on evidence (111-2, SYNC-1, INC-1, 123-1, IMM-1, KM-2, KM-3, OM-3, OM-4, OM-5, PW-2, GATE-1 … GATE-3), so items 108, 141, 142, 143, 146, 147, 148, 149 (card half), 150 and 151 are merged; FP-1 PARTIAL → R-141 filed, item 107 blocked(R-141); items 168 – 171 filed; DEPLOY STATE's stale 09-05 ⛔ paragraph retired; docs/BENCH_NEXT_RUN.md rewritten for 49b; runbook lessons (token order, hover before a click, the chat-notifications column); the three players' actors refreshed only (_stats on 8 items each); world diff otherwise empty (67 actors in and out, combats 0 → 0; one stray click on a Charges card's Detonate ALL was cancelled with a refund and its residue removed); Ben's combat already gone at 16:19Z, Palewater Ford empty. CI green on fb77ef5; gates 13/13 locally; one review correction: CLAUDE.md's rulings sentence (141 rulings, open set R-141)",
+      "pr": 393
     }
   ],
-  "runLogTotal": 331,
+  "runLogTotal": 333,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3935,6 +3970,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 392
+    },
+    {
+      "at": "2026-09-15T16:14:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 393
     }
   ],
   "statusVocab": [
