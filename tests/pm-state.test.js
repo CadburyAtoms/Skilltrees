@@ -438,7 +438,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // card text." — so the engine's END-of-next-turn convention stands and False Premise's card text moved.
   // The body moved to §K.18 with a §L stub; the open set is EMPTY again and R-141 joins the closed list
   // below. The length assertion moves 1 → 0.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-15, at fix pass 13's merge: the PM files R-142 in §L — the decoy damage rolls on ten talents
+  // plus Killing Blow and The Final Study (keep the formulas and suppress the system's roll, re-key attack
+  // context and colour off the formula, or leave the decoys), from the review of item 169 (PR #396). The
+  // length assertion moves 0 → 1.
+  const ECOSYSTEM_RULINGS = ["R-142"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
