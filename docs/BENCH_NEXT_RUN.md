@@ -1,5 +1,7 @@
 # Next bench session — run 50: no drivable 🤖 row is waiting; the queue is re-drives behind open fixes
 
+> ⚠️ **Superseded in part at 15:20 ET the same day (the PM):** fix pass 13 (PR #398) and item 169's narrowed fix (PR #396) merged and were DEPLOYED — agent-run deploy 2026-09-15T19:20:26Z from main @ eedc939, engine `80042b86…` = HEAD, all five packs rebuilt, validators PASS. So run 50 **does** have a queue: the "Fix pass 13 — bench runs 48 + 49a's defects" section (CUE-161, CUE-161b, THORN-162, PACK-163, PACK-163b, SNAP-164, SYNC-168, LBL-171, VD-170), FP-1 (R-141 (a): the END of the target's next turn plus the card re-read) and item 169's 169-PWR and 169-DTH. Run the roster script (it refreshes the bench PCs) and, under PM-R17, the three players' actors' own ⟳ Sync Talents before the card rows. Predator's Due still waits on item 88; the ten talents held in item 169 wait on R-142.
+
 > **Bench run 49b (2026-09-15) retired all twenty-two item-156 adversary rows on evidence** (156-1 … 156-22: the
 > Corvaine + Riverlands pass and the R-137 rerun with the Thalendor Heartwood blocks), filed **two defects (TODO items
 > 172–173)** and kept nothing open. Bench run 49a had drained the engine-wide queue the same day. **No deploy is owed by
