@@ -45,16 +45,19 @@ function withAdvMutation(mutate, fn) {
   }
 }
 
-/* --- (iii) baseline: the shipped data passes pass 5 clean, and has exactly 16 noHook abilities -- */
+/* --- (iii) baseline: the shipped data passes pass 5 clean, and has exactly 15 noHook abilities -- */
 test("pass 5 baseline: the shipped data/adversaries.json passes lint-refs clean", () => {
   const { status, out } = runLintRefs();
   assert.strictEqual(status, 0, `expected lint-refs to pass on shipped data, got exit ${status}:\n${out}`);
 });
 
-test("data/adversaries.json: 0 HTML comments left, 17 noHook keys (16 abilities + the schema doc)", () => {
+// 2026-09-14, the Thalendor nation pass (item 156): the Briar-Gone Grove's Apex Predator was
+// re-litigated off its noHook (iron rule 3) — Draw Mana and Sudden Growth place engine terrain,
+// so the Green talent's own test-rider now rides the trait — and the count moves 16 → 15 abilities.
+test("data/adversaries.json: 0 HTML comments left, 16 noHook keys (15 abilities + the schema doc)", () => {
   const src = fs.readFileSync(ADV, "utf8");
   assert.strictEqual((src.match(/<!--/g) || []).length, 0, "an HTML comment survived the item 93 migration");
-  assert.strictEqual((src.match(/"noHook"/g) || []).length, 17, "expected 16 ability noHook keys + 1 schema doc key");
+  assert.strictEqual((src.match(/"noHook"/g) || []).length, 16, "expected 15 ability noHook keys + 1 schema doc key");
 });
 
 /* --- (i) a prose marker regresses (e.g. re-typed by hand, or a bad merge) → the NEW message ----- */

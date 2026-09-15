@@ -48,9 +48,13 @@ const SYNTH = {
 // R-128 (a): a block that states `attributes` and no `senses` reads the cosmere ladder at its AWA
 // (3 → 20 ft) and the census marks it (awa), not (d); an explicit `senses` still wins over AWA. Kept
 // OUT of SYNTH so the ledger / band / unattuned pins above and below stay exactly what they pin.
-const KEEN_SCOUT = { role: "rival", tier: 1, defenses: { phy: 12, cog: 10, spi: 10 }, hp: 18, folder: "Fixture Bestiary", movement: 30,
-  attributes: { str: 1, spd: 2, int: 0, wil: 1, awa: 3, pre: 0 },
-  items: [{ name: "Jab", kind: "weapon", attack: 4, damage: "1d6", damageType: "keen" }] };
+// R-137 (2026-09-15): stating attributes also puts the block on the PC attack model, so its Jab is
+// written the model's way — a ranged weapon (→ Light Weaponry) with dice-only damage and a stated
+// rank — and the census DERIVES its attack (SPD 2 + lwp 1 = +3) and hit EV (3.5 + 3 = 6.5).
+// R-139 (a): a PC-model block states no `defenses` — the census derives 13 / 11 / 13 from its attributes.
+const KEEN_SCOUT = { role: "rival", tier: 1, hp: 18, folder: "Fixture Bestiary", movement: 30,
+  attributes: { str: 1, spd: 2, int: 0, wil: 1, awa: 3, pre: 0 }, skills: { lwp: 1 },
+  items: [{ name: "Jab", kind: "weapon", range: "Range 30 ft.", damage: "1d6", damageType: "keen" }] };
 
 test("bestiary-census: the colour ledger halves a pair, counts unattuned blocks, and folders the legacy blocks apart", () => {
   const r = c.census(SYNTH, { pcHandlerTypes: new Set(["edha-gm-cue"]), customStatuses: new Set(["weakened"]) });
@@ -79,6 +83,16 @@ test("bestiary-census: senses and movement report stated vs derived, and the der
   const ov = overridden.blocks.find((b) => b.name === "Keen Scout");
   assert.deepStrictEqual([ov.sensesFt, ov.sensesStated, ov.sensesFromAwa], [60, true, false]);
   assert.ok(/Keen Scout.*\| 20 \(awa\) \|/.test(c.renderMarkdown(r)), "the §4 row prints the AWA-derived radius as `20 (awa)`");
+  // R-137: the PC-model block's attack and hit are derived, marked (pc) in §4, and counted in §1.
+  assert.deepStrictEqual([scout.model, scout.attackMods, scout.bestHitEv, scout.native], ["pc", [3], 6.5, 1]);
+  assert.deepStrictEqual([scout.phy, scout.cog, scout.spi], [13, 11, 13], "R-139 (a): a PC-model block's defenses are the derived 10 + attribute pair");
+  assert.deepStrictEqual([pair.phy, pair.cog, pair.spi], [12, 10, 10], "a flat block's defenses are the stated overrides");
+  assert.deepStrictEqual([pair.model, pair.attackMods, pair.bestHitEv], ["flat", [5], 5.5], "a flat-model block reads its stored numbers");
+  assert.deepStrictEqual([r.totals.pcModel, r.totals.flatModel], [1, 2]);
+  assert.ok(/Keen Scout.*\| 3 \(pc\) \| 6\.5 \|/.test(c.renderMarkdown(r)), "the §4 row prints the derived attack as `3 (pc)` beside the derived hit EV");
+  assert.ok(/\| Attack model \| 1 on the PC model .* 2 still on the flat model/.test(c.renderMarkdown(r)), "§1 counts the two populations");
+  const flatOnModel = c.census({ ...SYNTH, "Keen Scout": { ...KEEN_SCOUT, items: [{ name: "Jab", kind: "weapon", damage: "1d6+1", damageType: "keen" }] } }, {});
+  assert.ok(flatOnModel.unparsedDamage.some((u) => /Keen Scout \/ Jab: "1d6\+1" \(PC model/.test(u)), "a flat inside a PC-model attack's damage is reported, not summed");
 });
 
 test("bestiary-census: wiring counts split cues / effects / native rolls / noHook, and sole consumers are adversary-only handler types", () => {

@@ -6,6 +6,11 @@ happened). This is the *read-at-the-table* version: read-aloud boxes, NPCs with 
 ford combat statted, and a clue ledger. GM truth throughout **except §8 (player-safe)** —
 ⚑ marks a provisional default (name, coordinate) you can swap freely.
 
+> ⛔ **2026-09-15 (R-137 / R-139 (a), TODO item 166):** the printed statblocks below changed — every attack
+> derives from attribute + skill rank (one modifier on the test and the damage, as a PC's), and the
+> three defenses derive from the attribute pair. **The published GM script (the URL in
+> `EDHA_CAMPAIGN_STATE.md` §6) is owed a republish** on the house template with these numbers.
+
 Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
 in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
 §5a). Sites run **south down the Palewater**, the Thalendor/Corvaine border river: **Elmsworth**
@@ -335,7 +340,7 @@ that round goes.
 | The party… | Roek's response |
 |---|---|
 | Asks to see the writ | He wades two steps closer and holds it out flat. Free look at the wax — **the child's handprint** (below). Costs him nothing; he *wants* it read. |
-| Argues Withervale is starving too | The *Outs* Persuasion/Leadership test, at **DC 13 vs. his Spiritual**, right here. On a success he takes one barge's load and goes — no combat at all. |
+| Argues Withervale is starving too | The *Outs* Persuasion/Leadership test, at **DC 14 vs. his Spiritual** *(derived, R-139 (a); was 13)*, right here. On a success he takes one barge's load and goes — no combat at all. |
 | Plays for time / stalls | He gives them one more exchange, then: *"You've had the courtesy. Ground the grain."* Initiative. |
 | Draws, casts, or advances | Initiative immediately, and the parley round is spent — **but Roek's line still does not get a free volley**; the PCs simply acted first. |
 | Stands down | The raiders offload two barges onto the bar and vanish back across the shallows. |
@@ -398,17 +403,19 @@ moment Roek calls it or the fight turns. The statted fight is the sharp end; the
 the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
 
 **Corvaine Raider** — minion, ×2 (see scaling). *humanoid, tier 1.*
-- **Defenses** phy 12 / cog 11 / spi 11. **deflect 1** *(the too-new gear is still the tell — see
+- **Defenses** phy 13 / cog 12 / spi 11 *(derived from STR 2 SPD 1 / INT 1 WIL 1 / AWA 1 PRE 0, R-139 (a))*. **deflect 1** *(the too-new gear is still the tell — see
   below; the stamped blade is the clue in hand)*. **HP** 10. **foc** 1. **Move** 25 ft. Senses 10 ft
   (AWA 1). *(Retuned 2026-09-14, item 156: the squishy-party line below became the block's default
   after bench runs 44 and 48 — deflect 2 / HP 12 / 1d6+2 is now the front-line-party variant.)*
-- ▶ **Soldier's Crossbow** — attack +4, Range 60 ft., 1d6+1 **keen**.
-- ▶ **Shortsword** — attack +4, Reach 5 ft., 1d6+1 **keen**.
+- ▶ **Soldier's Crossbow** — attack +2, Range 60 ft., 1d6+2 **keen** *(R-137: SPD 1 + Light Weaponry 1 — one
+  modifier on the test and the damage; graze 1d6)*.
+- ▶ **Shortsword** — attack +2, Reach 5 ft., 1d6+2 **keen** *(STR 2 + Heavy Weaponry 0)*.
 - ⟲ **Break** (Reaction, free): when a Raider is first reduced below half HP *or* an ally drops,
   it may immediately Disengage and flee. These are not fanatics.
 
 **Corvaine Line-Caller** — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
-Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
+Raider (deflect, HP, Move; crossbow and shortsword both +2 for 1d6+2 — STR 1 + Heavy Weaponry 1, SPD 1 +
+Light Weaponry 1) with **defenses phy 12 / cog 13 / spi 13** *(derived)*, plus **inv 2** and:
 - ▶ **Guiding Signal** (1 Action, 1 Investiture — *the White tree talent, AS WRITTEN per
   ruling 40: humans use talents unmodified*): designate one PC within Attunement Range
   (15 ft at minion rank); the next Raider who tests against them this round **raises the
@@ -423,10 +430,10 @@ Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
 - White-attuned **Corvaine ground-stock** (ruling 36) — the ecology confirmed in play.
 
 **Sergeant Halden Roek** — rival, tier 1. *humanoid.*
-- **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 24 *(was 28; item 156, 2026-09-14 — he
+- **Defenses** phy 13 / cog 13 / spi 14 *(derived, R-139 (a) — his talk-out DC is 14 now)*. **deflect 2**. **HP** 24 *(was 28; item 156, 2026-09-14 — he
   calls the break at one third, so 16 is the fight's number)*. **foc** 3. **Move** 25 ft. Senses 10 ft.
-- ▶ **Issued Blade** — attack +5, Reach 5 ft., 1d8+2 **keen**.
-- ▶▶ **Press the Line** — attack +5, Reach 5 ft., 1d8+2 keen; on a hit, one ally Raider may make a
+- ▶ **Issued Blade** — attack +3, Reach 5 ft., 1d8+3 **keen** *(R-137: STR 2 + Heavy Weaponry 1; graze 1d8)*.
+- ▶▶ **Press the Line** — attack +3, Reach 5 ft., 1d8+3 keen; on a hit, one ally Raider may make a
   crossbow shot as a Reaction. *(Costs 1 focus.)*
 - ⟲ **Cover Their Retreat** (Reaction, 1 focus): when an ally within 20 ft would drop, Roek grants
   it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).
@@ -461,7 +468,7 @@ this crossing a dozen times and hates it more each time.
 
 ### Outs (reward talk and mercy)
 
-- **Persuasion / Leadership vs. Roek's Spiritual (DC 13):** offer a split of the grain, or point out
+- **Persuasion / Leadership vs. Roek's Spiritual (DC 14 — derived, R-139 (a); was 13):** offer a split of the grain, or point out
   Withervale is starving *too*, and he'll take one barge's load and go. (He can't wade home empty —
   his unit starves either way.)
 - **Intimidation (DC 14):** harder — he's already past fear — but a decisive show of force early
@@ -474,10 +481,10 @@ this crossing a dozen times and hates it more each time.
 - **Default:** Roek + 2 Raiders + 1 Line-Caller (ruling 39's shape: one invested minion at
   the sharp end).
 - ⚠️ **For THIS party the block's printed numbers ARE the softened line** (item 156, 2026-09-14:
-  Raider deflect 1 / HP 10 / 1d6+1 became the default after bench runs 44 and 48). Two Scholars and
+  Raider deflect 1 / HP 10 / +2 for 1d6+2 became the default after bench runs 44 and 48, the attack on the PC model since 2026-09-15). Two Scholars and
   an Envoy, no dedicated fighter (state doc §1): run them as printed and open with Ordered Advance
   rather than Signal. The fight still has to bruise; it now has to bruise a party with no front line.
-- **±1 PC:** ±1 Raider. **Front-line party:** take the Raiders back up to deflect 2 / HP 12 / 1d6+2
+- **±1 PC:** ±1 Raider. **Front-line party:** take the Raiders back up to deflect 2 / HP 12 and a rank of Heavy Weaponry (+3 for 1d6+3)
   and lead with Signal. **Squishy/support-heavy party:** as printed, and have the Line-Caller lead
   with Ordered Advance instead of Signal (mobility reads softer than advantage).
 - **Melee-heavy party:** keep the crossbow line in the scrub an extra round and add a fourth
@@ -549,7 +556,7 @@ always come from where they aren't.
 ### Adversary (tier 1; schema matches `data/adversaries.json`)
 
 **Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
-- **Defenses** phy 12 / cog 14 / spi 11. **deflect 1** (dense fog-gray plumage). **HP** 20.
+- **Defenses** phy 14 / cog 14 / spi 14 *(derived, R-139 (a): INT 2 / WIL 2 hold the belief DC at Cog 14)*. **deflect 1** (dense fog-gray plumage). **HP** 20.
   **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
 - ▶ **The Seeming** (1 Action — the Blue tree talent **Phantom Double**, adapted per ruling 40:
   self-only, at will): its image stands a pace from its body. Using it places the seeming as
@@ -559,9 +566,9 @@ always come from where they aren't.
   stands plainly seen. Its *call* sounds from the seeming, never the body. *(It costs the bird
   an Action to raise — a round spent hiding is a round it does not strike. That trade is the
   fight.)*
-- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d6+2 **keen** *(was 1d8+2; item 156, 2026-09-14,
+- ▶ **Spearing Beak** — attack +2, Reach 10 ft., 1d6+2 **keen** *(R-137, 2026-09-15: STR 2 + Heavy Weaponry 0, graze 1d6 — was +5; and 1d8+2 before item 156, 2026-09-14,
   after bench run 48's yardstick)*; **+1d6** against a character who is taken in by the seeming.
-- ▶▶ **Snatch and Wade** — attack +5, Reach 5 ft., vs. one Small-or-smaller creature or a
+- ▶▶ **Snatch and Wade** — attack +2, Reach 5 ft., vs. one Small-or-smaller creature or a
   carried/loose object (the dog; a grain sack): on a hit it grips instead of dealing damage and
   immediately moves its full Speed into the fog. *(This is what it actually wants.)*
 - ⟲ **Fade** (Reaction, 1 focus): when its seeming breaks or it takes damage, it moves 10 ft.

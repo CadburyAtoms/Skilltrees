@@ -46,7 +46,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { REPO_ROOT, DATA } = require("./lib/paths.js");
-const { sensesRangeFtFromAwa, advSensesRangeFt } = require("./foundry-build-parts.js");
+const { sensesRangeFtFromAwa, advSensesRangeFt, advOnPcModel, advAttackModel, advDefenses } = require("./foundry-build-parts.js");
 
 const REPORT_PATH = path.join(REPO_ROOT, "docs", "analysis", "bestiary", "CENSUS.md");
 const ENGINE_CORE = path.join(REPO_ROOT, "module-src", "scripts", "engine", "01-shared-core.js");
@@ -157,12 +157,20 @@ function census(data, ctx = {}) {
     const attackMods = [], hitEvs = [], types = new Set(), ruleShapes = [];
     let native = 0, cues = 0, effects = 0, noHook = 0, rules = 0;
     const statuses = [];
+    // R-137 (2026-09-15): a block that states `attributes` is on the PC attack model — its attack
+    // modifier and hit EV are DERIVED (attribute + skill rank [+ attackBonus]; dice + attribute +
+    // rank), the numbers the table will roll. A flat-model block's stored `attack` / "1d6+2" are read
+    // as before. The §1 roster row counts the two populations.
+    const onModel = advOnPcModel(a);
     for (const it of items) {
-      if (it.attack != null || it.damage != null || it.heal != null) native++;
-      if (typeof it.attack === "number") attackMods.push(it.attack);
+      const model = onModel ? advAttackModel(a, it) : null;
+      const isAttack = model ? true : it.attack != null;
+      if (isAttack || it.damage != null || it.heal != null) native++;
+      if (model) attackMods.push(model.attackTotal);
+      else if (typeof it.attack === "number") attackMods.push(it.attack);
       if (it.damage != null) {
-        const d = parseDamage(it.damage);
-        if (d) hitEvs.push(d.ev); else unparsedDamage.push(`${name} / ${it.name}: ${JSON.stringify(it.damage)}`);
+        const ev = model ? model.hitEv : (parseDamage(it.damage) || {}).ev;
+        if (Number.isFinite(ev)) hitEvs.push(ev); else unparsedDamage.push(`${name} / ${it.name}: ${JSON.stringify(it.damage)}${model ? " (PC model: an attack's damage is dice only)" : ""}`);
         const ty = it.damageType || "(none)";
         types.add(ty); damageTypes[ty] = (damageTypes[ty] || 0) + 1;
       }
@@ -182,10 +190,12 @@ function census(data, ctx = {}) {
     const immunities = (a.conditionImmunities || []).map((s) => String(s).toLowerCase());
     for (const s of immunities) (statusUse[s] = statusUse[s] || new Set()).add(name);
 
+    // R-139 (a): a PC-model block's defenses derive (10 + the attribute pair); a flat block's are stated.
+    const def = onModel ? advDefenses(a) : { phy: a.defenses && a.defenses.phy, cog: a.defenses && a.defenses.cog, spi: a.defenses && a.defenses.spi };
     blocks.push({
       name, folder: a.folder || null, legacy: !a.folder || /^Legacy\b/.test(a.folder), role: a.role || "rival", tier: a.tier ?? 1, size: a.size || "medium",
       creatureType: a.creatureType || "humanoid", count: a.count || 1, leylines,
-      hp: a.hp, phy: a.defenses && a.defenses.phy, cog: a.defenses && a.defenses.cog, spi: a.defenses && a.defenses.spi,
+      hp: a.hp, phy: def.phy, cog: def.cog, spi: def.spi,
       deflect: a.deflect || 0, foc: a.foc || 0, inv: a.inv ?? (leylines.length ? 2 : 0),
       skills: a.skills || {}, talents: a.talents || [], immunities,
       sensesFt: advSensesRangeFt(a), sensesStated: a.senses != null, sensesFromAwa: a.senses == null && a.attributes?.awa != null,
@@ -193,6 +203,7 @@ function census(data, ctx = {}) {
       items: items.length, native, rules, cues, effects, noHook, attackMods, hitEvs,
       bestHitEv: hitEvs.length ? Math.max(...hitEvs) : null, damageTypes: [...types].sort(), ruleShapes,
       placeholderArt: typeof a.img === "string" && a.img.startsWith("icons/"),
+      model: onModel ? "pc" : "flat",
     });
   }
 
@@ -228,6 +239,7 @@ function census(data, ctx = {}) {
       talentBlocks: blocks.filter((b) => b.talents.length).length, talents: blocks.reduce((n, b) => n + b.talents.length, 0),
       sensesStated: blocks.filter((b) => b.sensesStated || b.sensesFromAwa).length, walkStated: blocks.filter((b) => b.walkStated).length,
       placeholderArt: blocks.filter((b) => b.placeholderArt).length, unattuned,
+      pcModel: blocks.filter((b) => b.model === "pc").length, flatModel: blocks.filter((b) => b.model === "flat").length,
     },
     ledger: Object.fromEntries(Object.entries(ledger).map(([c, v]) => [c, Math.round(v * 10) / 10])),
     bands, folders, blocks, shapes, soleConsumers, statuses, damageTypes, unparsedDamage,
@@ -244,7 +256,7 @@ function renderMarkdown(r) {
     (r.stamps ? `\`data/adversaries.json\` @ \`${r.stamps.adversaries}\` and the ${r.stamps.authoredFiles} authored overlays @ \`${r.stamps.authored}\`` : "the data") +
     "; regenerate after either changes (`tests/bestiary-census.test.js` fails while this file is stale). " +
     "The standard these numbers are read against is `.claude/skills/bestiary-forge/STANDARD.md`; the scope licence is R-101 (a): a yardstick, not a finding about adversary design.", "");
-  L.push("**Per hit, not per turn.** Every damage figure is the expected value of one landed hit (dice average plus flat modifier). Actions per turn, hit rates against real defenses and the graze floor are table facts the bestiary yardstick bench fights measure, on copies of the actual PCs.", "");
+  L.push("**Per hit, not per turn.** Every damage figure is the expected value of one landed hit (dice average plus the modifier — the stored flat on a flat-model block, attribute + skill rank on a PC-model block, R-137). Actions per turn, hit rates against real defenses and the graze floor are table facts the bestiary yardstick bench fights measure, on copies of the actual PCs.", "");
 
   L.push("## 1. The roster", "");
   L.push("| | |", "|---|---|");
@@ -252,6 +264,7 @@ function renderMarkdown(r) {
   L.push(`| Roles | ${ROLES.map((x) => `${t.roles[x]} ${x}`).join(", ")} |`);
   L.push(`| Tiers | ${Object.entries(t.tiers).sort().map(([k, v]) => `${v} at tier ${k}`).join(", ")} |`);
   L.push(`| Bespoke items | ${t.items}: ${t.native} roll natively (attack / damage / heal), ${t.rules} event rules (${t.cues} GM cues, ${t.effects} effects), ${t.noHook} declare \`noHook\` |`);
+  L.push(`| Attack model | ${t.pcModel} on the PC model (attributes + skill ranks — attack and damage derived, R-137), ${t.flatModel} still on the flat model (a stated attack bonus and a flat inside the damage, right only at attributes 0; they migrate nation by nation, R-135) |`);
   L.push(`| Tree talents on blocks | ${t.talents} talents on ${t.talentBlocks} blocks |`);
   L.push(`| Senses stated / movement stated | ${t.sensesStated} / ${t.walkStated} blocks (a `+"`senses`"+` override or an AWA on the ladder, R-128; the rest inherit AWA 0 → ${sensesRangeFtFromAwa(0)} ft and the ${DEFAULT_WALK_FT} ft walk default) |`);
   L.push(`| Placeholder art in data | ${t.placeholderArt} blocks point at a core icon (the build swaps in real art from \`art/adversaries/\` when Ben drops it) |`, "");
@@ -266,10 +279,10 @@ function renderMarkdown(r) {
   L.push(`| ${r.ledger.white} | ${r.ledger.blue} | ${r.ledger.black} | ${r.ledger.red} | ${r.ledger.green} | ${t.unattuned} |`, "");
 
   L.push("## 4. Every block", "");
-  L.push("Senses and Move read **(d)** when the block inherits the derivation default instead of stating a value; senses read **(awa)** when the block states `attributes` and the cosmere ladder derives the radius from its AWA (R-128). Rules read cues / effects / native rolls / `noHook`.", "");
+  L.push("Senses and Move read **(d)** when the block inherits the derivation default instead of stating a value; senses read **(awa)** when the block states `attributes` and the cosmere ladder derives the radius from its AWA (R-128). Atk reads **(pc)** when the block is on the PC attack model and the number is derived — attribute + skill rank, plus an `attackBonus` only where one is stated (R-137); the hit EV beside it is dice + that modifier, and such a block's Phy/Cog/Spi are the derived 10 + attribute pair (R-139 (a)). Rules read cues / effects / native rolls / `noHook`.", "");
   L.push("| Block | Folder | Role · tier | Colours | HP | Phy/Cog/Spi | Dfl | Atk | Best hit EV | Types | Senses | Move | Rules | Talents |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
   for (const b of [...r.blocks].sort((x, y) => (x.folder || "").localeCompare(y.folder || "") || x.name.localeCompare(y.name))) {
-    L.push(`| ${b.name}${b.count > 1 ? ` ×${b.count}` : ""} | ${b.folder || "—"} | ${b.role} · T${b.tier} | ${b.leylines.join("+") || "—"} | ${b.hp} | ${b.phy}/${b.cog}/${b.spi} | ${b.deflect} | ${b.attackMods.length ? [...new Set(b.attackMods)].sort((p, q) => p - q).join("/") : "—"} | ${b.bestHitEv == null ? "—" : b.bestHitEv} | ${b.damageTypes.join(", ") || "—"} | ${b.sensesFt}${b.sensesStated ? "" : b.sensesFromAwa ? " (awa)" : " (d)"} | ${b.walkFt}${b.walkStated ? "" : " (d)"} | ${b.cues}/${b.effects}/${b.native}/${b.noHook} | ${b.talents.length ? b.talents.join(", ") : "—"} |`);
+    L.push(`| ${b.name}${b.count > 1 ? ` ×${b.count}` : ""} | ${b.folder || "—"} | ${b.role} · T${b.tier} | ${b.leylines.join("+") || "—"} | ${b.hp} | ${b.phy}/${b.cog}/${b.spi} | ${b.deflect} | ${b.attackMods.length ? [...new Set(b.attackMods)].sort((p, q) => p - q).join("/") + (b.model === "pc" ? " (pc)" : "") : "—"} | ${b.bestHitEv == null ? "—" : b.bestHitEv} | ${b.damageTypes.join(", ") || "—"} | ${b.sensesFt}${b.sensesStated ? "" : b.sensesFromAwa ? " (awa)" : " (d)"} | ${b.walkFt}${b.walkStated ? "" : " (d)"} | ${b.cues}/${b.effects}/${b.native}/${b.noHook} | ${b.talents.length ? b.talents.join(", ") : "—"} |`);
   }
   L.push("");
 

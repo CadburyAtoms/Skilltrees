@@ -37,10 +37,18 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
   for (const a of Object.values(actors)) {
     const s = a.system;
     const skl = s.skills ? ` Skills ${Object.entries(s.skills).map(([k, v]) => `${k}:${v.rank}`).join(",")}` : "";
-    console.log(`${a.name} [${s.role}/${s.type.id}${s.type.custom ? `:${s.type.custom}` : ""}/T${s.tier}/${s.size}] HP ${s.resources.hea.max.override} P/C/S ${s.defenses.phy.override}/${s.defenses.cog.override}/${s.defenses.spi.override} Def ${s.deflect?.override ?? "-"} Foc ${s.resources.foc.max.override} Inv ${s.resources.inv.max.override}${s.movement ? ` Move ${s.movement.walk.rate.override}` : ""}${skl} → ${(folders[a.folder] || {}).name}`);
+    // R-137 / R-139 (a) (2026-09-15): an actor that states `attributes` is on the PC model — its
+    // defenses DERIVE on the sheet (10 + the attribute pair, the published pack's shape), so the
+    // pack carries NO override for them; print the derivation as "(d)". A flat-model actor keeps
+    // the July overrides and the original check.
+    const at = s.attributes ? Object.fromEntries(Object.entries(s.attributes).map(([k, v]) => [k, Number(v?.value) || 0])) : null;
+    const dv = at ? { phy: 10 + (at.str || 0) + (at.spd || 0), cog: 10 + (at.int || 0) + (at.wil || 0), spi: 10 + (at.awa || 0) + (at.pre || 0) } : null;
+    const pcs = at ? `${dv.phy}/${dv.cog}/${dv.spi} (d)` : `${s.defenses?.phy?.override}/${s.defenses?.cog?.override}/${s.defenses?.spi?.override}`;
+    console.log(`${a.name} [${s.role}/${s.type.id}${s.type.custom ? `:${s.type.custom}` : ""}/T${s.tier}/${s.size}] HP ${s.resources.hea.max.override} P/C/S ${pcs} Def ${s.deflect?.override ?? "-"} Foc ${s.resources.foc.max.override} Inv ${s.resources.inv.max.override}${s.movement ? ` Move ${s.movement.walk.rate.override}` : ""}${skl} → ${(folders[a.folder] || {}).name}`);
     if (a.type !== "adversary") fail(`${a.name}: type ${a.type}`);
     if (!a.folder || !folders[a.folder]) fail(`${a.name}: bad folder`);
-    if (s.defenses.phy.useOverride !== true) fail(`${a.name}: phy not useOverride`);
+    if (at) { if (s.defenses?.phy?.useOverride === true) fail(`${a.name}: PC-model actor carries a phy defense override — defenses derive from attributes (R-139 (a))`); }
+    else if (s.defenses?.phy?.useOverride !== true) fail(`${a.name}: phy not useOverride`);
     if (!Array.isArray(a.items)) fail(`${a.name}: items not array`);
     for (const id of a.items) {
       if (typeof id !== "string") { fail(`${a.name}: items entry not string`); continue; }

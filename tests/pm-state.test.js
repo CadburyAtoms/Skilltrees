@@ -424,6 +424,12 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // 2026-09-14, later the same evening: Ben answered R-136 (a) in chat ("Default for R 136 as
   // well") with the statblock-gate yes; the body moved to §K.16 and the open set is EMPTY again.
   // R-136 joins the closed list below; the length assertion moves 1 → 0.
+  // 2026-09-15, the attack-model rerun (item 166): FOUR rulings filed already answered — R-137 (Ben's
+  // 2026-09-14 ruling that adversaries follow the same rules as the PCs, written in the §K.16 shape
+  // with a §G stub), and R-138 … R-140 (the per-round line, which derived stats bind on the PC model,
+  // how R-134's rows read under one modifier), filed on the gate page and answered "defaults on all
+  // rulings" in chat the same day. All four sit in §K.17 with stubs in §G and §L; the open set stays
+  // EMPTY and the four join the closed list below.
   const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
@@ -431,7 +437,8 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91",
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
-      "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136"]) {
+      "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
+      "R-137", "R-138", "R-139", "R-140"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),

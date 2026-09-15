@@ -73,14 +73,15 @@ const ADV_ITEM_ICON = {
 };
 // Leyline rank by role (ruling 40 default, Ben 2026-07-14): minion 1 / rival 2 / boss 3 per attuned
 // color — dice scale d4/d6/d8 and Attunement Range 15/30/60 ft. Explicit `skills` entries override.
-const ROLE_LEYLINE_RANK = { minion: 1, rival: 2, boss: 3 };
+// ROLE_LEYLINE_RANK and SKILL_ATTR moved to foundry-build-parts.js (R-137, 2026-09-15) so the PC
+// attack model can derive from them where tests can reach it; required below with the other parts.
 // Adversary art auto-detect dir (under MODROOT); filenames are contractual — see EDHA_ADVERSARY_ART_WISHLIST.md.
 const ADV_ART_DIR = "art/adversaries";
 
 // ---------- reference maps ----------
 const STD_SKILL = { agility:"agi", athletics:"ath", "heavy weaponry":"hwp", "light weaponry":"lwp", stealth:"stl", thievery:"thv", crafting:"cra", deduction:"ded", discipline:"dis", intimidation:"inm", lore:"lor", medicine:"med", deception:"dec", insight:"ins", leadership:"lea", perception:"prc", persuasion:"prs", survival:"sur" };
 const LEYLINE_SKILL = { white:"white", blue:"blue", black:"black", red:"red", green:"green" };
-const SKILL_ATTR = { white:"wil", blue:"int", black:"pre", red:"str", green:"awa", agi:"spd", ath:"str", hwp:"str", lwp:"spd", stl:"spd", thv:"spd", cra:"int", ded:"int", dis:"wil", inm:"wil", lor:"int", med:"int", dec:"pre", ins:"awa", lea:"pre", prc:"awa", prs:"pre", sur:"awa" };
+// SKILL_ATTR (skill → attribute, the system's own map) lives in foundry-build-parts.js — see above.
 const ATTR_ALIASES = { STR:"str", STRENGTH:"str", SPD:"spd", SPEED:"spd", INT:"int", INTELLECT:"int", WIL:"wil", WILLPOWER:"wil", AWA:"awa", AWARENESS:"awa", PRE:"pre", PRESENCE:"pre" };
 
 // NOTE: all paths verified to exist in Foundry's public/icons. Broken paths => node sprite never draws.
@@ -117,7 +118,8 @@ const { applyAuthorable, snapshotDoc, diffUnextractedEdits, readPack, slugify } 
 // imported: classic-level at load + a top-level async IIFE). Do not re-inline it here — see
 // TODO_REPO_HYGIENE #16 (a malformed authored file used to be dropped silently; the shared loader
 // throws, naming the file, instead).
-const { loadAuthoredIndex, authoredOverlayFor, advSensesRangeFt, advAttributes, advInvDefault } = require("./foundry-build-parts.js");
+const { loadAuthoredIndex, authoredOverlayFor, advSensesRangeFt, advAttributes, advInvDefault,
+        SKILL_ATTR, ROLE_LEYLINE_RANK, advSkills, advAttackModel, signed, advOnPcModel } = require("./foundry-build-parts.js");
 // Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
 // talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
 // events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
@@ -1010,12 +1012,19 @@ function rangeLabel(r) {
   return t.replace(/^(reach|range)\b/i, m => cap(m.toLowerCase()));
 }
 
-function advItemDoc(advName, raw, sort) {
+function advItemDoc(advName, raw, sort, adv = null) {
   const kind = raw.kind === "trait" ? "trait" : raw.kind === "weapon" ? "weapon" : "action";
   const costStr = raw.cost || (kind === "trait" ? "Passive" : "1 Action");
   const spec = activationSpec(costStr);
   const { consume, costText } = parseCost(raw.consume);
-  const isAttack = raw.attack != null;           // damage optional: a grab/grapple attack rolls to-hit only
+  /* R-137 (Ben, 2026-09-14; built 2026-09-15): a block that states `attributes` is on the PC ATTACK
+   * MODEL — its attacks derive attack and damage from attribute + skill rank exactly as the system
+   * rolls a PC's item (foundry-build-parts.js `advAttackModel`, which also says which items ARE
+   * attacks there: weapons, and actions stating `attackSkill`). `model` is null on a flat-model block
+   * (no attributes), where every expression below reduces to the July shape and the pack builds
+   * byte-identically — proved by a scratch-build diff on 2026-09-15, and re-provable the same way. */
+  const model = adv ? advAttackModel(adv, raw) : null;
+  const isAttack = model ? true : raw.attack != null;   // damage optional: a grab/grapple attack rolls to-hit only
   const isDmgRoll = !isAttack && raw.damage;     // damage-only roll (heal/AoE) — raw dice, no skill mod
   /* Only a TRUE heal (damageType "heal" — Suture Cradle) gets the "Restores…" prose; a non-attack
    * ability with a real damage type (Flame Surge's 2d8 energy — 07-26n) keeps its text-driven
@@ -1023,7 +1032,7 @@ function advItemDoc(advName, raw, sort) {
    * detonate. Before this split, giving such an ability a damage field rewrote its card as a heal. */
   const isHeal = isDmgRoll && String(raw.damageType || "").toLowerCase() === "heal";
   const ranged = /\brange\b/i.test(raw.range || "");
-  const skill = raw.skill || (ranged ? "lwp" : "hwp");
+  const skill = model ? model.skill : (raw.skill || (ranged ? "lwp" : "hwp"));
   const attribute = SKILL_ATTR[skill] || "str";
 
   /* An ability that GATES ITSELF ON A TEST has to roll one. `edha-def-test` (H1) is a decider, not a
@@ -1047,8 +1056,16 @@ function advItemDoc(advName, raw, sort) {
   if (isAttack) {
     activation.type = "skill_test";
     activation.skill = skill;
-    activation.modifierFormula = String(raw.attack); // flat attack bonus -> added to the d20 test as a part
-    if (raw.damage) damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
+    // FLAT model: the block's whole attack bonus rides `modifierFormula` as a part beside the system's
+    // own `@mod` (attribute + rank), which is 0 on a block with no attributes — the only reason the
+    // flat number ever read right at the table (R-137's finding, verified live 2026-09-15). PC model:
+    // `@mod` IS the attack; only an explicit `attackBonus` goes here, and an empty string is what the
+    // system's own companions-and-adversaries pack writes on every one of its strikes.
+    activation.modifierFormula = model ? (model.bonus ? String(model.bonus) : "") : String(raw.attack);
+    // Damage on the PC model is the dice alone — the system appends attribute + rank at roll time
+    // (index.js rollDamage: `${formula} + ${mod}`) — so the card's Hit line prints the derived total
+    // while the document carries no number that would double-count it.
+    if (raw.damage) damage = { formula: model && model.dice ? model.dice.text : raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   } else if (defTestSkill) {
     activation.type = "skill_test";
     activation.skill = testSkill;
@@ -1060,13 +1077,16 @@ function advItemDoc(advName, raw, sort) {
 
   let descValue;
   if (isAttack) {
-    const head = [`<strong>Attack</strong> +${raw.attack}`, `<strong>${rangeLabel(raw.range)}</strong>`, `<strong>Targets</strong> ${esc(raw.targets || "one")}`];
+    // The card prints the DERIVED total on the PC model (Attack = attribute + rank [+ bonus]; Hit =
+    // dice + attribute + rank; Graze = the dice) — the numbers the roll will actually show.
+    const head = [`<strong>Attack</strong> ${model ? signed(model.attackTotal) : `+${raw.attack}`}`, `<strong>${rangeLabel(raw.range)}</strong>`, `<strong>Targets</strong> ${esc(raw.targets || "one")}`];
     descValue = `<p>${head.join("; ")};</p>`;
     if (raw.damage) {
-      const typeCap = cap(raw.damageType), grazeF = raw.graze || stripFlat(raw.damage);
+      const typeCap = cap(raw.damageType), grazeF = raw.graze || (model && model.dice ? model.dice.text : stripFlat(raw.damage));
+      const hitF = model && model.hitFormula ? model.hitFormula : raw.damage;
       descValue +=
         `<p><strong>Graze</strong> [[damage ${grazeF} ${typeCap} average]];</p>` +
-        `<p><strong>Hit</strong> [[damage ${raw.damage} ${typeCap} average]]${raw.rider ? `. ${raw.rider}` : ""}</p>`;
+        `<p><strong>Hit</strong> [[damage ${hitF} ${typeCap} average]]${raw.rider ? `. ${raw.rider}` : ""}</p>`;
     } else if (raw.rider) {
       descValue += `<p><strong>Hit</strong> ${raw.rider}</p>`;     // no-damage attack (grab): the rider IS the hit effect
     }
@@ -1097,8 +1117,9 @@ function advItemDoc(advName, raw, sort) {
   // Foundry's lenient-load fallback to the initial), system.id is the registry/custom id slug,
   // range lives at attack.range {value, long, unit} (the old top-level `range` and `weaponId`
   // fields simply stripped), damage.skill mirrors the weapon skill (sample: Longsword), and the
-  // expertise flag is `expertise`, not `expert`. Same skill_test + modifierFormula roll as the
-  // action shape so the PDF attack numbers are preserved regardless of the actor's skill ranks.
+  // expertise flag is `expertise`, not `expert`. Same skill_test roll as the action shape. (This
+  // line read "modifierFormula … so the PDF attack numbers are preserved regardless of the actor's
+  // skill ranks" until 2026-09-15 — true only at attributes 0; see R-137 and `model` above.)
   const weaponRangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
   const weaponType = raw.weaponType || (skill === "lwp" ? "light_wpn" : "heavy_wpn");
 
@@ -1167,12 +1188,8 @@ function advItemDoc(advName, raw, sort) {
   };
 }
 
-function advSkills(adv) {
-  const skills = {};
-  for (const c of adv.leylines || []) skills[String(c).toLowerCase()] = { rank: ROLE_LEYLINE_RANK[adv.role || "rival"] || 1 };
-  for (const [id, rank] of Object.entries(adv.skills || {})) skills[id] = { rank: Number(rank) || 0 };
-  return skills;
-}
+// advSkills(adv) — the block's skill ranks (attuned colours at the role rank, explicit `skills` as
+// given) — lives in foundry-build-parts.js since R-137 (the attack model reads the same ranks).
 
 function advActorSystem(adv) {
   const ov = n => ({ override: n, useOverride: true });
@@ -1181,7 +1198,13 @@ function advActorSystem(adv) {
     type: adv.creatureType === "custom" ? { id: "custom", custom: adv.customType || "", subtype: "" } : { id: adv.creatureType || "humanoid" },
     tier: adv.tier ?? 1,
     role: adv.role || "rival",
-    defenses: { phy: ov(adv.defenses.phy), cog: ov(adv.defenses.cog), spi: ov(adv.defenses.spi) },
+    // R-139 (a) (Ben, 2026-09-15): on the PC model the defenses DERIVE — the system writes 10 + the
+    // attribute pair on the sheet, the published pack's shape — so no override is written and the
+    // DataModel's own default (override null, useOverride false) stands; the model gate holds a
+    // stated `defenses` on such a block to the same numbers. A flat-model block keeps the July
+    // overrides in this same key position (its attributes are 0 and the card's numbers are the only
+    // truth it has), so its document stays byte-identical to the July build.
+    ...(advOnPcModel(adv) ? {} : { defenses: { phy: ov(adv.defenses.phy), cog: ov(adv.defenses.cog), spi: ov(adv.defenses.spi) } }),
     resources: {
       hea: { value: adv.hp, max: ov(adv.hp) },
       foc: { value: adv.foc || 0, max: ov(adv.foc || 0) },
@@ -1308,7 +1331,7 @@ function buildAdversaries(resolveTalent) {
     const img = art.portrait || adv.img;
     const tokenImg = art.token || art.portrait || adv.token || adv.img;
     let sortI = 0;
-    const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000)));
+    const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000), adv));
     // Tree-talent embeds (ruling 40): ACTION-TYPED TWINS of the built talent docs. The adversary
     // sheet renders exactly three item sections — trait / weapon / action (AdversaryActionsListComponent
     // filters `item.type === type`) — so a genuine `talent`-type embed is invisible on the sheet

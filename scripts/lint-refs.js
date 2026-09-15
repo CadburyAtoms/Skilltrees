@@ -1133,12 +1133,16 @@ engine.split("\n").forEach((lineText, i) => {
    * (`raw.skill || defTestSkill` for a non-attack, the weapon skill for an attack). The type check
    * is skipped for the same reason: the builder promotes it. Kept narrow deliberately — this is a
    * mirror of one builder line, not a re-implementation of the builder. */
-  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+  // R-137 (2026-09-15): on the PC attack model (the block states `attributes`) an attack is a weapon or
+  // an item stating `attackSkill`, and it tests THAT skill; the flat model keeps `attack` + `skill`.
+  // The same helpers the builder uses, so this stays a mirror and not a second implementation.
+  const { advIsAttackItem, advOnPcModel, advAttackSkill } = require("./foundry-build-parts.js");
+  for (const { advName, adv, item: it } of ADVERSARY_ENTRIES) {
     const h = defTestOf(Array.isArray(it?.events) ? it.events : []);
     if (!h || !needsRoll(h) || !h.skill) continue;
-    const isAttack = it.attack != null;
+    const isAttack = advIsAttackItem(adv, it);
     const ranged = /\brange\b/i.test(it.range || "");
-    const effectiveSkill = isAttack ? (it.skill || (ranged ? "lwp" : "hwp")) : (it.skill || h.skill);
+    const effectiveSkill = isAttack ? (advOnPcModel(adv) ? advAttackSkill(it) : (it.skill || (ranged ? "lwp" : "hwp"))) : (it.skill || h.skill);
     if (effectiveSkill !== h.skill) {
       err(`${ADV_REL} (${advName} / ${it.name}): the ability rolls "${effectiveSkill}" but its ` +
           `edha-def-test rule waits for "${h.skill}" — the contest is matched BY SKILL, so it never resolves ` +

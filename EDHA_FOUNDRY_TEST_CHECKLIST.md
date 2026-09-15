@@ -98,6 +98,8 @@ confirm the sync state before reporting a bug.
 
 ✅ **The rebuilds owed by the Corvaine + Riverlands bestiary pass (PR #388) are CLEARED** — the agent-run deploy 2026-09-15T01:50:15Z from main @ e54bb93 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS: the six re-statted blocks, the Corvaine Well-Warden and the R-136 (a) card texts are live in the packs. World adversaries placed before that stamp are snapshots until a ⟳ Sync Adversaries (Ben's button, or a bench-scoped call); a PC who owns Phantom Double needs one ⟳ Sync Talents. The section "Corvaine + Riverlands bestiary pass — item 156" rows can now be driven.
 
+⛔ **A PACK REBUILD IS OWED (filed 2026-09-15, PR #390 — the R-137 rerun, item 166).** `data/adversaries.json`: twelve blocks are on the PC attack model (the seven of PR #388, the four Thalendor blocks, the Preacher of the Lowered Crown) — attacks derived from attribute + skill rank with dice-only damage, defenses derived (R-139 (a)). Until the adversaries REBUILD + a scoped ⟳ Sync Adversaries (Session 1 — Palewater Ford, Riverlands Bestiary, Corvaine River-Plains Bestiary, Thalendor Heartwood Bestiary), **every world copy and fresh import of the seven PR-#388 blocks rolls the flat card numbers with STR / SPD on top** (a Raider's Shortsword at +6 for 1d6+3 against a card that says +4 for 1d6+1 — verified live 2026-09-15). The rows in "Corvaine + Riverlands rerun and the Thalendor Heartwood pass — R-137" wait on it; rows 156-1 … 156-9 read the new numbers once it lands.
+
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
 never need replacing; PCs need no ⟳ Sync unless a section says a specific pack-baked talent
@@ -1120,16 +1122,16 @@ licensed scene. Numbers: `docs/analysis/bestiary/CENSUS.md`; the reasons: the 20
 `docs/analysis/bestiary/YARDSTICK-2026-09-14.md`.)*
 
 - [ ] 🤖 **156-1 — Corvaine Raider reads the retune:** a fresh import shows HP 10, Deflect 1, Soldier's
-      Crossbow and Shortsword at 1d6+1 keen, the token's sight range 10 ft (AWA 1); a hit that takes
+      Crossbow and Shortsword at +2 for 1d6+2 keen (R-137, 2026-09-15 — row 156-15 reads the rolls), defenses 13 / 12 / 11 derived (R-139 (a)), the token's sight range 10 ft (AWA 1); a hit that takes
       it below 5 posts the Break cue, and its two rules' descriptions open with `cue — table call:`.
-- [ ] 🤖 **156-2 — Corvaine Line-Caller reads the retune:** HP 10 / Deflect 1 / 1d6+1, token 10 ft
+- [ ] 🤖 **156-2 — Corvaine Line-Caller reads the retune:** HP 10 / Deflect 1 / +2 for 1d6+2 on both weapons (R-137), defenses 12 / 13 / 13 derived, token 10 ft
       (AWA 2), Investiture 2 on the sheet (not the derived 4); Guiding Signal's picker card lists the
       PC tokens within 15 ft; The Line Falls Apart cues at 0 HP with the labelled text.
 - [ ] 🤖 **156-3 — Sergeant Halden Roek reads HP 24 and his attributes:** Athletics and Discipline
       total 2 on the sheet with no rank written (STR 2 / WIL 2), token 10 ft, Investiture 2; the Not a
       Bandit cue posts on the write that takes him below 8; Press the Line's hit still cues the
       Raider shot.
-- [ ] 🤖 **156-4 — Mistheron's beak and senses:** Spearing Beak rolls 1d6+2 keen with
+- [ ] 🤖 **156-4 — Mistheron's beak and senses:** Spearing Beak rolls +2 for 1d6+2 keen (R-137) with
       `(1d6)[Spearing Beak]` appended against a fooled PC copy and its Graze subtotal reads 1d6; token
       20 ft (AWA 3); Stealth totals 2 with no rank written; The Seeming's card carries the R-136
       sentence ("resolves against it (defenses 0) and affects only the seeming").
@@ -1153,6 +1155,76 @@ licensed scene. Numbers: `docs/analysis/bestiary/CENSUS.md`; the reasons: the 20
       confirms every old skill total reappears from the attribute alone (Roek ath 2 / dis 2, Mistheron
       stl 2, Tollbird prc 3, Surecat prc 4 / stl 3, Well-Warden dec 4) and every prototype token's
       `sight.range` equals the ladder at its AWA (10 / 10 / 10 / 20 / 20 / 20 / 10).
+
+## Corvaine + Riverlands rerun and the Thalendor Heartwood pass — R-137, item 156 (2026-09-15 — DATA: adversaries REBUILD + ⟳ Sync Adversaries scoped to the Session 1, Riverlands, Corvaine River-Plains and Thalendor Heartwood folders; PR #390)
+
+*(The correctness rerun of the first nation pass and the second nation pass, approved by Ben on
+2026-09-15 from the gate page (https://claude.ai/artifact/UciQTpc4TcAej9thP71tBQ): "you have my
+permission to continue with everything as presented and defaults on all rulings" — the one change
+was the Thalendor human's colour (White). Every attack on these twelve blocks is now ONE skill
+modifier on the test and the damage, as a PC's (R-137); every defense derives from the attribute
+pair (R-139 (a)). Every row is a fresh import from the rebuilt pack, rolled through the item's own
+play button or `rollAttack`, on a licensed scene. Numbers: `docs/analysis/bestiary/CENSUS.md`; the
+derivation of each: `node scripts/validate-adversary-model.js`.)*
+
+- [ ] 🤖 **156-10 — Rootling Swarm on the model:** a fresh import reads HP 6, Deflect 0, defenses
+      13 / 10 / 11 derived, a 10 ft token, Athletics 1 and Stealth 2 on the sheet with no rank
+      written; Whip and Root rolls `1d20 + 2` and `1d6 + 2` (STR 1 + Heavy Weaponry 1), graze subtotal
+      `1d6`; Grasping Vines rolls `1d20 + 2` against a copy's Physical (AWA 1 + green 1); a 3-damage
+      write posts the scatter cue; Territorial Instinct's card posts once per round per living rootling
+      with the "ready this round" note.
+- [ ] 🤖 **156-11 — Briar-Gone Grove on the model:** the Bough rolls `1d20 + 4` and `1d8 + 4` (STR 3 +
+      Heavy Weaponry 1), graze `1d8`; Athletics 3 on the sheet from STR 3 alone; defenses 13 / 13 / 12
+      derived, the token 30 ft (the stated senses); with three PC copies inside its Draw Mana briar the
+      Bough rolls with advantage (Apex Predator's rule) and with two it does not; the Thorn Field and
+      Spreading Roots cue notes lead with their condition.
+- [ ] 🤖 **156-12 — Crownox Ring on the model:** Horn Toss rolls `1d20 + 3` and `1d8 + 3` (STR 2 + Heavy
+      Weaponry 1); Athletics 2 from STR 2; defenses 13 / 10 / 13 derived; the token 20 ft; Investiture 2;
+      no aura effect on any ox (Guardian Stance stays a `noHook`); every rule description opens with its
+      label.
+- [ ] 🤖 **156-13 — Reeve-Owl on the model:** the Stoop of Office rolls Agility — `1d20 + 3` and
+      `1d8 + 3` (SPD 3 + Agility 0), graze `1d8`; Perception 3 and Stealth 3 with no ranks written;
+      defenses 13 / 11 / 13 derived; a hit on a Weakened copy takes the owl's Focus 1 → 2 with a
+      "regains 1 Focus" card, a hit on an un-Weakened copy does nothing, at 3 Focus it stays 3; the
+      token 20 ft.
+- [ ] 🤖 **156-14 — the set, from the rebuilt pack:** one `pack.getDocuments()` pass over the twelve
+      PC-model blocks confirms every weapon and attack action carries `modifierFormula ""` (or the
+      stated bonus only) and dice-only damage, every card's Attack and Hit equal the roll's own
+      numbers, every actor's `system.defenses` carries no override and the sheet shows 10 + the
+      attribute pair, and every old skill total reappears from the attribute alone (rootling
+      Athletics 1 / Stealth 2, ring Athletics 2, grove Athletics 3, owl Perception 3 / Stealth 3,
+      Mistheron Stealth 2, Surecat Perception 4 / Stealth 3, Roek Athletics 2 / Discipline 2, flock
+      Perception 3).
+- [ ] 🤖 **156-15 — Corvaine Raider rolls the model:** a fresh Raider's Shortsword rolls `1d20 + 2` and
+      `1d6 + 2` (STR 2 + Heavy Weaponry 0), the Soldier's Crossbow `1d20 + 2` and `1d6 + 2` (SPD 1 +
+      Light Weaponry 1), graze subtotals `1d6`; the cards read Attack +2 / Hit 1d6+2; the sheet shows
+      Heavy Weaponry 2 and Light Weaponry 2 as totals and defenses 13 / 12 / 11 with no override.
+- [ ] 🤖 **156-16 — Corvaine Line-Caller rolls the model:** the Raider's read at STR 1 + Heavy Weaponry 1
+      and SPD 1 + Light Weaponry 1 (both `1d20 + 2`, `1d6 + 2`); defenses 12 / 13 / 13 derived; Guiding
+      Signal's picker card still lists the tokens within 15 ft; Investiture 2 on the sheet.
+- [ ] 🤖 **156-17 — Sergeant Halden Roek rolls the model:** the Issued Blade and Press the Line roll
+      `1d20 + 3` and `1d8 + 3` (STR 2 + Heavy Weaponry 1), graze `1d8`; Press the Line's cue still posts on
+      its hit; defenses 13 / 13 / 14 derived (his talk-out DC is 14); HP 24; the Not a Bandit cue posts
+      below 8.
+- [ ] 🤖 **156-18 — Mistheron rolls the model:** the Spearing Beak rolls `1d20 + 2` and `1d6 + 2` (STR 2 +
+      Heavy Weaponry 0) with "(1d6)[Spearing Beak]" appended against a fooled copy, graze `1d6`; Snatch
+      and Wade rolls `1d20 + 2` and no damage; defenses 14 / 14 / 14 derived — the Seeming's belief test
+      is still Perception vs Cog 14.
+- [ ] 🤖 **156-19 — Tollbird Flock rolls Agility:** Mob the Straggler rolls `1d20 + 2` and `1d4 + 2`
+      (SPD 2 + Agility 0), graze `1d4`; defenses 12 / 11 / 13 derived; Sapping Hex still lands Weakened on
+      an Isolated hit; Whispered Doubt still drains the spender.
+- [ ] 🤖 **156-20 — Surecat rolls Agility:** The Pounce Already Taken rolls `1d20 + 3` and `1d8 + 3`
+      (SPD 3 + Agility 0), graze `1d8`; the on-hit +1d4 cue still posts; defenses 15 / 11 / 14 derived;
+      Redirect Momentum still rolls Blue at rank 2.
+- [ ] 🤖 **156-21 — Corvaine Well-Warden rolls the model:** the Warden's Hook-Pole rolls `1d20 + 1` and
+      `1d6 + 1` (STR 1 + Heavy Weaponry 0); Hollow Command still rolls Deception +4; defenses 12 / 13 / 14
+      derived (unchanged in number); the bloodied cue posts below 11.
+- [ ] 🤖 **156-22 — Preacher of the Lowered Crown imports whole:** the block builds with Censure, Decree
+      of Ruin and Expose as action-typed twins plus the White Key and Draw Mana; HP 20, defenses
+      11 / 13 / 14 derived, foc 4, inv 4, White 4 (WIL 2 + rank 2) and Black 4 (PRE 2 + rank 2) on the
+      sheet, the token 10 ft; the Pilgrim's Staff rolls Light Weaponry — `1d20 + 2` and `1d6 + 2`;
+      Censure's use rolls Black vs a PC copy's Cognitive and the success steps the copy's damage die
+      down; a hit that takes him below 10 posts The Crown Lowered cue with its label.
 
 ## Bestiary yardstick fights — item 155 (2026-09-14 — DOCS-ONLY: nothing to deploy; three fights on copies of the actual PCs, recorded on `.claude/skills/bestiary-forge/TURN_LEDGER.md`)
 

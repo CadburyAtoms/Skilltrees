@@ -1,6 +1,6 @@
 {
   "_README": {
-    "purpose": "Source data for the Edha adversary pack — every statted bestiary block (52 on 2026-09-14, in per-nation `folder`s) plus the nine legacy playtest-dungeon blocks in the 'Legacy — Playtest Dungeon' folder (the 6-room test dungeon this file began as, 2026-07; kept as build fixtures by ruling R-130 (a), 2026-09-14). foundry-build.js reads this and writes the `edha-adversaries` Actor compendium: one `adversary` actor per entry with embedded `action`/`trait`/`weapon` items. Modelled on the cosmere-rpg companions-and-adversaries pack schema. Source of truth for a bestiary block = EDHA_CAMPAIGN_CANON.md §5c + its statblock-gate ruling in §9; the statting standard is .claude/skills/bestiary-forge/STANDARD.md and the measured census is docs/analysis/bestiary/CENSUS.md (regenerate with `node scripts/bestiary-census.js --write` after editing this file — the census test fails otherwise).",
+    "purpose": "Source data for the Edha adversary pack — every statted bestiary block (53 on 2026-09-15, in per-nation `folder`s) plus the nine legacy playtest-dungeon blocks in the 'Legacy — Playtest Dungeon' folder (the 6-room test dungeon this file began as, 2026-07; kept as build fixtures by ruling R-130 (a), 2026-09-14). foundry-build.js reads this and writes the `edha-adversaries` Actor compendium: one `adversary` actor per entry with embedded `action`/`trait`/`weapon` items. Modelled on the cosmere-rpg companions-and-adversaries pack schema. Source of truth for a bestiary block = EDHA_CAMPAIGN_CANON.md §5c + its statblock-gate ruling in §9; the statting standard is .claude/skills/bestiary-forge/STANDARD.md and the measured census is docs/analysis/bestiary/CENSUS.md (regenerate with `node scripts/bestiary-census.js --write` after editing this file — the census test fails otherwise).",
     "actor_fields": {
       "role": "minion | rival | boss. PDF 'Standard' and 'Elite' both map to 'rival' (the system has only 3 roles).",
       "size": "small | medium | large.",
@@ -9,12 +9,12 @@
       "tier": "Cosmere tier (number).",
       "img": "Portrait/sheet image (must exist under Foundry data or core public/icons). Placeholder only once real art exists: the build auto-detects <module>/art/adversaries/<slug>-portrait.(webp|png|jpg) and <slug>-token.* and prefers them (filenames listed per creature in EDHA_ADVERSARY_ART_WISHLIST.md) — drop files + rebuild, no data edit.",
       "token": "Token image; defaults to img (or the auto-detected art, see img).",
-      "defenses": "{ phy, cog, spi } — the PDF DEF numbers; written as override+useOverride (DerivedValueField).",
+      "defenses": "{ phy, cog, spi }. FLAT MODEL (no `attributes`): the PDF DEF numbers, written as override+useOverride (DerivedValueField). PC MODEL (R-139 (a), Ben 2026-09-15): the three defenses DERIVE — 10 + STR+SPD / INT+WIL / AWA+PRE, the system's own rule and the published pack's shape — so the build writes no override and this key is OMITTED; a stated pair there is accepted only when it restates the derivation (scripts/validate-adversary-model.js refuses one that disagrees). Choose the attributes that derive the numbers you want.",
       "deflect": "Deflect value (number). Omit for none. Default deflect types = energy/impact/keen (physical armour).",
       "deflectTypes": "Optional array overriding which damage types the deflect applies to.",
       "hp": "Max HP (override).",
       "foc": "Focus max (override). 0 if none.",
-      "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
+      "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) — 2 while the block states no attributes, more once it does (R-128). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
       "senses": "Senses Range in ft — the BESPOKE OVERRIDE (Character_Building_Rules §Senses Range; Ben 07-16c sight rule; R-56, items 55 → 83: one rule for PCs and adversaries). Omit = the cosmere system's own ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] (R-56 FINAL, item 83, 2026-09-07: \"Cosmere ladder for everyone\"), so an attribute-less block sees 5 ft — the build stamps that on the prototype token (advSensesRangeFt) and the system derives the same number on the sheet; the two agree. R-128 (a) (2026-09-14): blocks gain `attributes`, so once a block states AWA the ladder gives it its darkness-sense radius and `senses` is only the fiction override above that (an eyeless grove that feels through its soil). Until a block is re-derived it still reads 5 ft — state `senses` on any creature that should not (bestiary-forge STANDARD.md §2). Set it ONLY for a creature whose fiction justifies unusual senses (Briar-Gone Grove: 30 — a rooted grove-heart has no eyes and perceives through its own soil, so its reach is the arena, not an AWA-0 stare). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
@@ -23,27 +23,29 @@
       "folder": "Actor-subfolder name, grouped under the 'Edha Adversaries' root folder in the pack (e.g. 'Session 1 — Palewater Ford', '<Nation> <Ground> Bestiary'). Every block states one since R-130 (a) (2026-09-14): the nine test-dungeon blocks sit in 'Legacy — Playtest Dungeon'. A block that omits it falls into the build's top-level 'Playtest Adversaries' fallback folder, which the build creates only when something lands in it — treat an omitted folder as a mistake, not a choice.",
       "leylines": "Array of attuned leyline colors (white/blue/black/red/green). Each gets a default skill rank by role — minion 1 / rival 2 / boss 3 (ruling 40; dice d4/d6/d8, Attunement Range 15/30/60 ft); an explicit `skills` entry overrides the default. Ruling 49: each color ALSO auto-embeds its Leyline Attunement Key (as an action-typed twin) and the actor gets the universal Draw Mana action — attuned adversaries run the same leyline economy as PCs (give them an `inv` pool).",
       "skills": "Explicit skill ranks { skillId: rank } — 3-letter core ids (ath/dis/prc/stl/…) or leyline colors. Set each block's 2–3 defensive/contest skills (the §8b lesson: rank 0 means PC opposed tests auto-win).",
-      "attributes": "R-128 (a), 2026-09-14 — the six cosmere attributes {str, spd, int, wil, awa, pre}, integers; omitted keys are 0 (every block before R-128 was all-zero, and a block that states no `attributes` builds byte-identically to before). What they drive: the SYSTEM derives Senses Range from AWA on its ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] and the walk rate from SPD (its own table) on the sheet; the build mirrors the AWA read onto the prototype token (advSensesRangeFt) so token and sheet agree; skill tests roll attribute + rank, so a block that stated an inflated rank to stand in for an attribute (Callthief `dec: 4`) is re-derived to attribute + rank with the same total in its nation's pass (R-135). `senses` stays the fiction override above the ladder; `movement` still overrides SPD's walk rate. Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in lit areas it sees as far as the light goes, same as the PC actors (Ben's gloss on R-128). Values land nation by nation behind the statblock gate, never as a bulk batch.",
+      "attributes": "R-128 (a), 2026-09-14 — the six cosmere attributes {str, spd, int, wil, awa, pre}, integers; omitted keys are 0 (every block before R-128 was all-zero, and a block that states no `attributes` builds byte-identically to before). What they drive: the SYSTEM derives Senses Range from AWA on its ladder [5, 10, 20, 50, 100, ∞][ceil(AWA/2)] and the walk rate from SPD (its own table) on the sheet; the build mirrors the AWA read onto the prototype token (advSensesRangeFt) so token and sheet agree; skill tests roll attribute + rank, so a block that stated an inflated rank to stand in for an attribute (Callthief `dec: 4`) is re-derived to attribute + rank with the same total in its nation's pass (R-135). `senses` stays the fiction override above the ladder; `movement` still overrides SPD's walk rate. Senses Range is the radius a creature perceives with its primary sense OBSCURED (darkness, dim light) — in lit areas it sees as far as the light goes, same as the PC actors (Ben's gloss on R-128). Values land nation by nation behind the statblock gate, never as a bulk batch. R-137 (Ben, 2026-09-14 — adversaries follow the same rules as the PCs): stating `attributes` ALSO puts the block on the PC ATTACK MODEL. The cosmere system rolls an adversary's item exactly as a PC's — d20 + attribute + skill rank, and the same modifier appended to the damage — so on such a block every attack is DERIVED: weapons (and actions stating `attackSkill`) test attribute + rank, `damage` is the dice alone, the card prints the derived total, and the graze is the dice. A flat `attack`, a `skill` override on an attack, or a flat inside an attack's `damage` is a gate error there (scripts/validate-adversary-model.js): the table would add STR/SPD on top of it, which is exactly what the seven PR-#388 blocks did between 2026-09-15T01:50Z and this fix.",
       "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
-      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable, and gets the system's NATIVE target + test-defense flow): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. THE MODEL (fleet weapon migration, item 34a 2026-09-06, Ben's 07-18 rulings): every gear attack AND natural weapon is kind weapon (natural ones add alwaysEquipped); attack-riding maneuvers/reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and bespoke investiture attacks (Frost Lance) stay actions. Doc fields ground-truthed by the 07-15 schema dump. Riders authored on a weapon keep harvesting — the engine's actor-wide rule loops gate on edhaRuleBearer (talents + weapons), not edhaIsTalent.",
+      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable, and gets the system's NATIVE target + test-defense flow): same attack/damage/range fields, roll is the action-shaped skill_test (flat model: the flat `attack` in modifierFormula beside the system's attribute + rank, which is 0 there; PC model: attribute + rank alone, R-137). THE MODEL (fleet weapon migration, item 34a 2026-09-06, Ben's 07-18 rulings): every gear attack AND natural weapon is kind weapon (natural ones add alwaysEquipped); attack-riding maneuvers/reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and bespoke investiture attacks (Frost Lance) stay actions. Doc fields ground-truthed by the 07-15 schema dump. Riders authored on a weapon keep harvesting — the engine's actor-wide rule loops gate on edhaRuleBearer (talents + weapons), not edhaIsTalent.",
       "alwaysEquipped": "Optional boolean, kind=weapon only: natural weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) — part of the creature, cannot be disarmed/dropped (system.alwaysEquipped).",
       "weaponId": "Optional, kind=weapon only: slug written to system.id (defaults to the slugified item name). system.type — the weapon CATEGORY, light_wpn/heavy_wpn — derives from the skill (lwp→light, hwp→heavy) or an explicit weaponType field.",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
-      "attack": "Flat attack bonus (number). Present => the item becomes a rollable skill_test (d20 + this bonus via modifierFormula). With `damage` the play button rolls attack + damage; WITHOUT `damage` it is a to-hit-only attack (grab/grapple) — put the on-hit effect in `rider`.",
-      "range": "Stat-line range text, e.g. 'Reach 5 ft.', 'Range 60 ft.', 'melee'. Also infers melee(hwp)/ranged(lwp) skill if `skill` not given.",
+      "attack": "FLAT-MODEL attack bonus (number) — legal ONLY on a block that states no `attributes`. Present => the item becomes a rollable skill_test: d20 + the system's own attribute + rank (0 on such a block) + this bonus via modifierFormula. With `damage` the play button rolls attack + damage; WITHOUT `damage` it is a to-hit-only attack (grab/grapple) — put the on-hit effect in `rider`. On a block that states `attributes` this key is a gate error (R-137, scripts/validate-adversary-model.js): the roll would add STR/SPD + rank on top of it — write the attack the PC model's way (`attackSkill` / `attackBonus`, dice-only `damage`).",
+      "attackSkill": "PC-MODEL key (R-137 — blocks that state `attributes`): the skill this attack tests, a core 3-letter id or a leyline colour. Present => the item IS an attack (a rollable skill_test: d20 + attribute + rank, exactly a PC's roll) even with no `attackBonus`; a to-hit-only grab states it with no `damage`. Optional on kind weapon (defaults by range: a 'Range …' line → lwp/SPD, otherwise hwp/STR — the flat model's own rule); required on an action-shaped attack (Press the Line, Snatch and Wade).",
+      "attackBonus": "PC-MODEL key, optional integer, default 0: a flat bonus the block explicitly states AS a bonus (a masterwork blade, a talent's +1). Written to modifierFormula, so it reaches the d20 only — never the damage — exactly as a PC's flat bonus would. Never use it to keep an old split (+4 to hit with 1d6+1): on the PC model the attack and the damage share ONE skill modifier, as they do for a PC (Ishee's Staff: SPD 3 + lwp 1 = +4, and 1d6+4).",
+      "range": "Stat-line range text, e.g. 'Reach 5 ft.', 'Range 60 ft.', 'melee'. Also infers melee(hwp)/ranged(lwp) skill if `skill` (flat model) / `attackSkill` (PC model) is not given.",
       "targets": "Targets text. Default 'one'.",
-      "damage": "Damage formula, e.g. '1d6+2'. With `attack` => weapon strike; without `attack` => damage-only roll (heals/AoE, raw dice).",
+      "damage": "Damage formula. FLAT MODEL: the whole damage, e.g. '1d6+2'. PC MODEL (the block states `attributes`): the DICE ALONE, e.g. '1d6' — the system appends attribute + rank at roll time and the card prints the derived total; a flat here is a gate error (R-137), because it would be added twice. With an attack (`attack` / `attackSkill` / kind weapon) => weapon strike; without one => damage-only roll (heals/AoE, raw dice, no modifier — either model).",
       "damageType": "energy | impact | keen | spirit | vital | heal.",
-      "graze": "Optional graze-override formula. Default = the damage dice with flat mods stripped (system default).",
-      "skill": "Optional skill id override for the test (cosmetic; attributes are 0 so the flat `attack` carries the bonus).",
+      "graze": "Optional graze-override formula (dice only). Default = the damage dice — the system's `@damage.dice`: a graze is the dice, never the modifier (SR p.35).",
+      "skill": "FLAT MODEL ONLY: optional skill id override for an attack's test (cosmetic there — attributes are 0 on a flat-model block, so the flat `attack` carries the whole bonus). Also read for a non-attack ability that gates itself on a test (edha-def-test), on either model. On a PC-model ATTACK it is a gate error: that item's test skill is `attackSkill`.",
       "uses": "Optional limited-uses note appended to the text (e.g. '1/round', '1/scene'). Informational.",
       "rider": "Extra hit-clause text appended after the Hit line (HTML allowed).",
       "text": "Full rules text for traits / utility actions with no attack. HTML allowed; supports [[damage NdM Type]] and [[test skill=xxx dc=N]] enrichers.",
-      "events": "OPTIONAL array of native event rules — [{event, handler, description?}] — the SAME edha-* vocabulary as PC talents (the build mints the 16-char rule ids; never author ids or the map form). THE WIRING STANDARD (Ben 2026-07-16): every ability whose text names a trigger MUST carry either native automation (attack/damage/heal fields), an events rule (edha-gm-cue at minimum), or a sibling `noHook` key (see below). A bare 'GM-run' label is a lint-able smell, not an answer.",
+      "events": "OPTIONAL array of native event rules — [{event, handler, description?}] — the SAME edha-* vocabulary as PC talents (the build mints the 16-char rule ids; never author ids or the map form). THE WIRING STANDARD (Ben 2026-07-16): every ability whose text names a trigger MUST carry either native automation (attack / attackSkill / damage / heal fields), an events rule (edha-gm-cue at minimum), or a sibling `noHook` key (see below). A bare 'GM-run' label is a lint-able smell, not an answer.",
       "noHook": "OPTIONAL string — the NO NAMEABLE HOOK declaration (item 93, R-89 (a), Ben 2026-09-07): the reason this ability's trigger has no nameable Foundry hook. Moved off `text`/`rider` into data because Foundry's editor drops HTML comments on save (ProseMirror parse/serialize round-trip — bench run 42 caught Wrongwake's Drag Under losing its marker this way). The build writes it to `flags['edha-content'].noHook`; it renders nowhere on the card. Read by lint-refs.js pass 5 as the exemption alongside events — a non-empty string satisfies the wiring standard, and the literal string 'NO NAMEABLE HOOK' left in visible/comment prose is now a pass-5 error naming this key. The ability's `text`/`rider` may still carry GM-run flavor describing the fiction; the reason itself lives only here."
     },
     "buckets": "RETIRED 2026-07-16 (the old text deferred triggered abilities to a future 'Phase-3 trigger model' — that model exists now). Every ability ships as a real item; strikes/heals are rollable; triggered/threshold abilities carry `events` rules (see item_fields.events). The only hand-run abilities are the ones with a written no-nameable-hook rationale (Combat Training, Pack Tactics, Veil)."
@@ -687,10 +689,8 @@
       "awa": 1,
       "pre": 0
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 11,
-      "spi": 11
+    "skills": {
+      "lwp": 1
     },
     "deflect": 1,
     "hp": 10,
@@ -698,15 +698,14 @@
     "inv": 0,
     "movement": 25,
     "count": 2,
-    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / 1d6+1), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 / 1d6+2 back.</em></p>",
+    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / a d6 blade), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 and a rank of Heavy Weaponry back.</em></p><p><em>R-137 (2026-09-15): its attacks derive like a PC's, one skill modifier on the test and the damage — Shortsword STR 2 + Heavy Weaponry 0 = +2 for 1d6+2, Soldier's Crossbow SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6. The cards read +4 for 1d6+1 under the flat model, and rolled +6 for 1d6+3 / +5 for 1d6+2 once attributes were stated on 2026-09-14.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 12 / Spi 11 (the card read 12 / 11 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -714,9 +713,8 @@
         "kind": "weapon",
         "weaponId": "shortsword",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -765,10 +763,9 @@
       "awa": 2,
       "pre": 1
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 11,
-      "spi": 11
+    "skills": {
+      "hwp": 1,
+      "lwp": 1
     },
     "deflect": 1,
     "hp": 10,
@@ -780,15 +777,14 @@
       "White/Guiding Signal",
       "White/Ordered Advance"
     ],
-    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p>",
+    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p><p><em>R-137 (2026-09-15): attacks derive like a PC's — Shortsword STR 1 + Heavy Weaponry 1 = +2 for 1d6+2, Soldier's Crossbow SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6 (the cards read +4 for 1d6+1 under the flat model, and rolled +5 for 1d6+2 once attributes were stated).</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 13 / Spi 13 (the card read 12 / 11 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -796,9 +792,8 @@
         "kind": "weapon",
         "weaponId": "shortsword",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -864,10 +859,8 @@
       "awa": 2,
       "pre": 2
     },
-    "defenses": {
-      "phy": 13,
-      "cog": 12,
-      "spi": 12
+    "skills": {
+      "hwp": 1
     },
     "deflect": 2,
     "hp": 24,
@@ -875,24 +868,23 @@
     "inv": 2,
     "movement": 25,
     "count": 1,
-    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 12) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p>",
+    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 14 — derived, R-139 (a)) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p><p><em>R-137 (2026-09-15): the Issued Blade and Press the Line derive like a PC's weapon — STR 2 + Heavy Weaponry 1 = +3 for 1d8+3, graze 1d8 (the cards read +5 for 1d8+2 under the flat model, and rolled +7 for 1d8+4 once attributes were stated). Athletics 2 and Discipline 2 still read off STR 2 and WIL 2.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 13 / Spi 14 (the card read 13 / 12 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "Issued Blade",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 5,
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen"
       },
       {
         "name": "Press the Line",
         "cost": "2 Actions",
         "consume": "1 Focus",
-        "attack": 5,
+        "attackSkill": "hwp",
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen",
         "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction.",
         "events": [
@@ -962,15 +954,10 @@
     "attributes": {
       "str": 2,
       "spd": 2,
-      "int": 0,
-      "wil": 1,
+      "int": 2,
+      "wil": 2,
       "awa": 3,
       "pre": 1
-    },
-    "defenses": {
-      "phy": 12,
-      "cog": 14,
-      "spi": 11
     },
     "deflect": 1,
     "hp": 20,
@@ -978,7 +965,7 @@
     "inv": 2,
     "movement": 30,
     "count": 2,
-    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p>",
+    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p><p><em>R-137 (2026-09-15): the Spearing Beak derives like a PC's weapon — STR 2 + Heavy Weaponry 0 = +2 for 1d6+2 (+1d6 against a fooled target), graze 1d6; Snatch and Wade tests the same +2 (the cards read +5 under the flat model, and rolled +7 for 1d6+4 once attributes were stated). Stealth 2 still reads off SPD 2.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 14 / Cog 14 / Spi 14 (the card read 12 / 14 / 11 as overrides; INT 2 / WIL 2 hold the belief DC at Cog 14).</em></p>",
     "items": [
       {
         "name": "The Seeming",
@@ -1006,9 +993,8 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 5,
         "range": "Reach 10 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6",
         "damageType": "keen",
         "rider": "+1d6 against a character who is taken in by the seeming.",
         "events": [
@@ -1027,7 +1013,7 @@
       {
         "name": "Snatch and Wade",
         "cost": "2 Actions",
-        "attack": 5,
+        "attackSkill": "hwp",
         "range": "Reach 5 ft.",
         "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>"
@@ -2833,21 +2819,21 @@
     "leylines": [
       "black"
     ],
-    "skills": {
-      "prc": 3,
-      "stl": 3
-    },
-    "defenses": {
-      "phy": 12,
-      "cog": 11,
-      "spi": 13
+    "attributes": {
+      "str": 0,
+      "spd": 3,
+      "int": 0,
+      "wil": 1,
+      "awa": 3,
+      "pre": 0
     },
     "deflect": 0,
     "hp": 26,
     "foc": 3,
+    "inv": 2,
     "movement": 60,
     "count": 1,
-    "biography": "<p>The Arbiter's bailiff (canon §5c, ruling 110) — the great eagle-owl whose death-sense has always taken the wasting; \"cast down\" in the station-idiom. Deity-attuned Black (ruling 108, worship-fed — heresy districts' owls sicken first). The encounter grammar: it prosecutes ONE respondent — cuts them from the group, Weakens, pins, finishes — while the party decides what saving them is worth.</p><p><em>Wasting-eater variant (ruling 34, never tougher): −8 hp, attacks at 5, and it does not break off at bloodied — build as a copy if a scene needs one. A MADDENED owl (worst reaches) also ignores the bloodied break and will target the stuck-dying themselves.</em></p>",
+    "biography": "<p>The Arbiter's bailiff (canon §5c, ruling 110) — the great eagle-owl whose death-sense has always taken the wasting; \"cast down\" in the station-idiom. Deity-attuned Black (ruling 108, worship-fed — heresy districts' owls sicken first). The encounter grammar: it prosecutes ONE respondent — cuts them from the group, Weakens, pins, finishes — while the party decides what saving them is worth.</p><p><em>Wasting-eater variant (ruling 34, never tougher): −8 hp, attacks at 5, and it does not break off at bloodied — build as a copy if a scene needs one. A MADDENED owl (worst reaches) also ignores the bloodied break and will target the stuck-dying themselves.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: inside the rival band and R-134's rival row, with no yardstick evidence on it. AWA 3 (R-128) sees 20 ft in the dark and carries the old Perception 3; SPD 3 carries the old Stealth 3; Presence, Black's own attribute, stays 0 so Sovereign of Solitude keeps +2. R-137: the Stoop of Office is an Agility strike, as the published raptor bites are — SPD 3 + Agility 0 = +3 for 1d8+3, one modifier on the test and the damage as a PC's (the card read +6 for 1d8+2 under the flat model), graze 1d8; Strength stays 0, an owl lifts nothing. Investiture stated at 2. Predatory Patience's Focus regain is engine-applied now (R-129): a hit on a Weakened creature returns 1 Focus, up to its pool.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 11 / Spi 13 (the card read 12 / 11 / 13 as overrides).</em></p>",
     "items": [
       {
         "name": "The Bailiff's Eye",
@@ -2862,7 +2848,7 @@
               "rangeFt": 60,
               "note": "The Bailiff's Eye — reminder: its respondent is the most wounded / wasting-touched creature; it presses only them."
             },
-            "description": "Black/Isolation. GM cue each hostile turn-start in range — the fixation is a table read; the cue is the floor."
+            "description": "cue — table call: the GM keeps the owl on its respondent — the most wounded or wasting-touched creature. Black/Isolation. GM cue each hostile turn-start in range — the fixation is a table read; the cue is the floor."
           }
         ]
       },
@@ -2885,7 +2871,7 @@
               "target": "victim",
               "radius": 0
             },
-            "description": "Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied, timed status)."
+            "description": "effect — decision-free (Weakened on a hit against an Isolated character). Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied, timed status)."
           }
         ]
       },
@@ -2903,16 +2889,30 @@
               "whenTargetStatus": "weakened",
               "whenTargetIsolated": false
             },
-            "description": "Black/Isolation. Predatory Patience: +1d6 ([Die] at rival rank 2, ruling 122) on attacks vs Weakened."
+            "description": "effect — decision-free (+1d6 on its attack test against a Weakened target). Black/Isolation. Predatory Patience: +1d6 ([Die] at rival rank 2, ruling 122) on attacks vs Weakened."
           },
           {
             "event": "edha-on-hit",
             "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "on-hit",
-              "note": "If the target is Weakened: the reeve-owl regains 1 Focus (GM adds — adversary focus has no auto-write)."
+              "type": "edha-triggered-effect",
+              "whenDamageType": "any",
+              "whenTargetIsolated": false,
+              "whenTargetStatus": "weakened",
+              "kind": "heal",
+              "statusId": "",
+              "formula": "0",
+              "damageType": "energy",
+              "target": "self",
+              "radius": 0,
+              "resourceGainResource": "foc",
+              "resourceGainValue": 1,
+              "costResource": "",
+              "costValue": 0,
+              "costOptional": false,
+              "oncePerRound": false,
+              "note": "On a successful attack against a Weakened creature, the reeve-owl regains 1 Focus."
             },
-            "description": "Black/Isolation. Focus-regain half is GM-applied; cue is the floor."
+            "description": "effect — decision-free (regains 1 Focus on a hit against a Weakened target, up to its pool). R-129 conversion 2026-09-14: the PC twin's regain rule verbatim, Focus for Investiture. It was an on-hit GM cue whose note said adversary Focus had no auto-write; edha-triggered-effect's resourceGain writes Focus (edhaGainResource), so the cue named no decision and the hook existed."
           }
         ]
       },
@@ -2930,7 +2930,7 @@
               "rangeFt": 30,
               "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d6 vital (target it and use the item to auto-resolve)."
             },
-            "description": "Black/Isolation. The willing-move trigger is a table read (the Dread Presence veto covers unwilling approach) — cue at the hostile turn-start is the floor; the use path auto-resolves."
+            "description": "cue — table call: the Weakened respondent tries to move and the owl spends 2 Focus to hold it. Black/Isolation. The willing-move trigger is a table read (the Dread Presence veto covers unwilling approach) — cue at the hostile turn-start is the floor; the use path auto-resolves."
           },
           {
             "event": "use",
@@ -2942,7 +2942,7 @@
               "requireTarget": true,
               "note": "The Immobilized lands whether or not the test succeeds; the success adds the vital bite."
             },
-            "description": "The contest half of the use path (Black vs Spiritual). Rule-keyed 07-26 (pre-deploy audit): the cue promised the use would auto-resolve, but the deleted engine name-key had left it dead."
+            "description": "effect — decision-free (Black vs Spiritual through the contest core). The contest half of the use path (Black vs Spiritual). Rule-keyed 07-26 (pre-deploy audit): the cue promised the use would auto-resolve, but the deleted engine name-key had left it dead."
           },
           {
             "event": "use",
@@ -2955,7 +2955,7 @@
               "formula": "0",
               "damageType": "energy"
             },
-            "description": "The movement-to-0 half: Immobilized until the end of the target's next turn, exactly as the tree twin applies it. Target is `prompt` = the creature you have targeted; the sibling Gated Test carries requireTarget, so one is guaranteed before any cost. It read `target` until 2026-09-05 — a value this handler's schema does not offer, which failed validation and took ALL FOUR of this item's rules down to {} at load (bench run 26)."
+            "description": "effect — decision-free (Immobilized until the end of the target's next turn, success or not). The movement-to-0 half: Immobilized until the end of the target's next turn, exactly as the tree twin applies it. Target is `prompt` = the creature you have targeted; the sibling Gated Test carries requireTarget, so one is guaranteed before any cost. It read `target` until 2026-09-05 — a value this handler's schema does not offer, which failed validation and took ALL FOUR of this item's rules down to {} at load (bench run 26)."
           },
           {
             "event": "edha-test-success",
@@ -2966,7 +2966,7 @@
               "damageType": "vital",
               "target": "victim"
             },
-            "description": "The success payload: [Tier][Die] vital — 1d6 at rival rank 2 (ruling 122), matching the card."
+            "description": "effect — decision-free (1d6 vital on a success). The success payload: [Tier][Die] vital — 1d6 at rival rank 2 (ruling 122), matching the card."
           }
         ]
       },
@@ -2988,7 +2988,7 @@
               "requireTargetIsolated": true,
               "note": "Cruel Step — move 10 ft toward the Isolated target without provoking Reactions."
             },
-            "description": "Black/Isolation. Cruel Step verbatim on the edha-move executor (requireTargetIsolated gate)."
+            "description": "effect — decision-free (a 10 ft glide toward an Isolated target, refused when the target is not Isolated). Black/Isolation. Cruel Step verbatim on the edha-move executor (requireTargetIsolated gate)."
           }
         ]
       },
@@ -2997,9 +2997,9 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 6,
+        "attackSkill": "agi",
         "range": "Reach 5 ft (flying strike).",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen"
       },
       {
@@ -3015,7 +3015,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — a sound reeve-owl breaks off and rises. (Maddened / wasting-eater variants do not.)"
             },
-            "description": "Black/Isolation. Bloodied break-off cue."
+            "description": "cue — table call: a sound owl breaks off and rises — the GM moves the token (the maddened and wasting-eater variants stay). Black/Isolation. Bloodied break-off cue."
           }
         ]
       }
@@ -3031,20 +3031,24 @@
     "leylines": [
       "white"
     ],
-    "skills": {
-      "ath": 2
+    "attributes": {
+      "str": 2,
+      "spd": 1,
+      "int": 0,
+      "wil": 0,
+      "awa": 3,
+      "pre": 0
     },
-    "defenses": {
-      "phy": 14,
-      "cog": 9,
-      "spi": 12
+    "skills": {
+      "hwp": 1
     },
     "deflect": 1,
     "hp": 26,
     "foc": 3,
+    "inv": 2,
     "movement": 30,
     "count": 3,
-    "biography": "<p>The ring (canon §5c, ruling 110) — Verdannis's White in the herd: station-keeping formation defense, \"the crown holds.\" Deity-attuned White (ruling 108). <strong>The party fights a wall</strong>: break it, bait an ox out of formation, or find another way — every wall talent below reads off adjacency, so pulling one ox 10+ ft from its ring-mates strips the ring's whole kit off it by construction.</p><p><em>Scaling: three oxen (count 3) are one rival-weight encounter — the wall math assumes it. A starving ring (famine arc) does not flee at bloodied; it tightens.</em></p>",
+    "biography": "<p>The ring (canon §5c, ruling 110) — Verdannis's White in the herd: station-keeping formation defense, \"the crown holds.\" Deity-attuned White (ruling 108). <strong>The party fights a wall</strong>: break it, bait an ox out of formation, or find another way — every wall talent below reads off adjacency, so pulling one ox 10+ ft from its ring-mates strips the ring's whole kit off it by construction.</p><p><em>Scaling: three oxen (count 3) are one rival-weight encounter — the wall math assumes it. A starving ring (famine arc) does not flee at bloodied; it tightens.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: no yardstick evidence on the ring (Horn Toss's 7.5 average sits half a point over R-134's rival row, and a rival trio is the next yardstick's fight). AWA 3 (R-128) sees 20 ft in the dark — the ring's shared startle, the sightline a camp borrows; Willpower, White's own attribute, stays 0 so Retributive Guard and Unbreakable Line keep +2, and STR 2 carries the old Athletics 2. R-137: Horn Toss is STR 2 + Heavy Weaponry 1 = +3 for 1d8+3, one modifier on the test and the damage as a PC's (the card read +6 for 1d8+3 under the flat model), graze 1d8. Investiture stated at 2 so AWA 3 does not raise the pool.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 10 / Spi 13 (the card read 14 / 9 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "The Ring",
@@ -3066,7 +3070,7 @@
               "color": "white",
               "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)"
             },
-            "description": "The tree talent's pre-reduction, verbatim — @colorRank resolves via ruling 122 (rival White rank 2 -> half 1d6, matching the card). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+            "description": "effect — decision-free (half 1d6 off a hit on a ring-mate with two oxen beside it, named in chat). The tree talent's pre-reduction, verbatim — @colorRank resolves via ruling 122 (rival White rank 2 -> half 1d6, matching the card). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
           }
         ]
       },
@@ -3074,7 +3078,7 @@
         "name": "Guardian Stance",
         "kind": "trait",
         "text": "<p><em>White talent.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>",
-        "noHook": "NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire."
+        "noHook": "NO NAMEABLE HOOK: re-litigated 2026-09-14 — the tree twin is now an `edha-aura` document rule and its sweep does reach adversaries on the canvas, but the sweep keys actors by id, and three ring oxen placed from one world actor share one: copying the rule would look live and mark a single ox (read in source, 13-white-bulwark.js edhaAuraSweep; not driven). The +1 Deflect stays a GM read while the ring stands."
       },
       {
         "name": "Retributive Guard",
@@ -3095,7 +3099,7 @@
               "costValue": 1,
               "prompt": "{victim} (adjacent ring-mate) was hit by {attacker}. Spend 1 Focus → test White vs Spiritual; on a success deal {amount} spirit to {attacker}."
             },
-            "description": "The tree talent's retaliate reaction with the ox's Focus cost (the tree twin charges Investiture) — auto-prompts from the damage chokepoint, contest through the core. Rule-keyed 07-26: the gm-cue it replaced promised a use path the deleted engine name-key had left dead."
+            "description": "effect — decision-free (the retaliate prompt posts itself from the damage; the click spends 1 Focus and White vs Spiritual resolves through the contest core). The tree talent's retaliate reaction with the ox's Focus cost (the tree twin charges Investiture) — auto-prompts from the damage chokepoint, contest through the core. Rule-keyed 07-26: the gm-cue it replaced promised a use path the deleted engine name-key had left dead."
           }
         ]
       },
@@ -3114,7 +3118,7 @@
               "requireTarget": true,
               "note": "Success: the ring-mate holds at 1 health instead of dropping (once per round; GM adjudicates — adversary Investiture has no auto-write)."
             },
-            "description": "H1 `edha-def-test` (2026-09-07, item 89): the missing use rule — clicking the item posted an empty card (no test, no contest core, no roll). DC = half the damage taken has no static/formula field on H1 (the executor reads `Number(h.dc)`, a flat number only), so `vs: prompt-dc` is the closest expressible form — same shape as the Callthief's Counterpoint: the ox rolls White, then the GM enters half the drop damage as the DC when the roll resolves. requireTarget: the dropping ring-mate."
+            "description": "effect — decision-free (White against the DC the GM enters — half the damage — through the contest core). H1 `edha-def-test` (2026-09-07, item 89): the missing use rule — clicking the item posted an empty card (no test, no contest core, no roll). DC = half the damage taken has no static/formula field on H1 (the executor reads `Number(h.dc)`, a flat number only), so `vs: prompt-dc` is the closest expressible form — same shape as the Callthief's Counterpoint: the ox rolls White, then the GM enters half the drop damage as the DC when the roll resolves. requireTarget: the dropping ring-mate."
           },
           {
             "event": "edha-apply-watch",
@@ -3124,7 +3128,7 @@
               "rangeFt": 5,
               "note": "Unbreakable Line — an adjacent ox may spend 3 Focus: test White vs. DC = half the damage; success → the ring-mate holds at 1 HP (once per round)."
             },
-            "description": "White/Bulwark. The ally-drops trigger carries it; the White test resolves through the contest core on use."
+            "description": "cue — table call: an adjacent ox spends 3 Focus to hold the ring-mate at 1 HP. White/Bulwark. The ally-drops trigger carries it; the White test resolves through the contest core on use."
           }
         ]
       },
@@ -3133,9 +3137,8 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 6,
         "range": "Reach 5 ft.",
-        "damage": "1d8+3",
+        "damage": "1d8",
         "damageType": "impact"
       },
       {
@@ -3151,7 +3154,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — the ring tightens around the calves; it does not scatter and does not pursue."
             },
-            "description": "White/Bulwark. Bloodied behavior cue."
+            "description": "cue — table call: the ring tightens around the calves — the GM holds the oxen in place (no scatter, no pursuit). White/Bulwark. Bloodied behavior cue."
           }
         ]
       }
@@ -3167,21 +3170,24 @@
     "leylines": [
       "green"
     ],
+    "attributes": {
+      "str": 1,
+      "spd": 2,
+      "int": 0,
+      "wil": 0,
+      "awa": 1,
+      "pre": 0
+    },
     "skills": {
-      "ath": 1,
-      "stl": 2
+      "hwp": 1
     },
-    "defenses": {
-      "phy": 11,
-      "cog": 8,
-      "spi": 10
-    },
-    "deflect": 1,
-    "hp": 12,
+    "deflect": 0,
+    "hp": 6,
     "foc": 2,
+    "inv": 2,
     "movement": 30,
     "count": 3,
-    "biography": "<p>The grove-heart's runners (canon §5c, ruling 32; blocks scoped ruling 110) — dog-sized tangles of root and whip: animal-smart, expendable, grown not born. Kit is the banked \"the Snare\" (ruling 106b): Grasping Vines + Territorial Instinct — it roots you where you stand and won't let go. Displaced rootlings (famine arc) mine farmland, gardens, and granaries for the Green in them.</p><p><em>Scaling: count 3 alongside a grove fight; the Briar-Gone Grove's Call the Runners is the same knob.</em></p>",
+    "biography": "<p>The grove-heart's runners (canon §5c, ruling 32; blocks scoped ruling 110) — dog-sized tangles of root and whip: animal-smart, expendable, grown not born. Kit is the banked \"the Snare\" (ruling 106b): Grasping Vines + Territorial Instinct — it roots you where you stand and won't let go. Displaced rootlings (famine arc) mine farmland, gardens, and granaries for the Green in them.</p><p><em>Scaling: count 3 alongside a grove fight; the Briar-Gone Grove's Call the Runners is the same knob.</em></p><p><em>HP 6 and Deflect 0 (were 12 and 1): bench run 48's YARD-1 took two to three PC Actions to drop a rootling against R-134's minion row of one. At 6 an average landed PC hit drops one, a graze bloodies it and its own scatter cue sends it into the soil. The bark hide goes with the Deflect — a rootling is green whip and root, expendable, grown not born. Whip and Root keeps its d6: its landed hits averaged 4.2, on target. AWA 1 (R-128) — animal-smart, reading footsteps through the soil — sees 10 ft in the dark; Awareness is Green's own attribute, so Grasping Vines and Territorial Instinct roll +2 where they rolled +1. Stealth rides SPD 2 and Athletics rides STR 1 — the old totals, as attributes. R-137: Whip and Root is STR 1 + Heavy Weaponry 1 = +2 for 1d6+2, one modifier on the test and the damage as a PC's (the card read +4 for 1d6+1 under the flat model), graze 1d6.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 10 / Spi 11 (the card read 11 / 8 / 10 as overrides).</em></p>",
     "items": [
       {
         "name": "Grasping Vines",
@@ -3199,7 +3205,7 @@
               "requireTarget": true,
               "note": "On a success the target is Restrained; the swarm spends 1 Focus at the start of its turn to maintain the hold (GM-tracked)."
             },
-            "description": "The tree talent's gated test, verbatim (Green vs Physical defense). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+            "description": "effect — decision-free (Green vs Physical defense, resolved through the contest core on its roll). The tree talent's gated test, verbatim (Green vs Physical defense). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
           },
           {
             "event": "edha-test-success",
@@ -3212,7 +3218,7 @@
               "formula": "0",
               "damageType": "energy"
             },
-            "description": "The success payload: Restrained on the caught character, exactly as the tree twin applies it."
+            "description": "effect — decision-free (Restrained lands on a success). The success payload: Restrained on the caught character, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3228,9 +3234,9 @@
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
               "rangeFt": 30,
-              "note": "If this enemy declares a Disengage: Territorial Instinct (1 Focus) — Green vs. Survival to zero its movement (use the item to auto-resolve)."
+              "note": "Territorial Instinct is ready this round (Reaction, 1 Focus): when an enemy within 30 ft declares a Disengage, target it and use the item — Green vs. Survival zeroes its movement."
             },
-            "description": "Green/Overgrowth. The Disengage declaration is a table read — the turn-start cue is the floor; the use path resolves the contest."
+            "description": "cue — table call: an enemy within 30 ft declares a Disengage and the rootling spends 1 Focus to answer it (the card posts once per round per rootling, at the first hostile turn start in range — one Reaction's budget). Green/Overgrowth. The Disengage declaration is a table read — the turn-start cue is the floor; the use path resolves the contest."
           },
           {
             "event": "use",
@@ -3242,7 +3248,7 @@
               "requireTarget": true,
               "note": "On a success the Disengaging enemy's movement drops to 0 this turn (GM-applied — no movement hook)."
             },
-            "description": "The tree talent's opposed contest, verbatim (Green vs Survival through the contest core — iron rule 3). Rule-keyed 07-26: the cue promised the use path would auto-resolve, but the deleted engine name-key had left it dead."
+            "description": "effect — decision-free (Green vs the mover's Survival through the contest core). The tree talent's opposed contest, verbatim (Green vs Survival through the contest core — iron rule 3). Rule-keyed 07-26: the cue promised the use path would auto-resolve, but the deleted engine name-key had left it dead."
           },
           {
             "event": "edha-test-success",
@@ -3255,7 +3261,7 @@
               "formula": "0",
               "damageType": "energy"
             },
-            "description": "The success payload: Immobilized until the end of the target's turn, exactly as the tree twin applies it."
+            "description": "effect — decision-free (Immobilized until the end of the target's turn). The success payload: Immobilized until the end of the target's turn, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3264,9 +3270,8 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "impact"
       },
       {
@@ -3282,7 +3287,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — the rootlings scatter into the soil."
             },
-            "description": "Green/Overgrowth. Bloodied scatter cue (Reedling precedent)."
+            "description": "cue — table call: the rootling scatters into the soil and the GM removes the token. Green/Overgrowth. Bloodied scatter cue (Reedling precedent)."
           }
         ]
       }
@@ -3299,21 +3304,25 @@
     "leylines": [
       "green"
     ],
-    "skills": {
-      "ath": 3
+    "attributes": {
+      "str": 3,
+      "spd": 0,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 0
     },
-    "defenses": {
-      "phy": 14,
-      "cog": 8,
-      "spi": 12
+    "skills": {
+      "hwp": 1
     },
     "deflect": 2,
     "hp": 60,
     "foc": 3,
+    "inv": 2,
     "movement": 5,
     "senses": 30,
     "count": 1,
-    "biography": "<p>A grove-heart locked in un-clearing blight — \"gone to briar\" (canon §5c, ruling 32; the Thalendor encounter that IS the plot). Kit is \"the Closing Arena\" grown to boss scale (ruling 110): the maze grows around you while the grove drags at whatever crosses its soil. Not evil; wrong — the Gone-to-Weir Fen-Heart's family grammar in forest key.</p><p><em>Healthy grove-hearts stay the ruling-40 terrain-scale / diplomacy exception — no block by design. Call the Runners is the scaling knob: cap it for small parties.</em></p>",
+    "biography": "<p>A grove-heart locked in un-clearing blight — \"gone to briar\" (canon §5c, ruling 32; the Thalendor encounter that IS the plot). Kit is \"the Closing Arena\" grown to boss scale (ruling 110): the maze grows around you while the grove drags at whatever crosses its soil. Not evil; wrong — the Gone-to-Weir Fen-Heart's family grammar in forest key.</p><p><em>Healthy grove-hearts stay the ruling-40 terrain-scale / diplomacy exception — no block by design. Call the Runners is the scaling knob: cap it for small parties.</em></p><p><em>Girdling Bough 1d8+4 (was 1d10+3): the same 8.5 average hit, but the system's graze is the base die — bench run 48's YARD-3 saw two 1d10 grazes (10 and 9) drop an 11-HP PC from full. A d8 graze averages 4.5, and two of them drop an 11-HP PC one time in three instead of one time in two. HP 60 stays: eleven PC Actions to drop against R-134's six or more. Attributes stated (R-128): village-minded (INT 1), un-dying (WIL 2), reading the arena through its soil (AWA 2 — the stated 30 ft Senses still wins over the ladder), and STR 3 carrying the old Athletics 3. R-137: the Girdling Bough is STR 3 + Heavy Weaponry 1 = +4 for 1d8+4, one modifier on the test and the damage as a PC's (the card read +6 for 1d10+3 under the flat model), graze 1d8. Investiture stated at 2, the pool it has always had.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 13 / Spi 12 (the card read 14 / 8 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "The Briar Rises",
@@ -3330,9 +3339,9 @@
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
-              "note": "Thorn Field — half 1d8 keen to any character entering or starting a turn in HAND-PLACED briar (engine-placed patches apply it automatically)."
+              "note": "Only if this scene has hand-placed briar: half 1d8 keen to a character entering or starting its turn in it (briar the grove places itself deals this automatically)."
             },
-            "description": "Green/Overgrowth. Cue covers the hand-placed maze; engine-placed terrain is automatic."
+            "description": "cue — table call: the GM applies half 1d8 keen to a character in the scene's HAND-PLACED briar (no range dial: every PC in the fight stands inside any range worth setting, and no hook can see painted briar). Green/Overgrowth. Cue covers the hand-placed maze; engine-placed terrain is automatic."
           },
           {
             "event": "edha-watch-rule",
@@ -3343,7 +3352,7 @@
               "damageType": "keen",
               "label": "Thorn Field"
             },
-            "description": "Terrain this creature places also deals half [Tier][Die] keen (boss green rank 3 → half 1d8) — read by the zone creator when Draw Mana / Sudden Growth drops a patch."
+            "description": "effect — decision-free (briar the grove places itself deals half 1d8 keen on enter and turn start). Terrain this creature places also deals half [Tier][Die] keen (boss green rank 3 → half 1d8) — read by the zone creator when Draw Mana / Sudden Growth drops a patch."
           }
         ]
       },
@@ -3369,7 +3378,7 @@
               "heal": false,
               "terrain": true
             },
-            "description": "Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
+            "description": "effect — decision-free (the click-placed burst drops difficult briar). Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
           }
         ]
       },
@@ -3384,26 +3393,39 @@
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
-              "note": "If this character starts its turn in the briar: Spreading Roots (1 Focus) — the briar spreads 10 ft toward them (GM extends the terrain)."
+              "note": "Only if this character starts its turn in the briar: Spreading Roots (1 Focus) — the briar spreads 10 ft toward it (the GM extends the terrain)."
             },
-            "description": "Green/Overgrowth. Spreading Roots on the enemy-turn-start cue — timing adapted to the closed trigger vocabulary and stated on the card."
+            "description": "cue — table call: a character starts its turn in the briar and the grove spends 1 Focus to spread it 10 ft toward them (no range dial, for Thorn Field's reason). Green/Overgrowth. Spreading Roots on the enemy-turn-start cue — timing adapted to the closed trigger vocabulary and stated on the card."
           }
         ]
       },
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>",
-        "noHook": "NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire."
+        "text": "<p><em>Green talent — carries Apex Predator's authored test-rider rule on its own document.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you. The engine grants it for briar the grove placed itself (Draw Mana, Sudden Growth); for the hand-placed maze it is the GM's read.</p>",
+        "events": [
+          {
+            "event": "edha-pre-test",
+            "handler": {
+              "type": "edha-test-rider",
+              "appliesTo": "any",
+              "bonusFormula": "",
+              "mode": "advantage",
+              "whenAttribute": "str, spd",
+              "whenEnemiesInMyZone": 3,
+              "unlessDisadvantage": true
+            },
+            "description": "effect — decision-free (advantage on its Physical tests while three or more living enemies stand in briar it placed; never over an active disadvantage). The Green talent's rule verbatim. Re-litigated 2026-09-14 (iron rule 3): the noHook it replaces said the briar is scene terrain, not an engine zone — but Draw Mana and Sudden Growth place engine terrain, and the rider's whenEnemiesInMyZone gate counts it."
+          }
+        ]
       },
       {
         "name": "Girdling Bough",
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 6,
         "range": "Reach 15 ft.",
-        "damage": "1d10+3",
+        "damage": "1d8",
         "damageType": "impact"
       },
       {
@@ -3429,7 +3451,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — it stops targeting downed characters."
             },
-            "description": "Green/Overgrowth. Bloodied register cue (Fen-Heart precedent)."
+            "description": "cue — table call: it stops targeting downed characters — the GM picks its targets. Green/Overgrowth. Bloodied register cue (Fen-Heart precedent)."
           },
           {
             "event": "edha-apply-watch",
@@ -3439,7 +3461,7 @@
               "atFraction": 0,
               "note": "0 HP — it goes still instead of dying; the blight stands."
             },
-            "description": "Green/Overgrowth. The 0-HP stillness cue (Fen-Heart precedent)."
+            "description": "cue — table call: it goes still instead of dying — the GM ends the fight and leaves the blight standing. Green/Overgrowth. The 0-HP stillness cue (Fen-Heart precedent)."
           }
         ]
       }
@@ -3463,18 +3485,13 @@
       "awa": 3,
       "pre": 0
     },
-    "defenses": {
-      "phy": 10,
-      "cog": 10,
-      "spi": 12
-    },
     "deflect": 0,
     "hp": 14,
     "foc": 2,
     "inv": 2,
     "movement": 50,
     "count": 1,
-    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p>",
+    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p><p><em>R-137 (2026-09-15): Mob the Straggler is an Agility strike, as the published swarm bites are — SPD 2 + Agility 0 = +2 for 1d4+2, graze 1d4 (the card read +4 for 1d4+1 under the flat model; Strength 0 would have left a Heavy Weaponry strike at +0). Perception 3 still reads off AWA 3.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 11 / Spi 13 (the card read 10 / 10 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "The Tolling Gone Wrong",
@@ -3544,9 +3561,9 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 4,
+        "attackSkill": "agi",
         "range": "Reach 5 ft (enveloping).",
-        "damage": "1d4+1",
+        "damage": "1d4",
         "damageType": "keen"
       },
       {
@@ -3592,18 +3609,13 @@
       "awa": 4,
       "pre": 0
     },
-    "defenses": {
-      "phy": 14,
-      "cog": 13,
-      "spi": 11
-    },
     "deflect": 0,
     "hp": 26,
     "foc": 3,
     "inv": 2,
     "movement": 45,
     "count": 1,
-    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p>",
+    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p><p><em>R-137 (2026-09-15): The Pounce Already Taken is an Agility strike — SPD 3 + Agility 0 = +3 for 1d8+3 (+1d4 keen when the declared action was taken), graze 1d8 (the card read +7 for 1d8+2 under the flat model, and rolled +9 for 1d8+4 once attributes were stated). Perception 4 and Stealth 3 still read off AWA 4 and SPD 3.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 15 / Cog 11 / Spi 14 (the card read 14 / 13 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Forewarned",
@@ -3691,9 +3703,9 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 7,
+        "attackSkill": "agi",
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen",
         "events": [
           {
@@ -3747,11 +3759,6 @@
     "skills": {
       "dec": 2
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 13,
-      "spi": 14
-    },
     "hp": 22,
     "foc": 3,
     "inv": 3,
@@ -3762,15 +3769,14 @@
       "Black/Hollow Command",
       "Black/Coercive Pressure"
     ],
-    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p>",
+    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p><p><em>R-137 (2026-09-15): the Warden's Hook-Pole derives like a PC's weapon — STR 1 + Heavy Weaponry 0 = +1 for 1d6+1, graze 1d6 (the card read +4 for 1d6+1 under the flat model, and rolled +5 for 1d6+2 once attributes were stated); it was never meant for this, and the number now says so. Deception PRE 2 + rank 2 = +4 for Hollow Command, as approved.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 13 / Spi 14 (the card read 12 / 13 / 14 as overrides).</em></p>",
     "items": [
       {
         "name": "Warden's Hook-Pole",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 10 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "impact",
         "rider": "The hooked haul-pole every warden carries — it keeps you at the line's length, and it was never meant for this."
       },
@@ -5426,6 +5432,75 @@
               "note": "Bloodied — the alpha withdraws the pack to watching distance; they shadow, they do not press."
             },
             "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
+  },
+  "Preacher of the Lowered Crown": {
+    "role": "rival",
+    "size": "medium",
+    "creatureType": "humanoid",
+    "tier": 1,
+    "folder": "Thalendor Heartwood Bestiary",
+    "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
+    "leylines": [
+      "white"
+    ],
+    "attributes": {
+      "str": 0,
+      "spd": 1,
+      "int": 1,
+      "wil": 2,
+      "awa": 2,
+      "pre": 2
+    },
+    "skills": {
+      "white": 2,
+      "black": 2,
+      "lwp": 1
+    },
+    "hp": 20,
+    "foc": 4,
+    "inv": 4,
+    "movement": 25,
+    "count": 1,
+    "talents": [
+      "Sovereignty/Censure",
+      "Sovereignty/Decree of Ruin",
+      "Sovereignty/Expose"
+    ],
+    "biography": "<p>Preacher Oswin Hollin (Ben's to rename; Merrit Wold is the other default) — a preacher of the <strong>Lowered Crown</strong> (canon §5b's brewing heresy; ruling 166, R-131 (a), item 158). In the most devout nation, starving worst, he preaches the first reading: the Arbiter has cast Thalendor down for a sin unnamed, and his district has stopped performing the First Sheaf over a vat-loaf. <strong>White-attuned</strong> (Ben, 2026-09-15: Corvaine's human was Black, so Thalendor's is White) and <strong>Sovereignty-aligned</strong> — Verdannis's own tree, whose grammar is the station-idiom he preaches; the tree's gate is White 2+ and Black 2+, so he carries both ranks (Black as a stated skill, no Black Key). The party holds Chaos, Fate and Knowledge, not this tree.</p><p><strong>Kit, as written (ruling 40):</strong> <em>Censure</em> (1 Action, 1 Investiture, Black vs Cognitive — a creature's damage die steps down one until his next turn: \"I have found you wanting\"), <em>Decree of Ruin</em> (1 Action, 2 Investiture, Black vs Cognitive — the step-down lasts the scene on a success, a turn on a failure, once per creature: the sentence), <em>Expose</em> (a censured creature that fails a test returns 1 Investiture to him; one that fails an attack opens a Reactive Strike for the ally it targeted). Plus the White Key's Draw Mana. Black tests roll PRE 2 + rank 2 = +4; White tests WIL 2 + rank 2 = +4. Against this party the kit costs about a point a hit (d6 → d4): pressure, not threat — a scene meant to be talked down.</p><p><strong>The encounter — a sermon before a fight.</strong> His district at a shrine-grove the wardens can no longer calm, or at a refused First Sheaf, with the sign read aloud. It becomes a fight only if someone forces the reading. Three outs: <em>talk</em> (Persuasion against his Spiritual 14); <em>the drain evidence</em> — the groves sickened in an order that maps a mechanism, not a judgment (§5c's GM layer: the famine's acute layer is the Arbiter's own search draining the Root Network, and neither side knows); <em>mercy</em> — one true thing on a vat-fed table (§5b). Tone: <strong>sad, not evil</strong> — a devout man whose god has gone quiet on him, preaching the only reading that lets the hunger mean something. Where he sits in session 2 is session-forge's call.</p><p><em>Numbers on the PC model (R-137 / R-139 (a)): STR 0 SPD 1 INT 1 WIL 2 AWA 2 PRE 2, which derives Phy 11 / Cog 13 / Spi 14; Focus 4 (2 + WIL) and Investiture 4 (2 + max(AWA, PRE)) stated; senses 10 ft; Pilgrim's Staff SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6. Ledger +1 White.</em></p>",
+    "items": [
+      {
+        "name": "Pilgrim's Staff",
+        "kind": "weapon",
+        "cost": "1 Action",
+        "attackSkill": "lwp",
+        "range": "Reach 5 ft.",
+        "damage": "1d6",
+        "damageType": "impact",
+        "rider": "A walking staff worn smooth by the road between shrine-groves. He would rather not."
+      },
+      {
+        "name": "The Sermon",
+        "kind": "trait",
+        "text": "<p>GM-run scene truth, no trigger: he preaches before anything is fought — the sign read aloud, the vat-loaf named, the First Sheaf refused. Three outs, none of them a blade: <em>talk</em> (Persuasion against his Spiritual 14), <em>the drain evidence</em> (the groves sickened in an order that maps a mechanism, not a judgment — canon §5c's GM layer), or <em>mercy</em> (one true thing on a vat-fed table). Force the reading and it becomes a fight; his district follows his reading, not his fists.</p>"
+      },
+      {
+        "name": "The Crown Lowered",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP) he lowers the crown himself — kneels, stops the sermon, and takes any surrender or any true thing offered. He never strikes a downed character.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — he kneels and the sermon ends; he takes any surrender or any true thing offered, and never strikes a downed character."
+            },
+            "description": "cue — table call: he kneels and the sermon ends — the GM stops the fight and plays the district's reading. White/Sovereignty morale cue (the Roek and Well-Warden precedent)."
           }
         ]
       }
