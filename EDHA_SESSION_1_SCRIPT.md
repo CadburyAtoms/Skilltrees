@@ -6,11 +6,6 @@ happened). This is the *read-at-the-table* version: read-aloud boxes, NPCs with 
 ford combat statted, and a clue ledger. GM truth throughout **except §8 (player-safe)** —
 ⚑ marks a provisional default (name, coordinate) you can swap freely.
 
-> ⛔ **2026-09-15 (R-137 / R-139 (a), TODO item 166):** the printed statblocks below changed — every attack
-> derives from attribute + skill rank (one modifier on the test and the damage, as a PC's), and the
-> three defenses derive from the attribute pair. **The published GM script (the URL in
-> `EDHA_CAMPAIGN_STATE.md` §6) is owed a republish** on the house template with these numbers.
-
 Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
 in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
 §5a). Sites run **south down the Palewater**, the Thalendor/Corvaine border river: **Elmsworth**
@@ -33,7 +28,7 @@ seed. Everything else tonight (the raid, the politics, the famine) is scaffoldin
 horror.
 
 > **The party landed 2026-09-09** (`EDHA_CAMPAIGN_STATE.md` §1) and the sheet has been tuned to
-> it without losing its build-agnosticism: **Hannah** (Envoy, **Blue**, Canticle exile,
+> it without losing its build-agnosticism: **Ishee** (Envoy, **Blue**, Canticle exile,
 > Law-Singing + Performance), **Soggy Bottom** (Scholar, **White**, Lunavar moon-pool exile),
 > **Tem Parinaem** (Scholar, **Green**, Thalendor woods). **No Black, no Red, and no dedicated
 > fighter** — the ford's scaling default moved accordingly (§3).
@@ -202,7 +197,7 @@ proudest of.
   Beneath it sit two countersignatures: the **ferry office** and the **paymaster's**.
 - **Un-missable fallback:** if nobody rolls or asks, Kell *volunteers* it — he wants the manifest
   initialled and holds the writ out to be read while he waits.
-- 🎯 **Hannah reads this for free.** She was a Law-Singer's apprentice in **Canticle**, where law
+- 🎯 **Ishee reads this for free.** She was a Law-Singer's apprentice in **Canticle**, where law
   binds only when performed and *accurate quotation is the highest courtesy* (canon §5b, "The
   Sounding"). Countersignatures, who may authorise what, and the difference a wrong seal makes are
   her trade. Give her the paper and let her tell the table what it means — this scene and her
@@ -431,7 +426,7 @@ Light Weaponry 1) with **defenses phy 12 / cog 13 / spi 13** *(derived)*, plus *
 
 **Sergeant Halden Roek** — rival, tier 1. *humanoid.*
 - **Defenses** phy 13 / cog 13 / spi 14 *(derived, R-139 (a) — his talk-out DC is 14 now)*. **deflect 2**. **HP** 24 *(was 28; item 156, 2026-09-14 — he
-  calls the break at one third, so 16 is the fight's number)*. **foc** 3. **Move** 25 ft. Senses 10 ft.
+  calls the break at one third, so 16 is the fight's number)*. **foc** 3. **inv** 2. **Move** 25 ft. Senses 10 ft.
 - ▶ **Issued Blade** — attack +3, Reach 5 ft., 1d8+3 **keen** *(R-137: STR 2 + Heavy Weaponry 1; graze 1d8)*.
 - ▶▶ **Press the Line** — attack +3, Reach 5 ft., 1d8+3 keen; on a hit, one ally Raider may make a
   crossbow shot as a Reaction. *(Costs 1 focus.)*
@@ -447,7 +442,7 @@ Light Weaponry 1) with **defenses phy 12 / cog 13 / spi 13** *(derived)*, plus *
 
 ### The tell — "gear too good"
 
-Starving irregulars do not carry **matched deflect-2 armour and fresh-forged keen blades.** Any PC
+Starving irregulars do not carry **matched armour and fresh-forged keen blades.** Any PC
 who looks:
 - **Perception (DC 12)** or **Crafting/Lore (DC 13):** the armour and blades are *new*, uniform,
   and stamped with a **Malcurr** maker's mark — mountain-forge work, not Corvaine issue. Someone is
@@ -505,10 +500,10 @@ structural causes, neither of them the statblocks:
 1. **The party has no ranged attack.** Not one, at the time of measuring. Against a crossbow line
    opening at 60 ft, rounds 1–2 are pure incoming fire with no reply. This is what the **parley
    round** above is for, and it is also worth telling the players there are shops in Elmsworth
-   (§2): a **shortbow** is 80/320 ft and Hannah's Light Weaponry rank makes it her best attack by
+   (§2): a **shortbow** is 80/320 ft and Ishee's Light Weaponry rank makes it her best attack by
    a wide margin; a **throwing axe** is Heavy Weaponry, which is Tem's rank-2 skill.
 2. **Cosmere has no whiffs.** A failed attack can still graze. Raider B rolled a **2** against
-   Hannah and dealt 5. Against PCs with no armour and deflect 0, that is a floor of damage every
+   Ishee and dealt 5. Against PCs with no armour and deflect 0, that is a floor of damage every
    round no matter how the dice fall.
 
 ⚠️ **Charge the graze cost.** A graze costs the attacker **1 focus per target** (SR p.35) and is
@@ -516,6 +511,16 @@ optional. Roek has 3 focus and *Press the Line* eats 1 per use; the Raiders and 
 have **1 focus each**, so a minion can graze exactly **once in the whole fight**. Run 44's first
 pass forgot this and the encounter read far more lethal than it is — with focus charged properly,
 most raider misses are simply misses.
+
+**The per-round budget (R-138 (a), 2026-09-15).** The ¼-per-round line binds the encounter, not the
+cards: at most **8.75 damage a round** against this party's 35-HP pool (HP 11 / 11 / 13).
+**Measured, not modelled:** bench run 44 took 18 in over three rounds — 6 a round, 17 % — at the old
++4 attacks; on the PC model a Raider's attack is worth about 2.4 against Physical 14 / 13 / 16 before
+a graze (it was about 2.9), so the rerun only lowers that. What holds the fight under the line is its
+shape, not its cards: the parley round (no free volley), the wade (boarders spend their Actions
+crossing Slowed water), the Focus cap (one graze per minion per fight), and Roek managing losses.
+**The hot round** is all four standing within reach of one PC at two attacks apiece — about 21 before
+grazes; spread them, and let Break and Cover Their Retreat pull people out.
 
 ---
 
@@ -557,7 +562,7 @@ always come from where they aren't.
 
 **Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
 - **Defenses** phy 14 / cog 14 / spi 14 *(derived, R-139 (a): INT 2 / WIL 2 hold the belief DC at Cog 14)*. **deflect 1** (dense fog-gray plumage). **HP** 20.
-  **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
+  **foc** 2. **inv** 2. **Move** 30 ft. (wading stalk; short clumsy glides). Senses 20 ft (AWA 3).
 - ▶ **The Seeming** (1 Action — the Blue tree talent **Phantom Double**, adapted per ruling 40:
   self-only, at will): its image stands a pace from its body. Using it places the seeming as
   **its own token beside the bird — 1 health, any hit breaks it**. Every enemy who can see it
@@ -565,7 +570,8 @@ always come from where they aren't.
   seeming is real to them; on a success it is empty air. When the seeming breaks, the bird
   stands plainly seen. Its *call* sounds from the seeming, never the body. *(It costs the bird
   an Action to raise — a round spent hiding is a round it does not strike. That trade is the
-  fight.)*
+  fight.)* A test or talent aimed at the seeming resolves against it (defenses 0) and affects only
+  the seeming — the fooled act on the wrong body *(R-136 (a), 2026-09-14; the card carries it)*.
 - ▶ **Spearing Beak** — attack +2, Reach 10 ft., 1d6+2 **keen** *(R-137, 2026-09-15: STR 2 + Heavy Weaponry 0, graze 1d6 — was +5; and 1d8+2 before item 156, 2026-09-14,
   after bench run 48's yardstick)*; **+1d6** against a character who is taken in by the seeming.
 - ▶▶ **Snatch and Wade** — attack +2, Reach 5 ft., vs. one Small-or-smaller creature or a
@@ -596,6 +602,14 @@ the reading copy. `data/adversaries.json` is the authority if the two ever disag
 
 **Scaling:** 2 birds baseline (3 PCs). 4+ PCs: 3 birds. If the ford fight left the party
 carrying injuries, cut to 1 bird — this beat bruises, it never threatens the boat.
+
+**The per-round budget (R-138 (a)).** At most 8.75 a round against this party. Bench run 48's YARD-2
+read the pair at 31–37 % a round on the old +5 / 1d8+2 beak; on the PC model a Beak against a fooled
+PC is worth about 3.9 before a graze (it was about 5.8), so the same fight lands near 7–9 a round — at
+the line, not comfortably under it. What holds it: each bird spends an Action a round on The Seeming,
+Snatch and Wade or the stalk (it wants the dog and the sacks, not a PC); Focus 2 pays for Fade and
+grazes out of one pool; bloodied, it leaves. **Don't give a bird two Beaks in a round**, and take the
+one-bird line above if the ford left injuries.
 
 ### After (Wick, the clue)
 
@@ -765,7 +779,7 @@ From Gramma as the players leave her, or any villager asked *"what else is wrong
 
 ### Per-color leyline tug (use only what the party brought)
 
-> **This party brings Blue, White and Green** — Hannah, Soggy and Tem respectively. **Black and
+> **This party brings Blue, White and Green** — Ishee, Soggy and Tem respectively. **Black and
 > Red will not fire**; they stay listed because a build can change and because the colours are
 > canon regardless. Tem's Green is the loud one here, and it is the same signal he has been
 > getting since Elmsworth.
@@ -830,7 +844,7 @@ food outvalues coin (ruling 56), and that is the point of the job.
 | **The chain-lift levy** — 1 sack in 20, or half, or a day's labour, or on account | Ferry-Serjeant Kell, Wainferry (§2b) | A *cost*, not loot — whatever they choose follows them. On account = **a debt to Khor** | the writ |
 | Rope, tar, poles, lamp-oil, salt meat, a barge dog | Wainferry market (§2b) | Ordinary prices; last market for 850 km | — |
 | A hired poler or two | Wainferry quay (§2b) | ~1s/day; the last warm body before the shallows | — |
-| **Malcurr-stamped blade** (and matched deflect-2 armour) | Any downed raider, Palewater Ford | Fresh-forged, uniform, mountain-forge work. **Un-missable: looting delivers it even if nobody rolls the tell** | ✔ the act-1 political thread |
+| **Malcurr-stamped blade** (and matched armour) | Any downed raider, Palewater Ford | Fresh-forged, uniform, mountain-forge work. **Un-missable: looting delivers it even if nobody rolls the tell** | ✔ the act-1 political thread |
 | **The writ of requisition** | Roek, on parley or from his body | Real paper, real seal, child's-handprint wax — and a quartermaster's countersignature | ✔ pairs with Kell's writ (§2b) |
 | Soldier's crossbows, shortswords, Roek's issued blade | Palewater Ford | Ordinary tier-1 gear; `kind:"weapon"` items on the pack actors, so they strip and render properly | — |
 | A cut of the crew's salt meat | Wick's stores (§3b) | Ends the mistheron fight if given to the river. Wick will be furious, then quiet | — |
@@ -940,6 +954,9 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
   for talents-on-adversaries. Engine unchanged; this is a pack-rebuild-only delivery.
   Art: core-icon placeholders; drop real files per `EDHA_ADVERSARY_ART_WISHLIST.md` +
   rebuild and the build picks them up automatically.
+- **Rebuilt on the PC attack model and deployed 2026-09-15** (R-137 / R-139 (a), PR #390): the four
+  blocks as printed in §3 / §3b; their roll rows (156-15 … 156-18 in `EDHA_FOUNDRY_TEST_CHECKLIST.md`)
+  are 🤖 queued for the bench.
 - **§2b adds no adversaries and needs no pack rebuild** — the ferry scene is entirely social.
   Kell, the tally-clerk and the hostler are GM voices, not actors.
 - Scenes/journals: none required — this sheet is the journal.

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T17:41:46.295Z",
+  "generatedAt": "2026-09-15T18:48:27.728Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "fa231391fc",
-    "commit": "404226c",
-    "branch": "pm/bench-49a",
+    "hash": "f9b998ef39",
+    "commit": "fdbf867",
+    "branch": "pm/bench-49b",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,39 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Bench run 49a merged as #393: 14 of 15 rows closed, FP-1 waits on your ruling R-141, four defects filed (items 168-171), and it found your combat already gone and Palewater Ford empty. Item 165 merged as #392 (Ishee protected). Next: bench run 49b (the 22 adversary rows). Fix pass 13 waits for your word. No Fable agents today.",
-    "waitingOn": "Ben: answer R-141 (False Premise timing, default a); keep or delete the two July branches; review PR #395 (session 2 prep); say when fix pass 13 runs",
+    "note": "PM of record since 11:49 ET. Bench run 49b merged as #397: all 22 adversary rows passed, two small defects filed (items 172-173), your combat was already gone and Palewater Ford empty. R-141 is (a); fix pass 13 is fixing the card text along with items 161-164, 168, 170 and 171. PR 395 is merged. Item 169 (decoy damage rolls) was held in review: removing the formula also changes attack detection and colour for ten talents, so it is being narrowed to three and the other ten will come to you as a ruling. No Fable agents today.",
+    "waitingOn": "Ben: may the deploy close and relaunch Foundry this afternoon, or wait for tonight; keep or delete the two July branches",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "fix-pass-13",
+      "title": "Fix pass 13: items 161-164, 168, 170, 171 and the R-141 (a) False Premise card text",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/fix-pass-13",
+      "startedAt": "2026-09-15T18:00:00Z",
+      "agent": "Fix pass 13 (engine + card text)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; repo-side"
+    },
+    {
+      "item": "169",
+      "title": "Decoy damage formulas: narrowing to the three talents with no side effects",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/169-decoy-damage-formulas",
+      "startedAt": "2026-09-15T18:05:32Z",
+      "agent": "Work item 169 (decoy damage formulas)",
+      "phase": "bounced",
+      "pr": 396,
+      "note": "restoring ten talents; the ten go to Ben as a ruling"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -1307,8 +1334,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-115 ✓ (a, phone 09-13)",
-      "status": "blocked",
-      "statusDetail": "R-141",
+      "status": "bench-pending",
+      "statusDetail": null,
       "pr": 374
     },
     {
@@ -2099,9 +2126,9 @@
       "model": "opus",
       "size": "M",
       "deps": "bench 49a",
-      "status": "queued",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 397
     },
     {
       "pos": 170,
@@ -2111,7 +2138,7 @@
       "model": "opus",
       "size": "M",
       "deps": "bench 49a · bench 49b",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2135,9 +2162,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "bench 49a ✓",
-      "status": "queued",
+      "status": "in-review",
       "statusDetail": null,
-      "pr": null
+      "pr": 396
     },
     {
       "pos": 173,
@@ -2159,6 +2186,30 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "bench 49a ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 175,
+      "item": "172",
+      "title": "A triggered effect's resource-gain card prints the declared gain even at a full pool (\"Reeve-Owl regains 1 Focus\" at 3 / 3; Draw Mana's \"recover N\" at a full Investiture pool) — edhaGainResource returns the amount actually gained (ENGINE-ONLY, F5). Filed by bench run 49b",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "bench 49b ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 176,
+      "item": "173",
+      "title": "An on-hit status rule gated on an Isolated target posts \"Sapping Hex — no Isolated target to affect\" publicly on every non-Isolated hit — return silently when a victim was supplied and filtered out (ENGINE-ONLY, F5). Filed by bench run 49b",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "bench 49b ✓",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2209,9 +2260,8 @@
     }
   ],
   "benOnly": [
-    "answer R-141 (False Premise's Reaction denial clears at the END of the target's next turn while its card says the START — default (a) keeps the engine's convention and fixes the card text)",
-    "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)",
-    "PR #395 (claude/session-2-grove — session 2 prep, with session 1's GM script republished first) is open from Ben's session, ready for his review (#394, the session-2 kickoff brief, merged at 13:33)."
+    "say whether the deploy that lands fix pass 13 (engine push + leyline and deity rebuilds) may close and relaunch Foundry this afternoon or waits for tonight",
+    "keep or delete the two YOUR-CALL July branches (claude/playtest-monitoring-checklist-8lit4b, a 126-line playtest watch sheet; claude/palewater-ford-battle-map-08r3hg, a 250-line battle-map drawing brief)."
   ],
   "inbox": [],
   "foundry": {
@@ -2221,104 +2271,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-13",
-      "time": "22:10",
-      "at": "2026-09-14T02:10:00.000Z",
-      "item": "Deploy cycle run BY THE PM — deploy-cycle.js --yes from main @ 61a97d2 (02:10:01Z → 02:10:16Z): six guards PASS, nine steps ok, packs stamped 02:10:16Z, served engine 24d74c96 = HEAD, all three post-flight checks PASS — the first run in which the script's own verification passed end to end (items 137 + 139 live). Hand-verified: 6 in sync, / 302, /join title Edha, served sha = repo sha. LIVE: REBUILD deity + leyline for #360 / #366 (items 130 / 133 / 134). ⟳ Sync Talents is bench 47's step zero",
-      "itemNo": "360",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:13",
-      "at": "2026-09-14T02:13:00.000Z",
-      "item": "Dispatched item 132 (sonnet, worktree pm/132-chaos-omen-cap — R-122 (a): capFormula tier + 1 on the four Omen placements, a place rule on Isolating Pressure's success when the target bears no Omen, two card texts, three 🤖 rows; pack parity via a scratch build with EDHA_DATA pinned; DATA → REBUILD deity). Trailing-5h dispatches 6 of 6 (19:26, 19:49, 20:13, 20:50 ×2, 22:13) — next slot 00:26 (item 135)",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:13",
-      "at": "2026-09-14T02:13:00.000Z",
-      "item": "Housekeeping + filings: items 140 (deploy cycle runs no extract; the build guard's fingerprint is blind to tree-node edits — the #360 session's note) and 141 (the three Knowledge cards' decoy item-level damage formulas — item 130's left-open note) filed; the git push origin --delete of the twelve merged remote branches was REFUSED by the auto-mode permission classifier — listed in the session line for Ben",
-      "itemNo": "360",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "filed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:13",
-      "at": "2026-09-14T02:13:00.000Z",
-      "item": "Item 132 (R-122 (a): the Omen cap → tier + 1 on the four placements + Entropy Strike's card; the Isolating Pressure half left open) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "29 min, 133 tool uses (241 turns)",
-      "weighted": "8.4M",
-      "weightedM": 8.4,
-      "outcome": "reviewed 22:47 — merged on green after the PM's bookkeeping commit on the branch, no trailers, five themed commits, no corrections; CI green on 67c0a70, gates 12/12 + --ci 14/14 in the worktree (1206 tests), the worker rebased onto main itself. Pack parity: scratch edha-deity before/after, 110 documents both sides, exactly 3 with content diffs (Entropy Strike, Spreading Omen, Unravel Everything — 7 field diffs = the four capFormula + the card's three copies), the other 107 differ only in _stats stamps. Stopped on the placement half with the cause named to the line (edhaDispatchTestResult halts on the first false; release returns false on an unmarked target) — filed by the PM as item 142 (opus S, engine primitive); TODO 132 closed for the cap half with the split recorded. Two 🤖 rows (OM-1 / OM-2). DATA → REBUILD deity + ⟳ Sync Talents — rides the next deploy with item 135",
-      "pr": 369
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:47",
-      "at": "2026-09-14T02:47:00.000Z",
-      "item": "Nothing running. Session tally 21:58 → 22:47: 5 PRs merged (#366 with #360, #356, #368 board, #369 item 132), one deploy (22:10, the first self-verifying deploy-cycle.js run), items 140 / 141 / 142 filed; workers 8.4M (item 132), PM ≈ 3.5M so far. Trailing-5h dispatches 6 of 6 (19:26, 19:49, 20:13, 20:50 ×2, 22:13) — next slot 00:26 → item 135 (sonnet XS), then deploy-cycle.js for 132 + 135, then bench run 47 (Opus 1 of 3 for 09-14) at ~00:49 over 111-1 / 111-2, DM-1 / DM-2, BR-1, GW-1 / AM-1 / TE-1, KM-1, OM-1 / OM-2, 135's row, 128-1, 123-1, 124's regen re-drive, Predator's Due (← 88); item 142 (Opus 2 of 3) after the bench or tomorrow. Seven rulings still on Ben's phone; twelve merged remote branches await his delete",
-      "itemNo": "366",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": "≈ 3.5M (PM)",
-      "weightedM": 3.5,
-      "outcome": "waiting until 00:26",
-      "pr": null
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:48",
-      "at": "2026-09-14T02:48:00.000Z",
-      "item": "#369 (item 132) merged at 22:48:40 after the PM's bookkeeping commit (CI green on 681d3d3); the worker's worktree record pruned and its folder removed (git worktree remove said Permission denied on the directory — the known node_modules wrinkle; rm -rf cleared it)",
-      "itemNo": "369",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 369
-    },
-    {
-      "date": "2026-09-13",
-      "time": "22:49",
-      "at": "2026-09-14T02:49:00.000Z",
-      "item": "Dispatched item 135 (sonnet, worktree pm/135-power-disoriented — R-125 (a): both Power cards + both status-list gates to Disoriented, the frightened registry comment, one 🤖 row, deity pack parity with EDHA_DATA pinned). Dispatched under PM-R16 (Sonnet unlimited — the board's binding cap) on Ben's \"132 and 135 are ready to dispatch\" rather than idling until 00:26; the weekend trailing-5h count reads 7 (19:26, 19:49, 20:13, 20:50 ×2, 22:13, 22:49), logged, not binding",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-13",
       "time": "22:49",
@@ -3060,9 +3012,107 @@
       "weightedM": null,
       "outcome": "merged",
       "pr": 394
+    },
+    {
+      "date": "2026-09-15",
+      "time": "13:46",
+      "at": "2026-09-15T17:46:00.000Z",
+      "item": "Dispatched bench run 49b (opus, worktree pm/bench-49b: the 22 item-156 adversary rows; measure Ben's combat and Palewater Ford first) on Ben's word (\"Run the bench now\"). Opus 2 of 3 for 09-15",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:00",
+      "at": "2026-09-15T18:00:00.000Z",
+      "item": "Ben (chat, just before 14:00): \"R-141, yeah fix the card text. Run the fix pass when you can. Merge PR #395.\" — R-141 = (a); the fix pass authorised; #395 to merge",
+      "itemNo": "395",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:00",
+      "at": "2026-09-15T18:00:00.000Z",
+      "item": "Dispatched fix pass 13 (opus, worktree pm/fix-pass-13: items 161 – 164, 168, 170, 171 + R-141 (a)'s False Premise card text and the ruling close-out; repo-side only while 49b held Foundry). Opus 3 of 3 for 09-15",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:05",
+      "at": "2026-09-15T18:05:00.000Z",
+      "item": "#395 squash-merged on Ben's word: the PM merged main into claude/session-2-grove (the generated dashboard conflicted after #393), gates 13/13, CI green on 64c67d3, marked ready and squashed to keep its three commits' trailers off main; the remote branch deleted",
+      "itemNo": "395",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 395
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:05",
+      "at": "2026-09-15T18:05:00.000Z",
+      "item": "Dispatched item 169 (sonnet, worktree pm/169-decoy-damage-formulas) — split out of fix pass 13's approved scope for size, touching none of its files",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "14:05",
+      "at": "2026-09-15T18:05:00.000Z",
+      "item": "Item 169 (decoy damage formulas) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "29.7 min, 164 tool uses (275 turns)",
+      "weighted": "9.2M",
+      "weightedM": 9.2,
+      "outcome": "reviewed 14:36 — HELD, bounced once at 14:45: 13 talents blanked (the 8 named + Necrotic Cascade, The Unmooring, Withering Touch, Momentum of Victory, Warlord's Advance), parity exact and gates green, but blanking changes two things parity cannot show — a skill_test talent's d20 context (Attack → Item, so attack-scoped test riders, aggro and pack advantage skip it: Volatile Strike and the four Chaos tests) and five talents' leyline colour (edhaTalentColor → the ⊙ range button, Necrotic Grasp's heal-cut gate). Narrowed to Momentum of Victory, Warlord's Advance and Withering Touch; the other ten go to Ben as a ruling",
+      "pr": 396
+    },
+    {
+      "date": "2026-09-15",
+      "time": "13:46",
+      "at": "2026-09-15T17:46:00.000Z",
+      "item": "Bench run 49b (the 22 adversary rows) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "56 min (17:46:06Z → 18:41:46Z), 176 tool uses (296 turns)",
+      "weighted": "19.2M",
+      "weightedM": 19.2,
+      "outcome": "reviewed 14:48 — squash-merged trailer-free after the PM's bookkeeping commit on the branch: all 22 rows 156-1 … 156-22 retired on evidence in two section notes (fresh pack imports on Bench Arena, every roll read off the cards' .dice-formula nodes); items 172 – 173 filed; the players' actors untouched (a zero-path diff); Ben's combat gone and Palewater Ford empty at 17:52Z, so nothing deleted or synced; world diff otherwise empty; docs/BENCH_NEXT_RUN.md rewritten for run 50 (no drivable row until fixes land). CI green on fdbf867; one review correction: DEPLOY STATE's stale \"Palewater Ford holds a started combat\" sentence",
+      "pr": 397
     }
   ],
-  "runLogTotal": 334,
+  "runLogTotal": 341,
   "runLogFrom": "2026-09-13",
   "dispatches": [
     {
@@ -3976,6 +4026,36 @@
       "model": "opus",
       "item": null,
       "pr": 393
+    },
+    {
+      "at": "2026-09-15T17:46:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-15T18:00:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-15T18:05:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-15T18:05:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 396
+    },
+    {
+      "at": "2026-09-15T17:46:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 397
     }
   ],
   "statusVocab": [

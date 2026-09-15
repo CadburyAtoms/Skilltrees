@@ -1691,6 +1691,48 @@ it adds a second, bench-owned option next to it:
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 49b (2026-09-15 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **A `scope: "scene"` watch never fires out of combat — stage it inside one.** Whispered Doubt, Coercive Pressure and
+  every other scene-scoped `edha-watch` pass through `edhaWatchCombatGate` (`module-src/scripts/engine/02-the-out-of-combat-gate.js`),
+  which needs an active combat containing the WATCHER (R-4 / #28a, by design). Run 49b's first Whispered Doubt take — a
+  real 2-Focus spend, 5 ft from the flock, out of combat — read exactly like a dead rule: cost paid, no drain, no card, no
+  console error. The same spend inside a combat holding the flock and the spender drained at once. **Before calling a
+  scene watch dead, check `game.combats` for the watcher.**
+- ⭐⭐ **`item.use({configurable: false})` is the play button with no roll dialog; the consume dialog still opens.**
+  `determineConfigurationMode` reads `configurable` and fast-forwards the roll, but `use()` shows `ItemConsumeDialog`
+  whenever the item consumes something — click `button[data-action="continue"]`. Read in the system bundle at 2.1.0 and
+  not driven: `shouldConsume: true` skips that dialog AND the consumption, because the system only deducts from the
+  dialog's answer, so it is no shortcut. A weapon with no cost settles on its own: `await Promise.race([item.use({configurable:
+  false}), timeout])` is one call per roll.
+- ⭐⭐ **A `item.rollAttack({configurable: false})` card has NO dice section in its DOM** — only the flavour line; the
+  formulas live on `msg.rolls`. For a row about what the card prints, roll through `use({configurable: false})`: that card
+  carries the `.dice-formula` nodes and the `Full N Graze M` subtotal.
+- ⭐ **The v13 chat log is `.chat-log`, not `#chat-log`.** A `#chat-log button.edha-pick-btn` query found nothing and
+  read like a missing Intercept button; `.chat-log [data-message-id="<id>"] button.edha-pick-btn` found it, and the click
+  resolved the offer.
+- ⭐ **A Dread Presence "control" move must take the mover farther from EVERY ally on the canvas.** Run 49b's "move away
+  from Power" stepped closer to another bench PC across the Arena and was refused, correctly, with the 🚫 card; the next
+  refusal that round posted no card (R-38: one card per token per round). Clear the canvas of other same-side tokens, or
+  measure every ally, before calling a move a control.
+- ⭐ **Belief staging.** Four observers adjacent to the caster put three of four "fooled" on one Seeming cast (Perception
+  +4 vs DC 14); a single observer took two Phantom Double casts (vs DC 16). A copy is hostile to a bench PC only if its
+  caster's TOKEN is: place the caster's token with `disposition: -1` (token-level; the actor's prototype is untouched).
+- ⭐ **Put PCs INTO a Grove's briar after the region exists.** Read the new Region's `shapes[0]` rectangle and create the
+  PC tokens inside it — no movement API involved. Thorn Field's hazard then hits each on creation (*"takes 2 keen from
+  dangerous terrain"*). Run 48's click recipe held unchanged: `canvas.animatePan`, the client point from `worldTransform`,
+  `elementFromPoint(...).closest("#board")`, hover, click; `canvas.mousePosition` read the world point back.
+- ⭐ **Serve a repo script to the page instead of transcribing it.** A throwaway `node` http server on 127.0.0.1 sending
+  `Access-Control-Allow-Origin: *`, a `fetch` from the page, a sha256 compare against the file on disk, then
+  `new Function(txt)()` — byte-exact main's copy of `bench-setup-console.js`; stop the server afterwards.
+- ⚠️ **Read the pool before trusting a gain card.** Predatory Patience printed "regains 1 Focus" at 3 / 3 and Draw Mana
+  "recover 3 Investiture" at 2 / 2 (TODO item 172); every non-Isolated Sapping Hex hit posts "no Isolated target to affect
+  (target a token, then re-fire)" (item 173) — noise, not a failed rule.
+- ✅ **Density, measured: 22 of 22 rows retired on evidence, none kept open, 2 defects filed with the root cause read in
+  source (items 172–173), and 1 harness false negative caught before it was recorded (the out-of-combat watch) — in about
+  55 page calls, 17:46Z → 18:32Z.** End-of-run diff: 67 actors in and out, zero non-bench changes, the three players'
+  actors byte-identical, every scene document and token hash identical, combats 0 → 0.
+
 ## Operating lessons from run 49a (2026-09-15 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **`scene.createEmbeddedDocuments("Token", docs)` does NOT return the documents in input order.** Run 49a placed
