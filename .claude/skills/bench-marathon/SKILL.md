@@ -135,7 +135,7 @@ skipped while looking scheduled.
 
 ## The standing rules — pass these to EVERY bench subagent, verbatim
 
-- **Tem parinaem and Soggy Bottom may be REFRESHED, never EDITED (PM-R17).** A REFRESH — the
+- **Tem parinaem, Soggy Bottom and Ishee may be REFRESHED, never EDITED (PM-R17).** A REFRESH — the
   sheet's `⟳ Sync Talents` button, or an equivalent pull of their owned talent copies from the
   pack — is allowed; a hand write to their stats, items, or text is not. Never type a password.
   Never activate or deactivate a scene (combats stay INACTIVE via `ui.combat.initialize({combat})`).
