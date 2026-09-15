@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T21:22:05.941Z",
+  "generatedAt": "2026-09-15T21:59:15.342Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "829e7c2103",
-    "commit": "da3c646",
-    "branch": "pm/bench-50",
+    "hash": "80d35b56d1",
+    "commit": "65712cb",
+    "branch": "pm/rulings-142-143-answered",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,12 +43,26 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Bench run 50 merged: all 12 rows passed, so today's fixes are verified live; one small defect filed (item 176). Waiting on you: confirm R-143 as (a) with the four caveats, give the go for the cosmere-rpg 3.1.0 compatibility check (item 177, done on a copy of your world first), and answer R-142. No Fable agents today.",
-    "waitingOn": "Ben: confirm R-143 (a) + four caveats; go for item 177 (3.1.0 check on a copy); answer R-142",
+    "note": "PM of record since 11:49 ET. You confirmed R-143 (a) with all four caveats and R-142 (a); both are filed and no rulings are open. Item 177, the cosmere-rpg 3.1.0 compatibility check, is running (Opus, analysis only: the release zip goes to a temp folder, nothing touches your Foundry data, no restart). The builds for both rulings are filed as items 178–181 and wait on it. No Fable agents today.",
+    "waitingOn": "nothing now — the next ask is the live 3.1.0 upgrade with Ben present, once item 177's breaks are fixed",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "177",
+      "title": "cosmere-rpg 2.1.0 → 3.1.0 compatibility check (static analysis; the release zip in $TEMP only)",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/177-cosmere-rpg-3-1-0-check",
+      "startedAt": "2026-09-15T21:43:00Z",
+      "agent": "Work item 177 (cosmere-rpg 3.1.0 check)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; the day's fifth Opus run, on Ben's go"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -2136,7 +2150,7 @@
       "size": "S",
       "deps": "bench 49a ✓",
       "status": "blocked",
-      "statusDetail": "R-142",
+      "statusDetail": "folded into item 178",
       "pr": 396
     },
     {
@@ -2194,9 +2208,9 @@
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "R-142",
+      "deps": "R-142 ✓",
       "status": "blocked",
-      "statusDetail": "R-142",
+      "statusDetail": "folded into item 178",
       "pr": null
     },
     {
@@ -2242,9 +2256,57 @@
       "lane": "B",
       "model": "opus",
       "size": "L",
-      "deps": "Ben's go",
+      "deps": "Ben's go ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 182,
+      "item": "178",
+      "title": "R-142 (a): one generic field on a talent's own rule suppresses the system's own damage roll and its Apply buttons, so the formula stays and attack context and colour do not move; the data pass sets it on item 169's ten held talents, restores Killing Blow's and The Final Study's formulas under it (item 174) and settles Set Charge's placement roll — closes items 169 and 174 (ENGINE, F5 + leyline and deity REBUILD + ⟳ Sync Talents). Filed by the PM from Ben's answer",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "item 177's break list",
       "status": "blocked",
-      "statusDetail": "Ben's go",
+      "statusDetail": "item 177",
+      "pr": null
+    },
+    {
+      "pos": 183,
+      "item": "179",
+      "title": "R-143 (a), the core: the engine resolves an attack against its one recorded target — a hit on an adversary applies at once, a hit on a player character waits for that player's reaction window, a miss offers the attacker's player the graze, every card the engine applies damage from carries Undo, and anything it cannot decide keeps today's card; honours item 178's field (ENGINE, F5). Filed by the PM from Ben's answer",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "items 177, 178",
+      "status": "blocked",
+      "statusDetail": "item 177",
+      "pr": null
+    },
+    {
+      "pos": 184,
+      "item": "180",
+      "title": "R-143 (a) caveat 2: an Opportunity or a Complication on an attack holds the damage until it is spent — the canon spends and the talents' own spends as real buttons, a Complication prompt, then the damage applies on the answer (ENGINE, F5 + REBUILD + ⟳ Sync Talents for the talents it wires). Filed by the PM from Ben's answer",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "item 179",
+      "status": "blocked",
+      "statusDetail": "item 179",
+      "pr": null
+    },
+    {
+      "pos": 185,
+      "item": "181",
+      "title": "R-143 (a) caveat 4: an optional sheet button arms Dodge before an enemy's attack roll (1 focus, disadvantage on that single-target attack), on the roll seam pack advantage already uses (ENGINE, F5). Filed by the PM from Ben's answer",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "item 177",
+      "status": "blocked",
+      "statusDetail": "item 177",
       "pr": null
     }
   ],
@@ -2293,9 +2355,8 @@
     }
   ],
   "benOnly": [
-    "answer R-142 (the decoy damage rolls on ten talents, plus Killing Blow and The Final Study: (a) keep the formulas and let a field on the talent's own rule suppress the system's damage roll — recommended; (b) derive attack context and colour from other fields, then blank the formulas; (c) leave the decoys and restore Killing Blow and The Final Study's formulas)",
-    "confirm R-143 as (a) with four caveats (upgrade cosmere-rpg to 3.1.0 first, item 177; the plot-die choice before any damage, with canon and talent spends as real buttons and a Complication prompt; a reaction window when a player's character is hit, with Undo on every auto-applied card; Dodge stays a call before the roll)",
-    "give the go for item 177's 3.1.0 compatibility check on a copy of the world."
+    "nothing right now",
+    "the next ask is the live 3.1.0 upgrade, with Ben present, once item 177's breaks are fixed."
   ],
   "inbox": [],
   "foundry": {
@@ -2305,34 +2366,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "00:01",
-      "at": "2026-09-14T04:01:00.000Z",
-      "item": "Item 107 (R-115 (a): False Premise denies Reactions instead of a duplicate disadvantage) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "17 min, 130 tool uses (222 turns)",
-      "weighted": "5.5M",
-      "weightedM": 5.5,
-      "outcome": "reviewed 00:20 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, five themed commits, no corrections; the PR arrived CONFLICTING (the generated dashboard, two merges behind) with no check runs — main merged in the worktree, dashboard rebuilt, gates 12/12 (1206 tests), CI on the new sha. Data: False Premise (poLaFQBLEDju9jIx) only — the three description copies + FalsePremMod0000 → edha-triggered-effect {kind: status, statusId: noreactions, statusExpire: target} (Hollow Command's noactions shape, noreactions already in EDHA_TIMED_STATUSES); parity 136 documents, exactly one differs, a pack-wide handler sweep finds no other shape collision, 0 formula diffs. 🤖 FP-1. Found: 15-blue-calculation.js's tree-section header comment still describes the old payload (comment-only → folded into 142 + 143). DATA → REBUILD leyline + ⟳ Sync Talents — rides the next deploy after the bench is off the table",
-      "pr": 374
-    },
-    {
-      "date": "2026-09-14",
-      "time": "00:22",
-      "at": "2026-09-14T04:22:00.000Z",
-      "item": "#374 (item 107) merged at 00:22:58 after the PM's main merge + bookkeeping commit (CI green on 7d7d262); the worker's worktree removed, the local branch deleted; main = 2d98de4. Dispatched item 108 the same minute (sonnet, worktree pm/108-deity-gates-get-a-job — R-118 (a): the three formula dials + two card lines; the gate audit before/after; deity pack parity with EDHA_DATA pinned; DATA → REBUILD deity) as the one lane-R worker beside bench 47",
-      "itemNo": "374",
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": 374
-    },
     {
       "date": "2026-09-14",
       "time": "00:22",
@@ -3144,9 +3177,37 @@
       "weightedM": 1.5,
       "outcome": "recorded",
       "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "17:43",
+      "at": "2026-09-15T21:43:00.000Z",
+      "item": "Ben (chat): \"Confirming 143-a, and with all caveats. Go on the compatibility check. 142-a is fine as well.\" → R-142 answered (a) and R-143 answered (a) with all four caveats, both moved verbatim to EDHA_RULINGS.md §K.19 with §L stubs (the open set is EMPTY; the pm-state pin moves to []); their builds filed as items 178 (the suppress-the-system-damage-roll field plus the data pass, closing items 169 and 174) and 179 – 181 (the auto-apply core, the plot-die choice, the Dodge button), all behind item 177",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "17:43",
+      "at": "2026-09-15T21:43:00.000Z",
+      "item": "Dispatched item 177 (opus, worktree pm/177-cosmere-rpg-3-1-0-check): the cosmere-rpg 2.1.0 → 3.1.0 compatibility analysis — the release zip into $TEMP only, never the live Foundry data folder, no Foundry launch or restart, no license handling; deliverable docs/analysis/cosmere-rpg-3.1.0-compatibility.md with the break list, a migration plan in themed PRs, a live-test plan for Ben and what 3.1.0 means for items 178 – 181; DOCS-ONLY PR, no merge. Opus 5 for 09-15, on Ben's go",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 352,
+  "runLogTotal": 354,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
@@ -4118,6 +4179,12 @@
     {
       "at": "2026-09-15T21:10:00.000Z",
       "model": "sonnet",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-15T21:43:00.000Z",
+      "model": "opus",
       "item": null,
       "pr": null
     }

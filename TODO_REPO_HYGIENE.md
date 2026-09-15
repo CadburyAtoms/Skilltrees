@@ -4287,6 +4287,8 @@ Warlord's Advance) and 169-DTH (Withering Touch) retired on evidence: no roll an
 messages, and their riders still land (+2 impact; +7 impact with the survivor rider; +10 vital with the healing cut).
 The item stays open for the ten held talents, which wait on R-142.
 
+**R-142 answered (a), 2026-09-15 evening** (Ben, chat: *"142-a is fine as well"*; `EDHA_RULINGS.md` §K.19): the ten held talents keep their formulas and gain a new field on their own rule that suppresses the system's damage roll, rather than being blanked. That build is **item 178**, which closes this item when it lands; nothing more is dispatched under 169.
+
 ## 170. [x] (2026-09-15, PR #398) Vital Diagnosis's Diagnosed card still tells the table "+Tier vital" right after the engine says "+3" — item 108 moved the bonus to the Blue rank but left the rule's printed note, and two sibling rule texts, on "tier" (DATA, REBUILD deity + ⟳ Sync Talents; one ENGINE-ONLY hint string) (2026-09-15)
 
 **Why:** measured at **bench run 49a (2026-09-15)** driving GATE-3 (which passed — the bonus IS the Blue rank, +3 at tier 2, from the owner and from an ally). The use card on `Bench — Life` read, verbatim: *"🎯 Vital Diagnosis : Trooper is Diagnosed (by Bench — Life) — damage against it gains +3 vital (auto-applied). Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."* The first sentence is `edhaStatusApplyCard`'s tail computed from `bonusDamageFormula: "@skills.blue.rank"`; everything after it is the rule's authored `note`, which `data/authored/deity-life.json` rule `NiiElTqWzyata6Pu` still writes with "+Tier vital" (its `description` says the same). The card text and the formula were changed by item 108; the note printed into chat beside them was not, so the chat log contradicts itself in one message — the same class as item 148 (Predatory Strike's stale cue text). Siblings found reading the same item's rules: Bulwark Ground's `BulwarkGuard0000` description still says "Temp HP = tier" (editor-facing, not printed), and the engine schema hint on `edha-apply-status.bonusDamageFormula` in `module-src/scripts/engine/53-native-event-system.js` (~line 1991) still offers "Vital Diagnosis: @tier" as its worked example.
@@ -4337,6 +4339,8 @@ The item stays open for the ten held talents, which wait on R-142.
 
 **PM:** lane B · model sonnet (or opus if R-142 (b) makes it an engine change) · size S · deps R-142. Filed 2026-09-15 by the PM from the item 169 review.
 
+**R-142 answered (a), 2026-09-15 evening** (Ben, chat: *"142-a is fine as well"*; `EDHA_RULINGS.md` §K.19): both formulas come back under the new field that suppresses the system's damage roll, so both tests count as attacks again. The work is folded into **item 178**, which closes this item when it lands.
+
 ## 175. [ ] `42-chaos.js`'s header comment still says the Chaos talents keep `events: {}` and read `item.system.damage.formula` — stale since the 07-24p migration (comment-only; no behaviour change) (2026-09-15)
 
 **Why:** reported by item 169's worker (PR #396, 2026-09-15). The 07-24p migration gave the Chaos talents real `events` rules that state their own formulas, and no Chaos rule reads the item's formula, so the header now misdirects anyone deciding whether a Chaos talent's formula can be blanked — the exact question R-142 asks.
@@ -4366,3 +4370,115 @@ The item stays open for the ten held talents, which wait on R-142.
 **Done when:** the break list is empty or fixed, `data/native-vocabulary.json` is regenerated at 3.1.0, Ben's live world runs 3.1.0, and a bench run passes on it.
 
 **PM:** lane B · model opus · size L · deps Ben's go · blocks R-143's build. Filed 2026-09-15 by the PM from Ben's questions.
+
+## 178. [ ] R-142 (a): a field on a talent's own rule suppresses the system's decoy damage roll — the formula stays, so attack context and colour do not move; the data pass covers item 169's ten held talents, Killing Blow and The Final Study (item 174), and Set Charge's placement roll (ENGINE, F5 + leyline and deity REBUILD + ⟳ Sync Talents; after item 177's break list) (2026-09-15)
+
+**Why:** R-142, answered (a) by Ben in chat on 2026-09-15 (*"142-a is fine as well"*; `EDHA_RULINGS.md` §K.19). A talent with an item-level `system.damage.formula` makes the cosmere system roll that formula as a real `DamageRoll`, with Apply Damage buttons, on every use, pass or fail, while the talent's own `events` rule deals the real damage (bench run 49a; item 169). Blanking the formula (item 141's recipe) also moves what the engine keys on it. **Attack context:** the system rolls a `skill_test` item that has a formula through its attack path (d20 context `Attack`) and one without through `roll()` (context `Item`), and `edhaTestCtxMatch`, `edhaAggroRecord` and `edhaPackAdvantageApply` (`module-src/scripts/engine/01-shared-core.js` 541 / 781 / 790) follow it. **Colour:** `edhaTalentColor` (`35-targeting-attunement-range-aoe-templates.js:31`) reads the formula first and otherwise falls back to a `system.path` that is wrong for several deity talents. So the formula stays and the roll goes.
+
+**What to do:**
+- **Engine.** Add one generic field to the rule vocabulary (a boolean, for example `suppressSystemDamage`), settable on any rule of a talent and editable on the Events tab. When an item carrying such a rule is used, the engine removes the system's own damage roll and its Apply / Reduce Focus buttons from the use message, and changes nothing else: the d20 test and its context (`Attack` stays `Attack`), the plot die, aggro, pack advantage, the talent's colour and the rule's own damage all behave as today.
+  - Find the narrowest seam on the system version item 177 settles on (a pre-hook on the damage roll, the chat message's creation, or the roll's parts) and say in the PR why that one. Item 177's break list says whether 3.0.0's Embedded Actions moved this path.
+  - Register the field wherever the rule vocabulary is linted and index it in `ENGINE_INDEX.md`.
+  - Pin the pure decision in `tests/`: a rule with the field set gives no damage part; unset, today's message; an item with no rules, today's message. Show the reversion failing.
+- **Data.**
+  - Set the field on item 169's ten held talents. Five for attack context: Volatile Strike, Cascade Collapse, Entropy Strike, Isolating Pressure, Isolating Ruin. Five for colour: Unravel Everything, Unstoppable Advance, Cascading Failure, The Unmooring, Necrotic Cascade. Every formula stays byte-identical.
+  - Restore Killing Blow's and The Final Study's `system.damage` from before PR #379 (item 141), and set the field on both.
+  - **Set Charge:** its placement use message rolls the blast formula (bench run 49a: `2d8` = 10 and 11) although nothing is damaged until detonation. Either set the field, keeping the formula that `edhaSetChargeMarker` copies into the ledger, or move the formula into its `edha-zone` rule; say which in the PR.
+  - Scratch-build leyline + deity into `$TEMP` with `EDHA_DATA` pinned to the worktree and get `validate-packs.js` green. Read the packs back: only those documents differ, only in the new field (plus Killing Blow's and The Final Study's `system.damage`).
+- **The sweep.** Re-run item 169's widened sweep: every talent that carries a formula but whose damage comes from an engine handler that never reads `item.system.damage.formula`. Set the field on anything else it finds, and name each in the PR.
+
+**Done when:**
+- None of the twelve talents, nor Set Charge at placement, posts a system damage roll or Apply buttons on use, and their own damage still lands.
+- Killing Blow's own test rolls in `Attack` context again: an attack-scoped test rider rides it.
+- The ten keep today's colour (Unravel Everything's ⊙ Attunement Range button stays blue).
+- Pinned tests are green.
+- One 🤖 row per affected tree.
+
+**PM:** lane B · model opus · size M · deps item 177's break list · closes items 169 and 174 · item 179 honours the field. Filed 2026-09-15 by the PM from Ben's answer to R-142.
+
+## 179. [ ] R-143 (a), the core: the engine applies an attack's damage itself — a hit on an adversary at once, a hit on a player character after that player's reaction window, a graze prompt to the attacker's player on a miss, Undo on every card the engine applies damage from, and today's card wherever the engine cannot decide (ENGINE, F5; after items 177 and 178) (2026-09-15)
+
+**Why:** R-143, answered (a) with all four caveats by Ben in chat on 2026-09-15 (*"Confirming 143-a, and with all caveats."*; `EDHA_RULINGS.md` §K.19). Ben asked why the GM clicks the system's damage card at all: *"why can't we make it so I never need to click a card? I guess for grazes, and complication/opportunity, etc?"* Today the cosmere system rolls an attack's d20 and its damage together, and damage lands only when someone clicks the card:
+- it applies to whichever tokens that user has selected or targeted at click time (`getApplyTargets`);
+- a modifier dialog, a full / graze toggle and a heal button come first;
+- yet the message already records the tokens targeted when the attack was rolled (`message.targets`).
+
+The engine already wraps `applyDamage` (`edhaWrapApplyDamage`, `module-src/scripts/engine/03-where-an-effect-lives.js`). Every on-hit rider, damage bonus, heal cut, Bulwark reaction and cue therefore fires on damage the engine applies just as on a click, and deflect is still applied inside the system's own `applyDamage`. This item is caveat 3 plus the base of (a). Caveat 1 (3.1.0 first) is item 177; caveat 2 (the plot-die choice) is item 180; caveat 4 (Dodge) is item 181.
+
+**What to do:** on the system version item 177 leaves live, watch each attack roll's message and decide.
+- **Exactly one recorded target, and the defense the attack targets can be read from that actor:** compare the attack total against it.
+  - **A hit on an adversary** (an actor no player owns): apply the rolled damage at once through the system's own `applyDamage`, so deflect, the wrapper and every rider run. Post a card naming what landed, with **Undo**.
+  - **A hit on a player character** (an actor a player owns): hold the damage. Whisper a reaction window to that player and the GM (*"<attacker> hits <character> — N <type> incoming"*) with **Take it** and **Avoided** (for a reaction the player spent that succeeded, such as Avoid Danger).
+    - Apply on Take it; the GM can apply from the same card at any time.
+    - Once the damage is applied, the card carries Undo.
+  - **A miss:** offer the attacker's player (the GM for an adversary) a one-click graze for the damage dice without the skill modifier, as the system's own graze total does (`r.graze.total`).
+    - It costs 1 Focus per target.
+    - It costs nothing when a free graze is available (Combat Training, once per round).
+    - There is no prompt at all when the attack or the target cannot be grazed (a "can't graze" effect; Slippery Target).
+- **No recorded target, several targets, an unreadable defense, a healing roll, or a roll item 178's field suppresses:** today's card, unchanged. Never auto-apply a suppressed roll.
+- **An Opportunity or a Complication on the roll:** hold, and leave the choice to item 180. Until item 180 lands, such a roll keeps today's card, never applying past the plot die.
+- **Undo** reverses what that application wrote: the target's health, plus the statuses and effects the application created, from a ledger recorded at apply time. Anything it cannot reverse, it names on the card.
+- **Open judgments** go through the PM as a ruling before merge, with a default proposed in the PR, not decided silently in code. Examples: who may press Undo, what Avoided checks, and whether the reaction window offers more than Take it / Avoided.
+- Pin the pure decisions in `tests/` (hit, miss, graze eligibility and cost, each fallback) with a reversion failing. Engine sources + `node scripts/engine-assemble.js`; `ENGINE_INDEX.md`.
+- 🤖 rows:
+  - an adversary hit applies at once, and Undo restores it;
+  - a hit on a player character waits for Take it;
+  - a miss offers the graze, and a free graze costs no Focus;
+  - two targets fall back to today's card;
+  - a Volatile Strike use applies nothing from the system roll.
+
+**Done when:** the bench drives those rows green on 3.1.0, and the GM never selects a token or clicks the system's card for a single-target attack without a plot-die result.
+
+**PM:** lane B · model opus · size L · deps item 177 (3.1.0 live) and item 178 · pairs with item 180. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+## 180. [ ] R-143 (a) caveat 2: an Opportunity or a Complication on an attack holds its damage until the table chooses — the canon spends and the talents' own spends as real buttons, a Complication prompt, and the damage applies on the answer (ENGINE, F5; DATA, REBUILD + ⟳ Sync Talents for the talents it wires; after item 179) (2026-09-15)
+
+**Why:** R-143's caveat 2, confirmed by Ben on 2026-09-15 (`EDHA_RULINGS.md` §K.19). Earlier the same day he asked for it: *"I want to make sure that the Opportunity/Complication pop-up is real- we have several talents that give good options to spend them on."* Measured the same day:
+- The Opportunity menu (`edhaOpportunityMenuWatch`, `module-src/scripts/engine/10-opportunity-spend-menu.js`, hooked on `cosmere-rpg.{skill,attack,item}Roll`) posts only when the roller owns an `edha-opportunity-option` rule or has a banked `oppCredit`. That covers three wired spend talents and four adders, and the menu lists the canon spends as text, not buttons.
+- 18 talents' cards mention an Opportunity and 5 a Complication, and no Complication prompt exists.
+- The roll already counts both (`opportunitiesCount` / `complicationsCount`): a d20 at or above its Opportunity value, or a plot-die Opportunity; a d20 at or below its Complication value, or a plot-die Complication.
+
+An Opportunity spend can change the damage (Critically Hit), so the choice has to come before the damage applies.
+
+**What to do:**
+- When an attack that item 179 resolves carries an Opportunity or a Complication, item 179 holds the damage and this item's card asks what it buys.
+- **An Opportunity:**
+  - The canon spends for that roll become real buttons. Take the list and its page references from the rules; Critically Hit changes the damage before it applies.
+  - So does every talent spend the roller owns.
+  - A button does what it says, or, where a spend is narrative, posts the choice for the table.
+- **A Complication:** a GM-facing prompt listing the canon Complication options for an attack, the talents' own, and a free narrative choice.
+- **The talents:** audit the 18 Opportunity cards and the 5 Complication cards. Every card that names a spend becomes a button through `edha-opportunity-option`, or through a Complication counterpart added generically if the vocabulary needs one, and indexed. List each card that only adds an Opportunity, or cannot be a button, with the reason.
+- The damage then applies on the answer through item 179's path (the reaction window, Undo). A skill test that is not an attack gets the same menu, with no damage to hold.
+- **Open judgments** go through the PM as a ruling before merge, with a default proposed in the PR. Example: who picks for a player character's Complication.
+- Pin the pure parts in `tests/`; `ENGINE_INDEX.md`; a pack rebuild for the wired talents.
+- 🤖 rows:
+  - an Opportunity on a hit holds the damage, and Critically Hit changes it;
+  - a Complication prompts the GM;
+  - a wired talent spend fires from its button.
+
+**Done when:** an attack with a plot-die result never applies damage before the choice, every wired spend is a button, and the bench rows are green on 3.1.0.
+
+**PM:** lane B · model opus · size L · deps item 179. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+## 181. [ ] R-143 (a) caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll — Dodge stays a call before the roll (ENGINE, F5; after item 177) (2026-09-15)
+
+**Why:** R-143's caveat 4, confirmed by Ben on 2026-09-15 (`EDHA_RULINGS.md` §K.19). Ben asked how a Dodge fits between one player declaring and rolling an attack and the other spending a reaction. The system's own action text:
+- Dodge is used before an enemy targets you with an attack, costs 1 focus, and adds disadvantage to that attack's test.
+- It cannot be used against an area or a multi-target attack.
+- The reaction that answers an already-rolled result is Avoid Danger (Agility against a DC equal to that test's result).
+
+So once the engine applies damage (item 179), Dodge is still called at the table when the attack is declared. The button lets the defending player arm it, so the attacker's roll picks up the disadvantage without the GM adding it by hand.
+
+**What to do:**
+- Add a button on the character sheet (the sheet render hook on 3.1.0) that arms Dodge on the actor.
+- The next single-target attack against that actor gets disadvantage on its d20, through the same roll-configuration seam `edhaPackAdvantageApply` uses (`module-src/scripts/engine/01-shared-core.js` ~790). It pays the Dodge and clears the arm. An area or multi-target attack ignores the arm.
+- Show the armed state on the sheet and on the token.
+- **Open judgments** go to the PM as one ruling before merge, with defaults proposed in the PR: when the Focus and the Reaction are paid (on arming or on use), and when an unused arm expires.
+- Pin the pure decision in `tests/`; `ENGINE_INDEX.md`.
+- 🤖 rows:
+  - an armed Dodge adds disadvantage to the next single-target attack and pays once;
+  - an area attack ignores it.
+
+**Done when:** those rows pass on 3.1.0.
+
+**PM:** lane B · model sonnet · size S · deps item 177 (the sheet and roll hooks on 3.1.0). Filed 2026-09-15 by the PM from Ben's answer to R-143.
