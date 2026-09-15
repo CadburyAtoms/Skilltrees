@@ -4472,7 +4472,7 @@ An Opportunity spend can change the damage (Critically Hit), so the choice has t
 
 **From item 177's check (PR #403, §e):** this item's hook surface is unchanged at 3.1.0 — the Opportunity menu's roll hooks and the roll's `opportunitiesCount` / `complicationsCount` are identical at both tags. What moves is the roll's `source`, which is now the embedded action whose `.root` is the talent; that matters only where a spend is tied to the rolling talent rather than harvested actor-wide. Note also that the damage is already rolled inside `rollAttack` by the time the card appears, so "the choice comes before any damage" means **holding the application** until the card is answered, with Critically Hit changing the rolled `DamageRoll` before `applyDamage`. `preAttackRollConfiguration` fires only when the attack dialog opens, so it cannot gate a fast-forwarded roll.
 
-## 181. [ ] R-143 (a) caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll — Dodge stays a call before the roll (ENGINE, F5; after item 177) (2026-09-15)
+## 181. [x] R-143 (a) caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll — Dodge stays a call before the roll (ENGINE, F5; after item 177) (2026-09-15, PR #407)
 
 **Why:** R-143's caveat 4, confirmed by Ben on 2026-09-15 (`EDHA_RULINGS.md` §K.19). Ben asked how a Dodge fits between one player declaring and rolling an attack and the other spending a reaction. The system's own action text:
 - Dodge is used before an enemy targets you with an attack, costs 1 focus, and adds disadvantage to that attack's test.
@@ -4494,6 +4494,8 @@ So once the engine applies damage (item 179), Dodge is still called at the table
 **Done when:** those rows pass on 3.1.0.
 
 **PM:** lane B · model sonnet · size S · deps none — item 177's check found both of this item's surfaces unchanged at 3.1.0, so it can be built dual-mode now (R-144 (a)). Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+**Proposed defaults (PR #407, both behind named dials — filed for Ben as a numbered ruling, not decided silently):** (1) the Focus is paid **on arming**, not on consume (`EDHA_DODGE_PAY_ON_ARM = true`) — matches every other `edha-self-status` "arm now, consume free later" marker already in the engine, and the Reaction itself stays GM-adjudicated (this engine tracks no reaction-economy resource for any Reaction); (2) an unused arm **expires at the end of the arming actor's own next turn** (the `tagged` shape, `edhaApplyTimedStatus`), not cleared at combat end — Dodge answers one imminent attack, not a scene-long stance.
 
 **From item 177's check (PR #403, §e):** the character sheet's render hook and `cosmere-rpg.preAttackRoll` — the advantage channel Edha's injectors already use, string-enum mode and all (`01-shared-core.js:513-516`) — are identical at 2.1.0 and 3.1.0. Only where the button sits on the redesigned sheet differs (3.0.0 added a Talents tab and the Actions tab lists actions, not items), so place it by a selector that survives both, and say in the PR which one.
 
