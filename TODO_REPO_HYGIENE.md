@@ -4321,3 +4321,23 @@ it has neither side effect.
 **Done when:** a Reeve-Owl hit on a creature that is not Isolated posts no Sapping Hex card, an Isolated hit still posts "… is Weakened", and a hand-fired card with nothing targeted still asks for a target; one 🤖 row re-drives both hits.
 
 **PM:** lane B · model sonnet · size XS · deps none. Filed 2026-09-15 by bench run 49b.
+
+## 174. [ ] Killing Blow and The Final Study have rolled their own tests as Item, not Attack, since PR #379 blanked their damage formulas — attack-scoped test riders, aggro and pack advantage skip them (awaits R-142) (2026-09-15)
+
+**Why:** found by the PM's review of item 169 (PR #396, 2026-09-15). The cosmere system rolls a `skill_test` item through its attack path (d20 context `Attack`) only when the item carries a damage formula, and through `roll()` (context `Item`) otherwise. `edhaTestCtxMatch` (`module-src/scripts/engine/01-shared-core.js:541`) lets an `appliesTo: "attack"` test rider ride an `Item`-context roll only when the source still carries a formula, and `edhaAggroRecord` / `edhaPackAdvantageApply` (`01-shared-core.js:781` / `790`) return early without one. PR #379 (item 141) blanked `system.damage` on both talents — both `skill_test`, `activation.skill: "red"` — so since the 2026-09-14 deploy their own tests no longer count as attacks. Their colour is unaffected (it resolves through `activation.skill`). `Predatory Strike`, the third #379 talent, is `utility` with an explicit `color` on its own rule, so it has neither side effect.
+
+**What to do:** R-142's answer decides the shape. Under (a), restore both formulas and set the new field that suppresses the system's own damage roll; under (b), nothing to restore once attack context comes from the activation; under (c), restore both formulas. Then one 🤖 row: an attack-scoped test rider (a Weakened target's die, for example) rides Killing Blow's own test.
+
+**Done when:** both talents' own tests count as attacks again, or R-142 rules that they should not; pinned headless wherever the decision is pure.
+
+**PM:** lane B · model sonnet (or opus if R-142 (b) makes it an engine change) · size S · deps R-142. Filed 2026-09-15 by the PM from the item 169 review.
+
+## 175. [ ] `42-chaos.js`'s header comment still says the Chaos talents keep `events: {}` and read `item.system.damage.formula` — stale since the 07-24p migration (comment-only; no behaviour change) (2026-09-15)
+
+**Why:** reported by item 169's worker (PR #396, 2026-09-15). The 07-24p migration gave the Chaos talents real `events` rules that state their own formulas, and no Chaos rule reads the item's formula, so the header now misdirects anyone deciding whether a Chaos talent's formula can be blanked — the exact question R-142 asks.
+
+**What to do:** rewrite the header in `module-src/scripts/engine/42-chaos.js` to name the rule shapes the Chaos talents actually carry and say that their damage rules state their own formulas; run `node scripts/engine-assemble.js`. The assembled engine may differ only in that comment.
+
+**Done when:** the header matches the authored data; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from the item 169 review.
