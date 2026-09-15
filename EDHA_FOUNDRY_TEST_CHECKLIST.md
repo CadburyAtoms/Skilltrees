@@ -51,6 +51,9 @@ This file is for tests.
 
 # ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
+**Agent-run deploy 2026-09-15T11:19:34.008Z from main @ 7bd01c4: packs 2026-09-15T11:19:34.009Z, engine 5e9833a9 = HEAD, validators PASS**
+
+
 **Agent-run deploy 2026-09-15T01:50:15.860Z from main @ e54bb93: packs 2026-09-15T01:50:15.860Z, engine 5e9833a9 = HEAD, validators PASS**
 
 
@@ -98,7 +101,7 @@ confirm the sync state before reporting a bug.
 
 ✅ **The rebuilds owed by the Corvaine + Riverlands bestiary pass (PR #388) are CLEARED** — the agent-run deploy 2026-09-15T01:50:15Z from main @ e54bb93 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS: the six re-statted blocks, the Corvaine Well-Warden and the R-136 (a) card texts are live in the packs. World adversaries placed before that stamp are snapshots until a ⟳ Sync Adversaries (Ben's button, or a bench-scoped call); a PC who owns Phantom Double needs one ⟳ Sync Talents. The section "Corvaine + Riverlands bestiary pass — item 156" rows can now be driven.
 
-⛔ **A PACK REBUILD IS OWED (filed 2026-09-15, PR #390 — the R-137 rerun, item 166).** `data/adversaries.json`: twelve blocks are on the PC attack model (the seven of PR #388, the four Thalendor blocks, the Preacher of the Lowered Crown) — attacks derived from attribute + skill rank with dice-only damage, defenses derived (R-139 (a)). Until the adversaries REBUILD + a scoped ⟳ Sync Adversaries (Session 1 — Palewater Ford, Riverlands Bestiary, Corvaine River-Plains Bestiary, Thalendor Heartwood Bestiary), **every world copy and fresh import of the seven PR-#388 blocks rolls the flat card numbers with STR / SPD on top** (a Raider's Shortsword at +6 for 1d6+3 against a card that says +4 for 1d6+1 — verified live 2026-09-15). The rows in "Corvaine + Riverlands rerun and the Thalendor Heartwood pass — R-137" wait on it; rows 156-1 … 156-9 read the new numbers once it lands.
+✅ **The rebuild owed by the R-137 rerun (PR #390) is CLEARED** — the agent-run deploy 2026-09-15T11:19:34Z from main @ 7bd01c4 (the DEPLOY STATE line above) rebuilt all five packs with validators PASS: the twelve PC-model blocks (the seven of PR #388, the four Thalendor blocks, the Preacher of the Lowered Crown) are live in the packs with derived attacks and defenses. World adversaries placed before that stamp are snapshots until a ⟳ Sync Adversaries — Ben's button, or a bench-scoped call; the Palewater Ford scene holds a started combat, so its copies are Ben's click. The rows in "Corvaine + Riverlands rerun and the Thalendor Heartwood pass — R-137" can now be driven.
 
 ⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
 a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
