@@ -959,8 +959,13 @@
     "leylines": [
       "blue"
     ],
-    "skills": {
-      "stl": 2
+    "attributes": {
+      "str": 2,
+      "spd": 2,
+      "int": 0,
+      "wil": 1,
+      "awa": 3,
+      "pre": 1
     },
     "defenses": {
       "phy": 12,
@@ -970,9 +975,10 @@
     "deflect": 1,
     "hp": 20,
     "foc": 2,
+    "inv": 2,
     "movement": 30,
     "count": 2,
-    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
+    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p>",
     "items": [
       {
         "name": "The Seeming",
@@ -991,7 +997,7 @@
               "beliefSkill": "prc",
               "note": "its image stands a pace from its body — 1 health, any hit breaks it. Every enemy who can see it tests Perception against its Cognitive defense."
             },
-            "description": "2bAA — the ruling-40 adaptation on its OWN document. It used to be a name-keyed case in the Blue tree's useItem switch, which that conversion deletes; keying it on the rule keeps its only wiring where the ability lives. copyOf self = targeting is ignored. The label the copy stamps is this item's own name, which is what Spearing Beak's whenTargetFooled rider reads back."
+            "description": "effect — decision-free (the copy is summoned and every onlooker's belief is engine-rolled). 2bAA — the ruling-40 adaptation on its OWN document. It used to be a name-keyed case in the Blue tree's useItem switch, which that conversion deletes; keying it on the rule keeps its only wiring where the ability lives. copyOf self = targeting is ignored. The label the copy stamps is this item's own name, which is what Spearing Beak's whenTargetFooled rider reads back."
           }
         ]
       },
@@ -1002,7 +1008,7 @@
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 10 ft.",
-        "damage": "1d8+2",
+        "damage": "1d6+2",
         "damageType": "keen",
         "rider": "+1d6 against a character who is taken in by the seeming.",
         "events": [
@@ -1014,7 +1020,7 @@
               "bonusFormula": "1d6",
               "whenTargetFooled": true
             },
-            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming."
+            "description": "effect — decision-free (the +1d6 reads the belief ledger). +1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming."
           }
         ]
       },
@@ -1039,7 +1045,7 @@
               "trigger": "damaged",
               "note": "Reaction, 1 Focus — the bird may move 10 ft without provoking, into fog if possible; once unseen it may raise The Seeming again."
             },
-            "description": "GM cue when the Mistheron takes damage."
+            "description": "cue — table call: the bird spends 1 Focus and moves 10 ft into fog. GM cue when the Mistheron takes damage."
           },
           {
             "event": "edha-apply-watch",
@@ -1048,7 +1054,7 @@
               "trigger": "seeming-break",
               "note": "Reaction, 1 Focus — its seeming broke; it may move 10 ft without provoking, into fog if possible, then raise The Seeming again once unseen."
             },
-            "description": "GM cue when its seeming breaks."
+            "description": "cue — table call: the bird spends 1 Focus and moves 10 ft into fog, then raises The Seeming once unseen. GM cue when its seeming breaks."
           }
         ]
       },
@@ -1065,7 +1071,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — it breaks off into the fog and does not return (its partner breaks too if also bloodied)."
             },
-            "description": "GM morale cue at half HP."
+            "description": "cue — table call: it breaks off into the fog and the GM moves the token. GM morale cue at half HP."
           }
         ]
       }
@@ -3449,8 +3455,13 @@
     "leylines": [
       "black"
     ],
-    "skills": {
-      "prc": 3
+    "attributes": {
+      "str": 0,
+      "spd": 2,
+      "int": 0,
+      "wil": 1,
+      "awa": 3,
+      "pre": 0
     },
     "defenses": {
       "phy": 10,
@@ -3460,9 +3471,10 @@
     "deflect": 0,
     "hp": 14,
     "foc": 2,
+    "inv": 2,
     "movement": 50,
     "count": 1,
-    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p>",
+    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p>",
     "items": [
       {
         "name": "The Tolling Gone Wrong",
@@ -3490,7 +3502,7 @@
               "once": "round-per-target",
               "chain": false
             },
-            "description": "The tree talent's focus-change watch, verbatim (enemy, Black Attunement Range at role rank, once per round per enemy). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+            "description": "effect — decision-free (the focus-change watch). The tree talent's focus-change watch, verbatim (enemy, Black Attunement Range at role rank, once per round per enemy). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
           },
           {
             "event": "edha-test-success",
@@ -3500,7 +3512,7 @@
               "target": "victim",
               "formula": "1"
             },
-            "description": "The watch payload: the spender loses 1 more focus, exactly as the tree twin applies it."
+            "description": "effect — decision-free (the drain lands on the spender). The watch payload: the spender loses 1 more focus, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3523,7 +3535,7 @@
               "target": "victim",
               "radius": 0
             },
-            "description": "Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied)."
+            "description": "effect — decision-free (Weakened on an Isolated hit). Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied)."
           }
         ]
       },
@@ -3556,7 +3568,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — the flock breaks and re-settles on the rooflines, out of reach."
             },
-            "description": "Black/Isolation. Bloodied break-off cue."
+            "description": "cue — table call: the flock re-settles out of reach and the GM moves it. Black/Isolation. Bloodied break-off cue."
           }
         ]
       }
@@ -3572,9 +3584,13 @@
     "leylines": [
       "blue"
     ],
-    "skills": {
-      "prc": 4,
-      "stl": 3
+    "attributes": {
+      "str": 2,
+      "spd": 3,
+      "int": 0,
+      "wil": 1,
+      "awa": 4,
+      "pre": 0
     },
     "defenses": {
       "phy": 14,
@@ -3584,9 +3600,10 @@
     "deflect": 0,
     "hp": 26,
     "foc": 3,
+    "inv": 2,
     "movement": 45,
     "count": 1,
-    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p>",
+    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p>",
     "items": [
       {
         "name": "Forewarned",
@@ -3600,7 +3617,7 @@
               "trigger": "turn-end",
               "note": "Forewarned — silently declare one character + one action type for the coming round (GM note). If it happens: +1 Reaction, and Intercept may fire on it."
             },
-            "description": "Blue/Foresight. The declaration is GM bookkeeping — the turn-end cue is the prompt; Intercept resolves off the same note."
+            "description": "cue — table call: the GM declares one character and one action type for the coming round. Blue/Foresight. The declaration is GM bookkeeping — the turn-end cue is the prompt; Intercept resolves off the same note."
           }
         ]
       },
@@ -3617,7 +3634,7 @@
               "trigger": "turn-end",
               "note": "Intercept standing — if the declared character takes the declared action, 1 Focus imposes disadvantage on it."
             },
-            "description": "Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
+            "description": "cue — table call: the GM reads whether the declared character took the declared action. Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
           },
           {
             "event": "use",
@@ -3630,7 +3647,7 @@
               "relativeTo": "self",
               "once": "no"
             },
-            "description": "The tree talent's confirm-pick, adapted to her Focus cost (the tree twin charges Investiture). Rule-keyed 07-26: the deleted engine name-key left the use path dead."
+            "description": "effect — decision-free (the confirm's Focus is spent and the payload queued). The tree talent's confirm-pick, adapted to her Focus cost (the tree twin charges Investiture). Rule-keyed 07-26: the deleted engine name-key left the use path dead."
           },
           {
             "event": "edha-test-success",
@@ -3640,7 +3657,7 @@
               "mode": "disadvantage",
               "count": 1
             },
-            "description": "The confirm payload: the declared creature's next test runs at disadvantage, exactly as the tree twin applies it."
+            "description": "effect — decision-free (disadvantage on the declared creature's next test). The confirm payload: the declared creature's next test runs at disadvantage, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3665,7 +3682,7 @@
               "requireTarget": true,
               "note": "On a success, reduce the mover's remaining movement by 10 ft, or push it 10 ft in any direction (the GM positions the token)."
             },
-            "description": "Blue vs the mover's Athletics, engine-rolled for the foe. 07-24p: the PC talent it copies moved onto its own document, so this ability carries its own rule now instead of riding that talent's deleted engine branch."
+            "description": "effect — decision-free (engine-rolled Blue vs Athletics; the GM positions the token on a success). Blue vs the mover's Athletics, engine-rolled for the foe. 07-24p: the PC talent it copies moved onto its own document, so this ability carries its own rule now instead of riding that talent's deleted engine branch."
           }
         ]
       },
@@ -3686,7 +3703,7 @@
               "trigger": "on-hit",
               "note": "If the target took the Forewarned-declared action this round: add +1d4 keen — it was already there when they arrived."
             },
-            "description": "Blue/Foresight. The declared-action rider is a table read (GM holds the declaration) — cue is the floor."
+            "description": "cue — table call: did the target take the declared action this round — +1d4 keen if so. Blue/Foresight. The declared-action rider is a table read (GM holds the declaration) — cue is the floor."
           }
         ]
       },
@@ -3703,7 +3720,7 @@
               "atFraction": 0.5,
               "note": "Bloodied — it leaves. A predator of certainties does not gamble."
             },
-            "description": "Blue/Foresight. Bloodied break-off cue."
+            "description": "cue — table call: it leaves; and against a wasting-touched creature the whole foresight kit simply fails. Blue/Foresight. Bloodied break-off cue."
           }
         ]
       }
