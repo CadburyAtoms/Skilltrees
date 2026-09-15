@@ -16,12 +16,13 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
 RETIRED** — session 1 was written before the party landed and still runs for any table, but a
 forge run may now write *to these three* rather than around them.
 
-The three Foundry actors are the **players'**, not the bench's: `Temp Name Hannah character`,
-`Soggy Bottom`, `Tem Parinaem`. All three are PROTECTED in `scripts/bench-setup-console.js` —
-refresh-only via the sheet's own ⟳ Sync Talents button, never written by tooling (PM-R17).
+The three Foundry actors are the **players'**, not the bench's: `Ishee`, `Soggy Bottom`,
+`Tem parinaem`. All three are refresh-only via the sheet's own ⟳ Sync Talents button, never written
+by tooling (PM-R17) — and **treat Ishee as protected even though `scripts/bench-setup-console.js`'s
+PROTECTED guard still names her old placeholder** (TODO_REPO_HYGIENE item 165).
 **When a player adds or changes inventory, talents, or expertises, that lands in §1a**, not here.
 
-### PC-1 — `Temp Name Hannah character` ⚑ *(placeholder name — the player has not settled one)*
+### PC-1 — `Ishee` *(Hannah's character; the actor carried the placeholder `Temp Name Hannah character` until she was named)*
 
 **Envoy** heroic · **Blue** leyline · **Chaos** deity path. She/her. Expertises: **Law-Singing**,
 **Performance**.
@@ -44,7 +45,7 @@ natural fit rather than a contrivance.
   Ben's framing: **the Fetch's influence is *why* she attuned Blue at all**, in a town with no
   Blue in it, and her visions of horror are its doing. She has no idea, and must not learn it here.
 - **GM truth — the deity path is mechanical, not devotional.** The player chose **Chaos** because
-  they like the Omen mechanics and wanted a Blue/Black character. **Hannah does not worship
+  they like the Omen mechanics and wanted a Blue/Black character. **Ishee does not worship
   Maelith or Chaos** and should never be played as doing so. (⚑ Ben: note the irony if you want
   it — the pre-infiltration Chaos theology that could damn the Fetch sits in **Canticle's Deep
   Stacks**, her own country's archive, thread §8.6. The Fetch has recruited a girl from the one
@@ -91,14 +92,18 @@ player says otherwise.
 
 **Blue / White / Green. No Black, no Red.** Two Scholars and an Envoy — **no dedicated fighter**,
 which is a real scaling input for session 1's ford (run-sheet §3: the squishy/support-heavy
-variant is now the default, not a variant). One native (Tem, Thalendor) and two exiles (Hannah
+variant is now the default, not a variant). One native (Tem, Thalendor) and two exiles (Ishee
 from Canticle, Soggy from Lunavar) — the Khor hire at Elmsworth works for all three unchanged.
 
-**Two of the three are vision-havers with opposed sources**, and neither player knows it: Hannah
+**Two of the three are vision-havers with opposed sources**, and neither player knows it: Ishee
 was pushed out into the world by **the Fetch corrupting her attunement**, Soggy by **a god trying
 to get someone to look**. That symmetry is the campaign's spine sitting inside the party, and the
 session where they compare notes and find their visions *disagree* is a beat worth waiting for.
 
+- **The numbers a forge run needs** (the players' actors as copied for bench run 48, 2026-09-14):
+  HP **11 / 11 / 13** (Ishee / Soggy / Tem — a 35-HP pool, so R-138's ¼-per-round line is 8.75),
+  Physical **14 / 13 / 16**, Deflect 0 all round, and **no ranged attack** between them. Recheck
+  against the sheets whenever the players level or buy a bow.
 - Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1036,1359)).
 
 ## 1a. Party inventory & wealth
@@ -110,8 +115,8 @@ must know — wealth, story-bearing items, and outstanding payment. Worth denomi
 **copper/silver/gold** (canon §5d, rulings 54–59 — the W25 coinage pass landed 2026-07-18);
 food-payment in the deficit nations stays descriptive per ruling 56.)*
 
-**The three actors are the players' own** (`Temp Name Hannah character`, `Soggy Bottom`,
-`Tem Parinaem`). **When a player adds or changes inventory, talents learned, or expertises, it
+**The three actors are the players' own** (`Ishee`, `Soggy Bottom`,
+`Tem parinaem`). **When a player adds or changes inventory, talents learned, or expertises, it
 gets noted HERE** (Ben, 2026-09-09) — this section is the repo's record of what the party is
 carrying, and a forge run reads it before pricing a job or stocking loot. The sheets stay the
 source of truth for the numbers; this is the ledger of what *matters to prep*.
@@ -175,9 +180,7 @@ session-1 sheet.**)*
 
 | # | GM script |
 |---|---|
-| 1 | https://claude.ai/code/artifact/9db5c439-01fe-459d-9539-151279764afd |
-
-*(Session 1's script is **owed a republish** since 2026-09-15: the ford's printed statblocks moved onto the PC attack model and derived defenses — R-137 / R-139 (a), TODO item 166. Republish to the URL above, never a second artifact.)*
+| 1 | https://claude.ai/artifact/LUXuto5fUcAKjmn2TSux3W — republished 2026-09-15 (version 4) with the R-137 statblocks; the older link form https://claude.ai/code/artifact/9db5c439-01fe-459d-9539-151279764afd opens the same artifact |
 
 ## 7. Next session
 
