@@ -1113,7 +1113,7 @@ job, not the worker's — note it in the report).
 
 ---
 
-## 32. [ ] Move the repo off OneDrive onto the local SSD (Ben's move; one worker PR first)
+## 32. [x] (2026-09-05, PR #156) Move the repo off OneDrive onto the local SSD (Ben's move; one worker PR first)
 
 **Why:** OneDrive sets the read-only attribute on every directory under `.git` (308 of 308 on
 2026-09-05), which hung `deploy-to-foundry.bat` twice on git's "Should I try again? (y/n)" prompt
@@ -4067,7 +4067,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane H · model — (done by the scoping session) · size M.
 
-## 155. [ ] Bestiary yardstick fights — three bench fights on copies of the actual PCs, recorded on the turn ledger (🤖, DOCS-ONLY; the census's played half)
+## 155. [x] (2026-09-14, PR #388) Bestiary yardstick fights — three bench fights on copies of the actual PCs, recorded on the turn ledger (🤖, DOCS-ONLY; the census's played half)
 
 **Why:** the census counts per hit; R-134's targets need per turn — Actions spent, hits against the party's real defenses, the graze floor — and the ecosystem critique named the turn ledger as *"the one follow-up measurement that would most change a decision."* Bench run 44 already did this once for the ford (18 to the party, 7 to the raiders; no ranged attack, grazes flooring damage) and it changed the run-sheet. R-135 (a) runs this set BEFORE the first nation pass.
 
@@ -4175,7 +4175,7 @@ by the PM as the design-proposal batch items 101/106/107/108/109/114 were waitin
 
 **PM:** lane B · model sonnet · size S · deps none. Report: bench run 48.
 
-## 165. [ ] The bench roster script's PROTECTED list does not name Ishee — Hannah's actor is guarded by a placeholder name that no longer exists (TOOLING, no deploy)
+## 165. [x] (2026-09-15, PR #392) The bench roster script's PROTECTED list does not name Ishee — Hannah's actor is guarded by a placeholder name that no longer exists (TOOLING, no deploy)
 
 **Why:** `scripts/bench-setup-console.js` refuses writes to `["tem parinaem", "soggy bottom", "temp name hannah character"]`, the names the campaign state doc used when the guard was written. In the world on 2026-09-14 the third player's actor is named **`Ishee`** (`Edha PCs` folder, Envoy · Blue · Chaos, level 1); the placeholder name resolves to nothing. Bench run 48 found it while copying the three PCs for the yardstick fights — the copies were made by hand, so nothing was touched, but any roster or orphan-repair pass that trusts the list would not treat Ishee as protected (PM-R17 covers her like the other two: refresh only, never edit).
 
