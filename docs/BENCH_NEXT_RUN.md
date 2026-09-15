@@ -60,10 +60,11 @@ checkboxes at the start of the run and drive only the ones that are both merged 
 | **173** | a Reeve-Owl hit on a creature that is not Isolated posts no Sapping Hex card; an Isolated hit still posts "… is Weakened" | ENGINE-ONLY, F5 |
 | **176** | a Chain Detonation kill with no creature within 5 ft of the body posts no damage card; one with a creature in radius still damages and names it (Bench — Red must be the killer: controlled, or the current combatant) | ENGINE-ONLY, F5 (lands with 173) |
 | **88** | Predator's Due's on-defeat instruction stops leaking to the table (then re-drive the blocked row above) | per the item |
-| **169 + 174** | after R-142's answer: the ten held talents (Volatile Strike, Cascade Collapse, Entropy Strike, Isolating Pressure, Isolating Ruin — attack context; Unravel Everything, Unstoppable Advance, Cascading Failure, The Unmooring, Necrotic Cascade — colour) lose their decoy damage rolls without losing attack context or colour, and Killing Blow's and The Final Study's own tests count as attacks again | per R-142's answer — DATA and / or ENGINE |
+| **178** (closes 169 + 174) | once item 178 lands (R-142 (a): the formulas stay, and a field on the talent's own rule suppresses the system's damage roll): the ten held talents (Volatile Strike, Cascade Collapse, Entropy Strike, Isolating Pressure, Isolating Ruin — attack context; Unravel Everything, Unstoppable Advance, Cascading Failure, The Unmooring, Necrotic Cascade — colour) lose their decoy damage rolls without losing attack context or colour, and Killing Blow's and The Final Study's own tests count as attacks again | ENGINE, F5 + leyline and deity REBUILD + ⟳ Sync Talents |
 
-**Rulings that gate work:** R-142 (the decoy damage rolls — items 169 and 174) and R-143 (filed by the PM on
-2026-09-15, a design proposal about auto-applying attack damage). Neither is a bench row; read `EDHA_RULINGS.md` §L.
+**Rulings that gate work:** none open. R-142 and R-143 were answered (a) on 2026-09-15, R-143 with four caveats, and
+filed in `EDHA_RULINGS.md` §K.19; their builds (items 178 – 181) wait on item 177, the `cosmere-rpg` 3.1.0 upgrade,
+and bring their own rows.
 
 **New rows will come from item 167** — the 42 flat-model adversary blocks migrate onto the PC attack model nation by
 nation (R-135), and each nation pass files its own 🤖 section. Rows 156-1 … 156-22 are the template: statics off one

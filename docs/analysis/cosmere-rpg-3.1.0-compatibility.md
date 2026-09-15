@@ -259,8 +259,9 @@ harder to diagnose than a fresh copy.
 
 ## (e) What 3.1.0 means for items 178–181
 
-The break list changes **where** this work hooks in, not whether it can be built. Build 178–181
-**after PR 2**, dual-mode, and it is written once — not written on 2.1.0 and rewritten after the flip.
+The break list changes **where** this work hooks in, not whether it can be built. Build 178–180
+**after PR 2**, dual-mode, and each is written once — not written on 2.1.0 and rewritten after the
+flip. Item 181 touches nothing that moved and can go now.
 
 ### Item 178 — R-142 (a), a rule field that suppresses the system's own damage roll
 
@@ -280,8 +281,30 @@ The break list changes **where** this work hooks in, not whether it can be built
   - `edhaTalentColor` keeps its formula (via F1's accessor).
 - **No native alternative.** `preDamageRoll` is `Hooks.callAll` and cannot cancel
   (`dice/index.ts:207`), and `use()`'s options have no skip-damage flag.
+- **Why this seam and not the other two item 178 names.** A pre-hook on the damage roll cannot stop
+  it (above). Stripping the damage rolls from the chat message in `preCreateChatMessage` — Edha
+  already hooks it, `01-shared-core.js:663` — still rolls the dice, and `use()` still returns them
+  (3.1.0 `documents/item.ts:1562-1564`) to anything that reads the result. The wrapper stops the roll
+  before it happens, on both versions.
 
 ### Items 179–181 — R-143 (a), the engine applies attack damage itself
+
+The rows below serve **item 179** (hit or miss, the graze prompt, the recorded target, applying,
+Undo, no double application, the reaction window), **item 180** (the plot-die choice before damage)
+and **item 181** (Dodge before the roll). Three findings change those items' plans:
+
+- **Undo is only half native.** The system's Undo Damage button restores health alone — it adds the
+  damage taken back to `hea.value` — and only the GM and the message's author see it (3.1.0
+  `documents/chat-message.ts:620-648`). Item 179's Undo also reverses the statuses and effects an
+  application created, so its ledger is still needed. The system's card can be the health half, and
+  its GM-or-author rule is a ready default for item 179's "who may press Undo" judgment.
+- **Item 180's hook surface is unchanged.** The Opportunity menu's roll hooks, and the roll's
+  `opportunitiesCount` / `complicationsCount`, are identical at both tags. What moves is the roll's
+  `source` — now the action, whose `.root` is the talent — which matters only where a spend is tied
+  to the rolling talent rather than harvested actor-wide.
+- **Item 181 does not need the upgrade.** Its two surfaces — the character sheet's render hook and
+  the pre-attack-roll advantage seam — are unchanged at 3.1.0 (Appendix C, rows 2 and 23). Only the
+  button's place on the redesigned sheet differs, so it can be built dual-mode now.
 
 The 3.1.0 surface to build on:
 

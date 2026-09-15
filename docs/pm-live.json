@@ -1,11 +1,19 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Bench run 50 merged: all 12 rows passed, so today's fixes are verified live; one small defect filed (item 176). Waiting on you: confirm R-143 as (a) with the four caveats, give the go for the cosmere-rpg 3.1.0 compatibility check (item 177, done on a copy of your world first), and answer R-142. No Fable agents today.",
-    "waitingOn": "Ben: confirm R-143 (a) + four caveats; go for item 177 (3.1.0 check on a copy); answer R-142",
+    "note": "PM of record since 11:49 ET. You confirmed R-143 (a) with all four caveats and R-142 (a); both are filed and no rulings are open. Item 177, the cosmere-rpg 3.1.0 compatibility check, is running (Opus, analysis only: the release zip goes to a temp folder, nothing touches your Foundry data, no restart). The builds for both rulings are filed as items 178–181 and wait on it. No Fable agents today.",
+    "waitingOn": "nothing now — the next ask is the live 3.1.0 upgrade with Ben present, once item 177's breaks are fixed",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "177",
+      "title": "cosmere-rpg 2.1.0 → 3.1.0 compatibility check (static analysis; the release zip in $TEMP only)",
+      "model": "opus", "size": "L", "lane": "B", "branch": "pm/177-cosmere-rpg-3-1-0-check",
+      "startedAt": "2026-09-15T21:43:00Z", "agent": "Work item 177 (cosmere-rpg 3.1.0 check)",
+      "phase": "working", "pr": null, "note": "worktree; the day's fifth Opus run, on Ben's go"
+    }
+  ],
   "usage": null
 }
