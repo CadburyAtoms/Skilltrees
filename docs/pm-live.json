@@ -1,11 +1,40 @@
 {
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. The 3.1.0 compatibility check is done and merged (#403) — and it is bigger than we assumed: 5 blockers, about 9 worker sessions, because 3.0.0 moved every talent's activation and damage onto an embedded action. The six migration PRs are filed as items 182–187. One question for you: R-144 — does your 'upgrade first' caveat still bind the damage-card builds, or do they go dual-mode after one resolver PR and reach your 2.1.0 table as they land (my recommendation, (a))? Item 181 (the Dodge button) is unblocked either way and can start now. Your live world stays on 2.1.0; nothing is owed to it. No Fable agents today.",
-    "waitingOn": "Ben: answer R-144 (does '3.1.0 first' still bind items 178–181, or dual-mode after one resolver PR — default a); and, when the upgrade should proceed, the ~1 hour of Route A (a second Foundry data path on port 30001 with your own license)",
+    "note": "PM of record since 11:49 ET. R-144 answered: the full 3.1.0 build proceeds on the side, your 2.1.0 table keeps session one, and we swap once you confirm session one has happened — filed in EDHA_RULINGS.md §K.20. Four Sonnet workers are running on your word: the three card-claim defects (172, 173, 176), the stale Chaos header (175), the Dodge arm button (181), and the lint gate that can see Embedded-Actions breaks (182). Nothing gameplay-changing deploys to your live table until you say session one has happened — say the word if you want the no-more-clicking builds live for it instead. No Fable agents today.",
+    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); optionally, whether the damage-card builds should go live before session one rather than after",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "172+173+176",
+      "title": "Three cards that claim what did not happen: a full-pool resource gain, an Isolated-gate miss, an empty near-victim splash",
+      "model": "sonnet", "size": "S", "lane": "B", "branch": "pm/172-173-176-card-claims",
+      "startedAt": "2026-09-15T23:13:00Z", "agent": "Items 172, 173, 176 (card claims)",
+      "phase": "working", "pr": null, "note": "worktree; ENGINE-ONLY (F5), no deploy while session one is pending"
+    },
+    {
+      "item": "175",
+      "title": "42-chaos.js's header comment is stale since the 07-24p migration (comment-only)",
+      "model": "sonnet", "size": "XS", "lane": "R", "branch": "pm/175-chaos-header",
+      "startedAt": "2026-09-15T23:13:00Z", "agent": "Item 175 (chaos header comment)",
+      "phase": "working", "pr": null, "note": "worktree; comment-only, nothing to deploy"
+    },
+    {
+      "item": "181",
+      "title": "R-143 caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll",
+      "model": "sonnet", "size": "S", "lane": "B", "branch": "pm/181-dodge-arm-button",
+      "startedAt": "2026-09-15T23:13:00Z", "agent": "Item 181 (Dodge arm button)",
+      "phase": "working", "pr": null, "note": "worktree; dual-mode; two judgment calls come back as a ruling before merge"
+    },
+    {
+      "item": "182",
+      "title": "Migration PR 1: per-item-type field sets so lint pass 11 can see an Embedded-Actions break",
+      "model": "sonnet", "size": "M", "lane": "R", "branch": "pm/182-per-type-field-sets",
+      "startedAt": "2026-09-15T23:13:00Z", "agent": "Item 182 (per-type lint gate)",
+      "phase": "working", "pr": null, "note": "worktree; TOOLING, the tracked 2.1.0 vocabulary snapshot is not regenerated"
+    }
+  ],
   "usage": null
 }
