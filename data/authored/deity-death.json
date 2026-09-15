@@ -235,8 +235,11 @@
         "complication": null
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
       },
       "events": {
         "NecroCascArm0000": {

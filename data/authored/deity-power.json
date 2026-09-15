@@ -570,8 +570,11 @@
         "complication": null
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
       },
       "events": {
         "UnstopArm0000000": {
