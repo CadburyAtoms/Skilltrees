@@ -23,16 +23,41 @@
  * Manual by nature (no Foundry hook): Predator's Instinct (track/fear).
  * ============================================================================================ */
 
-// "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
-async function edhaGrantAdvAttack(actor, source) {
+/* "Advantage on your next attack" flag (Pack Hunter, Scent the Weak, White's rally, the Decree's Witnesses,
+ * Investiture of Command), consumed on the next attack it APPLIES to.
+ * Item 163 (2026-09-15, bench run 48): a grant that names a creature — "advantage on your next attack
+ * against IT" (Pack Hunter, Scent the Weak) — now stamps that creature's TOKEN uuid, and the pre-roll and
+ * the consume below both ask edhaAdvAttackApplies, so the advantage is neither applied nor spent on an
+ * attack against anyone else. Before, the flag held only a name and the next attack against ANY target
+ * took it: Ishee's advantage, banked against a rootling that had since died, rolled 2d20kh on her Staff
+ * against another. A grant with no target keeps the old any-target shape, and a string / `true` flag
+ * banked by an older engine reads as targetless. */
+async function edhaGrantAdvAttack(actor, source, targetUuid = null) {
   try {
-    return await edhaSetEdhaFlag(actor, "advAttackNext", source || true);   // Job 6a: routed through the canonical helper
+    const value = targetUuid ? { source: source || "Pack tactics", targetUuid } : (source || true);
+    return await edhaSetEdhaFlag(actor, "advAttackNext", value);   // Job 6a: routed through the canonical helper
   } catch (e) { return false; }
 }
+// PURE (pinned in tests/pack-hunter-target-gate.test.js): does this banked flag apply to an attack whose
+// user targets are these token uuids? Targetless → any attack; targeted → only one aimed at that token.
+function edhaAdvAttackApplies(flag, targetUuids) {
+  if (!flag) return false;
+  const want = (typeof flag === "object") ? flag.targetUuid : null;
+  if (!want) return true;
+  return Array.isArray(targetUuids) && targetUuids.includes(want);
+}
+// PURE: the name the spend card shows — a string flag, the object shape's source, or the generic label.
+function edhaAdvAttackSourceName(flag) {
+  if (typeof flag === "string") return flag;
+  if (flag && typeof flag === "object" && flag.source) return String(flag.source);
+  return "Pack tactics";
+}
+// The rolling user's targeted token uuids (through the one game.user.targets reader).
+function edhaAdvAttackTargetUuids() { return edhaUserTargetTokens().map(t => t?.document?.uuid).filter(Boolean); }
 function edhaAdvAttackPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "advAttackNext")) return;
+    if (!edhaAdvAttackApplies(actor?.getFlag?.("edha-content", "advAttackNext"), edhaAdvAttackTargetUuids())) return;   // item 163: a banked target gates the grant
     roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -41,9 +66,10 @@ function edhaAdvAttackPreRoll(roll, source, config) {
 function edhaAdvAttackConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const src = actor?.getFlag?.("edha-content", "advAttackNext"); if (!src) return;
+    const src = actor?.getFlag?.("edha-content", "advAttackNext");
+    if (!edhaAdvAttackApplies(src, edhaAdvAttackTargetUuids())) return;   // item 163: an advantage banked against another creature stays banked
     void actor.unsetFlag("edha-content", "advAttackNext");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${typeof src === "string" ? src : "Pack tactics"}</strong> — advantage spent on this attack.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${edhaAdvAttackSourceName(src)}</strong> — advantage spent on this attack.</p>` });
   } catch (e) { console.error("Edha Content | adv-attack consume failed", e); }
 }
 for (const ctx of ["attack", "item"]) {

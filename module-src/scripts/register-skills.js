@@ -6395,12 +6395,28 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
  * and Guardian Stance via H7 `edha-aura` (07-25, pass 2bR — the name-keyed pre-pass loops and the
  * guardianStance sweep are gone). Hardy is the lone data-side AE (hea.max.bonus += @level).
  * ============================================================================================ */
+/* PURE (pinned in tests/pack-hunter-target-gate.test.js): do two token FOOTPRINTS touch — share an edge,
+ * share a corner, or overlap? `a` / `b` = {x, y} CENTRE in px and {w, h} size in grid squares (clamped to
+ * at least 1); `gs` = px per square. Per axis, the centres may sit at most the two half-sizes apart, plus
+ * the old 0.05-square epsilon. For two 1×1 tokens that is EXACTLY the rule it replaces — Chebyshev centre
+ * distance ≤ 1.05 squares — written as `dx <= half + 0.05` rather than `dx - half <= 0.05` on purpose:
+ * `1.05 - 1` is 0.050000000000000044 in floating point, which would flip the boundary case.
+ * Item 163 (2026-09-15, bench run 48 / YARD-3): the centre-to-centre rule made a Medium creature touching a
+ * Large (2×2) token's edge — 1.5 squares from its centre — never adjacent, so Pack Hunter counted
+ * "1 hunter(s)" with Ishee beside the Briar-Gone Grove. Every edhaAdjacent consumer had the same blind spot:
+ * Isolation's "no ally adjacent", the touch (`requireAdjacent`) gate, the damage-reduce and damage-react
+ * adjacency gates, and the adjacent-allies aura. */
+function edhaFootprintsTouch(a, b, gs = 100) {
+  const size = (v) => Math.max(1, Number(v) || 1);
+  const dx = Math.abs((Number(a?.x) || 0) - (Number(b?.x) || 0)) / gs;
+  const dy = Math.abs((Number(a?.y) || 0) - (Number(b?.y) || 0)) / gs;
+  return dx <= (size(a?.w) + size(b?.w)) / 2 + 0.05 && dy <= (size(a?.h) + size(b?.h)) / 2 + 0.05;
+}
 function edhaAdjacent(tokA, tokB) {
   if (!tokA || !tokB) return false;
   const gs = (tokA.scene ?? canvas?.scene)?.grid?.size || 100;
-  const dx = Math.abs((tokA.center?.x ?? 0) - (tokB.center?.x ?? 0)) / gs;
-  const dy = Math.abs((tokA.center?.y ?? 0) - (tokB.center?.y ?? 0)) / gs;
-  return Math.max(dx, dy) <= 1.05;   // Chebyshev ≤ 1 square (orthogonal + diagonal), small epsilon
+  const rect = (t) => ({ x: t.center?.x ?? 0, y: t.center?.y ?? 0, w: t.document?.width, h: t.document?.height });
+  return edhaFootprintsTouch(rect(tokA), rect(tokB), gs);
 }
 function edhaAdjacentAllies(ownerTok) {
   const disp = ownerTok?.document?.disposition;
@@ -18695,16 +18711,41 @@ async function edhaReknitClick(ev) {
  * Manual by nature (no Foundry hook): Predator's Instinct (track/fear).
  * ============================================================================================ */
 
-// "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
-async function edhaGrantAdvAttack(actor, source) {
+/* "Advantage on your next attack" flag (Pack Hunter, Scent the Weak, White's rally, the Decree's Witnesses,
+ * Investiture of Command), consumed on the next attack it APPLIES to.
+ * Item 163 (2026-09-15, bench run 48): a grant that names a creature — "advantage on your next attack
+ * against IT" (Pack Hunter, Scent the Weak) — now stamps that creature's TOKEN uuid, and the pre-roll and
+ * the consume below both ask edhaAdvAttackApplies, so the advantage is neither applied nor spent on an
+ * attack against anyone else. Before, the flag held only a name and the next attack against ANY target
+ * took it: Ishee's advantage, banked against a rootling that had since died, rolled 2d20kh on her Staff
+ * against another. A grant with no target keeps the old any-target shape, and a string / `true` flag
+ * banked by an older engine reads as targetless. */
+async function edhaGrantAdvAttack(actor, source, targetUuid = null) {
   try {
-    return await edhaSetEdhaFlag(actor, "advAttackNext", source || true);   // Job 6a: routed through the canonical helper
+    const value = targetUuid ? { source: source || "Pack tactics", targetUuid } : (source || true);
+    return await edhaSetEdhaFlag(actor, "advAttackNext", value);   // Job 6a: routed through the canonical helper
   } catch (e) { return false; }
 }
+// PURE (pinned in tests/pack-hunter-target-gate.test.js): does this banked flag apply to an attack whose
+// user targets are these token uuids? Targetless → any attack; targeted → only one aimed at that token.
+function edhaAdvAttackApplies(flag, targetUuids) {
+  if (!flag) return false;
+  const want = (typeof flag === "object") ? flag.targetUuid : null;
+  if (!want) return true;
+  return Array.isArray(targetUuids) && targetUuids.includes(want);
+}
+// PURE: the name the spend card shows — a string flag, the object shape's source, or the generic label.
+function edhaAdvAttackSourceName(flag) {
+  if (typeof flag === "string") return flag;
+  if (flag && typeof flag === "object" && flag.source) return String(flag.source);
+  return "Pack tactics";
+}
+// The rolling user's targeted token uuids (through the one game.user.targets reader).
+function edhaAdvAttackTargetUuids() { return edhaUserTargetTokens().map(t => t?.document?.uuid).filter(Boolean); }
 function edhaAdvAttackPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "advAttackNext")) return;
+    if (!edhaAdvAttackApplies(actor?.getFlag?.("edha-content", "advAttackNext"), edhaAdvAttackTargetUuids())) return;   // item 163: a banked target gates the grant
     roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -18713,9 +18754,10 @@ function edhaAdvAttackPreRoll(roll, source, config) {
 function edhaAdvAttackConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const src = actor?.getFlag?.("edha-content", "advAttackNext"); if (!src) return;
+    const src = actor?.getFlag?.("edha-content", "advAttackNext");
+    if (!edhaAdvAttackApplies(src, edhaAdvAttackTargetUuids())) return;   // item 163: an advantage banked against another creature stays banked
     void actor.unsetFlag("edha-content", "advAttackNext");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${typeof src === "string" ? src : "Pack tactics"}</strong> — advantage spent on this attack.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${edhaAdvAttackSourceName(src)}</strong> — advantage spent on this attack.</p>` });
   } catch (e) { console.error("Edha Content | adv-attack consume failed", e); }
 }
 for (const ctx of ["attack", "item"]) {
@@ -21950,7 +21992,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const low = enemies[0];
         if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
           if (this.once === "round") await edhaCoordOPRMark(actor, item.name, "_adv");
-          void edhaGrantAdvAttack(actor, item.name);
+          void edhaGrantAdvAttack(actor, item.name, low.document?.uuid ?? null);   // item 163: "your first test against IT" — spent only on the weakest enemy named
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low
           ? `<p>🩸 <strong>${item.name}</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>`
@@ -21974,12 +22016,20 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
           : `<p>👑 <strong>${item.name}</strong> (${actor.name}): no valid targeted ally to grant.</p>` });
         return;
       }
-      void edhaGrantAdvAttack(actor, item.name);
+      /* item 163 (2026-09-15, bench run 48): a `pack` grant names the targeted enemy — the card says
+       * "… against <enemy>" — so the owner's flag and every hunter's stamp its token uuid, and only an
+       * attack on it takes the advantage (edhaAdvAttackApplies). A hunter must be standing (a downed ally
+       * was counted in "2 hunter(s)"), and adjacency reads token footprints (edhaAdjacent), so a Medium
+       * hunter beside a Large enemy's edge counts. `self` mode names nobody and stays targetless. */
+      const enemyTok = this.to === "pack" ? edhaUserTargetToken() : null;
+      const enemyUuid = enemyTok?.document?.uuid ?? null;
+      void edhaGrantAdvAttack(actor, item.name, enemyUuid);
       if (this.to === "pack") {
-        const enemyTok = edhaUserTargetToken(); let n = 1;
+        let n = 1;
         if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
           if (t.id === otok.id || !t.actor || !Number.isFinite(t.document?.disposition) || !Number.isFinite(disp) || t.document.disposition !== disp || !edhaAdjacent(t, enemyTok)) continue;
-          void edhaGrantAdvAttack(t.actor, item.name); n++;
+          if (edhaActorDefeated(t.actor)) continue;   // item 163: a hunter at 0 HP is not hunting
+          void edhaGrantAdvAttack(t.actor, item.name, enemyUuid); n++;
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
       } else {

@@ -1705,6 +1705,17 @@ own items); none names a talent.
 - **`edha-adv-attack`** — executor over the existing `advAttackNext` pipeline: `to: self|pack`
   (pack = you + allies adjacent to your targeted enemy — Pack Hunter), `vsLowestHp` +
   `rangeColor` + `once: round` (the Scent the Weak scan; the card names the weakest enemy).
+  ⚠️ **A grant that names a creature is spent only against it** (item 163, 2026-09-15):
+  `edhaGrantAdvAttack(actor, source, targetUuid)` stamps `advAttackNext = {source, targetUuid}` (the
+  TOKEN uuid) for `pack` (the targeted enemy) and Scent mode (the weakest enemy), and the pre-roll and the
+  consume hook both ask the pure **`edhaAdvAttackApplies(flag, targetUuids)`**, so the advantage is neither
+  applied nor spent on an attack against anyone else (bench run 48: an advantage banked against a rootling
+  that had died rolled 2d20kh against a living one). A targetless grant (`self`, `targets`, White's rally,
+  the Decree's Witnesses) and a string / `true` flag from an older engine still apply to any target.
+  `pack` skips a defeated hunter (`edhaActorDefeated`) and reads adjacency on token FOOTPRINTS —
+  **`edhaAdjacent(tokA, tokB)`** now goes through the pure **`edhaFootprintsTouch(a, b, gs)`** (identical for
+  1×1 tokens; a Medium beside a Large or Huge token's edge counts), which every adjacency consumer shares.
+  Pinned in `tests/pack-hunter-target-gate.test.js`.
 - **`edha-strike-window`** — executor: arms the `strikeWindow` flag (renamed from `packPressure` —
   generic) until the start of your next turn; the card text is the rule's editable `note`.
   Read by `edhaStrikeWindowActive`.

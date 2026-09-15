@@ -2508,7 +2508,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const low = enemies[0];
         if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
           if (this.once === "round") await edhaCoordOPRMark(actor, item.name, "_adv");
-          void edhaGrantAdvAttack(actor, item.name);
+          void edhaGrantAdvAttack(actor, item.name, low.document?.uuid ?? null);   // item 163: "your first test against IT" — spent only on the weakest enemy named
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low
           ? `<p>🩸 <strong>${item.name}</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>`
@@ -2532,12 +2532,20 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
           : `<p>👑 <strong>${item.name}</strong> (${actor.name}): no valid targeted ally to grant.</p>` });
         return;
       }
-      void edhaGrantAdvAttack(actor, item.name);
+      /* item 163 (2026-09-15, bench run 48): a `pack` grant names the targeted enemy — the card says
+       * "… against <enemy>" — so the owner's flag and every hunter's stamp its token uuid, and only an
+       * attack on it takes the advantage (edhaAdvAttackApplies). A hunter must be standing (a downed ally
+       * was counted in "2 hunter(s)"), and adjacency reads token footprints (edhaAdjacent), so a Medium
+       * hunter beside a Large enemy's edge counts. `self` mode names nobody and stays targetless. */
+      const enemyTok = this.to === "pack" ? edhaUserTargetToken() : null;
+      const enemyUuid = enemyTok?.document?.uuid ?? null;
+      void edhaGrantAdvAttack(actor, item.name, enemyUuid);
       if (this.to === "pack") {
-        const enemyTok = edhaUserTargetToken(); let n = 1;
+        let n = 1;
         if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
           if (t.id === otok.id || !t.actor || !Number.isFinite(t.document?.disposition) || !Number.isFinite(disp) || t.document.disposition !== disp || !edhaAdjacent(t, enemyTok)) continue;
-          void edhaGrantAdvAttack(t.actor, item.name); n++;
+          if (edhaActorDefeated(t.actor)) continue;   // item 163: a hunter at 0 HP is not hunting
+          void edhaGrantAdvAttack(t.actor, item.name, enemyUuid); n++;
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
       } else {
