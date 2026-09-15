@@ -689,10 +689,8 @@
       "awa": 1,
       "pre": 0
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 11,
-      "spi": 11
+    "skills": {
+      "lwp": 1
     },
     "deflect": 1,
     "hp": 10,
@@ -700,15 +698,14 @@
     "inv": 0,
     "movement": 25,
     "count": 2,
-    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / 1d6+1), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 / 1d6+2 back.</em></p>",
+    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3. These ARE the squishy-party numbers (deflect 1 / HP 10 / a d6 blade), made the default by R-134's minion row after bench runs 44 and 48; a party with a front line may take deflect 2 / HP 12 and a rank of Heavy Weaponry back.</em></p><p><em>R-137 (2026-09-15): its attacks derive like a PC's, one skill modifier on the test and the damage — Shortsword STR 2 + Heavy Weaponry 0 = +2 for 1d6+2, Soldier's Crossbow SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6. The cards read +4 for 1d6+1 under the flat model, and rolled +6 for 1d6+3 / +5 for 1d6+2 once attributes were stated on 2026-09-14.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 12 / Spi 11 (the card read 12 / 11 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -716,9 +713,8 @@
         "kind": "weapon",
         "weaponId": "shortsword",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -767,10 +763,9 @@
       "awa": 2,
       "pre": 1
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 11,
-      "spi": 11
+    "skills": {
+      "hwp": 1,
+      "lwp": 1
     },
     "deflect": 1,
     "hp": 10,
@@ -782,15 +777,14 @@
       "White/Guiding Signal",
       "White/Ordered Advance"
     ],
-    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p>",
+    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p><p><em>Chassis as the Raider's (deflect 1 / HP 10 / 1d6+1, R-134's minion row); its Investiture pool stays 2 — one Signal and one Advance per fight, whatever its Awareness derives.</em></p><p><em>R-137 (2026-09-15): attacks derive like a PC's — Shortsword STR 1 + Heavy Weaponry 1 = +2 for 1d6+2, Soldier's Crossbow SPD 1 + Light Weaponry 1 = +2 for 1d6+2, graze 1d6 (the cards read +4 for 1d6+1 under the flat model, and rolled +5 for 1d6+2 once attributes were stated).</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 13 / Spi 13 (the card read 12 / 11 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Soldier's Crossbow",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Range 60 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -798,9 +792,8 @@
         "kind": "weapon",
         "weaponId": "shortsword",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 5 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "keen"
       },
       {
@@ -866,10 +859,8 @@
       "awa": 2,
       "pre": 2
     },
-    "defenses": {
-      "phy": 13,
-      "cog": 12,
-      "spi": 12
+    "skills": {
+      "hwp": 1
     },
     "deflect": 2,
     "hp": 24,
@@ -877,24 +868,23 @@
     "inv": 2,
     "movement": 25,
     "count": 1,
-    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 12) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p>",
+    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 14 — derived, R-139 (a)) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p><p><em>HP 24 (was 28): he calls the break at one third, so 16 is the fight's real number — three PC Actions, R-134's rival row. Attributes stated (R-128): STR 2 / WIL 2 carry the Athletics and Discipline totals his old ranks did; AWA 2 sees 10 ft in the dark.</em></p><p><em>R-137 (2026-09-15): the Issued Blade and Press the Line derive like a PC's weapon — STR 2 + Heavy Weaponry 1 = +3 for 1d8+3, graze 1d8 (the cards read +5 for 1d8+2 under the flat model, and rolled +7 for 1d8+4 once attributes were stated). Athletics 2 and Discipline 2 still read off STR 2 and WIL 2.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 13 / Cog 13 / Spi 14 (the card read 13 / 12 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "Issued Blade",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 5,
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen"
       },
       {
         "name": "Press the Line",
         "cost": "2 Actions",
         "consume": "1 Focus",
-        "attack": 5,
+        "attackSkill": "hwp",
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen",
         "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction.",
         "events": [
@@ -964,15 +954,10 @@
     "attributes": {
       "str": 2,
       "spd": 2,
-      "int": 0,
-      "wil": 1,
+      "int": 2,
+      "wil": 2,
       "awa": 3,
       "pre": 1
-    },
-    "defenses": {
-      "phy": 12,
-      "cog": 14,
-      "spi": 11
     },
     "deflect": 1,
     "hp": 20,
@@ -980,7 +965,7 @@
     "inv": 2,
     "movement": 30,
     "count": 2,
-    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p>",
+    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p><p><em>Spearing Beak 1d6+2 (was 1d8+2): bench run 48's YARD-2 read the pair at 31–37 % of the party's HP pool per round with two PCs down by round 3 — R-134's rival row is a 6–7 average hit, and the fooled-target +1d6 stays because the Seeming is the trick, not the beak. AWA 3 (R-128) sees 20 ft in fog and dark; Stealth rides SPD 2.</em></p><p><em>R-137 (2026-09-15): the Spearing Beak derives like a PC's weapon — STR 2 + Heavy Weaponry 0 = +2 for 1d6+2 (+1d6 against a fooled target), graze 1d6; Snatch and Wade tests the same +2 (the cards read +5 under the flat model, and rolled +7 for 1d6+4 once attributes were stated). Stealth 2 still reads off SPD 2.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 14 / Cog 14 / Spi 14 (the card read 12 / 14 / 11 as overrides; INT 2 / WIL 2 hold the belief DC at Cog 14).</em></p>",
     "items": [
       {
         "name": "The Seeming",
@@ -1008,9 +993,8 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 5,
         "range": "Reach 10 ft.",
-        "damage": "1d6+2",
+        "damage": "1d6",
         "damageType": "keen",
         "rider": "+1d6 against a character who is taken in by the seeming.",
         "events": [
@@ -1029,7 +1013,7 @@
       {
         "name": "Snatch and Wade",
         "cost": "2 Actions",
-        "attack": 5,
+        "attackSkill": "hwp",
         "range": "Reach 5 ft.",
         "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>"
@@ -3465,18 +3449,13 @@
       "awa": 3,
       "pre": 0
     },
-    "defenses": {
-      "phy": 10,
-      "cog": 10,
-      "spi": 12
-    },
     "deflect": 0,
     "hp": 14,
     "foc": 2,
     "inv": 2,
     "movement": 50,
     "count": 1,
-    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p>",
+    "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p><p><em>Numbers unchanged by the 2026-09-14 pass: a 3.5 average hit sits under R-134's minion row and the swarm rule halves what a Strike does to it. AWA 3 (R-128) sees 20 ft — the crows' eyes and the death-sense; Perception rides it at the old total of 3.</em></p><p><em>R-137 (2026-09-15): Mob the Straggler is an Agility strike, as the published swarm bites are — SPD 2 + Agility 0 = +2 for 1d4+2, graze 1d4 (the card read +4 for 1d4+1 under the flat model; Strength 0 would have left a Heavy Weaponry strike at +0). Perception 3 still reads off AWA 3.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 11 / Spi 13 (the card read 10 / 10 / 12 as overrides).</em></p>",
     "items": [
       {
         "name": "The Tolling Gone Wrong",
@@ -3546,9 +3525,9 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 4,
+        "attackSkill": "agi",
         "range": "Reach 5 ft (enveloping).",
-        "damage": "1d4+1",
+        "damage": "1d4",
         "damageType": "keen"
       },
       {
@@ -3594,18 +3573,13 @@
       "awa": 4,
       "pre": 0
     },
-    "defenses": {
-      "phy": 14,
-      "cog": 13,
-      "spi": 11
-    },
     "deflect": 0,
     "hp": 26,
     "foc": 3,
     "inv": 2,
     "movement": 45,
     "count": 1,
-    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p>",
+    "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p><p><em>Numbers unchanged by the 2026-09-14 pass (inside the rival band; no yardstick evidence on it; the +7 pounce is the top of the band and is the fiction — it has already seen you). AWA 4 (R-128) sees 20 ft and carries the old Perception 4; SPD 3 carries the old Stealth 3.</em></p><p><em>R-137 (2026-09-15): The Pounce Already Taken is an Agility strike — SPD 3 + Agility 0 = +3 for 1d8+3 (+1d4 keen when the declared action was taken), graze 1d8 (the card read +7 for 1d8+2 under the flat model, and rolled +9 for 1d8+4 once attributes were stated). Perception 4 and Stealth 3 still read off AWA 4 and SPD 3.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 15 / Cog 11 / Spi 14 (the card read 14 / 13 / 11 as overrides).</em></p>",
     "items": [
       {
         "name": "Forewarned",
@@ -3693,9 +3667,9 @@
         "kind": "weapon",
         "alwaysEquipped": true,
         "cost": "1 Action",
-        "attack": 7,
+        "attackSkill": "agi",
         "range": "Reach 5 ft.",
-        "damage": "1d8+2",
+        "damage": "1d8",
         "damageType": "keen",
         "events": [
           {
@@ -3749,11 +3723,6 @@
     "skills": {
       "dec": 2
     },
-    "defenses": {
-      "phy": 12,
-      "cog": 13,
-      "spi": 14
-    },
     "hp": 22,
     "foc": 3,
     "inv": 3,
@@ -3764,15 +3733,14 @@
       "Black/Hollow Command",
       "Black/Coercive Pressure"
     ],
-    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p>",
+    "biography": "<p><strong>Warden Idony Kell</strong> (Ben's to rename) — the well-warden of a yellow-painted street (canon §5b; ruling 165, R-131 (a)): the sworn civic post that hauls clean water to the painted line and pours it across into vessels that never come back, so that one touched rope does not condemn a whole street's water to the fire. One of the few posts the regency still pays on time. Corvaine's one invested human of the first nation pass, <strong>Black-attuned</strong> — the riverlands' own ground colour, and the death-sense the tollbirds carry in human key: she perceives what is leaving a body and can tell the stuck-dying from the merely sick at the line. Two years in, the lines only go outward; her street's well was painted last winter.</p><p><strong>Kit, as written</strong> (ruling 40; R-94 — no tree gates apply): <strong>Dread Presence</strong> — the painted line made literal, the Weakened cannot close on the clean side; <strong>Hollow Command</strong> (2 Actions, 1 Investiture, Deception vs Spiritual) — \"stand where you are\", her word stops a body at the line for a turn; <strong>Coercive Pressure</strong> — an enemy that loses Focus tests its next Cognitive at disadvantage; and the Black Key's Draw Mana, the isolating pour. Deception PRE 2 + rank 2 = 4.</p><p><strong>The encounter</strong> is a negotiation before it is a fight: <em>a well-warden pours across the painted line, and the PCs must hand something (or someone) across.</em> It becomes a fight only if the party forces the line. <strong>Outs:</strong> talk (Persuasion against her Spiritual 14), a writ, or mercy — she lets one through, and it costs her the well. <strong>Tone:</strong> sad, not evil; she is protecting the well from the sick, and everyone knows what happens to a town whose warden walks off.</p><p><em>Numbers from R-134's rival row (average hit 4.5 with the hook-pole; the kit, not the pole, is the threat; HP 22 with no armour — a civic post): a party that talks never rolls against them.</em></p><p><em>R-137 (2026-09-15): the Warden's Hook-Pole derives like a PC's weapon — STR 1 + Heavy Weaponry 0 = +1 for 1d6+1, graze 1d6 (the card read +4 for 1d6+1 under the flat model, and rolled +5 for 1d6+2 once attributes were stated); it was never meant for this, and the number now says so. Deception PRE 2 + rank 2 = +4 for Hollow Command, as approved.</em></p><p><em>R-139 (a) (2026-09-15): defenses derive from the attributes like a PC's — Phy 12 / Cog 13 / Spi 14 (the card read 12 / 13 / 14 as overrides).</em></p>",
     "items": [
       {
         "name": "Warden's Hook-Pole",
         "kind": "weapon",
         "cost": "1 Action",
-        "attack": 4,
         "range": "Reach 10 ft.",
-        "damage": "1d6+1",
+        "damage": "1d6",
         "damageType": "impact",
         "rider": "The hooked haul-pole every warden carries — it keeps you at the line's length, and it was never meant for this."
       },
