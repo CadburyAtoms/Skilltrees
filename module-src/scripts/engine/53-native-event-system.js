@@ -152,9 +152,10 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
       /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
-       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
-       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
-       * the CASTER and nobody else. */
+       * default. Two callers fill it in: Fault Line (its caster — see edhaFaultLine) and, since item
+       * 162 (2026-09-15), Green terrain's enter / turn-start hazard (the creature that grew it — see
+       * edhaCreateGreenTerrain). Every other hazard passes nothing. Allies and enemies inside are
+       * still caught — the dial spares ONE actor and nobody else. */
       exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }

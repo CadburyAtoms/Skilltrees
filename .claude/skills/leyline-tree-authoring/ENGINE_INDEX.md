@@ -968,12 +968,16 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
 - ⚠️ **`exemptActorUuid` — ONE actor this terrain never burns** (2026-09-06, R-6, item 48). A field
   on the behavior (so it is visible on the Region sheet), blank by default, threaded through
   `edhaDropHazard` → `edhaPlaceHazardRegionGM` **and the player→GM socket relay** — miss the relay
-  half and a player's own cast still burns them. **Fault Line is the only caller that fills it in**,
-  passing the caster's uuid, so every other hazard is byte-identical. Why an exemption and not a
+  half and a player's own cast still burns them. **Fault Line** fills it in with the caster's uuid,
+  and **since item 162 (2026-09-15) so does Green terrain's enter / turn-start hazard**, with the uuid
+  of the creature that grew it (`edhaCreateGreenTerrain` — bench run 48 measured the Briar-Gone Grove
+  taking 1 then 3 keen from a square under its own token). Every other hazard passes nothing. A
+  turn-END hazard (Bone Garden's `moment: "turn-end"`) is a region flag, not this behaviour, and still
+  catches the owner (Ben's R5). Why an exemption and not a
   shifted rectangle (Ben left both open): the rectangle IS the line that was just damaged, and
   moving it a square out would make the terrain and the burst disagree about the same ground.
   Allies and enemies inside are still caught — the ruling spares the caster ALONE. Pinned:
-  `tests/fault-line-caster-exempt.test.js`.
+  `tests/fault-line-caster-exempt.test.js`; Green terrain in `tests/green-terrain-creator-exempt.test.js`.
 - **Ownership/membership — ONE VOCABULARY, and it is GATED (07-27s).** Every hazard/terrain Region
   carries `flags.edha-content.terrain = {ownerUuid, color}`, and **`edhaTerrainOwnerUuid(region)` is
   the only function allowed to know that**; ask it, or ask the spine built on it:
@@ -1688,7 +1692,10 @@ own items); none names a talent.
   terrain also damages on enter / turn-start (`damageFormula` with `@colorRank`/`@tier`, baked at
   placement; `damageType`; `label` blank = talent name). Thorn Field (PC) + the Fellstag's Thorn
   Hedge + the Briar-Gone Grove's verbatim copy (both in `data/adversaries.json`). `edhaOwnsThorn`
-  is DELETED.
+  is DELETED. **The creature that grew the terrain is exempt from its enter / turn-start tick**
+  (item 162, 2026-09-15: the behaviour carries `exemptActorUuid: owner.uuid`, R-6's dial — bench run 48
+  measured the grove taking 1 then 3 keen from its own briar); a `moment: turn-end` rider is a region
+  flag and still catches the owner (R5).
 - **`edha-zone-react`** — config-only, read on `combatTurnChange`: a creature ends its turn in
   your zone → whispered expand offer (`sizeFt` 0 = by rank, `costInv` spent on the CLICK, one
   offer per owner per round). Spreading Roots.

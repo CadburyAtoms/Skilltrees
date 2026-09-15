@@ -18227,7 +18227,13 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt, sourceItem =
       const baked = edhaFoldDieMath(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
       if ((h.moment || "enter-turn-start") === "turn-end")
         turnEnd = { formula: baked, type: h.damageType || "keen", source: `${thornLabel} — ${owner.name}` };
-      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}` } });
+      /* item 162 (2026-09-15, bench run 48 / YARD-3): the creature that grew the terrain is EXEMPT from its
+       * own briar — R-6's generic dial (Fault Line spares its caster). Unfilled, the Briar-Gone Grove took
+       * 1 keen on placement and 3 at its next turn start from a square under its own 2×2 token. Every Green
+       * creator reaches this function (Draw Mana's edha-zone, Sudden Growth's burst, the adversary copies,
+       * and the player relay's GM side), so the exemption needs no socket field. A turn-END rider (the
+       * branch above) is a region flag, not this behaviour, and still catches the owner (Ben's R5). */
+      else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}`, exemptActorUuid: owner.uuid } });
     }
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — ${turnEnd ? thornLabel : "Difficult Terrain"}`, color: EDHA_COLOR_HEX.green,
@@ -19588,9 +19594,10 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
       /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
-       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
-       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
-       * the CASTER and nobody else. */
+       * default. Two callers fill it in: Fault Line (its caster — see edhaFaultLine) and, since item
+       * 162 (2026-09-15), Green terrain's enter / turn-start hazard (the creature that grew it — see
+       * edhaCreateGreenTerrain). Every other hazard passes nothing. Allies and enemies inside are
+       * still caught — the dial spares ONE actor and nobody else. */
       exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }

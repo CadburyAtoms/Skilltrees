@@ -15,8 +15,9 @@
  * damaged on. Keeping the footprint and exempting one actor says the true thing about both: that
  * square is dangerous to everyone but the one who split it open.
  *
- * The dial is GENERIC (`exemptActorUuid` on the hazard behavior) but WIRED only from Fault Line —
- * every other hazard passes nothing and is byte-identical, because no ruling asked them to change.
+ * The dial is GENERIC (`exemptActorUuid` on the hazard behavior). When this pin was written it was
+ * WIRED only from Fault Line; item 162 (2026-09-15) made Green terrain's enter / turn-start hazard the
+ * second caller (tests/green-terrain-creator-exempt.test.js). Every other hazard still passes nothing.
  *
  * Mutation: drop the `exemptActorUuid` early return in _handleRegionEvent and the first case fails
  * with 8 damage on the caster; drop `owner.uuid` from edhaFaultLine's edhaDropHazard call and the
