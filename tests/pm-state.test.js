@@ -449,7 +449,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // caveats. Go on the compatibility check. 142-a is fine as well." R-142 and R-143 moved to §K.19 with
   // §L stubs, and their builds are TODO items 178 – 181. The open set is EMPTY again; both join the
   // closed list below. The length assertion moves 2 → 0.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-15, that evening: item 177's compatibility check (PR #403) measured the 3.1.0 upgrade at
+  // five blockers and ~9 worker sessions, and found that the engine work can be written dual-mode. The
+  // PM files R-144 in §L — does R-143's "3.1.0 first" caveat still bind items 178 – 181, or do they go
+  // dual-mode after one resolver PR? The length assertion moves 0 → 1.
+  const ECOSYSTEM_RULINGS = ["R-144"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

@@ -4396,7 +4396,9 @@ The item stays open for the ten held talents, which wait on R-142.
 - Pinned tests are green.
 - One 🤖 row per affected tree.
 
-**PM:** lane B · model opus · size M · deps item 177's break list · closes items 169 and 174 · item 179 honours the field. Filed 2026-09-15 by the PM from Ben's answer to R-142.
+**PM:** lane B · model opus · size M · deps R-144 (under (a): item 183's resolver, then dual-mode) · closes items 169 and 174 · item 179 honours the field. Filed 2026-09-15 by the PM from Ben's answer to R-142.
+
+**From item 177's check (PR #403, §e) — the seam, settled:** build the suppression on the `CosmereItem#rollDamage` wrapper Edha already owns (`03-where-an-effect-lives.js:272-289`), and when the rule carries the field return **`[]`, not `null`** — `rollAttack` returns the result inside a tuple and `use()` spreads it into the message, so `null` throws, while `[]` posts the d20 with no damage and no Apply buttons. The other two candidates are dead ends: `preDamageRoll` is `Hooks.callAll` and cannot cancel, and stripping the rolls in `preCreateChatMessage` still rolls the dice and still returns them from `use()`. On 3.1.0 the formula lives on the talent's embedded action, so the field is read off the root talent through item 183's accessor; on 2.1.0 `this` is already the talent. R-142 (a)'s point holds on both: the formula stays, so the d20 context stays `Attack`, the `source.system.damage.formula` checks (`01-shared-core.js:734, 789, 798`) still read true, and `edhaTalentColor` keeps its formula.
 
 ## 179. [ ] R-143 (a), the core: the engine applies an attack's damage itself — a hit on an adversary at once, a hit on a player character after that player's reaction window, a graze prompt to the attacker's player on a miss, Undo on every card the engine applies damage from, and today's card wherever the engine cannot decide (ENGINE, F5; after items 177 and 178) (2026-09-15)
 
@@ -4431,7 +4433,13 @@ The engine already wraps `applyDamage` (`edhaWrapApplyDamage`, `module-src/scrip
 
 **Done when:** the bench drives those rows green on 3.1.0, and the GM never selects a token or clicks the system's card for a single-target attack without a plot-die result.
 
-**PM:** lane B · model opus · size L · deps item 177 (3.1.0 live) and item 178 · pairs with item 180. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+**PM:** lane B · model opus · size L · deps R-144 (under (a): items 183 and 178, dual-mode) · pairs with item 180. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+**From item 177's check (PR #403, §e) — four findings that change this plan:**
+- **The system already posts an Undo.** `applyDamage` posts a DAMAGE_TAKEN card carrying `taken {health, damageTaken, damageDeflect, …, undo: true}` and renders its own Undo Damage button, visible to the GM and the message's author (3.1.0 `documents/actor.ts:1008`; `documents/chat-message.ts:612-648`). Use it for the health half — **provided the engine leaves `chatMessage` on**, which most engine applications turn off today (for example `33-triggered-effect-resolution.js:287`). The ledger is still needed for the statuses and effects an application created, and the system's GM-or-author rule is the ready default for "who may press Undo".
+- **Double application has a native guard.** `onClickApplyButton` returns early when `cosmere-rpg.chatMessageInteract` is answered false (`documents/chat-message.ts:1000-1008, 1158-1165`) — a cancellable hook, so a card the engine already resolved can refuse a second click instead of relying on the GM not to press it.
+- **The recorded target survives.** `use()` still writes `flags["cosmere-rpg"].message.targets`; on 3.1.0 `message.item` is the **action's UUID** where 2.1.0 stored an id, so read it with `fromUuid` (`documents/item.ts:1454-1461`).
+- **A once-per-round reset now exists.** 3.0.0 added `cosmere-rpg.combatRoundStart` / `combatRoundEnd` and the matching native events — the clean home for Combat Training's free graze and any per-round reaction budget.
 
 ## 180. [ ] R-143 (a) caveat 2: an Opportunity or a Complication on an attack holds its damage until the table chooses — the canon spends and the talents' own spends as real buttons, a Complication prompt, and the damage applies on the answer (ENGINE, F5; DATA, REBUILD + ⟳ Sync Talents for the talents it wires; after item 179) (2026-09-15)
 
@@ -4460,7 +4468,9 @@ An Opportunity spend can change the damage (Critically Hit), so the choice has t
 
 **Done when:** an attack with a plot-die result never applies damage before the choice, every wired spend is a button, and the bench rows are green on 3.1.0.
 
-**PM:** lane B · model opus · size L · deps item 179. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+**PM:** lane B · model opus · size L · deps item 179 · R-144 sets when it starts. Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+**From item 177's check (PR #403, §e):** this item's hook surface is unchanged at 3.1.0 — the Opportunity menu's roll hooks and the roll's `opportunitiesCount` / `complicationsCount` are identical at both tags. What moves is the roll's `source`, which is now the embedded action whose `.root` is the talent; that matters only where a spend is tied to the rolling talent rather than harvested actor-wide. Note also that the damage is already rolled inside `rollAttack` by the time the card appears, so "the choice comes before any damage" means **holding the application** until the card is answered, with Critically Hit changing the rolled `DamageRoll` before `applyDamage`. `preAttackRollConfiguration` fires only when the attack dialog opens, so it cannot gate a fast-forwarded roll.
 
 ## 181. [ ] R-143 (a) caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll — Dodge stays a call before the roll (ENGINE, F5; after item 177) (2026-09-15)
 
@@ -4483,4 +4493,72 @@ So once the engine applies damage (item 179), Dodge is still called at the table
 
 **Done when:** those rows pass on 3.1.0.
 
-**PM:** lane B · model sonnet · size S · deps item 177 (the sheet and roll hooks on 3.1.0). Filed 2026-09-15 by the PM from Ben's answer to R-143.
+**PM:** lane B · model sonnet · size S · deps none — item 177's check found both of this item's surfaces unchanged at 3.1.0, so it can be built dual-mode now (R-144 (a)). Filed 2026-09-15 by the PM from Ben's answer to R-143.
+
+**From item 177's check (PR #403, §e):** the character sheet's render hook and `cosmere-rpg.preAttackRoll` — the advantage channel Edha's injectors already use, string-enum mode and all (`01-shared-core.js:513-516`) — are identical at 2.1.0 and 3.1.0. Only where the button sits on the redesigned sheet differs (3.0.0 added a Talents tab and the Actions tab lists actions, not items), so place it by a selector that survives both, and say in the PR which one.
+
+## 182. [ ] Migration PR 1 — per-type field sets in the native-vocabulary snapshot, so lint pass 11 can see an Embedded-Actions break at all (TOOLING; nothing to deploy) (2026-09-15)
+
+**Why:** break F8 of item 177's check (PR #403). Lint pass 11 compares a `system.<field>` read against the union of every top-level field in `data/native-vocabulary.json`. At 3.1.0 that union still contains `activation` and `damage`, because `action` items declare them — 87 → 103 fields, 0 removed — so a talent-level `system.activation` read passes as "not obviously dead" even though talents no longer carry it. That is why every gate stayed green across the whole upgrade in the check's analysis: CI cannot see blockers B1 or F1.
+
+**What to do:** `scripts/dump-native-vocabulary.js` also records the top-level field set **per item type** (talent, action, weapon, trait, equipment, armor, …). `scripts/lint-refs.js` pass 11 checks a read against the type the call site holds, wherever it can tell which type that is, and stays on the union where it cannot. The tracked snapshot stays at 2.1.0 — it regenerates at the flip (item 187).
+
+**Done when:** a mutation proves it — a `talent.system.strike` read fails pass 11 against a fixture 3.x snapshot, and today's reads still pass. Gates green.
+
+**PM:** lane R · model sonnet · size M · deps none (independent of R-144 — this is the gate that catches the rest). Filed 2026-09-15 by the PM from item 177's check, §c PR 1.
+
+## 183. [ ] Migration PR 2 — the dual-mode use-subject resolver and action accessor: an embedded action resolves back to the talent whose rules Edha reads (ENGINE, F5; no behaviour change on 2.1.0) (2026-09-15)
+
+**Why:** blockers B2, F1, F3 and B3's engine half, from item 177's check (PR #403). On 3.1.0 `CosmereItem#use` returns null unless the item is an action, and `preUseItem` / `useItem` fire with the **embedded action**, whose `events` are empty and which `edhaIsTalent` (`31-trigger-gating-cost.js:37-39`) rejects. That silently inerts 24 `preUseItem` sites and 3 talent `useItem` sites — every pre-cost veto, the single-target gate, the cost-shortfall announcer, the stance toggle and the burst takeover — and every engine read of a talent's own `system.activation` / `system.damage` falls back to a default die, a wrong colour or an empty cost list. The check lists every call site.
+
+**What to do:** two generic helpers, both no-ops on 2.1.0 (an item can only be an action when `item.isAction?.()` is true and its parent is an Item, which 2.1.0 has no way to produce):
+- `edhaUseSubject(item)` — an action resolves to `item.root`, anything else to itself — at the 24 `preUseItem` sites, the 3 talent `useItem` sites and the `edha-content.noop-pre-use` dispatch (`39-burst-execution-the-gm-socket-relay.js:390, 394`).
+- `edhaActionOf(item)` — the talent's own action — behind every talent-level `activation` / `damage` read, including `consume` ↔ `consumption` (`37-synchronous-formula-dice-evaluation.js:128-132`), plus `defaultAction.use()` at `34-single-target-gate-defeat-tracking.js:52` and the `use` / `use-action` literals at `05-edha-watch.js:614` and `44-sovereignty.js:302`.
+
+Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction`, and pin both paths.
+
+**Done when:** the existing suite passes unchanged (the 2.1.0 path), new 3.x-stub tests fail when the resolver is removed, and gates are green. **This item gates items 178 – 180 under R-144 (a).**
+
+**PM:** lane B · model opus · size L · deps R-144. Filed 2026-09-15 by the PM from item 177's check, §c PR 2.
+
+## 184. [ ] Migration PR 3 — ⟳ Sync, summons, statuses and the sheet injectors under Embedded Actions (ENGINE, F5) (2026-09-15)
+
+**Why:** breaks F2, B4 (the summons half), F4, F5 and C2 of item 177's check. ⟳ Sync Talents copies `system.activation` / `system.damage` from the pack source onto owned talents (`26-talent-sync.js:134-156`); at 3.1.0 the source has neither key, so an owned talent keeps its migration-time cost, skill and damage forever and a card fix never reaches the roll. Summons write attacks with `activation.skill` / `attribute` (`29-summons.js:144-184`), which moved to `skillTest`. The system now defines its own `diminished` condition, so `edhaRegisterStatuses` skips Edha's Sovereignty mark and `edhaHasCondition` starts returning true for it. And the ⊙ range button and the ritual HP-cost cell key on an Actions-tab row's `data-item-id`, which is now an action's id, not an item's.
+
+**What to do:** ⟳ Sync Talents and ⟳ Sync Adversaries create, update or delete embedded actions by `system.id`; summons write the 3.x action shape; Edha's `diminished` status id is renamed (the card prose can keep the word); the ⊙ and HP-cost injectors map an action row back to its root item; decide whether to hide the system's new non-core `all` (Allomancy) skill from Edha sheets, and say which in the PR. All dual-mode behind item 183's helpers.
+
+**Done when:** pinned tests per helper; the id rename is held by a grep gate that fails on the old id in `01-shared-core.js` / `44-sovereignty.js`; gates green; 🤖 rows for the copy bench.
+
+**PM:** lane B · model opus · size M · deps item 183. Filed 2026-09-15 by the PM from item 177's check, §c PR 3.
+
+## 185. [ ] Migration PR 4 — the pack builder emits Embedded Actions behind `EDHA_SYSTEM_TARGET`, default 2 (DATA-REBUILD; nothing deploys while the default is 2) (2026-09-15)
+
+**Why:** blockers B1, B3 (the data half), B4 and B5, and break F6, from item 177's check. A talent built by today's pipeline loads on 3.1.0 with no action at all: nothing to click on the tree, every new pick unusable, and no `migrateData` anywhere in 3.1.0 to convert an old-shape field — it is dropped at load. The system's own world migration never touches compendia, so Edha's five packs stay 2.x-shaped whatever the world does. Adversary actions lose their costs and skills (78 actions, 53 costed), and weapons lose the flat model's `+N` damage and attack bonus (50 weapons, 36 flat).
+
+**What to do:** build behind `EDHA_SYSTEM_TARGET` (default `2`, so nothing merged changes Ben's table). At target 3: one embedded action per non-passive talent (246 of 365), translated exactly as the system's own `migrateActionData` maps; the 3.x shapes for adversary actions, talent twins and Draw Mana; weapons as `strike`, with `skillTestBonus` and `damageBonus` carrying the flat model; `use` → `use-action` on non-action documents; `modality` on the action; `SYSVER` per target. Add a validator: every non-passive talent carries exactly one embedded action, and no talent carries a top-level `activation` or `damage`.
+
+**PM decisions, settled 2026-09-15 (from the check's two questions):** the authored overlay **keeps its seven keys** and the builder translates — that holds `lint-refs.js:50`, CLAUDE.md's seven-key rule and all 354 `activation` / 427 `formula` keys, and Edha has one action per talent today. `use` → `use-action` **translates at build** until the flip; the 189 authored rules are rewritten once, in item 187, so the JSON matches what the Events tab shows.
+
+**Done when:** target-2 scratch builds hash identical before and after; target 3 passes the new validator and a fixture diff against the system's own compendium talents (`subtle-takedown.json`, `fatal-thrust.json`); `node scripts/gates.js --ci` green.
+
+**PM:** lane B · model opus · size L · deps item 183. Filed 2026-09-15 by the PM from item 177's check, §c PR 4.
+
+## 186. [ ] Migration PR 5 — the Foundry → overlay extract round-trip and the old-shape readers (TOOLING; nothing to deploy) (2026-09-15)
+
+**Why:** breaks F7 and F9 of item 177's check. `scripts/edha-pack-io.js:33, 99` reads `description`, `activation`, `damage` and `events` off the talent, so once cost, skill and damage live on the embedded action, Ben's in-Foundry edit to any of them no longer extracts — the authoring loop in `AUTHORING_WORKFLOW.md` quietly loses half its round-trip. `lint-refs.js:1104-1131` and `:2087-2108`, `validate-adversaries.js:59-65` and `inspect-pack.js:25` read the 2.x action shape and misreport as soon as the build emits 3.x.
+
+**What to do:** `edha-pack-io.js` maps an embedded action back to the overlay's `activation` / `damage`, and `use-action` back to `use`; the four readers accept either shape.
+
+**Done when:** a round-trip test — build at target 3, extract, and the overlay is byte-identical to what went in. Gates green.
+
+**PM:** lane B · model sonnet · size M · deps item 185. Filed 2026-09-15 by the PM from item 177's check, §c PR 5.
+
+## 187. [ ] Migration PR 6 — the flip: default target 3, the vocabulary regenerated, the 189 `use` rules rewritten, in the live-upgrade window (TOOLING + DATA + DOCS; REBUILD + ⟳ Sync Talents + ⟳ Sync Adversaries) (2026-09-15)
+
+**Why:** the last step of item 177. Everything before it is dual-mode or behind the target flag, so the live table stays on 2.1.0 until this lands with Ben present.
+
+**What to do:** default `EDHA_SYSTEM_TARGET` to 3; regenerate `data/native-vocabulary.json` at 3.1.0 (the check measured events 17 → 27 and handlers 12 → 14 — **this must wait for the live upgrade**, because a 3.1.0 snapshot on a 2.1.0 table would let an author write `use-action` against a system that never fires it); rewrite the 189 authored `"event": "use"` rules to `use-action` in one scripted commit; set `module-src/module.json`'s system relationship to 3.1.0 (it reads `verified: 2.0.4` today, already stale against the live 2.1.0); update the vocabulary counts in `CLAUDE.md` and the handoff; retire the consume-dialog wrapper and its test, whose behaviour 3.x does natively (break C1).
+
+**Done when:** `node scripts/gates.js --ci` green at target 3; the live upgrade runs per the check's Route B (backup, system update, migration watched in the console, deploy, ⟳ Sync Talents and ⟳ Sync Adversaries); a bench run passes on the upgraded world; item 177 closes.
+
+**PM:** lane B · model opus · size M · deps item 186, the bench on the copy, and Ben present. Filed 2026-09-15 by the PM from item 177's check, §c PR 6.
