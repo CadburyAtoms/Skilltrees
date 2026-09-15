@@ -4341,7 +4341,7 @@ The item stays open for the ten held talents, which wait on R-142.
 
 **R-142 answered (a), 2026-09-15 evening** (Ben, chat: *"142-a is fine as well"*; `EDHA_RULINGS.md` §K.19): both formulas come back under the new field that suppresses the system's damage roll, so both tests count as attacks again. The work is folded into **item 178**, which closes this item when it lands.
 
-## 175. [x] `42-chaos.js`'s header comment still says the Chaos talents keep `events: {}` and read `item.system.damage.formula` — stale since the 07-24p migration (comment-only; no behaviour change) (2026-09-15, PR #TBD)
+## 175. [x] `42-chaos.js`'s header comment still says the Chaos talents keep `events: {}` and read `item.system.damage.formula` — stale since the 07-24p migration (comment-only; no behaviour change) (2026-09-15, PR #406)
 
 **Why:** reported by item 169's worker (PR #396, 2026-09-15). The 07-24p migration gave the Chaos talents real `events` rules that state their own formulas, and no Chaos rule reads the item's formula, so the header now misdirects anyone deciding whether a Chaos talent's formula can be blanked — the exact question R-142 asks.
 
