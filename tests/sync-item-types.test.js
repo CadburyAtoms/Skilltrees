@@ -169,13 +169,18 @@ test("item 146: a RENAMED owned path is left alone and reported missing", async 
   assert.strictEqual(result.updated, 0);
 });
 
-/* THE NEGATIVE the brief asks for: an owned item with no pack source is untouched. */
+/* THE NEGATIVE the brief asks for: an owned item with no pack source is untouched.
+ * Re-pinned by item 168 (2026-09-15): this case used a flagless `action`, which is now exactly what
+ * a cosmere NATIVE basic action looks like and is skipped without being listed. The guarantee it
+ * carried — no pack source → untouched AND reported — is kept on a flagless TALENT here, and on an
+ * Edha-flagged action in the item 168 block below. */
 test("item 146: an owned item with no pack source at all is untouched", async () => {
-  const homebrew = mockItem({ name: "Ben's Homebrew Action", id: "own-hb", type: "action",
+  const homebrew = mockItem({ name: "Ben's Homebrew Talent", id: "own-hb", type: "talent",
                               system: { description: { value: "mine" }, events: {} } });
+  delete homebrew.flags["edha-content"];
   const { result, updates } = await sync([homebrew]);
   eq(updates, []);
-  eq(result.missing, ["Ben's Homebrew Action"]);
+  eq(result.missing, ["Ben's Homebrew Talent"]);
 });
 
 /* ONE OWNER PER GRANT (case study §10): an adversary's embedded ability is an `action` the
@@ -202,4 +207,71 @@ test("edhaSyncTypeLabel: pluralises, omits zero counts, and keeps EDHA_SYNC_TYPE
   assert.strictEqual(env.edhaSyncTypeLabel({ path: 2 }), "2 paths");
   assert.strictEqual(env.edhaSyncTypeLabel({ talent: 0, path: 0 }), "");
   assert.strictEqual(env.edhaSyncTypeLabel(undefined), "");
+});
+
+/* ---- item 168 (fix pass 13, 2026-09-15): the cosmere system's NATIVE basic actions ----------------
+ *
+ * Bench run 49a's PM-R17 refresh: the sheet's own ⟳ Sync Talents button on each of the three players'
+ * actors posted "Edha: synced 8 item(s) on Tem parinaem (4 talents, 3 paths, 1 action) — 19 not found
+ * in packs (see console)", and the console listed the same nineteen every time. They are the cosmere
+ * system's basic actions (Tem parinaem's Dodge, read live: `type: "action"`, no `flags` scope, no
+ * compendium source). Item 146's widening made every owned `action` a candidate; each missed both
+ * source keys and landed in `missing`. Nothing was written to them — but nineteen lines of noise is
+ * exactly what hides a REAL miss. The bench PCs own only Draw Mana, which is why SYNC-1 read clean.
+ *
+ * The rule the fix pins: an owned `action` syncs only if it came from an Edha pack
+ * (`edhaHasEdhaFlags`). A scratch build of the three atlas packs (2026-09-15) holds ONE action, Draw
+ * Mana, flagged `{core: true, drawMana: true}`, so the gate cannot drop a real Edha action.
+ *
+ * Reversion: delete the `item.type === "action" && !edhaHasEdhaFlags(item)` line in
+ * 26-talent-sync.js and the first case fails with all nineteen names in `missing`. */
+const NATIVE_BASIC_ACTIONS = ["Dodge", "Common Actions Pack", "Gain Advantage", "Avoid Danger", "Basic Actions Pack",
+  "Use A Skill", "Drop", "Strike", "Grapple", "Ready", "Brace", "Aid", "Reactive Strike", "Move", "Recover", "Banter",
+  "Interact", "Shove", "Disengage"];   // the bench's console list, verbatim
+function nativeAction(name) {
+  const it = mockItem({ name, id: `native-${name}`, type: "action",
+                        system: { description: { value: `cosmere ${name}` }, events: {}, activation: {}, damage: {} } });
+  delete it.flags["edha-content"];   // a native action carries no edha-content scope at all
+  return it;
+}
+
+test("item 168: the system's native basic actions are neither updated nor listed missing", async () => {
+  const { result, updates } = await sync(NATIVE_BASIC_ACTIONS.map(nativeAction));
+  eq(updates, []);
+  eq(result.missing, []);
+  assert.strictEqual(result.updated, 0);
+});
+
+test("item 168: a real PC's mix — the Edha items still sync and the toast reports nothing not found", async () => {
+  const { result, updates } = await sync([ownedTalent(), ownedPath(), ownedDrawMana(), ...NATIVE_BASIC_ACTIONS.map(nativeAction)]);
+  eq(result.byType, { talent: 1, path: 1, action: 1 });
+  eq(result.missing, []);
+  eq(updates.map((u) => u._id).sort(), ["own-action", "own-path", "own-talent"]);   // eq(): the array was built inside the engine's vm realm
+});
+
+test("item 168: a RENAMED Edha talent is still reported missing — talents keep today's behaviour", async () => {
+  const renamed = mockItem({ name: "Sapping Hex (Ben's copy)", id: "own-renamed-talent", type: "talent",
+                             flags: { atlas: "leyline", group: "Black" },
+                             system: { description: { value: "hand-edited" }, events: {} } });
+  const { result, updates } = await sync([renamed, ...NATIVE_BASIC_ACTIONS.map(nativeAction)]);
+  eq(updates, []);
+  eq(result.missing, ["Sapping Hex (Ben's copy)"]);
+});
+
+test("item 168: an Edha-flagged action with no pack source is still a real miss", async () => {
+  const stale = mockItem({ name: "Draw Mana (pre-R-126)", id: "own-stale-dm", type: "action",
+                           flags: { core: true, drawMana: true },
+                           system: { description: { value: "old" }, events: {} } });
+  const { result, updates } = await sync([stale]);
+  eq(updates, []);
+  eq(result.missing, ["Draw Mana (pre-R-126)"]);
+});
+
+test("edhaHasEdhaFlags: a key in the edha-content scope is Edha; no scope, an empty scope or no item is not", () => {
+  assert.strictEqual(env.edhaHasEdhaFlags({ flags: { "edha-content": { core: true, drawMana: true } } }), true);
+  assert.strictEqual(env.edhaHasEdhaFlags({ flags: { "edha-content": { atlas: "leyline" } } }), true);
+  assert.strictEqual(env.edhaHasEdhaFlags({ flags: {} }), false);
+  assert.strictEqual(env.edhaHasEdhaFlags({ flags: { "edha-content": {} } }), false);
+  assert.strictEqual(env.edhaHasEdhaFlags({}), false);
+  assert.strictEqual(env.edhaHasEdhaFlags(null), false);
 });

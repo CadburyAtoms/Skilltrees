@@ -10323,7 +10323,7 @@ Hooks.on("createItem", (item, options, userId) => {
  * Matching is by (type | atlas | group | name) — edhaSrcKey — with a (type | name) fallback, so a
  * RENAMED item does not match and is left alone rather than silently overwritten with the wrong card.
  * Owns: EDHA_SRC_PACKS · EDHA_SYNC_TYPES · edhaSrcKey · edhaSyncTypeLabel · edhaBuildSourceMap ·
- *   edhaSrcFor · edhaSyncActorTalents · edhaSyncAllCharacters · edhaSyncNow.
+ *   edhaSrcFor · edhaHasEdhaFlags · edhaSyncActorTalents · edhaSyncAllCharacters · edhaSyncNow.
  * ============================================================================================ */
 
 /* --- G: "Sync Edha Talents" utility -----------------------------------------------------------
@@ -10400,6 +10400,18 @@ function edhaSrcFor(byName, item) {
   const f = item.flags?.["edha-content"] ?? {};
   return byName.get(edhaSrcKey(item.type, f.atlas, f.group, item.name)) ?? byName.get(edhaSrcKey(item.type, null, null, item.name));
 }
+/* PURE (item 168, 2026-09-15 — bench run 49a). Did this owned item come from an Edha pack? Every
+ * document the three atlas packs ship carries the build's `edha-content` flag scope with at least one
+ * key — a talent `{atlas, group}`, a path `{atlas}`, and the packs' ONE `action`, Draw Mana,
+ * `{core, drawMana}` (read back from a scratch build on 2026-09-15: leyline ships 1 action, deity and
+ * heroic none). The cosmere system's own basic actions — Dodge, Strike, Grapple and the rest, nineteen
+ * on every real PC — carry no `edha-content` scope at all (measured live on Tem parinaem's Dodge). An
+ * EMPTY scope reads as "not Edha" too: it holds nothing a sync could match on. Pinned in
+ * tests/sync-item-types.test.js. */
+function edhaHasEdhaFlags(item) {
+  const f = item?.flags?.["edha-content"];
+  return !!f && typeof f === "object" && Object.keys(f).length > 0;
+}
 
 async function edhaSyncActorTalents(actor, byName) {
   if (!actor) return { updated: 0, missing: [], byType: {} };
@@ -10414,6 +10426,13 @@ async function edhaSyncActorTalents(actor, byName) {
      * adversary token would otherwise pull its Draw Mana embed from the LEYLINE pack and replace the
      * `{adversary}` flag with the leyline copy's `{core}` one. Skip them: not this button's items. */
     if (item.flags?.["edha-content"]?.adversary) continue;
+    /* item 168 (2026-09-15, bench run 49a): the widening above also swept in the cosmere system's
+     * NATIVE basic actions, which every real character owns and no Edha pack ships. Each missed both
+     * source keys, so every PC's toast read "— 19 not found in packs" — noise, but exactly the noise
+     * that hides a real miss (a renamed talent reads as one more line under nineteen). Nothing was
+     * ever written to them. An owned `action` is a candidate only when it came from an Edha pack;
+     * talents and paths are unchanged, so a flagless talent is still reported missing. */
+    if (item.type === "action" && !edhaHasEdhaFlags(item)) continue;
     const src = edhaSrcFor(byName, item);
     if (!src) { missing.push(item.name); continue; }
     const so = src.toObject();             // plain data (not the live DataModel)
