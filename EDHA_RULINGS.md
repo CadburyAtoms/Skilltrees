@@ -2829,6 +2829,10 @@ Ask: a gated deity design pass on the Channel model (a), a mechanical re-pricing
 - **(b) Pay on consume.** `EDHA_DODGE_PAY_ON_ARM = false`: arming is free and the Focus leaves only when an attack actually rolls against the disadvantage, so a Dodge nobody attacks into costs nothing. Truer to "a Reaction is paid when it triggers", but it lets a player arm every turn for free. Deploy: ENGINE (F5), one constant.
 - **(c) The arm persists until something consumes it, or combat ends.** A standing guard rather than a called Reaction; the cheapest to remember at the table, the furthest from the action's text. Deploy: ENGINE (F5), the status's expiry shape.
 
+> **2026-09-16 (item 193, R-148 (a)):** both dials are now Foundry module settings —
+> `dodgePayOnArm` and `dodgeArmExpiresOnOwnTurn` — so a veto here is a flip in Foundry's Settings
+> dialog (world-scoped, GM-only), not a PR; the constants stand as their registered defaults.
+
 - **(a) The published ladder, for everyone — RECOMMENDED.** Delete the override in `edhaDeriveSheetStats`; the system's `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` stands on sheet and token, and reads `value + bonus` (which the Edha copy never did), so a +10 ft effect behaves. PCs at SPD 2–5 lose 5 ft per Move. Deploy: ENGINE (F5), plus the creation wizard's preview copy and the build's token stamp. Matches R-54 and R-56.
 - **(b) Keep `20 + 5·SPD` as a declared house rule.** Nothing changes at the table; the docs stop calling it canon and say why Edha's movement is smoother per point than the book's step ladder (it rewards Speed evenly instead of in jumps). Deploy: DOCS-ONLY. The cost is that one derived stat stays out of step with the book and with the system, and the next rules audit re-asks.
 - **(c) PCs keep the formula; adversaries read the ladder.** The split that R-56 (a) tried and Ben then reversed at item 83. Deploy: ENGINE (F5), a type guard. Listed for completeness — it re-creates the "three surfaces disagreeing about the same creature" problem the senses reversal was fixing.
