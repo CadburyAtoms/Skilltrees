@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T20:47:46.816Z",
+  "generatedAt": "2026-09-16T20:51:59.238Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "0561cf7700",
-    "commit": "b194a90",
+    "hash": "65478a8691",
+    "commit": "5ccb930",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,13 +42,22 @@
     "nextOpenAt": "2026-09-17T01:00:00.000Z"
   },
   "pm": {
-    "status": "idle",
+    "status": "running",
     "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
     "waitingOn": "Ben: paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": 201,
+      "title": "The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary",
+      "model": "opus",
+      "branch": "pm/201-rules-audit",
+      "startedAt": "2026-09-16T20:52:00Z",
+      "note": "one Opus worker in a $TEMP worktree; files the audit items and rulings itself, reports to the PM"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -2531,7 +2540,7 @@
       "model": "opus",
       "size": "L",
       "deps": "none",
-      "status": "queued",
+      "status": "running (worktree $TEMP/edha-201, branch pm/201-rules-audit, dispatched 16:52 ET)",
       "statusDetail": null,
       "pr": null
     },
@@ -2613,20 +2622,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:14",
-      "at": "2026-09-14T06:14:00.000Z",
-      "item": "#381 (board part 3) merged at 02:14 (CI green on 94e84fa); main = e9268ad, clean; two workers in flight (142 + 143 + 150, item 152)",
-      "itemNo": "381",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 381
-    },
     {
       "date": "2026-09-14",
       "time": "02:10",
@@ -3452,9 +3447,23 @@
       "weightedM": null,
       "outcome": "filed",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "16:52",
+      "at": "2026-09-16T20:52:00.000Z",
+      "item": "Dispatched item 201 (opus, worktree $TEMP/edha-201, branch pm/201-rules-audit from main = 5ccb930) on Ben's word — the full rules audit against the Mistborn Handbook, Chapter 3 first then chapters 9 – 13 and the glossary; the brief names the handbook pack, the dump script, the five audit surfaces, the ledger shape, and lets the worker file items from 203 and rulings from R-156 (board untouched)",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "running",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 371,
+  "runLogTotal": 372,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
@@ -4464,6 +4473,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 409
+    },
+    {
+      "at": "2026-09-16T20:52:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
