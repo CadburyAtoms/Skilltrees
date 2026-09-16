@@ -234,8 +234,8 @@ const EDHA_STATUSES = {
   insight:   { label: "Insight",   icon: "icons/svg/book.svg",      condition: false, _id: "condinsight00000", stackable: true },
   omen:      { label: "Omen",      icon: "icons/svg/hazard.svg",    condition: false, _id: "condomen00000000" },   // Chaos (Maelith) — the fracture mark
   isolated:  { label: "Isolated",  icon: "icons/svg/net.svg",       condition: true,  _id: "condisolated0000" },   // inflictable Isolation (OR'd into edhaIsIsolated)
-  exalted:    { label: "Exalted",    icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP
-  diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
+  exalted:    { label: "Exalted Die", icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP. Label "Exalted Die" since item 205 (was "Exalted"), for symmetry with its renamed partner below.
+  lessened:   { label: "Lessened Die", icon: "icons/svg/degen.svg", condition: false, _id: "condlessened0000" },   // Sovereignty (Verdannis) — damage die stepped DOWN. Renamed off `diminished`/"Diminished" (item 205, 2026-09-16): Diminished is a PUBLISHED condition (Mistborn Handbook Ch. 9, attribute −X) — a player reading the token HUD or a card saw a published condition's name on this unrelated mechanic, and a system release shipping the real Diminished would have silently taken the id (`edhaRegisterStatuses` only claims an id `if (!COSMERE.statuses[id])`). tests/status-labels.test.js guards no Edha status label ever colliding with a published condition name again. Ben may rename this at PR review (alternatives named in TODO item 205: `exalted`/`abased`, or plain "Lessened" without "Die").
   harvested:  { label: "Harvested Remain", icon: "icons/svg/skull.svg",  condition: false, _id: "condharvested000", tint: "#3a9d4a" },  // Death (Morrath) — corpse marked by Reaper's Harvest (green skull, beside the black defeated overlay)
   decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
   cascadearmed: { label: "Cascade Armed (Necrotic Cascade)", icon: "icons/svg/explosion.svg", condition: false, _id: "condcascadearmed", tint: "#3a9d4a" },  // Death (Morrath) — 07-24r: the SCENE-ARMING marker, replacing the bespoke `cascadeArmed` flag. Same reasoning as `crowned`: a status is what a document-driven rule can both set (edha-self-status) and read (edha-watch requireSelfStatus), and it makes "am I armed?" visible on the token.
@@ -1396,7 +1396,7 @@ function edhaWrapRollDamage(originalCall, options = {}) {
       }
     }
   } catch (e) { /* never break a damage roll on a rider failure */ }
-  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Diminished) has its damage dice moved
+  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Lessened) has its damage dice moved
   // along the d4–d12 ladder before the roll (riders included — they're the roller's own damage).
   const stepped = edhaSovStepOverride(this, options.overrideFormula ?? this.system?.damage?.formula);
   if (stepped) options = { ...options, overrideFormula: stepped };
@@ -15660,7 +15660,8 @@ async function edhaClearFateState(endedCombat) {
  * WHAT STAYS HERE (engine machinery the rules consume — none of it keys on a talent name):
  *   • The die-step LEDGER: flags.edha-content.dieStep = [{key, steps, scope, ownerId, castRound,
  *     expire, pairId?, onPairHit?, failThpFormula?, failThpRange?}] on the affected creature +
- *     the `exalted`/`diminished` statuses + the rollDamage-wrapper rewrite (edhaSovStepOverride):
+ *     the `exalted`/`lessened` statuses (item 205, 2026-09-16: the step-down id was `diminished`
+ *     until it collided with the published Diminished condition) + the rollDamage-wrapper rewrite (edhaSovStepOverride):
  *     bake the formula, move every ladder die by the net steps (entries STACK — Ben R6; the d4/d12
  *     clamp is the only rail; off-ladder dice untouched). scope "attack" gates to weapon/attack.
  *   • Timed expiry — entry.expire = owner-relative next-turn coordinate, swept on combatTurnChange;
@@ -15692,11 +15693,11 @@ async function edhaSovSetSteps(target, list) {
     return await edhaSetEdhaFlag(target, "dieStep", value);   // Job 6a: routed through the canonical helper (setFlag(key, null) reads the same as unset for every edhaSovSteps consumer)
   } catch (e) { console.error("Edha Content | set dieStep failed", e); return false; }
 }
-// Keep the exalted/diminished token icons in sync with the entry list (idempotent toggles).
+// Keep the exalted/lessened token icons in sync with the entry list (idempotent toggles).
 async function edhaSovSyncStatuses(target, list) {
   const up = (list ?? []).some(e => Number(e.steps) > 0), down = (list ?? []).some(e => Number(e.steps) < 0);
   if (up !== !!target.statuses?.has?.("exalted")) await edhaToggleStatus(target, "exalted", up);
-  if (down !== !!target.statuses?.has?.("diminished")) await edhaToggleStatus(target, "diminished", down);
+  if (down !== !!target.statuses?.has?.("lessened")) await edhaToggleStatus(target, "lessened", down);
 }
 // The owner-relative timed expiry: the coordinate of the OWNER's next turn ("start of your next
 // turn" lands end-of-owner-next-turn, the engine convention). Out of combat → "owner-next", lazily
@@ -15787,7 +15788,7 @@ async function edhaSovRecoverInv(owner, sourceName, victimName, n = 1) {
 function edhaSovPostExposeCard(owner, sourceName, victim, total, recoverN) {
   ChatMessage.create({
     whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (Diminished by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
+    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (${EDHA_STATUSES.lessened.label} by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
       <button type="button" class="edha-sov-expose-btn" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(sourceName)}" data-edha-victim="${victim.name}" data-edha-n="${recoverN}">It failed — recover ${recoverN} Investiture</button></div>`,
   });
 }
@@ -15844,7 +15845,7 @@ async function edhaSovRollWatch(ctx, roll, source, config) {
       }
     }
 
-    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired diminished enemy
+    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired lessened enemy
     if (!read || read.failed) return;
     const plus = entries.filter(e => e.steps > 0 && e.onPairHit && e.pairId);
     if (!plus.length) return;
@@ -15907,7 +15908,7 @@ async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "sov",
     flags: ["dieStep", "dieStepOnceBy"],
-    statuses: ["exalted", "diminished"],
+    statuses: ["exalted", "lessened"],
   });
 }
 // (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
@@ -22378,7 +22379,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
     label: "Edha: Step a Damage Die (On Use / On Success)", description: "Move a creature's damage die size along the d4–d12 ladder (entries stack; the clamp is the only rail). Put it on 'use' for an untested buff (Exalt), or on the 'When Your Test SUCCEEDS' / 'FAILS' events after an Edha: Gated Test (Censure, Decree of Ruin). 'pair' writes a linked ally/enemy pair whose on-hit coupling the engine watches (Sovereign's Balance, Sovereignty).",
     config: { schema: {
       key: new FF.StringField({ required: true, initial: "step", label: "Entry key", hint: "Names this effect in the ledger — censure, decree, edict, exalt, investiture, balance, sovereign. Authored data: it is what an Edha: Die-Step Reaction's whenKeys and a replaceKeys field match against." }),
-      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Diminished one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
+      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Lessened one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
       scope: new FF.StringField({ required: false, initial: "all", choices: choices("all", "attack"), label: "Applies to", hint: "all = every damage roll · attack = weapon/attack damage only (Edict of the Fallen)." }),
       expire: new FF.StringField({ required: false, initial: "next-turn", choices: choices("next-turn", "scene"), label: "Lasts", hint: "next-turn = until the start of YOUR next turn (the timed sweep) · scene = until the encounter ends." }),
       target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "ally", "enemy", "pair"), label: "Who is stepped", hint: "victim = the creature this rule's trigger resolved against (a gated test's payload) · ally / enemy = your targeted willing ally / enemy (vetoed pre-cost when missing) · pair = one targeted ally AND one targeted enemy, written as a linked pair." }),
@@ -22444,7 +22445,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         }
         await stampOnce(who);
         await announce(who, steps);
-        say(`${who.name} is <strong>${steps > 0 ? "Exalted" : "Diminished"}</strong> — ${stepWord(steps)} ${durText}.`);
+        say(`${who.name} is <strong>${steps > 0 ? EDHA_STATUSES.exalted.label : EDHA_STATUSES.lessened.label}</strong> — ${stepWord(steps)} ${durText}.`);   // item 205: read the label from the registry, not a hardcoded string, so a future rename is one line (01-shared-core.js)
       } catch (e) { console.error("Edha Content | edha-die-step executor failed", e); }
     },
   },

@@ -1802,7 +1802,7 @@
     "cost": "2 Investiture",
     "prerequisites": "Black 3+; Censure",
     "description": "Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.",
-    "flavor": "By my decree, you are diminished.",
+    "flavor": "By my decree, you are lessened.",
     "atlas": "deity",
     "layout": {
       "x": 0.8,

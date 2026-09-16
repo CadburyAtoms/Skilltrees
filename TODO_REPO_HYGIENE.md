@@ -4763,7 +4763,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size XS · deps none · Filed 2026-09-16 by item 201's audit.
 
-## 205. [ ] "Diminished" is a published condition and Edha uses the name for something else — rename Sovereignty's damage-die step-down off it (ENGINE + DATA, REBUILD + ⟳ Sync) (2026-09-16)
+## 205. [x] DONE 2026-09-16 (PR #425) — "Diminished" is a published condition and Edha uses the name for something else — rename Sovereignty's damage-die step-down off it (ENGINE + DATA, REBUILD + ⟳ Sync) (2026-09-16)
 
 **Why:** the rules audit's Phase 1 row (`docs/analysis/rules-audit-2026-09.md`). Mistborn Handbook Ch. 9 → Conditions defines **Diminished [attribute −X]**: the named attribute drops, cumulative, defenses and maxima unchanged — the mirror of Enhanced, which Edha and the system both already carry. Edha registers its own status `diminished`, label **"Diminished"** (`module-src/scripts/engine/01-shared-core.js:191`), meaning Sovereignty's *damage die stepped DOWN* (the partner of `exalted`). A player reading the token HUD or a card sees a published condition's name on an unrelated mechanic. Second hazard: `edhaRegisterStatuses` claims an id only `if (!COSMERE.statuses[id])`, so a system release that ships the published conditions takes the id and Sovereignty's step-down silently stops working — item 177's 3.1.0 upgrade is exactly where that would land.
 
