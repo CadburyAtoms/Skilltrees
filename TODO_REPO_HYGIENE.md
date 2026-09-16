@@ -4563,4 +4563,38 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **Done when:** `node scripts/gates.js --ci` green at target 3; the live upgrade runs per the check's Route B (backup, system update, migration watched in the console, deploy, ⟳ Sync Talents and ⟳ Sync Adversaries); a bench run passes on the upgraded world; item 177 closes.
 
-**PM:** lane B · model opus · size M · deps item 186, the bench on the copy, and Ben present. Filed 2026-09-15 by the PM from item 177's check, §c PR 6.
+**PM:** lane B · model opus · size M · deps item 186, the bench on the copy, Ben present, and Ben's word that session one has happened (R-144). Filed 2026-09-15 by the PM from item 177's check, §c PR 6.
+
+**Carried from item 182 (PR #409, 2026-09-15) — spot-check before trusting:** that PR taught `dump-native-vocabulary.js` to harvest a per-item-type field map, but **no part of that harvester has ever run against a real bundle** — there was no 3.1.0 install to run it on, and the worker was barred from Ben's Foundry. It fails soft by design (it warns and never exits, so it cannot block a routine 2.1.0 re-snapshot), which also means a wrong class- or mixin-name assumption would pass silently as an empty map. When this item regenerates the snapshot at 3.1.0, read the per-type output by hand against the system's own data models before trusting it, and say in the PR that you did.
+
+## 188. [ ] `42-chaos.js`'s "OMEN MODEL (Ben, 06-18)" paragraph still describes `preUseItem` takeovers the 07-24p migration deleted (comment-only; no behaviour change) (2026-09-15)
+
+**Why:** found by item 175's worker (PR #406, 2026-09-15) while fixing the header paragraph immediately above it, and left alone as outside that item's named scope. The paragraph — around line 34 of `module-src/scripts/engine/42-chaos.js` — still reads that "Every ACTIVE talent is a `preUseItem` TAKEOVER … mirroring Destruction". The takeovers were deleted from 07-24p onward, when the iron-rule-2b migration moved all nine Chaos talents onto their own documents' `events` rules; the file's own "IRON RULE 2b STATUS" section, further down, already records that correctly. So the file now contradicts itself, and the stale half is the one a reader meets first. Item 175 fixed exactly the same failure mode one paragraph earlier: a design note from 06-18 that outlived its design.
+
+**What to do:** rewrite the OMEN MODEL paragraph to describe how Omen actually resolves today — read the nine talents' rules in `data/authored/deity-chaos.json` and the handlers they name, and say what is true rather than what the 06-18 design intended. Keep Ben's design intent where it still holds (the paragraph carries a ruling of his: the Omen model itself), and mark the mechanism as superseded rather than deleting the history. Run `node scripts/engine-assemble.js`; the assembled `module-src/scripts/register-skills.js` must differ **only** in that comment — prove it the way item 175 did, with a stripped-source comparison, not by eye.
+
+**Done when:** the paragraph matches the file's own IRON RULE 2b STATUS section and the authored data; gates green; no checklist row, because nothing at the table changes.
+
+**PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from item 175's out-of-scope finding.
+
+## 189. [ ] Two more "(target a token)" fallbacks in the trigger-card family: the `affliction` and `thp` branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5) (2026-09-15)
+
+**Why:** found by the worker that fixed items 172, 173 and 176 (PR #408, 2026-09-15) and left alone, because neither item's "What to do" named them. Items 173 and 176 fixed exactly this shape in two branches of `edhaRunTriggerEffect`: a public card that blames the table — *"(no target — target a token, then re-fire)"* — when the rule supplied its own target list and something culled it to empty, which is not a thing the user can act on. Two siblings still carry it:
+- The **`affliction` and `thp` branches** of `edhaRunTriggerEffect` (`module-src/scripts/engine/33-triggered-effect-resolution.js`) print the same fallback for an empty list, so an automatic dispatch that supplied its own victim can still tell the table to re-fire.
+- **`edhaPostTriggerCard`'s `needsTargeting` check** (same file, around line 315 before PR #408) excludes only `victim`, `triggering` and `self` from the "Target the creature on the canvas…" instruction, so a hand-fired `near-victim` or `list-members` trigger card still shows it although neither mode reads the user's canvas target. Cosmetic, and a different code path from the two above.
+
+**What to do:** carry items 173 and 176's rule into the `affliction` and `thp` branches — when a supplied victim or list is culled to empty, post no public card (at most a GM whisper naming why), and keep the "(no target — target a token, then re-fire)" wording for `prompt` targets alone. Then widen `needsTargeting`'s exclusion list to every mode that resolves its own targets. Pin both beside `tests/no-candidate-no-card.test.js` and show each reversion failing.
+
+**Done when:** no branch of `edhaRunTriggerEffect` blames the user for a list it supplied itself; the canvas-target instruction appears only on cards that actually read the canvas; gates green; one 🤖 row that re-drives an affliction rule whose target is culled.
+
+**PM:** lane B · model sonnet · size XS · deps none — same file as items 173 and 176, both merged in #408, so read their fix first. Filed 2026-09-15 by the PM from PR #408's out-of-scope findings.
+
+## 190. [ ] `scripts/README.md` is missing five scripts, and the checker that says so is not a gate (TOOLING; nothing to deploy) (2026-09-15)
+
+**Why:** reported by item 182's worker (PR #409, 2026-09-15) while adding rows for its own two new lib files. `node scripts/check-scripts-readme.js` names five scripts the README does not document: `bestiary-census.js`, `build-levelup-guides.py`, `levelup-guides-prose.json`, `validate-adversary-model.js`, `validate-build.py`. Every one of them is load-bearing — the census a skill reads, the adversary-model gate CI runs, the build validator `build-forge` calls — so the index a cold session consults is wrong about the tooling it is most likely to need. The drift happened because the checker exists but nothing runs it: `scripts/gates.js --list` does not include it, so a new script can land undocumented with every gate green, which is exactly how these five did.
+
+**What to do:** add the five rows to `scripts/README.md`, each saying what the script is for and who calls it (read the script, do not guess from the filename). Then decide whether `check-scripts-readme.js` joins the local gate set in `scripts/gates.js` — it is fast and repo-side, so the PM's expectation is yes; if it cannot join, say why in the PR and leave a note in the README instead of silently omitting it.
+
+**Done when:** `node scripts/check-scripts-readme.js` reports nothing missing, and either the gate list includes it or the PR says why not. Gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from PR #409's out-of-scope finding.
