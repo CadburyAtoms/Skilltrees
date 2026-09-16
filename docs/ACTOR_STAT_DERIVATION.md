@@ -23,8 +23,9 @@ which is 10 + STR at level 1 and 39 + 2·STR at level 7. cosmere-rpg 2.1.0's adv
 (`config.ts` ~L485): level 1 `health: 10, healthIncludeStrength: true`, levels 2–5 `health: 5`,
 level 6 `health: 4` + STR, level 11 `3` + STR, level 16 `2` + STR — **the same table, term for term.**
 The engine comment that says "the cosmere system derives all three differently" is true for
-Movement and false for HP. (Senses has since gone back to the system too — R-56's
-2026-09-07 reversal, §3b; **Movement is the only stat Edha still derives differently.**) The
+neither any more. (Senses went back to the system with R-56's 2026-09-07 reversal, §3b; Movement
+followed with R-156 (a)'s 2026-09-16 reversal, §3c — **no stat is Edha-derived on the sheet any
+more.**) The
 level-gate alternative considered in §5 would have applied a bonus only above level 1, which
 matches nothing in canon either. One constant; the sheet, the wizard preview, and the pinned tests
 move together by design.
@@ -46,7 +47,7 @@ flowchart TD
   G --> H["CLAMP: every resource's current value ≤ its max"]
   H --> I["EDHA WRAPPER (libWrapper on prepareDerivedData)"]
   I --> J["edhaDeriveInvestiture<br/>inv.max = 2 + max(AWA, PRE) written as an override,<br/>persisted to the sheet once per session (R-77 gate)"]
-  I --> K["edhaDeriveSheetStats<br/>hea.max.bonus += EDHA_HP_BONUS (0 since R-54), in memory only<br/>then the clamp repair · walk rate override = 20 + 5·SPD<br/>senses: NOTHING — the system's ladder above stands (R-56, item 83)"]
+  I --> K["edhaDeriveSheetStats<br/>hea.max.bonus += EDHA_HP_BONUS (0 since R-54), in memory only<br/>then the clamp repair<br/>movement: NOTHING — the system's ladder above stands (R-156 (a), item 203)<br/>senses: NOTHING — the system's ladder above stands (R-56, item 83)"]
   K --> V["Everything reads .value = (override if useOverride, else derived) + bonus"]
   J --> V
 ```
@@ -81,7 +82,7 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Max Focus** | 2 + WIL | 2 + WIL (value) | none | `foc.max.bonus` 6 (Composed +2, …) |
 | **Max Investiture** | 2 + max(AWA, PRE), only if attuned | **not derived for characters** — a manual field | `edhaDeriveInvestiture`: override = 2 + max(AWA, PRE); current clamped; override persisted to the sheet once per session, non-primary GMs defer (R-77) | none |
 | **Defenses** PHY / COG / SPI | 10 + STR+SPD / 10 + INT+WIL / 10 + AWA+PRE | **identical** (attribute values) + `bonus` | read-only (`edhaReadDefense`); `edha-defense-buff` applies scene/turn buffs as effects | `defenses.*.bonus`: phy 6, cog 10, spi 12 (Customary Garb, Collected, …) |
-| **Movement** (walk) | 20 + 5·SPD ft | ladder `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` | **override = 20 + 5·SPD** (SPD value), unless the sheet already carries its own override; effect bonuses add on top via the getter | `walk.rate.bonus` 5 (Surefooted +10, Walking Ruin, …), `walk.rate.override` 1 (Siege Form 0) |
+| **Movement** (walk) | superseded, see §3c — was `20 + 5·SPD` ft (legacy doc) | ladder `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` | **NONE since item 203 (R-156 (a), 2026-09-16).** The engine writes nothing to `movement.walk.rate`; the system's own value stands for every actor type. A hand-set override (a legacy pregen's own, or an adversary block's explicit `movement`) still wins, and effect bonuses still add on top via the getter, because both sit above `.derived` | `walk.rate.bonus` 5 (Surefooted +10, Walking Ruin, …), `walk.rate.override` 1 (Siege Form 0) |
 | **Senses range** | Edha canon named AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft — **superseded, see §3b** | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **NONE since item 83 (R-56 final, 2026-09-07).** The engine writes nothing to `senses.range`; the system's own value stands for every actor type. A hand-set override still wins (an adversary block's `senses` is written as exactly that) and bonus still adds, because both sit above `.derived`. The token's sight range is stamped from a copy of the *same* ladder (`edhaSensesRangeFtFromAwa` for new/edited actors, `advSensesRangeFt` in the build for the pack) | none |
 | **Recovery die** | the legacy `Character_Building_Rules.md` names WIL 0–1 d4, 2–3 d6, 4–5 d8, 6–7 d10 — **superseded 2026-09-16**, see the note under this table | `[d4,d6,d8,d10,d12,d20][ceil((WIL+bonus)/2)]` = **the published Recovery Die table, term for term** | none (wizard preview mirrors the system ladder) | none |
 | **Lift / Carry** | not in the legacy docs; **published** (Lifting and Carrying Capacity, App. 2) and the system's ladder matches it | `[100,200,500,1000,5000,10000]` / `[50,100,250,500,2500,5000]` by ceil((STR+bonus)/2) lb | none | none |
@@ -90,10 +91,10 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Skill-rank budget** | 5 + (L−1)·2 | advancement table (4 at L1) | wizard and sheet budget bar use the Edha number | — |
 | **Tier / max skill rank** | table: T1 L1–5 (max 2), T2 L6–10 (3), … | same table | none | — |
 
-Net for a fresh level-1 character with every attribute 0 (as of item 83): **Health 10** (R-54
+Net for a fresh level-1 character with every attribute 0 (as of item 203): **Health 10** (R-54
 removed the +1 — engine, canon and system now agree), Focus 2, Investiture 2, defenses 10/10/10,
-Move 20 ft (the one stat Edha still overrides), **Senses 5 ft** (the system's own ladder — see §3b),
-Recovery d4.
+**Move 20 ft** (the system's own ladder — see §3c), **Senses 5 ft** (the system's own ladder — see
+§3b), Recovery d4. No stat here is Edha-overridden on the sheet any more.
 
 > ⚠️ **Corrected 2026-09-16 — what "Edha canon" means in the first column** (TODO item 201, the
 > rules audit against the Mistborn Handbook; `docs/analysis/rules-audit-2026-09.md`). That column
@@ -107,10 +108,11 @@ Recovery d4.
 > * **Senses range** — already resolved the same way by R-56 final (§3b); the system's ladder is
 >   term for term the published Senses Range table.
 > * **Movement** — the published Movement Rate table is a **ladder** (SPD 0 → 20 ft, 1–2 → 25,
->   3–4 → 30, 5–6 → 40, 7–8 → 60, 9+ → 80), not `20 + 5·SPD`. Edha's override is therefore the one
->   remaining derived-stat contradiction: a SPD-2 PC walks 30 ft here and 25 ft in the book. **Do
->   not change it on this note** — it is Ben's call, filed as ruling **R-156** with the build as
->   **item 203**, the exact parallel of R-56's senses reversal.
+>   3–4 → 30, 5–6 → 40, 7–8 → 60, 9+ → 80), not `20 + 5·SPD`. This was Edha's one remaining
+>   derived-stat contradiction — a SPD-2 PC walked 30 ft here against 25 ft in the book — until
+>   **R-156 answered (a) "defaults"** the same day this note was written (filed `EDHA_RULINGS.md`
+>   §K.23) and **item 203** deleted the override the same day: see §3c for the reversal, the exact
+>   parallel of R-56's senses reversal.
 >
 > Health `10 + STR`, focus `2 + WIL`, Investiture `2 + max(AWA, PRE)`, the defenses and the
 > tier / rank-cap table were all checked in the same pass and match the published rules.
@@ -118,6 +120,11 @@ Recovery d4.
 > 9, 12, 15 and 18 with **no level-3 increase**, while the system's `advancement.rules` (and this
 > table's "+1 at L3, L6, …") grant one at level 3 — filed as ruling **R-157**, unchanged here
 > because the sheet enforces the system's table.
+>
+> **R-157 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.23; TODO item 208): Edha follows the system's
+> (Stormlight) advancement table, level-3 attribute point included — the Mistborn Handbook's table
+> has no level-3 point, and Ben chose the system's, so a PC at level 3 keeps the point the sheet
+> grants.
 
 ### 3a. Adversaries (item 55, R-56 (a), 2026-09-06 — then item 83, below)
 
@@ -161,6 +168,37 @@ AWA 0–10 so they cannot drift apart again.
 **F5 alone** moves every existing actor, PC and adversary. A token's `sight.range` is *stored*, so
 it does not: pack adversaries are re-stamped by the REBUILD + ⟳ Sync Adversaries, and existing PC
 tokens need `edha.fixPcTokens()` (or any AWA edit, which re-fires the `updateActor` watcher).
+
+### 3c. The Movement reversal — R-156 (a), item 203, 2026-09-16
+
+Movement was the last of the three legacy derivations still overriding the system, and it moved in
+one step rather than three the way Senses did (§3b):
+
+| When | Rule on the sheet | Why |
+|---|---|---|
+| 07-16c → item 203 | Edha's `20 + 5·SPD` override, characters only | `Character_Building_Rules.md` §Derived stats was read as canon before the published Mistborn Handbook tables were on the machine |
+| **item 203 / R-156 (a), 2026-09-16** | **the system's ladder**, every actor type — *and the engine writes nothing* | the 2026-09-16 rules audit (TODO item 201) found the legacy doc disagreed with the published Movement Rate table (a ladder, not a linear formula) — R-156 answered (a) "defaults": adopt the published ladder, delete the override, the same shape Ben already chose for Senses |
+
+The system's `CommonActorDataModel.prepareSecondaryDerivedData` (the same call that derives Senses)
+already writes `movement.walk.rate.derived = [20,25,30,40,60,80][ceil((SPD+bonus)/2)]` for both
+actor models, so the item-203 fix is a **deletion**, exactly like item 83's senses fix: the
+`20 + 5·SPD` write in `edhaDeriveSheetStats` (`module-src/scripts/engine/52-green-instinct.js`) is
+gone, and the system's reading of SPD as `value + bonus` (which the Edha override never had) comes
+back with it. `edhaWalkRateFtFromSpd` survives as a pure function, term-for-term the system's
+ladder, kept for the one surface the system does not derive: the creation wizard's preview (no
+prepared actor exists yet to read `.derived` from). There is no token-sight equivalent for
+movement (Foundry does not stamp a token's walk speed the way it stamps sight range), so — unlike
+Senses — there is no third build-side copy to keep in step and no `advSensesRangeFt`-shaped
+counterpart in `scripts/foundry-build-parts.js`.
+
+⚠️ **An F5 alone moves every existing actor's sheet** (PC and adversary), the same as the senses
+reversal — there is no stored token value for movement to leave behind. `walk.rate.bonus` effects
+(Surefooted +10, Walking Ruin, five talents total) and `walk.rate.override` (Siege Form's 0, one
+summon's) are untouched: both sit above `.derived` in the `DerivedValueField`, exactly as before —
+only the number underneath them changed. `tests/derived-stats.test.js` pins the ladder at SPD
+0–10 and the absence of the sheet write; `tests/engine-helpers.test.js` re-pins the historic
+"bonus folded into the override" regression (07-18 bench) against the new shape (no override at
+all, so it structurally cannot recur).
 
 ## 4. Where the +1 came from — the history, dated
 

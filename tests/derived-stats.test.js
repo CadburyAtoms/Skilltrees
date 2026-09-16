@@ -2,9 +2,15 @@
  *
  * Run 21 reported THREE drifts between the creation wizard's live preview panel and the finished
  * character sheet, and canon pointed a different way for each:
- *   • Move   — preview 30 ft, sheet 35 ft. Character_Building_Rules.md §Derived stats says
- *              "Movement = 20 + SPD·5", so the SHEET was right and the preview was re-implementing
- *              the cosmere system's ceil(SPD/2) ladder.
+ *   • Move   — preview 30 ft, sheet 35 ft. At the time, Character_Building_Rules.md §Derived stats
+ *              said "Movement = 20 + SPD·5", so the SHEET was ruled right and the preview was
+ *              re-implementing the cosmere system's ceil(SPD/2) ladder.
+ *              ⟳ **REVERSED 2026-09-16 (R-156 (a), item 203): the published Mistborn Handbook
+ *              table is a LADDER, not `20 + 5·SPD`** — the rules audit (item 201) found the legacy
+ *              doc disagreed with the actual published rule, which the system's own
+ *              `[20,25,30,40,60,80][ceil(SPD/2)]` already implements term-for-term. The fix is the
+ *              same shape as Senses below: delete the engine's `20 + 5·SPD` sheet override so the
+ *              system's ladder stands, and keep `edhaWalkRateFtFromSpd` only for the wizard preview.
  *   • Senses — preview 10 ft, sheet 5 ft. The same doc's §Senses Range table says AWA 0 → 10 ft,
  *              so the PREVIEW was ruled right at the time: the engine had never applied the Edha
  *              table to the sheet at all, and the system's own ceil(AWA/2) ladder stood.
@@ -50,7 +56,7 @@ function derived(d, { override = null, useOverride = false, bonus = 0 } = {}) {
  * resource clamp that runs LAST in prepareSecondaryDerivedData, which is the whole mechanism
  * behind 13/14. `srcHea` is what the document actually stores; the prepared value is the clamp's
  * output against the max the SYSTEM derived (i.e. before the engine's bonus). */
-function pc({ str = 0, spd = 0, awa = 0, srcHea = null, srcHeaBonus = 0, srcRateOverride = false, type = "character" } = {}) {
+function pc({ str = 0, spd = 0, awa = 0, srcHea = null, srcHeaBonus = 0, type = "character" } = {}) {
   const systemMaxHea = 10 + str;                       // advancement rule L1: health 10 + STR
   const storedHea = srcHea == null ? systemMaxHea : srcHea;
   const clamped = Math.max(0, Math.min(systemMaxHea + srcHeaBonus, storedHea));   // the system's clamp
@@ -60,40 +66,53 @@ function pc({ str = 0, spd = 0, awa = 0, srcHea = null, srcHeaBonus = 0, srcRate
       attributes: { str: { value: str, bonus: 0 }, spd: { value: spd, bonus: 0 }, awa: { value: awa, bonus: 0 },
                     int: { value: 0, bonus: 0 }, wil: { value: 0, bonus: 0 }, pre: { value: 0, bonus: 0 } },
       resources: { hea: { value: clamped, max: derived(systemMaxHea, { bonus: srcHeaBonus }) } },
-      movement: { walk: { rate: derived(20 + 5 * Math.min(Math.ceil(spd / 2), 5)) } },   // system ladder-ish placeholder
+      movement: { walk: { rate: derived([20, 25, 30, 40, 60, 80][Math.min(Math.ceil(spd / 2), 5)]) } },   // system's published ladder
       senses: { range: derived([5, 10, 20, 50, 100, Number.MAX_SAFE_INTEGER][Math.min(Math.ceil(awa / 2), 5)]) },
       level: 1,
     },
     _source: {
       system: {
         resources: { hea: { value: storedHea, max: { bonus: srcHeaBonus } } },
-        movement: { walk: { rate: { useOverride: srcRateOverride, override: 99 } } },
+        movement: { walk: { rate: { useOverride: false } } },
       },
     },
   };
 }
 
-// --- Move: the sheet was canon, the preview was the bug -----------------------
-test("edhaWalkRateFtFromSpd is the canon 20 + 5xSPD, not the system's ceil(SPD/2) ladder", () => {
-  assert.strictEqual(env.edhaWalkRateFtFromSpd(0), 20);
-  assert.strictEqual(env.edhaWalkRateFtFromSpd(1), 25);
-  assert.strictEqual(env.edhaWalkRateFtFromSpd(3), 35);   // the system's ladder says 30 here — the reported drift
-  assert.strictEqual(env.edhaWalkRateFtFromSpd(6), 50);   // ladder says 80
+// --- Move: R-156 (a) REVERSED 2026-09-16 (item 203) — the published ladder, not 20 + 5xSPD ------
+test("edhaWalkRateFtFromSpd is the published Speed ladder — [20,25,30,40,60,80] by ceil(SPD/2), SPD 0-10", () => {
+  const table = [20, 25, 25, 30, 30, 40, 40, 60, 60, 80, 80];   // SPD 0..10
+  for (let spd = 0; spd <= 10; spd++) {
+    assert.strictEqual(env.edhaWalkRateFtFromSpd(spd), table[spd], `SPD ${spd}`);
+  }
   assert.strictEqual(env.edhaWalkRateFtFromSpd(undefined), 20);
 });
 
-test("edhaDeriveSheetStats overrides walk rate with 20 + 5xSPD", () => {
-  const a = pc({ spd: 3 });
-  env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.movement.walk.rate.override, 35);
-  assert.strictEqual(a.system.movement.walk.rate.useOverride, true);
+// --- Movement: R-156 (a) REVERSED 2026-09-16 (item 203) — the engine writes NOTHING -------------
+// The cases below are the reversal's load-bearing half: `edhaDeriveSheetStats` must LEAVE the
+// system's own `movement.walk.rate.derived` alone for every actor type, so the sheet reads the
+// published ladder. A returning `20 + 5·SPD` override write fails all three — the same shape as
+// the Senses reversal (item 83) directly below.
+test("R-156 (a) (item 203): edhaDeriveSheetStats does NOT touch movement.walk.rate — the published ladder stands", () => {
+  for (const [spd, ft] of [[0, 20], [1, 25], [2, 25], [3, 30], [4, 30], [5, 40], [6, 40], [7, 60], [8, 60], [9, 80], [10, 80]]) {
+    const a = pc({ spd });
+    const before = a.system.movement.walk.rate.derived;
+    assert.strictEqual(before, ft, `the system prepared SPD ${spd} → ${ft} ft`);
+    env.edhaDeriveSheetStats(a);
+    assert.strictEqual(a.system.movement.walk.rate.derived, ft, `SPD ${spd} unchanged by the Edha layer`);
+    assert.strictEqual(a.system.movement.walk.rate.value, ft, `SPD ${spd} sheet value`);
+    assert.strictEqual(a.system.movement.walk.rate.useOverride, false, `SPD ${spd}: no override written`);
+  }
 });
 
-test("NEGATIVE: a legacy pregen's own movement override is never stomped", () => {
-  const a = pc({ spd: 3, srcRateOverride: true });
+test("NEGATIVE: a hand-configured movement override still wins, and the bonus still adds", () => {
+  const a = pc({ spd: 4 });   // ladder(4) = 30
+  a.system.movement.walk.rate.override = 60;
+  a.system.movement.walk.rate.useOverride = true;
+  a.system.movement.walk.rate.bonus = 10;
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.movement.walk.rate.useOverride, false);   // untouched
-  assert.strictEqual(a.system.movement.walk.rate.override, null);
+  assert.strictEqual(a.system.movement.walk.rate.derived, 30);   // the system's ladder underneath
+  assert.strictEqual(a.system.movement.walk.rate.value, 70);     // but the override + bonus decide
 });
 
 // --- Senses: R-56 REVERSED 2026-09-07 (item 83) — the engine writes NOTHING ----

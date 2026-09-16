@@ -246,8 +246,19 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
       return;
     }
-    // Every pre-07-24u mode: first target only, replace-not-keep. Unchanged on purpose.
-    const tgt = found[0] ?? owner;
+    // Every pre-07-24u mode: first target only, replace-not-keep. Unchanged on purpose — EXCEPT
+    // item 189: `found[0] ?? owner` used to silently redirect an empty supplied-victim/near-victim
+    // grant onto the OWNER and post a public card for a target that was never there. Same rule as
+    // the affliction/status branches: only "prompt" (nothing on the user's canvas) keeps the
+    // re-fire wording; every mode that resolves its own target gets a quiet GM audit line instead.
+    if (!found.length) {
+      if (eff.target !== "prompt") { await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no target for the Temp HP grant; no effect.</p>`); return; }
+      const what = `(no target — target a token, then re-fire).`;
+      if (rolled) await edhaRollCard(owner, name, roll, what);
+      else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
+      return;
+    }
+    const tgt = found[0];
     await edhaWriteTempHp(tgt, amt, name);
     if (rolled) await edhaRollCard(owner, name, roll, `${tgt.name} gains <strong>${amt}</strong> Temp HP.`);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${tgt.name} gains <strong>${amt}</strong> Temp HP.</p>` });
@@ -296,10 +307,24 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     return;
   }
   if (eff.kind === "affliction") {
+    // item 189: same rule as the status branch above — a real candidate that whenTargetIsolated
+    // culled (culledByIsolation), or any other supplied mode (victim/near-victim/list-members) that
+    // resolved to nobody, is not the user's fault: there is no token to target and nothing to
+    // re-fire. Only a genuine "prompt" miss (nothing on the user's own canvas target) keeps that
+    // wording — everything else gets a quiet GM audit line via edhaPostGmCard instead of a public
+    // "(target a token) is Afflicted..." card for a target that was never there.
+    if (!targets.length) {
+      if (culledByIsolation || eff.target !== "prompt") {
+        await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no${spec.whenTargetIsolated ? " Isolated" : ""} target to afflict; no effect.</p>`);
+        return;
+      }
+      await edhaRollCard(owner, name, roll, `(target a token) is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
+      return;
+    }
     for (const a of targets) {
       try { await a.toggleStatusEffect?.("afflicted", { active: true }); await edhaAddAffliction(a, amt, eff.damageType, name); } catch (e) {}
     }
-    await edhaRollCard(owner, name, roll, `${targets.map(a => a.name).join(", ") || "(target a token)"} is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
+    await edhaRollCard(owner, name, roll, `${targets.map(a => a.name).join(", ")} is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
     return;
   }
   // damage / damage-aoe — apply silently, post one combined message with the dice. A target the local
@@ -346,8 +371,11 @@ function edhaPostTriggerCard(owner, name, spec, ctx) {
     EDHA_TRIG_PENDING[pid] = { spec, ctx: ctx || {} };
     // Ben pass 3 (07-12, Mender's Instinct): the card was wordy AND told you to target the creature
     // when the effect already knows its recipient (victim/self) — the instruction only appears when
-    // the effect actually reads your user targets.
-    const needsTargeting = !["victim", "triggering", "self"].includes(spec.effect?.target);
+    // the effect actually reads your user targets. item 189: widened to every mode that resolves
+    // its OWN targets — near-victim (auto-picks near the trigger's victim) and list-members (sweeps
+    // a ledger) read the canvas exactly as little as victim/self do; only "prompt" (and an unset
+    // target, which defaults to prompt) actually wants the instruction.
+    const needsTargeting = !["victim", "triggering", "self", "near-victim", "list-members"].includes(spec.effect?.target);
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content:

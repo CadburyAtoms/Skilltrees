@@ -293,7 +293,10 @@ literal in the engine's `ready` hook is the authority). Keys today:
 - **Draw Mana riders, the Draw Mana yield (`edhaDrawManaYield` — highest attuned colour rank since
   R-126 (a), 2026-09-13; it was the tier before), the Investiture formula (`2 + max(AWA, PRE)`), `EDHA_HP_BONUS`,
   `edhaWalkRateFtFromSpd`, `edhaSensesRangeFtFromAwa`** are hardcoded in the engine (small, fixed
-  canon; the wizard preview and the sheet read the same functions).
+  canon; the wizard preview reads all of these). **The sheet does not** for Movement or Senses any
+  more — since R-156 (a)/item 203 (2026-09-16) and R-56/item 83 (2026-09-07) the system's own
+  ladders own both, and the engine writes neither; `EDHA_HP_BONUS` is the one still applied on the
+  sheet (currently `0`, R-54 (c)).
 
 ## 6. Settings & world facts the engine relies on
 
@@ -444,8 +447,10 @@ writer at 0; never bump a count); 21 canonical homes (path literals etc.); 22 `E
 `cultures.json`; 23 no `consume` entry with `min ≠ max`.
 
 **7.9 Derived stats** (`docs/ACTOR_STAT_DERIVATION.md` is the full walk): HP = system + `EDHA_HP_BONUS`
-(+ the `Hardy — Max HP` ADD effect on its three copies), Speed = `edhaWalkRateFtFromSpd(SPD)`,
-Senses = `edhaSensesRangeFtFromAwa(AWA)` for every actor type, Investiture max = `2 + max(AWA, PRE)`
+(+ the `Hardy — Max HP` ADD effect on its three copies), Speed and Senses = the SYSTEM's own
+ladders for every actor type — the engine writes NEITHER any more (R-156 (a)/item 203, 2026-09-16;
+R-56/item 83, 2026-09-07) — `edhaWalkRateFtFromSpd(SPD)` / `edhaSensesRangeFtFromAwa(AWA)` survive
+only as the creation wizard's preview copies. Investiture max = `2 + max(AWA, PRE)`
 (persisted on `actor.isOwner && (!isGM || edhaNoOtherActiveGM())`). **Never call a bare
 `Actor#prepareData()`** — `reset()` is the recompute primitive (a bare prepare double-applies every
 ADD-mode effect; source-asserted).

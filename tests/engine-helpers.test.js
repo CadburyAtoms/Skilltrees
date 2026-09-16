@@ -586,24 +586,29 @@ test("wiring: the adversary sheet's single-actor sync button stays unfiltered (n
   assert.ok(/edhaSyncAdversaryActor\(actor\)/.test(btnBlock), "the sheet button must still call edhaSyncAdversaryActor(actor) with no scene filter");
 });
 
-// --- 07-18 bench: Surefooted +10 displayed as +20 — the derivation folded rate.bonus into the
-// override while DerivedValueField.value = override + bonus, double-counting every speed AE.
-test("edhaDeriveSheetStats: speed override excludes rate.bonus (AE applies once via the getter)", () => {
+// --- 07-18 bench: Surefooted +10 displayed as +20 — the historic bug: the derivation folded
+// rate.bonus into a WRITTEN override while DerivedValueField.value = base + bonus, double-
+// counting every speed AE. R-156 (a) (item 203, 2026-09-16) removed the override write itself —
+// Movement is now the system's own ladder, the same shape as Senses — so this pins the surviving
+// half: edhaDeriveSheetStats writes NOTHING to movement.walk.rate, and a bonus the system already
+// carries reaches `.value` exactly once.
+test("edhaDeriveSheetStats: movement leaves rate.bonus alone — writes no override, so an AE speed buff cannot double-count", () => {
   const actor = {
     type: "character",
     system: {
       resources: { hea: { max: { bonus: 0 } } },
-      movement: { walk: { rate: { bonus: 10, override: 0, useOverride: false } } },
+      movement: { walk: { rate: { derived: 25, bonus: 10, override: null, useOverride: false } } },   // SPD 2 → system ladder 25; Surefooted +10
       attributes: { spd: { value: 2 } },
     },
     _source: { system: { resources: { hea: { max: { bonus: 0 } } }, movement: { walk: { rate: {} } } } },
   };
   env.edhaDeriveSheetStats(actor);
   const rate = actor.system.movement.walk.rate;
-  assert.strictEqual(rate.override, 30, "override must be 20 + 5×SPD only — bonus stays out");
-  assert.strictEqual(rate.useOverride, true);
-  // displayed value = override + bonus = 40 exactly once, not 50
-  assert.strictEqual(rate.override + rate.bonus, 40);
+  assert.strictEqual(rate.override, null, "R-156 (a): the engine writes no override to movement any more");
+  assert.strictEqual(rate.useOverride, false);
+  assert.strictEqual(rate.derived, 25, "the system's ladder value is untouched");
+  // displayed value = derived + bonus = 35 exactly once, not 45
+  assert.strictEqual(rate.derived + rate.bonus, 35);
 });
 
 // --- 07-19 adversary-wiring audit: the ambush-belief ledger (the lightweight seeming) ----------
@@ -768,6 +773,28 @@ test("edhaDefTestOutcome vs defense: meets-or-beats succeeds, under fails", () =
 test("edhaDefTestOutcome vs skill: compares against the engine-rolled foe total", () => {
   assert.strictEqual(env.edhaDefTestOutcome(18, { vs: "skill", oppRoll: 12 }).ok, true);
   assert.strictEqual(env.edhaDefTestOutcome(9, { vs: "skill", oppRoll: 12 }).ok, false);
+});
+// --- item 204 (2026-09-16): an opposed skill test must be WON, not tied — Mistborn Handbook
+// Ch. 3 → Skills, "Opposed Tests": your result must EXCEED your opponent's, and on a tie the
+// result favors the defender. `>=` used to hand the initiator every tie on this path; `defense`
+// and `dc` are unaffected (you only need to MEET a fixed bar). This is the case that must flip:
+// against the OLD `t >= n` comparison, the first assertion below fails (a 12-vs-12 tie reads ok).
+test("edhaDefTestOutcome vs skill: a TIE now fails for the initiator", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(12, { vs: "skill", oppRoll: 12 }).ok, false, "a tie must NOT hand the initiator the win");
+  assert.strictEqual(env.edhaDefTestOutcome(13, { vs: "skill", oppRoll: 12 }).ok, true, "one point above still succeeds");
+  assert.strictEqual(env.edhaDefTestOutcome(11, { vs: "skill", oppRoll: 12 }).ok, false, "one point below still fails");
+});
+test("item 204 — all three vs modes at equal/above/below in one table: only 'skill' flips on a tie", () => {
+  const cases = [
+    { vs: "defense", key: "defValue", tieOk: true },
+    { vs: "dc", key: "dc", tieOk: true },
+    { vs: "skill", key: "oppRoll", tieOk: false },
+  ];
+  for (const { vs, key, tieOk } of cases) {
+    assert.strictEqual(env.edhaDefTestOutcome(10, { vs, [key]: 10 }).ok, tieOk, `${vs}: equal (10 vs 10)`);
+    assert.strictEqual(env.edhaDefTestOutcome(11, { vs, [key]: 10 }).ok, true, `${vs}: above (11 vs 10)`);
+    assert.strictEqual(env.edhaDefTestOutcome(9, { vs, [key]: 10 }).ok, false, `${vs}: below (9 vs 10)`);
+  }
 });
 test("edhaDefTestOutcome vs dc: flat number, ties succeed", () => {
   assert.strictEqual(env.edhaDefTestOutcome(15, { vs: "dc", dc: 15 }).ok, true);

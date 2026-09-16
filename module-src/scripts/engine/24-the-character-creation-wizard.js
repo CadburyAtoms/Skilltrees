@@ -713,16 +713,15 @@ function edhaCwSensesCell(awa) {
 // Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
 // health, focus, investiture, and defenses WILL be at the current distribution"). Its contract is
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
-// three stats Edha derives differently from the system come from the shared helpers
+// stats the wizard cannot read off a prepared actor yet come from the shared helpers
 // (EDHA_HP_BONUS / edhaWalkRateFtFromSpd / edhaSensesRangeFtFromAwa), never re-implemented here.
-// Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
-// used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
-// preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
+// Bench run 21 caught Health and Move (then Senses too, at the time) drifting from the sheet at
+// once. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
 // system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.
-// R-56's 2026-09-07 reversal — item 83 — has since made Senses the SYSTEM's ladder too: the cell
-// still reads the shared helper, but that helper is now the system's `[5,10,20,50,100,∞]` by
-// ceil(AWA/2), so the preview promises exactly what the system will derive onto the sheet.
-// MOVEMENT is now the only cell here that is an Edha rule rather than a system one.)
+// R-56's 2026-09-07 reversal — item 83 — made Senses the SYSTEM's ladder; R-156 (a) — item 203,
+// 2026-09-16 — did the same for Movement. Every cell here is now a copy of a SYSTEM ladder/table,
+// not an Edha rule of its own — the wizard just cannot read a prepared actor's `.derived` before
+// one exists, so it keeps its own copies of the same three tables.)
 // The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
@@ -796,10 +795,11 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
 // What each attribute actually feeds, read off the real wiring (bench take-two: "write a blurb
 // for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
 // on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
-// system-derived); movement rate derives from SPD (edhaWalkRateFtFromSpd — the EDHA 20+5×SPD
-// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA on the
-// SYSTEM's own ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer
-// overrides the sheet's number at all); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// system-derived); movement rate derives from SPD on the SYSTEM's own ladder
+// (edhaWalkRateFtFromSpd, R-156 (a) reversed at item 203 — the engine no longer overrides the
+// sheet's number, the same shape as Senses Range, which derives from AWA on the SYSTEM's own
+// ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer overrides the
+// sheet's number either); Investiture 2 + max(AWA, PRE) is the Edha rule. The
 // skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
 const EDHA_CW_ATTR_STAT = {
   str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
