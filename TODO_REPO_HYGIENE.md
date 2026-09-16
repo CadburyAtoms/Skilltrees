@@ -4715,7 +4715,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane H · model — (Ben's own session) · size L · deps Ben's time · Filed 2026-09-16 by the PM from R-152 (b).
 
-## 201. [x] DONE 2026-09-16 (PR #TBD) — The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary: every place the engine, the docs, the skills, the rulings or memory contradict the published rule is listed, the documentation fixed in the same PR, the engine and data findings filed (DOCS + a contradiction ledger; engine fixes as items) (2026-09-16)
+## 201. [x] DONE 2026-09-16 (PR #417) — The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary: every place the engine, the docs, the skills, the rulings or memory contradict the published rule is listed, the documentation fixed in the same PR, the engine and data findings filed (DOCS + a contradiction ledger; engine fixes as items) (2026-09-16)
 
 **Why:** Ben, 2026-09-16 in chat: *"We are creating a module that fills the same role as Stormlight and Mistborn — a skin on an existing rules system. If we published a handbook, our Chapter 3 would be exactly the same. Thus, anywhere our engine, .md files, skills, memory, etc contradict Chapter 3 of the handbook, we need to correct ourselves. Previously, we did not have access to the full handbook, just the starter rules."* The first contradiction is already found: advantage and disadvantage are per die and countable in Chapter 3, and three of our documents plus two answered rulings state the engine's one-scalar fold as the rule (R-155; corrected with dated blocks in the PR that filed this item).
 
