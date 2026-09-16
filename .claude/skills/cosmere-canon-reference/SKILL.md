@@ -25,18 +25,27 @@ quoted or paraphrased, and cite which source (rulebook or talent set) the fact c
 
 ## Source Provenance
 
-Every entry below is grounded in one of two source documents:
+Every entry below is grounded in one of three source documents:
 
+- **MH** = the **Mistborn Handbook** — *the source of record for general game rules since
+  2026-09-16* (the `cosmere-rpg-mistborn-handbook` module v1.0.0, `handbook` journal pack, 21
+  journals / 241 pages, installed on Ben's machine). It is a full core rulebook where SR is a
+  60-page excerpt, so **where MH and SR disagree, or where SR is silent, MH wins.** Cite it by
+  chapter and section ("MH Ch. 3 → Skills, Opposed Tests"); the text is licensed, so paraphrase
+  and quote at most a short phrase. How to read it, and what the sweep found:
+  `docs/analysis/rules-audit-2026-09.md` (TODO item 201).
 - **SR** = *Stormlight Starter Rules* (SL015, v1.02, 2025), 60-page core rulebook
 - **CT** = *CosmereRPG Talents.xlsx*, the canon talent set (374 talents across all 6
   Heroic paths and all 9 Radiant Order paths)
 
-Where the two sources use different conventions for the same term (most often
+Where the sources use different conventions for the same term (most often
 capitalization), both forms are listed with the context that produced them. Heroic and
-Radiant talents are the gold standard for in-talent phrasing; the rulebook is the gold
-standard for general game-rules phrasing.
+Radiant talents are the gold standard for in-talent phrasing; **MH is the gold standard for
+general game-rules phrasing and for every rule fact**, with SR as its Roshar-flavoured
+counterpart. An entry below that still carries only an `[SR p.n]` citation was checked against MH
+by the 2026-09-16 audit and agrees with it unless the entry says otherwise.
 
-If a term doesn't appear in either source but is used by the user's homebrew (Leyline
+If a term doesn't appear in any source but is used by the user's homebrew (Leyline
 paths, Deity paths, the Weakened condition, etc.), it's flagged as **homebrew** rather
 than canon — the reviewer skills should treat homebrew terms permissively but consistently.
 
@@ -130,13 +139,25 @@ In stat blocks, "Action" by itself means "1 Action."
 
 ## Standard Actions (always capitalized in talent text)
 
-The 17 standard actions from SR Part 3, available to all characters:
+The 17 standard actions, available to all characters. **Costs are MH's** — Ch. 10 "Actions and
+Reactions" and the Actions and Reactions table in Appendix 2, corroborated by the handbook
+module's own 21-item `actions` pack, which carries each cost as data.
 
 **Actions (▶):** Aid (reaction, 1 focus), Avoid Danger (reaction), Banter (free),
 Brace (1 ▶), Disengage (1 ▶), Dodge (reaction, 1 focus), Drop (free),
-Gain Advantage (1 ▶), Grapple (1 ▶), Interact (1 ▶), Move (1 ▶), Reactive Strike
+Gain Advantage (1 ▶), **Grapple (2 ▶)**, Interact (1 ▶), Move (1 ▶), Reactive Strike
 (reaction, 1 focus), Ready (1 ▶ + cost of readied action), Recover (2 ▶),
-Shove (1 ▶), Strike (1 ▶), Use a Skill (1 ▶)
+**Shove (2 ▶)**, Strike (1 ▶), Use a Skill (1 ▶)
+
+> ⚠️ **Corrected 2026-09-16 (TODO item 201).** Grapple and Shove read "1 ▶" here from 2025 until
+> this audit; both cost **2 actions**. They are the two costliest things on the list beside
+> Recover, so a talent that grants a free Shove or Grapple is worth twice what the old line
+> implied — re-read any power judgment that priced one.
+
+Three costs worth remembering because they bite in talent design: **Strike** may be used more than
+once a turn but each use must be a different hand (an offhand attack costs 2 focus); **Move** and
+**Interact** may also be used more than once a turn; and every *other* named action — including
+one granted by a talent — can be used **only once per turn** (MH Ch. 10 → Actions).
 
 When talent text references any of these by name, capitalize. When using "move" or
 "strike" as generic English verbs (not the action), leave lowercase.
@@ -154,30 +175,38 @@ the action.
 
 ## Conditions (always capitalized)
 
-The 14 canon conditions confirmed from SR Part 2 and CT:
+**The published list is MH Ch. 9 → Conditions: fifteen conditions.** Thirteen of them are also in
+SR; the two SR never had — **Depleted** and **Diminished** — were added by the 2026-09-16 audit,
+and **Empowered** is SR's alone (it is not in MH, though the cosmere-rpg system still ships it as
+a status). A condition's own text says how long it lasts and how it can be removed early; see
+MH Ch. 9 → Durations for effects that last "a number of rounds".
 
 | Condition | Source | Effect (canon) |
 |-----------|--------|----------------|
-| **Afflicted** [type/amount] | SR | Take ongoing damage; bracket lists damage type and amount |
-| **Determined** | SR | When you fail a test, may add an Opportunity to the result; condition then ends |
-| **Disoriented** | SR | No reactions; senses count as obscured; Perception tests have disadvantage |
-| **Empowered** | SR | Gain advantage on all tests; Investiture refills to max at start of each turn. Granted by swearing an Ideal. Lasts until end of scene. |
-| **Enhanced** [+X attribute] | SR | Specified attribute gains a bonus; doesn't change defenses/maxes. **Cumulative** across attributes. |
-| **Exhausted** [−X] | SR | Apply −X penalty to test results. **Cumulative**. Reduce penalty by 1 after each long rest. |
-| **Focused** | SR | Abilities that cost focus cost 1 less |
-| **Immobilized** | SR | Movement rate becomes 0; can't move or be moved |
-| **Prone** | SR | Lying flat; you are Slowed; melee attacks against you have advantage; can use Brace without cover; stand up as free action (movement reduced by 5 until start of next turn) |
-| **Restrained** | SR | Movement rate becomes 0; disadvantage on tests other than escape attempts |
-| **Slowed** | SR | Movement rate halved (round up if mid-move) |
-| **Stunned** | SR | Lose reactions; gain two fewer actions; don't gain a reaction |
-| **Surprised** | SR | Lose reactions; don't gain reaction at start of combat; can't take fast turn; gain one fewer action. Removed after your next turn. |
-| **Unconscious** | SR | Movement 0; can't move/communicate; fall Prone, drop items; only Breathe Stormlight and Regenerate available |
+| **Afflicted** [type/amount] | MH, SR | Take ongoing damage at the end of each of your turns (out of combat, every 10 seconds and after each attempt to remove it); bracket lists damage type and amount. **Multiple instances resolve separately.** |
+| **Depleted** [power] | MH | No access to the Investiture for that power: you can't spend Investiture on it, don't count as Invested for it, and lose its nascent effects. Multiple powers can be Depleted at once. (Scadrian-flavoured, but the shape — "this power is switched off" — is the general one.) |
+| **Determined** | MH, SR | When you fail a test, may add an Opportunity to the result; condition then ends |
+| **Diminished** [attribute −X] | MH | The named attribute drops by X: its skill tests and any talent that uses it take the penalty, and ladders off it (movement, senses, recovery die) move down — but defenses and the health/focus/Investiture maxima do **not** change. **Cumulative**, and more than one attribute can be Diminished at once. The mirror of Enhanced. ⚠️ Edha registers an unrelated status also labelled "Diminished" (Sovereignty's damage-die step-down) — see TODO item 205. |
+| **Disoriented** | MH, SR | No reactions; senses count as obscured; Perception tests have disadvantage |
+| **Empowered** | SR only | Gain advantage on all tests; Investiture refills to max at start of each turn. Granted by swearing an Ideal. Lasts until end of scene. **Not an MH condition** — Roshar-specific; the system carries the status. |
+| **Enhanced** [+X attribute] | MH, SR | Specified attribute gains a bonus; doesn't change defenses/maxes. **Cumulative** across attributes. |
+| **Exhausted** [−X] | MH, SR | Apply −X penalty **after calculating a test result, before resolving it**. **Cumulative**. Reduce penalty by 1 after each long rest; removed at 0. |
+| **Focused** | MH, SR | Abilities that cost focus cost 1 less |
+| **Immobilized** | MH, SR | Movement rate becomes 0; can't move or be moved |
+| **Prone** | MH, SR | Lying flat; you are Slowed; melee attacks against you gain an advantage; can use Brace without cover; stand up as a free action (movement reduced by 5 until start of next turn). Becoming Prone while climbing or flying means falling. |
+| **Restrained** | MH, SR | Movement rate becomes 0; disadvantage on all tests other than escape attempts |
+| **Slowed** | MH, SR | Movement rate halved (round **up** if mid-move — one of the few published exceptions to Round Down) |
+| **Stunned** | MH, SR | Lose reactions; gain two fewer actions; don't gain a reaction |
+| **Surprised** | MH, SR | Lose reactions; don't gain reaction at start of combat; can't take fast turn; gain one fewer action. Removed after your next turn. |
+| **Unconscious** | MH, SR | Movement 0; can't move, communicate, or use any action or reaction; unaware of your surroundings; fall Prone and drop what you're holding; always take a slow turn but can do nothing on it. **A PC may choose to regain consciousness at the end of any of their turns** (no action) or when healed to 1 health — and at 0 health recovers 1 health on doing so. **An NPC cannot choose**: they wake only when something heals them 1 health. (SR's Roshar version listed "only Breathe Stormlight and Regenerate available"; MH's is the general rule.) |
 
-**Bracketed parameters:** When a condition takes a parameter (Afflicted, Enhanced,
-Exhausted), the bracket appears immediately after the condition name with no space:
-`Exhausted [−1]`, `Enhanced [+2 Speed]`, `Afflicted [1d4 vital]`.
+**Bracketed parameters:** When a condition takes a parameter (Afflicted, Depleted, Diminished,
+Enhanced, Exhausted), the bracket appears immediately after the condition name with no space:
+`Exhausted [−1]`, `Enhanced [+2 Speed]`, `Diminished [Speed −2]`, `Afflicted [1d4 vital]`.
 
-**Conditions NOT in canon source material** (homebrew or potentially from later books):
+**Conditions NOT in canon source material** (homebrew or potentially from later books) —
+re-confirmed against MH's full list on 2026-09-16, so these are homebrew against *both* published
+handbooks, not merely absent from the Starter Rules:
 Weakened, Frightened, Compelled, Marked, Hexmarked, Injured, Hidden, Bleeding,
 Poisoned. The reviewer skills should treat these as homebrew conditions when they
 appear — capitalize them consistently but flag if a custom talent invents a new
@@ -476,11 +505,33 @@ advantage" (granted by other effects) is lowercase. Always include the article
 
 ### advantage / disadvantage (lowercase)
 
-A test modifier. Roll an extra of one die type, keep one (the player's choice for
-advantages, GM's choice for disadvantages). Cancel each other 1-for-1. [SR p.18]
+A test modifier, and **countable — each one is placed on its own die.** [MH Ch. 3 → Skills,
+"Advantages and Disadvantages"; SR p.18 carries the same text]
+
+* For **each advantage**, the roller chooses one die they are about to roll — the d20, the plot
+  die, or any other die such as a damage die — rolls two of it and keeps one. **Each die may be
+  chosen only once**, so two advantages double two *different* dice; you never roll three of the
+  same die.
+* For **each disadvantage**, the *opponent* chooses the die and which of the two results is kept:
+  the GM on a player's test, and on an **enemy NPC's** test the roles reverse — the GM picks for
+  its advantages, a player (the one most affected) for its disadvantages.
+* Advantages and disadvantages **cancel one for one** before anything is placed; two advantages
+  and one disadvantage leave one advantage.
+* On a test against several targets, roll the extra dice separately and apply them only to the
+  targets they concern.
+* Only the d20 you keep can contribute an Opportunity or a Complication.
+
+> ⚠️ **The engine is not there yet** (2026-09-16). Edha writes the d20 channel only and folds
+> every live source into the one tri-state the system holds, so a second advantage is discarded —
+> a deviation, not the rule. R-155 (answered (a)) and TODO item 202 carry the fix; the sweep that
+> found every doc repeating the fold as if it were the rule is
+> `docs/analysis/rules-audit-2026-09.md`. **Judge a card against the rule above, not against the
+> fold.**
 
 Always lowercase. Use the article: `gain an advantage`, `have a disadvantage`,
-`with a disadvantage`.
+`with a disadvantage`. The **published verb is "gains"** — MH writes "your attack gains a
+disadvantage", "the test gains an advantage", and Dodge "adds a disadvantage" — so never rewrite
+`gains a disadvantage` into something else.
 
 ### Attunement Range (capitalized)
 
@@ -626,18 +677,30 @@ are valid; the abbreviated form is more common.
 - "vs. an enemy's Spiritual" — possessive form
 - "vs. each enemy's Cognitive" — distributive
 
-### Skill contests (rare in canon)
+### Opposed tests (a published general rule)
 
-Canon talents very rarely contest skill-vs-skill directly. The closest example is:
+**[MH Ch. 3 → Skills, "Opposed Tests"]** When two characters actively test against each other, or
+when one character's result sets the DC for a later attempt to subvert it, both roll and **the
+opponent's result is the DC**. The book's worked example is a Lurcher Pulling a gun out of your
+hand: you test Athletics against their Allomancy.
+
+* **You must EXCEED your opponent's result**, not match it.
+* **On a tie, nobody meets their DC** — both fail their objective, and "in the case of an
+  aggressive contest, the result favors the defender who's trying to keep things the same" (the
+  gun stays in the hand it was already in).
+* Opposed tests are also the book's catch-all for conflicts with no specific rule.
+
+So a `test [Skill] vs. [Skill]` talent is a **canonical structure**, not a homebrew one — this
+entry said the opposite until 2026-09-16 (TODO item 201), on SR's silence. What *is* thin in the
+canon talent set is the phrasing; the closest canon example opposes a test to an incoming attack's
+result rather than to a named skill:
 
 - "test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a
   Shardblade" (Precise Parry)
 
-Here the test is opposed to the result of an incoming attack. True skill-vs-skill
-contests aren't well represented in canon talents; if a custom talent uses a
-`test [Skill] vs. [Skill]` structure (e.g. "test Green vs. Survival"), it's a
-homebrew pattern with weak canonical precedent. Reviewers may accept it but should
-note it isn't canonical.
+> ⚠️ Edha's contest core resolves a tie **for the initiator** (`edhaDefTestOutcome`'s `>=` on the
+> `vs: "skill"` path) — TODO item 204. `>=` is correct against a defense or a flat DC, where you
+> meet the number; it is wrong against an opponent's roll.
 
 ### Default DC mapping
 

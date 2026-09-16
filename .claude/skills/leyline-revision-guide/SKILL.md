@@ -33,7 +33,12 @@ This skill contains the canonical design standards for the Leyline system. Consu
 - **half [Die]**: Half the rank die result (round down).
 - **[Size]**: 2.5 ft (Rank 1), 5 ft (Rank 2), 10 ft (Rank 3), 15 ft (Rank 4), 20 ft (Rank 5).
 - **Attunement Range**: 15 ft / 30 ft / 60 ft / 90 ft / 120 ft (Ranks 1–5).
-- **Tier**: Character level bracket. Tier 1 = levels 1–4, Tier 2 = levels 5–9, etc.
+- **Tier**: Character level bracket. **Tier 1 = levels 1–5 (max skill rank 2), Tier 2 = levels
+  6–10 (rank 3), Tier 3 = 11–15 (rank 4), Tier 4 = 16–20 (rank 5).** *(Corrected 2026-09-16, TODO
+  item 201: this line read "Tier 1 = levels 1–4, Tier 2 = levels 5–9" from 2025 until the Mistborn
+  Handbook's Character Advancement table settled it — the same table the cosmere-rpg system
+  implements and `docs/ACTOR_STAT_DERIVATION.md` already carried. **Level 6 is the double step**:
+  tier and rank cap rise together, so `[Tier][Die]` goes 1d6 → 2d8 in one level.)*
 - **Rank**: Skill investment (1–5). Used for die size and area scaling.
 
 ### Damage Types
@@ -44,6 +49,8 @@ This skill contains the canonical design standards for the Leyline system. Consu
 Disoriented, Determined, Surprised, Weakened, Slowed, Exhausted[X], Afflicted[X damage], Restrained, Prone, Immobilized.
 
 ### Advantage / Disadvantage (System Mechanic)
+
+> ⚠️ **Correction, 2026-09-16 — this section describes the SYSTEM's d20 code and Edha's fold, not the rule.** The Mistborn Handbook (Ch. 3 Character Statistics → Skills, "Advantages and Disadvantages"; identical to the Stormlight Starter Rules Part 1) is per die and countable: for each advantage the roller chooses one die about to be rolled — the d20, the plot die, or any other die such as a damage die — rolls two and keeps one, each die chosen at most once, so two advantages double two different dice; for each disadvantage the opponent chooses the die and the kept result (the GM on a player's test; on an enemy NPC's test the most-affected player); advantages and disadvantages cancel one for one; a multi-target test rolls the extra dice separately for the targets they concern. The system exposes a toggle per die (d20, plot die, each damage die) and counts nothing; Edha's engine writes the d20 only and folds sources to one scalar — that is the deviation, not the rule. Engine question: R-155 (`EDHA_RULINGS.md` §L); the full audit is TODO item 201.
 Advantage and disadvantage are each **one binary state**, not a stacking counter — the engine folds
 every matching source into a single scalar (`edhaNextModFoldMode`), so a second advantage or
 disadvantage from another talent, on the same roll, contributes nothing. The **printed rule**
