@@ -1,10 +1,10 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "PM of record since 11:49 ET. All four Sonnet workers are in and merged: the stale Chaos header (#406), the Dodge arm button (#407, its two dials filed as R-145 APPLIED), the three card-claim defects (#408, fix pass 14) and the per-item-type lint gate (#409, the first migration PR). Three follow-ups filed from what they found in passing: items 188, 189, 190 — all small Sonnet work, queued on your word. Item 183, the resolver that unblocks the damage-card builds, is queued for the next Opus window. Nothing was deployed: your table is still on 2.1.0, untouched, while session one is pending.",
-    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); R-145 only if you want to veto a Dodge dial; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
+    "status": "stopped",
+    "note": "This session stopped at Ben's word on the morning of 2026-09-16 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened. Open for the next PM: R-145 (applied, wants a veto only), item 183 (the resolver that unblocks the damage-card builds — Opus, needs Ben's word), items 188-190 (small Sonnet), and the 3.1.0 migration items 184-187 behind 183.",
+    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
     "nextWakeAt": null,
-    "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
+    "session": "STOPPED 2026-09-16 (the 2026-09-15 11:49 ET hand-started session; Ben starts the next PM of record himself)"
   },
   "workers": [],
   "usage": null
