@@ -129,6 +129,12 @@ function buildGates(py) {
   });
 
   gates.push({
+    id: "scripts-readme",
+    desc: "node scripts/check-scripts-readme.js (item 190: scripts/README.md's Files table matches `git ls-files scripts`)",
+    run: () => run("node", ["scripts/check-scripts-readme.js"]),
+  });
+
+  gates.push({
     id: "lint-refs",
     desc: "node scripts/lint-refs.js",
     run: () => run("node", ["scripts/lint-refs.js"]),
