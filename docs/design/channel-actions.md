@@ -16,7 +16,7 @@ The gate log is the record.
 | 2 | §2 The five frames | **✅ approved 2026-09-16** — F-0 (b) Red's Realms swapped; F-W (a) the line, F-B (a) the deep reading, F-K (a) the hunt, F-R (a) the mage's own edge, F-G (a) the ground |
 | 3 | §3 White, worked | **✅ approved 2026-09-16** — W-1 … W-6 all (a): two formation passives become riders, three Reactions, Terms of Accord a release, Unbreakable Line gated on the flood, Voice of Authority reads the spend, Guiding Signal on the payment |
 | 4 | §4 The build | **✅ approved 2026-09-16** — B-1 … B-6 all (a): `data/channels.json` build-only, one gate field in three dispatch sites, the `edha-channel` event, per-die disadvantage built with the Channel, the colour skill non-core, the bench on the Route A copy |
-| 5 | §5 Close-out | not yet written |
+| 5 | §5 Close-out | **✅ done 2026-09-16** — delta at the top of `docs/handoff-changelog/2026-09.md`; no new ruling filed; DOCS-ONLY PR from `design/channel-actions` |
 
 **What this rests on** (read in this order; nothing below re-derives them):
 `docs/analysis/talent-comparison-mistborn-radiant.md` §B, §C.2, §D-1, §D-3, §E (the published
@@ -979,3 +979,65 @@ live table.
 
 > **Answered at gate 4 (Ben, chat, 2026-09-16):** *"all defaults"* — **B-1 … B-6 (a).** §4 committed on
 > that answer.
+
+---
+
+## 5. Close-out
+
+**All five gates passed on 2026-09-16, in one session, in order.** Nothing in this document assumes
+an answer Ben did not give; the gate log at the top is the record, and each section's menu carries
+his answer verbatim under it.
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 1 — the rule | The Channel as written in §1.1: 1 Action; 1 or more Investiture up to your rank; the frame until the end of your next turn; maintained as a Free Action for 1 – rank; ends on choice, Unconscious, or unpaid; **one colour at a time, with a deity tree allowed one braid passive** (M6 (c)); opening and maintaining can be answered by Blue's counter, riders cannot (M7 (a)); Attunement Range, `[Tier][Die]` and Draw Mana unchanged; the frame's number is the channelled Investiture; riders carry no Investiture cost; a costed standalone talent is a **release** (M16 (a)); Blue's `Counterspell` becomes **Countercurrent** (M17 (a)); the specialties are the three Realms as a principle, not a rename; White is the worked colour. |
+| 2 — the frames | The Realm map with **Red's Momentum (Physical) and Conflagration (Spiritual) swapped** (F-0 (b)); White *the line* (deflect to the formation); Blue *the deep reading* (per-die disadvantage on one enemy); Black *the hunt* (extra vital against Isolated creatures — after Ben struck the first draft as restating Isolated and repeating the Key); Red *the mage's own rising edge* (narrowed from the shared edge on his "quite strong"); Green *the ground*. The per-die advantage rule from the Mistborn Handbook chapter 3 is recorded in §2.3 with the docs that now disagree. |
+| 3 — White | All twenty-five cards (§3.3): sixteen change, nine untouched, the graph untouched; Shield Wall and Unyielding Accord become riders; three Reactions stay; Terms of Accord is a release; Unbreakable Line gates on the flood; Voice of Authority reads the spend per die; Guiding Signal rides the payment. Passive + Special 68 % → 84 %, costed 60 % → 16 %, Investiture-priced cards 15 → 1. |
+| 4 — the build | `data/channels.json` build-only; one gate field in three dispatch sites and ten schemas; the `edha-channel` event; per-die disadvantage built with the Channel; the colour skill non-core and unlocked by the power; sixteen 🤖 rows on the Route A copy. |
+
+### 5.2 What waits on Ben
+
+**Nothing from this pass.** No new ruling was filed: every judgment call was a menu entry answered
+at its gate, and the two names (release, Countercurrent) were decided in chat. `EDHA_RULINGS.md` §L
+still holds R-145 alone, applied and wanting a veto. The rules fact Ben brought to gate 2 (per-die
+advantage) is a *fact*, recorded in §2.3; the work it implies is items for the PM, not a decision.
+
+### 5.3 What the PM should file from this pass
+
+Items, in the order they pay, none of them started here:
+
+1. **Re-scope item 198** (colours as `power` items, the last PR of the re-platforming) to build
+   §4 as written: the five powers and the White Channel first — the nine widenings (A – I), the
+   `edha-channel` event, `data/channels.json` + `channelPowerDoc`, the ten schema declarations,
+   `validate-packs.js` learning `power`, `tests/channel.test.js`, the White data pass (§3.3 into
+   `data/leyline.json` and `data/authored/leyline-white.json`), the sixteen CH rows under
+   `# BENCH — White`, and the docs in §4.4. **White first, as the pilot**; the other four colours'
+   riders are unworked and each wants a session like this one before its Channel ships.
+2. **A Blue pass**: the Countercurrent rename (M17; DATA — REBUILD, plus the checklist rows and docs
+   that name the talent), F-B's frame on the per-die injector as its second consumer, and Blue's
+   twenty-five cards worked as §3 worked White's.
+3. **The docs correction for the per-die rule** (DOCS-ONLY, 2.1.0-safe, can land now): `SYSTEM-PRIMER.md`
+   fact 1, the leyline guide's advantage paragraph, and a note under R-100 / R-110 in
+   `EDHA_RULINGS.md` §K — each currently describes the Edha engine's fold (`edhaNextModFoldMode`)
+   as the game's rule; the game's rule is per die, and the system's own roll classes carry it at
+   2.1.0 and 3.1.0 (§2.3).
+4. **Re-run the balance yardsticks** (`docs/analysis/talent-ecosystem/`) against §2.2's deflect
+   numbers and §3's free riders before item 198 builds — the review's turn arithmetic was priced on
+   1 Investiture per play and one Reaction per round, and both change.
+5. **Re-open R-151** (the deity re-pricing) against §1.1's rider / release split, §1.6's braid and
+   M13, as R-151 (a) said it would once this document existed.
+6. **The Black, Red and Green passes**, each a gated session on this document's §2 frame, before
+   their Channels build.
+
+### 5.4 The record
+
+- Branch `design/channel-actions`, DOCS-ONLY, four commits (§1 `283d607`, §2 `4cc6507`, §3 `953b1d8`,
+  §4 and this close-out); gates green on every commit; PR opened from the branch on 2026-09-16
+  (the number is in the PM's run log and on the branch).
+- The session worked in the harness-made worktree `.claude/worktrees/channel-actions-design-68e8bc`
+  rather than a `%TEMP%` one — same isolation from the PM's checkout; the PM sweeps it after the
+  merge like any other.
+- The dated delta is at the top of `docs/handoff-changelog/2026-09.md`; `docs/PM_BOARD.md` was not
+  touched, per the brief.
