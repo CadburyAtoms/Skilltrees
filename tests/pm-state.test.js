@@ -471,7 +471,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // length assertion moves 1 → 2.
   // 2026-09-16, 16:47 ET: Ben answered R-155 (a) in chat; moved to §K.22 with a §L stub and joins the closed list.
   // The length assertion moves 2 → 1.
-  const ECOSYSTEM_RULINGS = ["R-145"];
+  // 2026-09-16, item 201 (the full rules audit against the Mistborn Handbook): the audit files three
+  // in §L — R-156 (the movement-rate ladder, the last legacy derived stat still live), R-157 (the
+  // level-3 attribute point, where the two published handbooks disagree) and R-158 (the published
+  // Minion and Boss role features, which no Edha block carries). The length assertion moves 1 → 4.
+  const ECOSYSTEM_RULINGS = ["R-145", "R-156", "R-157", "R-158"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

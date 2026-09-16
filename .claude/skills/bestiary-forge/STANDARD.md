@@ -46,7 +46,7 @@ is the *standard* — which fields a block must carry and where the value comes 
 
 | Field | Required? | Comes from | Notes |
 |---|---|---|---|
-| `role` | yes | the encounter's job: minion / rival / boss | Role is the lever for everything rank-shaped (§3). "Standard" and "Elite" from the old cheatsheet both map to rival. |
+| `role` | yes | the encounter's job: minion / rival / boss | Role is the lever for everything rank-shaped (§3). "Standard" and "Elite" from the old cheatsheet both map to rival. **PENDING R-158:** in the published rules a role also carries *features* (the Minion's no-crit / defeated-on-injury, the Boss's two turns a round and focus-for-an-action) that no Edha block states — §3 has the text. |
 | `tier` | yes | the party level band the block is built for | Tier supplies only the dice COUNT (§3). 45 of 52 are tier 1 (MEASURED). |
 | `folder` | yes | `"<Nation> <Ground> Bestiary"` (e.g. `Thalendor Heartwood Bestiary`), or a campaign folder (`Session 1 — Palewater Ford`) | **RULED R-130 (a):** every block states one; the nine test-dungeon blocks sit in `Legacy — Playtest Dungeon` and keep building as fixtures. A block that omits it is a mistake, not a choice (the build's fallback folder exists only for that mistake). |
 | `size`, `creatureType` / `customType` | yes | the fiction | Large = a 2×2 token (the build). |
@@ -68,6 +68,38 @@ is the *standard* — which fields a block must carry and where the value comes 
 | `img` | yes | a core-icon placeholder | The build swaps in `art/adversaries/<slug>-portrait.*` / `-token.*` when Ben drops them; add the slugs to `EDHA_ADVERSARY_ART_WISHLIST.md`. |
 
 ## 3. Numbers by role
+
+**PENDING R-158 — the published role FEATURES, which no Edha block carries.** Added 2026-09-16 by
+the rules audit (TODO item 201; `docs/analysis/rules-audit-2026-09.md`). In the Mistborn Handbook
+(Ch. 13 → Using Adversaries, "Role") a role is not only a band of numbers — each role *is* a rule,
+printed on the block:
+
+* **Minion** — "The Minion's attacks can't critically hit, and they're immediately defeated when
+  they suffer an injury." (An injury is what a PC suffers at 0 health, so a minion is removed by
+  the first hit that would down it; the PC who lands it may choose death or Unconscious.)
+* **Rival** — no additional rules. This one we already match.
+* **Boss** — "The Boss can take both a fast turn and a slow turn each round. After an enemy
+  finishes a turn, the Boss can spend 1 focus to immediately use an additional 1 or 0.
+  Additionally, they can spend 1 focus on their turn to remove a condition from themself."
+
+**Nothing in `data/adversaries.json` or the engine implements any of this** — `role` drives the
+leyline rank map and the bands below, and that is all. A published Boss therefore acts about twice
+as often as ours does, which is also the yardstick the R-134 targets were measured against (bench
+run 48), so adopting it re-opens that arithmetic rather than simply adding text. **R-158 asks Ben;
+per this standard's own convention a PENDING line is never applied to data before the ruling
+lands**, and the build is filed as item 206.
+
+**RULED (published) — the encounter budget, beside R-134's per-hit rows.** MH Ch. 13 → Building
+Combat Scenes gives threat values at the party's own tier: **Minion 0.5, Rival 1, Boss 4**, summed
+against the party size — **easy** = half the number of PCs, **average** = the number of PCs,
+**hard** = 1.5× (the book's own guidance: a party needs a long rest after two or three average
+fights and can rarely take more than one hard fight between long rests). Across tiers, double the
+value per tier the adversary is above the party and halve it per tier below, rounding to the
+nearest quarter (Scaling Adversary Threats, App. 2). This is a *budget for the encounter*, so it
+sits next to R-138's ¼-of-the-party's-HP-per-round line rather than replacing it: R-138 says how
+hard the fight may hit, this says how much fight to buy. A three-PC party at tier 1 gets 1.5
+threat for an easy scene, 3 for an average one, 4.5 for a hard one — one Boss alone is already
+above hard for this party.
 
 **RULED — the dice.** Adversary leyline rank = ROLE rank, minion 1 / rival 2 / boss 3 (canon
 ruling 122, superseding 107's rank ≡ tier; the ruling-123 retro sweep re-derived the older blocks).
