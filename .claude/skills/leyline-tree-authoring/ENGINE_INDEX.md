@@ -3091,12 +3091,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   value getter adds `.bonus` on top of the override, so folding double-counts every AE
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
 - **THE EDHA DERIVED-STAT RULES — one source of truth** (`EDHA_HP_BONUS`,
-  **`edhaWalkRateFtFromSpd(spd)`** = 20 + 5×SPD, `edhaSensesRangeFtFromAwa(awa)`; canon is
-  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). **ONE** of them
-  still differs from the cosmere system's own derivation — **Movement**; Senses joined it in 07-28i
-  and left again at item 83 (R-56 final — the system's ladder for every actor type, engine writes
-  nothing), and HP was never really a difference (R-54). `edhaDeriveSheetStats` (the sheet) and
-  `edhaCwDerivedPreview` (the wizard's live panel) must read
+  **`edhaWalkRateFtFromSpd(spd)`** = the SYSTEM's `[20,25,30,40,60,80]` ceil((SPD+bonus)/2) ladder
+  since R-156 (a) (item 203, 2026-09-16), `edhaSensesRangeFtFromAwa(awa)`; canon is
+  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats, superseded by the
+  published Mistborn Handbook tables per the 2026-09-16 rules audit). **NONE** of the three differs
+  from the cosmere system's own derivation any more — Senses left at item 83 (R-56 final — the
+  system's ladder for every actor type, engine writes nothing), Movement followed at item 203
+  (R-156 (a) — same shape, `20 + 5·SPD` deleted), and HP was never really a difference (R-54).
+  `edhaDeriveSheetStats` (the sheet) and `edhaCwDerivedPreview` (the wizard's live panel) must read
   these helpers, never re-implement the arithmetic. 07-28i: when they each carried a copy they
   drifted in BOTH directions at once (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved
   one surface would have been right for one cell and wrong for the next.

@@ -586,24 +586,29 @@ test("wiring: the adversary sheet's single-actor sync button stays unfiltered (n
   assert.ok(/edhaSyncAdversaryActor\(actor\)/.test(btnBlock), "the sheet button must still call edhaSyncAdversaryActor(actor) with no scene filter");
 });
 
-// --- 07-18 bench: Surefooted +10 displayed as +20 — the derivation folded rate.bonus into the
-// override while DerivedValueField.value = override + bonus, double-counting every speed AE.
-test("edhaDeriveSheetStats: speed override excludes rate.bonus (AE applies once via the getter)", () => {
+// --- 07-18 bench: Surefooted +10 displayed as +20 — the historic bug: the derivation folded
+// rate.bonus into a WRITTEN override while DerivedValueField.value = base + bonus, double-
+// counting every speed AE. R-156 (a) (item 203, 2026-09-16) removed the override write itself —
+// Movement is now the system's own ladder, the same shape as Senses — so this pins the surviving
+// half: edhaDeriveSheetStats writes NOTHING to movement.walk.rate, and a bonus the system already
+// carries reaches `.value` exactly once.
+test("edhaDeriveSheetStats: movement leaves rate.bonus alone — writes no override, so an AE speed buff cannot double-count", () => {
   const actor = {
     type: "character",
     system: {
       resources: { hea: { max: { bonus: 0 } } },
-      movement: { walk: { rate: { bonus: 10, override: 0, useOverride: false } } },
+      movement: { walk: { rate: { derived: 25, bonus: 10, override: null, useOverride: false } } },   // SPD 2 → system ladder 25; Surefooted +10
       attributes: { spd: { value: 2 } },
     },
     _source: { system: { resources: { hea: { max: { bonus: 0 } } }, movement: { walk: { rate: {} } } } },
   };
   env.edhaDeriveSheetStats(actor);
   const rate = actor.system.movement.walk.rate;
-  assert.strictEqual(rate.override, 30, "override must be 20 + 5×SPD only — bonus stays out");
-  assert.strictEqual(rate.useOverride, true);
-  // displayed value = override + bonus = 40 exactly once, not 50
-  assert.strictEqual(rate.override + rate.bonus, 40);
+  assert.strictEqual(rate.override, null, "R-156 (a): the engine writes no override to movement any more");
+  assert.strictEqual(rate.useOverride, false);
+  assert.strictEqual(rate.derived, 25, "the system's ladder value is untouched");
+  // displayed value = derived + bonus = 35 exactly once, not 45
+  assert.strictEqual(rate.derived + rate.bonus, 35);
 });
 
 // --- 07-19 adversary-wiring audit: the ambush-belief ledger (the lightweight seeming) ----------
