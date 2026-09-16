@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T21:33:10.739Z",
+  "generatedAt": "2026-09-16T21:59:23.975Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "43d840e15b",
-    "commit": "8d44fb1",
+    "hash": "22d66d51ff",
+    "commit": "5d05d7b",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -44,7 +44,7 @@
   "pm": {
     "status": "idle",
     "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: R-156, R-157, R-158 from the rules audit (defaults recommended: the published movement ladder, keep the system's attribute table, adopt the Minion and Boss features); paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "waitingOn": "Ben: paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
@@ -2555,8 +2555,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-156",
-      "status": "blocked",
-      "statusDetail": "R-156",
+      "status": "queued",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -2591,8 +2591,8 @@
       "model": "opus",
       "size": "L",
       "deps": "R-158",
-      "status": "blocked",
-      "statusDetail": "R-158",
+      "status": "queued",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -2603,6 +2603,18 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "item 202",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 212,
+      "item": "208",
+      "title": "R-157 (a): the advancement table Edha uses is the system's, level-3 point included — ACTOR_STAT_DERIVATION.md and build-forge say so and record the Mistborn divergence (DOCS-ONLY). Filed by the PM from R-157 (a)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2653,16 +2665,16 @@
     }
   ],
   "benOnly": [
-    "R-156, R-157, R-158 (\"defaults\" is a complete answer)",
-    "Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
+    "the session-one confirmation (R-144), an R-145 veto if he disagrees, and the Channel design pass's report. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
     "nobody else touches it. the session-one confirmation (R-144)",
     "an R-145 veto if he disagrees",
     "the Channel design pass when he has time. Standing instruction from Ben (2026-09-16): the Mistborn Handbook is the rules source — anywhere the engine, the docs, the skills or memory contradict its Chapter 3 we correct ourselves",
     "item 201 is the audit. What the next PM can dispatch, on Ben's word: item 183 (opus, L)",
     "item 201 (opus, L — the rules audit, Chapter 3 first)",
     "item 202 (opus, L — R-155 (a), dual-mode, 2.1.0-safe, phase 1 first)",
-    "items 204 and 205 (sonnet, XS / S — the opposed-test tie and the Diminished rename, no deps)",
-    "item 203 behind R-156, item 206 behind R-158, item 207 behind 202",
+    "items 203, 204, 205 and 208 (sonnet, XS – S — the movement ladder, the opposed-test tie, the Diminished rename, the advancement-table note; no deps)",
+    "item 206 (opus, L — the Minion and Boss features, R-158 (a))",
+    "item 207 behind 202",
     "items 188, 189, 190, 192, 196, 199 (sonnet, XS – S)",
     "items 193 and 194 (sonnet, S — both 2.1.0-safe, F5 / REBUILD, nothing deploys until the freeze lifts)",
     "item 191 behind 183",
@@ -2677,20 +2689,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:38",
-      "at": "2026-09-14T06:38:00.000Z",
-      "item": "#382 (item 152) merged at 02:38:36 after the PM's bookkeeping commit (CI green on 7b3c4d4); the worktree and the remote branch removed; main = f8dc9ad",
-      "itemNo": "382",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 382
-    },
     {
       "date": "2026-09-14",
       "time": "02:09",
@@ -3516,9 +3514,23 @@
       "weightedM": null,
       "outcome": "reviewed 17:29 — merged as #417 on green CI: no forbidden surface touched, the dump stayed in $TEMP, the open-set pin covers R-156 … R-158; the ledger's load-bearing finds — the movement ladder (R-156 / item 203), the opposed-test tie (item 204), Grapple and Shove at 2 actions (fixed), the diminished name collision (item 205), the Minion and Boss role features (R-158 / item 206), the level-3 attribute point (R-157). Close-out: queue rows 207 – 211, item 207 filed, the README's Draw Mana line corrected, one over-long quote paraphrased, the memory file's \"how to apply\" widened",
       "pr": 417
+    },
+    {
+      "date": "2026-09-16",
+      "time": "17:57",
+      "at": "2026-09-16T21:57:00.000Z",
+      "item": "Ben (chat) answers R-156, R-157 and R-158: *\"defaults\"* — the published movement ladder, the system's attribute table with the divergence documented, the Minion and Boss role features adopted. Moved to §K.23 with §L stubs; items 203 and 206 unblocked; item 208 filed (R-157's documentation); tests/pm-state.test.js re-pinned 4 → 1; the pointers, the changelog and the phone board updated",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~10 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed",
+      "pr": null
     }
   ],
-  "runLogTotal": 373,
+  "runLogTotal": 374,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

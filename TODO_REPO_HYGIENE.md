@@ -4741,6 +4741,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 203. [ ] R-156: the movement-rate ladder — delete Edha's `20 + 5·SPD` override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5; blocked on R-156) (2026-09-16)
 
+**Unblocked 2026-09-16 17:57 ET:** R-156 answered (a) by Ben in chat ("defaults"); filed in `EDHA_RULINGS.md` §K.23.
+
 **Why:** the rules audit's Phase 1 row (`docs/analysis/rules-audit-2026-09.md`): the Mistborn Handbook (Ch. 3 → Attributes → Speed, and the Movement Rate table in Appendix 2) makes movement rate a **ladder** — SPD 0 → 20 ft, 1–2 → 25, 3–4 → 30, 5–6 → 40, 7–8 → 60, 9+ → 80 — and the cosmere-rpg system implements exactly that. Edha overrides it with `edhaWalkRateFtFromSpd(spd) = 20 + 5·spd` (`module-src/scripts/engine/52-green-instinct.js:591`, written as a sheet override at `:653`), so from SPD 2 up every PC walks further than the book allows (SPD 4: 40 ft against 30). It is the **last legacy derived stat still live** — health went back to the published formula with R-54 (c) and senses with R-56 final ("Cosmere ladder for everyone"); this one was never asked about. R-156 carries the menu; `EDHA_RULINGS.md` §L.
 
 **What to do (on R-156 (a)):** delete the walk-rate override from `edhaDeriveSheetStats` so the system's own `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` stands — the same shape as item 83's senses deletion, and it restores the system's reading of SPD as `value + bonus`, which the Edha copy never had. Sweep the other two copies of the formula: the creation wizard's derived-stat preview (`engine/24-the-character-creation-wizard.js`) and anything in `scripts/foundry-build-parts.js` that stamps a token's movement, so sheet, preview and pack agree the way `tests/adversary-senses.test.js` pins the senses trio. Pin the ladder in `tests/` at SPD 0–10. Update `docs/ACTOR_STAT_DERIVATION.md` §3 (the Movement row, and the "the one stat Edha still derives differently" line in §1) and the correction note under the table. Check the five `walk.rate.bonus` talents and `Siege Form`'s 0 override still behave, and say in the delta that an **F5 moves every existing actor's sheet** while a token's stored values do not.
@@ -4771,6 +4773,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 206. [ ] R-158: the published Minion and Boss role features — a minion that cannot crit and is defeated by its first injury, a boss that takes two turns a round (DATA + ENGINE, REBUILD + ⟳ Sync; blocked on R-158) (2026-09-16)
 
+**Unblocked 2026-09-16 17:57 ET:** R-158 answered (a) by Ben in chat ("defaults"); filed in `EDHA_RULINGS.md` §K.23.
+
 **Why:** the rules audit's Phase 2 row (`docs/analysis/rules-audit-2026-09.md`). Mistborn Handbook Ch. 13 → Using Adversaries, "Role": a role is a **rule**, printed on the block. Minion — attacks can't critically hit, and the minion is immediately defeated when it suffers an injury. Rival — no extra rules (the only one we match). Boss — takes **both a fast and a slow turn each round**, may spend 1 focus after an enemy's turn for an extra 1-Action or free action, and 1 focus on its own turn to clear a condition from itself. Nothing in `data/adversaries.json` or the engine carries any of it: `role` drives the leyline rank map (canon ruling 122) and `bestiary-forge/STANDARD.md` §3's numeric bands. A published Boss acts about twice as often as an Edha boss, and R-134's targets and R-138's per-round line were both measured in bench run 48 against one-turn bosses. R-158 carries the menu; `EDHA_RULINGS.md` §L, and `STANDARD.md` §3 already holds the text as PENDING.
 
 **What to do (on R-158 (a)):** the Minion half first — a stated feature on every `role: "minion"` block (the build can mint it from the role, the way it embeds Draw Mana for an attuned block), the engine's defeat path so a minion that would suffer an injury is removed instead of rolling one, and the no-crit clause where the attack path can see it. Then the Boss half — the two turns a round against the system's combat tracker (**measure first**: the fast/slow phases are the system's, so a second turn may be a tracker entry rather than engine state), the focus-for-an-extra-Action prompt and the focus-to-clear-a-condition button. **Re-run the yardstick** (`docs/analysis/bestiary/YARDSTICK-2026-09-14.md`'s shape) against the eight boss blocks before the change reaches a live encounter, and restate R-134's rows and `STANDARD.md` §3's PENDING lines with what it measures. Regenerate `docs/analysis/bestiary/CENSUS.md`.
@@ -4788,3 +4792,13 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** each of the three carries a dated post-202 line, or a §L ruling exists for it; gates green.
 
 **PM:** lane R · model sonnet · size XS · deps item 202 · Filed 2026-09-16 by the PM from item 201's out-of-scope findings.
+
+## 208. [ ] R-157 (a): the advancement table Edha uses is the system's, level-3 attribute point included — `docs/ACTOR_STAT_DERIVATION.md` and `build-forge` say so and record that the Mistborn Handbook's table differs (DOCS-ONLY) (2026-09-16)
+
+**Why:** item 201's audit found the two published handbooks disagree on attribute points at level 3 (the Mistborn table grants them at 1, 6, 9, 12, 15, 18; the system enforces the Stormlight table with a point at 3). R-157 answered (a) by Ben on 2026-09-16: keep the system's table and document the divergence. `docs/ACTOR_STAT_DERIVATION.md` §3 and `.claude/skills/build-forge/SKILL.md:49` currently state "attribute points at levels 3, 6 and 9" as if it were the one published rule.
+
+**What to do:** in both files, one dated sentence beside the advancement line: Edha follows the system's (Stormlight) advancement table; the Mistborn Handbook's table has no level-3 point; R-157 (a) chose the system's, so a PC at level 3 keeps the point the sheet grants. `docs/analysis/rules-audit-2026-09.md`'s R-157 row gets its disposition updated to "answered (a), item 208".
+
+**Done when:** both files carry the sentence; the audit row is updated; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-157 (a).
