@@ -424,6 +424,12 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## An affliction rule's culled target — item 189 (2026-09-16; ENGINE-ONLY, F5; **nothing deploys under the R-144 freeze**)
+
+`edhaRunTriggerEffect`'s `affliction` branch used to post "(target a token) is Afflicted […]" publicly whenever a supplied victim/near-victim/list-members mode resolved to nobody — the same "blame the user for a list it supplied itself" shape items 173/176 fixed in the status/damage branches (`tests/no-candidate-no-card.test.js`). Fixed alongside the `thp` branch's own supplied-target fallback and `edhaPostTriggerCard`'s `needsTargeting` exclusion; pinned in `tests/no-blame-supplied-target.test.js` against the real registered executors. This row waits on Ben's word that the R-144 freeze has lifted before it can be driven live.
+
+- [ ] 🤖 Re-drive an affliction rule whose on-hit victim is culled to nothing — e.g. Dark Investiture (Black, `data/authored/leyline-black.json`, `target: "victim"`) fired with no `ctx.victim`, or any affliction rule carrying `whenTargetIsolated: true` hit against a target that is NOT Isolated. Confirm NO public "(target a token) is Afflicted…" card posts, and that a GM client sees a quiet audit line instead ("…no [Isolated ]target to afflict; no effect."). Control: a hand-fired PROMPT-mode affliction rule (e.g. Red's Conflagration rider) with nothing targeted must still show today's "(target a token) is Afflicted…" wording — that miss is the user's own canvas, unchanged.
+
 ## Sovereignty status rename — item 205 (2026-09-16; **REBUILD deity + ⟳ Sync Talents first**; nothing deploys while the R-144 freeze holds)
 
 Sovereignty's damage-die step-down status was renamed off `diminished`/"Diminished" — a
