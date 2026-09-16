@@ -466,7 +466,10 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // nothing applied. The length assertion moves 1 → 10.
   // 2026-09-16, 14:40 ET: Ben answered all nine in one chat line — "default all except R150-b, 152-b" — and
   // they moved to §K.21 with §L stubs; the nine join the closed list below. The length assertion moves 10 → 1.
-  const ECOSYSTEM_RULINGS = ["R-145"];
+  // 2026-09-16, 16:40 ET: the PM files R-155 in §L — advantage and disadvantage per Chapter 3 of the
+  // Mistborn Handbook (per die, countable, the chooser named) against the engine's one-scalar fold. The
+  // length assertion moves 1 → 2.
+  const ECOSYSTEM_RULINGS = ["R-145", "R-155"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
