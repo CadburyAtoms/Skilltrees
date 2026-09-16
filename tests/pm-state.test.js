@@ -477,7 +477,9 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // Minion and Boss role features, which no Edha block carries). The length assertion moves 1 → 4.
   // 2026-09-16, 17:57 ET: Ben answered R-156, R-157 and R-158 in one word ("defaults"); all three moved to
   // §K.23 with §L stubs and join the closed list below. The length assertion moves 4 → 1.
-  const ECOSYSTEM_RULINGS = ["R-145"];
+  // 2026-09-16, 18:08 ET: the PM files R-159 in §L from the Channel design pass (PR #419) — the deity re-pricing
+  // R-151 (a) held for, re-opened against the rider / release split. The length assertion moves 1 → 2.
+  const ECOSYSTEM_RULINGS = ["R-145", "R-159"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

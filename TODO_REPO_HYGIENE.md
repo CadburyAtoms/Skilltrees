@@ -4687,6 +4687,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 198. [ ] R-150 (b): the five leyline colours re-based on the system's `power` item type — a non-core skill, a linked talent tree, `@scalar.power.<colour>.die` as the die, and the Channel action (item 200's design) as the power's embedded action — the last PR of the 3.x re-platforming (DATA-REBUILD + ENGINE at 3.x; after items 187 and 200) (2026-09-16)
 
+**Re-scoped 2026-09-16 from the Channel design pass (`docs/design/channel-actions.md`, PR #419, §5.3 item 1):** build §4 as written — the five `power` items and **the White Channel first, as the pilot**: the nine named widenings on existing primitives (§4.3 A – I; no bespoke subsystem), the `edha-channel` event, `data/channels.json` + `channelPowerDoc` in the builder, the ten schema declarations of the "while channelling" gate, `validate-packs.js` learning `power`, `tests/channel.test.js`, the White data pass (§3.3 into `data/leyline.json` and `data/authored/leyline-white.json` — sixteen cards change, nine untouched, the graph untouched), the sixteen CH 🤖 rows under `# BENCH — White`, and the docs in §4.4. The other four colours' riders are unworked (item 211); Blue's Countercurrent rename rides item 209. Item 210's yardstick re-run comes first.
+
 **Why:** R-150 answered (b) by Ben on 2026-09-16, against the PM's recommended (a). The published game models a metal as a `power` (3.1.0 `data/item/power.ts`; the Mistborn Handbook's 67 power items), and its power die table (d4 → d12 by rank) is exactly Edha's `(2 × rank + 2)` die — `[Tier][Die]` is tier copies of it. `unlocked` would then gate the sheet's skill row, `linkedSkills` and the die scalar natively, and the Channel (R-152 (b)) has a document to live on. `docs/analysis/metalworks-comparison.md` §c B10; `docs/analysis/talent-comparison-mistborn-radiant.md` §C.3.
 
 **What to do:** after the flip and after the Channel design is approved: a `power` item per colour in the leyline pack (`registerPowerType("leyline")`), the colour skill registered non-core with `hiddenUntilAcquired`, each tree's `talentTree` linked from its power, formulas rewritten from `(@tier)d(2 * @skills.<colour>.rank + 2)` to `(@tier)@scalar.power.<colour>.die` with a fixture that proves the two agree at every rank, the creation wizard granting the power instead of the skill rank, ⟳ Sync covering powers. Every leyline bench block re-run on the copy.
@@ -4705,7 +4707,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-151 (a) and R-153 (a).
 
-## 200. [ ] R-152 (b): the Channel design pass — a base action per leyline colour, one colour worked in full text with Ben's gate per section; Ben runs it in a session of his own from `docs/briefs/channel-design-pass.md` (DESIGN, DOCS-ONLY; the build is item 198) (2026-09-16)
+## 200. [x] DONE 2026-09-16 (PR #419) — R-152 (b): the Channel design pass — a base action per leyline colour, one colour worked in full text with Ben's gate per section; Ben runs it in a session of his own from `docs/briefs/channel-design-pass.md` (DESIGN, DOCS-ONLY; the build is item 198) (2026-09-16)
 
 **Why:** R-152 answered (b) by Ben on 2026-09-16, against the PM's recommended (a): *design it now as a `leyline-revision-guide` pass (one colour worked in full text, Ben's gate per section), build after 3.1.0.* The published families put the cost on a base power action and let talents ride it free; Edha's colours have no base action, which is the root of the deity atlas's 80 % costed / 0 % Special profile (R-151) and of the ecosystem review's "Blue and White have fifteen Investiture-costing talents and zero regen". `docs/analysis/talent-comparison-mistborn-radiant.md` §D-3.
 
@@ -4802,3 +4804,33 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** both files carry the sentence; the audit row is updated; gates green.
 
 **PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-157 (a).
+
+## 209. [ ] The Blue pass on the Channel model — Countercurrent (the Counterspell rename, M17), Blue's frame as the per-die disadvantage injector's second consumer, and Blue's twenty-five cards worked as §3 worked White's; Ben's own gated session from a brief like item 200's (DESIGN, DOCS-ONLY; the build rides item 198) (2026-09-16)
+
+**Why:** `docs/design/channel-actions.md` §5.3 item 2. The design worked one colour in full (White); Blue is next because its frame — *the deep reading*, a per-die disadvantage on one enemy — is the second consumer of the per-die placement item 202 builds, and because its `Counterspell` was renamed **Countercurrent** at gate 1 (M17 (a)), a DATA change that rides item 198.
+
+**What to do:** the PM writes a brief in the shape of `docs/briefs/channel-design-pass.md` scoped to Blue (§2.3's frame as the starting text; the same five gates; `docs/design/channel-actions.md` §1 and §4 as the fixed rule); Ben runs it in a session of his own; the deliverable is a §3-style section for Blue appended to the design document (or `docs/design/channel-blue.md`), with the before/after table and the mix against the bands; the Countercurrent rename lists every checklist row and doc that names the talent.
+
+**Done when:** the Blue section is merged with every gate approved; item 198's brief points at it for the Blue leg; the rename's data change is scheduled with 198.
+
+**PM:** lane H · model — (Ben's own session) · size L · deps items 200 (done), 202 · Filed 2026-09-16 by the PM from the design pass.
+
+## 210. [ ] Re-run the balance yardsticks against the Channel — `docs/analysis/talent-ecosystem/`'s turn arithmetic was priced on 1 Investiture per play and one Reaction per round; §2.2's deflect numbers and §3's free riders change both — before item 198 builds (DOCS + analysis tooling) (2026-09-16)
+
+**Why:** `docs/design/channel-actions.md` §5.3 item 4 and §3.5: under the Channel a full White round buys the frame and every rider for the Investiture that used to buy two plays; the tree's Investiture pricing falls from 17 to 1. The ecosystem review's damage and resource censuses (`damage-census.js`, `resource-economy.js`, the cross-cut's turn tables) and the bestiary yardstick (`docs/analysis/bestiary/YARDSTICK-2026-09-14.md`) were measured on the old pricing; item 198 must not build against stale numbers.
+
+**What to do:** extend `derive-dossiers.js` to read a proposed-cards overlay (the design's §3.3 table for White; later Blue) so the censuses can run on the proposed data without touching `data/`; re-run the damage, resource and combat-share censuses for White before / after; re-run the three yardstick fights on paper with White's frame (deflect to the line) and its riders free; write `docs/analysis/channel-yardstick-2026-09-16.md` with the deltas and a verdict against R-134's per-role targets and R-138's per-round line. No data change.
+
+**Done when:** the document exists with before / after tables for White, the tooling accepts the overlay, and item 198's brief cites the verdict. Gates green.
+
+**PM:** lane R · model opus · size M · deps none · Filed 2026-09-16 by the PM from the design pass.
+
+## 211. [ ] The Black, Red and Green passes on the Channel model — each a gated session on `docs/design/channel-actions.md` §2's frame, in Ben's own sessions, before their Channels build (DESIGN, DOCS-ONLY; the builds ride item 198) (2026-09-16)
+
+**Why:** `docs/design/channel-actions.md` §5.3 item 6: the five frames are decided (§2), but only White's twenty-five cards are worked. Black (*the hunt*), Red (*the rising edge*, with Momentum and Conflagration's Realms swapped at gate 2) and Green (*the ground*) each want a session like item 200's before their Channel ships.
+
+**What to do:** after the White pilot is benched on the Route A copy (item 198): one brief per colour in the shape of `docs/briefs/channel-design-pass.md`, scoped to the colour and its §2 frame; Ben runs each; the deliverable is a §3-style section per colour, appended to the design document or its own file, with the before/after table and the mix against the bands. One colour per session.
+
+**Done when:** all three sections are merged with every gate approved and item 198's brief covers all five colours.
+
+**PM:** lane H · model — (Ben's own sessions) · size L ×3 · deps item 198's White pilot benched · Filed 2026-09-16 by the PM from the design pass.

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T21:59:23.975Z",
+  "generatedAt": "2026-09-16T22:07:40.853Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "22d66d51ff",
-    "commit": "5d05d7b",
+    "hash": "7bfc012c0c",
+    "commit": "f94f4d1",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "idle",
-    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "waitingOn": "Ben: R-159 (the deity re-pricing on the Channel model — recommended a, a gated deity pass in your own session); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
@@ -2519,9 +2519,9 @@
       "model": null,
       "size": "L",
       "deps": "Ben's time",
-      "status": "queued",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 419
     },
     {
       "pos": 205,
@@ -2618,6 +2618,42 @@
       "status": "queued",
       "statusDetail": null,
       "pr": null
+    },
+    {
+      "pos": 213,
+      "item": "209",
+      "title": "The Blue pass on the Channel model — Countercurrent, Blue's frame on the per-die injector, Blue's twenty-five cards worked as White's; Ben's own gated session (DESIGN, DOCS-ONLY). Filed by the PM from the design pass",
+      "lane": "H",
+      "model": null,
+      "size": "L",
+      "deps": "items 200 (done), 202",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 214,
+      "item": "210",
+      "title": "Re-run the balance yardsticks against the Channel — the censuses and the three yardstick fights on White's proposed cards, before item 198 builds (DOCS + analysis tooling). Filed by the PM from the design pass",
+      "lane": "R",
+      "model": "opus",
+      "size": "M",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 215,
+      "item": "211",
+      "title": "The Black, Red and Green passes on the Channel model — one gated session per colour in Ben's own sessions, before their Channels build (DESIGN, DOCS-ONLY). Filed by the PM from the design pass",
+      "lane": "H",
+      "model": null,
+      "size": "L ×3",
+      "deps": "item 198's White pilot benched",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -2665,7 +2701,9 @@
     }
   ],
   "benOnly": [
-    "the session-one confirmation (R-144), an R-145 veto if he disagrees, and the Channel design pass's report. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
+    "R-159",
+    "the session-one confirmation (R-144)",
+    "an R-145 veto if he disagrees. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
     "nobody else touches it. the session-one confirmation (R-144)",
     "an R-145 veto if he disagrees",
     "the Channel design pass when he has time. Standing instruction from Ben (2026-09-16): the Mistborn Handbook is the rules source — anywhere the engine, the docs, the skills or memory contradict its Chapter 3 we correct ourselves",
@@ -2674,7 +2712,9 @@
     "item 202 (opus, L — R-155 (a), dual-mode, 2.1.0-safe, phase 1 first)",
     "items 203, 204, 205 and 208 (sonnet, XS – S — the movement ladder, the opposed-test tie, the Diminished rename, the advancement-table note; no deps)",
     "item 206 (opus, L — the Minion and Boss features, R-158 (a))",
+    "item 210 (opus, M — the yardstick re-run on White's proposed cards, before 198)",
     "item 207 behind 202",
+    "items 209 and 211 are Ben's own design sessions",
     "items 188, 189, 190, 192, 196, 199 (sonnet, XS – S)",
     "items 193 and 194 (sonnet, S — both 2.1.0-safe, F5 / REBUILD, nothing deploys until the freeze lifts)",
     "item 191 behind 183",
@@ -2689,34 +2729,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:09",
-      "at": "2026-09-14T06:09:00.000Z",
-      "item": "Items 142 + 143 + 150 (+ the Blue header comment) — work-item, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "33 min, 179 tool uses (252 turns)",
-      "weighted": "6.5M",
-      "weightedM": 6.5,
-      "outcome": "reviewed 02:44 — merged on green after the PM's bookkeeping commit on the branch, NO trailers, five themed commits, no corrections; CI green on 4c312c6, gates 12/12 + --ci 14/14 (1270 tests); the worker merged main itself. Engine: onMissing: halt / continue on H3 edha-owner-list (list and counter mode; default halt, byte-identical), whenTargetStatus / unlessTargetStatus on H3, edhaTargetStatusesAt + the dispatcher's targetStatusesAtEntry snapshot (04-black-ritual.js), edhaClearPowerState minus frightened; the registry snapshot and lint-refs 9b's FIELDS gain the two names (unlessTargetStatus had never been enumerated). Data: Isolating Pressure's three rules + card; five release carriers' capFormula. Parity 123 documents, exactly 5 differ. Six pins in tests/omen-branch-dial.test.js through the real registered executors, four reversions shown failing (a null snapshot, a disabled gate block, the restored frightened, the deleted dial). The worker's one judgment: the snapshot over an up-front gate pass — one gating mechanism per handler, no skip flag. 🤖 OM-3 / OM-4 / OM-5 (REBUILD) + PW-2 (F5). ENGINE-ONLY F5 + DATA REBUILD deity — the PM deploys next",
-      "pr": 383
-    },
-    {
-      "date": "2026-09-14",
-      "time": "02:47",
-      "at": "2026-09-14T06:47:00.000Z",
-      "item": "#383 (items 142 + 143 + 150) merged at 02:47:49 after the PM's bookkeeping commit (CI green on b632077; one PM slip on the way — a literal pipe inside a backticked board cell shifted the status column and failed the pm-state pin; fixed before the push, noted in memory); the worktree and remote branch removed; main = 90cfce6",
-      "itemNo": "383",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 383
-    },
     {
       "date": "2026-09-14",
       "time": "02:48",
@@ -3528,9 +3540,37 @@
       "weightedM": null,
       "outcome": "filed",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "18:08",
+      "at": "2026-09-16T22:08:00.000Z",
+      "item": "The Channel design pass (item 200) LANDED as #419 — Ben's own session, four commits on design/channel-actions, five gates approved in order: the Channel rule (§1), the five frames (§2), White worked (§3: sixteen of twenty-five cards change, graph untouched), the build (§4: nine widenings, data/channels.json, the edha-channel event, sixteen CH rows), the close-out (§5). No new ruling from the pass. The PM merged main into the branch to clear the changelog / README conflict (both deltas kept, count bumped), merged on the head sha; the harness worktree .claude/worktrees/channel-actions-design-* swept",
+      "itemNo": "419",
+      "model": "ben + fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 419
+    },
+    {
+      "date": "2026-09-16",
+      "time": "18:08",
+      "at": "2026-09-16T22:08:00.000Z",
+      "item": "Close-out of the design pass: item 200 ticked (#419); item 198 re-scoped to build §4 White-first; items 209 (the Blue pass), 210 (the yardstick re-run before 198), 211 (the Black / Red / Green passes) filed; R-159 filed from §5.3 item 5 (the deity re-pricing re-opened, recommended (a)); §5.3 item 3, the per-die docs correction, was already done by R-155's PR and item 207 carries the §K notes; tests/pm-state.test.js re-pinned 1 → 2; the pointers, the changelog and the phone board updated",
+      "itemNo": "419",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~15 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed",
+      "pr": null
     }
   ],
-  "runLogTotal": 374,
+  "runLogTotal": 376,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
