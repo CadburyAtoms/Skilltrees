@@ -81,6 +81,8 @@ Full detail and citations in `SYSTEM-PRIMER.md`. The four that change conclusion
 2. **1 Reaction per round**, and **3 Actions per slow turn / 2 per fast**.
 3. **Draw Mana is 1 Action for Tier Investiture** — so 1 Investiture per Action at levels 1–5.
    Investiture max is `2 + max(AWA, PRE)`, about 4 at level 1.
+
+   > ⚠️ **Correction, 2026-09-16 (found by item 201's audit):** R-126 (a), answered 2026-09-13, changed Draw Mana's yield from Tier to **your rank in the colour drawn**; SYSTEM-PRIMER was updated then and this line was not. Read R-126 in `EDHA_RULINGS.md` §K.12 for the live number.
 4. **Level 6 is a double step for leyline and deity, and not for heroic.** Tier goes 1→2 and the
    rank cap goes 2→3 at the same level, so `[Tier][Die]` jumps `1d6` → `2d8` — 3.5 average to 9,
    in one level.
