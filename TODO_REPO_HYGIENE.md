@@ -4727,6 +4727,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 202. [ ] R-155: advantage and disadvantage per Chapter 3 — a counter of live sources, one-for-one cancellation, placement on the d20, the plot die or a damage die by the chooser Chapter 3 names, the dialog when it opens and a fixed priority when it does not (ENGINE, F5; dual-mode; blocked on R-155) (2026-09-16)
 
+**From item 201's audit (2026-09-16):** two more lines fall to this build — `EDHA_FOUNDRY_HANDOFF.md` §10's *"Quarry advantage STOMPS an active disadvantage (house convention)"* is a second deviation from the one-for-one cancellation and must be rewritten when the harvest-and-net step lands, and §10's `nextTestMod` fold line beside it describes the fold this item deletes. The reference is the PM's to edit; this item's PR says what §10 should read.
+
 **Unblocked 2026-09-16 16:47 ET:** R-155 answered (a) by Ben in chat; filed in `EDHA_RULINGS.md` §K.22. Phase 1 first (the counter, the cancellation, the fixed-priority placement), phase 2 in the same PR or the next; both 2.1.0-safe.
 
 **Why:** Chapter 3 says each advantage doubles one die of the roller's choice — d20, plot die or any other die, each once — and each disadvantage doubles one die of the opponent's choice, after cancelling one for one; enemy NPC tests reverse the roles. The system holds one tri-state per die and counts nothing; Edha writes only the d20 channel and folds every source into one scalar (`edhaNextModFoldMode`, `15-blue-calculation.js`), so a second advantage is discarded. R-155 carries the menu; `EDHA_RULINGS.md` §L.
@@ -4776,3 +4778,13 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** a minion block states the Minion feature, is removed by the hit that would down it, and cannot critically hit; a boss block states the Boss feature and can take a fast and a slow turn in one round; the census and the standard are updated; the yardstick re-run is recorded; gates green. 🤖 bench rows per feature.
 
 **PM:** lane B · model opus · size L · deps R-158 · Filed 2026-09-16 by item 201's audit.
+
+## 207. [ ] Re-read R-98, R-100 and R-110 against Chapter 3 once item 202 lands — their premise ("a second advantage is worth exactly zero") was the engine's fold, not the rule; re-file as a ruling if a conclusion changes (DOCS / RULING; after item 202) (2026-09-16)
+
+**Why:** item 201's audit (PR #417, 2026-09-16) recorded, rather than re-filed, three answered rulings whose premise contradicts the handbook: R-98 (Blue's two disadvantage talents "compete for the same roll"), R-100 ("advantage does not stack — three specific collisions") and R-110. Under Chapter 3 a second advantage or disadvantage is real value on a different die, so the "collisions" are artefacts of the fold item 202 deletes. Re-opening their conclusions is a ruling, which is Ben's, not the worker's.
+
+**What to do:** after item 202 merges: re-read the three rulings' answers against the built behaviour and the ledger row; for each, either record in §K that the answer stands under the rule as built (a dated line under the entry), or file one new §L ruling naming what changed and the options. Update `tests/pm-state.test.js`'s open-set pin for any new ruling.
+
+**Done when:** each of the three carries a dated post-202 line, or a §L ruling exists for it; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps item 202 · Filed 2026-09-16 by the PM from item 201's out-of-scope findings.
