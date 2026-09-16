@@ -4549,7 +4549,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM decisions, settled 2026-09-15 (from the check's two questions):** the authored overlay **keeps its seven keys** and the builder translates — that holds `lint-refs.js:50`, CLAUDE.md's seven-key rule and all 354 `activation` / 427 `formula` keys, and Edha has one action per talent today. `use` → `use-action` **translates at build** until the flip; the 189 authored rules are rewritten once, in item 187, so the JSON matches what the Events tab shows.
 
-**Done when:** target-2 scratch builds hash identical before and after; target 3 passes the new validator and a fixture diff against the system's own compendium talents (`subtle-takedown.json`, `fatal-thrust.json`); `node scripts/gates.js --ci` green.
+**Done when:** target-2 scratch builds hash identical before and after; target 3 passes the new validator and a fixture diff against `tests/fixtures/embedded-actions-shapes.json` (item 192, 2026-09-16: 881 documents from the installed Mistborn Handbook module reduced to 187 shapes, key paths + field types only, no licensed text) rather than two hand-picked files — the two system compendium talents item 177 named (`subtle-takedown.json`, `fatal-thrust.json`) are themselves pinned, reduced the same way, in `tests/fixtures/system-talent-shapes-3.1.0.json` (see `tests/embedded-action-shapes.test.js` for how "matches"/"is compatible with" is checked, given the 3.0.0-vs-3.1.0 schema gap that test documents); `node scripts/gates.js --ci` green.
 
 **PM:** lane B · model opus · size L · deps item 183. Filed 2026-09-15 by the PM from item 177's check, §c PR 4.
 

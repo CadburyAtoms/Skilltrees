@@ -37,6 +37,28 @@ python docs/analysis/talent-comparison/compare.py <scratch>/mistborn-talents.jso
 per-tree appendix. The Radiant rows are a spreadsheet summary, so its damage column is a prose
 count, not a formula count — the document says so wherever it quotes one.
 
+## The shape-only fixture (TODO_REPO_HYGIENE item 192)
+
+`shape-corpus.js` reads the same `dump-packs.js` JSON as step 1 above and reduces every item
+document (talent/power/action/path/goal/talent_tree/equipment, and every action embedded at
+`system.__embedded.items[]`) to its SHAPE — key paths and field types only, values replaced by a
+type marker, `name`/`description`/`img`/`_id`/`_stats`/`folder`/`sort`/`ownership`/`flags` dropped
+entirely, a dynamically-keyed map (talent-tree `nodes`, a `grant-expertises` handler's free-text
+`expertises` map, …) collapsed to one `{"*": …}` entry — so no licensed text ever reaches the
+committed output. That output is `tests/fixtures/embedded-actions-shapes.json` (regenerate with
+the command below whenever the module updates; there is no automated staleness gate for it, since
+regenerating needs a real Foundry install with the module):
+
+```
+node docs/analysis/talent-comparison/shape-corpus.js <scratch>/mistborn-json tests/fixtures/embedded-actions-shapes.json --module-version 1.0.0
+```
+
+Item 185's Embedded-Actions builder diffs its own output's shapes against this fixture's 200+
+real documents instead of two hand-picked files. `tests/embedded-action-shapes.test.js` proves the
+fixture is usable against the two system compendium talents item 177 named — see that file's
+header comment for why the check is "shape-compatible with", not "byte-identical to", given the
+real 3.0.0-vs-3.1.0 schema gap it found and documents.
+
 ## What each row of the Mistborn table carries
 
 `flatten-mistborn.py` reads a 3.x talent the way the system does: activation, cost and consumption
