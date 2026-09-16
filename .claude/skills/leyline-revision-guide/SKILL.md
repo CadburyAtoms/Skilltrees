@@ -89,7 +89,68 @@ Based on analysis of 374 official talents across 6 Heroic paths and 9 Radiant pa
 | Reaction       | 5%       | 2%        | ~5–8%            |
 | 3 Actions      | 2%       | 1%        | **0%**           |
 
-The current leyline trees have 0% Specials and 14% 3-Action costs — both need fixing. Specials are the most important gap: they are elegant, action-efficient, and the backbone of official talent design.
+**Corrected 2026-09-16** (`docs/analysis/talent-ecosystem/crosscut/cost-curve.md` §0(b)) — this
+claim is stale. Leyline now runs **21.6% Specials** and **0% 3-Action talents** across all 125
+rows; both problems the sentence above names are already fixed, and re-fixing them wastes an
+audit. The live gaps are Reactions (14% against 2 – 7% in every published family, R-95/R-96) and
+`leyline/Black`'s Passive share (60% against the ~35% target, with the atlas's worst Special
+share at 4%).
+
+### Published benchmarks (2026-09-16)
+
+From `docs/analysis/talent-comparison-mistborn-radiant.md` §C.1 (action-type mix) and §C.2 (cost),
+the eight-family measurement behind R-151 (a) and R-153 (a) (`EDHA_RULINGS.md` §K.21). Use this
+table, not the aspirational one above, when checking a tree against what the published game
+actually does.
+
+**§C.1 — action-type mix (% of family's talents):**
+
+| Family | n | Passive | Special | 1 Act | 2 Act | 3 Act | Free | Reaction | Passive + Special |
+|---|---|---|---|---|---|---|---|---|---|
+| Mistborn — Allomancy | 83 | 45 | 37 | 7 | 0 | 0 | 5 | 6 | **82** |
+| Mistborn — Feruchemy | 85 | 29 | 41 | 13 | 5 | 1 | 4 | 7 | **71** |
+| Mistborn — Metalborn paths | 38 | 50 | 37 | 5 | 0 | 0 | 8 | 0 | **87** |
+| Radiant (9 orders) | 225 | 38 | 39 | 7 | 10 | 1 | 3 | 2 | **76** |
+| Official heroic (control) | 149 | 34 | 30 | 14 | 8 | 2 | 7 | 5 | 64 |
+| **Edha leyline** | 125 | 43 | 22 | 11 | 7 | 0 | 2 | **14** | 66 |
+| Edha deity | 90 | 16 | 0 | 38 | 23 | 11 | 7 | 6 | 16 |
+| Edha heroic | 150 | 34 | 27 | 13 | 9 | 3 | 8 | 7 | 61 |
+
+Every published family runs 71 – 87% Passive + Special. Edha leyline (66%) sits inside that band
+and is outside it only on Reactions.
+
+**§C.2 — cost (% of family's talents that consume a pool):**
+
+| Family | Costed | Of which | Pool refill | Per-effect limit | Variable spend |
+|---|---|---|---|---|---|
+| Mistborn — Allomancy | **34%** | Investiture 20%, Focus 13% | scenes start full (1 if Surprised); *Drink Vial* refills | your Allomancy rank | yes — *"1 or more, up to your limit"*; flaring = spending the limit |
+| Mistborn — Feruchemy | **46%** | metalmind charges 40%, Focus 6% | Store earns 1 charge/scene; capacity by tier | 1 charge per Tap; talents raise it | yes — many *"instead of 1 charge, spend any number"* talents |
+| Mistborn — Metalborn paths | 8% | Focus 5%, Investiture 3%, uses 3% | — | — | — |
+| Radiant | **29%** | Investiture 27%, Opportunity/Focus 2% | Breathe Stormlight from spheres | *"up to your ranks in [surge]"* on the variable ones | yes — 10 talents |
+| Official heroic | 32% | Focus (1: 14%, 2: 13%, 3: 3%) | rest | — | rare (3) |
+| **Edha leyline** | **48%** | Investiture 48% (1: 41%, 2: 6%, 3: 1%) | Draw Mana, 1 Action → tier | none | 2 talents ("Variable Investiture") |
+| Edha deity | **80%** | Investiture 80% (1: 38%, 2: 31%, 3: 10%, 4: 1%) | Draw Mana | none | none |
+| Edha heroic | 31% | Focus (1: 15%, 2: 13%, 3: 3%) | rest | — | — |
+
+Edha leyline at 48% costed is above every published family except Feruchemy (whose "cost" is
+charges earned in downtime, not paid on the spot) — see the variable-spend convention below for
+the one lever that is cheap to apply going forward.
+
+### Variable spend ("1 or more, up to your rank")
+
+**R-153 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.21) — a convention for **new and revised**
+talents; no sweep of existing cards. Every published Invested family uses variable spend (20 of
+83 Allomancy costs, 10 Radiant "Variable Investiture" talents); Edha leyline has two, Edha deity
+has none. When a talent's effect already scales with something numeric — damage dice, targets,
+range, duration — let the player spend more Investiture for more of it instead of writing a flat
+cost:
+- Use the consume dialog's `{min: 1, max: <rank>}` row (the same shape the Mistborn packs write
+  `max: -1` for "up to your limit" on). The limit is the talent's own colour rank — the "Metallic
+  Art limit" equivalent.
+- Card phrasing: `"Spend 1 or more Investiture, up to your [Colour] rank, to …"`, with the effect
+  scaling per point spent stated in the same sentence.
+- Only for talents whose effect is already a numeric scale. A talent with a single binary outcome
+  (on/off) does not get variable spend just to add one.
 
 ### Description Length
 - Official average: ~20 words per talent description.

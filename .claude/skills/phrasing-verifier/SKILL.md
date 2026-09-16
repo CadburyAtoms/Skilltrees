@@ -355,6 +355,18 @@ upgrade applied at the moment of another talent's placement may embed the spend
 later in the description, e.g. "When you place a Charge, spend an additional 1
 Investiture to declare it a Pinpoint Charge." Do not flag these.
 
+### Rule 12: Variable-spend convention ("1 or more, up to your rank")
+
+**R-153 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.21; `docs/analysis/talent-comparison-mistborn-radiant.md`
+§D-4) — a convention for **new and revised** talents going forward; there is no sweep of existing
+cards to flag against it. When a talent's effect already scales with a numeric quantity (damage
+dice, targets, range, duration) and its cost is being written or revised, prefer a variable spend
+over a flat one: the consume dialog's `{min: 1, max: <rank>}` row (the Mistborn packs' shape for
+"up to your limit" is `max: -1`), with the limit set to the talent's own colour rank. Card
+phrasing: `"Spend 1 or more Investiture, up to your [Colour] rank, to …"`, with the per-point
+scaling named in the same sentence. Do not flag existing flat-cost talents for this — it is a
+forward convention, not a phrasing defect.
+
 ---
 
 ## Edge cases
