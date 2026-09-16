@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T00:16:02.712Z",
+  "generatedAt": "2026-09-16T12:24:26.023Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "62938fb25c",
-    "commit": "c60fb2f",
-    "branch": "pm/batch-close-out-0915",
+    "hash": "070e0611df",
+    "commit": "4cba548",
+    "branch": "pm/handoff-0916",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -39,14 +39,14 @@
   "windowStatus": {
     "open": false,
     "changeAt": null,
-    "nextOpenAt": "2026-09-16T01:00:00.000Z"
+    "nextOpenAt": "2026-09-17T01:00:00.000Z"
   },
   "pm": {
-    "status": "awake",
-    "note": "PM of record since 11:49 ET. All four Sonnet workers are in and merged: the stale Chaos header (#406), the Dodge arm button (#407, its two dials filed as R-145 APPLIED), the three card-claim defects (#408, fix pass 14) and the per-item-type lint gate (#409, the first migration PR). Three follow-ups filed from what they found in passing: items 188, 189, 190 — all small Sonnet work, queued on your word. Item 183, the resolver that unblocks the damage-card builds, is queued for the next Opus window. Nothing was deployed: your table is still on 2.1.0, untouched, while session one is pending.",
-    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); R-145 only if you want to veto a Dodge dial; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
+    "status": "stopped",
+    "note": "This session stopped at Ben's word on the morning of 2026-09-16 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened. Open for the next PM: R-145 (applied, wants a veto only), item 183 (the resolver that unblocks the damage-card builds — Opus, needs Ben's word), items 188-190 (small Sonnet), and the 3.1.0 migration items 184-187 behind 183.",
+    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
     "nextWakeAt": null,
-    "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
+    "session": "STOPPED 2026-09-16 (the 2026-09-15 11:49 ET hand-started session; Ben starts the next PM of record himself)"
   },
   "workers": [],
   "usage": null,
@@ -2449,9 +2449,9 @@
     }
   ],
   "benOnly": [
-    "tell the PM when session one has happened — that releases the swap to 3.1.0 (item 187 and the Route B upgrade, about an hour of his time)",
-    "and say if the damage-card builds should reach the table before session one rather than after. R-145 is filed APPLIED from item 181's build — the Dodge button's two dials, the Focus paid on arming and an unused arm clearing at the end of your own next turn — so it wants a veto, not a decision",
-    "silence keeps both."
+    "that session-one confirmation, which also releases the ~1 hour of Route A (a second Foundry data path on port 30001 with his own license — the agent never handles it, docs/analysis/cosmere-rpg-3.1.0-compatibility.md §(d))",
+    "an R-145 veto if he disagrees",
+    "and his word before any dispatch. Housekeeping left alone on purpose: two stale worktrees under .claude/worktrees/bestiary-thalendor-* at 2cd2f23 belong to other sessions — sweep them only if Ben says so."
   ],
   "inbox": [],
   "foundry": {
@@ -2461,20 +2461,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "01:33",
-      "at": "2026-09-14T05:33:00.000Z",
-      "item": "#378 (item 140) merged at 01:33:45 after the PM's main merge + bookkeeping commit (CI green on c246f32); the worktree removed. Two PM notes: the merge chain had piped the gates through tail, masking a failing lint-changelog (the resolver counted dated headings, 163, where the gate counts every ##  heading, 165) — caught and recounted before the push, re-gated with the exit code checked; and --delete-branch left the remote branch behind again → deleted by hand with tonight's other five merged PR branches (107, 108, 132, 135, 145); the older twelve remain Ben's",
-      "itemNo": "378",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 378
-    },
     {
       "date": "2026-09-14",
       "time": "01:28",
@@ -3300,9 +3286,23 @@
       "weightedM": null,
       "outcome": "recorded",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "08:24",
+      "at": "2026-09-16T12:24:00.000Z",
+      "item": "PM handoff — this session STOPPED on Ben's word (*\"Close this session down, I'm starting a new pm session of record this morning\"*). Handed over clean: main at 4cba548, tree clean, no workers, no open PRs, nothing owed to the machine. The next PM inherits the R-144 deploy freeze (nothing that changes play reaches the live 2.1.0 table until Ben says session one has happened), R-145 as the only open ruling and APPLIED (veto only), item 183 queued for an Opus window on Ben's word, and items 188 – 190 queued Sonnet",
+      "itemNo": null,
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
     }
   ],
-  "runLogTotal": 363,
+  "runLogTotal": 364,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
