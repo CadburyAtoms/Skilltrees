@@ -4363,6 +4363,8 @@ The item stays open for the ten held talents, which wait on R-142.
 
 ## 177. [ ] Upgrade the `cosmere-rpg` system 2.1.0 → 3.1.0 — a compatibility check on a copy of the world before the live upgrade (TOOLING, then ENGINE / DATA as the breaks demand; awaits Ben's go) (2026-09-15)
 
+**From the 2026-09-16 Metalworks comparison (`docs/analysis/metalworks-comparison.md` §a, §d):** the break list holds at the source; 3.1.0 is still the latest stable (3.1.1 is a pre-release). Route A step 3 should also copy `modules\cosmere-rpg-mistborn-handbook` — Ben's installed Mistborn Handbook module declares `cosmere-rpg` 3.0.2, so it belongs on the copy (X2, a 🤖 row) and off the 2.1.0 world.
+
 **Why:** Ben asked on 2026-09-15 whether the installed system is behind. Measured: `C:/Users/benhe/AppData/Local/FoundryVTT/Data/systems/cosmere-rpg/system.json` reads **2.1.0** (released 2026-05-15, by The Metalworks — a community system carrying Brotherwise-licensed content). Stable releases since, per https://github.com/the-metalworks/cosmere-rpg/releases: **3.0.0** (2026-07-30), 3.0.1 (07-31), 3.0.2 (08-20), **3.1.0** (2026-09-03, latest stable), plus a 3.1.1 pre-release (09-09). Foundry core is 13.351, which already satisfies 3.1.0 (minimum 13.346, verified 13.351). **3.0.0 replaced item Activations with Embedded Actions** and added combat event triggers. Edha reads activations everywhere: the authored overlay's `activation` key on every talent, `edhaOnHitIsItemSpecific` and `edhaTalentColor` (`activation.type` / `activation.skill`), the attack and damage wrappers around the system's roll and `applyDamage`, and `data/native-vocabulary.json`, which was snapshotted at 2.1.0. Two more reasons to do it now: Brotherwise's official Mistborn Foundry products (Mistborn Handbook, Mistborn World Guide, Mistborn Legacy — content add-ons, released about 2026-09-09/10) require 3.1.0, and R-143's attack-damage work would otherwise be built on 2.1.0 and then rebuilt. The release notes 2.1.0 → 3.1.0 say nothing about auto-applying damage, grazes, plot-die prompts or reactions (a research pass on 2026-09-15; a direct read of the repo's CHANGELOG and diff is still owed).
 
 **What to do:** back up Ben's world and the module first. Install 3.1.0 into a SEPARATE Foundry data path or a copied world — never Ben's live world; installing is a download Ben approves. Then: read the 2.1.0 → 3.1.0 CHANGELOG and diff for module-facing changes; `node scripts/gates.js --ci`; the pack build against the new system; `scripts/dump-native-vocabulary.js` for the 3.1.0 vocabulary and its diff; and a smoke bench on the copy (use a talent, apply damage from the system's card, ⟳ Sync Talents, a contest-core test, the Opportunity menu, a Strike). Record every break with its root cause and a fix class, fix in themed PRs, and only then upgrade the live world with Ben present.
@@ -4511,6 +4513,8 @@ So once the engine applies damage (item 179), Dodge is still called at the table
 
 ## 183. [ ] Migration PR 2 — the dual-mode use-subject resolver and action accessor: an embedded action resolves back to the talent whose rules Edha reads (ENGINE, F5; no behaviour change on 2.1.0) (2026-09-15)
 
+**From the 2026-09-16 Metalworks comparison (§a):** there are six `useItem` registrations, not five — the sixth, `52-green-instinct.js:130`, is the Fellstag's *Herding Antlers*, an adversary action, actor-level and unaffected; add it to the inventory so the list is complete.
+
 **Why:** blockers B2, F1, F3 and B3's engine half, from item 177's check (PR #403). On 3.1.0 `CosmereItem#use` returns null unless the item is an action, and `preUseItem` / `useItem` fire with the **embedded action**, whose `events` are empty and which `edhaIsTalent` (`31-trigger-gating-cost.js:37-39`) rejects. That silently inerts 24 `preUseItem` sites and 3 talent `useItem` sites — every pre-cost veto, the single-target gate, the cost-shortfall announcer, the stance toggle and the burst takeover — and every engine read of a talent's own `system.activation` / `system.damage` falls back to a default die, a wrong colour or an empty cost list. The check lists every call site.
 
 **What to do:** two generic helpers, both no-ops on 2.1.0 (an item can only be an action when `item.isAction?.()` is true and its parent is an Item, which 2.1.0 has no way to produce):
@@ -4525,6 +4529,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 184. [ ] Migration PR 3 — ⟳ Sync, summons, statuses and the sheet injectors under Embedded Actions (ENGINE, F5) (2026-09-15)
 
+**From the 2026-09-16 Metalworks comparison (§c B1, B4; §d):** if R-146 (a) is taken, the F5 step becomes item 191 — registered sections through `registerActionListSection` / `registerTalentListSection` instead of remapping action rows to their root. Also (one hunk): register the five colours through `cosmereRPG.api.registerSkill` with `source: "edha-content"` instead of the raw `COSMERE.skills[key] = …` write at `01-shared-core.js:134-139`. The "Allomancy hide decision" is "hide every non-core skill the actor has no `power` for" — with the Mistborn module active there are two (`all`, `fer`), and a non-core skill shows whenever its config lacks `hiddenUntilAcquired` (3.1.0 `skills-group.ts:106`).
+
 **Why:** breaks F2, B4 (the summons half), F4, F5 and C2 of item 177's check. ⟳ Sync Talents copies `system.activation` / `system.damage` from the pack source onto owned talents (`26-talent-sync.js:134-156`); at 3.1.0 the source has neither key, so an owned talent keeps its migration-time cost, skill and damage forever and a card fix never reaches the roll. Summons write attacks with `activation.skill` / `attribute` (`29-summons.js:144-184`), which moved to `skillTest`. The system now defines its own `diminished` condition, so `edhaRegisterStatuses` skips Edha's Sovereignty mark and `edhaHasCondition` starts returning true for it. And the ⊙ range button and the ritual HP-cost cell key on an Actions-tab row's `data-item-id`, which is now an action's id, not an item's.
 
 **What to do:** ⟳ Sync Talents and ⟳ Sync Adversaries create, update or delete embedded actions by `system.id`; summons write the 3.x action shape; Edha's `diminished` status id is renamed (the card prose can keep the word); the ⊙ and HP-cost injectors map an action row back to its root item; decide whether to hide the system's new non-core `all` (Allomancy) skill from Edha sheets, and say which in the PR. All dual-mode behind item 183's helpers.
@@ -4534,6 +4540,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **PM:** lane B · model opus · size M · deps item 183. Filed 2026-09-15 by the PM from item 177's check, §c PR 3.
 
 ## 185. [ ] Migration PR 4 — the pack builder emits Embedded Actions behind `EDHA_SYSTEM_TARGET`, default 2 (DATA-REBUILD; nothing deploys while the default is 2) (2026-09-15)
+
+**From the 2026-09-16 Metalworks comparison (§a N1, §c B9; §d):** the installed Mistborn Handbook module's packs are 206 talents in the 3.x shape and corroborate every prescription above one by one — one embedded action per non-passive and none per passive (106 / 62 in `metallic-arts`), consumption rows carrying the ancestor-Actor `matchDocument` step, `item_resource` charges, `skill_test` + `@scalar.power.<id>.die` damage, and `modality` on BOTH the talent and its action (the system's own `flamestance.json` agrees). Item 192 builds the shape-only fixture corpus this item should diff against instead of two files.
 
 **Why:** blockers B1, B3 (the data half), B4 and B5, and break F6, from item 177's check. A talent built by today's pipeline loads on 3.1.0 with no action at all: nothing to click on the tree, every new pick unusable, and no `migrateData` anywhere in 3.1.0 to convert an old-shape field — it is dropped at load. The system's own world migration never touches compendia, so Edha's five packs stay 2.x-shaped whatever the world does. Adversary actions lose their costs and skills (78 actions, 53 costed), and weapons lose the flat model's `+N` damage and attack bonus (50 weapons, 36 flat).
 
@@ -4556,6 +4564,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **PM:** lane B · model sonnet · size M · deps item 185. Filed 2026-09-15 by the PM from item 177's check, §c PR 5.
 
 ## 187. [ ] Migration PR 6 — the flip: default target 3, the vocabulary regenerated, the 189 `use` rules rewritten, in the live-upgrade window (TOOLING + DATA + DOCS; REBUILD + ⟳ Sync Talents + ⟳ Sync Adversaries) (2026-09-15)
+
+**From the 2026-09-16 Metalworks comparison (§a N3, §d):** C2's hide covers `fer` as well as `all` when the Mistborn Handbook module is active; the Route A copy should have that module enabled so the smoke bench sees a second module on 3.1.0 (X2). Items 195 (round events) and R-147's pilot can only start after this PR.
 
 **Why:** the last step of item 177. Everything before it is dual-mode or behind the target flag, so the live table stays on 2.1.0 until this lands with Ben present.
 
@@ -4598,3 +4608,63 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** `node scripts/check-scripts-readme.js` reports nothing missing, and either the gate list includes it or the PR says why not. Gates green.
 
 **PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from PR #409's out-of-scope finding.
+
+## 191. [ ] R-146 (a): sheet sections through the system's API — the ⊙ range button, the ritual HP-cost cell, the path-slot budget readout and the adversary-sync controls become registered Actions-tab / Talents-tab sections, and the selector injectors retire as each is replaced (ENGINE, F5; dual-mode, a no-op on 2.1.0; blocked on R-146) (2026-09-16)
+
+**Why:** item 177's F5: on 3.1.0 the Actions tab lists embedded actions, so every injector keyed on a row's `data-item-id` (`25-sheet-qol.js:203-208`, `35-targeting-attunement-range-aoe-templates.js:131-150`) loses its row; `23-sheet-path-slots-the-budget-readout.js:36-45` and `27-adversary-pack-sync.js:292-344` inject by selector too. 3.1.0 exposes `registerActionListSection` / `registerTalentListSection` and their dynamic-section generators (`api/sheet.ts`), the seam the Mistborn Handbook module uses for its own section. `docs/analysis/metalworks-comparison.md` §c B1.
+
+**What to do:** in item 184's PR (or its own, after 183): one registered section per injector where the API fits, guarded so it is a no-op on 2.1.0; the selector code stays until its section is live on the copy bench, then goes. Where the API does not fit (the consume dialog, the header readout) keep the selector and say so in the header comment. Pinned tests per section through the harness's sheet stubs.
+
+**Done when:** the four surfaces render on the 3.1.0 copy as sections; nothing changed on 2.1.0 (the existing sheet tests pass unchanged); gates green.
+
+**PM:** lane B · model opus · size M · deps R-146 (a), item 183 · Filed 2026-09-16 by the PM from the Metalworks comparison.
+
+## 192. [ ] A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents, not two hand-picked files (TOOLING; nothing to deploy) (2026-09-16)
+
+**Why:** item 177 pinned PR 4's fixture diff to `subtle-takedown.json` and `fatal-thrust.json`. The installed Mistborn Handbook module carries 206 talents and 67 powers in the 3.x shape — one embedded action per non-passive and none per passive, consumption rows with the ancestor-Actor `matchDocument` step, `item_resource` charges, `skill_test` plus `@scalar` damage, `modality` on both the talent and its action, `power` prerequisites on tree nodes. Its text is licensed and never committed; its *shapes* are the best oracle we have. `docs/analysis/metalworks-comparison.md` §a N1, §c B9.
+
+**What to do:** a script under `docs/analysis/talent-comparison/` (beside `dump-packs.js`) that reads the copied packs and writes `tests/fixtures/embedded-actions-shapes.json`: every distinct document *shape* (key paths and field types, values replaced by type markers, names and descriptions dropped), with a count per shape. Item 185's validator then checks each built talent against the shape set instead of against two files. The fixture is regenerable from an install and small enough to commit.
+
+**Done when:** the fixture exists with a header saying how it was made; a test asserts the system's two compendium JSON files (already in the 3.1.0 archive) match a shape in it; item 185's brief points at it. Gates green.
+
+**PM:** lane R · model sonnet · size S · deps none (item 185 consumes it) · Filed 2026-09-16 by the PM from the Metalworks comparison.
+
+## 193. [ ] R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
+
+**Why:** `EDHA_DODGE_PAY_ON_ARM` and the arm-expiry dial (R-145), R-43's dice math and the omen-branch dial are constants, so a veto is an engine edit and a deploy. The system keeps fifteen such switches in Settings. CLAUDE.md's Foundry convention: *"The user must be able to edit everything from inside Foundry."* `docs/analysis/metalworks-comparison.md` §c B3.
+
+**What to do:** an `edhaSetting(key)` reader in `01-shared-core.js` over `game.settings.register("edha-content", …)` entries registered at `init`; each dial's constant becomes the setting's default and the reader is called at use time, never cached at load. The existing tests keep pinning the constants (they are the defaults). A one-line list of the dials in `ENGINE_INDEX.md`.
+
+**Done when:** every dial named above is in Foundry's module settings with a label and hint; flipping one changes behaviour without a reload; gates green; a 🤖 row per dial.
+
+**PM:** lane B · model sonnet · size S · deps R-148 (a) · Filed 2026-09-16 by the PM from the Metalworks comparison.
+
+## 194. [ ] R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+
+**Why:** a MANUAL talent's card says "roll it yourself"; the system's enrichers (`docs/Enrichers.md` at 2.1.0 and 3.1.0) make the same sentence a button, with no wiring and no engine code. The Mistborn Handbook cards use them throughout. `docs/analysis/metalworks-comparison.md` §c B5.
+
+**What to do:** list the MANUAL set from the tree-section headers; for each card that names a roll, add the tag in the authored `description` (the overlay wins); `phrasing-verifier`'s SKILL.md gains the convention and its checker allows the tags; `lint-refs.js` learns the tag syntax so a typo fails the build.
+
+**Done when:** every MANUAL card with a roll has a clickable tag on the 2.1.0 table (🤖 rows); no engine change; gates green.
+
+**PM:** lane B · model sonnet · size S · deps R-149 (a) · Filed 2026-09-16 by the PM from the Metalworks comparison.
+
+## 195. [ ] Round events instead of turn sweeps after the flip — `combat-round-start` / `-end` and the `combatRoundStart` / `combatRoundEnd` hooks replace the per-round resets among the 21 `combatTurnChange` registrations, and per-round talents carry a native round rule where the payload allows (ENGINE, F5 at 3.x; after item 187) (2026-09-16)
+
+**Why:** 3.1.0 adds Combat-document dispatch and round events (`hooks/item-event-system/events.ts:179-215`, `documents/combat.ts:20-46`); Edha resets per-round state by sweeping `combatTurnChange` at 21 sites and by the `edha-combat-timing` event. A native round rule is one a player can read on the Events tab. `docs/analysis/metalworks-comparison.md` §c B6.
+
+**What to do:** after the flip: inventory the 21 sites, move the ones that are round resets onto the round hooks, and let `edha-combat-timing`'s `round-start` moment delegate to the native event where the payload matches; keep the turn-scoped sweeps. Pinned tests through the harness's combat stubs.
+
+**Done when:** no round-reset logic remains on a turn hook; the bench's per-round rows pass on 3.1.0; gates green.
+
+**PM:** lane B · model opus · size M · deps item 187 · Filed 2026-09-16 by the PM from the Metalworks comparison.
+
+## 196. [ ] `tests/deploy-cycle.test.js`'s dry-run case depends on a clean working tree — the combined guard reports `clean-tree` and stops before the `on-main` verdict when `git status` is non-empty, so `npm run gates` goes red for anyone with uncommitted changes (TOOLING; nothing to deploy) (2026-09-16)
+
+**Why:** found by the PM on 2026-09-16 running the gates before committing this session's documents: `unit-tests` failed on *"expected the on-main guard's verdict line in dry-run output"* while every other gate passed, and the same test passed in a scratch worktree of the same HEAD. `scripts/deploy-cycle.js --dry-run` prints `REFUSE clean-tree` on a dirty tree and never reaches the `on-main` line the test asserts. Iron rule 4 says gates before every commit — which is exactly when the tree is dirty.
+
+**What to do:** either make the test run the dry-run against a temporary clean worktree of HEAD (the harness already has the pattern for scratch checkouts), or make the guard print every verdict (`clean-tree` AND `on-main`) before refusing so the assertion holds on any tree — and say in the PR which, and why. Pin a case where the tree is dirty and the test still passes.
+
+**Done when:** `node tests/run.js` is green with an uncommitted file in the tree; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM.

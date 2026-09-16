@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T12:24:26.023Z",
+  "generatedAt": "2026-09-16T17:23:31.007Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "070e0611df",
-    "commit": "4cba548",
-    "branch": "pm/handoff-0916",
+    "hash": "1ad30c90f5",
+    "commit": "2b5d13e",
+    "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,11 +42,11 @@
     "nextOpenAt": "2026-09-17T01:00:00.000Z"
   },
   "pm": {
-    "status": "stopped",
-    "note": "This session stopped at Ben's word on the morning of 2026-09-16 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened. Open for the next PM: R-145 (applied, wants a veto only), item 183 (the resolver that unblocks the damage-card builds — Opus, needs Ben's word), items 188-190 (small Sonnet), and the 3.1.0 migration items 184-187 behind 183.",
-    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
+    "status": "idle",
+    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). Nine rulings R-146 … R-154 are filed as a MENU with recommended defaults; items 191 – 195 filed. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "waitingOn": "Ben: the menu R-146 … R-154 (say 'defaults' and the PM files them all); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
-    "session": "STOPPED 2026-09-16 (the 2026-09-15 11:49 ET hand-started session; Ben starts the next PM of record himself)"
+    "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
   "workers": [],
   "usage": null,
@@ -2402,6 +2402,78 @@
       "status": "queued",
       "statusDetail": null,
       "pr": null
+    },
+    {
+      "pos": 195,
+      "item": "191",
+      "title": "R-146 (a): sheet sections through the system's API — the ⊙ button, the ritual HP-cost cell, the budget readout and the adversary-sync controls as registered Actions/Talents-tab sections, selector injectors retired (ENGINE, F5; dual-mode). Filed by the PM from the Metalworks comparison",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "R-146 (a), item 183",
+      "status": "blocked",
+      "statusDetail": "R-146",
+      "pr": null
+    },
+    {
+      "pos": 196,
+      "item": "192",
+      "title": "A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents (TOOLING). Filed by the PM from the Metalworks comparison",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 197,
+      "item": "193",
+      "title": "R-148 (a): engine dials as module settings — every ruling-toggled constant becomes a world-scoped GM-only game.settings entry (ENGINE-ONLY, F5; 2.1.0-safe). Filed by the PM from the Metalworks comparison",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "R-148 (a)",
+      "status": "blocked",
+      "statusDetail": "R-148",
+      "pr": null
+    },
+    {
+      "pos": 198,
+      "item": "194",
+      "title": "R-149 (a): enrichers on the MANUAL cards — [[test …]] / [[damage …]] tags in the card text of every rule-3 MANUAL talent (DATA — REBUILD + ⟳ Sync Talents; 2.1.0-safe). Filed by the PM from the Metalworks comparison",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "R-149 (a)",
+      "status": "blocked",
+      "statusDetail": "R-149",
+      "pr": null
+    },
+    {
+      "pos": 199,
+      "item": "195",
+      "title": "Round events instead of turn sweeps after the flip — combat-round-start / -end replace the per-round resets among the 21 combatTurnChange sites (ENGINE, F5 at 3.x). Filed by the PM from the Metalworks comparison",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "item 187",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 200,
+      "item": "196",
+      "title": "tests/deploy-cycle.test.js's dry-run case depends on a clean working tree — the combined guard stops at clean-tree before the on-main verdict the test asserts, so the gates go red on any uncommitted change (TOOLING). Filed by the PM after this session's own gate run",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -2449,9 +2521,11 @@
     }
   ],
   "benOnly": [
-    "that session-one confirmation, which also releases the ~1 hour of Route A (a second Foundry data path on port 30001 with his own license — the agent never handles it, docs/analysis/cosmere-rpg-3.1.0-compatibility.md §(d))",
-    "an R-145 veto if he disagrees",
-    "and his word before any dispatch. Housekeeping left alone on purpose: two stale worktrees under .claude/worktrees/bestiary-thalendor-* at 2cd2f23 belong to other sessions — sweep them only if Ben says so."
+    "the menu R-146 … R-154 (say \"defaults\" and the PM files them all)",
+    "the session-one confirmation (R-144)",
+    "an R-145 veto if he disagrees. What the next PM can dispatch, on Ben's word: item 183 (opus, L) and items 188, 189, 190, 192 (sonnet, XS – S)",
+    "items 191, 193, 194 unblock on their rulings",
+    "195 waits on 187."
   ],
   "inbox": [],
   "foundry": {
@@ -2461,48 +2535,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "01:28",
-      "at": "2026-09-14T05:28:00.000Z",
-      "item": "Items 141 + 148 (Knowledge's decoy item-level damage; Predatory Strike's cue text) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "26 min, 138 tool uses (254 turns)",
-      "weighted": "8.0M",
-      "weightedM": 8,
-      "outcome": "reviewed 01:56 — merged on green after the PM's bookkeeping commit on the branch, no trailers, three themed commits, no corrections; CI green on 02a7726, gates 12/12 + --ci 14/14 (1219 tests); the worker merged main itself. Parity: scratch edha-deity before/after, 110 documents, exactly 3 differ (Killing Blow / The Final Study in system.damage only; Predatory Strike in system.damage + the cue's handler.text + the rider's description), a pack-wide formula sweep clean; validate-packs PASS on the scratch modroot. 🤖 KM-2 / KM-3. DATA → REBUILD deity + ⟳ Sync Talents — rides the fix-pass-12 deploy",
-      "pr": 379
-    },
-    {
-      "date": "2026-09-14",
-      "time": "01:58",
-      "at": "2026-09-14T05:58:00.000Z",
-      "item": "#379 (items 141 + 148) merged at 01:58:15 (CI green on 932b26d); the worktree and the leftover remote branch removed; main = dbc171d",
-      "itemNo": "379",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 379
-    },
-    {
-      "date": "2026-09-14",
-      "time": "01:12",
-      "at": "2026-09-14T05:12:00.000Z",
-      "item": "Fix pass 12 (bench 47's engine defects: 146, 147 + 151, 149's card half) — test-pass-fixes, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "52 min, 260 tool uses (374 turns)",
-      "weighted": "11.9M",
-      "weightedM": 11.9,
-      "outcome": "reviewed 02:07 — squash-merged trailer-free after the PM's bookkeeping commit (every commit carried a harness Co-Authored-By trailer; the worker flagged the conflict with iron rule 6 itself rather than rewriting green history); CI green on 62c83b6; gates 12/12 + --ci 14/14; the worker merged main twice. Four themed fixes, 45 pins — tests/sync-item-types.test.js (11), tests/sync-scene-scope.test.js (16, at the hook layer through the real registered chain), tests/status-immunity-card.test.js (18 — disabling the immunity branch reproduces bench 47's card verbatim) — each shown failing under a one-line reversion. Sibling sweeps: the unfiltered game.scenes walk has no twin (twelve updateActor hooks checked); two more status announcers claimed landings and were retrofitted. Found beyond the report: the AWA sight watcher was itself wrong for a bespoke senses block (Briar-Gone Grove 30 ft → 5), so the sync stamps edhaSceneScope: [] and the watcher stands down. ENGINE-ONLY (F5) — the PM deploys next; Ben's PCs need one ⟳ Sync Talents click after it",
-      "pr": 380
-    },
     {
       "date": "2026-09-14",
       "time": "02:08",
@@ -3300,9 +3332,51 @@
       "weightedM": null,
       "outcome": "recorded",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "12:30",
+      "at": "2026-09-16T16:30:00.000Z",
+      "item": "Ben (chat) hand-starts this PM session with three asks: what is still on branches other than main (\"you can trim them if there's no novel information\"); review the 2.1.0 → 3.1.0 material — compatibility, how the Metalworks team approaches problem-solving versus us, what of their code improves ours; compare Allomancy / Feruchemy (the Mistborn Handbook he installed) and the Radiant paths against the Deity and Leyline trees. Scope questions asked first; answered 12:50: delete them; the Radiant list is source-materials/legacy-uploads/CosmereRPG Talents.xlsx; re-verify the break list; the proposed axes; a menu first; \"I want you to do them\" — the PM does the analysis itself",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "session opened; MODEL GUARD passed; main = 2b5d13e, clean",
+      "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "12:40",
+      "at": "2026-09-16T16:40:00.000Z",
+      "item": "Branch and worktree sweep. origin held only main; 13 local branches (bestiary-thalendor ×3, deploy-record ×2, edha-talent-ecosystem, session-2-grove, session-2-kickoff-brief, data/path-prose, docs/balance-answers ×2, docs/tree-intent-read, engine/draw-mana-rank) proven merged by git cherry and net three-dot diffs — the ecosystem branch's 17 commits were #327's squash, session-2-grove's net diff was empty since #395 — and deleted; 4 worktrees (two under .claude/worktrees/, two in %TEMP%) clean at merged commits, removed with git worktree remove --force + prune. The two .claude/worktrees folders remain as empty shells held open by another process",
+      "itemNo": "327",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "5 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "done; nothing lost",
+      "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "13:25",
+      "at": "2026-09-16T17:25:00.000Z",
+      "item": "The Metalworks comparison and the talent comparison — docs/analysis/metalworks-comparison.md (break list re-verified at the 3.1.0 source and re-counted at HEAD: holds, with the bestiary-grown B4 figures, a sixth useItem site, and the installed Mistborn Handbook module as a 3.x corpus; the codebase comparison; nine borrows, two declined) and docs/analysis/talent-comparison-mistborn-radiant.md (206 Mistborn talents read from the module's packs, 225 Radiant from the sheet, 365 Edha from the dossier; the published Invested families are 71 – 87 % Passive + Special with the cost on the base power; the deity atlas is the outlier on every column; the power die is Edha's die, Edha adds ×tier) with the tooling committed under docs/analysis/talent-comparison/ and no licensed text",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~55 min, ~90 tool uses",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "R-146 … R-154 filed as a menu; items 191 – 195 filed; one 🤖 row; CLAUDE.md's rulings pointer, the changelog and this board updated; gates green",
+      "pr": null
     }
   ],
-  "runLogTotal": 364,
+  "runLogTotal": 367,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

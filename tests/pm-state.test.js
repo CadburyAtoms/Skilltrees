@@ -460,7 +460,11 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // 2026-09-15, that evening: item 181 (the Dodge arm button, PR #407) shipped its two judgment calls
   // behind named dials rather than settling them in code, and the PM filed them as R-145 in §L —
   // APPLIED as the default, so the card asks for a veto. The length assertion moves 0 → 1.
-  const ECOSYSTEM_RULINGS = ["R-145"];
+  // 2026-09-16: the PM session of record (Ben: "I want you to do them") re-verified the 3.1.0 break list,
+  // compared the Metalworks codebase and the Mistborn / Radiant talent sets with ours, and filed the
+  // borrows and design questions as ONE menu in §L — R-146 … R-154, each with a recommended default,
+  // nothing applied. The length assertion moves 1 → 10.
+  const ECOSYSTEM_RULINGS = ["R-145", "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
