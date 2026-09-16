@@ -4611,6 +4611,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 191. [ ] R-146 (a): sheet sections through the system's API — the ⊙ range button, the ritual HP-cost cell, the path-slot budget readout and the adversary-sync controls become registered Actions-tab / Talents-tab sections, and the selector injectors retire as each is replaced (ENGINE, F5; dual-mode, a no-op on 2.1.0; blocked on R-146) (2026-09-16)
 
+**Unblocked 2026-09-16 14:40 ET:** R-146 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
+
 **Why:** item 177's F5: on 3.1.0 the Actions tab lists embedded actions, so every injector keyed on a row's `data-item-id` (`25-sheet-qol.js:203-208`, `35-targeting-attunement-range-aoe-templates.js:131-150`) loses its row; `23-sheet-path-slots-the-budget-readout.js:36-45` and `27-adversary-pack-sync.js:292-344` inject by selector too. 3.1.0 exposes `registerActionListSection` / `registerTalentListSection` and their dynamic-section generators (`api/sheet.ts`), the seam the Mistborn Handbook module uses for its own section. `docs/analysis/metalworks-comparison.md` §c B1.
 
 **What to do:** in item 184's PR (or its own, after 183): one registered section per injector where the API fits, guarded so it is a no-op on 2.1.0; the selector code stays until its section is live on the copy bench, then goes. Where the API does not fit (the consume dialog, the header readout) keep the selector and say so in the header comment. Pinned tests per section through the harness's sheet stubs.
@@ -4631,6 +4633,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 193. [ ] R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
 
+**Unblocked 2026-09-16 14:40 ET:** R-148 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
+
 **Why:** `EDHA_DODGE_PAY_ON_ARM` and the arm-expiry dial (R-145), R-43's dice math and the omen-branch dial are constants, so a veto is an engine edit and a deploy. The system keeps fifteen such switches in Settings. CLAUDE.md's Foundry convention: *"The user must be able to edit everything from inside Foundry."* `docs/analysis/metalworks-comparison.md` §c B3.
 
 **What to do:** an `edhaSetting(key)` reader in `01-shared-core.js` over `game.settings.register("edha-content", …)` entries registered at `init`; each dial's constant becomes the setting's default and the reader is called at use time, never cached at load. The existing tests keep pinning the constants (they are the defaults). A one-line list of the dials in `ENGINE_INDEX.md`.
@@ -4640,6 +4644,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **PM:** lane B · model sonnet · size S · deps R-148 (a) · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
 ## 194. [ ] R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+
+**Unblocked 2026-09-16 14:40 ET:** R-149 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
 
 **Why:** a MANUAL talent's card says "roll it yourself"; the system's enrichers (`docs/Enrichers.md` at 2.1.0 and 3.1.0) make the same sentence a button, with no wiring and no engine code. The Mistborn Handbook cards use them throughout. `docs/analysis/metalworks-comparison.md` §c B5.
 
@@ -4668,3 +4674,43 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** `node tests/run.js` is green with an uncommitted file in the tree; gates green.
 
 **PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM.
+
+## 197. [ ] R-147 (a): item resources for one tree's counted resource — Chaos's Omens or Destruction's Charges move from the engine ledger onto the talent's own `system.resources` at 3.x, spent by ordinary consumption rows; bench it, then decide the rest (DATA-REBUILD + ENGINE at 3.x; after item 187) (2026-09-16)
+
+**Why:** R-147 answered (a) by Ben on 2026-09-16 ("default all except R150-b, 152-b"). The shipped Mistborn Handbook does exactly this for a Feruchemist's metalmind: 34 talents consume `{type: "item_resource", resource: "charges"}`, the sheet shows the count, the consume dialog handles min / max / optional spend, ⟳ Sync refreshes it (`registerItemResource`, 3.1.0 `api/item.ts:46`). `docs/analysis/metalworks-comparison.md` §c B2.
+
+**What to do:** after the flip: pick the tree with Ben (Chaos's Omens is the recommended pilot — one caster-side counter, `tier + 1` cap already ruled), register the resource, move the counter onto the talent, make the placing talents' consumption rows spend it, keep the cross-actor list (marks on enemies) on `edha-owner-list`. 🤖 rows for every talent that reads the count. A short comparison — before and after — for Ben's decision on the other seven.
+
+**Done when:** the pilot tree's counter is a native resource on the 3.1.0 copy, its bench rows pass, and the PR says what the other seven would cost. Gates green.
+
+**PM:** lane B · model opus · size M · deps item 187 · Filed 2026-09-16 by the PM from R-147 (a).
+
+## 198. [ ] R-150 (b): the five leyline colours re-based on the system's `power` item type — a non-core skill, a linked talent tree, `@scalar.power.<colour>.die` as the die, and the Channel action (item 200's design) as the power's embedded action — the last PR of the 3.x re-platforming (DATA-REBUILD + ENGINE at 3.x; after items 187 and 200) (2026-09-16)
+
+**Why:** R-150 answered (b) by Ben on 2026-09-16, against the PM's recommended (a). The published game models a metal as a `power` (3.1.0 `data/item/power.ts`; the Mistborn Handbook's 67 power items), and its power die table (d4 → d12 by rank) is exactly Edha's `(2 × rank + 2)` die — `[Tier][Die]` is tier copies of it. `unlocked` would then gate the sheet's skill row, `linkedSkills` and the die scalar natively, and the Channel (R-152 (b)) has a document to live on. `docs/analysis/metalworks-comparison.md` §c B10; `docs/analysis/talent-comparison-mistborn-radiant.md` §C.3.
+
+**What to do:** after the flip and after the Channel design is approved: a `power` item per colour in the leyline pack (`registerPowerType("leyline")`), the colour skill registered non-core with `hiddenUntilAcquired`, each tree's `talentTree` linked from its power, formulas rewritten from `(@tier)d(2 * @skills.<colour>.rank + 2)` to `(@tier)@scalar.power.<colour>.die` with a fixture that proves the two agree at every rank, the creation wizard granting the power instead of the skill rank, ⟳ Sync covering powers. Every leyline bench block re-run on the copy.
+
+**Done when:** the five colours are powers on the 3.1.0 copy, every leyline formula rolls the same die it rolled before (pinned), the wizard still builds a legal L1 character, the bench is clean. Gates green.
+
+**PM:** lane B · model opus · size L · deps items 187 and 200 · Filed 2026-09-16 by the PM from R-150 (b).
+
+## 199. [ ] R-151 (a) + R-153 (a): the two design guides record the published Invested families' action-type and cost tables and the variable-spend convention — no talent changes (DOCS-ONLY) (2026-09-16)
+
+**Why:** R-151 answered (a) on 2026-09-16 — hold the deity re-pricing for R-152's design, but record the numbers now; R-153 answered (a) — "spend 1 or more, up to your rank" becomes a convention for new and revised talents, no sweep. The numbers are `docs/analysis/talent-comparison-mistborn-radiant.md` §C.1 and §C.2; the leyline guide's own action-type table is stale on two of its claims (`docs/analysis/talent-ecosystem/crosscut/cost-curve.md` §0 (b)).
+
+**What to do:** in `.claude/skills/leyline-revision-guide/SKILL.md` and `.claude/skills/deity-revision-guide/SKILL.md`: a "published benchmarks (2026-09-16)" table per guide with the eight-family action mix and the costed shares; the deity guide's action-type target restated per R-108 (a) with the measured 0 % Special / 80 % costed beside it and a pointer to R-152; a "variable spend" convention paragraph (the `{min, max}` consumption row, the rank limit, when to use it) in both guides and in `phrasing-verifier`'s conventions. Mirror the user-level copies under `~/.claude/skills/` only if Ben says the repo copies are not the ones he loads.
+
+**Done when:** both guides carry the tables and the convention; `tree-audit` and the skill's own checks pass; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-151 (a) and R-153 (a).
+
+## 200. [ ] R-152 (b): the Channel design pass — a base action per leyline colour, one colour worked in full text with Ben's gate per section; Ben runs it in a session of his own from `docs/briefs/channel-design-pass.md` (DESIGN, DOCS-ONLY; the build is item 198) (2026-09-16)
+
+**Why:** R-152 answered (b) by Ben on 2026-09-16, against the PM's recommended (a): *design it now as a `leyline-revision-guide` pass (one colour worked in full text, Ben's gate per section), build after 3.1.0.* The published families put the cost on a base power action and let talents ride it free; Edha's colours have no base action, which is the root of the deity atlas's 80 % costed / 0 % Special profile (R-151) and of the ecosystem review's "Blue and White have fifteen Investiture-costing talents and zero regen". `docs/analysis/talent-comparison-mistborn-radiant.md` §D-3.
+
+**What to do:** Ben pastes the prompt in `docs/briefs/channel-design-pass.md` into a new session (a worktree, not the PM's checkout). The deliverable is `docs/design/channel-actions.md`: the generic Channel rule, the five frames, one colour (White by default) with all 25 talents re-typed in full text, the build's data shape at 3.x, and a DOCS-ONLY PR. The PM records the pass from the session's report and re-scopes item 198 to build what the design specifies.
+
+**Done when:** `docs/design/channel-actions.md` is merged with every section approved at its gate; the rulings it filed are in §L or answered; item 198's brief points at it.
+
+**PM:** lane H · model — (Ben's own session) · size L · deps Ben's time · Filed 2026-09-16 by the PM from R-152 (b).
