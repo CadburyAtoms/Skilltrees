@@ -814,71 +814,142 @@ test("insertDeployStateRecord: throws (does not silently no-op) when the heading
  * the "no process control in CI" case the item's brief calls for: on ubuntu-latest (CI's actual
  * runner) every PowerShell-backed helper in deploy-cycle.js short-circuits on `process.platform`
  * before it would ever spawn `powershell.exe`, so this spawn is safe there too.
+ *
+ * item 196: the spawn runs against a throwaway `git worktree add --detach` checkout of HEAD,
+ * never against the outer tree this test file itself runs from. `checkOnMainClean` in
+ * deploy-guards.js is ONE combined guard that reports only the first thing wrong — a dirty tree
+ * on branch `main` prints `clean-tree` and never reaches the `on-main` line below, so this test
+ * used to fail for anyone running `npm run gates` (iron rule 4: before every commit — exactly
+ * when the tree is dirty) from `main` with uncommitted changes, which is the PM's own checkout's
+ * normal working state. A detached scratch worktree of HEAD is always clean and never on a
+ * branch literally named "main" (checking out `main` itself a second time would collide with
+ * whichever checkout already holds it — commonly the PM's), so `on-main` always refuses there on
+ * the branch check alone and its verdict line is always present — deterministically, regardless
+ * of the ambient state of whatever tree is running this suite.
  */
 
-test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes no changes", () => {
+// Strips every GIT_* variable from a copy of process.env. Found the hard way: this test suite
+// can itself run FROM INSIDE a git hook (the pre-commit body runs `node tests/run.js` whenever a
+// tests/ file is staged — see scripts/pre-commit-body), and a hook subprocess inherits GIT_DIR /
+// GIT_INDEX_FILE / GIT_WORK_TREE pointed at the OUTER commit's in-progress, locked index. A
+// nested `git worktree add`/`remove` that inherits those ends up operating on that same locked
+// index instead of deriving everything fresh from its own `cwd` argument — the outer `git commit`
+// then reads back a corrupted index and silently creates an EMPTY commit (reproduced while
+// writing this fix: two `git commit` runs in a row, both with real staged changes, both produced
+// a commit whose tree exactly equalled its parent's). Passing an explicitly cleaned env to every
+// nested git call below is what makes `cwd` the only thing that decides which repository state
+// they touch, regardless of what invoked this test file.
+function cleanGitEnv() {
+  const env = { ...process.env };
+  for (const k of Object.keys(env)) if (k.startsWith("GIT_")) delete env[k];
+  return env;
+}
+
+// Checks out a detached scratch `git worktree` of HEAD and spawns `deploy-cycle.js --dry-run`
+// from inside it (so `lib/paths.js`'s REPO_ROOT — resolved from the spawned script's own
+// `__dirname` — points at the scratch checkout, never at REPO), pointed at fresh scratch
+// EDHA_MODROOT / EDHA_FOUNDRY_USERDATA dirs exactly as before. Always removes the worktree
+// afterward, even if the caller's assertions throw.
+function spawnDryRunAgainstCleanWorktreeOfHead() {
   const scratchRoot = fs.mkdtempSync(path.join(os.tmpdir(), "edha-deploycycle-test-"));
+  const worktreePath = path.join(scratchRoot, "wt");
   const scratchModroot = path.join(scratchRoot, "modroot");
   const scratchUserdata = path.join(scratchRoot, "userdata");
   fs.mkdirSync(scratchModroot, { recursive: true });
   fs.mkdirSync(path.join(scratchUserdata, "Config"), { recursive: true });
+  const gitEnv = cleanGitEnv();
+  cp.execFileSync("git", ["worktree", "add", "--detach", "--quiet", worktreePath, "HEAD"], {
+    cwd: REPO,
+    stdio: "pipe",
+    env: gitEnv,
+  });
+  try {
+    const r = cp.spawnSync(process.execPath, [path.join(worktreePath, "scripts", "deploy-cycle.js"), "--dry-run"], {
+      cwd: worktreePath,
+      encoding: "utf8",
+      env: { ...gitEnv, EDHA_MODROOT: scratchModroot, EDHA_FOUNDRY_USERDATA: scratchUserdata },
+    });
+    return { r, worktreePath };
+  } finally {
+    cp.execFileSync("git", ["worktree", "remove", "--force", worktreePath], { cwd: REPO, stdio: "pipe", env: gitEnv });
+    fs.rmSync(scratchRoot, { recursive: true, force: true });
+  }
+}
 
+test("deploy-cycle.js --dry-run: prints every step + guard verdicts, and makes no changes", () => {
   const checklistBefore = fs.readFileSync(path.join(REPO, "EDHA_FOUNDRY_TEST_CHECKLIST.md"), "utf8");
   const backupsDir = path.join(REPO, "tmp", "deploy-backups");
   const backupsDirsBefore = fs.existsSync(backupsDir) ? fs.readdirSync(backupsDir) : [];
 
-  const r = cp.spawnSync(process.execPath, [path.join(REPO, "scripts", "deploy-cycle.js"), "--dry-run"], {
-    cwd: REPO,
-    encoding: "utf8",
-    env: { ...process.env, EDHA_MODROOT: scratchModroot, EDHA_FOUNDRY_USERDATA: scratchUserdata },
-  });
+  const { r, worktreePath } = spawnDryRunAgainstCleanWorktreeOfHead();
+  const out = (r.stdout || "") + (r.stderr || "");
+
+  assert.ok(out.includes("DRY RUN"), "must announce dry-run mode");
+  assert.ok(out.includes("Pre-flight guards:"), "must print the guards section");
+  for (const guardName of ["on-main", "no-bench-worker", "packs-exist", "un-extracted-edits", "world-configured", "foundry-exe-exists"]) {
+    // module-src-sync's guard name varies (module-src-sync vs module-src-hand-edited) — check
+    // the ones whose name is fixed regardless of verdict. item 140: un-extracted-edits must
+    // print PASS here (an empty scratch EDHA_MODROOT has no pack/baseline to compare). item 196:
+    // on a detached scratch worktree, on-main always refuses (branch "HEAD", not "main") — its
+    // NAME is still printed either way, which is all this loop checks.
+    assert.ok(out.includes(guardName), `expected the ${guardName} guard's verdict line in dry-run output`);
+  }
+  for (const stepFragment of [
+    "1. Close Foundry",
+    "2. Back up the five packs",
+    "3. git pull --ff-only",
+    "4. module-src-sync.js status",
+    "5. module-src-sync.js push",
+    "6. sync-art.js",
+    "7. foundry-build.js",
+    "8. validate-packs.js",
+    "9. Relaunch the exe",
+  ]) {
+    assert.ok(out.includes(stepFragment), `expected step text "${stepFragment}" in dry-run output`);
+  }
+  assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
+  assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
+
+  // item 137: the post-flight description must say verification retries/waits up to
+  // --wait-seconds, not just checks once.
+  assert.ok(out.includes("--wait-seconds"), "dry-run must mention the post-flight verification's --wait-seconds bound");
+  assert.ok(/retried with backoff/i.test(out), "dry-run must describe the post-flight checks as retried, not one-shot");
+
+  // item 129: the backup must be PRINTED after the close, not before — this is the step-order
+  // regression the item exists to pin. Reverting the order (backup before close) fails this.
+  const closeIdx = out.indexOf("1. Close Foundry");
+  const backupIdx = out.indexOf("2. Back up the five packs");
+  assert.ok(closeIdx !== -1 && backupIdx !== -1, "both the close and backup step lines must be present");
+  assert.ok(closeIdx < backupIdx, "the close step must be printed BEFORE the backup step");
+
+  // Prove it by mutation-adjacent evidence too, not just the printed claim: REPO's own checklist
+  // file and backups directory are byte-for-byte / entry-for-entry unchanged, and the scratch
+  // worktree (whose own REPO_ROOT the spawned process actually used) never grew one either.
+  const checklistAfter = fs.readFileSync(path.join(REPO, "EDHA_FOUNDRY_TEST_CHECKLIST.md"), "utf8");
+  assert.strictEqual(checklistAfter, checklistBefore, "dry-run must not touch the checklist file");
+  const backupsDirsAfter = fs.existsSync(backupsDir) ? fs.readdirSync(backupsDir) : [];
+  assert.deepStrictEqual(backupsDirsAfter, backupsDirsBefore, "dry-run must not create a backup directory");
+  assert.ok(!fs.existsSync(path.join(worktreePath, "tmp", "deploy-backups")), "dry-run must not create a backup directory in the scratch worktree either");
+});
+
+// item 196's own regression: the whole point of running against a detached scratch worktree is
+// that the result no longer depends on the OUTER tree's ambient git status. Prove it by making
+// REPO itself dirty (a scratch untracked file — the same shape as an in-progress edit session,
+// or the PM's own checkout mid-shift) and showing the guard verdict lines are unaffected.
+test("deploy-cycle.js --dry-run: guard verdicts are unaffected by a dirty OUTER working tree (item 196)", () => {
+  // NOT under tmp/ and not a *.tmp/*.local.* name — both are gitignored (see .gitignore), so a
+  // file there would never dirty `git status --porcelain` and this test would mean nothing.
+  const scratchFile = path.join(REPO, `edha-item196-dirty-probe-${process.pid}.md`);
+  fs.writeFileSync(scratchFile, "item 196 regression probe — safe to delete\n");
+  const statusOut = cp.execFileSync("git", ["status", "--porcelain"], { cwd: REPO, encoding: "utf8", env: cleanGitEnv() });
+  assert.notStrictEqual(statusOut.trim(), "", "the probe file must actually dirty REPO's working tree for this test to mean anything");
 
   try {
+    const { r } = spawnDryRunAgainstCleanWorktreeOfHead();
     const out = (r.stdout || "") + (r.stderr || "");
-
-    assert.ok(out.includes("DRY RUN"), "must announce dry-run mode");
-    assert.ok(out.includes("Pre-flight guards:"), "must print the guards section");
-    for (const guardName of ["on-main", "no-bench-worker", "packs-exist", "un-extracted-edits", "world-configured", "foundry-exe-exists"]) {
-      // module-src-sync's guard name varies (module-src-sync vs module-src-hand-edited) — check
-      // the ones whose name is fixed regardless of verdict. item 140: un-extracted-edits must
-      // print PASS here (an empty scratch EDHA_MODROOT has no pack/baseline to compare).
-      assert.ok(out.includes(guardName), `expected the ${guardName} guard's verdict line in dry-run output`);
-    }
-    for (const stepFragment of [
-      "1. Close Foundry",
-      "2. Back up the five packs",
-      "3. git pull --ff-only",
-      "4. module-src-sync.js status",
-      "5. module-src-sync.js push",
-      "6. sync-art.js",
-      "7. foundry-build.js",
-      "8. validate-packs.js",
-      "9. Relaunch the exe",
-    ]) {
-      assert.ok(out.includes(stepFragment), `expected step text "${stepFragment}" in dry-run output`);
-    }
-    assert.ok(out.includes("nothing was changed"), "dry-run must say it changed nothing");
-    assert.ok(!out.includes("Backed up"), "dry-run must never reach the backup step");
-
-    // item 137: the post-flight description must say verification retries/waits up to
-    // --wait-seconds, not just checks once.
-    assert.ok(out.includes("--wait-seconds"), "dry-run must mention the post-flight verification's --wait-seconds bound");
-    assert.ok(/retried with backoff/i.test(out), "dry-run must describe the post-flight checks as retried, not one-shot");
-
-    // item 129: the backup must be PRINTED after the close, not before — this is the step-order
-    // regression the item exists to pin. Reverting the order (backup before close) fails this.
-    const closeIdx = out.indexOf("1. Close Foundry");
-    const backupIdx = out.indexOf("2. Back up the five packs");
-    assert.ok(closeIdx !== -1 && backupIdx !== -1, "both the close and backup step lines must be present");
-    assert.ok(closeIdx < backupIdx, "the close step must be printed BEFORE the backup step");
-
-    // Prove it by mutation-adjacent evidence too, not just the printed claim: the checklist file
-    // and the backups directory are byte-for-byte / entry-for-entry unchanged.
-    const checklistAfter = fs.readFileSync(path.join(REPO, "EDHA_FOUNDRY_TEST_CHECKLIST.md"), "utf8");
-    assert.strictEqual(checklistAfter, checklistBefore, "dry-run must not touch the checklist file");
-    const backupsDirsAfter = fs.existsSync(backupsDir) ? fs.readdirSync(backupsDir) : [];
-    assert.deepStrictEqual(backupsDirsAfter, backupsDirsBefore, "dry-run must not create a backup directory");
+    assert.ok(out.includes("on-main"), "the on-main guard's verdict line must appear even though the OUTER tree (REPO) is dirty");
+    assert.ok(!/^\s*REFUSE\s+clean-tree\b/m.test(out), "the scratch worktree is clean, so no run should ever print a clean-tree refusal here");
   } finally {
-    fs.rmSync(scratchRoot, { recursive: true, force: true });
+    fs.rmSync(scratchFile, { force: true });
   }
 });

@@ -4549,7 +4549,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM decisions, settled 2026-09-15 (from the check's two questions):** the authored overlay **keeps its seven keys** and the builder translates — that holds `lint-refs.js:50`, CLAUDE.md's seven-key rule and all 354 `activation` / 427 `formula` keys, and Edha has one action per talent today. `use` → `use-action` **translates at build** until the flip; the 189 authored rules are rewritten once, in item 187, so the JSON matches what the Events tab shows.
 
-**Done when:** target-2 scratch builds hash identical before and after; target 3 passes the new validator and a fixture diff against the system's own compendium talents (`subtle-takedown.json`, `fatal-thrust.json`); `node scripts/gates.js --ci` green.
+**Done when:** target-2 scratch builds hash identical before and after; target 3 passes the new validator and a fixture diff against `tests/fixtures/embedded-actions-shapes.json` (item 192, 2026-09-16: 881 documents from the installed Mistborn Handbook module reduced to 187 shapes, key paths + field types only, no licensed text) rather than two hand-picked files — the two system compendium talents item 177 named (`subtle-takedown.json`, `fatal-thrust.json`) are themselves pinned, reduced the same way, in `tests/fixtures/system-talent-shapes-3.1.0.json` (see `tests/embedded-action-shapes.test.js` for how "matches"/"is compatible with" is checked, given the 3.0.0-vs-3.1.0 schema gap that test documents); `node scripts/gates.js --ci` green.
 
 **PM:** lane B · model opus · size L · deps item 183. Filed 2026-09-15 by the PM from item 177's check, §c PR 4.
 
@@ -4599,7 +4599,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size XS · deps none — same file as items 173 and 176, both merged in #408, so read their fix first. Filed 2026-09-15 by the PM from PR #408's out-of-scope findings.
 
-## 190. [ ] `scripts/README.md` is missing five scripts, and the checker that says so is not a gate (TOOLING; nothing to deploy) (2026-09-15)
+## 190. [x] (2026-09-16, PR #429) `scripts/README.md` is missing five scripts, and the checker that says so is not a gate (TOOLING; nothing to deploy) (2026-09-15)
 
 **Why:** reported by item 182's worker (PR #409, 2026-09-15) while adding rows for its own two new lib files. `node scripts/check-scripts-readme.js` names five scripts the README does not document: `bestiary-census.js`, `build-levelup-guides.py`, `levelup-guides-prose.json`, `validate-adversary-model.js`, `validate-build.py`. Every one of them is load-bearing — the census a skill reads, the adversary-model gate CI runs, the build validator `build-forge` calls — so the index a cold session consults is wrong about the tooling it is most likely to need. The drift happened because the checker exists but nothing runs it: `scripts/gates.js --list` does not include it, so a new script can land undocumented with every gate green, which is exactly how these five did.
 
@@ -4621,7 +4621,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model opus · size M · deps R-146 (a), item 183 · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 192. [ ] A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents, not two hand-picked files (TOOLING; nothing to deploy) (2026-09-16)
+## 192. [x] (2026-09-16, PR #429) A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents, not two hand-picked files (TOOLING; nothing to deploy) (2026-09-16)
 
 **Why:** item 177 pinned PR 4's fixture diff to `subtle-takedown.json` and `fatal-thrust.json`. The installed Mistborn Handbook module carries 206 talents and 67 powers in the 3.x shape — one embedded action per non-passive and none per passive, consumption rows with the ancestor-Actor `matchDocument` step, `item_resource` charges, `skill_test` plus `@scalar` damage, `modality` on both the talent and its action, `power` prerequisites on tree nodes. Its text is licensed and never committed; its *shapes* are the best oracle we have. `docs/analysis/metalworks-comparison.md` §a N1, §c B9.
 
@@ -4672,7 +4672,7 @@ Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warr
 
 **PM:** lane B · model opus · size M · deps item 187 · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 196. [ ] `tests/deploy-cycle.test.js`'s dry-run case depends on a clean working tree — the combined guard reports `clean-tree` and stops before the `on-main` verdict when `git status` is non-empty, so `npm run gates` goes red for anyone with uncommitted changes (TOOLING; nothing to deploy) (2026-09-16)
+## 196. [x] (2026-09-16, PR #429) `tests/deploy-cycle.test.js`'s dry-run case depends on a clean working tree — the combined guard reports `clean-tree` and stops before the `on-main` verdict when `git status` is non-empty, so `npm run gates` goes red for anyone with uncommitted changes (TOOLING; nothing to deploy) (2026-09-16)
 
 **Why:** found by the PM on 2026-09-16 running the gates before committing this session's documents: `unit-tests` failed on *"expected the on-main guard's verdict line in dry-run output"* while every other gate passed, and the same test passed in a scratch worktree of the same HEAD. `scripts/deploy-cycle.js --dry-run` prints `REFUSE clean-tree` on a dirty tree and never reaches the `on-main` line the test asserts. Iron rule 4 says gates before every commit — which is exactly when the tree is dirty.
 
