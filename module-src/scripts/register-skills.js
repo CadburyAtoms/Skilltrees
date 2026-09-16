@@ -249,6 +249,7 @@ const EDHA_STATUSES = {
   withernext:  { label: "Withering Touch (next melee hit)", icon: "icons/magic/death/hand-withered-gray.webp", condition: false, _id: "condwithernext00", tint: "#3a9d4a" },  // Death (Morrath) — 2bW: the armed-next-melee-hit marker (the predprimed shape); edha-self-status writes it, the armed-self-status damage-bonus rule CONSUMES it on the hit (a definitively ranged hit stands down WITHOUT consuming). Cleared by the Death scene reset.
   "tagged":    { label: "Tagging Shot (next ranged hit)",   icon: "icons/svg/target.svg",    condition: false, _id: "condtagged000000", tint: "#8b6a1a" },  // heroic/Hunter — 2bX: the armed-next-ranged-hit marker (the predprimed shape); edha-self-status writes it, the armed-self-status damage-bonus rule CONSUMES it on the hit (a definitively melee hit stands down WITHOUT consuming — rangedOnly). Timed: expires end of the owner's next turn.
   quarry:      { label: "Quarry",                            icon: "icons/svg/target.svg",    condition: false, _id: "condquarry000000", tint: "#8b6a1a" },  // heroic/Hunter — 2bX: the marked-quarry token icon (the H3 `quarry` ledger's marker status, cap 1, follows the creature). Placed by Seek Quarry's H3 rule or Tagging Shot's placeList hit; cleared by the ledger's own unmark paths (Cold Eyes, eviction).
+  dodgearmed:  { label: "Dodge Armed (next attack at disadvantage)", icon: "icons/svg/wing.svg", condition: false, _id: "conddodgearmed00" },  // item 181 / R-143 (a) caveat 4 — the sheet-button arm-and-consume marker (the predprimed shape, not a talent: Dodge is a standard system Reaction, SR p.34). Armed by edhaArmDodge; edhaDodgeConsumePreRoll CONSUMES it on the first single-target attack it sees (an area or multi-target attack ignores it — SR p.34). Timed: expires end of the arming actor's own next turn (edhaApplyTimedStatus, the `tagged` shape).
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -853,6 +854,117 @@ Hooks.on("deleteCombat", (combat) => {
       if (a.getFlag?.("edha-content", "aggro")) void a.unsetFlag("edha-content", "aggro");
     }
   } catch (e) {}
+});
+
+/* --- Dodge arm (item 181, R-143 (a) caveat 4, 2026-09-15) --------------------------------------
+ * Dodge is a standard SYSTEM Reaction (SR p.34), not a talent: "spend 1 focus to add a
+ * disadvantage to an enemy's attack against you. Doesn't work on area attacks or multi-target
+ * attacks." There is no talent document to carry an `events` rule for it — it's available to
+ * every character — so this is ENGINE_OWNED (iron rule 2b's declared exit: no nameable card).
+ * The sheet button below arms the `dodgearmed` status (EDHA_STATUSES above); the consuming half
+ * is the SAME seam edhaPackAdvantageApply uses just above — pre{Skill|Attack|Item}Roll, the
+ * "damage formula on the source" attack heuristic, the string-enum advantageMode + configureDialog
+ * wrap, an idempotency guard on the roll's own options — except it reads the DEFENDER's arm
+ * instead of the attacker's own talents, so a genuine single Foundry target (not the attacker
+ * itself) is required: zero or 2+ targets is an area or multi-target attack and the arm does not
+ * apply (SR p.34). Registering as a real status (not a bare flag) is also what paints it on the
+ * token for free — the same reasoning `crowned` / `cascadearmed` give.
+ *
+ * TWO ruling dials, both defaulted here and filed as a numbered ruling for Ben before merge (PR
+ * body / the changelog delta name it):
+ *  - EDHA_DODGE_PAY_ON_ARM (default true) — the Focus is spent when you ARM Dodge, not when an
+ *    attack later consumes it. Matches every other edha-self-status "arm now, consume free later"
+ *    marker in this file (Warlord's Advance, Momentum of Victory, Tagging Shot, ...): the cost is
+ *    paid at the activation that arms the marker; the later consuming event is free. Flip to
+ *    false to charge on consume instead (and refund nothing if the arm expires unused).
+ *  - Expiry: end of the ARMING actor's own next turn (edhaApplyTimedStatus, the `tagged` shape),
+ *    not "cleared at combat end" — Dodge answers ONE imminent attack, not a scene-long stance, and
+ *    the system has no tracked "reaction economy" resource to gate re-arming on (compat check
+ *    §e: reactions are GM-adjudicated at this table, same as Aid/Avoid Danger/Reactive Strike).
+ */
+const EDHA_DODGE_PAY_ON_ARM = true;   // ruling dial — see the PR body / EDHA_RULINGS.md
+
+/* PURE (pinned in tests/dodge-arm.test.js): the Dodge-arm decision. True only for a genuine
+ * SINGLE-target attack (exactly one current Foundry target) whose source item carries a damage
+ * formula (edhaAggroRecord / edhaPackAdvantageApply use the same "is this an attack" heuristic),
+ * where that one target is not the attacker itself and currently carries the `dodgearmed` arm.
+ * Zero targets, more than one target, a non-damaging test, or an unarmed target all leave the arm
+ * untouched — the caller consumes nothing and applies nothing. */
+function edhaDodgeShouldApply(attacker, hasDamageFormula, targetActors, targetIsArmed) {
+  if (!attacker || !hasDamageFormula) return false;
+  if (!Array.isArray(targetActors) || targetActors.length !== 1) return false;
+  const defender = targetActors[0];
+  if (!defender || defender === attacker) return false;
+  return !!targetIsArmed;
+}
+function edhaDodgeConsumePreRoll(roll, source, config) {
+  try {
+    if (roll?.options?._edhaDodgeArm) return;
+    const attacker = edhaD20RollActor(config); if (!attacker) return;
+    const hasDamage = !!config?.data?.source?.system?.damage?.formula;
+    const targets = edhaUserTargetTokens().map(t => t?.actor).filter(Boolean);
+    const defender = targets[0];
+    if (!edhaDodgeShouldApply(attacker, hasDamage, targets, defender?.statuses?.has?.("dodgearmed"))) return;
+    roll.options.advantageMode = "disadvantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "disadvantage"; } catch (e) {} return orig(data); };
+    roll.options._edhaDodgeArm = true;
+    void edhaToggleStatus(defender, "dodgearmed", false);            // consumed — pays once
+    if (!EDHA_DODGE_PAY_ON_ARM) void edhaSpendResource(defender, "foc", 1);
+    ChatMessage.create({ whisper: edhaWhisperIds(defender), speaker: ChatMessage.getSpeaker({ actor: defender }), content: `<p>🛡️ <strong>Dodge</strong>: ${defender.name}'s armed Dodge adds disadvantage to ${attacker.name}'s attack.</p>` });
+  } catch (e) { console.error("Edha Content | Dodge consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaDodgeConsumePreRoll);
+}
+// The arming half — the sheet button's click handler. Refuses (no toggle, no spend) when already
+// armed or, under the pay-on-arm dial, when the actor cannot afford 1 Focus.
+async function edhaArmDodge(actor) {
+  try {
+    if (!actor) return false;
+    if (actor.statuses?.has?.("dodgearmed")) return false;
+    if (EDHA_DODGE_PAY_ON_ARM) {
+      const foc = Number(actor.system?.resources?.foc?.value) || 0;
+      if (foc < 1) { ui.notifications?.warn(`Edha: ${actor.name} needs 1 Focus to arm Dodge.`); return false; }
+      await edhaSpendResource(actor, "foc", 1);
+    }
+    await edhaApplyTimedStatus(actor, "dodgearmed", { owner: actor, expire: "owner" });
+    ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${actor.name}</strong> arms Dodge — the next single-target attack against them rolls with disadvantage.</p>` });
+    return true;
+  } catch (e) { console.error("Edha Content | Dodge arm failed", e); return false; }
+}
+// The sheet button. Character-only (edhaSheetRoot); anchored beside the Focus resource bar (where
+// the cost is paid), falling back to right under the header if that row isn't found.
+Hooks.on("renderCharacterSheet", (app, element) => {
+  try {
+    const rs = edhaSheetRoot(app, element); if (!rs) return;
+    const { root, actor } = rs;
+    root.querySelector(".edha-dodge-bar")?.remove();
+    const armed = !!actor.statuses?.has?.("dodgearmed");
+    const bar = document.createElement("div");
+    bar.className = "edha-dodge-bar";
+    bar.style.cssText = "display:flex;justify-content:flex-end;align-items:center;padding:2px 8px;margin:2px 0;";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "edha-dodge-btn";
+    btn.style.cssText = "flex:0 0 auto;padding:1px 8px;font-size:13.5px;line-height:1.4;white-space:nowrap;border-radius:3px;cursor:pointer;" +
+      (armed ? "color:#bfe8c8;background:rgba(80,180,110,0.18);border:1px solid rgba(120,200,140,0.55);cursor:default;"
+             : "color:#d8cfb6;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);");
+    btn.title = armed
+      ? "Dodge is armed — the next single-target attack against you rolls with disadvantage. An area or multi-target attack ignores it."
+      : "Dodge (Reaction, 1 Focus, SR p.34): the next single-target attack against you rolls with disadvantage. Doesn't work on area or multi-target attacks.";
+    btn.textContent = armed ? "🛡️ Dodge Armed" : "🛡️ Dodge";
+    btn.disabled = armed;
+    btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      Promise.resolve(edhaArmDodge(actor)).then((ok) => { if (ok) app.render(false); });
+    });
+    bar.appendChild(btn);
+    const anchor = root.querySelector(".resource.foc") || root.querySelector(".sheet-header");
+    if (anchor) anchor.after(bar);
+  } catch (e) { console.error("Edha Content | Dodge arm button failed", e); }
 });
 
 /* --- Generic timed-status EXPIRY (2026-06-13) --------------------------------------------------
@@ -14511,10 +14623,23 @@ async function edhaClearLifeState(endedCombat) {
 // (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
- * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
- * NO pack rebuild (all 9 talents keep events:{}; the damage formulas already live on the items —
- * read item.system.damage.formula). Reuses existing primitives wholesale — NO side-engine, NO new
- * data handler or sidecar table:
+ * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY
+ * for edits to THIS FILE (the generic primitives below) — NO pack rebuild. All 9 Chaos talents
+ * carry real `events` rules on their OWN documents — none keep `events: {}` (the 07-24p/2bU/2bY
+ * passes moved every one off name-keyed dispatch; see IRON RULE 2b STATUS below). Rule shapes
+ * carried: `edha-def-test` (H1) rolls the color test, `edha-owner-list` (H3) places/releases
+ * Omens, `edha-triggered-effect` deals the damage or applies the status the card describes (each
+ * damage rule states its OWN `formula` field — that is what `edha-triggered-effect` reads at
+ * runtime, NOT `item.system.damage.formula`), plus `edha-prompt-pick` (H6, Unweaving's dispel),
+ * `edha-reroll-react` (Shatter Focus) and `edha-sense-reveal` (Void Sense). The item-level
+ * `damage.formula` still exists too and still drives the system's OWN decoy damage roll beside
+ * the engine's real one (bench run 49a, item 169) — per R-142 (a) (EDHA_RULINGS.md §K.19,
+ * 2026-09-15) the formulas STAY and item 178 will add a field to suppress that decoy roll, so
+ * do NOT blank a Chaos formula to "clean up" the decoy before then. A Chaos talent's own
+ * `events`/`effects`/`damage.formula` lives in `data/authored/deity-chaos.json` and needs a
+ * REBUILD + ⟳ Sync like any authored data (iron rule 1) — this .js file is what's ENGINE-ONLY,
+ * not the talents' data. Reuses existing primitives wholesale — NO side-engine, NO new data
+ * handler or sidecar table:
  *   • Omen = the MARKED pattern — a registered `omen` status + flags.edha-content.markedBy.omen,
  *     exactly like Diagnosed/Insight. So "bears your Omen" is a status check, the cap (= tier) counts
  *     your omen-marked enemies, the icon shows the bearer's location (Void Sense flavor), and Void

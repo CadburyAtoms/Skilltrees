@@ -457,7 +457,10 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // do the full 3.1.0 build on the side. Once I confirm session one has occurred, we can swap to 3.1.0"
   // — so it moved to §K.20 with a §L stub and joins the closed list below. The length assertion moves
   // 1 → 0, and the open set is EMPTY again.
-  const ECOSYSTEM_RULINGS = [];
+  // 2026-09-15, that evening: item 181 (the Dodge arm button, PR #407) shipped its two judgment calls
+  // behind named dials rather than settling them in code, and the PM filed them as R-145 in §L —
+  // APPLIED as the default, so the card asks for a veto. The length assertion moves 0 → 1.
+  const ECOSYSTEM_RULINGS = ["R-145"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);

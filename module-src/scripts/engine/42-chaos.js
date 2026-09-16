@@ -1,8 +1,21 @@
 /* ============================================================================================
- * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
- * NO pack rebuild (all 9 talents keep events:{}; the damage formulas already live on the items —
- * read item.system.damage.formula). Reuses existing primitives wholesale — NO side-engine, NO new
- * data handler or sidecar table:
+ * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY
+ * for edits to THIS FILE (the generic primitives below) — NO pack rebuild. All 9 Chaos talents
+ * carry real `events` rules on their OWN documents — none keep `events: {}` (the 07-24p/2bU/2bY
+ * passes moved every one off name-keyed dispatch; see IRON RULE 2b STATUS below). Rule shapes
+ * carried: `edha-def-test` (H1) rolls the color test, `edha-owner-list` (H3) places/releases
+ * Omens, `edha-triggered-effect` deals the damage or applies the status the card describes (each
+ * damage rule states its OWN `formula` field — that is what `edha-triggered-effect` reads at
+ * runtime, NOT `item.system.damage.formula`), plus `edha-prompt-pick` (H6, Unweaving's dispel),
+ * `edha-reroll-react` (Shatter Focus) and `edha-sense-reveal` (Void Sense). The item-level
+ * `damage.formula` still exists too and still drives the system's OWN decoy damage roll beside
+ * the engine's real one (bench run 49a, item 169) — per R-142 (a) (EDHA_RULINGS.md §K.19,
+ * 2026-09-15) the formulas STAY and item 178 will add a field to suppress that decoy roll, so
+ * do NOT blank a Chaos formula to "clean up" the decoy before then. A Chaos talent's own
+ * `events`/`effects`/`damage.formula` lives in `data/authored/deity-chaos.json` and needs a
+ * REBUILD + ⟳ Sync like any authored data (iron rule 1) — this .js file is what's ENGINE-ONLY,
+ * not the talents' data. Reuses existing primitives wholesale — NO side-engine, NO new data
+ * handler or sidecar table:
  *   • Omen = the MARKED pattern — a registered `omen` status + flags.edha-content.markedBy.omen,
  *     exactly like Diagnosed/Insight. So "bears your Omen" is a status check, the cap (= tier) counts
  *     your omen-marked enemies, the icon shows the bearer's location (Void Sense flavor), and Void

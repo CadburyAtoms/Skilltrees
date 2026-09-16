@@ -1218,6 +1218,25 @@ because the actors involved had no tokens on one. ✅ **Both fixed by fix pass 1
 `edhaSceneScope: []` so the sight watcher stands down (item 147). This row stays RETIRED — row **123-1** carries the
 live re-drive of both.)*
 
+## Dodge arm — item 181 / R-143 (a) caveat 4 (2026-09-15; ENGINE-ONLY — relaunch / F5)
+
+A button on the CHARACTER sheet (beside the Focus resource bar) arms the `dodgearmed` status for 1
+Focus (default dial: paid on arm, not on consume — see the ruling filed for this item) and shows
+on both the sheet (button relabels "🛡️ Dodge Armed", disabled) and the token (a real status icon).
+Any bench PC works as the defender; needs a second controlled/GM token with a damage-formula item
+to attack from.
+
+- [ ] 🤖 **Dodge arm applies and pays once** — arm Dodge on a bench PC (1 Focus spent, the
+      `dodgearmed` icon appears on its token), then make a SINGLE-target attack against that PC
+      from another token whose item carries a damage formula. The attack roll must come up with
+      disadvantage (2d20kl, or the dialog pre-seeded to disadvantage on a non-fast-forward roll),
+      and the `dodgearmed` icon must be gone from the token afterward. A second attack right after
+      must roll normally — nothing left to consume.
+- [ ] 🤖 **An area or multi-target attack ignores the arm** — arm Dodge on a bench PC, then target
+      it together with at least one other token (or run an area/burst ability that includes it)
+      and attack. The roll must NOT gain disadvantage, and the `dodgearmed` icon must still be on
+      the token afterward (SR p.34: "Doesn't work on area attacks or multi-target attacks").
+
 ---
 
 # BENCH — White (leyline)
