@@ -14699,12 +14699,21 @@ async function edhaClearLifeState(endedCombat) {
  *   • reroll-lower   → edhaRewriteOrRelay (the Voice-of-Authority roll-rewrite); the kept d20 is lowered.
  *   • per-actor state→ owner once/round gate (edhaTriggerAllowed); statuses cleared at scene/combat
  *     end (deleteCombat), mirroring the Charge / Reserve / Life-flag pattern.
- * OMEN MODEL (Ben, 06-18): cap = tier; placements past the cap are lost. Every ACTIVE talent is a
- * preUseItem TAKEOVER (cancel the default single-target flow, pay the cost ourselves, refund on
- * cancel) — mirroring Destruction — so the color test is ROLLED (1d20 + @skills.<color>.mod) and
- * GATED against the target's defense via edhaReadDefense (NOT "trust the player"): the effect lands
- * only when total >= the defense. Cascade Collapse rolls once and gates EACH bearer against ITS OWN
- * Cognitive (Ben, 06-18). Attunement Range = EDHA_ATTUNE_FT[Blue rank] (Omens are Blue-placed).
+ * OMEN MODEL (Ben, 06-18): cap = tier + 1 (R-122 (a), 2026-09-13 — was `@tier` until then; every
+ * `op: release` rule states the formula outright since item 150); placements past the cap are
+ * lost. SUPERSEDED MECHANISM, kept for history: every ACTIVE talent used to be a preUseItem
+ * TAKEOVER — cancel the default single-target flow, pay the cost ourselves, refund on cancel —
+ * mirroring Destruction. The 07-24p migration deleted every one of those takeovers (see IRON RULE
+ * 2b STATUS below); today each ACTIVE Chaos talent carries H1 `edha-def-test` (`event: "use"`) on
+ * its OWN document instead, and the talent's native skill_test/attack fires — and pays its own
+ * cost through the system — exactly like any other talent's. A `preUseItem` hook
+ * (04-black-ritual.js) only VETOES pre-cost on a missing target/counter (no swallow: the roll and
+ * the system's own use-card still happen); H1's `use` executor queues a contest that the roll-
+ * watch hooks (12-contested-roll-resolution.js) resolve against that same native roll. So the
+ * color test is still ROLLED (1d20 + @skills.<color>.mod, the system's own roll) and GATED against
+ * the target's defense via edhaReadDefense/edhaDefTestOutcome (NOT "trust the player"): the effect
+ * lands only when total >= the defense. Cascade Collapse rolls once and gates EACH bearer against
+ * ITS OWN Cognitive (Ben, 06-18). Attunement Range = EDHA_ATTUNE_FT[Blue rank] (Omens are Blue-placed).
  * Wired here (no longer GM-eyeballed):
  *   • Entropy Strike / Spreading Omen — Blue vs Cognitive → place Omen(s) on a success (+ Entropy
  *     Strike's own spirit damage). Spreading Omen also marks the nearest other enemy within 10 ft.
