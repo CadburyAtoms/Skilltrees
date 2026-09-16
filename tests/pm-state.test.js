@@ -475,7 +475,9 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // in §L — R-156 (the movement-rate ladder, the last legacy derived stat still live), R-157 (the
   // level-3 attribute point, where the two published handbooks disagree) and R-158 (the published
   // Minion and Boss role features, which no Edha block carries). The length assertion moves 1 → 4.
-  const ECOSYSTEM_RULINGS = ["R-145", "R-156", "R-157", "R-158"];
+  // 2026-09-16, 17:57 ET: Ben answered R-156, R-157 and R-158 in one word ("defaults"); all three moved to
+  // §K.23 with §L stubs and join the closed list below. The length assertion moves 4 → 1.
+  const ECOSYSTEM_RULINGS = ["R-145"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -484,7 +486,8 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
       "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
-      "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155"]) {
+      "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155",
+      "R-156", "R-157", "R-158"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
