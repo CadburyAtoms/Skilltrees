@@ -418,6 +418,12 @@ bench and report it** — every converted talent rides the same premise. The dia
 the day-1 bench report, already fixed.
 
 
+## Mistborn Handbook module — X2 from the Metalworks comparison (2026-09-16; DOCS-ONLY: nothing to deploy)
+
+Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `cosmere-rpg` verified **3.0.2**. On the 2.1.0 table its documents load with every 3.x-only field (`__embedded`, `resources`, the action's `activation`) dropped, so its actions look empty — not a module bug. `docs/analysis/metalworks-comparison.md` §(a) N2 / X2.
+
+- [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
+
 ## Path descriptions — item 111 (2026-09-13; **REBUILD leyline + deity + heroic packs + ⟳ Sync Talents first**)
 
 The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approved prose from

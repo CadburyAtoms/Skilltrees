@@ -1,10 +1,10 @@
 {
   "pm": {
-    "status": "stopped",
-    "note": "This session stopped at Ben's word on the morning of 2026-09-16 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened. Open for the next PM: R-145 (applied, wants a veto only), item 183 (the resolver that unblocks the damage-card builds — Opus, needs Ben's word), items 188-190 (small Sonnet), and the 3.1.0 migration items 184-187 behind 183.",
-    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
+    "status": "idle",
+    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). Nine rulings R-146 … R-154 are filed as a MENU with recommended defaults; items 191 – 195 filed. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "waitingOn": "Ben: the menu R-146 … R-154 (say 'defaults' and the PM files them all); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
-    "session": "STOPPED 2026-09-16 (the 2026-09-15 11:49 ET hand-started session; Ben starts the next PM of record himself)"
+    "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
   "workers": [],
   "usage": null
