@@ -136,3 +136,91 @@ test("edhaArmDodge: refuses (no toggle) when the actor cannot afford 1 Focus", a
   assert.strictEqual(ok, false);
   assert.ok(!actor.statuses.has("dodgearmed"), "an unaffordable arm must not toggle the status");
 });
+
+/* --- item 193 (R-148 (a)): the two Dodge dials as Foundry module settings --------------------
+ * `edhaSetting(key, fallback)` is the one reader every ruling-toggled dial goes through — the
+ * constant stays the default (registered on `game.settings.register`), and a live override (or
+ * the harness's bare stub, whose `game.settings.get()` always answers `undefined`) is read at
+ * USE time. These pin the reader itself, then that both Dodge call sites actually consult it
+ * instead of the raw constant.
+ */
+test("edhaSetting: falls back to the constant when game.settings.get answers undefined (the harness stub, and real Foundry before a key is registered)", () => {
+  const env = loadEngine();
+  assert.strictEqual(env.edhaSetting("dodgePayOnArm", true), true);
+  assert.strictEqual(env.edhaSetting("dodgePayOnArm", false), false, "the fallback is the caller's, not a hidden hardcoded default");
+});
+
+test("edhaSetting: falls back to the constant when game.settings is entirely absent", () => {
+  const env = loadEngine();
+  env.game.settings = undefined;
+  assert.strictEqual(env.edhaSetting("dodgePayOnArm", true), true);
+});
+
+test("edhaSetting: falls back to the constant when game.settings.get throws (e.g. an unregistered key)", () => {
+  const env = loadEngine();
+  env.game.settings.get = () => { throw new Error("not registered"); };
+  assert.strictEqual(env.edhaSetting("dodgePayOnArm", true), true);
+});
+
+test("edhaSetting: returns the LIVE stored value once game.settings actually answers one", () => {
+  const env = loadEngine();
+  env.game.settings.get = (scope, key) => (scope === "edha-content" && key === "dodgePayOnArm") ? false : undefined;
+  assert.strictEqual(env.edhaSetting("dodgePayOnArm", true), false, "a stored false must win over the true default");
+  assert.strictEqual(env.edhaSetting("someOtherKey", "fallback"), "fallback", "an unanswered key still falls through");
+});
+
+test("edhaArmDodge: the dodgePayOnArm setting, not just the constant, gates the upfront charge — off, a broke actor still arms for free", async () => {
+  const env = loadEngine();
+  env.game.settings.get = (scope, key) => (key === "dodgePayOnArm") ? false : undefined;
+  const actor = mockActor({ name: "Broke-But-Dial-Off" });
+  actor.isOwner = true;
+  actor.toggleStatusEffect = async (id, { active }) => { if (active) actor.statuses.add(id); else actor.statuses.delete(id); };
+  actor.system.resources = { foc: { value: 0 } };
+
+  const ok = await env.edhaArmDodge(actor);
+  assert.strictEqual(ok, true, "with the setting off, arming never checks affordability");
+  assert.ok(actor.statuses.has("dodgearmed"));
+  assert.strictEqual(actor.system.resources.foc.value, 0, "no Focus left the pool on arm");
+});
+
+test("edhaArmDodge: with dodgePayOnArm off, the LATER consume charges the Focus instead", async () => {
+  const env = loadEngine();
+  env.game.settings.get = (scope, key) => (key === "dodgePayOnArm") ? false : undefined;
+  const defender = mockActor({ name: "Defender-Pay-On-Consume" });
+  defender.isOwner = true;
+  defender.toggleStatusEffect = async (id, { active }) => { if (active) defender.statuses.add(id); else defender.statuses.delete(id); };
+  defender.system.resources = { foc: { value: 2 } };
+
+  await env.edhaArmDodge(defender);
+  assert.strictEqual(defender.system.resources.foc.value, 2, "arming under the off dial spends nothing yet");
+
+  const attacker = mockActor({ name: "Attacker4" });
+  env.game.user = { targets: new Set([makeToken(defender)]) };
+  const roll = { options: {} };
+  const config = { data: { source: { actor: attacker, system: { damage: { formula: "1d6" } } } } };
+  await fireHook(env, "cosmere-rpg.preAttackRoll", roll, null, config);
+
+  assert.strictEqual(roll.options.advantageMode, "disadvantage", "the arm still applied");
+  assert.strictEqual(defender.system.resources.foc.value, 1, "the Focus is charged on CONSUME under the off dial");
+});
+
+test("edhaArmDodge: the dodgeArmExpiresOnOwnTurn setting decides the expire mode passed to edhaApplyTimedStatus", async () => {
+  const env = loadEngine();
+  const seen = [];
+  env.edhaApplyTimedStatus = async (target, statusId, opts) => { seen.push(opts); return true; };
+
+  const onActor = mockActor({ name: "ExpiresOn" });
+  onActor.isOwner = true;
+  onActor.toggleStatusEffect = async () => {};
+  onActor.system.resources = { foc: { value: 1 } };
+  await env.edhaArmDodge(onActor);
+  assert.strictEqual(seen[0].expire, "owner", "default (setting absent): the arm still expires end of the arming actor's own next turn");
+
+  env.game.settings.get = (scope, key) => (key === "dodgeArmExpiresOnOwnTurn") ? false : undefined;
+  const offActor = mockActor({ name: "ExpiresOff" });
+  offActor.isOwner = true;
+  offActor.toggleStatusEffect = async () => {};
+  offActor.system.resources = { foc: { value: 1 } };
+  await env.edhaArmDodge(offActor);
+  assert.strictEqual(seen[1].expire, false, "the setting off: no expiry stamp — the arm persists until consumed");
+});
