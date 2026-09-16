@@ -59,6 +59,67 @@ Looser than leyline because deity talents skew more active. Targets:
 3 Actions exist in deity design specifically for the capstone slot. Outside the capstone, prefer 2 Actions even for heavy effects.
 
 > **R-108 (a), 2026-09-13 — target restated, nothing converted yet.** The deity atlas runs **0% Specials** across all ninety talents against this table's ~15–20% target (65 of 90 cost one or more Actions; the rest split across 13 Passives, 7 Free Actions and 5 Reactions). The one narrow conversion proposed — retype talents that "already ride another action" under Part 3 principle 10 — changes no talent on inspection: of the six candidates, four are already Passives, one is already a Free Action, and one (`Withering Touch`) is its own attack, not a rider. Converting standalone deity Actions into Specials now, before that authoring gap is closed, would only make deity trees more action-efficient and widen the deity-vs-leyline agency gap the primer already flags (R-96). So: **the target above stands as written, but do not convert any deity talent to a Special to chase it** until leyline's agency work (R-96) has landed and a fresh leyline-vs-deity comparison can be run. *(`EDHA_RULINGS.md` R-108, answered 2026-09-13.)*
+>
+> **Update 2026-09-16 (R-151, `EDHA_RULINGS.md` §K.21).** The same atlas also runs **80% costed**
+> (72 of 90 talents spend Investiture on their own, at 1 – 4 a cast) against 8 – 46% costed in
+> every published Invested family — see the Published benchmarks table below. R-151 (a) holds this
+> re-pricing rather than converting talent-by-talent, because the root is structural: a deity tree
+> charges on every talent because it has no base action to have charged on (**R-152**, §K.21). The
+> structural fix is designed at `docs/design/channel-actions.md` (White approved, PR #419); the
+> deity re-pricing itself is reopened as **R-159** (§L) once a deity pass runs the same way.
+
+### Published benchmarks (2026-09-16)
+
+From `docs/analysis/talent-comparison-mistborn-radiant.md` §C.1 (action-type mix) and §C.2 (cost),
+the eight-family measurement behind R-151 (a) and R-153 (a) (`EDHA_RULINGS.md` §K.21).
+
+**§C.1 — action-type mix (% of family's talents):**
+
+| Family | n | Passive | Special | 1 Act | 2 Act | 3 Act | Free | Reaction | Passive + Special |
+|---|---|---|---|---|---|---|---|---|---|
+| Mistborn — Allomancy | 83 | 45 | 37 | 7 | 0 | 0 | 5 | 6 | **82** |
+| Mistborn — Feruchemy | 85 | 29 | 41 | 13 | 5 | 1 | 4 | 7 | **71** |
+| Mistborn — Metalborn paths | 38 | 50 | 37 | 5 | 0 | 0 | 8 | 0 | **87** |
+| Radiant (9 orders) | 225 | 38 | 39 | 7 | 10 | 1 | 3 | 2 | **76** |
+| Official heroic (control) | 149 | 34 | 30 | 14 | 8 | 2 | 7 | 5 | 64 |
+| Edha leyline | 125 | 43 | 22 | 11 | 7 | 0 | 2 | 14 | 66 |
+| **Edha deity** | 90 | 16 | **0** | **38** | **23** | **11** | 7 | 6 | **16** |
+| Edha heroic | 150 | 34 | 27 | 13 | 9 | 3 | 8 | 7 | 61 |
+
+Every published family runs 71 – 87% Passive + Special. Edha deity (16%) is outside every column:
+0% Special, 72% costing at least one Action, 11% three-Action capstones against 0 – 2% published.
+
+**§C.2 — cost (% of family's talents that consume a pool):**
+
+| Family | Costed | Of which | Pool refill | Per-effect limit | Variable spend |
+|---|---|---|---|---|---|
+| Mistborn — Allomancy | **34%** | Investiture 20%, Focus 13% | scenes start full (1 if Surprised); *Drink Vial* refills | your Allomancy rank | yes — *"1 or more, up to your limit"*; flaring = spending the limit |
+| Mistborn — Feruchemy | **46%** | metalmind charges 40%, Focus 6% | Store earns 1 charge/scene; capacity by tier | 1 charge per Tap; talents raise it | yes — many *"instead of 1 charge, spend any number"* talents |
+| Mistborn — Metalborn paths | 8% | Focus 5%, Investiture 3%, uses 3% | — | — | — |
+| Radiant | **29%** | Investiture 27%, Opportunity/Focus 2% | Breathe Stormlight from spheres | *"up to your ranks in [surge]"* on the variable ones | yes — 10 talents |
+| Official heroic | 32% | Focus (1: 14%, 2: 13%, 3: 3%) | rest | — | rare (3) |
+| Edha leyline | **48%** | Investiture 48% | Draw Mana, 1 Action → tier | none | 2 talents ("Variable Investiture") |
+| **Edha deity** | **80%** | Investiture 80% (1: 38%, 2: 31%, 3: 10%, 4: 1%) | Draw Mana | none | **none** |
+| Edha heroic | 31% | Focus (1: 15%, 2: 13%, 3: 3%) | rest | — | — |
+
+Edha deity at 80% costed is two and a half times the most expensive published family. Edha's
+Investiture sums per deity tree (minimum cost, summed): Power 15, Chaos 14, Death 14, Life 13,
+Sovereignty 13, Civilization 11, Fate 11, Destruction 10, Knowledge 10, Order 10 — a nine-talent
+deity tree carries as much Investiture pricing as a twenty-five-talent leyline colour.
+
+### Variable spend ("1 or more, up to your rank")
+
+**R-153 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.21) — a convention for **new and revised**
+talents; no sweep of existing cards. Every published Invested family uses variable spend; Edha
+deity has zero talents that do (leyline has two). When a talent's effect already scales with
+something numeric — damage dice, targets, range, duration — let the player spend more Investiture
+for more of it instead of writing a flat cost:
+- Use the consume dialog's `{min: 1, max: <rank>}` row (the Mistborn packs write `max: -1` for
+  "up to your limit"; deity's limit is the talent's rank in whichever of its two colours the
+  effect scales with).
+- Card phrasing: `"Spend 1 or more Investiture, up to your [Colour] rank, to …"`, stating the
+  per-point scaling in the same sentence.
+- Only for talents whose effect is already a numeric scale, not for binary on/off effects.
 
 ### Description length
 
