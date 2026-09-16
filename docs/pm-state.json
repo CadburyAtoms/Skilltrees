@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T22:41:51.904Z",
+  "generatedAt": "2026-09-16T23:32:52.787Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "89059a7b35",
-    "commit": "ed724d1",
+    "hash": "6b37dcc0d9",
+    "commit": "123911e",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,70 +42,13 @@
     "nextOpenAt": "2026-09-17T01:00:00.000Z"
   },
   "pm": {
-    "status": "running",
-    "note": "R-159 answered (a) and filed; seven Sonnet workers are out on items 188 – 208's small fixes; the Blue brief is written. The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "status": "idle",
+    "note": "All seven Sonnet workers landed (#423 – #429): the movement ladder, the opposed-test tie, the Diminished rename (now Lessened Die — say the word if you prefer abased), the Dodge dials as Foundry settings, enrichers on six heroic cards, the guides' tables, the scripts gate, the dirty-tree test, the shape corpus. Two REBUILDs are owed under the freeze (deity for the rename, heroic for the enrichers). The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
     "waitingOn": "Ben: the Blue pass when you have time (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
-  "workers": [
-    {
-      "item": "203+204",
-      "title": "the movement ladder + the opposed-test tie",
-      "model": "sonnet",
-      "branch": "pm/203-204-ladder-tie",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "205",
-      "title": "the Diminished rename",
-      "model": "sonnet",
-      "branch": "pm/205-diminished-rename",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "193",
-      "title": "engine dials as module settings",
-      "model": "sonnet",
-      "branch": "pm/193-dials-settings",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "194",
-      "title": "enrichers on the MANUAL cards",
-      "model": "sonnet",
-      "branch": "pm/194-enrichers",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "199+208",
-      "title": "the design guides' tables + the advancement note",
-      "model": "sonnet",
-      "branch": "pm/199-208-guides-notes",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "188+189",
-      "title": "the Chaos header + the trigger-card fallbacks",
-      "model": "sonnet",
-      "branch": "pm/188-189-chaos-trigger",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    },
-    {
-      "item": "190+196+192",
-      "title": "the scripts README gate + the dirty-tree test + the shape corpus",
-      "model": "sonnet",
-      "branch": "pm/190-196-192-tooling",
-      "startedAt": "2026-09-16T22:40:00Z",
-      "note": "one Sonnet worker in a $TEMP worktree"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -2432,9 +2375,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 426
     },
     {
       "pos": 193,
@@ -2444,9 +2387,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 426
     },
     {
       "pos": 194,
@@ -2456,9 +2399,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 429
     },
     {
       "pos": 195,
@@ -2480,9 +2423,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 429
     },
     {
       "pos": 197,
@@ -2492,9 +2435,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-148 (a)",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 424
     },
     {
       "pos": 198,
@@ -2504,9 +2447,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-149 (a)",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 428
     },
     {
       "pos": 199,
@@ -2528,9 +2471,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 429
     },
     {
       "pos": 201,
@@ -2564,9 +2507,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 423
     },
     {
       "pos": 204,
@@ -2612,9 +2555,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-156",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 427
     },
     {
       "pos": 208,
@@ -2624,9 +2567,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 427
     },
     {
       "pos": 209,
@@ -2636,9 +2579,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 425
     },
     {
       "pos": 210,
@@ -2672,9 +2615,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 423
     },
     {
       "pos": 213,
@@ -2720,6 +2663,18 @@
       "model": null,
       "size": "L",
       "deps": "items 209, 198's White pilot",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 217,
+      "item": "213",
+      "title": "The player primer renders enricher tags as literal text, and Vinestance's card carries the typo \"lsoe\" — strip or render the tags in build-player-primer.js, fix the word (TOOLING + DATA: REBUILD heroic). Filed by the PM from item 194's out-of-scope findings",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2798,34 +2753,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "09:25",
-      "at": "2026-09-14T13:25:00.000Z",
-      "item": "Ben's hours — three phone notes (09:20–09:23 ET) + a chat message; recorded, nothing dispatched. R-127 = (a) (immunity as a PRE-COST gate) → item 149's second half queued (opus S); item 106's Decree of Ruin card text approved as proposed → 106 fully unblocked (opus L); item 82 parked until the bestiary redo session (nothing asked of Ben). Rulings doc: R-127's inline marker (open set [], pin re-set), R-119's approval line; TODO 106 / 149 notes; this board. All seen 09:26 with action lines. The session stays STOPPED; the next PM is Ben's hand start (Mon 21:00 at the earliest)",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "~15 min",
-      "weighted": "≈ 1M (PM)",
-      "weightedM": 1,
-      "outcome": "recorded",
-      "pr": null
-    },
-    {
-      "date": "2026-09-14",
-      "time": "19:14",
-      "at": "2026-09-14T23:14:00.000Z",
-      "item": "#386 merged — the bestiary redo scoped (Ben's interactive session, not a PM dispatch; reconciled 2026-09-15): the bestiary-forge skill and STANDARD, the census, rulings R-128 … R-135 filed; items 153 and 154 done (TOOLING + DOCS)",
-      "itemNo": "386",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 386
-    },
     {
       "date": "2026-09-14",
       "time": "19:49",
@@ -3637,9 +3564,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "19:36",
+      "at": "2026-09-16T23:36:00.000Z",
+      "item": "The seven-worker batch landed — #423 (199 + 208; sonnet, 11 min, 73 tool uses, 165k), #424 (193; sonnet, 18 min, 105 uses, 228k), #425 (205; sonnet, 21 min, 109 uses, 256k), #426 (188 + 189; sonnet, 23 min, 129 uses, 261k), #427 (203 + 204; sonnet, 28 min, 147 uses, 293k), #428 (194; sonnet, 36 min, 178 uses, 365k), #429 (190 + 196 + 192; sonnet). Each merged on green CI after the PM's landing script merged main into the branch and resolved the bookkeeping files (the changelog's deltas re-inserted and recounted, the checklist and shared skill files replayed line by line, the dashboard / primer / codex / census / engine regenerated) — nine conflicts across seven PRs, none in code",
+      "itemNo": "423",
+      "model": "sonnet ×7",
+      "isDispatch": false,
+      "duration": "~2 h wall",
+      "weighted": "~1.9M",
+      "weightedM": 1.9,
+      "outcome": "all merged",
+      "pr": 423
+    },
+    {
+      "date": "2026-09-16",
+      "time": "19:36",
+      "at": "2026-09-16T23:36:00.000Z",
+      "item": "Batch close-out: queue rows 192 – 212 set merged with their PRs; item 213 filed (the primer's literal enricher tags + the Vinestance typo); item 183's brief gains a note (the compatibility doc's \"the card prose can keep Diminished\" line is stale since #425); the trailer correction recorded",
+      "itemNo": "425",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~10 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed",
+      "pr": null
     }
   ],
-  "runLogTotal": 378,
+  "runLogTotal": 380,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
