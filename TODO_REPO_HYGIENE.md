@@ -4631,7 +4631,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size S · deps none (item 185 consumes it) · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 193. [ ] R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
+## 193. [x] DONE 2026-09-16 (PR #424) — R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
 
 **Unblocked 2026-09-16 14:40 ET:** R-148 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
 
