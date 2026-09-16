@@ -104,9 +104,9 @@
       "docId": "abLPml0pRyShHI6s",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Focus</p><p>Spend 3 focus to test Deduction vs. Cognitive, gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deduction vs. Cognitive, gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deduction vs. Cognitive, gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Focus</p><p>Spend 3 focus to test Deduction vs. Cognitive [[test skill=ded defence=cog]], gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deduction vs. Cognitive [[test skill=ded defence=cog]], gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deduction vs. Cognitive [[test skill=ded defence=cog]], gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down.</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -337,9 +337,9 @@
       "docId": "DOS95lNPA0QVh9Qm",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to test Deduction vs. Spiritual to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to test Deduction vs. Spiritual to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to test Deduction vs. Spiritual to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to test Deduction vs. Spiritual [[test skill=ded defence=spi]] to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to test Deduction vs. Spiritual [[test skill=ded defence=spi]] to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to test Deduction vs. Spiritual [[test skill=ded defence=spi]] to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -720,9 +720,9 @@
       "docId": "ZnEeLOwM4NNdSaAm",
       "img": "icons/equipment/feet/boots-armored-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 2 Focus</p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive to hide from them. You gain an advantage if in cover or obscured.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive to hide from them. You gain an advantage if in cover or obscured.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive to hide from them. You gain an advantage if in cover or obscured.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 2 Focus</p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive [[test skill=thv defence=cog]] to hide from them. You gain an advantage if in cover or obscured.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive [[test skill=thv defence=cog]] to hide from them. You gain an advantage if in cover or obscured.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive [[test skill=thv defence=cog]] to hide from them. You gain an advantage if in cover or obscured.</p>"
       },
       "activation": {
         "type": "skill_test",
