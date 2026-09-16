@@ -3679,3 +3679,37 @@ whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
   (= Red rank) is enforced twice, at the bump and at the read. Pinned:
   `tests/rally-spent-on-test.test.js`. The `edha-rally-stack` schema is unchanged (`trigger`,
   `resetOn`, `note`) — only its label/hint text now says "spent".
+
+## Item 181 2026-09-15 (R-143 (a) caveat 4 — the Dodge arm)
+
+Dodge is a standard SYSTEM Reaction (SR p.34: "spend 1 focus to add a disadvantage to an enemy's
+attack against you. Doesn't work on area attacks or multi-target attacks."), not a talent — there
+is no card to put an `events` rule on, so this is ENGINE_OWNED (`01-shared-core.js`, right after
+`edhaPackAdvantageApply`). All new; every primitive it calls is reused, not new (`edhaD20RollActor`,
+`edhaUserTargetTokens`, `edhaApplyTimedStatus`, `edhaToggleStatus`, `edhaSpendResource`,
+`edhaWhisperIds`, `edhaSheetRoot`).
+
+- **`edhaDodgeShouldApply(attacker, hasDamageFormula, targetActors, targetIsArmed)`** — PURE, pinned
+  in `tests/dodge-arm.test.js`. True only for a genuine SINGLE Foundry target (an area or
+  multi-target attack is 0 or 2+ targets and the arm does not apply — SR p.34) whose source item
+  carries a damage formula (the same "is this an attack" heuristic `edhaAggroRecord` /
+  `edhaPackAdvantageApply` already use), where that one target is not the attacker itself and
+  currently carries the `dodgearmed` status.
+- **`edhaDodgeConsumePreRoll(roll, source, config)`** — the consuming half, on
+  `pre{Skill,Attack,Item}Roll` (the same seam `edhaPackAdvantageApply` uses just above it, string-
+  enum `advantageMode` + `configureDialog` wrap + an `_edhaDodgeArm` idempotency guard on the
+  roll's own options — `tests/advantage-channel.test.js` covers the shape generically). On a true
+  decision it writes `"disadvantage"`, consumes the arm (`edhaToggleStatus(defender, "dodgearmed",
+  false)`) and posts a whispered card.
+- **`edhaArmDodge(actor)`** — the sheet button's click handler. Refuses (no toggle, no spend) when
+  already armed, or — under the `EDHA_DODGE_PAY_ON_ARM` dial (default `true`) — when the actor
+  cannot afford 1 Focus. On success: `edhaSpendResource(actor, "foc", 1)` (dial-gated) then
+  `edhaApplyTimedStatus(actor, "dodgearmed", {owner: actor, expire: "owner"})` — expires end of the
+  ARMING actor's own next turn (the `tagged` shape), not "cleared at combat end": Dodge answers one
+  imminent attack, not a scene-long stance.
+- **`dodgearmed`** joins `EDHA_STATUSES` (`condition: false`, the predprimed/tagged/warlord "armed
+  next hit" shape) — a real status, not a bare flag, so it paints on the token for free.
+- **Two ruling dials, both defaulted in code and filed as a numbered ruling for Ben** (see the
+  2026-09 changelog delta / the item's PR): `EDHA_DODGE_PAY_ON_ARM` (Focus paid on arm vs. on
+  consume) and the expiry window (end of the arming actor's next turn vs. cleared at combat end).
+  Pinned: `tests/dodge-arm.test.js`.

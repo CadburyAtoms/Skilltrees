@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T23:18:18.448Z",
+  "generatedAt": "2026-09-15T23:51:23.585Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "47c753ad40",
-    "commit": "689d4c9",
-    "branch": "pm/r-144-answered",
+    "hash": "1c7b0a6621",
+    "commit": "727e34e",
+    "branch": "pm/181-dodge-arm-button",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. R-144 answered: the full 3.1.0 build proceeds on the side, your 2.1.0 table keeps session one, and we swap once you confirm session one has happened — filed in EDHA_RULINGS.md §K.20. Four Sonnet workers are running on your word: the three card-claim defects (172, 173, 176), the stale Chaos header (175), the Dodge arm button (181), and the lint gate that can see Embedded-Actions breaks (182). Nothing gameplay-changing deploys to your live table until you say session one has happened — say the word if you want the no-more-clicking builds live for it instead. No Fable agents today.",
-    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); optionally, whether the damage-card builds should go live before session one rather than after",
+    "note": "PM of record since 11:49 ET. Two of the four Sonnet workers are in: item 175 (the stale Chaos header, #406) and item 181 (the Dodge arm button, #407) are merged. Item 181's two design questions are filed as R-145, APPLIED behind named dials — the Focus paid when you arm, and an unused arm clearing at the end of your own next turn — so it wants a veto, not a decision; silence keeps both. Still running: the three card-claim defects (172, 173, 176) and the lint gate (182). Nothing deploys to your table while session one is pending. No Fable agents today.",
+    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); R-145 only if you want to veto a Dodge dial; optionally, whether the damage-card builds should go live before session one",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
@@ -61,32 +61,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; ENGINE-ONLY (F5), no deploy while session one is pending"
-    },
-    {
-      "item": "175",
-      "title": "42-chaos.js's header comment is stale since the 07-24p migration (comment-only)",
-      "model": "sonnet",
-      "size": "XS",
-      "lane": "R",
-      "branch": "pm/175-chaos-header",
-      "startedAt": "2026-09-15T23:13:00Z",
-      "agent": "Item 175 (chaos header comment)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; comment-only, nothing to deploy"
-    },
-    {
-      "item": "181",
-      "title": "R-143 caveat 4: an optional sheet button that arms Dodge before an enemy's attack roll",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/181-dodge-arm-button",
-      "startedAt": "2026-09-15T23:13:00Z",
-      "agent": "Item 181 (Dodge arm button)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; dual-mode; two judgment calls come back as a ruling before merge"
     },
     {
       "item": "182",
@@ -2344,9 +2318,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "none — both surfaces unchanged at 3.1.0",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 407
     },
     {
       "pos": 186,
@@ -2467,7 +2441,8 @@
   ],
   "benOnly": [
     "tell the PM when session one has happened — that releases the swap to 3.1.0 (item 187 and the Route B upgrade, about an hour of his time)",
-    "and say if the damage-card builds should reach the table before session one rather than after."
+    "and say if the damage-card builds should reach the table before session one rather than after. R-145 is filed APPLIED from item 181's build — the Dodge button's two dials, the Focus paid on arming and an unused arm clearing at the end of your own next turn — so it wants a veto, not a decision",
+    "silence keeps both."
   ],
   "inbox": [],
   "foundry": {
@@ -2477,20 +2452,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "01:12",
-      "at": "2026-09-14T05:12:00.000Z",
-      "item": "Dispatched fix pass 12 (opus, worktree pm/fix-pass-12 — test-pass-fixes on bench 47's engine defects: 146 the sync's talent-only type filter, 147 the sight hook's unfiltered game.scenes walk + 151 the exact folder filter and its four documents, 149's card half; every fix pinned by reversion; ENGINE-ONLY, F5). Opus 2 of 3 for 09-14",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "01:13",
@@ -3316,9 +3277,23 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-15",
+      "time": "19:51",
+      "at": "2026-09-15T23:51:00.000Z",
+      "item": "Item 181 — the Dodge arm button (R-143 (a) caveat 4; worktree pm/181-dodge-arm-button)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "32 min (23:13Z → 23:45Z), 150 tool uses",
+      "weighted": "374k",
+      "weightedM": null,
+      "outcome": "reviewed 19:51 — merged as #407 after the PM's own read of the Focus path: edhaArmDodge spends the 1 Focus under the pay-on-arm dial behind an affordability guard, and the consuming hook spends only when that dial is false, so exactly one payment happens either way. ENGINE-ONLY (F5); 7 pinned tests with a live mutation proof (relaxing the single-target guard failed two, then restored); two 🤖 rows; dodgearmed collides with no id on main; no data/ file touched; CI green on 727e34e. Its two judgment calls were filed as R-145, APPLIED behind named dials, in the same PR",
+      "pr": 407
     }
   ],
-  "runLogTotal": 358,
+  "runLogTotal": 359,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
@@ -4304,6 +4279,12 @@
       "model": "opus",
       "item": null,
       "pr": 403
+    },
+    {
+      "at": "2026-09-15T23:51:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 407
     }
   ],
   "statusVocab": [
