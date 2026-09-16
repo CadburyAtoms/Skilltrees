@@ -516,9 +516,9 @@
       "docId": "ymcAxzv99kHUf9Vz",
       "img": "icons/magic/life/cross-flared-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) [[test skill=med dc=10]] to treat an ally, removing one condition caused by their injury.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) [[test skill=med dc=10]] to treat an ally, removing one condition caused by their injury.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) [[test skill=med dc=10]] to treat an ally, removing one condition caused by their injury.</p>"
       },
       "activation": {
         "type": "skill_test",

@@ -4643,7 +4643,14 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size S · deps R-148 (a) · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 194. [ ] R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+## 194. [x] (2026-09-16, PR #428) R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+
+*(Closed as DATA — REBUILD heroic + ⟳ Sync Talents, narrower than filed: the full 15-tree
+tree-section-header audit found the MANUAL-with-an-unrolled-roll set is Heroic-only — every
+leyline and deity MANUAL bullet is consent, hidden information, action-forcing, or a table
+judgment, never an un-automated test/damage roll. Six talents tagged: Agent's Get 'Em Talking /
+Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warrior's Vinestance.
+`edha-leyline` and `edha-deity` data are untouched, so only `edha-heroic` needs the rebuild.)*
 
 **Unblocked 2026-09-16 14:40 ET:** R-149 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
 

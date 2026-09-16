@@ -424,6 +424,22 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## Enrichers on the MANUAL cards — item 194 / R-149 (a) (2026-09-16; **DATA — REBUILD heroic + ⟳ Sync Talents**; 2.1.0-safe)
+
+Six Heroic-atlas talents gained a `[[test ...]]` / `[[damage ...]]` / `[[/roll ...]]` enricher tag
+right where their card names a roll the engine does not roll (no `events` rule at all): Agent's
+**Get 'Em Talking**, **Close the Case**, **Shadow Step**; Hunter's **Deadly Trap**; Scholar's
+**Ongoing Care**; Warrior's **Vinestance**. The full tree-section-header audit (all 15 trees)
+found the MANUAL-with-an-unrolled-roll set is Heroic-only — every leyline and deity MANUAL bullet
+is consent, hidden information, action-forcing, or a table judgment, never an un-automated test
+or damage roll — so only the `edha-heroic` pack needs a rebuild; `edha-leyline` / `edha-deity`
+are untouched by this item. Any bench actor owning these talents works.
+
+- [ ] 🤖 Open Get 'Em Talking's card (Agent) and confirm the "Deduction Test" button renders and rolls Deduction vs. the target's Spiritual defence when clicked. Repeat for Close the Case (Deduction vs. Cognitive) and Shadow Step (Thievery vs. Cognitive).
+- [ ] 🤖 Open Deadly Trap's card (Hunter) and confirm BOTH variants show a working roll button: Survival Test (Cognitive) + a 2d4 Impact damage button for the Entangling Trap sentence, Survival Test (Physical) + a 2d4 Keen damage button for the Impaling Trap sentence.
+- [ ] 🤖 Open Ongoing Care's card (Scholar) and confirm the Medicine Test button shows "against DC 10" and rolls.
+- [ ] 🤖 Open Vinestance's card (Warrior) and confirm BOTH the Athletics Test (Cognitive) button and the plain `1d4` inline roll link render and roll.
+
 ## Opposed skill tie — item 204 (2026-09-16; **ENGINE-ONLY, F5**)
 
 `edhaDefTestOutcome`'s `vs: "skill"` path now uses `>` instead of `>=` (Mistborn Handbook Ch. 3,

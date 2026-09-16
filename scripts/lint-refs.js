@@ -2079,6 +2079,53 @@ engine.split("\n").forEach((lineText, i) => {
   }
 }
 
+/* --- pass 24: enricher tag syntax (item 194, R-149 (a), 2026-09-16) ------------------------------
+ *
+ * `[[test skill=… ]]` / `[[damage … ]]` / `[[/roll … ]]` enrichers turn a MANUAL card's "roll it
+ * yourself" sentence into a button (docs/Enrichers.md, byte-identical at cosmere-rpg 2.1.0 and
+ * 3.1.0). Nothing in Foundry's own editor errors on a malformed one — a typo'd key or an unknown
+ * trigraph just leaves the literal `[[test skil=ded]]` sitting in the card text, silently
+ * unclicked, which is pass 1+2's "silent manual card" family on the two-bracket surface instead
+ * of the events one. The scan/decide logic lives in scripts/lib/enricher-check.js so
+ * tests/enricher-check.test.js can pin it against fixtures without shelling out (the pass-23
+ * precedent). Scanned here: every authored talent's description (value/chat/short) and every
+ * adversary ability's card text + each adversary's biography — data/adversaries.json already
+ * ships live tags (the Stalker's Concealed test, the Living Lock's regen), so this pass also
+ * guards against a regression there, not just the item's new talent cards. */
+{
+  const { checkEnricherTags } = require("./lib/enricher-check.js");
+  let scanned24 = 0;
+  const scanField = (source, name, field, text) => {
+    if (typeof text !== "string" || !text) return;
+    scanned24++;
+    for (const f of checkEnricherTags(text)) {
+      err(`pass 24: ${source} (${name}${field ? `, ${field}` : ""}): ${f.tag} — ${f.error}`);
+    }
+  };
+  for (const { rel, talentName, talent } of AUTHORED_ENTRIES) {
+    const desc = talent?.description;
+    if (desc && typeof desc === "object") {
+      scanField(rel, talentName, "description.value", desc.value);
+      scanField(rel, talentName, "description.chat", desc.chat);
+      scanField(rel, talentName, "description.short", desc.short);
+    }
+  }
+  for (const { advName, item } of ADVERSARY_ENTRIES) {
+    scanField(ADV_REL, `${advName} / ${item?.name}`, "text", item?.text);
+    if (typeof item?.description === "string") scanField(ADV_REL, `${advName} / ${item?.name}`, "description", item.description);
+  }
+  if (ADVERSARY_DATA) {
+    for (const [advName, adv] of Object.entries(ADVERSARY_DATA)) {
+      if (advName.startsWith("_")) continue;
+      scanField(ADV_REL, advName, "biography", adv?.biography);
+    }
+  }
+  if (scanned24 < 100) {
+    err(`pass 24: only ${scanned24} text field(s) with content were scanned (expected 100+) — ` +
+        `the scan rotted; fix it before trusting this pass.`);
+  }
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);
