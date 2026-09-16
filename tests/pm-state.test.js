@@ -479,7 +479,9 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // §K.23 with §L stubs and join the closed list below. The length assertion moves 4 → 1.
   // 2026-09-16, 18:08 ET: the PM files R-159 in §L from the Channel design pass (PR #419) — the deity re-pricing
   // R-151 (a) held for, re-opened against the rider / release split. The length assertion moves 1 → 2.
-  const ECOSYSTEM_RULINGS = ["R-145", "R-159"];
+  // 2026-09-16, 18:40 ET: Ben answered R-159 (a) in chat ("Default for 159"); moved to §K.24 with a §L stub and joins
+  // the closed list. The length assertion moves 2 → 1.
+  const ECOSYSTEM_RULINGS = ["R-145"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -489,7 +491,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
       "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
       "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155",
-      "R-156", "R-157", "R-158"]) {
+      "R-156", "R-157", "R-158", "R-159"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
