@@ -15,7 +15,7 @@ The gate log is the record.
 | 1 | §1 The Channel rule, generic | **✅ approved 2026-09-16** — M1 – M5 (a), M6 (c), M7 (a), M8 – M13 (a), M14 (a), M15 (a) White, M16 (a) *release*, M17 (a) *Countercurrent* |
 | 2 | §2 The five frames | **✅ approved 2026-09-16** — F-0 (b) Red's Realms swapped; F-W (a) the line, F-B (a) the deep reading, F-K (a) the hunt, F-R (a) the mage's own edge, F-G (a) the ground |
 | 3 | §3 White, worked | **✅ approved 2026-09-16** — W-1 … W-6 all (a): two formation passives become riders, three Reactions, Terms of Accord a release, Unbreakable Line gated on the flood, Voice of Authority reads the spend, Guiding Signal on the payment |
-| 4 | §4 The build | not yet written |
+| 4 | §4 The build | **✅ approved 2026-09-16** — B-1 … B-6 all (a): `data/channels.json` build-only, one gate field in three dispatch sites, the `edha-channel` event, per-die disadvantage built with the Channel, the colour skill non-core, the bench on the Route A copy |
 | 5 | §5 Close-out | not yet written |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -757,3 +757,225 @@ today.
 
 > **Answered at gate 3 (Ben, chat, 2026-09-16):** *"all recommended"* — **W-1 … W-6 (a).** §3 committed
 > on that answer.
+
+---
+
+## 4. The build
+
+What item 198 builds, named from what exists. Every primitive below is in `ENGINE_INDEX.md` or the
+3.1.0 source at the line quoted; the *widenings* are new fields or one new event type on existing
+primitives, listed as such so the PM can size them, and nothing here is a bespoke subsystem
+(iron rule 2a). **No code and no data change in this pass.** Deploy class of the whole build:
+ENGINE (F5) + DATA — REBUILD leyline (and the adversaries pack where a block embeds a power) +
+⟳ Sync Talents, **at 3.x only** — after item 187's flip, which waits on session one (R-144).
+
+### 4.1 The data shape at 3.x
+
+**Five `power` items in the leyline pack**, one per colour, built by `foundry-build.js` beside Draw
+Mana (`drawManaItemDoc`, `foundry-build.js:697`), each carrying:
+
+| Field | Value | Where it comes from |
+|---|---|---|
+| `type` | `power` | 3.1.0 `data/item/power.ts` |
+| `system.id` / `system.skill` / `customSkill` | `white` / `white` / `true` | the Mistborn shape (`packs/metalborn-paths/allomantic-powers/steel/steel-allomancy.json`: `skill: "all"`, `customSkill: true`) |
+| `system.type` | `leyline` | a power type Edha registers with `api.registerPowerType` (the Mistborn module registers `metallic-art`; Edha registers none today — `metalworks-comparison.md` Appendix A) |
+| `system.talentTree` | the White `talent_tree` UUID | the build already mints `tree.treeDocId` (`foundry-build.js:670`); the `TalentsProviderMixin` (`mixins/talents-provider.ts:10`) lists the tree's talents on the power's Talents tab |
+| `system.description` | §2.2's frame paragraph and card sentence | `data/channels.json` (B-1) |
+| `system.events` | the Channel's own rules, §4.2 | authored in `data/channels.json`, emitted by the build |
+| embedded actions | **Channel White** (`act` 1) and **Maintain White** (`fre`), each with one consumption row `{type: "resource", resource: "inv", value: {min: 1, max: -1, actual: 1}, matchDocument: ancestor Actor}` | the Appendix B.3 action shape (`cosmere-rpg-3.1.0-compatibility.md`); `ActionCostType` `act` / `fre` (`types/cosmere.ts:254-259`) |
+
+**The colour skill becomes non-core.** Today the five colours are written into `COSMERE.skills` as
+core skills (N4); R-150 (b) makes them power skills (`core: false`, registered through
+`registerSkill` per borrow B4), so `skills.white.unlocked` derives from owning the power
+(`data/actor/common.ts:633-641`) and the sheet's White row appears with it. **The leyline path's
+`grant-items` rule** (`foundry-build.js:415-420`, which grants the Key and Draw Mana) gains the
+power's UUID, so the creation wizard's "path grants Draw Mana" step (`24-…js:298`) grants the Channel
+the same way and never touches it itself. `edhaColorRank` (`35-…js`) reads `system.skills[colour].rank`
+and is unchanged by core-ness; the adversary fallback to role rank stands, so an adversary block
+with an attuned colour embeds the power beside its Key twin and channels at its role rank.
+
+**`[Die]` at 3.x.** Once the skill is unlocked, `@scalar.power.white.die` exists on the actor's roll
+data (`documents/actor.ts:1370-1400`, the d4 → d12 table at `config.ts:1196-1204`). Edha's
+`(2 * @colorRank + 2)` keeps working; moving formulas onto the scalar is optional and is not part
+of this build.
+
+### 4.2 The Channel's own rules — on the power's Events tab
+
+Three rules, all on the power document, readable and editable in Foundry:
+
+1. **The arm.** `use-action` (the 3.x native event; today's `use`) → **`edha-self-status`**
+   `{statusId: "channelwhite", timed: true}` — the existing timed self-arm
+   (`53-native-event-system.js:2241`; `edhaApplyTimedStatus`, `14-white-accord.js:27`, stamps
+   `expireAfter` = `edhaNextTurnCoord`, the end of your next turn; the turn-change pass clears it).
+   The **Maintain** action carries the same rule: a re-arm refreshes the expiry
+   (`refuseWhileActive: false`). Five statuses join `EDHA_STATUSES` (`01-shared-core.js:184`) —
+   `channelwhite` … `channelgreen`, `condition: false`, tinted by `EDHA_COLOR_HEX`, labelled
+   *Channelling White* (a label that names no talent — `tests/status-labels.test.js`).
+   - **Widening A — `recordSpend`.** The rule stores the consumption's `actual` on the status
+     effect's flag (`edha-content.channelled`). The amount is already handed to hooks by the system
+     (`options.consumeResponse`, 3.1.0 `documents/item.ts:1312`); the precedent for a rule-written
+     flag on a marker is the stance marker (`edha-content.stanceOf`).
+   - **Widening B — `spendMax`.** `"@colorRank"`: the rank limit, since a 3.1.0 consumption row's
+     `max` cannot be a formula (§1.3). Vetoed BEFORE cost, in the existing pre-cost veto family
+     (the already-armed veto on untimed self-status rules; `requireTargetStatus`), announcing the
+     shortfall by name in a toast the way item 119 taught the engine to.
+   - **Widening C — `exclusiveWith`.** A comma-list of statuses cleared on arm
+     (`channelblue, channelblack, channelred, channelgreen`) — M6, one colour at a time. And
+     **`endOnStatus: "unconscious"`** — M5; the createActiveEffect watcher `immuneStatuses` already
+     installs is the mirror.
+2. **The frame.** `edha-watch-rule` → **`edha-aura`** (H7, `13-white-bulwark.js:55` `edhaAuraSweep`,
+   the adjacency sweep that manages an AE on you and adjacent allies) with
+   `key: "system.deflect.bonus"`.
+   - **Widening D — three fields on `edha-aura`:** `requireSelfStatus: "channelwhite"` (the field
+     five handlers already carry — §4.3), `scope: "formation"` (you and every ally within
+     `rangeColor` Attunement Range who is adjacent to *any* ally, instead of adjacent to the owner —
+     `edhaAdjacentAllies`, `13-…js:33`, is the adjacency test it reuses), and
+     `amountFormula: "@channelled"`.
+   - **`@channelled`** is the one new formula token: `edhaSubstRankTier`
+     (`37-…js:92`, pure, pinned) resolves `@colorRank` and `@tier` today and gains a third
+     replacement read from the arming status's flag. Every handler that already routes formulas
+     through it (terrain damage, `50-green-territory.js:54`; damage-reduce; damage-bonus) inherits
+     the token — which is what Green's frame (F-G) and Black's (F-K) will read.
+3. **The payment event.** **Widening E — one new event type, `edha-channel`**, fired on every
+   Channel / Maintain use with `options.channelled`, exactly as `edha-draw-mana` is fired from the
+   Draw Mana hook ("~5 lines of `registerItemEventType` + a sweep inside the existing hook",
+   `ENGINE_INDEX.md` §"An ALWAYS-ACTIVE talent can hold no `use` rule"). Guiding Signal's
+   `edha-designate` rule moves from `use` to `edha-channel` (W-6) and stays on Guiding Signal's own
+   document (iron rule 2b); Blue's Countercurrent watch ("spends Investiture on a leyline talent")
+   fires from the same hook at the Blue pass.
+
+### 4.3 The "while channelling" gate on the riders
+
+The field is **`requireSelfStatus`**, which exists today on `edha-watch` (H8), `edha-redirect`,
+`edha-test-aura`, `edha-damage-bonus` and `edha-suppress-veil` (`53-…js:602, 2126, 2236, 2590,
+2753`). White's sixteen riders use ten other handler types:
+
+| Rider(s) | Handler | Read by | Gate lands in |
+|---|---|---|---|
+| Shared Conviction, Pillar of Order, Voice of Authority | `edha-test-react` | `12-contested-roll-resolution.js:288` via `edhaWatchersOfRule` | the shared sweep |
+| Interposing Shield, Retributive Guard, Shared Burden, Unbreakable Line | `edha-damage-react` | `edhaBulwarkReactions` (`13-…js:156`) via `edhaWatchersOfRule` | the shared sweep |
+| Shield Wall | `edha-damage-reduce` | the applyDamage pre-pass (`03-…js`) via `edhaWatchersOfRule` | the shared sweep |
+| Beacon of Stability | `edha-cleanse` on `edha-draw-mana` | `edhaDispatchDrawMana` | the Draw dispatcher, one check |
+| Ordered Advance, Counterpoint, Overwhelming Authority, Collective Resolve, Mending Aura, Guiding Signal | `edha-move-window`, `edha-def-test`, `edha-prompt-pick`, `edha-pulse`, `edha-burst`, `edha-designate` on `use` / `edha-pre-use` / `edha-channel` | the event system's executor | the pre-cost veto on `preUseItem`, one check |
+| Unyielding Accord | an ActiveEffect | — | **Widening G** below |
+
+**Widening F — the gate in three places, one field.** (i) `edhaWatchersOfRule(type)`
+(`05-edha-watch.js:323`) returns a cached index of every owner's config-only rules of a type; **22
+call sites** read it. A filter applied to the returned list on every call — drop entries whose
+`handler.requireSelfStatus` the owner does not carry — gates every config-only handler at once
+(the H8 dispatcher's own check at `:412` becomes redundant and can stay). (ii) The pre-cost veto on
+`preUseItem` refuses a `use` / `edha-pre-use` rule whose `requireSelfStatus` is unmet, with the
+toast, before anything is spent. (iii) `edhaDispatchDrawMana` skips a Draw Mana rule the same way.
+The **schema** side is ten declarations — the same `StringField` the five handlers carry, added to
+the ten types above so the Events tab shows the field (`tests/handler-schemas.test.js` pins the
+schemas; lint-refs pass 11 would otherwise flag an undeclared field).
+
+**Widening G — the channel-rider ActiveEffect.** Unyielding Accord's +1 Cognitive / Spiritual is an
+AE on the talent today (`flags.edha-content.passive`). The stance machine already has the pattern
+for "numbers that hold only while a state is up": one AE on the talent flagged
+`edha-content.stanceRider` with `transfer: false`, copied onto the stance marker at enter and
+gone at leave (`edhaStanceRiderChanges`, pure, pinned in `tests/engine-helpers.test.js`). The same
+helper, keyed on a `channelRider: "white"` flag and copied onto the `channelwhite` status effect
+when it is armed, carries Unyielding Accord — and any future numeric rider — with no engine
+branch on a name.
+
+**Two rider-specific fields.**
+- **Widening H — `requireChannelled`** (a number) beside `requireSelfStatus`: Unbreakable Line's
+  "*while channelling 3 or more*" (W-4) reads the `channelled` flag on the status.
+- **Widening I — per-die disadvantage.** Voice of Authority (W-5) and Blue's frame (F-B) both
+  need "*disadvantage equal to N, one instance per die*". `edha-next-test-mod` (`53-…js:2798`)
+  already has `appliesTo: test | damage | either` and the list-shaped flag (item 49); it gains
+  `dice: "d20, plot, damage"` and a `count` that may be `@channelled`, and the injector writes the
+  system's own per-die fields — `advantageMode` (d20), **`advantageModePlot`** (`dice/d20-roll.ts:79`)
+  and the damage roll's `advantageMode` (`dice/damage-roll.ts:44`) — in that order. Today's fold
+  (`edhaNextModFoldMode`, `15-…js:239`) keeps handling the d20; the plot and damage writes are
+  new, and `tests/advantage-channel.test.js`'s two-line invariant (the string enum and the
+  `configureDialog` seed) applies to each new site. This is also the engine half of the docs
+  correction §2.3 recorded.
+
+### 4.4 What moves in the overlay and the pipeline
+
+- **The talent overlay's seven keys are unchanged** (`lint-refs.js:50` `TALENT_KEYS`). Per rider the
+  edits are ordinary: `activation` (the type — `spe` / `rea` / `act` — and the Investiture consume
+  row removed; at 3.x, on the embedded action per item 185), `description` (§3.3's sentence),
+  `events` (the `requireSelfStatus` field on each rider's handler; Guiding Signal's event `use` →
+  `edha-channel`; Unbreakable Line's `requireChannelled: 3`; Voice of Authority's action → the
+  per-die mod), `effects` (Unyielding Accord's AE gains `channelRider` and `transfer: false`).
+- **`data/leyline.json`** — the sixteen White records' `action`, `cost` and `description` updated
+  with the same sentences (the source prose and the authored card move together, `CLAUDE.md`
+  §"Where behavior lives"), and the source's "gran" typo with them. Graph untouched: no
+  `connections` or `prerequisites` change, so `validate.js`'s DAG and reachability checks and
+  `tests/pipeline.test.js` are unaffected.
+- **The power's source** — `data/channels.json` (B-1): five records (colour, power name, frame
+  sentence, frame paragraph, the two actions' text) read by a `channelPowerDoc` in
+  `foundry-build.js`, the way `drawManaItemDoc` builds Draw Mana; build-only, edited in the JSON,
+  not extracted. It is not a talent, so it stays outside the seven-key overlay and lint-refs pass 1.
+- **Validators and tests.** `validate-packs.js:42` enumerates the item types it checks and learns
+  `power`; `tests/handler-schemas.test.js` (ten schema declarations, the new fields);
+  `tests/handler-registry.test.js` (the `edha-channel` event); `tests/status-labels.test.js` (five
+  statuses); `tests/engine-helpers.test.js` (`@channelled` in `edhaSubstRankTier`); a new
+  `tests/channel.test.js` pinning the clamp, the maintain refresh, the exclusive end, the
+  `channelled` flag write and the formation scope — mutation-verified, per iron rule 4.
+- **Docs the build carries** (iron rule 5): `ENGINE_INDEX.md` (the event type and eight widenings);
+  the leyline guide (the Channel under "Key Mechanic", §1.5's Realm principle, and the advantage
+  paragraph rewritten to the per-die rule — §2.3); `SYSTEM-PRIMER.md` fact 1; a note under R-100
+  / R-110 in `EDHA_RULINGS.md`; `EDHA_TALENT_HANDBOOK.md`; the player primer and one-pager (the
+  Channel is player-facing); the White section header in `13-white-bulwark.js` (rule 3's ledger).
+
+### 4.5 The bench rows
+
+Sixteen rows, all **🤖** (an agent drives every one on the Route A 3.1.0 copy; nothing here is
+Ben's judgment — the gates were), to be added under `# BENCH — White (leyline)` as a
+`## Channel — item 198` block when the build lands. Written here so the PM can size the run.
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CH-1 open | Bench — White: Channel White, enter 1 | *Channelling White* on the token with `expireAfter` = end of its next turn; the card names the frame; Investiture −1 |
+| CH-2 clamp | at rank 2 enter 3, then 2 | 3 refused before cost with a toast naming the limit, nothing spent; 2 spent |
+| CH-3 formation | Ally A adjacent to Ally B in range; Ally C alone; Ally D adjacent only to the mage; channelled 2 | A, B, D and the mage +2 deflect on the sheet; C unchanged |
+| CH-4 maintain | next turn Maintain White at 1; a later turn skip it | expiry advances one turn and deflect reads +1; after the skipped turn the status and the deflect are gone at the end of the mage's next turn |
+| CH-5 exclusive | Channel Blue while channelling White | White's status ends, Blue's arms |
+| CH-6 Unconscious | toggle Unconscious on the mage | the Channel ends |
+| CH-7 riders off / on | with no Channel: an adjacent ally is hit; Ordered Advance used | no Interposing Shield offer; Ordered Advance refused before cost with the toast. With the Channel: the offer posts and the move window arms, both spending nothing |
+| CH-8 the payment | Channel, then Maintain | Guiding Signal's designate card on both |
+| CH-9 Draw rider | Draw Mana with and without the Channel | Beacon's cleanse card only with it |
+| CH-10 the flood | a rank-3 bench PC channelling 2, then 3; an adjacent ally drops to 0 | Unbreakable Line offers only at 3 |
+| CH-11 per die | Voice of Authority while channelling 2 as an enemy attacks an ally | the enemy's d20 and plot die (or damage) both at disadvantage in the roll config |
+| CH-12 two mages | Bench — White II channelling 1 beside a White channelling 2, same ally | +2, not +3 |
+| CH-13 Countercurrent | Bench — Blue reacts to a Channel opening | the Channel fails on a success (needs the Blue pass landed) |
+| CH-14 adversary | a rival with White attuned channels; a minion | rival clamps at 2, minion at 1, role rank |
+| CH-15 outside combat | open with no combat, then start one | the status persists, then ends at the end of the mage's first turn unless maintained |
+| CH-16 the tabs | the Actions tab and the Talents tab of a synced PC | two rows under the power; the riders on the Talents tab; ⟳ Sync refreshes the power |
+
+### 4.6 Gate 4 — the menu
+
+**B-1. Where the power's text lives.** (a) **`data/channels.json` + `channelPowerDoc` in the build,
+edited in the JSON, not extracted — recommended** (Draw Mana's shape; a power is not a talent, so
+the seven-key overlay and its lint stay as they are). (b) A new overlay group with its own key set
+(lint-refs widened; the extract round-trip taught the power). (c) Hand-authored JSON documents in
+the pack source.
+
+**B-2. Where the rider gate lives.** (a) **One field, three dispatch sites (the shared sweep's
+return filter, the pre-cost veto, the Draw dispatcher) and ten schema declarations —
+recommended.** (b) Per-handler checks inside each of the ten executors, as the five carrying the
+field do today.
+
+**B-3. Guiding Signal's trigger.** (a) **A new `edha-channel` event type on the Channel / Maintain
+use, the `edha-draw-mana` precedent — recommended.** (b) A new `edha-watch` kind (the watch
+vocabulary is `test, skill-roll, defeat, focus-change, turn-start, die-step, token-move, damaged` —
+`53-…js:590` — and "an action of mine was used" is not in it either way).
+
+**B-4. Per-die disadvantage (Widening I).** (a) **Built with the Channel; Voice of Authority is the
+first consumer and Blue's frame the second — recommended.** (b) Deferred; Voice of Authority ships
+flat until a Blue pass builds it.
+
+**B-5. The colour skill.** (a) **Non-core, unlocked by the power, per R-150 (b) — recommended**
+(the sheet row appears with the power; the wizard grants it through the path). (b) Stays core;
+`unlocked` ignored (the power is a container only).
+
+**B-6. Where the bench runs.** (a) **The sixteen rows on the Route A 3.1.0 copy, before the flip —
+recommended** (R-144: the live table stays on 2.1.0 and session one). (b) After the flip, on the
+live table.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-16):** *"all defaults"* — **B-1 … B-6 (a).** §4 committed on
+> that answer.
