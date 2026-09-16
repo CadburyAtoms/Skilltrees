@@ -14,7 +14,7 @@ The gate log is the record.
 |---|---|---|
 | 1 | §1 The Channel rule, generic | **✅ approved 2026-09-16** — M1 – M5 (a), M6 (c), M7 (a), M8 – M13 (a), M14 (a), M15 (a) White, M16 (a) *release*, M17 (a) *Countercurrent* |
 | 2 | §2 The five frames | **✅ approved 2026-09-16** — F-0 (b) Red's Realms swapped; F-W (a) the line, F-B (a) the deep reading, F-K (a) the hunt, F-R (a) the mage's own edge, F-G (a) the ground |
-| 3 | §3 White, worked | not yet written |
+| 3 | §3 White, worked | **✅ approved 2026-09-16** — W-1 … W-6 all (a): two formation passives become riders, three Reactions, Terms of Accord a release, Unbreakable Line gated on the flood, Voice of Authority reads the spend, Guiding Signal on the payment |
 | 4 | §4 The build | not yet written |
 | 5 | §5 Close-out | not yet written |
 
@@ -503,3 +503,257 @@ except …" is enough; a frame Ben wants reworded rather than replaced is a note
 > don't think this does anything. Let's try another frame for black. default elsewhere."* → **F-W (a),
 > F-B (a), F-R (a), F-G (a) answered**; the Black frame was replaced by the hunt (§2.4).
 > **Third exchange:** *"a"* → **F-K (a) the hunt.** §2 committed on that answer.
+
+---
+
+## 3. White, worked
+
+Every card below was read from `data/leyline.json` (structure and source prose) and
+`data/authored/leyline-white.json` (the authored card and its rules) on 2026-09-16, at `main`
+`fc1fc04` — after item 105's minimal-change set (Interposing Shield a Special, Shared Burden 1
+Investiture, Ordered Advance 1 Action), which is why the counts here differ from the ecosystem
+review's. Nothing is written from memory. **Today's White:** 10 Passives, 7 Specials, 2 Actions,
+6 Reactions; 15 of 25 cost something, every one of them Investiture (two also focus or an Opportunity), for a tree-sum of 17 (§C.2).
+
+### 3.1 The three trees, by Realm
+
+| Tree | Realm | What its riders do to the frame |
+|---|---|---|
+| **Bulwark** | Physical | deepen the wall: step in, take the hit, hold the ally at 1, and the second layer of reduction |
+| **Accord** | Cognitive | make the line harder to sway: cheaper resistance, the counter-argument, the Disorient riders, +1 Cognitive / Spiritual |
+| **Coordination** | Spiritual | make the line luckier: the pointed target, the raised stakes, the blanked Complication, the condition lifted, the small heal |
+
+The frame (§2.2) is *"You and allies you can see within Attunement Range gain deflect equal to the
+Investiture you are channelling while adjacent to another ally."* Note that **you** are an ally to
+whoever stands beside you, so an ally adjacent only to the mage is covered.
+
+### 3.2 The conversion rules applied
+
+1. **A costed talent becomes a rider** — it gains "*While channelling White,*", loses its Investiture
+   cost, and keeps an Opportunity or focus cost only where that is the card's identity (M13).
+2. **A free passive stays free and unconditional** — the Channel costs; it does not take. Two
+   exceptions, both cards that *are* the frame's clause ("adjacent to another ally") in another
+   Realm: **Shield Wall** and **Unyielding Accord** become "while channelling" riders, because
+   unconditional they would double the wall the Channel is paid for. *(W-1.)*
+3. **A Reaction that is an *action* stays a Reaction** (a test, a redirect, a contest); **a Reaction
+   that is a *modifier* becomes a Special with "Once per round."** Six Reactions become three. *(W-2.)*
+4. **A scene-long effect is a release**, not a rider — a round-scoped frame should not carry a
+   pact that lasts the scene. One card: Terms of Accord keeps its 1 Investiture. *(W-3.)*
+5. **The capstone gates on the flood** — Unbreakable Line's 3 Investiture becomes "*while
+   channelling 3 or more White*" (M9 (a)), which at White 3+ means the full Channel. *(W-4.)*
+6. **One rider reads the channelled number** — Voice of Authority's disadvantage is "equal to the
+   Investiture you are channelling", one instance per die under the rule recorded in §2.3. *(W-5.)*
+7. **Guiding Signal rides the payment** — a Special that fires "when you channel or maintain
+   White", so the point happens every round without an Action. *(W-6.)*
+
+Convention: the condition is written "*While channelling White,*" at the head of the card, and the
+Key's rider ("when you Draw Mana") stays a Draw Mana rider.
+
+### 3.3 The twenty-five cards
+
+Format: **name** — *tree / Realm* · today → proposed · the full card sentence as it would ship
+(words in parentheses; the guide's target is 20 – 25, and today's card count is given where it was
+over). Prerequisites and connections are unchanged throughout — this pass changes action type,
+cost and text, not the graph.
+
+**White Leyline Attunement** — *Key* · Passive; — → **unchanged.** *"When you Draw Mana, allies you
+can see within Attunement Range regain health equal to your tier."* (18)
+
+**Concordant Presence** — *Coordination / Spiritual* · Passive; — → **unchanged.** *"When an ally
+you can see within Attunement Range succeeds on a test, the next ally testing that same skill this
+round raises the stakes."* (25)
+
+**Guiding Signal** — *Coordination / Spiritual* · 1 Action; 1 Investiture → **Special; —.**
+*"When you channel or maintain White, designate a character within Attunement Range. The next ally
+to test against it this round raises the stakes."* (24; was 24)
+
+**Unity of Purpose** — *Coordination / Spiritual* · Passive; — → **unchanged.** *"When two or more
+allies aid the same test, raise the stakes."* (11)
+
+**Beacon of Stability** — *Coordination / Spiritual* · Special; 1 Investiture → **Special; —.**
+*"While channelling White, when you Draw Mana, remove one condition from an ally within Attunement
+Range."* (17; was 18)
+
+**Shared Conviction** — *Coordination / Spiritual* · Reaction; 2 Focus, 1 Investiture → **Special;
+2 Focus.** *"While channelling White, when an ally within Attunement Range would fail a test, spend
+2 focus to add your White modifier to their result. Once per round."* (27; was 32)
+
+**Ordered Advance** — *Coordination / Spiritual* · 1 Action; 1 Investiture → **1 Action; —.**
+*"While channelling White: this round, when you move, allies within 10 feet may move half their
+Speed without provoking Reactions."* (20; was 20)
+
+**Mending Aura** — *Coordination / Spiritual* · Special; Opportunity, 1 Investiture → **Special;
+Opportunity.** *"While channelling White, spend an Opportunity to restore half [Tier][Die] health
+to each ally within [Size]."* (18; was 18)
+
+**Pillar of Order** — *Coordination / Spiritual* · Reaction; 1 Investiture → **Special; —.**
+*"While channelling White, when an ally within Attunement Range rolls a Complication, change it to
+a blank face. Once per round."* (22; was 20)
+
+**Guardian Stance** — *Bulwark / Physical* · Passive; — → **unchanged.** *"While an ally is
+adjacent to you, you both gain +1 deflect."* (12) The entry talent works before the Channel is
+open and adds +1 on top of the frame; it stays free.
+
+**Interposing Shield** — *Bulwark / Physical* · Special; 1 Investiture → **Special; —.** *"While
+channelling White, when an ally within 10 feet takes damage, move up to 10 feet toward them and
+reduce it by half [Die]. Once per round."* (28; was 24)
+
+**Retributive Guard** — *Bulwark / Physical* · Reaction; 1 Investiture → **Reaction; —.** *"While
+channelling White, when an enemy within Attunement Range damages an ally adjacent to you, test
+White vs. Spiritual; on a success, deal [Tier][Die] spirit damage to it."* (28; was 32)
+
+**Shared Burden** — *Bulwark / Physical* · Reaction; 1 Investiture → **Reaction; —.** *"While
+channelling White, when an ally adjacent to you takes damage, take half of it in their place."*
+(18; was 22)
+
+**Devoted Conduit** — *Bulwark / Physical* · Passive; — → **unchanged.** *"When an ally within
+Attunement Range takes damage intended for another creature, reduce that damage by half
+[Tier][Die]."* (20)
+
+**Shield Wall** — *Bulwark / Physical* · Passive; — → **Passive; — , now a rider (W-1).** *"While
+channelling White, when two or more allies are adjacent to you, attacks against them deal half
+[Tier][Die] less damage."* (21; was 18)
+
+**Unbreakable Line** — *Bulwark / Physical* · Special; 3 Investiture → **Special; — , gated on the
+flood (W-4).** *"While channelling 3 or more White, when an adjacent ally would drop to 0 health,
+test White, DC half the damage; on a success they drop to 1 instead. Once per round."* (31; was 40)
+
+**Hardy** — *Bulwark / Physical* · Passive; — → **unchanged.** *"Gain +1 maximum health per level,
+including previous levels."* (9)
+
+**Terms of Accord** — *Accord / Cognitive* · Special; 1 Investiture → **unchanged — a release
+(W-3).** *"When you and a character within Attunement Range verbally agree on a shared objective,
+spend 1 Investiture. You both gain +1 to tests pursuing the objective for the scene. One active
+accord per creature."* (36)
+
+**Counterpoint** — *Accord / Cognitive* · Reaction; 1 Investiture → **Reaction; —.** *"While
+channelling White, when an enemy within Attunement Range successfully influences an ally, test
+White. On a success, negate the effect and Disorient the enemy until the end of your next turn."*
+(32; was 35)
+
+**Disciplined Mind** — *Accord / Cognitive* · Passive; — → **unchanged.** *"You and allies within
+Attunement Range reduce the focus cost to resist influence by 1 (minimum 1)."* (17)
+
+**Overwhelming Authority** — *Accord / Cognitive* · Special; 1 Investiture → **Special; —.** *"While
+channelling White, when you successfully influence a character, it also becomes Disoriented until
+the end of your next turn."* (20; was 20)
+
+**Bound by Word** — *Accord / Cognitive* · Passive; — → **unchanged.** *"When an ally within
+Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier
+in place of their own."* (26)
+
+**Collective Resolve** — *Accord / Cognitive* · Special; Opportunity, 1 Investiture → **Special;
+Opportunity.** *"While channelling White, spend an Opportunity to grant allies within Attunement
+Range Determined."* (14; was 15, and the source prose's "gran" is fixed with it)
+
+**Unyielding Accord** — *Accord / Cognitive* · Passive; — → **Passive; — , now a rider (W-1).**
+*"While channelling White, allies within Attunement Range gain +1 to Cognitive and Spiritual
+defenses while adjacent to another ally."* (20; was 17)
+
+**Voice of Authority** — *Accord / Cognitive* · Reaction; 1 Investiture → **Special; — (W-2, W-5).**
+*"While channelling White, when an enemy within Attunement Range targets an ally with a hostile
+action, impose disadvantage on it equal to the Investiture you are channelling. Once per round."*
+(30; was 20)
+
+### 3.4 Before and after
+
+| # | Talent | Tree / Realm | Today | Proposed | Condition |
+|---|---|---|---|---|---|
+| 1 | White Leyline Attunement | Key | Passive; — | Passive; — | — (Draw Mana rider) |
+| 2 | Concordant Presence | Coordination / Spi | Passive; — | Passive; — | — |
+| 3 | Guiding Signal | Coordination / Spi | 1 Action; 1 Inv | **Special; —** | on the payment |
+| 4 | Unity of Purpose | Coordination / Spi | Passive; — | Passive; — | — |
+| 5 | Beacon of Stability | Coordination / Spi | Special; 1 Inv | **Special; —** | while channelling + Draw Mana |
+| 6 | Shared Conviction | Coordination / Spi | Reaction; 2 Foc, 1 Inv | **Special; 2 Foc** | while channelling; once per round |
+| 7 | Ordered Advance | Coordination / Spi | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 8 | Mending Aura | Coordination / Spi | Special; Opp, 1 Inv | **Special; Opp** | while channelling |
+| 9 | Pillar of Order | Coordination / Spi | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
+| 10 | Guardian Stance | Bulwark / Phy | Passive; — | Passive; — | — |
+| 11 | Interposing Shield | Bulwark / Phy | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 12 | Retributive Guard | Bulwark / Phy | Reaction; 1 Inv | **Reaction; —** | while channelling |
+| 13 | Shared Burden | Bulwark / Phy | Reaction; 1 Inv | **Reaction; —** | while channelling |
+| 14 | Devoted Conduit | Bulwark / Phy | Passive; — | Passive; — | — |
+| 15 | Shield Wall | Bulwark / Phy | Passive; — | Passive; — | **while channelling** |
+| 16 | Unbreakable Line | Bulwark / Phy | Special; 3 Inv | **Special; —** | while channelling 3 or more; once per round |
+| 17 | Hardy | Bulwark / Phy | Passive; — | Passive; — | — |
+| 18 | Terms of Accord | Accord / Cog | Special; 1 Inv | Special; 1 Inv | — (release) |
+| 19 | Counterpoint | Accord / Cog | Reaction; 1 Inv | **Reaction; —** | while channelling |
+| 20 | Disciplined Mind | Accord / Cog | Passive; — | Passive; — | — |
+| 21 | Overwhelming Authority | Accord / Cog | Special; 1 Inv | **Special; —** | while channelling |
+| 22 | Bound by Word | Accord / Cog | Passive; — | Passive; — | — |
+| 23 | Collective Resolve | Accord / Cog | Special; Opp, 1 Inv | **Special; Opp** | while channelling |
+| 24 | Unyielding Accord | Accord / Cog | Passive; — | Passive; — | **while channelling** |
+| 25 | Voice of Authority | Accord / Cog | Reaction; 1 Inv | **Special; —** | while channelling; once per round; reads the spend |
+
+Sixteen cards change; nine are untouched (the Key, six free passives, Terms of Accord, Guardian
+Stance).
+
+### 3.5 The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **White today** | 10 (40 %) | 7 (28 %) | 2 (8 %) | 0 | 0 | 6 (24 %) | 68 % | 15 (60 %) | 15 (60 %) | 17 |
+| **White proposed** | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | **84 %** | **4 (16 %)** | **1 (4 %)** | **1** (+ the Channel, 1 – rank a round) |
+| published Invested band (§C.1 / §C.2) | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+Read against the bands: **Passive + Special lands inside the published band** (84 %, from 68 %) and
+**costed drops from 60 % to 16 %**, inside 8 – 46 %, with a single Investiture-priced card left where
+there were fifteen. Reactions halve (24 % → 12 %) — still above the 5 – 8 % target, and above every
+published family, on purpose: White's identity is *"you rarely act first, you answer"*
+(TREE-INTENT), and the three that stay are the three that *do* something on the enemy's turn (a
+test and damage, a redirect, a contest). W-2 offers two. Specials overshoot the guide's 25 – 30 %
+because four Reactions became Specials; the guide's targets were written for trees with no base
+action, and the published Invested families run 37 – 41 % Special for exactly this reason. Single
+Actions fall to one card plus the Channel itself, which is now White's self-initiated play every
+round — the ecosystem review's "two in twenty-five" becomes one card, one base action, and five
+Specials that fire on the mage's own payment, draw, influence or Opportunity.
+
+**What the White player's turn is now.** Round 1: Channel White at 2 (the pool is 4), Draw Mana
+(heal the line, and Beacon lifts a condition), one Action left. Every round after: maintain (Free
+Action) for 1 or 2, Draw when the pool needs it, and three Actions — one of which may be Ordered
+Advance, free — while the line carries +1 or +2 deflect, the point lands on the payment, the
+Complication is blanked, the failed test is caught, the interposition and the redirect and the
+retaliation all cost nothing. The Reaction is spent on the answer that matters; the Specials answer
+the rest, once each.
+
+**What it costs, in numbers.** Today a full White round — Draw, Guiding Signal, one Reaction — spent
+2 Investiture and earned 2 (R-126), for two plays. Under the Channel the same Investiture buys the
+frame and every rider. The tree's total Investiture pricing falls from 17 to 1, which is the change
+R-152 was filed to make; the balance review's yardsticks (`docs/analysis/talent-ecosystem/`) should
+be re-run against §2.2's deflect numbers before the build, and that is a §5 item.
+
+### 3.6 Gate 3 — the menu
+
+**W-1. The two formation passives.** (a) **Shield Wall and Unyielding Accord become "while
+channelling" riders; the other seven free passives stay unconditional — recommended** (they are
+the frame's own clause in another Realm; unconditional they double the wall the Channel pays for).
+(b) All free passives stay unconditional (the Channel only ever adds). (c) Every formation passive
+becomes a rider, Guardian Stance included (the published shape — nothing works without the metal —
+but the entry talent should work at level 1 before a Channel is opened).
+
+**W-2. The Reactions.** (a) **Three — Retributive Guard, Shared Burden, Counterpoint; the three
+modifiers become Specials with "Once per round" — recommended** (12 %: above the band, for the
+colour that answers). (b) Two — Counterpoint also a Special (8 %, inside the band; its test then
+fires without spending the Reaction, which is a small power gain). (c) Six, as today (24 %; the
+one-slot problem the ecosystem review measured stays).
+
+**W-3. Terms of Accord.** (a) **A release: Special, 1 Investiture, unchanged — recommended** (a
+scene-long pact should not hang on a round-scoped frame). (b) A rider: "*While channelling White,
+when you and a character … agree*", no cost, the accord ending when the Channel ends.
+
+**W-4. Unbreakable Line.** (a) **A rider gated on channelling 3 or more — recommended** (the flood
+is the cost; at White 3+ that is the full Channel, and one Draw Mana funds it every round).
+(b) A release: Special, 3 Investiture, unchanged.
+
+**W-5. Voice of Authority reads the spend.** (a) **Disadvantage equal to the channelled Investiture,
+one instance per die — recommended** (the one White card that shows what a flood buys the Accord
+tree, under the per-die rule from §2.3). (b) Flat disadvantage, as today.
+
+**W-6. Guiding Signal.** (a) **A Special on the payment — recommended** (the point every round for
+free; converts one of White's two Actions into a Special per guide principle 1). (b) A 1 Action
+rider with no cost (keeps a second standalone Action). (c) A release: 1 Action, 1 Investiture, as
+today.
+
+> **Answered at gate 3 (Ben, chat, 2026-09-16):** *"all recommended"* — **W-1 … W-6 (a).** §3 committed
+> on that answer.
