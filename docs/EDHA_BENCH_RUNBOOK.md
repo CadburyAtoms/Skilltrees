@@ -2602,10 +2602,11 @@ it adds a second, bench-owned option next to it:
 - ✅ **A `target: "pair"` die-step proves the whole ally/enemy split in one cast** — and to prove the
   split is by *disposition* rather than click order, **target the enemy first**. Add the caster's own
   token to the target set in the same click: a correct implementation leaves it in neither list, and
-  that is the third assertion for free. Check the applied **statuses** too (Exalted / Diminished) —
+  that is the third assertion for free. Check the applied **statuses** too (Exalted / Lessened —
+  renamed off "Diminished" by item 205, 2026-09-16, since Diminished is a published condition) —
   they are a second, independent surface for the same answer.
 - ⚠️ **A die-step leaves BOTH a flag and a status behind.** Restoring `flags.edha-content.dieStep`
-  alone leaves `Exalted` / `Diminished` on the actors and your effect diff will catch you. Clear them
+  alone leaves `Exalted` / `Lessened` on the actors and your effect diff will catch you. Clear them
   with `toggleStatusEffect(id, {active:false})`, never by deleting the effect document.
 - ⚠️ **A derived stat can be different depending on WHICH prepare ran.** `Bench — White`'s max HP read
   64 at run start, 57 after a resource write, and 64 again after `prepareData()` — the `Hardy - Max HP`

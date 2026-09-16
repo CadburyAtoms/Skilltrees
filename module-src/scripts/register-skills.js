@@ -39,6 +39,11 @@
  *   • debug tracer — edhaSetDebug · edhaDebugArg · edhaDebugOut · edhaDebugSave, plus the
  *     Hooks.on wrapper installed for THIS file's top-level execution only (restored at the
  *     bottom of the file), so only edha-content handlers carry the tracer.
+ *   • module settings — edhaSetting (item 193, R-148 (a)): the ONE reader every ruling-toggled
+ *     engine dial goes through. A dial keeps its historic top-level constant as the setting's
+ *     registered default (so pinned tests still read the constant); the reader is called at USE
+ *     time, never cached at load, so flipping the setting in Foundry changes behaviour with no
+ *     reload. See "Dodge arm" below for the two dials it currently reads.
  *   • registration bootstrap — registerContent · edhaRegisterStatuses · edhaRegisterCurrency ·
  *     EDHA_CURRENCY_SEED, run from module load + init + setup + ready (see the docblock above:
  *     the leyline skills must land before the Actor data model schema is first built).
@@ -141,6 +146,22 @@ Hooks.once("ready", () => {
   if (edhaDebugOn) console.log("[EDHA-TEST] debug tracing is ON (persisted) — edha.debug(false) to disable");
 });
 
+/* --- Module settings — the ruling-dial reader (item 193, 2026-09-16, R-148 (a)) -----------------
+ * Every engine constant a ruling has TOGGLED (a veto is one flip, not a design) is registered as
+ * a world-scoped, GM-only Foundry module setting, defaulting to the constant's current value —
+ * "The user must be able to edit everything from inside Foundry" (CLAUDE.md). `edhaSetting` is the
+ * one place any handler asks for the live value: `game.settings` is unavailable at pure-module-load
+ * time and its `.get()` throws for a key not yet registered (both real Foundry pre-init and, most
+ * days, `tests/harness.js`'s stub — `game.settings.get()` there is a bare `() => undefined`, which
+ * looks exactly like "not configured" and must fall through the same as a thrown lookup). PURE:
+ * pinned in `tests/dodge-arm.test.js`. */
+function edhaSetting(key, fallback) {
+  try {
+    const v = game?.settings?.get?.("edha-content", key);
+    return v === undefined ? fallback : v;
+  } catch (e) { return fallback; }
+}
+
 const LEYLINE_SKILLS = {
   white: { label: "White", attribute: "wil" },
   blue:  { label: "Blue",  attribute: "int" },
@@ -213,8 +234,8 @@ const EDHA_STATUSES = {
   insight:   { label: "Insight",   icon: "icons/svg/book.svg",      condition: false, _id: "condinsight00000", stackable: true },
   omen:      { label: "Omen",      icon: "icons/svg/hazard.svg",    condition: false, _id: "condomen00000000" },   // Chaos (Maelith) — the fracture mark
   isolated:  { label: "Isolated",  icon: "icons/svg/net.svg",       condition: true,  _id: "condisolated0000" },   // inflictable Isolation (OR'd into edhaIsIsolated)
-  exalted:    { label: "Exalted",    icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP
-  diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
+  exalted:    { label: "Exalted Die", icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP. Label "Exalted Die" since item 205 (was "Exalted"), for symmetry with its renamed partner below.
+  lessened:   { label: "Lessened Die", icon: "icons/svg/degen.svg", condition: false, _id: "condlessened0000" },   // Sovereignty (Verdannis) — damage die stepped DOWN. Renamed off `diminished`/"Diminished" (item 205, 2026-09-16): Diminished is a PUBLISHED condition (Mistborn Handbook Ch. 9, attribute −X) — a player reading the token HUD or a card saw a published condition's name on this unrelated mechanic, and a system release shipping the real Diminished would have silently taken the id (`edhaRegisterStatuses` only claims an id `if (!COSMERE.statuses[id])`). tests/status-labels.test.js guards no Edha status label ever colliding with a published condition name again. Ben may rename this at PR review (alternatives named in TODO item 205: `exalted`/`abased`, or plain "Lessened" without "Die").
   harvested:  { label: "Harvested Remain", icon: "icons/svg/skull.svg",  condition: false, _id: "condharvested000", tint: "#3a9d4a" },  // Death (Morrath) — corpse marked by Reaper's Harvest (green skull, beside the black defeated overlay)
   decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
   cascadearmed: { label: "Cascade Armed (Necrotic Cascade)", icon: "icons/svg/explosion.svg", condition: false, _id: "condcascadearmed", tint: "#3a9d4a" },  // Death (Morrath) — 07-24r: the SCENE-ARMING marker, replacing the bespoke `cascadeArmed` flag. Same reasoning as `crowned`: a status is what a document-driven rule can both set (edha-self-status) and read (edha-watch requireSelfStatus), and it makes "am I armed?" visible on the token.
@@ -870,19 +891,38 @@ Hooks.on("deleteCombat", (combat) => {
  * apply (SR p.34). Registering as a real status (not a bare flag) is also what paints it on the
  * token for free — the same reasoning `crowned` / `cascadearmed` give.
  *
- * TWO ruling dials, both defaulted here and filed as a numbered ruling for Ben before merge (PR
- * body / the changelog delta name it):
+ * TWO ruling dials (R-145), both defaulted here — **since item 193 (R-148 (a)) both are also
+ * Foundry module settings**, `dodgePayOnArm` and `dodgeArmExpiresOnOwnTurn`, world-scoped and
+ * GM-only, read at use time through `edhaSetting` (above); a veto is a flip in Foundry's Settings
+ * dialog, not a PR:
  *  - EDHA_DODGE_PAY_ON_ARM (default true) — the Focus is spent when you ARM Dodge, not when an
  *    attack later consumes it. Matches every other edha-self-status "arm now, consume free later"
  *    marker in this file (Warlord's Advance, Momentum of Victory, Tagging Shot, ...): the cost is
  *    paid at the activation that arms the marker; the later consuming event is free. Flip to
  *    false to charge on consume instead (and refund nothing if the arm expires unused).
- *  - Expiry: end of the ARMING actor's own next turn (edhaApplyTimedStatus, the `tagged` shape),
- *    not "cleared at combat end" — Dodge answers ONE imminent attack, not a scene-long stance, and
- *    the system has no tracked "reaction economy" resource to gate re-arming on (compat check
- *    §e: reactions are GM-adjudicated at this table, same as Aid/Avoid Danger/Reactive Strike).
+ *  - EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN (default true) — the arm auto-expires at the end of the
+ *    ARMING actor's own next turn (edhaApplyTimedStatus, the `tagged` shape), not "cleared at
+ *    combat end" — Dodge answers ONE imminent attack, not a scene-long stance, and the system has
+ *    no tracked "reaction economy" resource to gate re-arming on (compat check §e: reactions are
+ *    GM-adjudicated at this table, same as Aid/Avoid Danger/Reactive Strike). Flip to false and the
+ *    arm carries no expiry stamp at all — it persists until an attack consumes it.
  */
-const EDHA_DODGE_PAY_ON_ARM = true;   // ruling dial — see the PR body / EDHA_RULINGS.md
+const EDHA_DODGE_PAY_ON_ARM = true;                   // ruling dial — see EDHA_RULINGS.md R-145
+const EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN = true;      // ruling dial — see EDHA_RULINGS.md R-145
+Hooks.once("init", () => {
+  try {
+    game.settings.register("edha-content", "dodgePayOnArm", {
+      name: "Dodge: pay Focus on arm (not on consume)",
+      hint: "R-145 (a), applied as default. On: arming Dodge spends the 1 Focus immediately, and a consumed arm costs nothing further (matches every other 'arm now, consume free later' marker). Off: arming is free and the Focus leaves the pool only when an attack actually rolls against the disadvantage.",
+      scope: "world", config: true, restricted: true, type: Boolean, default: EDHA_DODGE_PAY_ON_ARM,
+    });
+    game.settings.register("edha-content", "dodgeArmExpiresOnOwnTurn", {
+      name: "Dodge: unused arm expires at end of your next turn",
+      hint: "R-145 (a), applied as default. On: an armed-but-unused Dodge clears at the end of the arming actor's own next turn. Off: the arm has no expiry stamp and persists until an attack consumes it.",
+      scope: "world", config: true, restricted: true, type: Boolean, default: EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN,
+    });
+  } catch (e) { console.error("Edha Content | Dodge dial settings registration failed", e); }
+});
 
 /* PURE (pinned in tests/dodge-arm.test.js): the Dodge-arm decision. True only for a genuine
  * SINGLE-target attack (exactly one current Foundry target) whose source item carries a damage
@@ -910,7 +950,7 @@ function edhaDodgeConsumePreRoll(roll, source, config) {
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "disadvantage"; } catch (e) {} return orig(data); };
     roll.options._edhaDodgeArm = true;
     void edhaToggleStatus(defender, "dodgearmed", false);            // consumed — pays once
-    if (!EDHA_DODGE_PAY_ON_ARM) void edhaSpendResource(defender, "foc", 1);
+    if (!edhaSetting("dodgePayOnArm", EDHA_DODGE_PAY_ON_ARM)) void edhaSpendResource(defender, "foc", 1);
     ChatMessage.create({ whisper: edhaWhisperIds(defender), speaker: ChatMessage.getSpeaker({ actor: defender }), content: `<p>🛡️ <strong>Dodge</strong>: ${defender.name}'s armed Dodge adds disadvantage to ${attacker.name}'s attack.</p>` });
   } catch (e) { console.error("Edha Content | Dodge consume failed", e); }
 }
@@ -924,12 +964,13 @@ async function edhaArmDodge(actor) {
   try {
     if (!actor) return false;
     if (actor.statuses?.has?.("dodgearmed")) return false;
-    if (EDHA_DODGE_PAY_ON_ARM) {
+    if (edhaSetting("dodgePayOnArm", EDHA_DODGE_PAY_ON_ARM)) {
       const foc = Number(actor.system?.resources?.foc?.value) || 0;
       if (foc < 1) { ui.notifications?.warn(`Edha: ${actor.name} needs 1 Focus to arm Dodge.`); return false; }
       await edhaSpendResource(actor, "foc", 1);
     }
-    await edhaApplyTimedStatus(actor, "dodgearmed", { owner: actor, expire: "owner" });
+    const expiresOnOwnTurn = edhaSetting("dodgeArmExpiresOnOwnTurn", EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN);
+    await edhaApplyTimedStatus(actor, "dodgearmed", { owner: actor, expire: expiresOnOwnTurn ? "owner" : false });
     ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${actor.name}</strong> arms Dodge — the next single-target attack against them rolls with disadvantage.</p>` });
     return true;
   } catch (e) { console.error("Edha Content | Dodge arm failed", e); return false; }
@@ -1355,7 +1396,7 @@ function edhaWrapRollDamage(originalCall, options = {}) {
       }
     }
   } catch (e) { /* never break a damage roll on a rider failure */ }
-  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Diminished) has its damage dice moved
+  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Lessened) has its damage dice moved
   // along the d4–d12 ladder before the roll (riders included — they're the roller's own damage).
   const stepped = edhaSovStepOverride(this, options.overrideFormula ?? this.system?.damage?.formula);
   if (stepped) options = { ...options, overrideFormula: stepped };
@@ -12347,8 +12388,19 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
       return;
     }
-    // Every pre-07-24u mode: first target only, replace-not-keep. Unchanged on purpose.
-    const tgt = found[0] ?? owner;
+    // Every pre-07-24u mode: first target only, replace-not-keep. Unchanged on purpose — EXCEPT
+    // item 189: `found[0] ?? owner` used to silently redirect an empty supplied-victim/near-victim
+    // grant onto the OWNER and post a public card for a target that was never there. Same rule as
+    // the affliction/status branches: only "prompt" (nothing on the user's canvas) keeps the
+    // re-fire wording; every mode that resolves its own target gets a quiet GM audit line instead.
+    if (!found.length) {
+      if (eff.target !== "prompt") { await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no target for the Temp HP grant; no effect.</p>`); return; }
+      const what = `(no target — target a token, then re-fire).`;
+      if (rolled) await edhaRollCard(owner, name, roll, what);
+      else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
+      return;
+    }
+    const tgt = found[0];
     await edhaWriteTempHp(tgt, amt, name);
     if (rolled) await edhaRollCard(owner, name, roll, `${tgt.name} gains <strong>${amt}</strong> Temp HP.`);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${tgt.name} gains <strong>${amt}</strong> Temp HP.</p>` });
@@ -12397,10 +12449,24 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     return;
   }
   if (eff.kind === "affliction") {
+    // item 189: same rule as the status branch above — a real candidate that whenTargetIsolated
+    // culled (culledByIsolation), or any other supplied mode (victim/near-victim/list-members) that
+    // resolved to nobody, is not the user's fault: there is no token to target and nothing to
+    // re-fire. Only a genuine "prompt" miss (nothing on the user's own canvas target) keeps that
+    // wording — everything else gets a quiet GM audit line via edhaPostGmCard instead of a public
+    // "(target a token) is Afflicted..." card for a target that was never there.
+    if (!targets.length) {
+      if (culledByIsolation || eff.target !== "prompt") {
+        await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no${spec.whenTargetIsolated ? " Isolated" : ""} target to afflict; no effect.</p>`);
+        return;
+      }
+      await edhaRollCard(owner, name, roll, `(target a token) is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
+      return;
+    }
     for (const a of targets) {
       try { await a.toggleStatusEffect?.("afflicted", { active: true }); await edhaAddAffliction(a, amt, eff.damageType, name); } catch (e) {}
     }
-    await edhaRollCard(owner, name, roll, `${targets.map(a => a.name).join(", ") || "(target a token)"} is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
+    await edhaRollCard(owner, name, roll, `${targets.map(a => a.name).join(", ")} is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
     return;
   }
   // damage / damage-aoe — apply silently, post one combined message with the dice. A target the local
@@ -12447,8 +12513,11 @@ function edhaPostTriggerCard(owner, name, spec, ctx) {
     EDHA_TRIG_PENDING[pid] = { spec, ctx: ctx || {} };
     // Ben pass 3 (07-12, Mender's Instinct): the card was wordy AND told you to target the creature
     // when the effect already knows its recipient (victim/self) — the instruction only appears when
-    // the effect actually reads your user targets.
-    const needsTargeting = !["victim", "triggering", "self"].includes(spec.effect?.target);
+    // the effect actually reads your user targets. item 189: widened to every mode that resolves
+    // its OWN targets — near-victim (auto-picks near the trigger's victim) and list-members (sweeps
+    // a ledger) read the canvas exactly as little as victim/self do; only "prompt" (and an unset
+    // target, which defaults to prompt) actually wants the instruction.
+    const needsTargeting = !["victim", "triggering", "self", "near-victim", "list-members"].includes(spec.effect?.target);
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content:
@@ -14706,12 +14775,21 @@ async function edhaClearLifeState(endedCombat) {
  *   • reroll-lower   → edhaRewriteOrRelay (the Voice-of-Authority roll-rewrite); the kept d20 is lowered.
  *   • per-actor state→ owner once/round gate (edhaTriggerAllowed); statuses cleared at scene/combat
  *     end (deleteCombat), mirroring the Charge / Reserve / Life-flag pattern.
- * OMEN MODEL (Ben, 06-18): cap = tier; placements past the cap are lost. Every ACTIVE talent is a
- * preUseItem TAKEOVER (cancel the default single-target flow, pay the cost ourselves, refund on
- * cancel) — mirroring Destruction — so the color test is ROLLED (1d20 + @skills.<color>.mod) and
- * GATED against the target's defense via edhaReadDefense (NOT "trust the player"): the effect lands
- * only when total >= the defense. Cascade Collapse rolls once and gates EACH bearer against ITS OWN
- * Cognitive (Ben, 06-18). Attunement Range = EDHA_ATTUNE_FT[Blue rank] (Omens are Blue-placed).
+ * OMEN MODEL (Ben, 06-18): cap = tier + 1 (R-122 (a), 2026-09-13 — was `@tier` until then; every
+ * `op: release` rule states the formula outright since item 150); placements past the cap are
+ * lost. SUPERSEDED MECHANISM, kept for history: every ACTIVE talent used to be a preUseItem
+ * TAKEOVER — cancel the default single-target flow, pay the cost ourselves, refund on cancel —
+ * mirroring Destruction. The 07-24p migration deleted every one of those takeovers (see IRON RULE
+ * 2b STATUS below); today each ACTIVE Chaos talent carries H1 `edha-def-test` (`event: "use"`) on
+ * its OWN document instead, and the talent's native skill_test/attack fires — and pays its own
+ * cost through the system — exactly like any other talent's. A `preUseItem` hook
+ * (04-black-ritual.js) only VETOES pre-cost on a missing target/counter (no swallow: the roll and
+ * the system's own use-card still happen); H1's `use` executor queues a contest that the roll-
+ * watch hooks (12-contested-roll-resolution.js) resolve against that same native roll. So the
+ * color test is still ROLLED (1d20 + @skills.<color>.mod, the system's own roll) and GATED against
+ * the target's defense via edhaReadDefense/edhaDefTestOutcome (NOT "trust the player"): the effect
+ * lands only when total >= the defense. Cascade Collapse rolls once and gates EACH bearer against
+ * ITS OWN Cognitive (Ben, 06-18). Attunement Range = EDHA_ATTUNE_FT[Blue rank] (Omens are Blue-placed).
  * Wired here (no longer GM-eyeballed):
  *   • Entropy Strike / Spreading Omen — Blue vs Cognitive → place Omen(s) on a success (+ Entropy
  *     Strike's own spirit damage). Spreading Omen also marks the nearest other enemy within 10 ft.
@@ -15626,7 +15704,8 @@ async function edhaClearFateState(endedCombat) {
  * WHAT STAYS HERE (engine machinery the rules consume — none of it keys on a talent name):
  *   • The die-step LEDGER: flags.edha-content.dieStep = [{key, steps, scope, ownerId, castRound,
  *     expire, pairId?, onPairHit?, failThpFormula?, failThpRange?}] on the affected creature +
- *     the `exalted`/`diminished` statuses + the rollDamage-wrapper rewrite (edhaSovStepOverride):
+ *     the `exalted`/`lessened` statuses (item 205, 2026-09-16: the step-down id was `diminished`
+ *     until it collided with the published Diminished condition) + the rollDamage-wrapper rewrite (edhaSovStepOverride):
  *     bake the formula, move every ladder die by the net steps (entries STACK — Ben R6; the d4/d12
  *     clamp is the only rail; off-ladder dice untouched). scope "attack" gates to weapon/attack.
  *   • Timed expiry — entry.expire = owner-relative next-turn coordinate, swept on combatTurnChange;
@@ -15658,11 +15737,11 @@ async function edhaSovSetSteps(target, list) {
     return await edhaSetEdhaFlag(target, "dieStep", value);   // Job 6a: routed through the canonical helper (setFlag(key, null) reads the same as unset for every edhaSovSteps consumer)
   } catch (e) { console.error("Edha Content | set dieStep failed", e); return false; }
 }
-// Keep the exalted/diminished token icons in sync with the entry list (idempotent toggles).
+// Keep the exalted/lessened token icons in sync with the entry list (idempotent toggles).
 async function edhaSovSyncStatuses(target, list) {
   const up = (list ?? []).some(e => Number(e.steps) > 0), down = (list ?? []).some(e => Number(e.steps) < 0);
   if (up !== !!target.statuses?.has?.("exalted")) await edhaToggleStatus(target, "exalted", up);
-  if (down !== !!target.statuses?.has?.("diminished")) await edhaToggleStatus(target, "diminished", down);
+  if (down !== !!target.statuses?.has?.("lessened")) await edhaToggleStatus(target, "lessened", down);
 }
 // The owner-relative timed expiry: the coordinate of the OWNER's next turn ("start of your next
 // turn" lands end-of-owner-next-turn, the engine convention). Out of combat → "owner-next", lazily
@@ -15753,7 +15832,7 @@ async function edhaSovRecoverInv(owner, sourceName, victimName, n = 1) {
 function edhaSovPostExposeCard(owner, sourceName, victim, total, recoverN) {
   ChatMessage.create({
     whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (Diminished by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
+    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (${EDHA_STATUSES.lessened.label} by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
       <button type="button" class="edha-sov-expose-btn" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(sourceName)}" data-edha-victim="${victim.name}" data-edha-n="${recoverN}">It failed — recover ${recoverN} Investiture</button></div>`,
   });
 }
@@ -15810,7 +15889,7 @@ async function edhaSovRollWatch(ctx, roll, source, config) {
       }
     }
 
-    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired diminished enemy
+    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired lessened enemy
     if (!read || read.failed) return;
     const plus = entries.filter(e => e.steps > 0 && e.onPairHit && e.pairId);
     if (!plus.length) return;
@@ -15873,7 +15952,7 @@ async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "sov",
     flags: ["dieStep", "dieStepOnceBy"],
-    statuses: ["exalted", "diminished"],
+    statuses: ["exalted", "lessened"],
   });
 }
 // (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
@@ -22361,7 +22440,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
     label: "Edha: Step a Damage Die (On Use / On Success)", description: "Move a creature's damage die size along the d4–d12 ladder (entries stack; the clamp is the only rail). Put it on 'use' for an untested buff (Exalt), or on the 'When Your Test SUCCEEDS' / 'FAILS' events after an Edha: Gated Test (Censure, Decree of Ruin). 'pair' writes a linked ally/enemy pair whose on-hit coupling the engine watches (Sovereign's Balance, Sovereignty).",
     config: { schema: {
       key: new FF.StringField({ required: true, initial: "step", label: "Entry key", hint: "Names this effect in the ledger — censure, decree, edict, exalt, investiture, balance, sovereign. Authored data: it is what an Edha: Die-Step Reaction's whenKeys and a replaceKeys field match against." }),
-      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Diminished one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
+      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Lessened one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
       scope: new FF.StringField({ required: false, initial: "all", choices: choices("all", "attack"), label: "Applies to", hint: "all = every damage roll · attack = weapon/attack damage only (Edict of the Fallen)." }),
       expire: new FF.StringField({ required: false, initial: "next-turn", choices: choices("next-turn", "scene"), label: "Lasts", hint: "next-turn = until the start of YOUR next turn (the timed sweep) · scene = until the encounter ends." }),
       target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "ally", "enemy", "pair"), label: "Who is stepped", hint: "victim = the creature this rule's trigger resolved against (a gated test's payload) · ally / enemy = your targeted willing ally / enemy (vetoed pre-cost when missing) · pair = one targeted ally AND one targeted enemy, written as a linked pair." }),
@@ -22427,7 +22506,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         }
         await stampOnce(who);
         await announce(who, steps);
-        say(`${who.name} is <strong>${steps > 0 ? "Exalted" : "Diminished"}</strong> — ${stepWord(steps)} ${durText}.`);
+        say(`${who.name} is <strong>${steps > 0 ? EDHA_STATUSES.exalted.label : EDHA_STATUSES.lessened.label}</strong> — ${stepWord(steps)} ${durText}.`);   // item 205: read the label from the registry, not a hardcoded string, so a future rename is one line (01-shared-core.js)
       } catch (e) { console.error("Edha Content | edha-die-step executor failed", e); }
     },
   },

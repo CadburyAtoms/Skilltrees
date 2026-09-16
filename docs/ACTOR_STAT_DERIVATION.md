@@ -120,6 +120,11 @@ removed the +1 — engine, canon and system now agree), Focus 2, Investiture 2, 
 > 9, 12, 15 and 18 with **no level-3 increase**, while the system's `advancement.rules` (and this
 > table's "+1 at L3, L6, …") grant one at level 3 — filed as ruling **R-157**, unchanged here
 > because the sheet enforces the system's table.
+>
+> **R-157 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.23; TODO item 208): Edha follows the system's
+> (Stormlight) advancement table, level-3 attribute point included — the Mistborn Handbook's table
+> has no level-3 point, and Ben chose the system's, so a PC at level 3 keeps the point the sheet
+> grants.
 
 ### 3a. Adversaries (item 55, R-56 (a), 2026-09-06 — then item 83, below)
 

@@ -795,7 +795,7 @@ async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "sov",
     flags: ["dieStep", "dieStepOnceBy"],
-    statuses: ["exalted", "diminished"],
+    statuses: ["exalted", "lessened"],
   });
 }
 ```
@@ -3707,14 +3707,29 @@ is no card to put an `events` rule on, so this is ENGINE_OWNED (`01-shared-core.
   decision it writes `"disadvantage"`, consumes the arm (`edhaToggleStatus(defender, "dodgearmed",
   false)`) and posts a whispered card.
 - **`edhaArmDodge(actor)`** — the sheet button's click handler. Refuses (no toggle, no spend) when
-  already armed, or — under the `EDHA_DODGE_PAY_ON_ARM` dial (default `true`) — when the actor
-  cannot afford 1 Focus. On success: `edhaSpendResource(actor, "foc", 1)` (dial-gated) then
-  `edhaApplyTimedStatus(actor, "dodgearmed", {owner: actor, expire: "owner"})` — expires end of the
-  ARMING actor's own next turn (the `tagged` shape), not "cleared at combat end": Dodge answers one
-  imminent attack, not a scene-long stance.
+  already armed, or — under the `dodgePayOnArm` setting (default `true`, the `EDHA_DODGE_PAY_ON_ARM`
+  constant) — when the actor cannot afford 1 Focus. On success: `edhaSpendResource(actor, "foc", 1)`
+  (dial-gated) then `edhaApplyTimedStatus(actor, "dodgearmed", {owner: actor, expire: <"owner" or
+  false, per the `dodgeArmExpiresOnOwnTurn` setting>})` — expires end of the ARMING actor's own next
+  turn by default (the `tagged` shape), not "cleared at combat end": Dodge answers one imminent
+  attack, not a scene-long stance. Off, the arm carries no expiry stamp and persists until consumed.
 - **`dodgearmed`** joins `EDHA_STATUSES` (`condition: false`, the predprimed/tagged/warlord "armed
   next hit" shape) — a real status, not a bare flag, so it paints on the token for free.
-- **Two ruling dials, both defaulted in code and filed as a numbered ruling for Ben** (see the
-  2026-09 changelog delta / the item's PR): `EDHA_DODGE_PAY_ON_ARM` (Focus paid on arm vs. on
-  consume) and the expiry window (end of the arming actor's next turn vs. cleared at combat end).
-  Pinned: `tests/dodge-arm.test.js`.
+- **Two ruling dials (R-145), both Foundry module settings since item 193 (R-148 (a))** — world-
+  scoped, GM-only, registered at `init` with the constant as their default, read at USE time
+  through the shared **`edhaSetting(key, fallback)`** reader (`01-shared-core.js`; falls back to
+  `fallback` whenever `game.settings` is absent, unregistered, or throws — which is exactly what
+  `tests/harness.js`'s bare `game.settings.get() => undefined` stub looks like): `dodgePayOnArm`
+  (Focus paid on arm vs. on consume) and `dodgeArmExpiresOnOwnTurn` (expires end of the arming
+  actor's next turn vs. no expiry stamp at all — persists until consumed). A veto is a flip in
+  Foundry's Settings dialog, not a PR. Pinned: `tests/dodge-arm.test.js`.
+- **`edhaSetting(key, fallback)`** (`01-shared-core.js`) — the ONE reader for every ruling-toggled
+  engine dial (item 193, R-148 (a)): `game.settings.get("edha-content", key)` when that answers a
+  defined value, else `fallback`. Registered dials keep their historic constant as the setting's
+  default, so a pinned test that asserts the constant still holds with no setting configured. Read
+  at use time, never cached — a flip in Foundry changes behaviour with no reload. R-43's "tests
+  Speed means the attribute" dice-math fix and the `edha-owner-list` `onMissing` dial (item 142) were
+  both considered for this treatment and excluded: R-43 is a corrected bug with no remaining toggle
+  (ANSWERED-by-acceptance, EDHA_RULINGS.md §K), and `onMissing` is already a per-talent AUTHORED
+  field on the H3 handler's own schema, editable on that talent's Events tab — exactly rule 2b's
+  goal, and a global setting would be a regression from it, not a step toward it.

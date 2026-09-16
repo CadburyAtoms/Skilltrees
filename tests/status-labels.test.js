@@ -40,6 +40,26 @@ test("item 171: noreactions / noactions are labelled by the condition alone (reg
   }
 });
 
+test("item 205: no Edha status label collides with a published condition name", () => {
+  // item 205 (2026-09-16): Edha's status `diminished` (Sovereignty's damage-die step-down) was
+  // labelled "Diminished" — a PUBLISHED condition (Mistborn Handbook Ch. 9 -> Conditions:
+  // Diminished [attribute -X]). Renamed to `lessened` / "Lessened Die". This case guards the
+  // whole class: none of the fifteen published conditions (`.claude/skills/
+  // cosmere-canon-reference/SKILL.md` §Conditions) may ever be an Edha status's exact label.
+  // Reversion: relabel `lessened` back to "Diminished" in EDHA_STATUSES and this case fails,
+  // naming the collision.
+  const env = registered();
+  const PUBLISHED_CONDITIONS = new Set([
+    "Afflicted", "Depleted", "Determined", "Diminished", "Disoriented", "Enhanced", "Exhausted",
+    "Focused", "Immobilized", "Prone", "Restrained", "Slowed", "Stunned", "Surprised", "Unconscious",
+  ]);
+  const offenders = [];
+  for (const [id, st] of Object.entries(env.CONFIG.COSMERE.statuses)) {
+    if (PUBLISHED_CONDITIONS.has(String(st.label))) offenders.push(`${id}: label "${st.label}" is a published condition name`);
+  }
+  assert.deepStrictEqual(offenders, [], offenders.join("; "));
+});
+
 test("item 171: no CONDITION label names a tree talent", () => {
   const env = registered();
   const dir = path.join(__dirname, "..", "data", "authored");
