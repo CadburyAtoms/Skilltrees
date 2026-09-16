@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T18:43:37.270Z",
+  "generatedAt": "2026-09-16T20:41:45.950Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "55bbbd8dc6",
-    "commit": "6b680af",
+    "hash": "6536a2af11",
+    "commit": "fc1fc04",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -44,7 +44,7 @@
   "pm": {
     "status": "idle",
     "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "waitingOn": "Ben: R-155 (advantage / disadvantage per Chapter 3 — recommended a); paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
@@ -2522,6 +2522,30 @@
       "status": "queued",
       "statusDetail": null,
       "pr": null
+    },
+    {
+      "pos": 205,
+      "item": "201",
+      "title": "The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary; a contradiction ledger docs/analysis/rules-audit-2026-09.md, DOCS fixes in its PR, engine findings as items, failed-premise rulings re-filed (DOCS + ledger). Filed by the PM from Ben's instruction",
+      "lane": "R",
+      "model": "opus",
+      "size": "L",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 206,
+      "item": "202",
+      "title": "R-155: advantage and disadvantage per Chapter 3 — a counter of live sources, cancellation one for one, placement on the d20 / plot die / damage die by the chooser the rule names; the dialog when it opens, a fixed priority when it does not (ENGINE, F5; dual-mode). Filed by the PM from R-155",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "R-155",
+      "status": "blocked",
+      "statusDetail": "R-155",
+      "pr": null
     }
   ],
   "rulings": [
@@ -2569,9 +2593,12 @@
     }
   ],
   "benOnly": [
+    "R-155 (advantage and disadvantage per Chapter 3 — recommended (a), filed 2026-09-16 16:40 ET)",
     "the session-one confirmation (R-144)",
     "an R-145 veto if he disagrees",
-    "the Channel design pass when he has time. What the next PM can dispatch, on Ben's word: item 183 (opus, L)",
+    "the Channel design pass when he has time. Standing instruction from Ben (2026-09-16): the Mistborn Handbook is the rules source — anywhere the engine, the docs, the skills or memory contradict its Chapter 3 we correct ourselves",
+    "item 201 is the audit. What the next PM can dispatch, on Ben's word: item 183 (opus, L)",
+    "item 201 (opus, L — the rules audit, Chapter 3 first)",
     "items 188, 189, 190, 192, 196, 199 (sonnet, XS – S)",
     "items 193 and 194 (sonnet, S — both 2.1.0-safe, F5 / REBUILD, nothing deploys until the freeze lifts)",
     "item 191 behind 183",
@@ -2586,20 +2613,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:09",
-      "at": "2026-09-14T06:09:00.000Z",
-      "item": "Dispatched items 142 + 143 + 150 (opus, worktree pm/142-143-150-omen-dial-power-reset — ONE generic H3 dial so Isolating Pressure places an Omen on an unmarked target (a non-halting release + pre-mutation status gates), the Chaos release caps to @tier + 1, edhaClearPowerState's frightened entry, the Blue header comment; pins by reversion; deity pack parity; ENGINE-ONLY F5 + DATA REBUILD deity). Opus 3 of 3 for 09-14",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "02:10",
@@ -3425,9 +3438,23 @@
       "weightedM": null,
       "outcome": "filed; tests/pm-state.test.js re-pinned 10 → 1; dashboard + phone board updated",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "16:40",
+      "at": "2026-09-16T20:40:00.000Z",
+      "item": "Ben (chat): confirm how Metalworks implements advantage / disadvantage, then read the handbook's rule — and, after the answer, the standing instruction: *\"our Chapter 3 would be exactly the same … anywhere our engine, .md files, skills, memory, etc contradict Chapter 3 of the handbook, we need to correct ourselves\"*, plus a TODO for a full rules audit and clarity on who chooses which die. Read at the source (both tags identical: one tri-state per die, per-die dialog toggles, p / gmp on the plot die, no counting) and in the handbook journal (Ch. 3 Skills: per die, countable, roller places advantages, opponent places disadvantages, enemy NPC tests reverse the roles, cancel one for one, multi-target rolls separate). Filed: R-155 (recommended (a), two phases), item 201 (the audit), item 202 (the build, blocked on R-155); dated corrections in SYSTEM-PRIMER, the ecosystem README and the leyline guide; a memory file; tests/pm-state.test.js re-pinned 1 → 2",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~35 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed; dashboard + phone board updated",
+      "pr": null
     }
   ],
-  "runLogTotal": 369,
+  "runLogTotal": 370,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

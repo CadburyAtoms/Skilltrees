@@ -76,6 +76,8 @@ Full detail and citations in `SYSTEM-PRIMER.md`. The four that change conclusion
    `d20.number = 2` with `kh`, full stop; and the Edha engine's own `edhaNextModFoldMode`
    boolean-ORs multiple sources into the one scalar the system holds. **Disadvantage is the same
    scalar.** A second advantage — or a second disadvantage — on the same roll is worth zero.
+
+> ⚠️ **Correction, 2026-09-16 — this section describes the SYSTEM's d20 code and Edha's fold, not the rule.** The Mistborn Handbook (Ch. 3 Character Statistics → Skills, "Advantages and Disadvantages"; identical to the Stormlight Starter Rules Part 1) is per die and countable: for each advantage the roller chooses one die about to be rolled — the d20, the plot die, or any other die such as a damage die — rolls two and keeps one, each die chosen at most once, so two advantages double two different dice; for each disadvantage the opponent chooses the die and the kept result (the GM on a player's test; on an enemy NPC's test the most-affected player); advantages and disadvantages cancel one for one; a multi-target test rolls the extra dice separately for the targets they concern. The system exposes a toggle per die (d20, plot die, each damage die) and counts nothing; Edha's engine writes the d20 only and folds sources to one scalar — that is the deviation, not the rule. Engine question: R-155 (`EDHA_RULINGS.md` §L); the full audit is TODO item 201.
 2. **1 Reaction per round**, and **3 Actions per slow turn / 2 per fast**.
 3. **Draw Mana is 1 Action for Tier Investiture** — so 1 Investiture per Action at levels 1–5.
    Investiture max is `2 + max(AWA, PRE)`, about 4 at level 1.

@@ -44,6 +44,8 @@ This skill contains the canonical design standards for the Leyline system. Consu
 Disoriented, Determined, Surprised, Weakened, Slowed, Exhausted[X], Afflicted[X damage], Restrained, Prone, Immobilized.
 
 ### Advantage / Disadvantage (System Mechanic)
+
+> ⚠️ **Correction, 2026-09-16 — this section describes the SYSTEM's d20 code and Edha's fold, not the rule.** The Mistborn Handbook (Ch. 3 Character Statistics → Skills, "Advantages and Disadvantages"; identical to the Stormlight Starter Rules Part 1) is per die and countable: for each advantage the roller chooses one die about to be rolled — the d20, the plot die, or any other die such as a damage die — rolls two and keeps one, each die chosen at most once, so two advantages double two different dice; for each disadvantage the opponent chooses the die and the kept result (the GM on a player's test; on an enemy NPC's test the most-affected player); advantages and disadvantages cancel one for one; a multi-target test rolls the extra dice separately for the targets they concern. The system exposes a toggle per die (d20, plot die, each damage die) and counts nothing; Edha's engine writes the d20 only and folds sources to one scalar — that is the deviation, not the rule. Engine question: R-155 (`EDHA_RULINGS.md` §L); the full audit is TODO item 201.
 Advantage and disadvantage are each **one binary state**, not a stacking counter — the engine folds
 every matching source into a single scalar (`edhaNextModFoldMode`), so a second advantage or
 disadvantage from another talent, on the same roll, contributes nothing. The **printed rule**
