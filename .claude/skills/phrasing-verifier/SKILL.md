@@ -254,6 +254,14 @@ slow turn, fast turn, free action
 | Damage receipt | "suffer X damage" | "take X damage" |
 | Disadvantage state | "take disadvantage" | "have disadvantage" |
 
+> **"Gains a disadvantage" is the published verb — never rewrite it** (added 2026-09-16, TODO item
+> 201). The Mistborn Handbook writes "your attack gains a disadvantage", "the test gains an
+> advantage", and, for the Dodge reaction, "add a disadvantage to their attack test". The rule
+> above only converts *"take(s) disadvantage"*; `gain(s) a disadvantage` and `add a disadvantage`
+> are correct as written, and so is a **counted** grant — "gain two advantages" is a legal card
+> line, because advantages are per die and countable (MH Ch. 3 → Skills; `cosmere-canon-reference`
+> §advantage / disadvantage). Do not collapse a counted grant to a single one.
+
 ### Rule 4: No flavor text in Description (manual review)
 
 Metaphors, sensory language, and narrative prose belong in the Flavor field. Flag

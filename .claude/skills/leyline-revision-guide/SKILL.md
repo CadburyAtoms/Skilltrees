@@ -33,7 +33,12 @@ This skill contains the canonical design standards for the Leyline system. Consu
 - **half [Die]**: Half the rank die result (round down).
 - **[Size]**: 2.5 ft (Rank 1), 5 ft (Rank 2), 10 ft (Rank 3), 15 ft (Rank 4), 20 ft (Rank 5).
 - **Attunement Range**: 15 ft / 30 ft / 60 ft / 90 ft / 120 ft (Ranks 1–5).
-- **Tier**: Character level bracket. Tier 1 = levels 1–4, Tier 2 = levels 5–9, etc.
+- **Tier**: Character level bracket. **Tier 1 = levels 1–5 (max skill rank 2), Tier 2 = levels
+  6–10 (rank 3), Tier 3 = 11–15 (rank 4), Tier 4 = 16–20 (rank 5).** *(Corrected 2026-09-16, TODO
+  item 201: this line read "Tier 1 = levels 1–4, Tier 2 = levels 5–9" from 2025 until the Mistborn
+  Handbook's Character Advancement table settled it — the same table the cosmere-rpg system
+  implements and `docs/ACTOR_STAT_DERIVATION.md` already carried. **Level 6 is the double step**:
+  tier and rank cap rise together, so `[Tier][Die]` goes 1d6 → 2d8 in one level.)*
 - **Rank**: Skill investment (1–5). Used for die size and area scaling.
 
 ### Damage Types
