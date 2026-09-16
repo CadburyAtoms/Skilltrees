@@ -90,7 +90,11 @@ is a stop-and-report, not a thing to fix.
 ## 5. Docs the change obliges (iron rule 5)
 
 - Check your item `[x]` in `TODO_REPO_HYGIENE.md` with the date and the PR number (you know the
-  number after `gh pr create`; amend the commit).
+  number after `gh pr create`; amend the commit). **If the docs commit is no longer the tip** —
+  merging `origin/main` mid-task buries it, which happens whenever the PM lands work while you
+  run — make a new, clearly-labeled commit (`item NN: record PR #NNN in the TODO tick`) instead.
+  Never rewrite pushed history to satisfy this rule: an interactive rebase or a force-push is a
+  worse outcome than an extra one-line commit (item 182, PR #409, 2026-09-15).
 - A dated delta at the **top** of the current month's changelog file,
   `docs/handoff-changelog/2026-MM.md` (never in `EDHA_FOUNDRY_HANDOFF.md`, the reference alone
   since item 19b): insert it as **heading, body, blank line — directly under the marker's blank

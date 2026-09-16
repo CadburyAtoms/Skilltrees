@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-15T23:51:23.585Z",
+  "generatedAt": "2026-09-16T00:16:02.712Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "1c7b0a6621",
-    "commit": "727e34e",
-    "branch": "pm/181-dodge-arm-button",
+    "hash": "62938fb25c",
+    "commit": "c60fb2f",
+    "branch": "pm/batch-close-out-0915",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,39 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "PM of record since 11:49 ET. Two of the four Sonnet workers are in: item 175 (the stale Chaos header, #406) and item 181 (the Dodge arm button, #407) are merged. Item 181's two design questions are filed as R-145, APPLIED behind named dials — the Focus paid when you arm, and an unused arm clearing at the end of your own next turn — so it wants a veto, not a decision; silence keeps both. Still running: the three card-claim defects (172, 173, 176) and the lint gate (182). Nothing deploys to your table while session one is pending. No Fable agents today.",
-    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); R-145 only if you want to veto a Dodge dial; optionally, whether the damage-card builds should go live before session one",
+    "note": "PM of record since 11:49 ET. All four Sonnet workers are in and merged: the stale Chaos header (#406), the Dodge arm button (#407, its two dials filed as R-145 APPLIED), the three card-claim defects (#408, fix pass 14) and the per-item-type lint gate (#409, the first migration PR). Three follow-ups filed from what they found in passing: items 188, 189, 190 — all small Sonnet work, queued on your word. Item 183, the resolver that unblocks the damage-card builds, is queued for the next Opus window. Nothing was deployed: your table is still on 2.1.0, untouched, while session one is pending.",
+    "waitingOn": "Ben: confirm when session one has happened (that releases the swap to 3.1.0); R-145 only if you want to veto a Dodge dial; a word to dispatch item 183 (Opus) or items 188-190 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-15 11:49 ET (hand-started by Ben in chat; Ben's hours, dispatches on his word)"
   },
-  "workers": [
-    {
-      "item": "172+173+176",
-      "title": "Three cards that claim what did not happen: a full-pool resource gain, an Isolated-gate miss, an empty near-victim splash",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/172-173-176-card-claims",
-      "startedAt": "2026-09-15T23:13:00Z",
-      "agent": "Items 172, 173, 176 (card claims)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; ENGINE-ONLY (F5), no deploy while session one is pending"
-    },
-    {
-      "item": "182",
-      "title": "Migration PR 1: per-item-type field sets so lint pass 11 can see an Embedded-Actions break",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/182-per-type-field-sets",
-      "startedAt": "2026-09-15T23:13:00Z",
-      "agent": "Item 182 (per-type lint gate)",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING, the tracked 2.1.0 vocabulary snapshot is not regenerated"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -2198,9 +2171,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "bench 49b ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 408
     },
     {
       "pos": 176,
@@ -2210,9 +2183,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "bench 49b ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 408
     },
     {
       "pos": 177,
@@ -2234,9 +2207,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": null,
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 406
     },
     {
       "pos": 179,
@@ -2258,9 +2231,9 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "bench 50 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 408
     },
     {
       "pos": 181,
@@ -2330,9 +2303,9 @@
       "model": "sonnet",
       "size": "M",
       "deps": "none",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 409
     },
     {
       "pos": 187,
@@ -2393,6 +2366,42 @@
       "status": "blocked",
       "statusDetail": "item 186",
       "pr": null
+    },
+    {
+      "pos": 192,
+      "item": "188",
+      "title": "42-chaos.js's \"OMEN MODEL (Ben, 06-18)\" paragraph still describes preUseItem takeovers the 07-24p migration deleted — the same failure mode item 175 fixed one paragraph above (comment-only). Filed by the PM from PR #406's finding",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 193,
+      "item": "189",
+      "title": "Two more \"(target a token, then re-fire)\" fallbacks in the trigger-card family — the affliction and thp branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5). Filed by the PM from PR #408's findings",
+      "lane": "B",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 194,
+      "item": "190",
+      "title": "scripts/README.md is missing five scripts, and check-scripts-readme.js is not in the gate set, so a new script can land undocumented with every gate green (TOOLING). Filed by the PM from PR #409's finding",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -2452,62 +2461,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "01:13",
-      "at": "2026-09-14T05:13:00.000Z",
-      "item": "Deploy cycle run BY THE PM — after deleting the stale pm/bench-47 remote branch: --dry-run 6/6 PASS, then --yes from main @ d76bf99 (05:13:0xZ → 05:13:15Z): nine steps ok, packs stamped 05:13:15Z, served engine 902ddadb = HEAD (unchanged since 23:14), all three post-flight checks PASS; hand-verified: 6 in sync, /join title Edha, served sha = repo sha. LIVE: REBUILD leyline + deity for items 107 + 108. Open 🤖 rows for bench 48: 111-2 (← 146), 123-1 (← 147), FP-1, GATE-1 … GATE-3 (+ fix pass 12's re-drive rows), Predator's Due (← 88)",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-14",
-      "time": "01:18",
-      "at": "2026-09-14T05:18:00.000Z",
-      "item": "#377 (board part 2) merged at 01:18 (CI green on 14e79ff); main = 4df8dc7, clean; two workers in flight (fix pass 12, item 140)",
-      "itemNo": "377",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 377
-    },
-    {
-      "date": "2026-09-14",
-      "time": "00:52",
-      "at": "2026-09-14T04:52:00.000Z",
-      "item": "Item 140 (the deploy cycle's un-extracted-edits pre-flight guard; the build fingerprint reaches tree-node fields) — work-item, worktree",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": "35 min, 148 tool uses (272 turns)",
-      "weighted": "9.5M",
-      "weightedM": 9.5,
-      "outcome": "reviewed 01:28 — merged on green after the PM's main merge + bookkeeping commit on the branch, no trailers, four themed commits, no corrections; CONFLICTING three merges behind with no check runs → main merged in the worktree (changelog kept newest-first and recounted, dashboard rebuilt), gates 12/12, CI on the new sha. edha-pack-io.js structuralOf / snapshotDoc / diffUnextractedEdits (content + structural kinds), foundry-build.js's ABORT split content / structural with the baseline write widened to talent_tree docs, foundry-extract.js's writeBaseline likewise, deploy-guards.js checkUnextractedEdits (pure; --force-build mirrors --force-bench's shape), deploy-cycle.js gathers read-only (temp copy, LOCK skipped) before step 1 and threads --force-build into step 7; 13 pins, the reversion → 4 failures on exactly the structural cases; live --dry-run PASS during bench 47. Docs: AUTHORING_WORKFLOW.md's blind-spot note narrowed to what remains (no round-trip for structure; node position / size / sort unfingerprinted on purpose), runbook. Found: nothing new. TOOLING + DOCS — nothing to deploy; the next deploy re-arms the widened baselines",
-      "pr": 378
-    },
-    {
-      "date": "2026-09-14",
-      "time": "01:28",
-      "at": "2026-09-14T05:28:00.000Z",
-      "item": "Dispatched items 141 + 148 (one sonnet worker, worktree pm/141-148-knowledge-decoys-cue — the three Knowledge cards' decoy item-level damage blocks removed with a scratch build + validate-packs + parity, Predatory Strike's cue text to the item-130 phrasing; DATA → REBUILD deity) as the lane-R worker beside fix pass 12",
-      "itemNo": null,
-      "model": "sonnet",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "running",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "01:33",
@@ -3291,9 +3244,65 @@
       "weightedM": null,
       "outcome": "reviewed 19:51 — merged as #407 after the PM's own read of the Focus path: edhaArmDodge spends the 1 Focus under the pay-on-arm dial behind an affordability guard, and the consuming hook spends only when that dial is false, so exactly one payment happens either way. ENGINE-ONLY (F5); 7 pinned tests with a live mutation proof (relaxing the single-target guard failed two, then restored); two 🤖 rows; dodgearmed collides with no id on main; no data/ file touched; CI green on 727e34e. Its two judgment calls were filed as R-145, APPLIED behind named dials, in the same PR",
       "pr": 407
+    },
+    {
+      "date": "2026-09-15",
+      "time": "19:34",
+      "at": "2026-09-15T23:34:00.000Z",
+      "item": "Item 175 — the stale 42-chaos.js header (comment-only; worktree pm/175-chaos-header)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "18 min (23:13Z → 23:31Z), 101 tool uses",
+      "weighted": "243k",
+      "weightedM": null,
+      "outcome": "reviewed 19:31 — merged as #406: the PM's own filter found no non-comment line in the engine diff, and the worker proved code identity a second way (stripped-source non-blank-line equality — 104 source lines and 14,439 assembled lines, identical before and after); no data/, scripts/ or tests/ file touched; CI green on ea697ab. Its out-of-scope finding — the same file's \"OMEN MODEL\" paragraph still describing preUseItem takeovers deleted in 07-24p — is filed as item 188",
+      "pr": 406
+    },
+    {
+      "date": "2026-09-15",
+      "time": "20:04",
+      "at": "2026-09-16T00:04:00.000Z",
+      "item": "Items 172 + 173 + 176 — three cards that claim what did not happen (fix pass 14; worktree pm/172-173-176-card-claims)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "49 min (23:13Z → 00:02Z), 178 tool uses",
+      "weighted": "444k",
+      "weightedM": null,
+      "outcome": "reviewed 20:03 — merged as #408: edhaGainResource returns the delivered delta and every \"regains N\" card is built from it (five call sites, Draw Mana and Sovereignty's recover among them, saying \"already at full\" at zero); the Isolated-cull and empty near-victim branches post a GM whisper instead of a public \"re-fire\" card; 15 pinned cases across two new test files, each mutation-verified and reverted; the PM checked that no call site reads the new return in a condition, since 0 is falsy; three 🤖 rows (GAIN-172, ISO-173, SPLASH-176); CI green on 0e80928. Two out-of-scope findings — the affliction and thp branches' identical fallback, and the canvas-target instruction on modes that never read the canvas — are filed as item 189",
+      "pr": 408
+    },
+    {
+      "date": "2026-09-15",
+      "time": "20:14",
+      "at": "2026-09-16T00:14:00.000Z",
+      "item": "Item 182 — per-item-type field sets, so lint pass 11 can see an Embedded-Actions break (migration PR 1; worktree pm/182-per-type-field-sets)",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "58 min (23:13Z → 00:11Z), 211 tool uses",
+      "weighted": "530k",
+      "weightedM": null,
+      "outcome": "reviewed 20:13 — merged as #409: module-src/ and data/ have zero diff, the tracked snapshot stays at 2.1.0 and carries no per-type key, so the sharpened check is provably inert today; pass 11 now checks a system.<field> read against the type the call site holds where it can tell one, and falls back to the union everywhere else; the proof is a mutation against a hand-built 3.1.0 fixture (talent.system.strike fails, six conservative-fallback controls pass), and the worker reported transparently that the same check also flags two real call sites the compatibility doc already named. gates and gates --ci both green; CI green on 2bb47d9. PM answers to its two questions: the unverified bundle harvester is accepted because it fails soft — a note on item 187 now requires a hand spot-check at the flip before it is trusted; and the labeled follow-up commit it used in place of an amend it could not reach was the right call, so the work-item skill now says so. Out-of-scope finding filed as item 190",
+      "pr": 409
+    },
+    {
+      "date": "2026-09-15",
+      "time": "20:16",
+      "at": "2026-09-16T00:16:00.000Z",
+      "item": "Batch close-out — queue rows for items 172, 173, 175, 176, 181 and 182 set merged with their PRs; run-log rows for #406, #408 and #409; items 188, 189 and 190 filed from the workers' out-of-scope findings; item 187 given the harvester spot-check; .claude/skills/work-item/SKILL.md given the amend fallback; pm-live back to no workers",
+      "itemNo": "406",
+      "model": "—",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "recorded",
+      "pr": null
     }
   ],
-  "runLogTotal": 359,
+  "runLogTotal": 363,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
@@ -4285,6 +4294,24 @@
       "model": "sonnet",
       "item": null,
       "pr": 407
+    },
+    {
+      "at": "2026-09-15T23:34:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 406
+    },
+    {
+      "at": "2026-09-16T00:04:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 408
+    },
+    {
+      "at": "2026-09-16T00:14:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 409
     }
   ],
   "statusVocab": [
