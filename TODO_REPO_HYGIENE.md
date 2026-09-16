@@ -4697,7 +4697,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model opus · size L · deps items 187 and 200 · Filed 2026-09-16 by the PM from R-150 (b).
 
-## 199. [ ] R-151 (a) + R-153 (a): the two design guides record the published Invested families' action-type and cost tables and the variable-spend convention — no talent changes (DOCS-ONLY) (2026-09-16)
+## 199. [x] DONE 2026-09-16 (PR #423) — R-151 (a) + R-153 (a): the two design guides record the published Invested families' action-type and cost tables and the variable-spend convention — no talent changes (DOCS-ONLY) (2026-09-16)
 
 **Why:** R-151 answered (a) on 2026-09-16 — hold the deity re-pricing for R-152's design, but record the numbers now; R-153 answered (a) — "spend 1 or more, up to your rank" becomes a convention for new and revised talents, no sweep. The numbers are `docs/analysis/talent-comparison-mistborn-radiant.md` §C.1 and §C.2; the leyline guide's own action-type table is stale on two of its claims (`docs/analysis/talent-ecosystem/crosscut/cost-curve.md` §0 (b)).
 
@@ -4795,7 +4795,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size XS · deps item 202 · Filed 2026-09-16 by the PM from item 201's out-of-scope findings.
 
-## 208. [ ] R-157 (a): the advancement table Edha uses is the system's, level-3 attribute point included — `docs/ACTOR_STAT_DERIVATION.md` and `build-forge` say so and record that the Mistborn Handbook's table differs (DOCS-ONLY) (2026-09-16)
+## 208. [x] DONE 2026-09-16 (PR #423) — R-157 (a): the advancement table Edha uses is the system's, level-3 attribute point included — `docs/ACTOR_STAT_DERIVATION.md` and `build-forge` say so and record that the Mistborn Handbook's table differs (DOCS-ONLY) (2026-09-16)
 
 **Why:** item 201's audit found the two published handbooks disagree on attribute points at level 3 (the Mistborn table grants them at 1, 6, 9, 12, 15, 18; the system enforces the Stormlight table with a point at 3). R-157 answered (a) by Ben on 2026-09-16: keep the system's table and document the divergence. `docs/ACTOR_STAT_DERIVATION.md` §3 and `.claude/skills/build-forge/SKILL.md:49` currently state "attribute points at levels 3, 6 and 9" as if it were the one published rule.
 
