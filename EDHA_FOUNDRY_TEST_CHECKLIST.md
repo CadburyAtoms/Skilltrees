@@ -424,6 +424,18 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## Opposed skill tie — item 204 (2026-09-16; **ENGINE-ONLY, F5**)
+
+`edhaDefTestOutcome`'s `vs: "skill"` path now uses `>` instead of `>=` (Mistborn Handbook Ch. 3,
+"Opposed Tests": a tie favors the defender, not the initiator). `vs: "defense"` and `vs: "dc"` are
+unchanged (ties still succeed). Any of the three authored consumers works — Redirect Momentum
+(Blue vs Athletics), Drive the Prey or Territorial Instinct (Green vs Survival).
+
+- [ ] 🤖 Tie a Blue contest (or a Green one): engineer the target's rolled skill total to equal the
+  Blue/Green initiator's total exactly. Confirm the card reads FAIL for the initiator and the
+  defender keeps the status quo (no movement reduction / push, no Slowed, no forced move) — then
+  confirm a one-point win still succeeds and a one-point loss still fails, so only the tie flipped.
+
 ## Path descriptions — item 111 (2026-09-13; **REBUILD leyline + deity + heroic packs + ⟳ Sync Talents first**)
 
 The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approved prose from

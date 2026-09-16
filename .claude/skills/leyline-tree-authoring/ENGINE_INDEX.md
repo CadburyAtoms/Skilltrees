@@ -1051,6 +1051,9 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   Pure decision **`edhaDefTestOutcome(total, {vs, dc, defValue, oppRoll})`** — pinned in `tests/`;
   it **fails OPEN** on an unreadable bar, matching the ~20 hand-rolled `def == null ? true : …`
   copies it replaced (an adversary with no written defense must not make the talent inert).
+  **`vs: "defense"` / `"dc"` meet-or-beat (`>=`); `vs: "skill"` must EXCEED (`>`)** — item 204
+  (2026-09-16): an opposed skill test compares against a competing ROLL, not a fixed bar, and the
+  Mistborn Handbook's "Opposed Tests" rule says a tie favors the defender, not the initiator.
   ⚠️ **H1 IS A DECIDER, NOT A ROLLER — the item must be able to roll the test itself.** The
   executor calls `edhaQueueContest` and waits for the owner's d20 on
   `cosmere-rpg.{skill,attack,item}Roll`; if none arrives the queue entry just expires and the talent

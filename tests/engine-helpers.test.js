@@ -774,6 +774,28 @@ test("edhaDefTestOutcome vs skill: compares against the engine-rolled foe total"
   assert.strictEqual(env.edhaDefTestOutcome(18, { vs: "skill", oppRoll: 12 }).ok, true);
   assert.strictEqual(env.edhaDefTestOutcome(9, { vs: "skill", oppRoll: 12 }).ok, false);
 });
+// --- item 204 (2026-09-16): an opposed skill test must be WON, not tied — Mistborn Handbook
+// Ch. 3 → Skills, "Opposed Tests": your result must EXCEED your opponent's, and on a tie the
+// result favors the defender. `>=` used to hand the initiator every tie on this path; `defense`
+// and `dc` are unaffected (you only need to MEET a fixed bar). This is the case that must flip:
+// against the OLD `t >= n` comparison, the first assertion below fails (a 12-vs-12 tie reads ok).
+test("edhaDefTestOutcome vs skill: a TIE now fails for the initiator", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(12, { vs: "skill", oppRoll: 12 }).ok, false, "a tie must NOT hand the initiator the win");
+  assert.strictEqual(env.edhaDefTestOutcome(13, { vs: "skill", oppRoll: 12 }).ok, true, "one point above still succeeds");
+  assert.strictEqual(env.edhaDefTestOutcome(11, { vs: "skill", oppRoll: 12 }).ok, false, "one point below still fails");
+});
+test("item 204 — all three vs modes at equal/above/below in one table: only 'skill' flips on a tie", () => {
+  const cases = [
+    { vs: "defense", key: "defValue", tieOk: true },
+    { vs: "dc", key: "dc", tieOk: true },
+    { vs: "skill", key: "oppRoll", tieOk: false },
+  ];
+  for (const { vs, key, tieOk } of cases) {
+    assert.strictEqual(env.edhaDefTestOutcome(10, { vs, [key]: 10 }).ok, tieOk, `${vs}: equal (10 vs 10)`);
+    assert.strictEqual(env.edhaDefTestOutcome(11, { vs, [key]: 10 }).ok, true, `${vs}: above (11 vs 10)`);
+    assert.strictEqual(env.edhaDefTestOutcome(9, { vs, [key]: 10 }).ok, false, `${vs}: below (9 vs 10)`);
+  }
+});
 test("edhaDefTestOutcome vs dc: flat number, ties succeed", () => {
   assert.strictEqual(env.edhaDefTestOutcome(15, { vs: "dc", dc: 15 }).ok, true);
   assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "dc", dc: 15 }).ok, false);

@@ -5965,10 +5965,17 @@ function edhaReadDefense(actor, key) {
 }
 /* H1 `edha-def-test` (07-24m) — the pure success/fail decision, hoisted out of ~20 hand-rolled
  * copies so it is testable without Foundry. `total` is the owner's captured roll.
- *   vs "defense" -> beat `defValue` (edhaReadDefense)
- *   vs "skill"   -> beat `oppRoll`  (edhaRollOpposedSkill — the engine rolls the foe; never trust
- *                   the player to have won, per iron rule 3 / kill-soft-laziness)
- *   vs "dc"      -> beat a flat `dc` (Grand Deception 15, Field Medicine 15)
+ *   vs "defense" -> MEETS OR BEATS `defValue` (edhaReadDefense) — you beat a static number by
+ *                   reaching it, same as any DC.
+ *   vs "skill"   -> must EXCEED `oppRoll` (edhaRollOpposedSkill — the engine rolls the foe; never
+ *                   trust the player to have won, per iron rule 3 / kill-soft-laziness). Item 204
+ *                   (2026-09-16, the rules audit): Mistborn Handbook Ch. 3 → Skills, "Opposed
+ *                   Tests" — your result must EXCEED your opponent's, and on a tie the initiator
+ *                   does not get what they wanted ("the result favors the defender who's trying
+ *                   to keep things the same"). `>=` was right for a DC/defense (you only need to
+ *                   MEET it) and wrong here, where `n` is a competing ROLL rather than a fixed
+ *                   bar — a tie used to hand the initiator every contest on this path.
+ *   vs "dc"      -> MEETS OR BEATS a flat `dc` (Grand Deception 15, Field Medicine 15).
  * FAIL-OPEN on an unreadable comparison value, which is what every deity call site already does
  * (`def == null ? true : total >= def`) — an adversary with no written defense must not make the
  * talent silently useless. Returns { ok, dc } so the card can print what was beaten. Pinned. */
@@ -5977,7 +5984,7 @@ function edhaDefTestOutcome(total, { vs = "defense", dc = null, defValue = null,
   const bar = vs === "skill" ? oppRoll : vs === "dc" ? dc : defValue;
   const n = Number(bar);
   if (bar === null || bar === undefined || !Number.isFinite(n)) return { ok: true, dc: null };   // fail-open
-  return { ok: t >= n, dc: n };
+  return { ok: vs === "skill" ? t > n : t >= n, dc: n };   // opposed skill: a tie favors the defender
 }
 // Queue a contest the moment a talent is used (captures game.user.targets reliably on the owner's client).
 // The talent's own skill_test roll is matched by edhaContestWatch — order-independent (see edhaTryResolveContest).
@@ -9871,16 +9878,15 @@ function edhaCwSensesCell(awa) {
 // Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
 // health, focus, investiture, and defenses WILL be at the current distribution"). Its contract is
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
-// three stats Edha derives differently from the system come from the shared helpers
+// stats the wizard cannot read off a prepared actor yet come from the shared helpers
 // (EDHA_HP_BONUS / edhaWalkRateFtFromSpd / edhaSensesRangeFtFromAwa), never re-implemented here.
-// Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
-// used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
-// preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
+// Bench run 21 caught Health and Move (then Senses too, at the time) drifting from the sheet at
+// once. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
 // system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.
-// R-56's 2026-09-07 reversal — item 83 — has since made Senses the SYSTEM's ladder too: the cell
-// still reads the shared helper, but that helper is now the system's `[5,10,20,50,100,∞]` by
-// ceil(AWA/2), so the preview promises exactly what the system will derive onto the sheet.
-// MOVEMENT is now the only cell here that is an Edha rule rather than a system one.)
+// R-56's 2026-09-07 reversal — item 83 — made Senses the SYSTEM's ladder; R-156 (a) — item 203,
+// 2026-09-16 — did the same for Movement. Every cell here is now a copy of a SYSTEM ladder/table,
+// not an Edha rule of its own — the wizard just cannot read a prepared actor's `.derived` before
+// one exists, so it keeps its own copies of the same three tables.)
 // The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
@@ -9954,10 +9960,11 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
 // What each attribute actually feeds, read off the real wiring (bench take-two: "write a blurb
 // for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
 // on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
-// system-derived); movement rate derives from SPD (edhaWalkRateFtFromSpd — the EDHA 20+5×SPD
-// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA on the
-// SYSTEM's own ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer
-// overrides the sheet's number at all); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// system-derived); movement rate derives from SPD on the SYSTEM's own ladder
+// (edhaWalkRateFtFromSpd, R-156 (a) reversed at item 203 — the engine no longer overrides the
+// sheet's number, the same shape as Senses Range, which derives from AWA on the SYSTEM's own
+// ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer overrides the
+// sheet's number either); Investiture 2 + max(AWA, PRE) is the Edha rule. The
 // skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
 const EDHA_CW_ATTR_STAT = {
   str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
@@ -19450,22 +19457,26 @@ function edhaDeriveInvestiture(actor) {
 }
 
 /* --- THE EDHA DERIVED-STAT RULES — one source of truth ------------------------------------------
- * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these;
- * the cosmere system derives TWO of them differently — Movement and Senses. HP is NOT one of them
- * (the correction R-54 landed, 2026-09-06): `Character_Building_Rules.md` §HP and
- * `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1,
- * term-for-term the system's own advancement table, so the Edha and system numbers are IDENTICAL.
+ * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats was Edha's legacy
+ * reading of these. All three have since been folded back onto the system's own tables: HP by
+ * R-54 (c) (2026-09-06), Senses by R-56 final (item 83, 2026-09-07), and now Movement by R-156 (a)
+ * (item 203, 2026-09-16) — nothing here differs from the published rules any more.
  * See `docs/ACTOR_STAT_DERIVATION.md` (the per-stat derivation map) before touching any of this.
  * Both the SHEET (edhaDeriveSheetStats, below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read
  * these helpers, because when they each carried their own copy of the arithmetic they drifted in
  * BOTH directions at once — bench run 21 measured preview Health 13 / Move 30 / Senses 10 against
  * sheet 14 / 35 / 5.
- *  • Movement = 20 + SPD·5 ft   (canon; the system's own ladder is ceil(SPD/2) into [20,25,30,40,60,80])
+ *  • Movement = **the SYSTEM's ladder**, ceil((SPD+bonus)/2) into [20,25,30,40,60,80] — NOT an Edha
+ *    override any more. R-156 (a) (item 203, 2026-09-16) deleted the `20 + 5·SPD` sheet override
+ *    that used to win over this — the exact parallel of R-56's senses reversal below. The system's
+ *    own `prepareSecondaryDerivedData` already writes this ladder into `movement.walk.rate.derived`
+ *    for every actor type, so `edhaWalkRateFtFromSpd` survives only as the copy for the one surface
+ *    the system does not derive: the creation wizard's preview (no prepared actor exists yet).
  *  • Senses Range = **the SYSTEM's ladder**, ceil(AWA/2) into [5,10,20,50,100,∞] — NOT an Edha rule
  *    any more. R-56 was reversed 2026-09-07 (item 83); the engine writes nothing, the system's own
  *    `prepareSecondaryDerivedData` owns the sheet number, and `edhaSensesRangeFtFromAwa` is only the
- *    token-stamp / wizard-preview copy of the same ladder. Movement is now the ONE stat Edha still
- *    overrides on the sheet.
+ *    token-stamp / wizard-preview copy of the same ladder. Movement now follows the identical shape
+ *    — no stat is Edha-overridden on the sheet any more.
  *  • HP = the system's per-level accumulation + EDHA_HP_BONUS
  * EDHA_HP_BONUS was `1` until R-54 answered (c) "remove the +1" — **no level gate anywhere**; the
  * math stays a single constant read from ONE place, so the sheet derivation, the clamp repair and
@@ -19473,13 +19484,26 @@ function edhaDeriveInvestiture(actor) {
  * The June pregens that STORE a manual `hea.max.bonus` keep theirs (the srcHeaBonus guard below
  * skips them) until `edha.migrateDerivations()` strips it. */
 const EDHA_HP_BONUS = 0;
-function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
+// Movement rate in ft — the COSMERE SYSTEM'S OWN LADDER (Mistborn Handbook Ch. 3 → Attributes →
+// Speed, and the Movement Rate table in Appendix 2), for every actor type, since R-156 (a) (item
+// 203, 2026-09-16). `[20,25,30,40,60,80]` indexed by `ceil((SPD+bonus)/2)` → SPD 0 → 20, 1–2 → 25,
+// 3–4 → 30, 5–6 → 40, 7–8 → 60, 9+ → 80 — term-for-term the system's own derivation, which
+// `CommonActorDataModel.prepareSecondaryDerivedData` already writes into `movement.walk.rate.derived`
+// for both actor models (the identical mechanism as `edhaSensesRangeFtFromAwa`, see the ⛔ note in
+// `edhaDeriveSheetStats` below). This copy exists only for the surface the system does NOT derive:
+// the creation wizard's preview panel. Was `20 + 5×SPD` before item 203 — the last of the three
+// legacy derivations (HP/R-54, Senses/R-56) still overriding the system's own table. Pinned in tests/.
+const EDHA_WALK_RATES_FT = [20, 25, 30, 40, 60, 80];
+function edhaWalkRateFtFromSpd(spd) {
+  const s = Number(spd) || 0;
+  return EDHA_WALK_RATES_FT[Math.min(Math.max(0, Math.ceil(s / 2)), EDHA_WALK_RATES_FT.length - 1)];
+}
 
-/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54); Speed = 20 + 5 × SPD.
- * Senses is NOT here any more — the system's ladder owns it (R-56 reversed, item 83) ----------
- * The Edha reference sheets derive MOVEMENT differently from the cosmere system; the
- * pregens carried per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL
- * characters:
+/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54). Speed and Senses are NOT
+ * here any more — the system's own ladders own them both (R-156 (a) item 203; R-56 reversed item
+ * 83) -----------------------------------------------------------------------------------------
+ * The Edha reference sheets used to derive Movement differently from the cosmere system; the
+ * pregens carried per-actor hacks (hea.max.bonus:1 / movement override).
  *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
  *    a manual bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations()
  *    strips them. Followed by the clamp repair — see the comment on it, it is load-bearing.
@@ -19487,8 +19511,8 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  *    is inert by construction (`after > before` can never hold). Both are kept, not deleted: they
  *    are the one place the number lives, and the repair is what makes a non-zero bonus REACHABLE
  *    if the constant ever moves again. Do not "simplify" either away.
- *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
- *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
+ *  • Speed: nothing since R-156 (a) (item 203, 2026-09-16). The system derives it for every actor
+ *    type; see the ⛔ note in the body, directly below the identical senses note.
  *  • Senses: nothing. The system derives it for every actor type; see the ⛔ note in the body.
  */
 function edhaDeriveSheetStats(actor) {
@@ -19504,7 +19528,16 @@ function edhaDeriveSheetStats(actor) {
     // including the `value + bonus` reading of AWA the Edha copy never had. A hand-set override,
     // and an adversary block's explicit `senses` (which the build writes as exactly that), still
     // win, because they always did — they sit above `.derived` in the DerivedValueField.
-    if (actor.type !== "character") return;   // HP and Speed below are PC-only rules (adversary blocks carry overrides)
+    // ⛔ NO SPEED WRITE HERE either — deliberately, since R-156 (a) (item 203, 2026-09-16): Movement
+    // is the SYSTEM's own ladder for every actor type, and the SAME `prepareSecondaryDerivedData`
+    // call already wrote `movement.walk.rate.derived` a moment ago —
+    // `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]`. So the fix is again the ABSENCE of a write: the
+    // `20 + 5·SPD` override that stood here until item 203 is gone, and the system's number
+    // survives — including the `value + bonus` reading of SPD the Edha override never had. A
+    // hand-set override (a legacy pregen's own `useOverride`, or an adversary block's explicit
+    // `movement`) still wins, because it always did — it sits above `.derived`. AE bonuses
+    // (`walk.rate.bonus` — Surefooted, Walking Ruin, …) still add on top via the getter itself.
+    if (actor.type !== "character") return;   // HP below is a PC-only rule (adversary blocks carry overrides)
     // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
@@ -19527,16 +19560,7 @@ function edhaDeriveSheetStats(actor) {
         }
       } catch (e) { /* non-fatal */ }
     }
-    // Speed = 20 + 5 × SPD. Do NOT fold rate.bonus into the override — the DerivedValueField's
-    // value getter adds .bonus ON TOP of the override, so folding it in double-counted every
-    // speed AE (07-18 bench: Surefooted's +10 displayed as +20). AE buffs stay additive via the
-    // getter itself.
-    const rate = actor.system?.movement?.walk?.rate;
-    const srcRate = actor._source?.system?.movement?.walk?.rate;
-    if (rate && !(srcRate?.useOverride)) {
-      const spd = Number(actor.system?.attributes?.spd?.value) || 0;
-      try { rate.override = edhaWalkRateFtFromSpd(spd); rate.useOverride = true; } catch (e) { /* non-fatal */ }
-    }
+    // Speed: nothing — see the ⛔ "NO SPEED WRITE HERE" note above (R-156 (a), item 203, 2026-09-16).
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
 // One-time migration: strip the pregens' per-actor HP bonus / movement override so the derivations
