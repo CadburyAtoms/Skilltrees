@@ -469,7 +469,9 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // 2026-09-16, 16:40 ET: the PM files R-155 in §L — advantage and disadvantage per Chapter 3 of the
   // Mistborn Handbook (per die, countable, the chooser named) against the engine's one-scalar fold. The
   // length assertion moves 1 → 2.
-  const ECOSYSTEM_RULINGS = ["R-145", "R-155"];
+  // 2026-09-16, 16:47 ET: Ben answered R-155 (a) in chat; moved to §K.22 with a §L stub and joins the closed list.
+  // The length assertion moves 2 → 1.
+  const ECOSYSTEM_RULINGS = ["R-145"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -478,7 +480,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
       "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
-      "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154"]) {
+      "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
