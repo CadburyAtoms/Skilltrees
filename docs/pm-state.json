@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T20:51:59.238Z",
+  "generatedAt": "2026-09-16T20:53:21.421Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "65478a8691",
-    "commit": "5ccb930",
-    "branch": "main",
+    "hash": "c84e3a3d41",
+    "commit": "b8e2859",
+    "branch": "pm/dispatch-201",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -2535,12 +2535,12 @@
     {
       "pos": 205,
       "item": "201",
-      "title": "The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary; a contradiction ledger docs/analysis/rules-audit-2026-09.md, DOCS fixes in its PR, engine findings as items, failed-premise rulings re-filed (DOCS + ledger). Filed by the PM from Ben's instruction",
+      "title": "The full rules audit against the Mistborn Handbook — Chapter 3 first, then chapters 9 – 13 and the glossary; a contradiction ledger docs/analysis/rules-audit-2026-09.md, DOCS fixes in its PR, engine findings as items, failed-premise rulings re-filed (DOCS + ledger). Filed by the PM from Ben's instruction; dispatched 16:52 ET in worktree $TEMP/edha-201 on pm/201-rules-audit",
       "lane": "R",
       "model": "opus",
       "size": "L",
       "deps": "none",
-      "status": "running (worktree $TEMP/edha-201, branch pm/201-rules-audit, dispatched 16:52 ET)",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
