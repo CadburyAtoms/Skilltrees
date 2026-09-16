@@ -4577,7 +4577,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **Carried from item 182 (PR #409, 2026-09-15) — spot-check before trusting:** that PR taught `dump-native-vocabulary.js` to harvest a per-item-type field map, but **no part of that harvester has ever run against a real bundle** — there was no 3.1.0 install to run it on, and the worker was barred from Ben's Foundry. It fails soft by design (it warns and never exits, so it cannot block a routine 2.1.0 re-snapshot), which also means a wrong class- or mixin-name assumption would pass silently as an empty map. When this item regenerates the snapshot at 3.1.0, read the per-type output by hand against the system's own data models before trusting it, and say in the PR that you did.
 
-## 188. [x] `42-chaos.js`'s "OMEN MODEL (Ben, 06-18)" paragraph still describes `preUseItem` takeovers the 07-24p migration deleted (comment-only; no behaviour change) (2026-09-15) — done 2026-09-16
+## 188. [x] `42-chaos.js`'s "OMEN MODEL (Ben, 06-18)" paragraph still describes `preUseItem` takeovers the 07-24p migration deleted (comment-only; no behaviour change) (2026-09-15) — done 2026-09-16, PR #426
 
 **Why:** found by item 175's worker (PR #406, 2026-09-15) while fixing the header paragraph immediately above it, and left alone as outside that item's named scope. The paragraph — around line 34 of `module-src/scripts/engine/42-chaos.js` — still reads that "Every ACTIVE talent is a `preUseItem` TAKEOVER … mirroring Destruction". The takeovers were deleted from 07-24p onward, when the iron-rule-2b migration moved all nine Chaos talents onto their own documents' `events` rules; the file's own "IRON RULE 2b STATUS" section, further down, already records that correctly. So the file now contradicts itself, and the stale half is the one a reader meets first. Item 175 fixed exactly the same failure mode one paragraph earlier: a design note from 06-18 that outlived its design.
 
@@ -4587,7 +4587,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from item 175's out-of-scope finding.
 
-## 189. [x] Two more "(target a token)" fallbacks in the trigger-card family: the `affliction` and `thp` branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5) (2026-09-15) — done 2026-09-16
+## 189. [x] Two more "(target a token)" fallbacks in the trigger-card family: the `affliction` and `thp` branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5) (2026-09-15) — done 2026-09-16, PR #426
 
 **Why:** found by the worker that fixed items 172, 173 and 176 (PR #408, 2026-09-15) and left alone, because neither item's "What to do" named them. Items 173 and 176 fixed exactly this shape in two branches of `edhaRunTriggerEffect`: a public card that blames the table — *"(no target — target a token, then re-fire)"* — when the rule supplied its own target list and something culled it to empty, which is not a thing the user can act on. Two siblings still carry it:
 - The **`affliction` and `thp` branches** of `edhaRunTriggerEffect` (`module-src/scripts/engine/33-triggered-effect-resolution.js`) print the same fallback for an empty list, so an automatic dispatch that supplied its own victim can still tell the table to re-fire.
