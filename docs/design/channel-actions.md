@@ -13,7 +13,7 @@ The gate log is the record.
 | Gate | Section | Status |
 |---|---|---|
 | 1 | §1 The Channel rule, generic | **✅ approved 2026-09-16** — M1 – M5 (a), M6 (c), M7 (a), M8 – M13 (a), M14 (a), M15 (a) White, M16 (a) *release*, M17 (a) *Countercurrent* |
-| 2 | §2 The five frames | not yet written |
+| 2 | §2 The five frames | **✅ approved 2026-09-16** — F-0 (b) Red's Realms swapped; F-W (a) the line, F-B (a) the deep reading, F-K (a) the hunt, F-R (a) the mage's own edge, F-G (a) the ground |
 | 3 | §3 White, worked | not yet written |
 | 4 | §4 The build | not yet written |
 | 5 | §5 Close-out | not yet written |
@@ -287,3 +287,219 @@ carried by item 198, and it touches the checklist rows and docs that name the ta
 > **M7 (a) with the rename (M17)**, M8 – M13 (a), M14 (a) as rewritten above, M15 (a) White; M16 and
 > M17 were filed from his three notes and answered in the next line — *"release, countercurrent, and
 > yes to commit"*: **M16 (a) release, M17 (a) Countercurrent.** §1 committed on that yes.
+
+---
+
+## 2. The five frames
+
+A frame is the one ongoing effect that channelling a colour *is* (§1.1): a single sentence, the same
+for every mage of the colour, worth paying 1 Investiture a round for on its own, and — where it names
+a number — that number is the channelled Investiture (M9 (a)). Each frame below is stated once as a
+paragraph (what it is, why it is the colour, what 1 / 2 / 3 buys, which riders hang on it, how it
+meets the Key's Draw Mana rider, and what two mages of the colour do to each other under M14) and once
+as the card sentence that would sit on the Channel action. Three frames land on other creatures —
+allies for White, enemies for Blue and Green — so M14 applies to them: a creature takes one frame of
+a colour, the larger. Black's and Red's frames are the mage's own (their attacks, their edge); M14
+reaches Red only through a Frenzy rider that shares the edge, and Black not at all.
+
+### 2.1 The specialties as Realms — the map
+
+§1.5 restored the axis; this is the assignment, and it is derived, not invented. The legacy guide
+(`source-materials/legacy-uploads/Leyline_Talent_Revision_Guide.md` Part 4) gave each colour an
+**Attunement** theme, a **Physical** theme and a **Cognitive** theme, and the named specialties were
+built one per theme. The Attunement theme — the leyline layer itself: coordination, prediction,
+isolation, momentum, territory — is the **Spiritual** Realm (Investiture, Connection, fortune). The
+other two keep their names.
+
+| Colour | Physical (body, damage, the ground) | Cognitive (mind, tests, influence, focus) | Spiritual (the leyline layer: connection, fortune, solitude, momentum, land) |
+|---|---|---|---|
+| White | **Bulwark** — formation defence, damage sharing | **Accord** — cooperative tests, anti-influence, condition removal | **Coordination** — plot-die sharing, group stability |
+| Blue | **Illusion** — barriers, doubles, images | **Calculation** — disadvantage, the counter, influence riders | **Foresight** — prediction, telepathy, the initiative take-back |
+| Black | **Ritual** — blood for vital damage | **Subjugation** — focus pressure, domination | **Isolation** — solitude and what it pays |
+| Red | **Momentum** — the charge, the leap, the body in motion | **Frenzy** — incitement, tempo, forced aggression | **Conflagration** — Investiture made visible: fire, the arc, the detonation |
+| Green | **Restoration** — deep healing, Injuries | **Instinct** — senses, the pack's coordination | **Territory** — difficult terrain that grows and holds |
+
+Four colours' cells match the legacy guide's Physical or Cognitive theme for that colour word for
+word (Blue Physical = "illusions — barriers, false images"; Black Physical = "HP sacrifice … vital
+damage"; Green Physical = "deep single-target healing"). **Red is the one deliberate departure**: the
+legacy guide put pyromancy under Physical and momentum in the Attunement layer, and Ben swapped them
+at gate 2 — fire is the leyline's Investiture made visible (Spiritual), the charge is the body
+(Physical). *(F-0 (b).)*
+
+### 2.2 White — the line
+
+**What it is.** Standing together makes the line harder to hurt: every ally in your Attunement Range
+who has another ally at their shoulder gains deflect equal to the Investiture you are channelling,
+and so do you. It is TREE-INTENT's first clause ("*harder to hurt*") made continuous, and it is the
+thing every White card already assumes — nearly all of them need a friendly body beside another.
+Today the wall is Guardian Stance (+1 deflect while an ally is adjacent to *you*, free) and Shield
+Wall (half `[Tier][Die]` — 1.75 at tier 1, 4.5 at tier 2 — off every attack on allies adjacent to you
+when two are); the frame reaches the whole formation instead of your own square. **What the spend
+buys:** 1 deflect for a trickle; 2 at a flood at levels 1 – 5 (a Draw every round); 3 from level 6.
+Deflect only stops impact, keen and energy, so a spirit or vital attack goes through the wall —
+Black's identity against White's, unchanged. **The riders.** Bulwark (Physical) sharpens the wall:
+step in, take the hit, hold the ally at 1. Accord (Cognitive) adds "harder to sway" to whoever the
+frame already covers. Coordination (Spiritual) adds "luckier on the dice". **Draw Mana** still heals
+every visible ally for your tier on each draw — the draw is the line breathing, the Channel is the line
+holding. **Two White mages:** an ally beside both takes the larger deflect, not the sum (M14).
+
+> **Channel White.** You and allies you can see within Attunement Range gain deflect equal to the
+> Investiture you are channelling while adjacent to another ally.
+
+**F-W.** (a) **The deflect line above — recommended.** (b) The formation line: allies adjacent to
+another ally gain +1 to all three defenses, fixed — every Realm at once, but nothing scales and a
+flood buys nothing the riders do not gate. (c) The plot-die line: allies in range may raise the stakes
+up to the channelled number of times each round — Coordination as the base; the least legible as
+"the wall", and the plot die is the GM's lever in canon.
+
+### 2.3 Blue — the reading
+
+> **A rules fact recorded at gate 2 (Ben, chat, 2026-09-16, from the Mistborn Handbook chapter 3,
+> confirmed in a parallel session):** advantage and disadvantage cancel one for one, **and each die
+> in a roll can carry its own** — the d20, the plot die, the damage die — so a second instance of
+> disadvantage is not wasted: whoever inflicts it assigns it to another die of that roll. The system
+> already models this (`d20-roll.ts` carries `advantageMode` for the d20 and `advantageModePlot` for
+> the plot die, `damage-roll.ts` its own `advantageMode`, at both 2.1.0 and 3.1.0); what folds every
+> source into the single d20 scalar is the **Edha engine** (`edhaNextModFoldMode`,
+> `15-blue-calculation.js:239`). So `SYSTEM-PRIMER.md` fact 1, the leyline guide's advantage
+> paragraph and the reasoning under R-100 / R-110 describe the engine's fold, not the game's rule.
+> This design is written to the game's rule; §4 names the widening the engine needs, and §5 carries
+> the docs that must be corrected.
+
+**What it is.** Blue makes the roll that matters go wrong. Each time you pay for the Channel you
+*read* one enemy, and its next test suffers disadvantage equal to the Investiture you spent — one
+instance per die, assigned as you choose: at 1 its d20; at 2 its d20 and its plot die, or its damage;
+at 3, from level 6, the whole roll. It is the disadvantage engine (Intercept, Probability Cascade,
+False Premise, Pattern Recognition, Redirect Momentum's contest: five costed ways today) made into
+the base, with the spend as the depth of the reading. **What the spend buys:** depth on the one
+enemy that matters — the archer's d20 alone, or its d20 and its damage both. A reading not used by
+your next payment lapses; the reading is fresh each round. **The riders.** Calculation (Cognitive)
+deepens what a read enemy suffers (its Reactions, its next two tests, its influence) and widens the
+reading to a second enemy. Illusion (Physical) puts a wall, a double or an image where the reading
+says the enemy will go. Foresight (Spiritual) predicts — the declared action that earns a Reaction,
+the intent the GM reveals, the slow-turn advantage. **Draw Mana** still grants advantage on your next
+Cognitive test. **Two Blue mages** reading the same enemy: one frame of a colour, the larger (M14) —
+the deeper reading stands, the two do not add.
+
+> **Channel Blue.** When you channel or maintain Blue, choose an enemy you can see within Attunement
+> Range; it has disadvantage on its next test equal to the Investiture you spent.
+
+**F-B.** (a) **The deep reading above, one enemy, one instance per die — recommended** (Ben's
+suggestion at gate 2; it is what "the roll that matters" means once dice carry disadvantage
+separately). (b) The distributed reading: disadvantage equal to the spend, distributed among enemies
+you can see as you choose — wide or deep each round; the most Blue and the most to adjudicate (a
+count per creature every payment). (c) The wide reading (gate 2's first draft): as many enemies as
+the spend, one instance each — breadth only, and it leaves the per-die rule unused.
+
+### 2.4 Black — the hunt
+
+**Why the first draft is gone.** Gate 2's first Black frame widened the isolation radius by the spend
+and kept the alone Weakened. Ben's objection stands: at 1 Investiture "no ally within 5 feet" *is* the
+definition of Isolated (`edhaIsIsolated`, the 07-05 ruling — a positional fact nobody applies; the
+adversary alone in a room is Isolated the moment anyone checks), and the Weakened half is what the
+Key's Draw Mana pulse already does. A frame that restates a definition and repeats the Key is not a
+frame. Isolated and Weakened stay exactly as they are; the Channel is something else.
+
+**What it is.** The hunt. Your attacks against Isolated creatures deal extra vital damage equal to
+the Investiture you are channelling. It is the colour's sentence — "*from there the tree does
+everything better against them*" — made into the base, on the damage type that is Black's identity
+(vital ignores deflect: the wall White is raising across the field does nothing against it). It
+reads the positional fact directly, applies nothing, and pays the mage for doing the one thing the
+tree is about: hunting whoever stands alone. "Attacks" is the system's word — a weapon Strike, and a
+Black attack test such as Withering Ray's — so a melee Black mage and a ray-caster both carry it.
+**What the spend buys:** +1 vital on every hit against the alone for a trickle; +2 at a flood at
+levels 1 – 5; +3 from level 6. Against Withering Ray's 2d6 at tier 1 that is +14 % to +28 %; against a
+d8 Strike, +25 % at a flood — the same band as Kindle (+Red modifier on energy) and Mighty, and it
+stacks with Severance (vital *instead of* the weapon's type) without doubling it. **The riders.**
+Isolation (Spiritual) makes the solitude the frame pays for — the push that strands one, the step
+that closes, the presence that keeps them from walking back. Ritual (Physical) spends blood for
+more of the same damage, and is where a rider may let you **pay the Channel in health** instead of
+Investiture ("*while channelling Black, you may maintain it by losing health equal to the
+Investiture you would spend*" — Sanguine Reservoir's economy, as a rider, not a change to the base
+rule). Subjugation (Cognitive) taxes the focus of the hunted. **Draw Mana** still Weakens every
+visible enemy with no ally within 5 feet, once — the pulse that opens the hunt; Predatory Patience
+and the other Weakened payoffs read it as today. **Two Black mages:** each adds their own extra
+damage to their own attacks; nothing to stack (M14 does not arise).
+
+> **Channel Black.** Your attacks against Isolated creatures deal extra vital damage equal to the
+> Investiture you are channelling.
+
+**F-K.** (a) **The hunt above — recommended.** (b) The tide: Isolated enemies you can see within
+Attunement Range are Weakened for as long as they stay so, *and* your attacks against Weakened
+creatures deal extra vital damage equal to the spend — the state and the payoff in one line; longer,
+and its first half is the Key's pulse made continuous, which is the redundancy Ben named. (c) The
+drain: Isolated enemies you can see within Attunement Range take vital damage equal to the spend at
+the start of their turn — automatic, and it *punishes* solitude, which drives enemies together into
+the party's areas instead of rewarding the mage for hunting them apart.
+
+### 2.5 Red — the rising edge
+
+**What it is.** Red gets stronger as the fight gets louder. Each time damage is dealt within your
+Attunement Range — by anyone, to anyone — **you** gain +1 to your next test, and the edge builds up
+to the Investiture you are channelling; your next test spends it. Gate 2's first draft gave the edge
+to every ally too, which is Battle Fever (a Frenzy passive today, capped at rank, reset at the start
+of your turn) promoted whole to the base — and Ben read it as too strong, which it is: three allies
+each carrying a +2 that refills on every hit in the fight, for 2 Investiture a round. The frame is the
+mage's own edge; **sharing it is what the Frenzy tree is for** — Battle Fever becomes the Cognitive
+rider that extends the frame to allies within range, and the Frenzy tree's other cards decide how
+far and how fast. **What the spend buys:** your ceiling — +1 for a trickle, +2 at a flood, +3 from
+level 6 — on the test you choose to spend it on. The bonus rides the engine's summing next-test
+channel (`edha-next-test-mod`, a list since item 49); the ecosystem review's warning about that
+channel was about *uncapped* totals, and this one is capped by the spend and lands on one creature.
+**The riders.** Momentum (Physical) rides the edge into the charge, the leap and the Fast turn.
+Frenzy (Cognitive) shares it, incites, and punishes the failing. Conflagration (Spiritual) turns it
+into fire. **Draw Mana** still grants advantage on your next Physical test and costs your Reaction —
+the identity tax stays. **Two Red mages:** each carries their own edge; nothing to stack (M14 does
+not arise unless a Frenzy rider shares it, and then the larger applies).
+
+> **Channel Red.** Each time damage is dealt within Attunement Range, you gain +1 to your next test,
+> up to the Investiture you are channelling.
+
+**F-R.** (a) **The mage's own rising edge above, shared only by Frenzy riders — recommended.**
+(b) The shared edge (gate 2's first draft): you and every ally in range each build the bonus — Battle
+Fever as the base; Ben's "quite strong" reading is right, and it would make Frenzy's identity the
+colour's default. (c) The fire line: damage you deal increases by the channelled Investiture — the
+simplest and the pyromancer's, but it is Conflagration alone and not the colour's stated mechanic.
+
+### 2.6 Green — the ground
+
+**What it is.** The ground is the colour, and channelling makes it bite: enemies that enter or start
+their turn in your difficult terrain within Attunement Range take keen damage equal to the
+Investiture you are channelling. Every Draw Mana lays terrain (the Key); the Channel is what makes
+laying it matter before rank 2, where Thorn Field (half `[Tier][Die]` on the same trigger) arrives
+today. **What the spend buys:** 1 / 2 / 3 keen per enemy per turn — small on one creature, real
+across a field with three enemies standing in it for three rounds, and it is the only frame whose
+number multiplies by the ground you have already laid. **The riders.** Territory (Spiritual) grows
+and holds the ground — spreading roots, grasping vines, the Disengage that fails. Restoration
+(Physical) heals the pack that stands on it. Instinct (Cognitive) hunts what stands in it — the
+pack's advantage, the weakest creature known. **Draw Mana** still creates difficult terrain within
+[Size] of a point in range; the Channel does not lay ground, it arms it. **Two Green mages:** an enemy
+standing in both fields takes the larger once (M14).
+
+> **Channel Green.** Enemies that enter or start their turn in your difficult terrain within
+> Attunement Range take keen damage equal to the Investiture you are channelling.
+
+**F-G.** (a) **The ground above — recommended.** (b) The regrowth line: allies within Attunement Range
+regain health equal to the channelled Investiture at the start of their turns — Restoration as the
+base; party-wide regeneration of 2 a turn at level 1 for a Draw a round is the strongest sustain in
+the game and would need the Draw Mana heal rebalanced against it. (c) The pack line: when you and an
+ally both attack the same enemy in a round, each attack deals extra damage equal to the channelled
+Investiture — Coordinated Hunt as the base; nothing for the ground.
+
+### 2.7 Gate 2 — the menu
+
+**F-0. The Realm map (§2.1).** (a) As first tabled, the legacy guide's themes verbatim. (b) **With
+Red's Conflagration and Momentum swapped (fire as Spiritual, the charge as Physical) — Ben's pick at
+gate 2, tabled above.** (c) Ben's own assignment for any cell.
+
+**F-W, F-B, F-K, F-R, F-G** — the frame per colour, (a) recommended in each. "Defaults on all
+except …" is enough; a frame Ben wants reworded rather than replaced is a note, not a menu pick.
+
+> **Gate 2, first exchange (Ben, chat, 2026-09-16):** F-0 → (b); Blue re-drafted to the per-die rule
+> he recorded (F-B (a) is now the deep reading he suggested); Black's card reworded so Isolated stays
+> positional; Red's edge narrowed to the mage (F-R (a)) after his "quite strong" on the shared
+> version.
+> **Second exchange:** *"If they have no ally within 5 feet aren't they isolated without the frame? I
+> don't think this does anything. Let's try another frame for black. default elsewhere."* → **F-W (a),
+> F-B (a), F-R (a), F-G (a) answered**; the Black frame was replaced by the hunt (§2.4).
+> **Third exchange:** *"a"* → **F-K (a) the hunt.** §2 committed on that answer.
