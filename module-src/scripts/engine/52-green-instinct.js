@@ -315,8 +315,18 @@ async function edhaDrawMana(item) {
     const actor = item?.actor; if (!actor) return;
     const gain = edhaDrawManaYield(actor);
     const inv = actor.system?.resources?.inv;
-    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await edhaResourceWrite(actor, "inv", { value: Math.min(max ?? ((inv.value || 0) + gain), (inv.value || 0) + gain) }, edhaBookkeepingTag("Draw Mana (recover Investiture)")); }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${gain} Investiture (highest leyline rank).</p>` });
+    // item 172: report what the pool actually took (next − cur), not the declared yield — a full
+    // Investiture pool must say so instead of a "recover N" that never landed.
+    let recoverLine = `recover ${gain} Investiture (highest leyline rank)`;
+    if (inv) {
+      const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max;
+      const cur = inv.value || 0;
+      const next = Math.min(max ?? (cur + gain), cur + gain);
+      await edhaResourceWrite(actor, "inv", { value: next }, edhaBookkeepingTag("Draw Mana (recover Investiture)"));
+      const recovered = next - cur;
+      recoverLine = recovered > 0 ? `recover ${recovered} Investiture (highest leyline rank)` : "already at full Investiture";
+    }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — ${recoverLine}.</p>` });
     // …then the document-driven riders (every Key since 2bZ). AFTER the summary card so the
     // recover-Investiture line still reads first; each rule posts its own card.
     await edhaDispatchDrawMana(actor, item);

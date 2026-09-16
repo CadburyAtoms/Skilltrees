@@ -140,8 +140,10 @@ function edhaSovAttackRead(roller, roll) {
 async function edhaSovRecoverInv(owner, sourceName, victimName, n = 1) {
   try {
     const gain = Math.max(1, Number(n) || 1);
-    await edhaGainResource(owner, "inv", gain);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${sourceName}</strong>: ${victimName} failed a test — ${owner.name} recovers ${gain} Investiture.</p>` });
+    // item 172: report what edhaGainResource actually delivered, not the requested amount.
+    const gained = await edhaGainResource(owner, "inv", gain);
+    const line = gained > 0 ? `${owner.name} recovers ${gained} Investiture` : `${owner.name} is already at full Investiture`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${sourceName}</strong>: ${victimName} failed a test — ${line}.</p>` });
   } catch (e) { console.error("Edha Content | Sovereignty Inv recovery failed", e); }
 }
 // The owner-click fallback for NON-attack tests (Foundry tests carry no DC — owner judges).
