@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T22:07:40.853Z",
+  "generatedAt": "2026-09-16T22:41:51.904Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "7bfc012c0c",
-    "commit": "f94f4d1",
+    "hash": "89059a7b35",
+    "commit": "ed724d1",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,13 +42,70 @@
     "nextOpenAt": "2026-09-17T01:00:00.000Z"
   },
   "pm": {
-    "status": "idle",
-    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: R-159 (the deity re-pricing on the Channel model — recommended a, a gated deity pass in your own session); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "status": "running",
+    "note": "R-159 answered (a) and filed; seven Sonnet workers are out on items 188 – 208's small fixes; the Blue brief is written. The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "waitingOn": "Ben: the Blue pass when you have time (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "203+204",
+      "title": "the movement ladder + the opposed-test tie",
+      "model": "sonnet",
+      "branch": "pm/203-204-ladder-tie",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "205",
+      "title": "the Diminished rename",
+      "model": "sonnet",
+      "branch": "pm/205-diminished-rename",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "193",
+      "title": "engine dials as module settings",
+      "model": "sonnet",
+      "branch": "pm/193-dials-settings",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "194",
+      "title": "enrichers on the MANUAL cards",
+      "model": "sonnet",
+      "branch": "pm/194-enrichers",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "199+208",
+      "title": "the design guides' tables + the advancement note",
+      "model": "sonnet",
+      "branch": "pm/199-208-guides-notes",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "188+189",
+      "title": "the Chaos header + the trigger-card fallbacks",
+      "model": "sonnet",
+      "branch": "pm/188-189-chaos-trigger",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    },
+    {
+      "item": "190+196+192",
+      "title": "the scripts README gate + the dirty-tree test + the shape corpus",
+      "model": "sonnet",
+      "branch": "pm/190-196-192-tooling",
+      "startedAt": "2026-09-16T22:40:00Z",
+      "note": "one Sonnet worker in a $TEMP worktree"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -2370,36 +2427,36 @@
     {
       "pos": 192,
       "item": "188",
-      "title": "42-chaos.js's \"OMEN MODEL (Ben, 06-18)\" paragraph still describes preUseItem takeovers the 07-24p migration deleted — the same failure mode item 175 fixed one paragraph above (comment-only). Filed by the PM from PR #406's finding",
+      "title": "42-chaos.js's \"OMEN MODEL (Ben, 06-18)\" paragraph still describes preUseItem takeovers the 07-24p migration deleted — the same failure mode item 175 fixed one paragraph above (comment-only). Filed by the PM from PR #406's finding; dispatched 18:40 ET in worktree $TEMP/edha-188-189-chaos-trigger on pm/188-189-chaos-trigger",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 193,
       "item": "189",
-      "title": "Two more \"(target a token, then re-fire)\" fallbacks in the trigger-card family — the affliction and thp branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5). Filed by the PM from PR #408's findings",
+      "title": "Two more \"(target a token, then re-fire)\" fallbacks in the trigger-card family — the affliction and thp branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5). Filed by the PM from PR #408's findings; dispatched 18:40 ET in worktree $TEMP/edha-188-189-chaos-trigger on pm/188-189-chaos-trigger",
       "lane": "B",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 194,
       "item": "190",
-      "title": "scripts/README.md is missing five scripts, and check-scripts-readme.js is not in the gate set, so a new script can land undocumented with every gate green (TOOLING). Filed by the PM from PR #409's finding",
+      "title": "scripts/README.md is missing five scripts, and check-scripts-readme.js is not in the gate set, so a new script can land undocumented with every gate green (TOOLING). Filed by the PM from PR #409's finding; dispatched 18:40 ET in worktree $TEMP/edha-190-196-192-tooling on pm/190-196-192-tooling",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2418,36 +2475,36 @@
     {
       "pos": 196,
       "item": "192",
-      "title": "A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents (TOOLING). Filed by the PM from the Metalworks comparison",
+      "title": "A shape-only fixture corpus for item 185 from the Mistborn Handbook packs — the target-3 builder diffs against 200 shipped 3.x documents (TOOLING). Filed by the PM from the Metalworks comparison; dispatched 18:40 ET in worktree $TEMP/edha-190-196-192-tooling on pm/190-196-192-tooling",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 197,
       "item": "193",
-      "title": "R-148 (a): engine dials as module settings — every ruling-toggled constant becomes a world-scoped GM-only game.settings entry (ENGINE-ONLY, F5; 2.1.0-safe). Filed by the PM from the Metalworks comparison",
+      "title": "R-148 (a): engine dials as module settings — every ruling-toggled constant becomes a world-scoped GM-only game.settings entry (ENGINE-ONLY, F5; 2.1.0-safe). Filed by the PM from the Metalworks comparison; dispatched 18:40 ET in worktree $TEMP/edha-193-dials-settings on pm/193-dials-settings",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-148 (a)",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 198,
       "item": "194",
-      "title": "R-149 (a): enrichers on the MANUAL cards — [[test …]] / [[damage …]] tags in the card text of every rule-3 MANUAL talent (DATA — REBUILD + ⟳ Sync Talents; 2.1.0-safe). Filed by the PM from the Metalworks comparison",
+      "title": "R-149 (a): enrichers on the MANUAL cards — [[test …]] / [[damage …]] tags in the card text of every rule-3 MANUAL talent (DATA — REBUILD + ⟳ Sync Talents; 2.1.0-safe). Filed by the PM from the Metalworks comparison; dispatched 18:40 ET in worktree $TEMP/edha-194-enrichers on pm/194-enrichers",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-149 (a)",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2466,12 +2523,12 @@
     {
       "pos": 200,
       "item": "196",
-      "title": "tests/deploy-cycle.test.js's dry-run case depends on a clean working tree — the combined guard stops at clean-tree before the on-main verdict the test asserts, so the gates go red on any uncommitted change (TOOLING). Filed by the PM after this session's own gate run",
+      "title": "tests/deploy-cycle.test.js's dry-run case depends on a clean working tree — the combined guard stops at clean-tree before the on-main verdict the test asserts, so the gates go red on any uncommitted change (TOOLING). Filed by the PM after this session's own gate run; dispatched 18:40 ET in worktree $TEMP/edha-190-196-192-tooling on pm/190-196-192-tooling",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2502,12 +2559,12 @@
     {
       "pos": 203,
       "item": "199",
-      "title": "R-151 (a) + R-153 (a): the two design guides record the published families' action-type and cost tables and the variable-spend convention (DOCS-ONLY). Filed by the PM from R-151 (a) and R-153 (a)",
+      "title": "R-151 (a) + R-153 (a): the two design guides record the published families' action-type and cost tables and the variable-spend convention (DOCS-ONLY). Filed by the PM from R-151 (a) and R-153 (a); dispatched 18:40 ET in worktree $TEMP/edha-199-208-guides-notes on pm/199-208-guides-notes",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2550,36 +2607,36 @@
     {
       "pos": 207,
       "item": "203",
-      "title": "R-156: the movement-rate ladder — delete Edha's 20 + 5·SPD override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5). Filed by item 201's audit",
+      "title": "R-156: the movement-rate ladder — delete Edha's 20 + 5·SPD override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5). Filed by item 201's audit; dispatched 18:40 ET in worktree $TEMP/edha-203-204-ladder-tie on pm/203-204-ladder-tie",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "R-156",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 208,
       "item": "204",
-      "title": "The opposed-test tie: an opposed test must be WON, not tied — edhaDefTestOutcome's >= hands the initiator every tie on the vs: \"skill\" path (ENGINE, F5; one comparison + a pinned case). Filed by item 201's audit",
+      "title": "The opposed-test tie: an opposed test must be WON, not tied — edhaDefTestOutcome's >= hands the initiator every tie on the vs: \"skill\" path (ENGINE, F5; one comparison + a pinned case). Filed by item 201's audit; dispatched 18:40 ET in worktree $TEMP/edha-203-204-ladder-tie on pm/203-204-ladder-tie",
       "lane": "B",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 209,
       "item": "205",
-      "title": "\"Diminished\" is a published condition and Edha uses the name for Sovereignty's die step-down — rename the status off it (ENGINE + DATA, REBUILD + ⟳ Sync). Filed by item 201's audit",
+      "title": "\"Diminished\" is a published condition and Edha uses the name for Sovereignty's die step-down — rename the status off it (ENGINE + DATA, REBUILD + ⟳ Sync). Filed by item 201's audit; dispatched 18:40 ET in worktree $TEMP/edha-205-diminished-rename on pm/205-diminished-rename",
       "lane": "B",
       "model": "sonnet",
       "size": "S",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2610,12 +2667,12 @@
     {
       "pos": 212,
       "item": "208",
-      "title": "R-157 (a): the advancement table Edha uses is the system's, level-3 point included — ACTOR_STAT_DERIVATION.md and build-forge say so and record the Mistborn divergence (DOCS-ONLY). Filed by the PM from R-157 (a)",
+      "title": "R-157 (a): the advancement table Edha uses is the system's, level-3 point included — ACTOR_STAT_DERIVATION.md and build-forge say so and record the Mistborn divergence (DOCS-ONLY). Filed by the PM from R-157 (a); dispatched 18:40 ET in worktree $TEMP/edha-199-208-guides-notes on pm/199-208-guides-notes",
       "lane": "R",
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2651,6 +2708,18 @@
       "model": null,
       "size": "L ×3",
       "deps": "item 198's White pilot benched",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 216,
+      "item": "212",
+      "title": "R-159 (a): the deity design pass on the Channel model — every deity talent rider or release, one braid per tree considered, R-108 revisited; Ben's own gated session from a brief the PM writes when asked (DESIGN, DOCS-ONLY). Filed by the PM from R-159 (a)",
+      "lane": "H",
+      "model": null,
+      "size": "L",
+      "deps": "items 209, 198's White pilot",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2701,9 +2770,9 @@
     }
   ],
   "benOnly": [
-    "R-159",
     "the session-one confirmation (R-144)",
-    "an R-145 veto if he disagrees. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
+    "an R-145 veto if he disagrees",
+    "the Blue pass when he has time. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
     "nobody else touches it. the session-one confirmation (R-144)",
     "an R-145 veto if he disagrees",
     "the Channel design pass when he has time. Standing instruction from Ben (2026-09-16): the Mistborn Handbook is the rules source — anywhere the engine, the docs, the skills or memory contradict its Chapter 3 we correct ourselves",
@@ -2729,34 +2798,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:48",
-      "at": "2026-09-14T06:48:00.000Z",
-      "item": "Deploy cycle run BY THE PM — --dry-run 7/7 PASS, then --yes from main @ 90cfce6 (06:48:0xZ → 06:48:17Z): nine steps ok, the engine pushed (served 5e9833a9 = HEAD — the H3 dial, the entry snapshot, Power's reset), packs stamped 06:48:17Z (the deity REBUILD for Isolating Pressure's placement + the five release caps), post-flight 3/3 PASS; hand-verified: 6 in sync, /join title Edha, served sha = repo sha. The night's fifth self-verifying run. Open 🤖 rows for bench 48: 15, plus Predator's Due blocked on 88",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
-    {
-      "date": "2026-09-14",
-      "time": "02:55",
-      "at": "2026-09-14T06:55:00.000Z",
-      "item": "PM handoff — loop STOPPED before Ben's hours (Monday), the day's Opus spent (3 of 3) and the Sonnet queue drained. Session (2026-09-13 21:58 → 02:55): 18 PRs merged — #366 (with #360), #356, #368 board, #369 item 132, #370 item 135, #371 board, #372 item 145, #373 board, #374 item 107, #375 item 108, #376 bench 47, #377 board, #378 item 140, #379 items 141 + 148, #380 fix pass 12, #381 board, #382 item 152, #383 items 142 + 143 + 150 — plus this handoff; five deploys (22:10, 23:14, 01:13, 02:09, 02:48), every one self-verified by deploy-cycle.js (22:10 the first ever to pass its own post-flight end to end; 01:13's first attempt refused on a stale squash-merged bench branch → item 152, shipped the same night); items 140–152 filed and ten of them closed; seven rulings answered from Ben's phone and filed in §K.13 (the doc has one open ruling, R-127, opened by the bench); bench 47: 13 rows retired, 2 defects → fix pass 12 shipped and deployed (Ben's own PCs' path cards refresh once he clicks ⟳ Sync Talents). Cost: this PM session 54.1M + 11 workers 88.7M = 142.8M weighted; the weekend (Fri 21:00 → now, every session) ≈ 377M; the week since Mon 09-08 (every session, Ben's own included) ≈ 712M (pm-usage.py, 02:46). Two PM slips, both caught before main: a gate piped through tail in a chain masked a failing lint-changelog; a literal pipe in a board cell shifted a column — both written to memory. Next PM: Ben's hand start, Mon 21:00 at the earliest",
-      "itemNo": "366",
-      "model": "fable",
-      "isDispatch": false,
-      "duration": "4 h 57",
-      "weighted": "54.1M (+ 88.7M workers)",
-      "weightedM": 54.1,
-      "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "09:25",
@@ -3568,9 +3609,37 @@
       "weightedM": null,
       "outcome": "filed",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "18:40",
+      "at": "2026-09-16T22:40:00.000Z",
+      "item": "Ben (chat): *\"Default for 159. Send the sonnet agents out. Check that the Channel session closed itself properly, and if it has get me a prompt for the blue session\"*. R-159 (a) filed in §K.24; item 212 filed. The Channel session checked: PR #419 merged, remote branch gone, local branch and worktree swept; one detached-and-restored checkout in the reflog (its git fell through to the PM's checkout after the sweep — see memory) and no damage. The Blue brief docs/briefs/channel-blue-pass.md written and its prompt handed over",
+      "itemNo": "419",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~20 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed",
+      "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "18:40",
+      "at": "2026-09-16T22:40:00.000Z",
+      "item": "Dispatched seven Sonnet workers (worktrees under $TEMP/edha-*, branches pm/*, all from main = ed724d1): 203-204-ladder-tie, 205-diminished-rename, 193-dials-settings, 194-enrichers, 199-208-guides-notes, 188-189-chaos-trigger, 190-196-192-tooling. Briefs: the work-item contract plus the item-specific overrides (205 and 194 may edit data/ per their specs; 205 proposes the name in its PR; engine PRs run engine-assemble.js and commit both files)",
+      "itemNo": null,
+      "model": "sonnet ×7",
+      "isDispatch": false,
+      "duration": "running",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 376,
+  "runLogTotal": 378,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

@@ -39,6 +39,11 @@
  *   • debug tracer — edhaSetDebug · edhaDebugArg · edhaDebugOut · edhaDebugSave, plus the
  *     Hooks.on wrapper installed for THIS file's top-level execution only (restored at the
  *     bottom of the file), so only edha-content handlers carry the tracer.
+ *   • module settings — edhaSetting (item 193, R-148 (a)): the ONE reader every ruling-toggled
+ *     engine dial goes through. A dial keeps its historic top-level constant as the setting's
+ *     registered default (so pinned tests still read the constant); the reader is called at USE
+ *     time, never cached at load, so flipping the setting in Foundry changes behaviour with no
+ *     reload. See "Dodge arm" below for the two dials it currently reads.
  *   • registration bootstrap — registerContent · edhaRegisterStatuses · edhaRegisterCurrency ·
  *     EDHA_CURRENCY_SEED, run from module load + init + setup + ready (see the docblock above:
  *     the leyline skills must land before the Actor data model schema is first built).
@@ -140,6 +145,22 @@ Hooks.once("ready", () => {
   try { game.socket.on("module.edha-content", (data) => { if (edhaDebugOn) edhaDebugOut(`[EDHA-TEST] socket action=${data?.action} (this client isGM=${game.user?.isGM}) ${JSON.stringify(data?.payload ?? "")}`); }); } catch (e) {}
   if (edhaDebugOn) console.log("[EDHA-TEST] debug tracing is ON (persisted) — edha.debug(false) to disable");
 });
+
+/* --- Module settings — the ruling-dial reader (item 193, 2026-09-16, R-148 (a)) -----------------
+ * Every engine constant a ruling has TOGGLED (a veto is one flip, not a design) is registered as
+ * a world-scoped, GM-only Foundry module setting, defaulting to the constant's current value —
+ * "The user must be able to edit everything from inside Foundry" (CLAUDE.md). `edhaSetting` is the
+ * one place any handler asks for the live value: `game.settings` is unavailable at pure-module-load
+ * time and its `.get()` throws for a key not yet registered (both real Foundry pre-init and, most
+ * days, `tests/harness.js`'s stub — `game.settings.get()` there is a bare `() => undefined`, which
+ * looks exactly like "not configured" and must fall through the same as a thrown lookup). PURE:
+ * pinned in `tests/dodge-arm.test.js`. */
+function edhaSetting(key, fallback) {
+  try {
+    const v = game?.settings?.get?.("edha-content", key);
+    return v === undefined ? fallback : v;
+  } catch (e) { return fallback; }
+}
 
 const LEYLINE_SKILLS = {
   white: { label: "White", attribute: "wil" },
@@ -870,19 +891,38 @@ Hooks.on("deleteCombat", (combat) => {
  * apply (SR p.34). Registering as a real status (not a bare flag) is also what paints it on the
  * token for free — the same reasoning `crowned` / `cascadearmed` give.
  *
- * TWO ruling dials, both defaulted here and filed as a numbered ruling for Ben before merge (PR
- * body / the changelog delta name it):
+ * TWO ruling dials (R-145), both defaulted here — **since item 193 (R-148 (a)) both are also
+ * Foundry module settings**, `dodgePayOnArm` and `dodgeArmExpiresOnOwnTurn`, world-scoped and
+ * GM-only, read at use time through `edhaSetting` (above); a veto is a flip in Foundry's Settings
+ * dialog, not a PR:
  *  - EDHA_DODGE_PAY_ON_ARM (default true) — the Focus is spent when you ARM Dodge, not when an
  *    attack later consumes it. Matches every other edha-self-status "arm now, consume free later"
  *    marker in this file (Warlord's Advance, Momentum of Victory, Tagging Shot, ...): the cost is
  *    paid at the activation that arms the marker; the later consuming event is free. Flip to
  *    false to charge on consume instead (and refund nothing if the arm expires unused).
- *  - Expiry: end of the ARMING actor's own next turn (edhaApplyTimedStatus, the `tagged` shape),
- *    not "cleared at combat end" — Dodge answers ONE imminent attack, not a scene-long stance, and
- *    the system has no tracked "reaction economy" resource to gate re-arming on (compat check
- *    §e: reactions are GM-adjudicated at this table, same as Aid/Avoid Danger/Reactive Strike).
+ *  - EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN (default true) — the arm auto-expires at the end of the
+ *    ARMING actor's own next turn (edhaApplyTimedStatus, the `tagged` shape), not "cleared at
+ *    combat end" — Dodge answers ONE imminent attack, not a scene-long stance, and the system has
+ *    no tracked "reaction economy" resource to gate re-arming on (compat check §e: reactions are
+ *    GM-adjudicated at this table, same as Aid/Avoid Danger/Reactive Strike). Flip to false and the
+ *    arm carries no expiry stamp at all — it persists until an attack consumes it.
  */
-const EDHA_DODGE_PAY_ON_ARM = true;   // ruling dial — see the PR body / EDHA_RULINGS.md
+const EDHA_DODGE_PAY_ON_ARM = true;                   // ruling dial — see EDHA_RULINGS.md R-145
+const EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN = true;      // ruling dial — see EDHA_RULINGS.md R-145
+Hooks.once("init", () => {
+  try {
+    game.settings.register("edha-content", "dodgePayOnArm", {
+      name: "Dodge: pay Focus on arm (not on consume)",
+      hint: "R-145 (a), applied as default. On: arming Dodge spends the 1 Focus immediately, and a consumed arm costs nothing further (matches every other 'arm now, consume free later' marker). Off: arming is free and the Focus leaves the pool only when an attack actually rolls against the disadvantage.",
+      scope: "world", config: true, restricted: true, type: Boolean, default: EDHA_DODGE_PAY_ON_ARM,
+    });
+    game.settings.register("edha-content", "dodgeArmExpiresOnOwnTurn", {
+      name: "Dodge: unused arm expires at end of your next turn",
+      hint: "R-145 (a), applied as default. On: an armed-but-unused Dodge clears at the end of the arming actor's own next turn. Off: the arm has no expiry stamp and persists until an attack consumes it.",
+      scope: "world", config: true, restricted: true, type: Boolean, default: EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN,
+    });
+  } catch (e) { console.error("Edha Content | Dodge dial settings registration failed", e); }
+});
 
 /* PURE (pinned in tests/dodge-arm.test.js): the Dodge-arm decision. True only for a genuine
  * SINGLE-target attack (exactly one current Foundry target) whose source item carries a damage
@@ -910,7 +950,7 @@ function edhaDodgeConsumePreRoll(roll, source, config) {
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "disadvantage"; } catch (e) {} return orig(data); };
     roll.options._edhaDodgeArm = true;
     void edhaToggleStatus(defender, "dodgearmed", false);            // consumed — pays once
-    if (!EDHA_DODGE_PAY_ON_ARM) void edhaSpendResource(defender, "foc", 1);
+    if (!edhaSetting("dodgePayOnArm", EDHA_DODGE_PAY_ON_ARM)) void edhaSpendResource(defender, "foc", 1);
     ChatMessage.create({ whisper: edhaWhisperIds(defender), speaker: ChatMessage.getSpeaker({ actor: defender }), content: `<p>🛡️ <strong>Dodge</strong>: ${defender.name}'s armed Dodge adds disadvantage to ${attacker.name}'s attack.</p>` });
   } catch (e) { console.error("Edha Content | Dodge consume failed", e); }
 }
@@ -924,12 +964,13 @@ async function edhaArmDodge(actor) {
   try {
     if (!actor) return false;
     if (actor.statuses?.has?.("dodgearmed")) return false;
-    if (EDHA_DODGE_PAY_ON_ARM) {
+    if (edhaSetting("dodgePayOnArm", EDHA_DODGE_PAY_ON_ARM)) {
       const foc = Number(actor.system?.resources?.foc?.value) || 0;
       if (foc < 1) { ui.notifications?.warn(`Edha: ${actor.name} needs 1 Focus to arm Dodge.`); return false; }
       await edhaSpendResource(actor, "foc", 1);
     }
-    await edhaApplyTimedStatus(actor, "dodgearmed", { owner: actor, expire: "owner" });
+    const expiresOnOwnTurn = edhaSetting("dodgeArmExpiresOnOwnTurn", EDHA_DODGE_ARM_EXPIRES_ON_OWN_TURN);
+    await edhaApplyTimedStatus(actor, "dodgearmed", { owner: actor, expire: expiresOnOwnTurn ? "owner" : false });
     ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${actor.name}</strong> arms Dodge — the next single-target attack against them rolls with disadvantage.</p>` });
     return true;
   } catch (e) { console.error("Edha Content | Dodge arm failed", e); return false; }

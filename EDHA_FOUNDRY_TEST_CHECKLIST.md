@@ -1276,6 +1276,22 @@ to attack from.
       and attack. The roll must NOT gain disadvantage, and the `dodgearmed` icon must still be on
       the token afterward (SR p.34: "Doesn't work on area attacks or multi-target attacks").
 
+## Dodge dials as Foundry settings — item 193 / R-148 (a) (2026-09-16; ENGINE-ONLY — relaunch / F5)
+
+`EDHA_DODGE_PAY_ON_ARM` and the arm's expiry are now `game.settings` entries under the module's
+Configure Settings page — `dodgePayOnArm` and `dodgeArmExpiresOnOwnTurn`, world-scoped and GM-only —
+read live (no cache) by the shared `edhaSetting` reader. Nothing deploys under the R-144 freeze;
+this is engine-only, F5.
+
+- [ ] 🤖 **`dodgePayOnArm` OFF moves the charge from arm to consume** — in Configure Settings →
+      Edha Content, turn `dodgePayOnArm` off. Arm Dodge on a bench PC with 0 Focus in the pool —
+      arming must now SUCCEED for free (no warning, no spend). Then land a single-target attack
+      against it: the Focus must be deducted THEN, at consume. Flip the setting back on afterward.
+- [ ] 🤖 **`dodgeArmExpiresOnOwnTurn` OFF makes an unused arm persist** — turn it off, arm Dodge on
+      a bench PC, and run that PC through its own next turn (and end of round) without anyone
+      attacking it. The `dodgearmed` icon must still be on the token afterward (default ON: it
+      would have cleared at the end of that PC's turn). Flip the setting back on afterward.
+
 ---
 
 # BENCH — White (leyline)
