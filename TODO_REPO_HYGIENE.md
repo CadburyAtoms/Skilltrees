@@ -3747,7 +3747,7 @@ filed 2026-09-08 01:1x.
 
 **PM:** lane R · model sonnet · size XS · deps 122 ✓ · verify: the pin + a dry run. Filed 2026-09-13 by the PM at item 122's review.
 
-## 126. [ ] `scripts/README.md` misses three tracked scripts — `build-levelup-guides.py`, `levelup-guides-prose.json`, `validate-build.py` (DOCS-ONLY) (2026-09-13)
+## 126. [x] SUPERSEDED 2026-09-16 by item 190 (PR #429 — the same checker, now a gate, closed a five-script gap) — `scripts/README.md` misses three tracked scripts — `build-levelup-guides.py`, `levelup-guides-prose.json`, `validate-build.py` (DOCS-ONLY) (2026-09-13)
 
 **Why:** item 122's worker ran `node scripts/check-scripts-readme.js` and it reported the drift; the three files landed with build-forge (2026-09-09) without README rows. The verifier is a gate candidate that is not wired (item 21), so nothing failed.
 
@@ -4513,6 +4513,8 @@ So once the engine applies damage (item 179), Dodge is still called at the table
 
 ## 183. [ ] Migration PR 2 — the dual-mode use-subject resolver and action accessor: an embedded action resolves back to the talent whose rules Edha reads (ENGINE, F5; no behaviour change on 2.1.0) (2026-09-15)
 
+**From item 205's landing (2026-09-16, PR #425):** `docs/analysis/cosmere-rpg-3.1.0-compatibility.md:113` says of F4 that "the card prose can keep 'Diminished'"; item 205 renamed the status to `lessened` / "Lessened Die" and moved the card prose with it, so read the live Sovereignty cards, not that line.
+
 **From the 2026-09-16 Metalworks comparison (§a):** there are six `useItem` registrations, not five — the sixth, `52-green-instinct.js:130`, is the Fellstag's *Herding Antlers*, an adversary action, actor-level and unaffected; add it to the inventory so the list is complete.
 
 **Why:** blockers B2, F1, F3 and B3's engine half, from item 177's check (PR #403). On 3.1.0 `CosmereItem#use` returns null unless the item is an action, and `preUseItem` / `useItem` fire with the **embedded action**, whose `events` are empty and which `edhaIsTalent` (`31-trigger-gating-cost.js:37-39`) rejects. That silently inerts 24 `preUseItem` sites and 3 talent `useItem` sites — every pre-cost veto, the single-target gate, the cost-shortfall announcer, the stance toggle and the burst takeover — and every engine read of a talent's own `system.activation` / `system.damage` falls back to a default die, a wrong colour or an empty cost list. The check lists every call site.
@@ -4853,3 +4855,13 @@ Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warr
 **Done when:** `docs/design/channel-deity.md` is merged with every gate approved; item 198's brief covers the deity leg; R-108 and R-151 carry dated post-design lines in §K.
 
 **PM:** lane H · model — (Ben's own session) · size L · deps items 209 (the Blue pass) and 198's White pilot benched · Filed 2026-09-16 by the PM from R-159 (a).
+
+## 213. [ ] The player primer renders enricher tags as literal text, and Vinestance's card carries the typo "lsoe" — strip or render the tags in `build-player-primer.js`, fix the word (TOOLING + DATA: REBUILD heroic + ⟳ Sync Talents) (2026-09-16)
+
+**Why:** item 194 (PR #428) added `[[test …]]` / `[[damage …]]` / `[[/roll …]]` enrichers to six heroic cards; Foundry renders them as buttons, but `EDHA_PLAYER_PRIMER.html` is a static page with no enricher renderer, so a player reading the primer sees the raw tag. The same worker found the word "lsoe" (for "lose") in Vinestance's authored text and left it, out of scope.
+
+**What to do:** in `scripts/build-player-primer.js`, render each tag to its plain reading — `[[test skill=ded dc=15]]` → "Deduction test (DC 15)", `[[damage 2d4 impact]]` → "2d4 impact damage", `[[/roll 1d6]]` → "1d6" — through one small function with a pinned test, using the skill labels the primer already knows; fix "lsoe" in `data/authored/heroic-warrior.json` (and the source prose if it carries it); rebuild the primer and commit it.
+
+**Done when:** the primer shows no `[[` anywhere; the tag renderer is pinned; Vinestance reads "lose"; gates green.
+
+**PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from item 194's out-of-scope findings.
