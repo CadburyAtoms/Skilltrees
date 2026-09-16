@@ -795,7 +795,7 @@ async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "sov",
     flags: ["dieStep", "dieStepOnceBy"],
-    statuses: ["exalted", "diminished"],
+    statuses: ["exalted", "lessened"],
   });
 }
 ```

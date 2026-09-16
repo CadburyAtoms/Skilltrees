@@ -424,6 +424,21 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## Sovereignty status rename — item 205 (2026-09-16; **REBUILD deity + ⟳ Sync Talents first**; nothing deploys while the R-144 freeze holds)
+
+Sovereignty's damage-die step-down status was renamed off `diminished`/"Diminished" — a
+**published condition** (Mistborn Handbook Ch. 9 → Conditions, attribute −X) — to
+`lessened`/"Lessened Die"; `exalted`'s label became "Exalted Die" for symmetry. Ben may veto
+either name at PR review (the item also names `exalted`/`abased`). `44-sovereignty.js`,
+`01-shared-core.js`, the `edha-die-step` primitive, `data/authored/deity-sovereignty.json` and
+`data/domain.json`'s prose moved together.
+
+- [ ] 🤖 On a Sovereignty caster (any Bench actor), cast **Censure** or **Decree of Ruin** on an
+  enemy in Attunement Range: confirm the target's damage die actually steps down one tier, the
+  target's token gains the new status (not `diminished` — check `target.statuses`), and both the
+  roll-watch chat card and Expose's owner-click recovery card read the new word, not "Diminished".
+  Then cast **Exalt** on an ally and confirm its buff and status are unaffected by the rename.
+
 ## Path descriptions — item 111 (2026-09-13; **REBUILD leyline + deity + heroic packs + ⟳ Sync Talents first**)
 
 The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approved prose from
