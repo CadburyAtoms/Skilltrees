@@ -17,8 +17,9 @@
  *
  * For the offset-preserving variant (comments AND string contents blanked to spaces, byte
  * offsets kept so a match index still points into the ORIGINAL source, template/regex-aware) —
- * that is `blankStringsAndComments` in scripts/lint-refs.js. It stays there: lint pass 11 is its
- * sole consumer and needs the offset-preserving property this module does not provide.
+ * that is `blankStringsAndComments` in ./blank-strings.js (moved out of lint-refs.js itself by
+ * TODO_REPO_HYGIENE item 182, for the same reason this file exists: pass 11 was no longer its
+ * only caller, and item 182 needed a second one). This module does not provide that property.
  *
  * Zero dependencies. Used by scripts/lint-refs.js and tests/harness.js (as `codeOnly`).
  */

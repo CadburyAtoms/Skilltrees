@@ -40,6 +40,8 @@ const { parseHandlerSchemas, parseHandlerChoices, loadRegistry, matchBrace, topL
 const { loadJson } = require("./lib/data.js");
 const { slugify } = require("./edha-pack-io.js");   // the ONE slugifier (pass 21's canonical home) — pass 22 slugs culture names exactly as foundry-build.js does
 const { stripComments } = require("./lib/strip-comments.js");
+const { blankStringsAndComments } = require("./lib/blank-strings.js");
+const { checkDeadFields } = require("./lib/dead-field-check.js");   // pass 11 (item 182: per-type sharpening)
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const ENGINE_PATH = path.join(REPO_ROOT, "module-src", "scripts", "register-skills.js");
@@ -104,91 +106,11 @@ function inEngine(lit) {
 // 4A) — required back here so this file's behavior is unchanged; tests/harness.js's `codeOnly`
 // is the same function, so a source-reading test and this linter always agree on what "code" means.
 const engineCode = stripComments(engine);
-/* Comments AND string contents replaced by spaces, byte offsets and line breaks preserved — so a
- * match index in the result still points at the same place in the original. `stripComments` above
- * rebuilds line-by-line and cannot be indexed back into the source; pass 11 needs both (it reads
- * object literals out of the ORIGINAL text at offsets found in the blanked copy).
- *
- * TEMPLATE-AWARE since 07-27y, and that is not a nicety — it was silently disabling this whole
- * file. The old scanner closed a backtick string at the FIRST backtick it saw, so a NESTED template
- * inside `${…}` (the engine has ~30, e.g.
- *     `…${a ? " strike" : `${x.name}'s hit`}…`
- * ) closed the OUTER template early, dumped the remaining string text into "code", and the next
- * apostrophe in prose ("the victim's healing") opened a runaway span that ate real code until the
- * next stray quote. Measured on register-skills.js: 116 runaway spans, 598 code lines (5.9%)
- * blanked to nothing. Every pass built on this helper — 11 (dead fields), 15 (isGM hooks), 16
- * (Region flags), 17 (object-as-scalar) — was blind on those lines, and the hole was invisible
- * because a blind pass reports SUCCESS. Verified by the very bug that exposed it: pass 17 did not
- * see the third object-as-scalar site (register-skills.js:5933) until this was fixed.
- *
- * The scanner is now an explicit context stack: code / quoted-string / template, with `${…}`
- * pushing a fresh CODE frame (brace-counted) so nested templates and the code inside interpolations
- * are both handled. Code inside `${…}` is now EXPOSED to the passes, which is correct — it is code.
- *
- * REGEX LITERALS get the standard prev-token heuristic: a `/` starts a regex when the previous
- * non-space code character cannot end an expression. Without it, `/[&<>"]/` (escCw, one line) opened
- * a fake string on its `"` and swallowed the next 36 lines. The heuristic is not a tokeniser — it
- * mis-reads `a /b/ c` as a regex — but that is division by an identifier on both sides, which does
- * not occur here, and the failure direction is the safe one (blanking too much never invents a
- * violation, it only hides one, and the per-pass rot alarms catch a collapse). */
-/* Does the `/` at `i` open a REGEX literal (rather than being division)? The standard heuristic:
- * look back past whitespace at the previous code character — if it cannot END an expression, a
- * regex must follow. `)` is deliberately treated as "can end" (so `(a+b) / c` is division), which
- * mis-reads `if (x) /re/.test(y)`; no such form exists here. */
-function regexStartsHere(src, i) {
-  let j = i - 1;
-  while (j >= 0 && /\s/.test(src[j])) j--;
-  if (j < 0) return true;
-  const p = src[j];
-  if ("([{,;:=!&|?+-*%~^<>".includes(p)) return true;
-  return /\b(return|typeof|case|in|of|new|delete|void|do|else|yield|await)$/.test(src.slice(Math.max(0, j - 9), j + 1));
-}
-function blankStringsAndComments(src, { keepStrings = false } = {}) {
-  let out = "";
-  const emit = (ch, blankIt) => { out += (ch === "\n") ? "\n" : (blankIt ? " " : ch); };
-  const stack = [{ k: "code", braces: 0, root: true }];
-  for (let i = 0; i < src.length; ) {
-    const t = stack[stack.length - 1];
-    const c = src[i];
-
-    if (t.k === "str" || t.k === "tpl") {
-      if (c === "\\") { emit(c, !keepStrings); emit(src[i + 1] ?? "", !keepStrings); i += 2; continue; }
-      if (c === (t.k === "tpl" ? "`" : t.q)) { out += c; i++; stack.pop(); continue; }   // the delimiter itself stays
-      if (t.k === "tpl" && c === "$" && src[i + 1] === "{") {   // interpolation: back to CODE until the matching }
-        out += "${"; i += 2; stack.push({ k: "code", braces: 0 }); continue;
-      }
-      emit(c, !keepStrings); i++; continue;
-    }
-
-    // code frame
-    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") { emit(src[i], true); i++; } continue; }
-    if (c === "/" && src[i + 1] === "*") {
-      const e = src.indexOf("*/", i + 2);
-      const end = e < 0 ? src.length : e + 2;
-      for (; i < end; i++) emit(src[i], true);
-      continue;
-    }
-    if (c === '"' || c === "'") { out += c; i++; stack.push({ k: "str", q: c }); continue; }
-    if (c === "`") { out += c; i++; stack.push({ k: "tpl" }); continue; }
-    if (c === "/" && regexStartsHere(src, i)) {           // a REGEX literal, not division — skip it whole
-      out += c; i++;
-      for (let cls = false; i < src.length; i++) {
-        if (src[i] === "\\") { out += "  "; i++; continue; }
-        if (src[i] === "[") cls = true; else if (src[i] === "]") cls = false;
-        const done = src[i] === "/" && !cls;
-        out += src[i] === "\n" ? "\n" : (done ? "/" : " ");
-        if (done || src[i] === "\n") { i++; break; }       // a newline means it was division after all — bail
-      }
-      continue;
-    }
-    if (!t.root) {
-      if (c === "{") { t.braces++; out += c; i++; continue; }
-      if (c === "}") { out += c; i++; if (t.braces === 0) stack.pop(); else t.braces--; continue; }
-    }
-    out += c; i++;
-  }
-  return out;
-}
+// `blankStringsAndComments` — comments AND string contents replaced by spaces, byte offsets and
+// line breaks preserved, template/regex-aware — moved to ./lib/blank-strings.js (item 182, so
+// scripts/lib/dead-field-check.js can share it without executing this whole file). See that
+// module's header comment for the full "why" (the 07-27y runaway-template bug, the regex-vs-
+// division heuristic); every call site below is unchanged.
 function inEngineCode(lit) {
   return engineCode.includes(`"${lit}"`) || engineCode.includes(`'${lit}'`) || engineCode.includes("`" + lit + "`");
 }
@@ -754,20 +676,49 @@ engine.split("\n").forEach((lineText, i) => {
  * schemas are parsed live out of the engine itself, so a new behaviour field needs no allowlisting.
  *
  * LIMITS, stated so a green pass is not over-read:
- *   · It is a UNION across document types — a field real on a weapon but read off an actor PASSES.
- *     "Not obviously dead", never "correct for this document".
+ *   · It is a UNION across document types, UNLESS pass 182's per-type sharpening (below) can tell
+ *     which type a call site holds — see scripts/lib/dead-field-check.js's own header comment for
+ *     exactly how narrow that detection is kept and why. Where it cannot tell, a field real on a
+ *     weapon but read off an actor still PASSES: "not obviously dead", never "correct for this
+ *     document".
  *   · TOP-LEVEL heads only. `system.attack.range` is fine and `system.range` is not, which is the
  *     distinction the 07-26l bug turned on; a wrong SECOND segment is still invisible here.
- *   · Skipped when the snapshot predates the field list (warn, don't guess). */
+ *   · Skipped when the snapshot predates the field list (warn, don't guess).
+ *
+ * PER-TYPE SHARPENING (added 2026-09-15, TODO_REPO_HYGIENE item 182). The union alone cannot see a
+ * field MOVING OFF one document type onto another — exactly the break the cosmere-rpg 3.1.0
+ * upgrade check (item 177) found in this very pass (break F8): at 3.1.0 `activation`/`damage` stay
+ * in the union because `action` items still declare them, even though `talent` no longer does
+ * (blocker B1), so a talent-level `system.activation` read would pass as "not obviously dead". The
+ * detection and the per-call-site checks now live in scripts/lib/dead-field-check.js (factored out
+ * so a test can reach them without executing this whole script); this block only builds the two
+ * snapshots it needs and formats what comes back. The tracked data/native-vocabulary.json has no
+ * `systemSchemaFieldsByType` key yet — it stays at 2.1.0 until the real upgrade (item 187) — so
+ * `knownByType` below is `null` and every real call site here still falls back to the union
+ * exactly as before this date; the sharpening is exercised today only by
+ * tests/dead-field-by-type.test.js, against a hand-built fixture 3.1.0 snapshot. */
 {
   const SNAP = path.join(REPO_ROOT, "data", "native-vocabulary.json");
   let known = null;
+  let knownByType = null;
   try {
     const v = JSON.parse(fs.readFileSync(SNAP, "utf8"));
     if (Array.isArray(v.systemSchemaTopLevelFields) && v.systemSchemaTopLevelFields.length >= 50) {
       known = new Set(v.systemSchemaTopLevelFields);
     } else {
       console.warn("⚠ lint-refs pass 11: native-vocabulary.json has no systemSchemaTopLevelFields — dead-field checking SKIPPED. Regenerate with: node scripts/dump-native-vocabulary.js");
+    }
+    // Per-type sets are OPTIONAL and additive: a snapshot without them (every one before item 182,
+    // including the tracked 2.1.0 file) simply means every call site falls back to the union,
+    // unchanged. A per-type entry with too few fields to be trustworthy is dropped rather than
+    // guessed with — see scripts/dump-native-vocabulary.js's own systemSchemaFieldsByType comment
+    // for why this can only ever be best-effort until item 187.
+    if (known && v.systemSchemaFieldsByType && typeof v.systemSchemaFieldsByType === "object") {
+      const byType = new Map();
+      for (const [type, fields] of Object.entries(v.systemSchemaFieldsByType)) {
+        if (Array.isArray(fields) && fields.length >= 3) byType.set(type, new Set(fields));
+      }
+      if (byType.size) knownByType = byType;
     }
   } catch (e) { /* pass 2's block already warned about an unreadable snapshot */ }
 
@@ -803,7 +754,18 @@ engine.split("\n").forEach((lineText, i) => {
           `resolves without error and stores nothing, and every read is undefined. Check the real ` +
           `schema (data/native-vocabulary.json systemSchemaTopLevelFields) before assuming a field ` +
           `exists — three shipped bugs came from guessing one`);
+    const DEAD_FOR_TYPE = (file, line, head, how, type) =>
+      err(`${file}:${line}: \`system.${head}\` — the "${type}" schema does not declare a top-level ` +
+          `"${head}" field (checked against data/native-vocabulary.json ` +
+          `systemSchemaFieldsByType.${type}), so this ${how} is DEAD even though a DIFFERENT ` +
+          `document type may declare "${head}" — that is why the plain union missed this one. ` +
+          `Foundry's SchemaField deletes unrecognised keys, the write resolves without error and ` +
+          `stores nothing, and every read is undefined.`);
 
+    // Forms (a)/(b)/(c) and the per-type detection heuristics live in dead-field-check.js (item
+    // 182) so a test can reach them without executing this whole script; this loop is unchanged
+    // in spirit from before that date — same three regex passes, same SCANNED files — just
+    // delegated, and now also passing `knownByType` through.
     for (const [file, src] of SCANNED) {
       const blanked = blankStringsAndComments(src);   // offsets preserved; prose can't false-match
       // Comments blanked but STRING BODIES kept — form (b) below has to look inside strings, and the
@@ -811,24 +773,9 @@ engine.split("\n").forEach((lineText, i) => {
       const noComments = blankStringsAndComments(src, { keepStrings: true });
       const lineAt = (idx) => src.slice(0, idx).split("\n").length;
 
-      // (a) property access — `system.foo`, `system?.foo`. No whitespace after the dot, so the word
-      //     "system." at the end of a sentence cannot match. `game.system.*` is the SYSTEM object.
-      for (const m of blanked.matchAll(/\bsystem(?:\?\.|\.)([A-Za-z_$][\w$]*)/g)) {
-        if (/game\s*\??\.\s*$/.test(blanked.slice(Math.max(0, m.index - 12), m.index))) continue;
-        if (!known.has(m[1])) DEAD(file, lineAt(m.index), m[1], "read");
-      }
-      // (b) flat update paths — `update({"system.foo": v})`, `getProperty(d, "system.foo")`. These
-      //     live INSIDE strings, so they are read from the comments-only-blanked copy.
-      for (const m of noComments.matchAll(/["'`]system\.([A-Za-z_$][\w$]*)/g)) {
-        if (!known.has(m[1])) DEAD(file, lineAt(m.index), m[1], "write path");
-      }
-      // (c) creation/update object literals — `system: { foo: … }`. This is the form the 07-27h status
-      //     registration used, and neither (a) nor (b) can see it.
-      for (const m of blanked.matchAll(/(?:^|[^\w$.])system\s*:\s*\{/g)) {
-        const open = src.indexOf("{", m.index);
-        let close; try { close = matchBrace(src, open); } catch (e) { continue; }
-        let keys; try { keys = topLevelKeys(src.slice(open + 1, close)); } catch (e) { continue; }
-        for (const k of keys) if (!known.has(k)) DEAD(file, lineAt(m.index), k, "stored key");
+      for (const hit of checkDeadFields({ src, blanked, noComments, known, knownByType })) {
+        if (hit.type) DEAD_FOR_TYPE(file, lineAt(hit.index), hit.field, hit.kind, hit.type);
+        else DEAD(file, lineAt(hit.index), hit.field, hit.kind);
       }
     }
   }

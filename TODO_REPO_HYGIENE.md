@@ -4499,7 +4499,7 @@ So once the engine applies damage (item 179), Dodge is still called at the table
 
 **From item 177's check (PR #403, §e):** the character sheet's render hook and `cosmere-rpg.preAttackRoll` — the advantage channel Edha's injectors already use, string-enum mode and all (`01-shared-core.js:513-516`) — are identical at 2.1.0 and 3.1.0. Only where the button sits on the redesigned sheet differs (3.0.0 added a Talents tab and the Actions tab lists actions, not items), so place it by a selector that survives both, and say in the PR which one.
 
-## 182. [ ] Migration PR 1 — per-type field sets in the native-vocabulary snapshot, so lint pass 11 can see an Embedded-Actions break at all (TOOLING; nothing to deploy) (2026-09-15)
+## 182. [x] Migration PR 1 — per-type field sets in the native-vocabulary snapshot, so lint pass 11 can see an Embedded-Actions break at all (TOOLING; nothing to deploy) (2026-09-15, PR #409)
 
 **Why:** break F8 of item 177's check (PR #403). Lint pass 11 compares a `system.<field>` read against the union of every top-level field in `data/native-vocabulary.json`. At 3.1.0 that union still contains `activation` and `damage`, because `action` items declare them — 87 → 103 fields, 0 removed — so a talent-level `system.activation` read passes as "not obviously dead" even though talents no longer carry it. That is why every gate stayed green across the whole upgrade in the check's analysis: CI cannot see blockers B1 or F1.
 
