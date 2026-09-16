@@ -83,8 +83,8 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Defenses** PHY / COG / SPI | 10 + STR+SPD / 10 + INT+WIL / 10 + AWA+PRE | **identical** (attribute values) + `bonus` | read-only (`edhaReadDefense`); `edha-defense-buff` applies scene/turn buffs as effects | `defenses.*.bonus`: phy 6, cog 10, spi 12 (Customary Garb, Collected, …) |
 | **Movement** (walk) | 20 + 5·SPD ft | ladder `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` | **override = 20 + 5·SPD** (SPD value), unless the sheet already carries its own override; effect bonuses add on top via the getter | `walk.rate.bonus` 5 (Surefooted +10, Walking Ruin, …), `walk.rate.override` 1 (Siege Form 0) |
 | **Senses range** | Edha canon named AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft — **superseded, see §3b** | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **NONE since item 83 (R-56 final, 2026-09-07).** The engine writes nothing to `senses.range`; the system's own value stands for every actor type. A hand-set override still wins (an adversary block's `senses` is written as exactly that) and bonus still adds, because both sit above `.derived`. The token's sight range is stamped from a copy of the *same* ladder (`edhaSensesRangeFtFromAwa` for new/edited actors, `advSensesRangeFt` in the build for the pack) | none |
-| **Recovery die** | WIL 0–1 d4, 2–3 d6, 4–5 d8, 6–7 d10 | `[d4,d6,d8,d10,d12,d20][ceil((WIL+bonus)/2)]` — same to WIL 6; **WIL 7+ gives d12 where canon says d10** | none (wizard preview mirrors the system ladder) | none |
-| **Lift / Carry** | not in canon | `[100,200,500,1000,5000,10000]` / `[50,100,250,500,2500,5000]` by ceil((STR+bonus)/2) lb | none | none |
+| **Recovery die** | the legacy `Character_Building_Rules.md` names WIL 0–1 d4, 2–3 d6, 4–5 d8, 6–7 d10 — **superseded 2026-09-16**, see the note under this table | `[d4,d6,d8,d10,d12,d20][ceil((WIL+bonus)/2)]` = **the published Recovery Die table, term for term** | none (wizard preview mirrors the system ladder) | none |
+| **Lift / Carry** | not in the legacy docs; **published** (Lifting and Carrying Capacity, App. 2) and the system's ladder matches it | `[100,200,500,1000,5000,10000]` / `[50,100,250,500,2500,5000]` by ceil((STR+bonus)/2) lb | none | none |
 | **Deflect** | — | max(natural, best equipped armour) | none | Guardian Stance +1 Deflect (toggled effect) |
 | **Skill modifier** | rank + attribute | rank + (value + bonus) | none | — |
 | **Skill-rank budget** | 5 + (L−1)·2 | advancement table (4 at L1) | wizard and sheet budget bar use the Edha number | — |
@@ -94,6 +94,30 @@ Net for a fresh level-1 character with every attribute 0 (as of item 83): **Heal
 removed the +1 — engine, canon and system now agree), Focus 2, Investiture 2, defenses 10/10/10,
 Move 20 ft (the one stat Edha still overrides), **Senses 5 ft** (the system's own ladder — see §3b),
 Recovery d4.
+
+> ⚠️ **Corrected 2026-09-16 — what "Edha canon" means in the first column** (TODO item 201, the
+> rules audit against the Mistborn Handbook; `docs/analysis/rules-audit-2026-09.md`). That column
+> is `source-materials/legacy-uploads/Character_Building_Rules.md` and the Builder workbook, which
+> predate having the full published rules on the machine. Three rows move:
+> * **Recovery die** — the published table (App. 2) is **WIL 0 → d4, 1–2 → d6, 3–4 → d8, 5–6 →
+>   d10, 7–8 → d12, 9+ → d20**, which is exactly the system's ladder. The legacy ladder is what
+>   disagrees, and this table's old note ("WIL 7+ gives d12 where canon says d10") had it
+>   backwards. Nothing is live on it — the engine writes no recovery die — so this is a
+>   documentation fix only.
+> * **Senses range** — already resolved the same way by R-56 final (§3b); the system's ladder is
+>   term for term the published Senses Range table.
+> * **Movement** — the published Movement Rate table is a **ladder** (SPD 0 → 20 ft, 1–2 → 25,
+>   3–4 → 30, 5–6 → 40, 7–8 → 60, 9+ → 80), not `20 + 5·SPD`. Edha's override is therefore the one
+>   remaining derived-stat contradiction: a SPD-2 PC walks 30 ft here and 25 ft in the book. **Do
+>   not change it on this note** — it is Ben's call, filed as ruling **R-156** with the build as
+>   **item 203**, the exact parallel of R-56's senses reversal.
+>
+> Health `10 + STR`, focus `2 + WIL`, Investiture `2 + max(AWA, PRE)`, the defenses and the
+> tier / rank-cap table were all checked in the same pass and match the published rules.
+> **Attribute points** did not: the published Character Advancement table grants them at levels 6,
+> 9, 12, 15 and 18 with **no level-3 increase**, while the system's `advancement.rules` (and this
+> table's "+1 at L3, L6, …") grant one at level 3 — filed as ruling **R-157**, unchanged here
+> because the sheet enforces the system's table.
 
 ### 3a. Adversaries (item 55, R-56 (a), 2026-09-06 — then item 83, below)
 

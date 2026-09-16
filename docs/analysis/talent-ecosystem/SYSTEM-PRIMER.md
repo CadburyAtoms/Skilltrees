@@ -24,6 +24,24 @@ is guessing.
   character can already Gain Advantage as a 1-Action skill test, and every character can already
   Aid an ally for 1 focus as a Reaction.
 
+> ⚠️ **Correction, 2026-09-16 — two action costs above are wrong, and the conditions list below
+> mixes homebrew with published** (TODO item 201, the rules audit against the Mistborn Handbook;
+> `docs/analysis/rules-audit-2026-09.md`).
+> * **Grapple and Shove cost 2 Actions each**, not 1 (MH Ch. 10 → Actions and Reactions, and the
+>   handbook module's own `actions` pack, which carries the cost as data). They are the two
+>   costliest standard actions beside Recover, so a talent that hands out a free Shove or Grapple
+>   is worth **twice** what this primer priced — re-read any judgment in this review that leaned on
+>   the 1-Action figure. Everything else in the list above is correct.
+> * Also published, and worth having while pricing: a **named action can be used only once per
+>   turn** (including one a talent grants), except Strike, Move and Interact, which say otherwise;
+>   an offhand Strike costs 2 focus; **Gain Advantage**'s advantage applies only to your next test
+>   against that target **using a different skill**.
+> * In "Conditions worth pricing" below: **Weakened is Edha homebrew** — it is in neither
+>   published handbook nor the system (Edha registers it and gives it a real effect: disadvantage
+>   on physical tests). **Empowered** is Stormlight's, not Mistborn's. Two *published* conditions
+>   are missing from that line and from the skill it cites: **Depleted** [power] and
+>   **Diminished** [attribute −X].
+
 ## Advantage — binary, not stacking. This is the single most load-bearing fact here.
 
 > ⚠️ **Correction, 2026-09-16 — this section describes the SYSTEM's d20 code and Edha's fold, not the rule.** The Mistborn Handbook (Ch. 3 Character Statistics → Skills, "Advantages and Disadvantages"; identical to the Stormlight Starter Rules Part 1) is per die and countable: for each advantage the roller chooses one die about to be rolled — the d20, the plot die, or any other die such as a damage die — rolls two and keeps one, each die chosen at most once, so two advantages double two different dice; for each disadvantage the opponent chooses the die and the kept result (the GM on a player's test; on an enemy NPC's test the most-affected player); advantages and disadvantages cancel one for one; a multi-target test rolls the extra dice separately for the targets they concern. The system exposes a toggle per die (d20, plot die, each damage die) and counts nothing; Edha's engine writes the d20 only and folds sources to one scalar — that is the deviation, not the rule. Engine question: R-155 (`EDHA_RULINGS.md` §L); the full audit is TODO item 201.
