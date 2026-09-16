@@ -424,6 +424,18 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## Opposed skill tie — item 204 (2026-09-16; **ENGINE-ONLY, F5**)
+
+`edhaDefTestOutcome`'s `vs: "skill"` path now uses `>` instead of `>=` (Mistborn Handbook Ch. 3,
+"Opposed Tests": a tie favors the defender, not the initiator). `vs: "defense"` and `vs: "dc"` are
+unchanged (ties still succeed). Any of the three authored consumers works — Redirect Momentum
+(Blue vs Athletics), Drive the Prey or Territorial Instinct (Green vs Survival).
+
+- [ ] 🤖 Tie a Blue contest (or a Green one): engineer the target's rolled skill total to equal the
+  Blue/Green initiator's total exactly. Confirm the card reads FAIL for the initiator and the
+  defender keeps the status quo (no movement reduction / push, no Slowed, no forced move) — then
+  confirm a one-point win still succeeds and a one-point loss still fails, so only the tie flipped.
+
 ## An affliction rule's culled target — item 189 (2026-09-16; ENGINE-ONLY, F5; **nothing deploys under the R-144 freeze**)
 
 `edhaRunTriggerEffect`'s `affliction` branch used to post "(target a token) is Afflicted […]" publicly whenever a supplied victim/near-victim/list-members mode resolved to nobody — the same "blame the user for a list it supplied itself" shape items 173/176 fixed in the status/damage branches (`tests/no-candidate-no-card.test.js`). Fixed alongside the `thp` branch's own supplied-target fallback and `edhaPostTriggerCard`'s `needsTargeting` exclusion; pinned in `tests/no-blame-supplied-target.test.js` against the real registered executors. This row waits on Ben's word that the R-144 freeze has lifted before it can be driven live.

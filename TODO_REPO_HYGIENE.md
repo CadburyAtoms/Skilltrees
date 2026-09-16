@@ -4741,7 +4741,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model opus · size L · deps R-155 · Filed 2026-09-16 by the PM from R-155.
 
-## 203. [ ] R-156: the movement-rate ladder — delete Edha's `20 + 5·SPD` override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5; blocked on R-156) (2026-09-16)
+## 203. [x] DONE 2026-09-16 (PR #427) — R-156: the movement-rate ladder — delete Edha's `20 + 5·SPD` override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5; blocked on R-156) (2026-09-16)
 
 **Unblocked 2026-09-16 17:57 ET:** R-156 answered (a) by Ben in chat ("defaults"); filed in `EDHA_RULINGS.md` §K.23.
 
@@ -4753,7 +4753,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size S · deps R-156 · Filed 2026-09-16 by item 201's audit.
 
-## 204. [ ] The opposed-test tie: an opposed test must be WON, not tied — `edhaDefTestOutcome`'s `>=` hands the initiator every tie on the `vs: "skill"` path (ENGINE, F5) (2026-09-16)
+## 204. [x] DONE 2026-09-16 (PR #427) — The opposed-test tie: an opposed test must be WON, not tied — `edhaDefTestOutcome`'s `>=` hands the initiator every tie on the `vs: "skill"` path (ENGINE, F5) (2026-09-16)
 
 **Why:** the rules audit's Phase 1 row (`docs/analysis/rules-audit-2026-09.md`). Mistborn Handbook Ch. 3 → Skills, "Opposed Tests": your result must **exceed** your opponent's, and on a tie *nobody* meets their DC — "in the case of an aggressive contest, the result favors the defender who's trying to keep things the same" (the book's own example: the gun stays in the hand that was already holding it). Edha's contest core compares `ok: t >= n` for **every** mode (`module-src/scripts/engine/12-contested-roll-resolution.js:36`), including `vs: "skill"`, where `n` is the opponent's rolled total rather than a DC. `>=` is right against a defense or a flat DC — you meet a DC — and wrong against a roll. Three authored rules ride the skill path today: `data/authored/leyline-blue.json:1211`, `leyline-green.json:194`, `leyline-green.json:1157`.
 
