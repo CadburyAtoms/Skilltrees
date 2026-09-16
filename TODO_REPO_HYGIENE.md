@@ -4577,7 +4577,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **Carried from item 182 (PR #409, 2026-09-15) — spot-check before trusting:** that PR taught `dump-native-vocabulary.js` to harvest a per-item-type field map, but **no part of that harvester has ever run against a real bundle** — there was no 3.1.0 install to run it on, and the worker was barred from Ben's Foundry. It fails soft by design (it warns and never exits, so it cannot block a routine 2.1.0 re-snapshot), which also means a wrong class- or mixin-name assumption would pass silently as an empty map. When this item regenerates the snapshot at 3.1.0, read the per-type output by hand against the system's own data models before trusting it, and say in the PR that you did.
 
-## 188. [ ] `42-chaos.js`'s "OMEN MODEL (Ben, 06-18)" paragraph still describes `preUseItem` takeovers the 07-24p migration deleted (comment-only; no behaviour change) (2026-09-15)
+## 188. [x] `42-chaos.js`'s "OMEN MODEL (Ben, 06-18)" paragraph still describes `preUseItem` takeovers the 07-24p migration deleted (comment-only; no behaviour change) (2026-09-15) — done 2026-09-16, PR #426
 
 **Why:** found by item 175's worker (PR #406, 2026-09-15) while fixing the header paragraph immediately above it, and left alone as outside that item's named scope. The paragraph — around line 34 of `module-src/scripts/engine/42-chaos.js` — still reads that "Every ACTIVE talent is a `preUseItem` TAKEOVER … mirroring Destruction". The takeovers were deleted from 07-24p onward, when the iron-rule-2b migration moved all nine Chaos talents onto their own documents' `events` rules; the file's own "IRON RULE 2b STATUS" section, further down, already records that correctly. So the file now contradicts itself, and the stale half is the one a reader meets first. Item 175 fixed exactly the same failure mode one paragraph earlier: a design note from 06-18 that outlived its design.
 
@@ -4587,7 +4587,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size XS · deps none. Filed 2026-09-15 by the PM from item 175's out-of-scope finding.
 
-## 189. [ ] Two more "(target a token)" fallbacks in the trigger-card family: the `affliction` and `thp` branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5) (2026-09-15)
+## 189. [x] Two more "(target a token)" fallbacks in the trigger-card family: the `affliction` and `thp` branches, and the canvas-target instruction on modes that never read the canvas (ENGINE-ONLY, F5) (2026-09-15) — done 2026-09-16, PR #426
 
 **Why:** found by the worker that fixed items 172, 173 and 176 (PR #408, 2026-09-15) and left alone, because neither item's "What to do" named them. Items 173 and 176 fixed exactly this shape in two branches of `edhaRunTriggerEffect`: a public card that blames the table — *"(no target — target a token, then re-fire)"* — when the rule supplied its own target list and something culled it to empty, which is not a thing the user can act on. Two siblings still carry it:
 - The **`affliction` and `thp` branches** of `edhaRunTriggerEffect` (`module-src/scripts/engine/33-triggered-effect-resolution.js`) print the same fallback for an empty list, so an automatic dispatch that supplied its own victim can still tell the table to re-fire.
@@ -4631,7 +4631,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size S · deps none (item 185 consumes it) · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 193. [ ] R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
+## 193. [x] DONE 2026-09-16 (PR #424) — R-148 (a): engine dials as module settings — every constant a ruling has toggled becomes a `game.settings` entry, world-scoped and GM-only, defaulting to today's value (ENGINE-ONLY, F5; 2.1.0-safe; blocked on R-148) (2026-09-16)
 
 **Unblocked 2026-09-16 14:40 ET:** R-148 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
 
@@ -4643,7 +4643,14 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size S · deps R-148 (a) · Filed 2026-09-16 by the PM from the Metalworks comparison.
 
-## 194. [ ] R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+## 194. [x] (2026-09-16, PR #428) R-149 (a): enrichers on the MANUAL cards — `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in the card text of every rule-3 MANUAL talent, and the phrasing-verifier learns the tag (DATA — REBUILD leyline + deity + heroic + ⟳ Sync Talents; 2.1.0-safe; blocked on R-149) (2026-09-16)
+
+*(Closed as DATA — REBUILD heroic + ⟳ Sync Talents, narrower than filed: the full 15-tree
+tree-section-header audit found the MANUAL-with-an-unrolled-roll set is Heroic-only — every
+leyline and deity MANUAL bullet is consent, hidden information, action-forcing, or a table
+judgment, never an un-automated test/damage roll. Six talents tagged: Agent's Get 'Em Talking /
+Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warrior's Vinestance.
+`edha-leyline` and `edha-deity` data are untouched, so only `edha-heroic` needs the rebuild.)*
 
 **Unblocked 2026-09-16 14:40 ET:** R-149 answered (a) by Ben in chat ("default all except R150-b, 152-b"); filed in `EDHA_RULINGS.md` §K.21.
 
@@ -4697,7 +4704,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model opus · size L · deps items 187 and 200 · Filed 2026-09-16 by the PM from R-150 (b).
 
-## 199. [ ] R-151 (a) + R-153 (a): the two design guides record the published Invested families' action-type and cost tables and the variable-spend convention — no talent changes (DOCS-ONLY) (2026-09-16)
+## 199. [x] DONE 2026-09-16 (PR #423) — R-151 (a) + R-153 (a): the two design guides record the published Invested families' action-type and cost tables and the variable-spend convention — no talent changes (DOCS-ONLY) (2026-09-16)
 
 **Why:** R-151 answered (a) on 2026-09-16 — hold the deity re-pricing for R-152's design, but record the numbers now; R-153 answered (a) — "spend 1 or more, up to your rank" becomes a convention for new and revised talents, no sweep. The numbers are `docs/analysis/talent-comparison-mistborn-radiant.md` §C.1 and §C.2; the leyline guide's own action-type table is stale on two of its claims (`docs/analysis/talent-ecosystem/crosscut/cost-curve.md` §0 (b)).
 
@@ -4741,7 +4748,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model opus · size L · deps R-155 · Filed 2026-09-16 by the PM from R-155.
 
-## 203. [ ] R-156: the movement-rate ladder — delete Edha's `20 + 5·SPD` override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5; blocked on R-156) (2026-09-16)
+## 203. [x] DONE 2026-09-16 (PR #427) — R-156: the movement-rate ladder — delete Edha's `20 + 5·SPD` override so the published Speed ladder stands on every actor, as R-56 did for senses (ENGINE, F5; blocked on R-156) (2026-09-16)
 
 **Unblocked 2026-09-16 17:57 ET:** R-156 answered (a) by Ben in chat ("defaults"); filed in `EDHA_RULINGS.md` §K.23.
 
@@ -4753,7 +4760,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size S · deps R-156 · Filed 2026-09-16 by item 201's audit.
 
-## 204. [ ] The opposed-test tie: an opposed test must be WON, not tied — `edhaDefTestOutcome`'s `>=` hands the initiator every tie on the `vs: "skill"` path (ENGINE, F5) (2026-09-16)
+## 204. [x] DONE 2026-09-16 (PR #427) — The opposed-test tie: an opposed test must be WON, not tied — `edhaDefTestOutcome`'s `>=` hands the initiator every tie on the `vs: "skill"` path (ENGINE, F5) (2026-09-16)
 
 **Why:** the rules audit's Phase 1 row (`docs/analysis/rules-audit-2026-09.md`). Mistborn Handbook Ch. 3 → Skills, "Opposed Tests": your result must **exceed** your opponent's, and on a tie *nobody* meets their DC — "in the case of an aggressive contest, the result favors the defender who's trying to keep things the same" (the book's own example: the gun stays in the hand that was already holding it). Edha's contest core compares `ok: t >= n` for **every** mode (`module-src/scripts/engine/12-contested-roll-resolution.js:36`), including `vs: "skill"`, where `n` is the opponent's rolled total rather than a DC. `>=` is right against a defense or a flat DC — you meet a DC — and wrong against a roll. Three authored rules ride the skill path today: `data/authored/leyline-blue.json:1211`, `leyline-green.json:194`, `leyline-green.json:1157`.
 
@@ -4763,7 +4770,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane B · model sonnet · size XS · deps none · Filed 2026-09-16 by item 201's audit.
 
-## 205. [ ] "Diminished" is a published condition and Edha uses the name for something else — rename Sovereignty's damage-die step-down off it (ENGINE + DATA, REBUILD + ⟳ Sync) (2026-09-16)
+## 205. [x] DONE 2026-09-16 (PR #425) — "Diminished" is a published condition and Edha uses the name for something else — rename Sovereignty's damage-die step-down off it (ENGINE + DATA, REBUILD + ⟳ Sync) (2026-09-16)
 
 **Why:** the rules audit's Phase 1 row (`docs/analysis/rules-audit-2026-09.md`). Mistborn Handbook Ch. 9 → Conditions defines **Diminished [attribute −X]**: the named attribute drops, cumulative, defenses and maxima unchanged — the mirror of Enhanced, which Edha and the system both already carry. Edha registers its own status `diminished`, label **"Diminished"** (`module-src/scripts/engine/01-shared-core.js:191`), meaning Sovereignty's *damage die stepped DOWN* (the partner of `exalted`). A player reading the token HUD or a card sees a published condition's name on an unrelated mechanic. Second hazard: `edhaRegisterStatuses` claims an id only `if (!COSMERE.statuses[id])`, so a system release that ships the published conditions takes the id and Sovereignty's step-down silently stops working — item 177's 3.1.0 upgrade is exactly where that would land.
 
@@ -4795,7 +4802,7 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 **PM:** lane R · model sonnet · size XS · deps item 202 · Filed 2026-09-16 by the PM from item 201's out-of-scope findings.
 
-## 208. [ ] R-157 (a): the advancement table Edha uses is the system's, level-3 attribute point included — `docs/ACTOR_STAT_DERIVATION.md` and `build-forge` say so and record that the Mistborn Handbook's table differs (DOCS-ONLY) (2026-09-16)
+## 208. [x] DONE 2026-09-16 (PR #423) — R-157 (a): the advancement table Edha uses is the system's, level-3 attribute point included — `docs/ACTOR_STAT_DERIVATION.md` and `build-forge` say so and record that the Mistborn Handbook's table differs (DOCS-ONLY) (2026-09-16)
 
 **Why:** item 201's audit found the two published handbooks disagree on attribute points at level 3 (the Mistborn table grants them at 1, 6, 9, 12, 15, 18; the system enforces the Stormlight table with a point at 3). R-157 answered (a) by Ben on 2026-09-16: keep the system's table and document the divergence. `docs/ACTOR_STAT_DERIVATION.md` §3 and `.claude/skills/build-forge/SKILL.md:49` currently state "attribute points at levels 3, 6 and 9" as if it were the one published rule.
 
@@ -4806,6 +4813,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-157 (a).
 
 ## 209. [ ] The Blue pass on the Channel model — Countercurrent (the Counterspell rename, M17), Blue's frame as the per-die disadvantage injector's second consumer, and Blue's twenty-five cards worked as §3 worked White's; Ben's own gated session from a brief like item 200's (DESIGN, DOCS-ONLY; the build rides item 198) (2026-09-16)
+
+**Brief written 2026-09-16 18:40 ET:** `docs/briefs/channel-blue-pass.md` — the prompt Ben pastes into a session of his own (worktree `%TEMP%\edha-channel-blue`, branch `design/channel-blue`, deliverable `docs/design/channel-blue.md`, five gated sections).
 
 **Why:** `docs/design/channel-actions.md` §5.3 item 2. The design worked one colour in full (White); Blue is next because its frame — *the deep reading*, a per-die disadvantage on one enemy — is the second consumer of the per-die placement item 202 builds, and because its `Counterspell` was renamed **Countercurrent** at gate 1 (M17 (a)), a DATA change that rides item 198.
 
@@ -4834,3 +4843,13 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** all three sections are merged with every gate approved and item 198's brief covers all five colours.
 
 **PM:** lane H · model — (Ben's own sessions) · size L ×3 · deps item 198's White pilot benched · Filed 2026-09-16 by the PM from the design pass.
+
+## 212. [ ] R-159 (a): the deity design pass on the Channel model — every deity talent classed rider or release with its new cost and card sentence, one braid considered per tree, R-108's Special target revisited, the two-colour test rule kept; Ben's own gated session from a brief the PM writes when asked (DESIGN, DOCS-ONLY; the build rides item 198's deity leg) (2026-09-16)
+
+**Why:** R-159 answered (a) by Ben on 2026-09-16 — the deity re-pricing R-151 (a) held for, now against `docs/design/channel-actions.md` §1.1's rider / release split and §1.6's braid. The deity atlas is 80 % Investiture-priced and 0 % Special against 8 – 46 % and 30 – 41 % in every published Invested family (`docs/analysis/talent-comparison-mistborn-radiant.md` §D-1), because a deity tree had no base action to have paid on; under the Channel it rides the colour's.
+
+**What to do:** the PM writes `docs/briefs/channel-deity-pass.md` in the shape of the Channel and Blue briefs when Ben asks for it (after the Blue pass, so the per-die and rider conventions are settled twice over): the ten trees, each gate one or two trees, every talent rider or release, the braid question per tree, R-108's target restated from the measured result; the deliverable `docs/design/channel-deity.md`. Ben runs it; the PM records it and adds the deity leg to item 198.
+
+**Done when:** `docs/design/channel-deity.md` is merged with every gate approved; item 198's brief covers the deity leg; R-108 and R-151 carry dated post-design lines in §K.
+
+**PM:** lane H · model — (Ben's own session) · size L · deps items 209 (the Blue pass) and 198's White pilot benched · Filed 2026-09-16 by the PM from R-159 (a).

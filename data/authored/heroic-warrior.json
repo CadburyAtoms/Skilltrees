@@ -624,9 +624,9 @@
       "docId": "x23tP4yUuO99LTE1",
       "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive to make attacker lsoe 1d4 focus and be pushed.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive to make attacker lsoe 1d4 focus and be pushed.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive to make attacker lsoe 1d4 focus and be pushed.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive [[test skill=ath defence=cog]] to make attacker lsoe 1d4 [[/roll 1d4]] focus and be pushed.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive [[test skill=ath defence=cog]] to make attacker lsoe 1d4 [[/roll 1d4]] focus and be pushed.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive [[test skill=ath defence=cog]] to make attacker lsoe 1d4 [[/roll 1d4]] focus and be pushed.</p>"
       },
       "activation": {
         "type": "utility",

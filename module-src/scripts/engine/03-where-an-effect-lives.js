@@ -259,7 +259,7 @@ function edhaWrapRollDamage(originalCall, options = {}) {
       }
     }
   } catch (e) { /* never break a damage roll on a rider failure */ }
-  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Diminished) has its damage dice moved
+  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Lessened) has its damage dice moved
   // along the d4–d12 ladder before the roll (riders included — they're the roller's own damage).
   const stepped = edhaSovStepOverride(this, options.overrideFormula ?? this.system?.damage?.formula);
   if (stepped) options = { ...options, overrideFormula: stepped };

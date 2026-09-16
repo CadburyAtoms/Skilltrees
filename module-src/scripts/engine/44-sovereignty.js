@@ -24,7 +24,8 @@
  * WHAT STAYS HERE (engine machinery the rules consume — none of it keys on a talent name):
  *   • The die-step LEDGER: flags.edha-content.dieStep = [{key, steps, scope, ownerId, castRound,
  *     expire, pairId?, onPairHit?, failThpFormula?, failThpRange?}] on the affected creature +
- *     the `exalted`/`diminished` statuses + the rollDamage-wrapper rewrite (edhaSovStepOverride):
+ *     the `exalted`/`lessened` statuses (item 205, 2026-09-16: the step-down id was `diminished`
+ *     until it collided with the published Diminished condition) + the rollDamage-wrapper rewrite (edhaSovStepOverride):
  *     bake the formula, move every ladder die by the net steps (entries STACK — Ben R6; the d4/d12
  *     clamp is the only rail; off-ladder dice untouched). scope "attack" gates to weapon/attack.
  *   • Timed expiry — entry.expire = owner-relative next-turn coordinate, swept on combatTurnChange;
@@ -56,11 +57,11 @@ async function edhaSovSetSteps(target, list) {
     return await edhaSetEdhaFlag(target, "dieStep", value);   // Job 6a: routed through the canonical helper (setFlag(key, null) reads the same as unset for every edhaSovSteps consumer)
   } catch (e) { console.error("Edha Content | set dieStep failed", e); return false; }
 }
-// Keep the exalted/diminished token icons in sync with the entry list (idempotent toggles).
+// Keep the exalted/lessened token icons in sync with the entry list (idempotent toggles).
 async function edhaSovSyncStatuses(target, list) {
   const up = (list ?? []).some(e => Number(e.steps) > 0), down = (list ?? []).some(e => Number(e.steps) < 0);
   if (up !== !!target.statuses?.has?.("exalted")) await edhaToggleStatus(target, "exalted", up);
-  if (down !== !!target.statuses?.has?.("diminished")) await edhaToggleStatus(target, "diminished", down);
+  if (down !== !!target.statuses?.has?.("lessened")) await edhaToggleStatus(target, "lessened", down);
 }
 // The owner-relative timed expiry: the coordinate of the OWNER's next turn ("start of your next
 // turn" lands end-of-owner-next-turn, the engine convention). Out of combat → "owner-next", lazily
@@ -151,7 +152,7 @@ async function edhaSovRecoverInv(owner, sourceName, victimName, n = 1) {
 function edhaSovPostExposeCard(owner, sourceName, victim, total, recoverN) {
   ChatMessage.create({
     whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (Diminished by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
+    content: `<div class="edha-trigger-card"><p>👁️ <strong>${sourceName}</strong>: <strong>${victim.name}</strong> (${EDHA_STATUSES.lessened.label} by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover ${recoverN} Investiture.</p>
       <button type="button" class="edha-sov-expose-btn" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(sourceName)}" data-edha-victim="${victim.name}" data-edha-n="${recoverN}">It failed — recover ${recoverN} Investiture</button></div>`,
   });
 }
@@ -208,7 +209,7 @@ async function edhaSovRollWatch(ctx, roll, source, config) {
       }
     }
 
-    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired diminished enemy
+    // ---- Pair couplings (entry.onPairHit): the exalted half HITS the paired lessened enemy
     if (!read || read.failed) return;
     const plus = entries.filter(e => e.steps > 0 && e.onPairHit && e.pairId);
     if (!plus.length) return;
@@ -271,7 +272,7 @@ async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
     key: "sov",
     flags: ["dieStep", "dieStepOnceBy"],
-    statuses: ["exalted", "diminished"],
+    statuses: ["exalted", "lessened"],
   });
 }
 // (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)

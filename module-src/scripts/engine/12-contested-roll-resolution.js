@@ -21,10 +21,17 @@ function edhaReadDefense(actor, key) {
 }
 /* H1 `edha-def-test` (07-24m) — the pure success/fail decision, hoisted out of ~20 hand-rolled
  * copies so it is testable without Foundry. `total` is the owner's captured roll.
- *   vs "defense" -> beat `defValue` (edhaReadDefense)
- *   vs "skill"   -> beat `oppRoll`  (edhaRollOpposedSkill — the engine rolls the foe; never trust
- *                   the player to have won, per iron rule 3 / kill-soft-laziness)
- *   vs "dc"      -> beat a flat `dc` (Grand Deception 15, Field Medicine 15)
+ *   vs "defense" -> MEETS OR BEATS `defValue` (edhaReadDefense) — you beat a static number by
+ *                   reaching it, same as any DC.
+ *   vs "skill"   -> must EXCEED `oppRoll` (edhaRollOpposedSkill — the engine rolls the foe; never
+ *                   trust the player to have won, per iron rule 3 / kill-soft-laziness). Item 204
+ *                   (2026-09-16, the rules audit): Mistborn Handbook Ch. 3 → Skills, "Opposed
+ *                   Tests" — your result must EXCEED your opponent's, and on a tie the initiator
+ *                   does not get what they wanted ("the result favors the defender who's trying
+ *                   to keep things the same"). `>=` was right for a DC/defense (you only need to
+ *                   MEET it) and wrong here, where `n` is a competing ROLL rather than a fixed
+ *                   bar — a tie used to hand the initiator every contest on this path.
+ *   vs "dc"      -> MEETS OR BEATS a flat `dc` (Grand Deception 15, Field Medicine 15).
  * FAIL-OPEN on an unreadable comparison value, which is what every deity call site already does
  * (`def == null ? true : total >= def`) — an adversary with no written defense must not make the
  * talent silently useless. Returns { ok, dc } so the card can print what was beaten. Pinned. */
@@ -33,7 +40,7 @@ function edhaDefTestOutcome(total, { vs = "defense", dc = null, defValue = null,
   const bar = vs === "skill" ? oppRoll : vs === "dc" ? dc : defValue;
   const n = Number(bar);
   if (bar === null || bar === undefined || !Number.isFinite(n)) return { ok: true, dc: null };   // fail-open
-  return { ok: t >= n, dc: n };
+  return { ok: vs === "skill" ? t > n : t >= n, dc: n };   // opposed skill: a tie favors the defender
 }
 // Queue a contest the moment a talent is used (captures game.user.targets reliably on the owner's client).
 // The talent's own skill_test roll is matched by edhaContestWatch — order-independent (see edhaTryResolveContest).

@@ -2643,7 +2643,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
     label: "Edha: Step a Damage Die (On Use / On Success)", description: "Move a creature's damage die size along the d4–d12 ladder (entries stack; the clamp is the only rail). Put it on 'use' for an untested buff (Exalt), or on the 'When Your Test SUCCEEDS' / 'FAILS' events after an Edha: Gated Test (Censure, Decree of Ruin). 'pair' writes a linked ally/enemy pair whose on-hit coupling the engine watches (Sovereign's Balance, Sovereignty).",
     config: { schema: {
       key: new FF.StringField({ required: true, initial: "step", label: "Entry key", hint: "Names this effect in the ledger — censure, decree, edict, exalt, investiture, balance, sovereign. Authored data: it is what an Edha: Die-Step Reaction's whenKeys and a replaceKeys field match against." }),
-      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Diminished one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
+      steps: new FF.NumberField({ required: false, initial: -1, label: "Steps (±)", hint: "−1 = Lessened one step, +1 = Exalted one step, −2 = Edict's success. Ignored in pair mode." }),
       scope: new FF.StringField({ required: false, initial: "all", choices: choices("all", "attack"), label: "Applies to", hint: "all = every damage roll · attack = weapon/attack damage only (Edict of the Fallen)." }),
       expire: new FF.StringField({ required: false, initial: "next-turn", choices: choices("next-turn", "scene"), label: "Lasts", hint: "next-turn = until the start of YOUR next turn (the timed sweep) · scene = until the encounter ends." }),
       target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "ally", "enemy", "pair"), label: "Who is stepped", hint: "victim = the creature this rule's trigger resolved against (a gated test's payload) · ally / enemy = your targeted willing ally / enemy (vetoed pre-cost when missing) · pair = one targeted ally AND one targeted enemy, written as a linked pair." }),
@@ -2709,7 +2709,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         }
         await stampOnce(who);
         await announce(who, steps);
-        say(`${who.name} is <strong>${steps > 0 ? "Exalted" : "Diminished"}</strong> — ${stepWord(steps)} ${durText}.`);
+        say(`${who.name} is <strong>${steps > 0 ? EDHA_STATUSES.exalted.label : EDHA_STATUSES.lessened.label}</strong> — ${stepWord(steps)} ${durText}.`);   // item 205: read the label from the registry, not a hardcoded string, so a future rename is one line (01-shared-core.js)
       } catch (e) { console.error("Edha Content | edha-die-step executor failed", e); }
     },
   },

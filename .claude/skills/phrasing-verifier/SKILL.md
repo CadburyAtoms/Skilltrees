@@ -12,6 +12,31 @@ description: >
   skill.
 ---
 
+### Rule 12: Enricher tags (never rewritten)
+
+Since item 194 / R-149 (a) (2026-09-16), a rule-3 MANUAL talent — one with no engine `events`
+rule at all, so the card's "roll it yourself" sentence has genuinely nothing behind it — may
+carry a **cosmere-rpg system enricher tag** right where the roll is named, turning that sentence
+into a clickable button with zero engine wiring (`docs/Enrichers.md`, byte-identical at
+cosmere-rpg 2.1.0 and 3.1.0). Three shapes, always inside literal double brackets:
+
+- `[[test skill=<trigraph> ...]]` — a skill test button. `skill=` is required (a trigraph from
+  `CONFIG.COSMERE.skills`, e.g. `ded`, `thv`, `sur`, `med`, `ath`); optional `defence=<phy|cog|spi>`
+  or `attribute=<trigraph>` and `dc=<n>` add the target text.
+- `[[damage <formula> <type>]]` / `[[healing <formula>]]` — a damage/heal roll button. `type` must
+  be a real damage type (`Impact`, `Keen`, `Energy`, `Spirit`, `Vital`, or `Heal`/`healing`).
+- `[[/roll <formula>]]` — Foundry's own core inline-roll link (not a cosmere enricher at all; used
+  for a plain die that isn't a skill test or a damage roll, e.g. a focus-loss die).
+
+**Never rewrite the inside of a tag, and never add or remove one on your own initiative.** The
+auto-fixer's regexes (Rule 2/3 above) operate on PROSE; they must skip any span between `[[` and
+the next `]]` untouched — a tag's `skill=ded`/`defence=cog`/lowercase keys are the enricher's own
+required syntax, not a capitalization slip, and "fixing" them breaks the button. Tags are added
+by a data pass against a named ruling (R-149 (a) is the first), never invented while auto-fixing
+phrasing. `scripts/lib/enricher-check.js` (lint-refs pass 24) is the syntax gate — it fails the
+build on a typo'd key, an unknown trigraph, a missing damage type, or an unclosed bracket, so a
+malformed tag never ships silently.
+
 # Talent Description Phrasing Verifier & Auto-Fixer
 
 You are checking and auto-correcting talent descriptions in the Edha RPG talent browser
@@ -355,6 +380,18 @@ upgrade applied at the moment of another talent's placement may embed the spend
 later in the description, e.g. "When you place a Charge, spend an additional 1
 Investiture to declare it a Pinpoint Charge." Do not flag these.
 
+### Rule 12: Variable-spend convention ("1 or more, up to your rank")
+
+**R-153 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.21; `docs/analysis/talent-comparison-mistborn-radiant.md`
+§D-4) — a convention for **new and revised** talents going forward; there is no sweep of existing
+cards to flag against it. When a talent's effect already scales with a numeric quantity (damage
+dice, targets, range, duration) and its cost is being written or revised, prefer a variable spend
+over a flat one: the consume dialog's `{min: 1, max: <rank>}` row (the Mistborn packs' shape for
+"up to your limit" is `max: -1`), with the limit set to the talent's own colour rank. Card
+phrasing: `"Spend 1 or more Investiture, up to your [Colour] rank, to …"`, with the per-point
+scaling named in the same sentence. Do not flag existing flat-cost talents for this — it is a
+forward convention, not a phrasing defect.
+
 ---
 
 ## Edge cases
@@ -375,3 +412,5 @@ Investiture to declare it a Pinpoint Charge." Do not flag these.
 - Game balance
 - Any field other than `Description`
 - JSON structure, field names, or ordering
+- The inside of any `[[test ...]]` / `[[damage ...]]` / `[[healing ...]]` / `[[/roll ...]]`
+  enricher tag (Rule 12) — never rewritten by the auto-fixer, never added without a named ruling

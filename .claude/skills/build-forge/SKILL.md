@@ -50,6 +50,12 @@ As of system 2.1.0, levels 1–10:
 - **Max skill rank 2 through level 5, 3 from level 6.**
 - **Tier 1 through level 5, tier 2 from level 6.**
 
+**R-157 (a), 2026-09-16** (`EDHA_RULINGS.md` §K.23; TODO item 208) — this is the system's
+(Stormlight) advancement table, and Edha follows it, level-3 attribute point included. The
+Mistborn Handbook's own table has no level-3 point (it grants at 1, 6, 9, 12, 15, 18); Ben chose
+the system's table, so a PC at level 3 keeps the point the sheet grants. See
+`docs/ACTOR_STAT_DERIVATION.md` §3 for the full divergence.
+
 **Level 6 is the whole shape of a build.** Tier and rank cap rise in the same step, so a rank-2
 colour at tier 1 rolls `1d6` and a rank-3 colour at tier 2 rolls `2d8` — average damage 3.5 → 9.
 Plan 2–5 as setup and 6 as the payoff, and mark that row on anything you hand a player.
