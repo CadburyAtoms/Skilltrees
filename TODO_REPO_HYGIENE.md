@@ -4807,6 +4807,8 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 
 ## 209. [ ] The Blue pass on the Channel model — Countercurrent (the Counterspell rename, M17), Blue's frame as the per-die disadvantage injector's second consumer, and Blue's twenty-five cards worked as §3 worked White's; Ben's own gated session from a brief like item 200's (DESIGN, DOCS-ONLY; the build rides item 198) (2026-09-16)
 
+**Brief written 2026-09-16 18:40 ET:** `docs/briefs/channel-blue-pass.md` — the prompt Ben pastes into a session of his own (worktree `%TEMP%\edha-channel-blue`, branch `design/channel-blue`, deliverable `docs/design/channel-blue.md`, five gated sections).
+
 **Why:** `docs/design/channel-actions.md` §5.3 item 2. The design worked one colour in full (White); Blue is next because its frame — *the deep reading*, a per-die disadvantage on one enemy — is the second consumer of the per-die placement item 202 builds, and because its `Counterspell` was renamed **Countercurrent** at gate 1 (M17 (a)), a DATA change that rides item 198.
 
 **What to do:** the PM writes a brief in the shape of `docs/briefs/channel-design-pass.md` scoped to Blue (§2.3's frame as the starting text; the same five gates; `docs/design/channel-actions.md` §1 and §4 as the fixed rule); Ben runs it in a session of his own; the deliverable is a §3-style section for Blue appended to the design document (or `docs/design/channel-blue.md`), with the before/after table and the mix against the bands; the Countercurrent rename lists every checklist row and doc that names the talent.
@@ -4834,3 +4836,13 @@ Add harness stubs for `isAction`, `parent`, `root`, `actions` and `defaultAction
 **Done when:** all three sections are merged with every gate approved and item 198's brief covers all five colours.
 
 **PM:** lane H · model — (Ben's own sessions) · size L ×3 · deps item 198's White pilot benched · Filed 2026-09-16 by the PM from the design pass.
+
+## 212. [ ] R-159 (a): the deity design pass on the Channel model — every deity talent classed rider or release with its new cost and card sentence, one braid considered per tree, R-108's Special target revisited, the two-colour test rule kept; Ben's own gated session from a brief the PM writes when asked (DESIGN, DOCS-ONLY; the build rides item 198's deity leg) (2026-09-16)
+
+**Why:** R-159 answered (a) by Ben on 2026-09-16 — the deity re-pricing R-151 (a) held for, now against `docs/design/channel-actions.md` §1.1's rider / release split and §1.6's braid. The deity atlas is 80 % Investiture-priced and 0 % Special against 8 – 46 % and 30 – 41 % in every published Invested family (`docs/analysis/talent-comparison-mistborn-radiant.md` §D-1), because a deity tree had no base action to have paid on; under the Channel it rides the colour's.
+
+**What to do:** the PM writes `docs/briefs/channel-deity-pass.md` in the shape of the Channel and Blue briefs when Ben asks for it (after the Blue pass, so the per-die and rider conventions are settled twice over): the ten trees, each gate one or two trees, every talent rider or release, the braid question per tree, R-108's target restated from the measured result; the deliverable `docs/design/channel-deity.md`. Ben runs it; the PM records it and adds the deity leg to item 198.
+
+**Done when:** `docs/design/channel-deity.md` is merged with every gate approved; item 198's brief covers the deity leg; R-108 and R-151 carry dated post-design lines in §K.
+
+**PM:** lane H · model — (Ben's own session) · size L · deps items 209 (the Blue pass) and 198's White pilot benched · Filed 2026-09-16 by the PM from R-159 (a).
