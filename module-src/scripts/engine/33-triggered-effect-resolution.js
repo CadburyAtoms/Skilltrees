@@ -179,9 +179,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
         try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: healAmt, type: "heal", heal: true }] } }); } catch (e2) {}
       }
     }
+    // item 172: the card must say what the pool actually took, not what the rule declared — a
+    // pool already at max must not print "regains N" when nothing landed (same family as the
+    // heal half above, which already reports through edhaHealLine's delivered amount).
+    let gainedAmt = 0;
     if (eff.resourceGain) {
       const r = eff.resourceGain;
-      await edhaGainResource(owner, r.resource, r.value);
+      gainedAmt = await edhaGainResource(owner, r.resource, r.value);
     }
     // Next-test modifier payoff (Flashpoint: advantage on your next Red test — ENFORCED 07-12; was a
     // "manual reminder" until the nextTestMod primitive was re-checked against it. Generic: any
@@ -197,7 +201,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
      * gain-less card would come out empty (the 07-05 "blank card" case). */
     const healLine = edhaHealLine(healee, amt, healAmt, d => `${healee.name} regains <strong>${d}</strong> health`)
       || (!gainNote ? `${healee.name} regains <strong>0</strong> health` : "");
-    const what = [healLine, gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
+    // item 172: built from gainedAmt (what edhaGainResource actually wrote), never gainNote (the
+    // rule's declared value) — a full pool reads "already at full X", never a "regains N" it didn't get.
+    const gainResLabel = eff.resourceGain ? (EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource) : "";
+    const gainClause = !eff.resourceGain ? "" : (gainedAmt > 0
+      ? `${owner.name} regains <strong>${gainedAmt} ${gainResLabel}</strong>`
+      : `${owner.name} is already at full ${gainResLabel}`);
+    const what = [healLine, gainClause].filter(Boolean).join("; ") + "." + why;
     if (rolled && healAmt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
@@ -244,12 +254,28 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     return;
   }
   let targets = edhaEffectTargets(owner, eff, ctx);
-  if (spec.whenTargetIsolated) targets = targets.filter(a => edhaIsIsolated(a));   // state filter (Sapping Hex)
+  // item 173: only the whenTargetIsolated FILTER emptying an already-resolved candidate means "the
+  // rule's condition was not met" (Sapping Hex fired on a real hit; the victim just was not
+  // Isolated) — a target that never resolved at all (no victim in ctx, nothing on the user's
+  // canvas target) is the different, older problem the message below still covers.
+  let culledByIsolation = false;
+  if (spec.whenTargetIsolated) {
+    const beforeIsolation = targets.length;
+    targets = targets.filter(a => edhaIsIsolated(a));   // state filter (Sapping Hex)
+    culledByIsolation = beforeIsolation > 0 && !targets.length;
+  }
   if (eff.kind === "status") {
     // Apply an Edha/native status to each (state-filtered) target — e.g. Sapping Hex → Weakened.
     // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
     // (Frost Lance: Slowed until the end of the TARGET's next turn).
-    if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
+    if (!targets.length) {
+      // item 173: the rule fired and found its real target — it just was not Isolated. There is no
+      // token to target and nothing to re-fire, so the public card stays silent; a GM who wants the
+      // audit trail still sees it (edhaPostGmCard relays to the GM when the local client is a player).
+      if (culledByIsolation) { await edhaPostGmCard(owner, `<p><strong>${name}</strong> — target is not Isolated; no effect.</p>`); return; }
+      ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` });
+      return;
+    }
     // item 149: the writers report what LANDED, so the card below can too — a target whose condition
     // immunity refused the status must not be listed among those carrying it.
     const landedOn = [], refusedBy = [];
@@ -279,6 +305,15 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   // damage / damage-aoe — apply silently, post one combined message with the dice. A target the local
   // client cannot write (a GM-owned foe hit from a player's payload — Killing Blow's bearer) relays
   // through burst-apply, the same move the heal branch above has always made (07-25, 2bT).
+  if (!targets.length && eff.target === "near-victim") {
+    // item 176: near-victim already means "whoever was near the victim, if anyone" — an empty
+    // splash is the rule correctly finding nobody in range, not a missing target: there is no
+    // token to target and nothing to re-fire, so no public card and no rolled number for nobody.
+    // Shares item 173's silent-not-blame-the-user rule for the different branch that hits it.
+    const vname = ctx?.victim?.name || "the victim";
+    await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no creature within ${Number(eff.radius) || 5} ft of ${vname} — nothing to splash.</p>`);
+    return;
+  }
   for (const a of targets) {
     if (!a.isOwner && game.users?.activeGM) {
       try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { casterActorUuid: owner.uuid, hits: [{ actorUuid: a.uuid, amount: amt, type: eff.damageType, heal: false }] } }); } catch (e) {}

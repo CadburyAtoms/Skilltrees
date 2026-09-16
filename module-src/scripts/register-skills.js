@@ -2028,8 +2028,11 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           if (!edhaTriggerAllowed(mk.owner, rule.item.name, spec)) continue;
           await edhaMarkTriggerUsed(mk.owner, rule.item.name, spec);
           const resKey = h.resource || "inv", gain = Number(h.value) || 1;
-          await edhaGainResource(mk.owner, resKey, gain);
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${edhaConditionLabel(status)} creature took damage — ${mk.owner.name} recovers ${gain} ${EDHA_RES_LABEL[resKey] || resKey}.</p>` });
+          // item 172: report what edhaGainResource actually delivered, not the requested amount.
+          const gained = await edhaGainResource(mk.owner, resKey, gain);
+          const resLabel = EDHA_RES_LABEL[resKey] || resKey;
+          const line = gained > 0 ? `${mk.owner.name} recovers ${gained} ${resLabel}` : `${mk.owner.name} is already at full ${resLabel}`;
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${edhaConditionLabel(status)} creature took damage — ${line}.</p>` });
         }
       }
       // HP-threshold prompt (Mender's Instinct): an ALLY character just dropped to ≤ half HP → offer
@@ -3727,12 +3730,16 @@ async function edhaSpendResource(actor, resource, n) {
 }
 async function edhaGainResource(actor, resource, n) {
   try {
-    if (!actor || !resource || !(Number(n) > 0)) return;
+    if (!actor || !resource || !(Number(n) > 0)) return 0;
     const res = actor.system?.resources?.[resource];
     const cur = res?.value ?? 0;
     const max = edhaResVal(res) ?? (cur + Number(n));
-    await actor.update({ [`system.resources.${resource}.value`]: Math.min(max, cur + Number(n)) });
-  } catch (e) { /* perms */ }
+    const next = Math.min(max, cur + Number(n));
+    await actor.update({ [`system.resources.${resource}.value`]: next });
+    // item 172: callers building a "regains N" card need what actually landed, not what was asked
+    // for — a pool already at max must return 0 here so the card can say so instead of the request.
+    return next - cur;
+  } catch (e) { /* perms */ return 0; }
 }
 
 /* --- edhaResourceWrite (TODO #13, 2026-09-06) — THE resource-path writer for every resource write
@@ -12075,9 +12082,12 @@ async function edhaSenseRevealOnDamage(victim, list) {
       const spec = h.oncePerRound === false ? {} : { oncePerRound: true };
       if (!edhaTriggerAllowed(w.actor, w.item.name, spec)) continue;
       await edhaMarkTriggerUsed(w.actor, w.item.name, spec);
-      await edhaGainResource(w.actor, res, amt);
+      // item 172: report what edhaGainResource actually delivered, not the requested amount.
+      const gained = await edhaGainResource(w.actor, res, amt);
+      const resLabel = EDHA_RES_LABEL[res] || res;
+      const line = gained > 0 ? `${w.actor.name} recovers ${gained} ${resLabel}` : `${w.actor.name} is already at full ${resLabel}`;
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: w.actor }),
-        content: `<p>👁️ <strong>${w.item.name}</strong>: a marked creature (${victim.name}) took damage — ${w.actor.name} recovers ${amt} ${EDHA_RES_LABEL[res] || res}.</p>` });
+        content: `<p>👁️ <strong>${w.item.name}</strong>: a marked creature (${victim.name}) took damage — ${line}.</p>` });
     }
   } catch (e) { console.error("Edha Content | sense-reveal recovery failed", e); }
 }
@@ -12263,9 +12273,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
         try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: healAmt, type: "heal", heal: true }] } }); } catch (e2) {}
       }
     }
+    // item 172: the card must say what the pool actually took, not what the rule declared — a
+    // pool already at max must not print "regains N" when nothing landed (same family as the
+    // heal half above, which already reports through edhaHealLine's delivered amount).
+    let gainedAmt = 0;
     if (eff.resourceGain) {
       const r = eff.resourceGain;
-      await edhaGainResource(owner, r.resource, r.value);
+      gainedAmt = await edhaGainResource(owner, r.resource, r.value);
     }
     // Next-test modifier payoff (Flashpoint: advantage on your next Red test — ENFORCED 07-12; was a
     // "manual reminder" until the nextTestMod primitive was re-checked against it. Generic: any
@@ -12281,7 +12295,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
      * gain-less card would come out empty (the 07-05 "blank card" case). */
     const healLine = edhaHealLine(healee, amt, healAmt, d => `${healee.name} regains <strong>${d}</strong> health`)
       || (!gainNote ? `${healee.name} regains <strong>0</strong> health` : "");
-    const what = [healLine, gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
+    // item 172: built from gainedAmt (what edhaGainResource actually wrote), never gainNote (the
+    // rule's declared value) — a full pool reads "already at full X", never a "regains N" it didn't get.
+    const gainResLabel = eff.resourceGain ? (EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource) : "";
+    const gainClause = !eff.resourceGain ? "" : (gainedAmt > 0
+      ? `${owner.name} regains <strong>${gainedAmt} ${gainResLabel}</strong>`
+      : `${owner.name} is already at full ${gainResLabel}`);
+    const what = [healLine, gainClause].filter(Boolean).join("; ") + "." + why;
     if (rolled && healAmt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
@@ -12328,12 +12348,28 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     return;
   }
   let targets = edhaEffectTargets(owner, eff, ctx);
-  if (spec.whenTargetIsolated) targets = targets.filter(a => edhaIsIsolated(a));   // state filter (Sapping Hex)
+  // item 173: only the whenTargetIsolated FILTER emptying an already-resolved candidate means "the
+  // rule's condition was not met" (Sapping Hex fired on a real hit; the victim just was not
+  // Isolated) — a target that never resolved at all (no victim in ctx, nothing on the user's
+  // canvas target) is the different, older problem the message below still covers.
+  let culledByIsolation = false;
+  if (spec.whenTargetIsolated) {
+    const beforeIsolation = targets.length;
+    targets = targets.filter(a => edhaIsIsolated(a));   // state filter (Sapping Hex)
+    culledByIsolation = beforeIsolation > 0 && !targets.length;
+  }
   if (eff.kind === "status") {
     // Apply an Edha/native status to each (state-filtered) target — e.g. Sapping Hex → Weakened.
     // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
     // (Frost Lance: Slowed until the end of the TARGET's next turn).
-    if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
+    if (!targets.length) {
+      // item 173: the rule fired and found its real target — it just was not Isolated. There is no
+      // token to target and nothing to re-fire, so the public card stays silent; a GM who wants the
+      // audit trail still sees it (edhaPostGmCard relays to the GM when the local client is a player).
+      if (culledByIsolation) { await edhaPostGmCard(owner, `<p><strong>${name}</strong> — target is not Isolated; no effect.</p>`); return; }
+      ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` });
+      return;
+    }
     // item 149: the writers report what LANDED, so the card below can too — a target whose condition
     // immunity refused the status must not be listed among those carrying it.
     const landedOn = [], refusedBy = [];
@@ -12363,6 +12399,15 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   // damage / damage-aoe — apply silently, post one combined message with the dice. A target the local
   // client cannot write (a GM-owned foe hit from a player's payload — Killing Blow's bearer) relays
   // through burst-apply, the same move the heal branch above has always made (07-25, 2bT).
+  if (!targets.length && eff.target === "near-victim") {
+    // item 176: near-victim already means "whoever was near the victim, if anyone" — an empty
+    // splash is the rule correctly finding nobody in range, not a missing target: there is no
+    // token to target and nothing to re-fire, so no public card and no rolled number for nobody.
+    // Shares item 173's silent-not-blame-the-user rule for the different branch that hits it.
+    const vname = ctx?.victim?.name || "the victim";
+    await edhaPostGmCard(owner, `<p><strong>${name}</strong> — no creature within ${Number(eff.radius) || 5} ft of ${vname} — nothing to splash.</p>`);
+    return;
+  }
   for (const a of targets) {
     if (!a.isOwner && game.users?.activeGM) {
       try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { casterActorUuid: owner.uuid, hits: [{ actorUuid: a.uuid, amount: amt, type: eff.damageType, heal: false }] } }); } catch (e) {}
@@ -15690,8 +15735,10 @@ function edhaSovAttackRead(roller, roll) {
 async function edhaSovRecoverInv(owner, sourceName, victimName, n = 1) {
   try {
     const gain = Math.max(1, Number(n) || 1);
-    await edhaGainResource(owner, "inv", gain);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${sourceName}</strong>: ${victimName} failed a test — ${owner.name} recovers ${gain} Investiture.</p>` });
+    // item 172: report what edhaGainResource actually delivered, not the requested amount.
+    const gained = await edhaGainResource(owner, "inv", gain);
+    const line = gained > 0 ? `${owner.name} recovers ${gained} Investiture` : `${owner.name} is already at full Investiture`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${sourceName}</strong>: ${victimName} failed a test — ${line}.</p>` });
   } catch (e) { console.error("Edha Content | Sovereignty Inv recovery failed", e); }
 }
 // The owner-click fallback for NON-attack tests (Foundry tests carry no DC — owner judges).
@@ -19153,8 +19200,18 @@ async function edhaDrawMana(item) {
     const actor = item?.actor; if (!actor) return;
     const gain = edhaDrawManaYield(actor);
     const inv = actor.system?.resources?.inv;
-    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await edhaResourceWrite(actor, "inv", { value: Math.min(max ?? ((inv.value || 0) + gain), (inv.value || 0) + gain) }, edhaBookkeepingTag("Draw Mana (recover Investiture)")); }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${gain} Investiture (highest leyline rank).</p>` });
+    // item 172: report what the pool actually took (next − cur), not the declared yield — a full
+    // Investiture pool must say so instead of a "recover N" that never landed.
+    let recoverLine = `recover ${gain} Investiture (highest leyline rank)`;
+    if (inv) {
+      const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max;
+      const cur = inv.value || 0;
+      const next = Math.min(max ?? (cur + gain), cur + gain);
+      await edhaResourceWrite(actor, "inv", { value: next }, edhaBookkeepingTag("Draw Mana (recover Investiture)"));
+      const recovered = next - cur;
+      recoverLine = recovered > 0 ? `recover ${recovered} Investiture (highest leyline rank)` : "already at full Investiture";
+    }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — ${recoverLine}.</p>` });
     // …then the document-driven riders (every Key since 2bZ). AFTER the summary card so the
     // recover-Investiture line still reads first; each rule posts its own card.
     await edhaDispatchDrawMana(actor, item);

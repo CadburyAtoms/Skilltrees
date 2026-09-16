@@ -215,12 +215,16 @@ async function edhaSpendResource(actor, resource, n) {
 }
 async function edhaGainResource(actor, resource, n) {
   try {
-    if (!actor || !resource || !(Number(n) > 0)) return;
+    if (!actor || !resource || !(Number(n) > 0)) return 0;
     const res = actor.system?.resources?.[resource];
     const cur = res?.value ?? 0;
     const max = edhaResVal(res) ?? (cur + Number(n));
-    await actor.update({ [`system.resources.${resource}.value`]: Math.min(max, cur + Number(n)) });
-  } catch (e) { /* perms */ }
+    const next = Math.min(max, cur + Number(n));
+    await actor.update({ [`system.resources.${resource}.value`]: next });
+    // item 172: callers building a "regains N" card need what actually landed, not what was asked
+    // for — a pool already at max must return 0 here so the card can say so instead of the request.
+    return next - cur;
+  } catch (e) { /* perms */ return 0; }
 }
 
 /* --- edhaResourceWrite (TODO #13, 2026-09-06) — THE resource-path writer for every resource write

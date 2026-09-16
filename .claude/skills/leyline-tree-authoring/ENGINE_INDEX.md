@@ -2151,6 +2151,22 @@ excluded — `edhaTokensWithin` drops the centre token). **`nearAffects`** (all 
 filters that by disposition relative to YOU and skips downed creatures. Default `all` is what every
 pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enemies` consumer.
 
+**item 176 (2026-09-15): a near-victim splash that finds nobody posts NO card.** Chain Detonation
+on a kill with nothing within 5 ft still rolled its damage and posted "6 energy to (no target —
+target a token, then re-fire)" publicly — wrong advice for an automatic dispatch that supplied its
+own victim; there is no token to target. The damage/damage-aoe branch of `edhaRunTriggerEffect`
+(33-triggered-effect-resolution.js) now checks `eff.target === "near-victim"` specifically and, if
+`edhaEffectTargets` came back empty, posts no public card (a quiet `edhaPostGmCard` audit line
+instead) and returns before rolling a visible number. The "(no target — target a token, then
+re-fire)" wording stays for genuine PROMPT-mode misses (nothing on the user's canvas target) — it
+is not a blanket rule for every `target` kind, because several OTHER damage rules key on `"victim"`
+directly and an empty list there (ctx truly carried no victim) is still worth surfacing loudly.
+**Item 173** is the same principle on the STATUS branch: `spec.whenTargetIsolated` culling an
+already-resolved victim (Sapping Hex hitting a creature that is not Isolated) also posts no public
+card now, distinguished from "nothing ever resolved" by comparing the target list's length before
+and after the filter (`culledByIsolation`) rather than by `eff.target` — see the status-branch note
+in `TRIGGERED-EFFECT RESOLUTION`'s row above.
+
 ## Statuses
 - **`edhaApplyTimedStatus(target, statusId, { owner, expire })`** — applies + stamps owner/target-relative
   auto-expiry (`expire:"owner"|"target"`). For NON-expiring (e.g. Prone) use **`edhaToggleStatus(target,
@@ -2622,6 +2638,13 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   convention (`edhaNumOr`, see the ⛑ family above) is now applied at all 3 dataset-cost-read sites
   that needed it (spread/reknit/vital-surge) — 2 of the 3 were already correct by hand; unified onto
   `edhaNumOr` for consistency, no behavior change.
+  **item 172 (2026-09-15): `edhaGainResource` now RETURNS the amount actually delivered** (`next -
+  cur`; 0 at max, on a non-positive request, or on a caught perms failure) instead of nothing — a
+  card built from the REQUEST rather than this return prints "regains N" at a full pool (bench run
+  49b's Predatory Patience / Draw Mana defect). Every "regains N `<resource>`" card must build its
+  clause from the return, and say "already at full `<resource>`" (or drop the clause) at 0 —
+  `edhaSovRecoverInv`, the marked-damage-trigger card and `edhaSenseRevealOnDamage` follow this now
+  too. No existing caller read the old (absent) return value, so this was a pure contract addition.
 - **`edhaResourceWrite(actor, resource, changes, options)`** (item 13, 2026-09-06) — THE resource-path
   writer for every write that is **not** a plain clamped spend/gain, and the reason
   `engine-idiom-ratchet.json`'s `resourceWrite` key reads **0**. The last twelve hand-rolled

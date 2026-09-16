@@ -932,8 +932,11 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           if (!edhaTriggerAllowed(mk.owner, rule.item.name, spec)) continue;
           await edhaMarkTriggerUsed(mk.owner, rule.item.name, spec);
           const resKey = h.resource || "inv", gain = Number(h.value) || 1;
-          await edhaGainResource(mk.owner, resKey, gain);
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${edhaConditionLabel(status)} creature took damage — ${mk.owner.name} recovers ${gain} ${EDHA_RES_LABEL[resKey] || resKey}.</p>` });
+          // item 172: report what edhaGainResource actually delivered, not the requested amount.
+          const gained = await edhaGainResource(mk.owner, resKey, gain);
+          const resLabel = EDHA_RES_LABEL[resKey] || resKey;
+          const line = gained > 0 ? `${mk.owner.name} recovers ${gained} ${resLabel}` : `${mk.owner.name} is already at full ${resLabel}`;
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${edhaConditionLabel(status)} creature took damage — ${line}.</p>` });
         }
       }
       // HP-threshold prompt (Mender's Instinct): an ALLY character just dropped to ≤ half HP → offer
