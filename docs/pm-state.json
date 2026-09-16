@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T17:23:31.007Z",
+  "generatedAt": "2026-09-16T18:43:37.270Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "1ad30c90f5",
-    "commit": "2b5d13e",
+    "hash": "55bbbd8dc6",
+    "commit": "6b680af",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "idle",
-    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). Nine rulings R-146 … R-154 are filed as a MENU with recommended defaults; items 191 – 195 filed. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: the menu R-146 … R-154 (say 'defaults' and the PM files them all); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "note": "The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
+    "waitingOn": "Ben: paste the Channel design-pass prompt (docs/briefs/channel-design-pass.md) into a session of your own when you have time; confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
     "nextWakeAt": null,
     "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
   },
@@ -2411,8 +2411,8 @@
       "model": "opus",
       "size": "M",
       "deps": "R-146 (a), item 183",
-      "status": "blocked",
-      "statusDetail": "R-146",
+      "status": "queued",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -2435,8 +2435,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-148 (a)",
-      "status": "blocked",
-      "statusDetail": "R-148",
+      "status": "queued",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -2447,8 +2447,8 @@
       "model": "sonnet",
       "size": "S",
       "deps": "R-149 (a)",
-      "status": "blocked",
-      "statusDetail": "R-149",
+      "status": "queued",
+      "statusDetail": null,
       "pr": null
     },
     {
@@ -2471,6 +2471,54 @@
       "model": "sonnet",
       "size": "XS",
       "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 201,
+      "item": "197",
+      "title": "R-147 (a): item resources for one tree's counted resource — Chaos's Omens (recommended) or Destruction's Charges onto the talent's own system.resources at 3.x, benched, then the other seven decided (DATA-REBUILD + ENGINE at 3.x). Filed by the PM from R-147 (a)",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "item 187",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 202,
+      "item": "198",
+      "title": "R-150 (b): the five colours re-based on power items — non-core skill, linked tree, @scalar.power.<colour>.die, the Channel as the power's embedded action — the last PR of the 3.x re-platforming (DATA-REBUILD + ENGINE at 3.x). Filed by the PM from R-150 (b)",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "items 187, 200",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 203,
+      "item": "199",
+      "title": "R-151 (a) + R-153 (a): the two design guides record the published families' action-type and cost tables and the variable-spend convention (DOCS-ONLY). Filed by the PM from R-151 (a) and R-153 (a)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "XS",
+      "deps": "none",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 204,
+      "item": "200",
+      "title": "R-152 (b): the Channel design pass — Ben's own session from docs/briefs/channel-design-pass.md; deliverable docs/design/channel-actions.md, White by default, five gated sections (DESIGN, DOCS-ONLY). Filed by the PM from R-152 (b)",
+      "lane": "H",
+      "model": null,
+      "size": "L",
+      "deps": "Ben's time",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -2521,11 +2569,14 @@
     }
   ],
   "benOnly": [
-    "the menu R-146 … R-154 (say \"defaults\" and the PM files them all)",
     "the session-one confirmation (R-144)",
-    "an R-145 veto if he disagrees. What the next PM can dispatch, on Ben's word: item 183 (opus, L) and items 188, 189, 190, 192 (sonnet, XS – S)",
-    "items 191, 193, 194 unblock on their rulings",
-    "195 waits on 187."
+    "an R-145 veto if he disagrees",
+    "the Channel design pass when he has time. What the next PM can dispatch, on Ben's word: item 183 (opus, L)",
+    "items 188, 189, 190, 192, 196, 199 (sonnet, XS – S)",
+    "items 193 and 194 (sonnet, S — both 2.1.0-safe, F5 / REBUILD, nothing deploys until the freeze lifts)",
+    "item 191 behind 183",
+    "items 195, 197 behind 187",
+    "198 behind 187 and 200."
   ],
   "inbox": [],
   "foundry": {
@@ -2535,34 +2586,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "02:08",
-      "at": "2026-09-14T06:08:00.000Z",
-      "item": "#380 (fix pass 12) squash-merged at 02:08:57 after the PM's bookkeeping commit (CI green on 0016065); no trailer on main (8f0c843); the worktree removed and the remote branch confirmed gone (deleted by hand — the item-152 recipe)",
-      "itemNo": "380",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 380
-    },
-    {
-      "date": "2026-09-14",
-      "time": "02:09",
-      "at": "2026-09-14T06:09:00.000Z",
-      "item": "Deploy cycle run BY THE PM — --dry-run 7/7 PASS (item 140's un-extracted-edits guard live for the first time), then --yes from main @ 8f0c843 (06:09:3xZ → 06:09:43Z): nine steps ok, the engine pushed (served 7fc3ce74 = HEAD — fix pass 12's F5), packs stamped 06:09:43Z with the widened baselines written, post-flight 3/3 PASS; hand-verified: 6 in sync, /join title Edha, served sha = repo sha. LIVE: fix pass 12 + the deity REBUILD for 141 / 148. Ben owes one ⟳ Sync Talents click per PC (item 146's fix is not retroactive). Open 🤖 rows for bench 48: 111-2, 123-1, FP-1, GATE-1 … GATE-3, KM-2 / KM-3, IMM-1, INC-1, SYNC-1, Predator's Due (← 88)",
-      "itemNo": null,
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "02:09",
@@ -3374,9 +3397,37 @@
       "weightedM": null,
       "outcome": "R-146 … R-154 filed as a menu; items 191 – 195 filed; one 🤖 row; CLAUDE.md's rulings pointer, the changelog and this board updated; gates green",
       "pr": null
+    },
+    {
+      "date": "2026-09-16",
+      "time": "13:27",
+      "at": "2026-09-16T17:27:00.000Z",
+      "item": "PR #412 merged (the two Metalworks comparisons, R-146 … R-154 as a menu, items 191 – 196, the sweep) — CI green in 1m19s; main = 6b680af; checkout back on main, clean",
+      "itemNo": "412",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 412
+    },
+    {
+      "date": "2026-09-16",
+      "time": "14:40",
+      "at": "2026-09-16T18:40:00.000Z",
+      "item": "Ben (chat) answers the menu: *\"default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)\"*. R-146 … R-154 moved to §K.21 with their answer lines; §L back to R-145 alone. Unblocked: items 191 (R-146 a), 193 (R-148 a), 194 (R-149 a). Filed: item 197 (R-147 a, one pilot tree after the flip), item 198 (R-150 b — colours as power items, the last PR of the re-platforming), item 199 (R-151 a + R-153 a, DOCS), item 200 (R-152 b — the Channel design pass, Ben's own session from docs/briefs/channel-design-pass.md); R-154 (a) waits for the rites. The prompt handed to Ben in chat and kept in the brief",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "~20 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "filed; tests/pm-state.test.js re-pinned 10 → 1; dashboard + phone board updated",
+      "pr": null
     }
   ],
-  "runLogTotal": 367,
+  "runLogTotal": 369,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

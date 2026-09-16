@@ -2682,7 +2682,9 @@ Filed 2026-09-15 by the PM from item 177's compatibility check (PR #403), and an
 
 ---
 
-## L. Waiting — R-146 … R-154 are OPEN (filed by the PM on 2026-09-16 as a MENU from the two Metalworks comparisons, `docs/analysis/metalworks-comparison.md` §c and `docs/analysis/talent-comparison-mistborn-radiant.md` §F — nothing applied, each with a recommended default; "defaults" is a complete answer) and R-145 is open (filed by the PM on 2026-09-15 from item 181's build, and APPLIED as its default, so it wants a veto rather than a decision); otherwise EMPTY since earlier that evening (R-144, filed that evening from item 177's compatibility check and answered in chat the same evening — the full 3.1.0 build proceeds on the side while the live table keeps session one, and the swap waits for Ben's word — filed in §K.20; R-142 and R-143, both filed by the PM that day, answered (a) in chat the same evening — R-143 with four caveats — and filed in §K.19; R-141, bench run 49a, answered (a) in chat the same day and filed in §K.18; R-137 … R-140, the attack-model rerun, answered 2026-09-14 / 2026-09-15 in chat and filed in §K.17; R-136 answered (a) in chat and moved to §K.16; R-127 answered and moved to §K.14; the seven design proposals moved to §K.13; the bestiary menu R-128 … R-135 lives in §G.1 → §K.15)
+### K.21 — R-146 … R-154 (the Metalworks comparisons' menu, filed by the PM 2026-09-16, answered 2026-09-16 in chat)
+
+Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c and `docs/analysis/talent-comparison-mistborn-radiant.md` §F, and answered by Ben in chat the same afternoon in one line. Each entry is verbatim as filed, with its answer line.
 
 **R-146. Sheet sections through the system's API instead of DOM injection — should the ⊙ range button, the ritual HP-cost cell, the path-slot budget readout and the adversary-sync controls become registered Actions-tab / Talents-tab sections at 3.1.0?** Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c, borrow B1. Today four injectors find their rows by DOM selector on render hooks (`25-sheet-qol.js:203-208`, `23-sheet-path-slots-the-budget-readout.js:36-45`, `35-targeting-attunement-range-aoe-templates.js:131-150`, `27-adversary-pack-sync.js:292-344`); item 177's F5 says the ⊙ button and the HP-cost cell vanish on 3.1.0 because Actions-tab rows become embedded actions. 3.1.0 exposes `registerActionListSection` / `registerTalentListSection` and dynamic-section generators (3.1.0 `api/sheet.ts`), which the Mistborn Handbook module itself uses for its own section. A menu, not applied.
 - **(a) Yes, in item 184 (PR 3): register sections, and retire each selector injector as its section replaces it.** What Ben sees: the same buttons, in a titled section the system sorts and labels. Deploy: ENGINE (F5) at 3.x, dual-mode guarded (a no-op on 2.1.0, so it can merge early). **Recommended.**
@@ -2691,12 +2693,16 @@ Filed 2026-09-15 by the PM from item 177's compatibility check (PR #403), and an
 
 Ask: registered sections in PR 3 (a), remap the rows (b), or sections only where the API fits (c)?
 
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — registered sections in item 184 / item 191.** Item 191 (queue row 195) is unblocked; it still waits on item 183's resolver.
+
 **R-147. Item resources for the counted per-talent resources — at 3.x, should Omen, Quarry, Harvested Remain, Ordained Ground, Snare, Edict, Charge and Bounty move from engine ledgers and flags onto the talent's own `system.resources.uses` / `charges`, spent by ordinary consumption rows?** Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c, borrow B2. This is how a Feruchemist's metalmind works in the shipped Mistborn Handbook: 34 talents consume `{type: "item_resource", resource: "charges"}` and the sheet shows the count, the consume dialog handles min / max / optional spend, and ⟳ Sync refreshes it (`registerItemResource`, 3.1.0 `api/item.ts:46`). The ecosystem review called Edha's version "eight sealed loops" (README §"Resource economy"). Cross-actor lists — marks placed on enemies — stay `edha-owner-list`; only the caster-side counters move. The fields exist only at 3.x, so nothing here can start before item 187.
 - **(a) Pilot on one tree after PR 6 — Chaos's Omens or Destruction's Charges — bench it, then decide the rest.** Deploy: DATA-REBUILD + ENGINE at 3.x. **Recommended.**
 - (b) All eight at once after PR 6.
 - (c) No — the ledgers work and are benched; a native count on the sheet is not worth the rewrite.
 
 Ask: pilot one tree after the flip (a), all eight (b), or leave the ledgers (c)?
+
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — pilot one tree after the flip.** Filed as **item 197** (Chaos's Omens recommended), after item 187.
 
 **R-148. Engine dials as module settings — should every constant a ruling has toggled (`EDHA_DODGE_PAY_ON_ARM` and its expiry dial from R-145, R-43's dice math, the omen-branch dial, the next ones) become a `game.settings` entry Ben can flip in Foundry's module settings?** Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c, borrow B3. The system runs fifteen such settings (automation toggles, chat buttons, sheet defaults); Edha's dials are constants, so a veto today is an engine edit, a PR and a deploy. The Foundry convention in CLAUDE.md — *"The user must be able to edit everything from inside Foundry"* — points at settings. 2.1.0-safe.
 - **(a) Yes: world-scoped, GM-only, each defaulting to today's value and read at use time; the constants stay as the defaults so the tests keep pinning them.** Deploy: ENGINE-ONLY (F5). **Recommended.**
@@ -2705,12 +2711,16 @@ Ask: pilot one tree after the flip (a), all eight (b), or leave the ledgers (c)?
 
 Ask: settings for every dial (a), just the Dodge pair (b), or code only (c)?
 
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — settings for every dial**, world-scoped and GM-only. Item 193 (queue row 197) is unblocked; 2.1.0-safe, so it can land before the swap.
+
 **R-149. Enrichers on MANUAL and paid-by-hand cards — should the phrasing standard adopt the system's `[[test skill=… dc=…]]`, `[[damage …]]` and `[[/roll …]]` tags in card text for rolls the engine does not own?** Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c, borrow B5. An enricher turns a sentence into a button the player clicks (3.1.0 `docs/Enrichers.md`; the Mistborn cards use `[[test skill=fer]]` and `[[damage 1d4 Impact]]` throughout), and it exists at 2.1.0 too. Rule 3's MANUAL exit today means "roll it yourself"; with a tag it means one click, with zero wiring and zero engine code. `phrasing-verifier` would learn the tag.
 - **(a) Yes, for the rule-3 MANUAL set first, then any card that tells the player to roll something the engine does not roll.** Deploy: DATA — REBUILD + ⟳ Sync Talents; 2.1.0-safe. **Recommended.**
 - (b) Everywhere a card names a roll, engine-owned or not — two ways to roll the same thing on some cards.
 - (c) No.
 
 Ask: tags on the MANUAL set first (a), everywhere (b), or not at all (c)?
+
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — tags on the MANUAL set first.** Item 194 (queue row 198) is unblocked; DATA — REBUILD + ⟳ Sync, 2.1.0-safe.
 
 **R-150. Colours as `power` items — should the five leyline colours be re-based on the system's `power` item type at 3.x (a non-core skill, a linked talent tree, and `@scalar.power.<colour>.die` as the die), so the system owns the die table, the unlock and the tree link?** Filed 2026-09-16 by the PM from `docs/analysis/metalworks-comparison.md` §c, borrow B10, and `docs/analysis/talent-comparison-mistborn-radiant.md` §C.3. The published game models a metal that way, and its power die (d4 → d12 by rank) is exactly Edha's `(2 × rank + 2)` die; `[Tier][Die]` is tier copies of it. The gain is small (the table is already identical; `unlocked` would gate the sheet's skill row); the churn is total — 15 trees' data, the creation wizard, every formula, every bench row.
 - **(a) No for now; revisit after playtest-1.** **Recommended.**
@@ -2719,12 +2729,16 @@ Ask: tags on the MANUAL set first (a), everywhere (b), or not at all (c)?
 
 Ask: leave the colours as core skills (a), re-base them on `power` (b), or spike one colour on the copy (c)?
 
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(b) — yes, the colours are re-based on `power` items as the last PR of the 3.x re-platforming**, against the PM's recommended (a). Filed as **item 198**, after items 187 and 200; the Channel (R-152) becomes the power's embedded action.
+
 **R-151. The deity atlas prices 80 % of its talents and has no Specials, against 8 – 46 % costed and 30 – 41 % Special in every published Invested family (Allomancy, Feruchemy, the Radiant orders) — re-price now, re-type now, or hold for R-152?** Filed 2026-09-16 by the PM from `docs/analysis/talent-comparison-mistborn-radiant.md` §D-1. The numbers: deity 0 % Special (published 30 – 41 %), 72 % of talents costing at least one Action (published 8 – 20 %), 11 % three-Action talents (published 0 – 1 %), 80 % consuming Investiture at 1 – 4 a cast (published 8 – 46 %, and Feruchemy's 46 % is charges earned in downtime). The leyline atlas sits inside every published band except Reactions. R-108 (answered (a), 2026-09-13) restated the Special target and deferred conversion "until the leyline agency work has landed"; this is the comparison it asked to revisit with. The pricing is the larger half, and its root is structural (R-152): a deity tree charges on every talent because it has no base action to have charged on.
 - **(a) Hold for R-152, but record these numbers in the deity guide's action-type and cost tables now.** Deploy: DOCS-ONLY. **Recommended** — re-pricing nine trees twice is the price of deciding early.
 - (b) Re-price now: drop the Investiture cost from the riders and passives that carry one, keep it on the sources. Deploy: DATA — REBUILD deity + ⟳ Sync Talents; every deity bench row re-run.
 - (c) Re-type now: convert one or two standalone Actions per tree into Specials (R-108's option (b), revisited). Deploy: DATA — REBUILD deity + ⟳ Sync Talents.
 
 Ask: hold and document (a), re-price the riders (b), or convert Actions to Specials (c)?
+
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — hold the deity re-pricing for R-152's design; record the numbers in the deity guide now.** Filed with R-153 (a) as **item 199** (DOCS-ONLY). The re-pricing re-opens against `docs/design/channel-actions.md` once it exists.
 
 **R-152. A base "Channel" action per colour — should each leyline colour gain a base action (1 Action; spend 1 to [rank] Investiture; an ongoing frame until the end of your next turn, maintained as a Free Action for the same cost) with the colour's talents re-typed as riders on it, the way Burn and Tap carry the cost for every metal?** Filed 2026-09-16 by the PM from `docs/analysis/talent-comparison-mistborn-radiant.md` §D-3. It is the structural answer the published design implies to D-1 and to the ecosystem review's "Blue and White have fifteen Investiture-costing talents and zero regen"; it is also a re-costing of 215 leyline and deity talents and of every bench row on them. Draw Mana would stay the refill.
 - **(a) No build now; file it as a design seed for after playtest-1**, alongside the bestiary's `DESIGN_SEEDS.md`. **Recommended.**
@@ -2733,12 +2747,16 @@ Ask: hold and document (a), re-price the riders (b), or convert Actions to Speci
 
 Ask: a design seed for later (a), a design pass now (b), or never (c)?
 
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(b) — design it now as a `leyline-revision-guide` pass, one colour in full text, Ben's gate per section; build after 3.1.0**, against the PM's recommended (a). Filed as **item 200**; the brief and the prompt Ben pastes into his own session are `docs/briefs/channel-design-pass.md`. White is the default worked colour.
+
 **R-153. "Spend 1 or more, up to your rank" as an Edha cost shape — should talents whose effect already scales with something (damage dice, targets, range, duration) adopt variable spend with a rank limit, using the consume dialog's `{min, max}` rows?** Filed 2026-09-16 by the PM from `docs/analysis/talent-comparison-mistborn-radiant.md` §D-4. Every published Invested family has it (20 of 83 Allomancy costs; 10 Radiant "Variable Investiture" talents; the Mistborn packs write `max: -1` for "up to your limit"); Edha has two leyline talents and no deity talent. The dialog already supports the row; a limit rule (rank, as the Metallic Art limit) is the only new piece.
 - **(a) Yes, as a convention for new and revised talents; no sweep of existing cards.** Deploy: none until a talent uses it. **Recommended.**
 - (b) Sweep: apply it to every talent whose effect scales. Deploy: DATA — REBUILD + ⟳ Sync Talents.
 - (c) No.
 
 Ask: a convention going forward (a), a sweep (b), or no (c)?
+
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — a convention for new and revised talents, no sweep.** Folded into **item 199** with R-151 (a).
 
 **R-154. Narrative gates for deity trees — should a deity capstone or second entry sit behind a `goal` item (a rite completed), as the Radiant Ideals and the Metalborn goals gate the published Invested paths?** Filed 2026-09-16 by the PM from `docs/analysis/talent-comparison-mistborn-radiant.md` §D-5. The system's `goal` item, `goal-complete` event and `goal` prerequisite type exist at 2.1.0 and 3.1.0; Edha gates only on colour rank. A god's rites are the obvious analogue, and they are canon work first (lore-forge).
 - **(a) No for now; revisit with the canon rites work**, since the goal must exist in canon before it exists on a sheet. **Recommended.**
@@ -2747,10 +2765,34 @@ Ask: a convention going forward (a), a sweep (b), or no (c)?
 
 Ask: wait for the rites (a), pilot one capstone (b), or never (c)?
 
+> **ANSWERED — Ben, chat 2026-09-16 14:40 ET, verbatim for all nine: "default all except R150-b, 152-b (give me a prompt to send to another session to do the design pass)"** → **(a) — no for now; revisit with the canon rites work.** Nothing filed.
+
+---
+
+## L. Waiting — R-145 is open (filed by the PM on 2026-09-15 from item 181's build, and APPLIED as its default, so it wants a veto rather than a decision); otherwise EMPTY since 2026-09-16 14:40 ET (R-146 … R-154, the Metalworks comparisons' menu filed that day, answered by Ben in one chat line — defaults on all but R-150 (b) and R-152 (b) — and filed in §K.21; before that, R-145 was open (filed by the PM on 2026-09-15 from item 181's build, and APPLIED as its default, so it wants a veto rather than a decision); otherwise EMPTY since earlier that evening (R-144, filed that evening from item 177's compatibility check and answered in chat the same evening — the full 3.1.0 build proceeds on the side while the live table keeps session one, and the swap waits for Ben's word — filed in §K.20; R-142 and R-143, both filed by the PM that day, answered (a) in chat the same evening — R-143 with four caveats — and filed in §K.19; R-141, bench run 49a, answered (a) in chat the same day and filed in §K.18; R-137 … R-140, the attack-model rerun, answered 2026-09-14 / 2026-09-15 in chat and filed in §K.17; R-136 answered (a) in chat and moved to §K.16; R-127 answered and moved to §K.14; the seven design proposals moved to §K.13; the bestiary menu R-128 … R-135 lives in §G.1 → §K.15)
+
 **R-145. Dodge's new arm button ships behind two dials — is the Focus paid when you ARM Dodge, and does an unused arm clear at the end of your own next turn?** Filed 2026-09-15 by the PM from item 181 (PR #407), R-143 (a)'s caveat 4, whose worker was told to propose defaults rather than settle these in code. **What shipped:** a button on the character sheet, beside the Focus bar, arms the `dodgearmed` status; the next single-target attack against you rolls with disadvantage through the same roll-configuration seam pack advantage uses, and consumes the arm; an area or multi-target attack ignores it, and the arm survives (SR p.34: Dodge "doesn't work on area attacks or multi-target attacks"). The system's own action text gives the rest: Dodge is a Reaction, used before an enemy targets you with an attack, costing 1 focus. **Two things that text does not settle** are the dials: `EDHA_DODGE_PAY_ON_ARM` (when the Focus leaves the pool) and the arm's expiry. The **Reaction** half of the cost stays GM-adjudicated either way — this engine tracks no reaction-economy resource for any Reaction, and item 177's check confirmed 3.1.0 adds none. **APPLIED as the default since PR #407 — a veto flips one constant each, not a design.** *Recommended default: **(a)** the Focus is spent when you arm, since the rules read "Dodge is used … costs 1 focus" and every armed marker this engine already carries — Warlord's Advance, Tagging Shot — pays at declaration; and an unused arm clears at the end of your own next turn, because Dodge answers one imminent attack rather than standing all scene.*
 - **(a) Pay on arming; the arm clears at the end of your own next turn.** Arming refuses when you cannot afford the Focus, and says so; a consumed arm costs nothing further. **APPLIED.** Deploy: ENGINE (F5) — already on `main`, and not at the table while session one is pending.
 - **(b) Pay on consume.** `EDHA_DODGE_PAY_ON_ARM = false`: arming is free and the Focus leaves only when an attack actually rolls against the disadvantage, so a Dodge nobody attacks into costs nothing. Truer to "a Reaction is paid when it triggers", but it lets a player arm every turn for free. Deploy: ENGINE (F5), one constant.
 - **(c) The arm persists until something consumes it, or combat ends.** A standing guard rather than a called Reaction; the cheapest to remember at the table, the furthest from the action's text. Deploy: ENGINE (F5), the status's expiry shape.
+
+*(R-146 — sheet sections through the system's API instead of DOM injection — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-147 — item resources for the counted per-talent resources, one pilot tree after the flip — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-148 — engine dials as module settings — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-149 — enrichers on the MANUAL cards — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-150 — the colours re-based on `power` items as the last PR of the re-platforming — (b), against the recommended default — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-151 — the deity atlas's pricing and Specials — hold for R-152, record the numbers now — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-152 — a base Channel action per colour — designed now as a gated leyline-revision-guide pass, built after 3.1.0 — (b), against the recommended default — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-153 — variable spend up to rank as a convention — ANSWERED 2026-09-16, moved to §K.)*
+
+*(R-154 — narrative gates for deity trees — wait for the rites — ANSWERED 2026-09-16, moved to §K.)*
 
 *(R-144 — the full 3.1.0 build proceeds on the side; the live 2.1.0 table keeps session one, and the swap waits for Ben's confirmation that it has happened — ANSWERED 2026-09-15, moved to §K.)*
 

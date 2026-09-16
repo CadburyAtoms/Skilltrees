@@ -464,7 +464,9 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // compared the Metalworks codebase and the Mistborn / Radiant talent sets with ours, and filed the
   // borrows and design questions as ONE menu in §L — R-146 … R-154, each with a recommended default,
   // nothing applied. The length assertion moves 1 → 10.
-  const ECOSYSTEM_RULINGS = ["R-145", "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154"];
+  // 2026-09-16, 14:40 ET: Ben answered all nine in one chat line — "default all except R150-b, 152-b" — and
+  // they moved to §K.21 with §L stubs; the nine join the closed list below. The length assertion moves 10 → 1.
+  const ECOSYSTEM_RULINGS = ["R-145"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -472,7 +474,8 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-95", "R-96", "R-97", "R-98", "R-99", "R-100", "R-101", "R-102", "R-103", "R-104", "R-105", "R-106", "R-107", "R-108", "R-109", "R-110", "R-111", "R-112", "R-113",
       "R-92", "R-114", "R-115", "R-116", "R-117", "R-118", "R-119", "R-127",
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
-      "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144"]) {
+      "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
+      "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
