@@ -16,8 +16,8 @@ gate log is the record.
 | 1 | §1 Blue's three trees, and the reading applied | **✅ approved 2026-09-16** — BL-1 … BL-7 all (a) |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-16** — BL2-1 … BL2-6 all (a) |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-16** — the two flagged numbers accepted in the same line |
-| 4 | §4 The build notes for Blue | pending |
-| 5 | §5 Close-out | pending |
+| 4 | §4 The build notes for Blue | **not gated** — facts stand; BB-1 … BB-4 filed unanswered (§4.6) |
+| 5 | §5 Close-out | **✅ done 2026-09-16** — Ben closed the pass: *"Blue is done"* |
 
 **What this rests on** (read in this order; nothing below re-derives them):
 `docs/design/channel-actions.md` §1.1 (the four definitions — frame, channelled Investiture, rider,
@@ -554,3 +554,233 @@ of it.
 frame and every rider in the colour. Sixteen Investiture-priced cards become seven, and the seven are
 the things Blue makes. The balance yardsticks (item 210) should be re-run against this row as well as
 White's before item 198 builds.
+
+---
+
+## 4. The build notes for Blue
+
+What item 198's Blue leg builds, named from what exists — every handler read from
+`data/authored/leyline-blue.json` and every line number re-derived against `main` `477e261` after the
+seven-worker batch landed. **No code and no data change in this pass.** Deploy class: **ENGINE (F5) +
+DATA — REBUILD leyline + ⟳ Sync Talents, at 3.x only**, after item 187's flip (R-144).
+
+### 4.1 Blue's riders and where §4.3's gate lands
+
+Nine cards become riders. Their `use`-borne handlers:
+
+| Rider(s) | Handler on `use` | In §4.3's ten? | Gate lands in |
+|---|---|---|---|
+| Intercept, Subtle Suggestion, Pattern Recognition, Anticipate, Probability Cascade | `edha-prompt-pick` | **yes** | the pre-cost veto, Widening F (ii) |
+| Countercurrent, False Premise | `edha-def-test` | **yes** | the pre-cost veto |
+| Reactive Analysis | `edha-next-test-mod` **and** `edha-note`, both on `use` | **no — new** | the pre-cost veto |
+| Read Intent | `edha-def-test` on **`edha-channel`** | — | **no gate needed** (below) |
+
+**Three findings item 198 should have before it sizes the Blue leg:**
+
+1. **Blue adds two schema declarations, not ten.** Widening F's schema side was ten types for White;
+   Blue's set is four, and `edha-prompt-pick` and `edha-def-test` are already among that ten. Only
+   **`edha-next-test-mod`** and **`edha-note`** are new, because Reactive Analysis is the one Blue rider
+   putting both directly on `use`. **Twelve declarations total across both colours.**
+2. **Blue gates at one dispatch site, not three.** Every Blue rider fires from `use` through the event
+   system's executor, so all of them land on **Widening F (ii)**, the pre-cost veto on `preUseItem`.
+   Nothing in Blue's rider set is a config-only rule read by `edhaWatchersOfRule` (F (i)) or a Draw Mana
+   rule (F (iii)). The two Blue rules that ride a *different* sweep — Calculated Patience's
+   `edha-test-rider` (read by `edhaActorRulesOf`, `01-shared-core.js:732`) and Living Image's
+   `edha-illusion-upkeep` (read by `edhaActorRuleOf`, `17-blue-illusion.js:310`) — **neither becomes a
+   rider**: the first is a free passive, the second a release. So `edhaActorRulesOf` needs no gate for
+   Blue. Whether a later colour forces a fourth dispatch site is item 211's question.
+3. **The seven chained rules need no gate at all.** Intercept's, Pattern Recognition's, Anticipate's and
+   Probability Cascade's `edha-next-test-mod`, Subtle Suggestion's and False Premise's
+   `edha-triggered-effect`, and Read Intent's `edha-note` all fire on `edha-test-success`, downstream of
+   their own card's gated `use`. Gate the `use` and the chain is gated.
+
+**Read Intent needs no `requireSelfStatus`.** Its rule moves from `use` to the new `edha-channel` event
+(Widening E), which fires *only* on a Channel or Maintain, so the condition is inherent — exactly as for
+White's Guiding Signal. §4.3's table lumps `edha-channel` under the pre-cost veto row; on that event the
+check is a no-op and the field should be left off rather than set and ignored.
+
+**Two of §4.3's nine widenings have no Blue consumer**, which shrinks the leg further:
+
+- **Widening G** (the channel-rider ActiveEffect, `channelRider` + `edhaStanceRiderChanges`) — Blue's
+  only two ActiveEffects are Collected's defenses and Composed's max focus, both free passives that stay
+  unconditional. No Blue AE is a rider.
+- **Widening H** (`requireChannelled`, the flood gate) — BL2-E: Blue has no 3-Investiture card and no
+  card gates on the flood.
+
+### 4.2 What the frame needs from item 202
+
+The frame is the per-die injector's **second consumer** (B-4 (a)). Five requirements:
+
+1. **The placer is the paying mage.** R-155 (a) phase 2 routes an adversary's disadvantages to *"a
+   player — the one most affected"*; F-B (a) says **assigned by the mage**. A disadvantage whose source
+   is a Blue Channel must route its placement prompt to the mage who paid, not to a most-affected
+   heuristic. `edhaSetNextTestMod` already stamps `source` and a `gid` on every entry
+   (`15-blue-calculation.js:151-163`), so the hook exists.
+2. **The instance count must not be `count`.** §4.3's Widening I says `edha-next-test-mod` gains `dice`
+   and "a `count` that may be `@channelled`". **`count` already means "Tests affected"** — Probability
+   Cascade's `count: 2` is its next *two tests*, and the engine says so (`15-blue-calculation.js:44`:
+   *"the one `count: 2` mod in the data, Probability Cascade, which is `test`-only and must keep applying
+   to two separate tests"*). Overloading it breaks the only card that uses it; the per-die instance count
+   needs its own field.
+3. **`@channelled` must resolve inside that count.** Widening A stores the consumption's `actual` on the
+   status effect's flag; Widening D's `edhaSubstRankTier` third replacement reads it.
+4. **The lapse needs an expiry the engine does not have.** *"A reading not used by your next payment
+   lapses"* is keyed to **the next payment**, not a turn or a round; today's expiries are
+   `expireEndOfRound` and the prune in `edhaNextModPrune`. Cheapest correct shape: the re-arm already in
+   Widening C, clearing the previous frame entry when the status re-arms, so a maintain *replaces* the
+   reading rather than adding one.
+5. **M14 (a) is a max across mages, a sum within one.** Two Blue mages reading one enemy give it the
+   larger reading; the same mage's riders add (BL-5 (a)). Since `edhaSetNextTestMod` appends to a list
+   and the pre-roll pass applies every matching entry, frame entries must be distinguishable by owner.
+   **Watch `EDHA_NEXTMOD_CAP = 12`** (`:112`, `evict: "oldest"`): a flooding mage places 3, and riders
+   and condition sources stack on top.
+
+### 4.3 What moves in the data
+
+**`data/authored/leyline-blue.json`** — the seven authored keys, unchanged as a set:
+
+- **`activation`** — nine cards. The `{type: "resource", resource: "inv"}` consume row is removed from
+  Intercept, Reactive Analysis, Read Intent, Subtle Suggestion, Pattern Recognition, Anticipate, False
+  Premise and Probability Cascade; from Countercurrent **only the `inv` row goes — the `foc` row stays at
+  min 2, max 2**. Type changes: Intercept `rea` → `spe`, Anticipate `rea` → `spe`, Read Intent `act`
+  (cost value 1) → `spe`.
+- **`description`** — the nine sentences of §2.2, plus Countercurrent's name and flavour line.
+- **`events`** — `requireSelfStatus: "channelblue"` on the `use` handler of eight riders (all but Read
+  Intent); Read Intent's rule moves `use` → `edha-channel` and takes no field; the five
+  `edha-prompt-pick` prompt strings drop "and 1 Investiture", which is player-facing text asking for a
+  cost that no longer exists.
+- **`effects`** — **nothing changes.** No Blue rider is an ActiveEffect.
+- **`docId`** — **preserved through the rename** (BB-3). The overlay is keyed by talent *name*
+  (`talents["Counterspell"]`), so the rename re-keys the entry; keeping the `docId` is what lets an owned
+  copy on a PC survive ⟳ Sync instead of orphaning.
+
+**`data/leyline.json`** — the nine records' `action`, `cost` and `description`; the rename's `name` and
+`flavor`; **`connections`: Baleful's `["Counterspell"]` → `["Countercurrent"]`** — the one inbound edge,
+and `validate.js`'s `validateConnections` fails the build if it is missed. Graph otherwise untouched: no
+prerequisite or edge change, so the DAG and reachability checks and `tests/pipeline.test.js` are
+unaffected. Plus §2.5's three phrasing fixes and Anticipate's stale `tags`.
+
+### 4.4 Everything that names `Counterspell`
+
+**Rename — live data, build inputs and gates (9 files):**
+
+| File | What |
+|---|---|
+| `data/leyline.json` | the record's `name`; Baleful's `connections` |
+| `data/authored/leyline-blue.json` | the `talents` key; two `events` rule `description` strings |
+| `data/talent-rolls.json` | the side-table entry (masked bootstrap history — renaming keeps it from becoming fiction; **do not add a new entry**, per CLAUDE.md) |
+| `data/authored/heroic-warrior.json` | Leybreaker's rule `description` cites *"Counterspell's shape"* — a cross-tree reference that stops resolving |
+| `docs/levelup-builds.json` | HANNAH's level-10 pick |
+| `EDHA_FOUNDRY_TEST_CHECKLIST.md` **line 528 only** | a live `node.prerequisitesMet` row |
+| `module-src/scripts/engine/15-blue-calculation.js:23` | the Blue/Calculation tree-section header (rule 3's ledger) |
+| `module-src/scripts/engine/17-blue-illusion.js:36` | the `edha-def-test` consumer list in the Blue/Illusion header |
+| `module-src/scripts/register-skills.js` | assembled — regenerate with `scripts/engine-assemble.js`, never hand-edit |
+
+**Regenerate, never hand-edit (3):** `EDHA_PLAYER_PRIMER.html` (`scripts/build-player-primer.js`),
+`EDHA_LEVELUP_GUIDES.html` (`scripts/build-levelup-guides.py`), `EDHA_DASHBOARD.html`
+(`scripts/build-dashboard.js`). All three carry the name because they are built from the files above.
+*(The levelup guide also renders "Investiure" for this row — a typo in its own prose source, worth fixing
+in the same pass.)*
+
+**Leave alone — historical record:** `EDHA_RULINGS.md` (R-98 and R-110 quote the card as it stood), the
+three `docs/handoff-changelog/` months, `docs/archive/EDHA_EDITABILITY_AUDIT.md`, all of
+`docs/analysis/talent-ecosystem/` (dated measurements, profiles, crosscut),
+`EDHA_FOUNDRY_TEST_CHECKLIST.md` **line 1207** (retired bench-run-49b evidence), the three
+`source-materials/legacy-uploads/` files, and `TODO_REPO_HYGIENE.md` / `docs/design/channel-actions.md` /
+`docs/briefs/channel-blue-pass.md`, which name the rename itself. **A dated record that says
+"Counterspell" is correct; rewriting it would make it a lie.**
+
+### 4.5 The bench rows
+
+Sixteen **🤖** rows, to be added under `# BENCH — Blue (leyline)` (checklist **line 1416**) as a
+`## Channel — item 198` block when the build lands, on the Route A 3.1.0 copy (B-6 (a)).
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CB-1 open | Channel Blue at 1, name an enemy | *Channelling Blue* on the token; the enemy's next d20 carries one disadvantage; Investiture −1 |
+| CB-2 depth | at rank 2, channel 2 | two instances placed on two different dice (d20 + plot, or d20 + damage) in the roll config |
+| CB-3 shallow | channel 2; the read enemy makes a plain skill test, no stakes, no damage | one placed, the surplus lost (BL-4 (a)) |
+| CB-4 lapse | channel, leave the reading unused, maintain next turn | the old reading is gone; exactly one new reading stands |
+| CB-5 stacking | channel 2 + Pattern Recognition on the same enemy | three instances on three dice (BL-5 (a)); watch the 12-entry cap |
+| CB-6 cancel | the read enemy also holds an advantage | one cancels one before placement (R-155 (a)) |
+| CB-7 riders off / on | with no Channel: Pattern Recognition, Subtle Suggestion, False Premise. Then with it | refused before cost with the toast; then all three fire spending nothing |
+| CB-8 the payment | Channel, then Maintain | Read Intent's def-test card on both |
+| CB-9 Countercurrent vs a Channel | a White mage opens a Channel in range | the offer posts; 2 focus spent; on a success the Channel does not arm and the White mage's Investiture stays spent (BB-1) |
+| CB-10 rider vs release | Countercurrent against Pattern Recognition, then against Phantom Barricade | no offer for the rider (spends nothing); the offer posts for the release |
+| CB-11 two mages | Bench — Blue channelling 2 beside Bench — Blue II channelling 1, same enemy | 2 instances, not 3 (M14 (a)) |
+| CB-12 the releases | Phantom Barricade, Ghostly Walls, Phantom Double with **no** Channel up | all three work and spend their Investiture |
+| CB-13 once per round | Pattern Recognition twice in one round | the second offer refuses |
+| CB-14 adversary | a rival with Blue attuned channels; a minion | rival clamps at 2, minion at 1, role rank (R-137) |
+| CB-15 the rename | a synced PC owning Counterspell | it reads Countercurrent, keeps its node, and Baleful is still reachable from it |
+| CB-16 the tabs | Actions tab and Talents tab of a synced Blue PC | Channel Blue and Maintain Blue under the power; riders on the Talents tab; ⟳ Sync refreshes |
+
+### 4.6 Gate 4 — the menu, filed unanswered
+
+**Gate 4 was not run.** The menu below was posted in chat and Ben closed the pass on the next line
+(*"Blue is done"*) without answering it, so **nothing in §4 assumes an answer**: §4.1 – §4.5 are facts
+read from the data and the engine, and the four entries here are carried to the PM with their
+recommended defaults intact. None of them blocks item 198 from starting, and each is a build detail its
+builder can put to Ben in one line.
+
+**BB-1. A countered Channel and its Investiture.** M17 (a)'s result is *"the effect fails"*.
+*(a) Recommended: the Investiture stays spent* — today's card already reads this way, and it is what
+makes 2 focus a fair price for the answer. (b) Refunded — Countercurrent as a pre-cost gate, R-127's
+shape.
+
+**BB-2. Widening I's instance count.** *(a) Recommended: a new field, distinct from `count`* — `count`
+means "tests affected" and Probability Cascade is its only consumer. (b) Overload `count` and migrate
+Probability Cascade.
+
+**BB-3. Countercurrent's `docId`.** *(a) Recommended: preserved; the overlay entry re-keyed and the name
+changed in place* — an owned copy survives ⟳ Sync. (b) A fresh `docId` — owned copies orphan.
+
+**BB-4. Where the frame's lapse lives.** *(a) Recommended: cleared at arm time by the re-arm, Widening
+C's shape* — a maintain replaces the reading; no new expiry mode. (b) A new "until my next payment"
+expiry mode on `edha-next-test-mod`.
+
+---
+
+## 5. Close-out
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 1 — the trees and the reading | Blue's three trees on §2.1's Realm map; what the frame does to each identity, Blue's case being the inverse of White's; **the release test corrected to the frame's DOMAIN** rather than its stated effect or the round boundary; **§1.3, the five things rider-vs-release actually decides**; Countercurrent in full (Reaction; 2 Focus, a rider, M17 (a)'s trigger and result, a reworded flavour line). BL-1 … BL-7 all (a). |
+| 2 — the cards | All twenty-five (§2.2): **nine change, sixteen are untouched**, the graph untouched. Illusion's six costed cards are releases; two of five Reactions become Specials; Read Intent rides the payment; four newly-free Specials gain "Once per round"; **rules 5 and 6 both have no Blue consumer**. R-98 closed three ways (§2.3). Three phrasing fixes ride the data pass. BL2-1 … BL2-6 all (a). |
+| 3 — the mix | Costed 64 % → 36 %, **inside the published 8 – 46 % band for the first time**; Investiture tree-sum 18 → 9; Reactions 20 % → 12 %. Passive + Special 56 % → 68 %, three points under the published band — named as the structural price of a release tree. The Blue turn, and the **read-or-build** tension the Channel creates. |
+| 4 — the build | **Not gated** (§4.6). The facts stand: two new schema declarations against White's ten, **one dispatch site against three**, two of the nine widenings with no Blue consumer, five requirements on item 202 (including that Widening I must not overload `count`), what moves in both data files, the nine-file Counterspell rename list against the three generated files and the historical record, and sixteen 🤖 CB rows. |
+
+### 5.2 What waits on Ben
+
+**Four build details, none blocking:** BB-1 … BB-4 in §4.6, each with its recommended default, carried
+to the PM rather than answered. No new ruling was filed — every judgment call in §1 – §3 was a menu entry
+answered at its gate. `EDHA_RULINGS.md` §L still holds R-145 alone.
+
+### 5.3 What the PM should file
+
+1. **Add the Blue leg to item 198's brief**, with §2.2 and §2.4 as its data pass and §4 as its build
+   spec. The leg is materially smaller than White's — worth saying in the brief so it is sized right.
+2. **Give item 202's builder §4.2's five requirements.** The `count` collision (BB-2) is the one that
+   would otherwise be found after the code is written.
+3. **Schedule the Countercurrent rename with item 198** — §4.4's nine files, three regenerated, and the
+   rest left alone as record.
+4. **Item 210's yardstick re-run should cover Blue's proposed row as well as White's** (§3).
+5. **Overwhelming Authority (White) — one card, for item 198's White data pass.** The domain rule of
+   §1.2, run back over White's fifteen costed cards, agrees with gate 3 on fourteen; this is the
+   exception. Not re-opened here.
+6. **Items 211 and 212 inherit the domain rule.** It predicts Red's Conflagration (all three costed cards
+   stay costed) and says a release tree is not a Realm law; the deity pass needs it for the same reason.
+
+### 5.4 The record
+
+- Branch **`claude/channel-blue-design-spoei2`** (not the `%TEMP%` worktree on `design/channel-blue` the
+  brief assumed: this session ran in a fresh remote Linux clone, which is the same isolation from the
+  PM's checkout under a different name). DOCS-ONLY; `docs/design/channel-blue.md` is the only design file
+  touched. Gates green on every commit; `main` merged in mid-pass after the seven-worker batch landed —
+  no conflicts, and **Blue's data was untouched by it**, so every card here was read at `7d27e6a` and
+  re-verified at `477e261`.
+- **Iron-rule-6 debt, this session's:** the first two commits carry a `Co-Authored-By` model-identifier
+  trailer, added from the harness default before the board's correction was read. Stripping them needed a
+  force-push the sandbox refused, so they stand; the close-out commits carry none.
+- `docs/PM_BOARD.md` was not touched, per the brief.
