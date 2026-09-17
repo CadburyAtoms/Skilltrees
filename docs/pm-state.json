@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-17T11:28:08.210Z",
+  "generatedAt": "2026-09-17T11:50:52.664Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "771f26303e",
-    "commit": "477e261",
-    "branch": "main",
+    "hash": "8276b5c861",
+    "commit": "2a50bee",
+    "branch": "pm/handoff-0917",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -44,7 +44,7 @@
   "pm": {
     "status": "stopped",
     "note": "This session stopped at Ben's word on the morning of 2026-09-17 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened; two rebuilds (deity for the Lessened rename, heroic for the enrichers) are owed when it lifts. Yesterday: nineteen PRs — the Metalworks comparisons, the handbook as rules source, the rules audit and its seven fixes, the Channel design pass, rulings R-146 … R-159 all answered.",
-    "waitingOn": "Ben: the Blue pass in your own session (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); a word on the name lessened only if you want abased; a word to the next PM to dispatch items 202 / 206 / 210 / 183 (Opus) or 213 (Sonnet)",
+    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); a word on the name lessened only if you want abased; a word to the next PM to dispatch items 202 / 206 / 210 / 183 (Opus) or 213 (Sonnet)",
     "nextWakeAt": null,
     "session": "STOPPED 2026-09-17 07:27 ET (the 2026-09-16 12:30 ET hand-started session; Ben starts the next PM of record himself)"
   },
@@ -2627,9 +2627,9 @@
       "model": null,
       "size": "L",
       "deps": "items 200 (done), 202",
-      "status": "queued",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 431
     },
     {
       "pos": 214,
@@ -2725,7 +2725,6 @@
     }
   ],
   "benOnly": [
-    "the Blue pass in his own session (docs/briefs/channel-blue-pass.md, item 209)",
     "the session-one confirmation",
     "a word on lessened only if he wants abased. What the next PM can dispatch, on Ben's word: item 202 (opus, L — the advantage counter, R-155 (a), dual-mode, 2.1.0-safe, phase 1 first), item 206 (opus, L — the Minion and Boss features, R-158 (a)), item 210 (opus, M — the yardstick re-run before 198), item 183 (opus, L — the resolver behind items 178 – 180), item 213 (sonnet, XS)",
     "items 197 and 195 wait on 187",
@@ -2744,20 +2743,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "19:58",
-      "at": "2026-09-14T23:58:00.000Z",
-      "item": "Agent-run deploy (bench run 48's step zero, from a worktree): deploy-cycle.js --yes from main @ cf85198, packs 23:58:55Z, engine 5e9833a9 = HEAD, validators PASS; the #387 rebuild cleared",
-      "itemNo": "387",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "deployed",
-      "pr": null
-    },
     {
       "date": "2026-09-14",
       "time": "21:50",
@@ -3583,9 +3568,23 @@
       "weightedM": null,
       "outcome": "handoff",
       "pr": null
+    },
+    {
+      "date": "2026-09-17",
+      "time": "06:02",
+      "at": "2026-09-17T10:02:00.000Z",
+      "item": "The Blue pass (item 209) LANDED as #431 — Ben's own session from docs/briefs/channel-blue-pass.md, merged by Ben himself; docs/design/channel-blue.md (Blue's twenty-five cards on the Channel model, Countercurrent, the per-die frame's build notes). Recorded by the closing PM; the next PM reads its close-out section, re-scopes item 198's Blue leg and hands item 202's builder the frame's requirements",
+      "itemNo": "431",
+      "model": "ben",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged",
+      "pr": 431
     }
   ],
-  "runLogTotal": 381,
+  "runLogTotal": 382,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {

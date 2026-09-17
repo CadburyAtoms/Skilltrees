@@ -2,7 +2,7 @@
   "pm": {
     "status": "stopped",
     "note": "This session stopped at Ben's word on the morning of 2026-09-17 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened; two rebuilds (deity for the Lessened rename, heroic for the enrichers) are owed when it lifts. Yesterday: nineteen PRs — the Metalworks comparisons, the handbook as rules source, the rules audit and its seven fixes, the Channel design pass, rulings R-146 … R-159 all answered.",
-    "waitingOn": "Ben: the Blue pass in your own session (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); a word on the name lessened only if you want abased; a word to the next PM to dispatch items 202 / 206 / 210 / 183 (Opus) or 213 (Sonnet)",
+    "waitingOn": "Ben: confirm when session one has happened (releases the swap to 3.1.0); a word on the name lessened only if you want abased; a word to the next PM to dispatch items 202 / 206 / 210 / 183 (Opus) or 213 (Sonnet)",
     "nextWakeAt": null,
     "session": "STOPPED 2026-09-17 07:27 ET (the 2026-09-16 12:30 ET hand-started session; Ben starts the next PM of record himself)"
   },
