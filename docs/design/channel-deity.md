@@ -15,8 +15,8 @@ log is the record.
 | Gate | Section | Status |
 |---|---|---|
 | 1 | §1 The deity path, re-evaluated under the Channel | **✅ approved 2026-09-17** (third draft; D-1 … D-9 and E-1 … E-8 withdrawn on Ben's notes, §1.1) — F-1 … F-10 all (a): Shape S, the supply with a face per colour |
-| 2 | §2 The marks — Chaos, Knowledge, Life | **proposed 2026-09-17, second draft** — first draft's rules 1, 2 and 6 struck on Ben's notes (§2.1); G-1 … G-8 tabled |
-| 3 | §3 The ground — Fate, Destruction, Civilization, Death | not started |
+| 2 | §2 The marks — Chaos, Knowledge, Life | **✅ approved 2026-09-17** (second draft) — G-1 … G-8 all (a): entry nodes dropped, seven cards each, no kept cost, capstones on the flood |
+| 3 | §3 The ground — Fate, Destruction, Civilization, Death | **proposed 2026-09-17** — H-1 … H-10 tabled |
 | 4 | §4 The word — Order, Power, Sovereignty | not started |
 | 5 | §5 The mix, against the bands | not started |
 | 6 | §6 The build notes | not started |
@@ -681,3 +681,6 @@ The Pack gates on 2 or more (the strongest sharing) — recommended.** (b) Both 
 
 **G-8. The three supplies' names.** (a) **Place Omen, Study, Tend — recommended** (*Tend* because
 *Diagnose* names one face only). (b) Ben's own.
+
+> **Answered at gate 2 (Ben, chat, 2026-09-17):** *"Much better. let's keep going."* — **G-1 … G-8 (a).**
+> §2 committed on that answer.
