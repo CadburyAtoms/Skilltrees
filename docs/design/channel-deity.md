@@ -302,3 +302,337 @@ recommended.** (b) Narrow deliberately.
 > the marks (Chaos, Knowledge, Life — a charge on one creature), the ground (Fate, Destruction,
 > Civilization, Death — a charge on the field), the word (Order, Power, Sovereignty — a charge declared
 > on a creature).
+
+---
+
+## 2. The marks — Chaos, Knowledge, Life
+
+Three gods whose charge sits on one creature: an Omen, Insight, a Diagnosis. Under Shape S each has a
+supply with two faces (§1.3), and in all three the frame meeting is **positional** — the disciple
+places the charge on the creature the frame already names (the read enemy, the forsaken, the creature
+on the ground) by choosing the same target — so no frame-amendment card is needed at this gate. Every
+card below was read from `data/domain.json` and its `data/authored/deity-*.json` record (text,
+activation, consume rows, `events`) at `main` `919bdf9`.
+
+### 2.1 The conversion rules, applied to the marks
+
+1. **The two entries are the supply's two faces.** The entry *talents* stay as tree nodes — the gate at
+   2+ / 2+, and the roots every other card's `connections` point at, so the graph is untouched (iron
+   rule 7) — and each entry's card now carries its face's text. The god's `power` carries the supply
+   as its embedded action, and owning an entry unlocks that face. A disciple who takes one entry has
+   one face, exactly as one entry buys one lane today. *(G-1.)*
+2. **Every costed card loses its Investiture and gains "*While channelling [A] or [B],*".** Type is
+   unchanged unless a rule below moves it. Nothing in these three trees is outside the charge or the
+   colours' domains, so the only rites are the capstones, and G-4 decides those.
+3. **A card that only widens the supply becomes a Passive rider on it.** Spreading Omen is Place Omen
+   twice; Pack Share and The Pack are "your allies profit from the Insight" — the published shape is
+   a passive that changes what the base action does, and an Action spent to switch on a scene-long
+   sharing was only ever the cost's shape. *(G-2.)* These are the arms F-4 (a) covers: they hold while
+   the disciple channels either colour, which as Passives they do by construction.
+4. **A Reaction that is a modifier becomes a Special with "Once per round."** — Shatter Focus, the
+   marks' one Reaction. *(G-5.)*
+5. **Two-Action cards and scene-long grants gate on "*channelling 2 or more*".** The synthesis tier
+   costs 2 Investiture today for a reason; under the Channel the reason becomes the flood — at levels
+   1 – 5 a Draw a round, from level 6 two-thirds of one. One-Action riders and Passives gate on 1.
+   *(G-3.)*
+6. **Capstones are riders gated on the flood — "*channelling 3 or more*", once per scene, no
+   Investiture.** White's Unbreakable Line (W-4) is the precedent; at rank 3 (level 6) a full Channel
+   is one Draw a round, and none of the three capstones is reachable before then in practice. *(G-4.)*
+7. **Phrasing rides the pass:** "Vital damage" → "vital damage" (damage types are lowercase; Knowledge
+   and Life capitalise it on seven cards), "creature" → "character" only on sentences that change
+   anyway (BL-6's precedent).
+
+### 2.2 Chaos — Place Omen (Blue / Black)
+
+**Today:** 9 cards; 1 Passive, 1 Reaction, 4 single Actions, 3 two-Action; 8 of 9 cost Investiture,
+tree-sum 14. The known structural fault (deity guide Part 4): the Black lane spends Omens it cannot
+make. Under the supply both faces place Omens, so the fault closes without a card.
+
+**The supply**, on Maelith's power (the card lists both faces; each entry talent carries its own):
+
+> **Place Omen** — Action; — · *the god's supply*
+> *While channelling Blue* — test Blue vs. Cognitive. On a success, place an Omen on the target and
+> deal [Tier][Die] spirit damage.
+> *While channelling Black* — test Black vs. Physical. On a success, the target is Isolated until the
+> start of your next turn; if it bears an Omen, remove it and deal [Tier][Die] + Awareness vital
+> damage; if not, place one.
+> You may have up to tier + 1 Omens active; placements beyond the cap are lost.
+
+**Entropy Strike** — *entry, the Blue face* · 1 Action; 1 Investiture → **the Blue face of Place
+Omen; —.** Card: *"You may Place Omen while channelling Blue: test Blue vs. Cognitive. On a success,
+place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier + 1 Omens
+active; placements beyond the cap are lost."* Events unchanged (`edha-def-test` blue vs cog →
+`edha-owner-list` place → `edha-triggered-effect` spirit) plus the `channelblue` gate.
+
+**Isolating Pressure** — *entry, the Black face* · 1 Action; 2 Investiture → **the Black face of
+Place Omen; —.** Card: *"You may Place Omen while channelling Black: test Black vs. Physical. On a
+success, the target is Isolated until the start of your next turn. If it bears an Omen, remove it and
+deal [Tier][Die] + Awareness vital damage; if not, place an Omen on it."* Events unchanged (the
+snapshot-gated shatter / place branches from item 142) plus the `channelblack` gate. Under Black's own
+frame the forsaken is already Isolated, so this face against the forsaken is the shatter-or-place
+alone — which is the play.
+
+**Shatter Focus** — Reaction; 1 Investiture → **Special; — (rule 4).** *"While channelling Blue or
+Black, when an enemy bearing one of your Omens within Attunement Range makes a test, remove the Omen;
+it rerolls and takes the lower result. Once per round."* Under Blue's frame the read enemy already
+carries disadvantage per die; the reroll sits on top of it, and R-155 (a) makes the two additive.
+Events: `edha-reroll-react` unchanged; the Reaction slot is no longer spent.
+
+**Spreading Omen** — 1 Action; 1 Investiture → **Passive; — , a rider on the supply (rule 3).**
+*"While channelling Blue or Black, when Place Omen succeeds, also place an Omen on one other enemy
+within 10 feet of the target, subject to your Omen cap."* Events: the second `edha-owner-list` place
+(`target: near-victim, nearFt: 10`) moves off its own `use` onto a watch of the supply's success —
+the build names the hook (§6).
+
+**Void Sense** — Passive; — → **unchanged.** *"You sense the location of every enemy bearing your Omen
+through any obstruction. Once per round, when an enemy bearing one of your Omens within Attunement
+Range takes damage from any source, you recover 1 Investiture."* The refund is what keeps a one-point
+maintain running without a Draw.
+
+**Unweaving** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more (rule 5).** *"While
+channelling 2 or more Blue or Black, test Black vs. Spiritual. On a success, end one magical buff,
+stance or sustained effect on the target. If the target bears an Omen, also remove it and Disorient
+the target until the start of your next turn."*
+
+**Cascade Collapse** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Blue or Black, test Blue vs. Cognitive against every enemy bearing your Omen
+within Attunement Range. Each bearer you succeed against loses its Omen, takes [Tier][Die] spirit
+damage and is Disoriented until the start of your next turn."* (One roll, gated per bearer — the
+owner-sweep as built, Ben 06-18.)
+
+**Isolating Ruin** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Blue or Black, test Black vs. Physical. On a success, the target is Isolated
+until the start of its next turn and takes [Tier][Die] + Awareness vital damage; if it bears an Omen,
+remove it and deal an additional [Tier][Die] + Awareness vital damage."* It is the Black face made
+heavy — two dice against a marked target — and stays a card rather than a widening of the face because
+the second die is what a flood buys (G-6).
+
+**Unravel Everything** — 3 Actions; 3 Investiture → **3 Actions; — , gated on the flood, once per
+scene (rule 6).** *"While channelling 3 or more Blue or Black, place an Omen on every enemy within
+Attunement Range up to your cap, then remove all your Omens at once: each removed Omen deals
+[Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn;
+a bearer that is Isolated when its Omen is removed instead takes 2[Tier][Die] vital damage. Once per
+scene."* Under Black's frame the forsaken is Isolated by definition, so the disciple who floods Black
+chooses which bearer takes the vital.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| 1 | Entropy Strike | 1 Action; 1 Inv | **the Blue face; —** | while channelling Blue |
+| 2 | Isolating Pressure | 1 Action; 2 Inv | **the Black face; —** | while channelling Black |
+| 3 | Shatter Focus | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
+| 4 | Spreading Omen | 1 Action; 1 Inv | **Passive; —** | while channelling; on the supply's success |
+| 5 | Void Sense | Passive; — | Passive; — | — |
+| 6 | Unweaving | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 7 | Cascade Collapse | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 8 | Isolating Ruin | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 9 | Unravel Everything | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 14 → **0**; costed 8 of 9 → 0 of 9; Passives 1 → 2, Specials 0 → 1. **The frame meeting:**
+under Blue the disciple reads the enemy and Places the Omen on it — its d20 and plot die
+compromised before Shatter Focus takes the lower; under Black the disciple forsakes the Omen-bearer,
+and Isolating Ruin's second die and Unravel's vital branch light up on the creature chosen. No card
+needed; the player picks the same target.
+
+### 2.3 Knowledge — Study (Red / Green)
+
+**Today:** 9 cards; 3 Passives, 4 single Actions, 1 two-Action, 1 three-Action; 6 of 9 cost
+Investiture, tree-sum 10. Green is a gate — no test, no die (guide Part 4). Under the supply Green
+is the Studied Mark's face, which is what a gate colour should have been.
+
+**The supply**, on Gnothis's power:
+
+> **Study** — Action; — · *the god's supply*
+> *While channelling Green* — choose a character within Attunement Range. Place 2 Insight on it and
+> learn its current health, conditions, and Physical and Spiritual defenses.
+> *While channelling Red* — make a melee or ranged weapon attack. On a hit, deal additional vital
+> damage equal to [Tier][Die] plus your tier per Insight on the target (minimum 1), then place 1
+> Insight on it.
+> You may have Insight on only one character at a time; placing Insight on a new character removes
+> all existing Insight. Insight may not exceed 5 and fades at the end of the scene.
+
+**Studied Mark** — *entry, the Green face* · 1 Action; 1 Investiture → **the Green face of Study;
+—.** Card as the face reads. Events unchanged (`edha-owner-list` counter place 2, `edha-reveal`) plus
+the `channelgreen` gate.
+
+**Predatory Strike** — *entry, the Red face* · 1 Action; 1 Investiture → **the Red face of Study;
+—.** Card as the face reads (the arm-and-consume rule pair unchanged, `predprimed`). Under Red's frame
+the hit carries the heat as any attack-test hit does (RD-6 (a)), and the same-creature-every-turn plan
+keeps the heat at cap.
+
+**Accumulate** — Passive; — → **unchanged.** *"At the start of each of your turns, if the character
+bearing your Insight is within Attunement Range, place 1 Insight on it (up to the cap). When that
+character takes damage from any source, you recover 1 Investiture once per round."* The refund funds
+the maintain.
+
+**Pack Share** — 1 Action; 1 Investiture · Green 3+ → **Passive; — , a rider on the supply (rule 3).**
+*"While channelling Red or Green, allies within Attunement Range know the current health, conditions
+and defenses of the character bearing your Insight and deal additional vital damage equal to your
+tier on attacks against it. Once per round, the first ally to hit that character places 1 Insight on
+it."* The `packsight` arm and its `use` card retire; the `edha-damage-bonus` (ally-hits-counter-bearer)
+and the public `edha-reveal` gate on the Channel instead of the arm.
+
+**Hunter's Discipline** — Passive; — → **unchanged** (+tier vital on your own hits on the bearer; half
+the Insight carried to a new character on the kill).
+
+**Killing Blow** — 1 Action; 2 Investiture · Red 3+ → **1 Action; —.** *"While channelling Red or
+Green, test Red vs. Physical against the character bearing your Insight. On a success, deal
+[Tier][Die] vital damage per Insight and remove all Insight. On a failure, deal [Tier][Die] vital
+damage and remove 1 Insight."* A one-Action rider gates on 1 (rule 5's line): Red 3+ is already the
+tree's steepest gate and the cash-out resets the stack, which is its own price.
+
+**The Pack** — 1 Action; 2 Investiture → **Passive; — , a rider on the supply, gated on 2 or more
+(rules 3 and 5).** *"While channelling 2 or more Red or Green, allies within Attunement Range deal
+additional vital damage equal to your Insight count on attacks against the character bearing your
+Insight. The first ally to hit that character each round places 1 Insight on it."* Additive with Pack
+Share (Ben R10) — at a flood the pack carries +tier + Insight on every hit against the quarry, which is
+the tree's whole identity spent on the one creature it is about.
+
+**Death Mark** — Passive; — → **unchanged** (the full stack carried on the kill; the allies' free
+vital hit).
+
+**The Final Study** — 3 Actions; 3 Investiture → **3 Actions; — , gated on the flood, once per
+scene.** *"While channelling 3 or more Red or Green, test Red vs. Physical against the character
+bearing your Insight. On a success, deal [Tier][Die] vital damage per Insight and remove all Insight;
+each ally within Attunement Range may immediately make a free Strike against any enemy within their
+reach. On a failure, deal [Tier][Die] vital damage and remove 1 Insight. Once per scene."*
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| 1 | Studied Mark | 1 Action; 1 Inv | **the Green face; —** | while channelling Green |
+| 2 | Predatory Strike | 1 Action; 1 Inv | **the Red face; —** | while channelling Red |
+| 3 | Accumulate | Passive; — | Passive; — | — |
+| 4 | Pack Share | 1 Action; 1 Inv | **Passive; —** | while channelling |
+| 5 | Hunter's Discipline | Passive; — | Passive; — | — |
+| 6 | Killing Blow | 1 Action; 2 Inv | **1 Action; —** | while channelling |
+| 7 | The Pack | 1 Action; 2 Inv | **Passive; —** | channelling 2 or more |
+| 8 | Death Mark | Passive; — | Passive; — | — |
+| 9 | The Final Study | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 10 → **0**; costed 6 of 9 → 0; Passives 3 → 5. **The frame meeting:** the Red face carries
+the heat and the plan keeps it at cap; under Green the Studied Mark on a character standing in the
+disciple's home ground is the pack hunting from the ground. Positional; no card.
+
+### 2.4 Life — Tend (Blue / Green)
+
+**Today:** 9 cards; 1 Passive, 6 single Actions, 1 two-Action, 1 three-Action; 8 of 9 cost
+Investiture, tree-sum 13. One Blue test (Surgical Precision, Blue 3+). **A drift for the record:**
+the guide and TREE-INTENT put Adaptive Mutation at Green 3+, level 6; `data/domain.json` and the
+authored card read *Green 2+; Life Surge*. The data is the authority; the PM should reconcile the
+prose (§7).
+
+**The supply**, on Anaveth's power:
+
+> **Tend** — Action; — · *the god's supply*
+> *While channelling Blue* — choose a character within Attunement Range. For the scene you know its
+> exact health, maximum health, conditions, and Physical and Spiritual defenses, and you and allies
+> dealing damage to it deal additional vital damage equal to your Blue rank.
+> *While channelling Green* — choose a character within Attunement Range. It regains [Tier][Die] +
+> Awareness health; healing beyond its maximum becomes temporary health. May self-target.
+
+**Vital Diagnosis** — *entry, the Blue face* · 1 Action; 1 Investiture → **the Blue face of Tend;
+—.** Events unchanged (`edha-apply-status` diagnosed with the Blue-rank vital rider; `edha-reveal`).
+Under Blue's frame the Diagnosed creature is the read creature: the party cuts deeper *and* its roll
+is compromised.
+
+**Life Surge** — *entry, the Green face* · 1 Action; 1 Investiture → **the Green face of Tend; —.**
+Events unchanged (`edha-overflow-thp`). Under Green's frame an ally standing on the home ground takes
+the flood and the trickle. The frame's own regen is not "a Life talent" for Prognosis (FG2-3's shape:
+the power's heal is not a talent's).
+
+**Surgical Precision** — 1 Action; 1 Investiture · Blue 3+ → **1 Action; —.** *"While channelling Blue
+or Green, touch a willing character and test Blue vs. Physical. On a success, it regains [Tier][Die]
+× 2 health and loses one condition (Weakened, Disoriented or Slowed). On a failure, it regains
+[Tier][Die] health. May self-target."*
+
+**Prognosis** — Passive; — → **unchanged.** *"When a Diagnosed character takes damage from any source,
+you recover 1 Investiture once per round. When you use a Life talent to heal a character that has a
+condition, that talent heals an additional [Tier][Die]."* The Diagnosed enemy funds the Channel — the
+diagnosis economy is now the disciple's maintain.
+
+**Overgrowth** — 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Blue or Green, choose
+a character within Attunement Range. It regains [Tier][Die] health and grows natural armor: +1 deflect
+until the end of the scene, stacking to 3. Healing beyond its maximum becomes temporary health."*
+
+**Adaptive Mutation** — 1 Action; 2 Investiture · Green 2+ → **1 Action; — , gated on 2 or more
+(rule 5: a scene-long graft).** *"While channelling 2 or more Blue or Green, touch a willing character
+and choose one adaptation for the scene: Bone Spurs (its melee attacks deal additional keen damage
+equal to your tier), Venom Glands (its melee hits inflict Afflicted [half [Tier][Die] vital]), or Dense
+Tissue (+2 deflect and immune to forced movement). One adaptation per character."*
+
+**Lifeline** — 1 Action; 2 Investiture → **1 Action; — , gated on 2 or more (rule 5: a scene-long
+link).** *"While channelling 2 or more Blue or Green, choose a character within Attunement Range. For
+the scene, when it takes damage you may take up to half of it instead as spirit damage; when you do,
+it immediately regains [Tier][Die] health. Once per round."* The link keeps its printed duration
+(F-4: a mark on another, not an arm the disciple wears).
+
+**Primal Regeneration** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Blue or Green, touch a willing character. For the scene, it regains tier + 1
+health at the start of each of its turns — [Tier][Die] + 1 if it has an adaptation from Adaptive
+Mutation. The regeneration ends if it takes vital or spirit damage."*
+
+**Apex Form** — 3 Actions; 3 Investiture → **3 Actions; — , gated on the flood, once per scene.**
+*"While channelling 3 or more Blue or Green, touch a willing character (may be you). For the scene it
+regains [Tier][Die] health at the start of each of its turns, gains +2 deflect, and deals additional
+vital damage equal to your tier on all attacks; its adaptations are doubled. When the effect ends, it
+takes an Injury. Once per scene."*
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| 1 | Vital Diagnosis | 1 Action; 1 Inv | **the Blue face; —** | while channelling Blue |
+| 2 | Life Surge | 1 Action; 1 Inv | **the Green face; —** | while channelling Green |
+| 3 | Surgical Precision | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 4 | Prognosis | Passive; — | Passive; — | — |
+| 5 | Overgrowth | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 6 | Adaptive Mutation | 1 Action; 2 Inv | **1 Action; —** | channelling 2 or more |
+| 7 | Lifeline | 1 Action; 2 Inv | **1 Action; —** | channelling 2 or more |
+| 8 | Primal Regeneration | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 9 | Apex Form | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 13 → **0**; costed 8 of 9 → 0. Life's types do not move — it is a tree of Actions by design,
+the healer's turn is spent healing — and its Special count stays 0; the marks' Specials come from
+Chaos. **The frame meeting:** the Blue face on the read enemy, the Green face on an ally on the home
+ground. Positional; no card.
+
+### 2.5 The three trees, together
+
+| | Costed today | Costed proposed | Tree-sum today → proposed | Passive | Special | Faces | 2-or-more | Flood |
+|---|---|---|---|---|---|---|---|---|
+| Chaos | 8 / 9 | 0 | 14 → 0 | 1 → 2 | 0 → 1 | 2 | 3 | 1 |
+| Knowledge | 6 / 9 | 0 | 10 → 0 | 3 → 5 | 0 | 2 | 1 | 1 |
+| Life | 8 / 9 | 0 | 13 → 0 | 1 → 1 | 0 | 2 | 3 | 1 |
+
+The marks keep **no Investiture cost anywhere**: their charge is capped (tier + 1 Omens, 5 Insight, one
+Diagnosis) and every card buys into it. What they pay instead is the Channel — 1 a round for the
+faces and the one-Action riders, a flood for the synthesis tier and the capstone — funded in all three
+trees by a refund passive (Void Sense, Accumulate, Prognosis) that pays the maintain back whenever the
+marked creature is hurt. That is the diagnosis economy, the Omen economy and the Insight economy doing
+under the Channel what they were designed to do under a pool that could not fund them.
+
+### 2.6 Gate 2 — the menu
+
+**G-1. The entries as faces.** (a) **The entry talents stay as tree nodes, each unlocking one face of
+the supply on the god's power; their cards carry the face text; the graph is untouched — recommended**
+(iron rule 7; one entry still buys one lane). (b) The entries retire; the faces live only on the power;
+every `connections` entry that names an entry is repointed — a graph edit and a validator run.
+
+**G-2. Cards that widen the supply become Passive riders.** (a) **Spreading Omen, Pack Share and The
+Pack — recommended** (the published shape; the Action was the cost's). (b) They stay Actions, free.
+
+**G-3. Amount gates.** (a) **Two-Action cards and scene-long grants gate on "channelling 2 or more";
+one-Action riders and Passives gate on 1 — recommended** (the synthesis tier's 2 Investiture becomes
+the flood). (b) No amount gates below the capstone. (c) Every card that costs 2 today gates on 2,
+Killing Blow included.
+
+**G-4. The capstones.** (a) **Riders gated on "channelling 3 or more", once per scene, no Investiture —
+recommended** (Unbreakable Line's precedent; reachable at level 6 either way). (b) Rites at 3
+Investiture, once per scene, unchanged. (c) Per capstone: (a) for the two cash-outs, (b) for Apex Form.
+
+**G-5. Shatter Focus.** (a) **A Special with "Once per round." — recommended** (rule 4; it does not
+test). (b) Stays a Reaction, free.
+
+**G-6. Isolating Ruin against the Black face.** (a) **Stays a card, gated on 2 or more — the second
+die is what the flood buys — recommended.** (b) Folds into the Black face as its flood clause ("while
+channelling 2 or more Black, the Black face also deals …") and the tree drops to eight.
+
+**G-7. The three supplies' names.** (a) **Place Omen, Study, Tend — recommended** (each is the verb the
+tree already uses; *Tend* because *Diagnose* names one face only). (b) Ben's own.
