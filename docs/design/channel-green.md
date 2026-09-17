@@ -18,7 +18,7 @@ gate log is the record.
 | 1 | §1 Green's three trees, and the home ground applied | **✅ approved 2026-09-17** — FG1-1 … FG1-6 (a) except **FG1-4 (b)**: the regen ticks once a minute outside combat |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — FG2-1 … FG2-5 all (a); *"looks good"* |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — FG3-1 (a), with Ben's standing note: the yardstick sessions and the bench may suggest balance changes to the frames |
-| 4 | §4 The build notes for Green | — |
+| 4 | §4 The build notes for Green | **✅ approved 2026-09-17** — GB-1 … GB-5 all (a); *"defaults."* |
 | 5 | §5 Close-out | — |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -545,3 +545,201 @@ not a Free Action's shape.
 > item 210's yardstick and the CH / CB / CR / CK / CG bench blocks may propose balance changes to a
 > frame's number, condition or sentence, filed as rulings for Ben rather than treated as re-litigating
 > a gate. §5.3 carries it to the PM. §3 committed on that answer.
+
+---
+
+## 4. The build notes for Green
+
+What item 198's Green leg builds, named from what exists — every handler read from
+`data/authored/leyline-green.json` and every line number re-derived against `main` `ba796d4`. **No code
+and no data change in this pass.** Deploy class: **ENGINE (F5) + DATA — REBUILD leyline + ⟳ Sync
+Talents, at 3.x only**, after item 187's flip (R-144). Green's frame lives on a **map Region** — the
+fourth frame shape after White's number, Blue's entry, Red's stack and Black's mark — and it is built
+from the two Region behaviours Green's terrain already carries.
+
+### 4.1 Green's riders and where §4.3's gate lands
+
+Nine cards become riders. Their handlers and dispatch sites:
+
+| Rider | Handler | On event | Read by | In the eighteen? | Gate lands in |
+|---|---|---|---|---|---|
+| Grasping Vines | `edha-def-test` (+ `edha-triggered-effect` chained) | `use` | the executor | yes | the pre-cost veto, F (ii) |
+| Territorial Instinct | `edha-def-test` (+ chained) | `use` | the executor | yes | the pre-cost veto |
+| Verdant Mend | `edha-single-target` (`53-…js:2900`) | `use` | the executor | **no — new** | the pre-cost veto |
+| Sudden Growth | `edha-burst` | `edha-pre-use` | the executor | yes (White) | the pre-cost veto |
+| Spreading Roots | `edha-zone-react` (`:2341`) | `edha-watch-rule` | `edhaWatchersOfRule` (`50-…js:282`) | **no — new** | the shared sweep, F (i) |
+| Pack Sense | `edha-test-react` | `edha-watch-rule` | `edhaWatchersOfRule` (`12-…js:295`) | yes (White) | the shared sweep |
+| Vital Surge, Resurgent Growth | `edha-heal-react` (`:2762`) | `edha-watch-rule` | **`edhaActorRulesOf`** (`51-…js:25, :55`) | **no — new** | Red's site, F (iv) |
+| Mender's Instinct | `edha-hp-threshold` (`:2918`) | `edha-apply-watch` | **`edhaActorRuleOf`** (`03-…js:958`) | **no — new** | **a sixth site (GB-5)** |
+
+**Four findings for item 198's sizing:**
+
+1. **Green adds four schema declarations** — `edha-single-target`, `edha-zone-react`, `edha-heal-react`,
+   `edha-hp-threshold` — **twenty-two across five colours**, and the set is now closed: every handler
+   a leyline rider uses carries the field.
+2. **Green touches four dispatch sites**, more than any colour: the pre-cost veto, the shared sweep,
+   Red's `edhaActorRulesOf`, and the **singular** `edhaActorRuleOf` (`03-…js:524`), which Red's
+   Widening F (iv) did not name. Both helpers sit in the same file with the same shape; the same
+   return filter gates both (GB-5). After Green, Widening F is **six sites, one field**, and there are
+   no more rule-lookup helpers to gate (`edhaWatchersOfRule`, `edhaRulesForEvent`, `edhaActorRulesOf`,
+   `edhaActorRuleOf` are the four the engine has).
+3. **Widenings G, H and I have no Green consumer** (no ActiveEffect rider — Hardy, Collected and
+   Predator's Instinct are free passives; no flood gate — Reknit Form is a release; no per-die work).
+   **E (`edha-channel`) has none** either: the Key's Draw lays the ground and the arm makes it home.
+4. **Natural Recovery takes no gate.** It keeps its Opportunity and stays unconditional (rule 2's
+   spirit); its `edha-heal-react` rule is the one of the three that gains no `requireSelfStatus`.
+
+### 4.2 The frame's build — the home ground on the Region
+
+The terrain is already a Region with two behaviours (`edhaCreateGreenTerrain`, `50-…js:38-70`): the
+native **`modifyMovementCost {walk: 2}`** for every token, and Edha's own **`edha-content.hazard`**
+(Thorn Field's bite, with `exemptActorUuid` — item 162's exemption of the creator from their own
+briar). The Region carries `flags.edha-content.terrain.ownerUuid` and `color` (FG1-5 (a)'s tag —
+Apex Predator's `whenEnemiesInMyZone` reads it). The frame is **two more behaviours of the same
+shape** on every Green Region, inert until the owner channels:
+
+1. **The arm** — identical to White's §4.2 rule 1 (`edha-self-status {statusId: "channelgreen",
+   timed: true}` with Widenings A, B, C).
+2. **The unslow — Widening M, `edha-content.terrain` replaces the native behaviour.** Foundry's
+   `modifyMovementCost` has no per-token exemption, so a Region cannot slow enemies and spare allies
+   with the core behaviour alone. Edha already registers a custom behaviour type (`edha-content.hazard`);
+   a second, `edha-content.terrain`, carries the walk × 2 cost and **reads the owner's `channelgreen`
+   status at movement time**: while the owner channels, a token allied to the owner pays × 1; everyone
+   else, and everyone when the Channel is down, pays × 2 — today's behaviour exactly. The native
+   behaviour comes off the creation list; existing Regions on a live scene are migrated by the same
+   `deleteCombat`-style sweep that clears them. (GB-1.)
+3. **The tick — Widening N, `edha-content.home`.** The hazard behaviour already fires on a token's
+   entry and turn start (its `moment: "enter-turn-start"`) and damages non-exempt tokens; the home
+   behaviour is its mirror: on **turn start only**, for a token **allied to the owner** (the owner
+   included, FG1-2 (a)), while the owner carries `channelgreen`, heal `@channelled` through
+   **`edhaHealCutGate`** (R-83: every `hea` write outside `applyDamage` passes it — a withered ally
+   regains nothing and the card says so). The amount is **read live** from Widening A's `channelled`
+   flag on the owner's status at tick time, never baked at creation (the hazard bakes its die because
+   its owner's rank does not change mid-scene; the spend does). Once per turn per token by
+   construction. (GB-2.) Two Green mages' overlapping Regions: the sweep dedupes per token per turn
+   and keeps the larger — M14 (a) — exactly as `edhaZoneTurnEndCheck` (`50-…js:276`) already walks
+   every zone per combatant.
+4. **Grasping Vines' hold — Widening O, `statusExpire: "owner-channel"`.** Today the vines' Restrained
+   is `statusExpire: ""` (until removed by hand) and the upkeep is a card note. Under FG2-1 (a) the
+   status ends when the owner's arming status ends: one new choice on `edha-triggered-effect`'s
+   `statusExpire`, cleared by the same end-of-status hook Widening L uses for Black's ledger. A
+   status bound to a Channel is the mark's shape applied to a condition.
+5. **Out of combat — the minute tick (FG1-4 (b); GB-3).** M11 says a Channel opened outside combat
+   lasts until the scene ends with no maintain, which would make the home ground a free full heal for
+   one Investiture. FG1-4 (b)'s intent was *a maintain a minute*, and §4 builds that: outside combat
+   the home behaviour ticks only when the owner **uses Maintain**, and each use is one tick for every
+   ally on the ground — the Maintain button *is* the minute. No world-time tracking, no interval; the
+   GM's *"you rest ten minutes"* is ten clicks or one click with a count prompt (the consume dialog's
+   free-entry amount, §1.3 of the parent, already asks for a number). This is a Green-specific reading
+   of M11 that §5.3 files as a one-line ruling for Ben rather than assumes.
+
+**The heal-react riders and the frame's tick (FG2-3 (a)).** `edhaActorRulesOf(healer, "edha-heal-react")`
+(`51-…js:25`) is swept from the *healing talent's* apply path with `whenColor` read from that talent;
+the home behaviour heals from the Region with the power as source, which is not a talent of any
+colour, so the three heal-react rules never see it. **No engine change is needed for FG2-3 (a)** — it
+falls out of the sweep's existing shape, and CG-9 proves it.
+
+**What the frame does not need.** No new handler type, no new event type, no ledger, no per-die work,
+no ActiveEffect. Two Region behaviours (M, N), one `statusExpire` choice (O), and a Maintain-as-tick
+rule outside combat.
+
+### 4.3 What moves in the data
+
+**`data/authored/leyline-green.json`** — the seven authored keys, unchanged as a set:
+
+- **`activation`** — eight cards. The `{type: "resource", resource: "inv"}` consume row is removed from
+  Grasping Vines, Territorial Instinct, Spreading Roots, Sudden Growth, Pack Sense, Mender's Instinct,
+  Verdant Mend and Vital Surge; Mender's Instinct's `cost.type` `rea` → `spe`. Resurgent Growth has no
+  activation to change.
+- **`description`** — the nine sentences of §2.2.
+- **`events`** — `requireSelfStatus: "channelgreen"` on all nine riders' handlers (Vines' and
+  Territorial Instinct's `edha-def-test`; Verdant Mend's `edha-single-target`; Sudden Growth's
+  `edha-burst`; Spreading Roots' `edha-zone-react`; Pack Sense's `edha-test-react`; Vital Surge's and
+  Resurgent Growth's `edha-heal-react`; Mender's `edha-hp-threshold`). Cost fields cleared: Spreading
+  Roots `costInv: 1` → 0, Pack Sense `costs: "inv:1"` → blank, Mender's `costResource: "inv"` → blank,
+  Vital Surge `costInv: 1` → 0. **`oncePerRound: true`** on Spreading Roots (the field does not exist on
+  `edha-zone-react` — GB-4) and on Pack Sense (`edha-test-react`, White's Shared Conviction shape).
+  Grasping Vines' `edha-triggered-effect` gains `statusExpire: "owner-channel"` and its def-test `note`
+  (*"spend 1 Investiture at the start of each of your turns…"*) goes; Pack Sense's `prompt` and
+  Spreading Roots' offer text drop *"Spend 1 Investiture"*.
+- **`effects`** — **nothing changes.** No Green rider is an ActiveEffect.
+- **`docId`** — **nothing changes.** Green has no rename.
+
+**`data/leyline.json`** — the nine records' `action` (one: Mender's Instinct), `cost` and
+`description`; Spreading Roots' trailing whitespace. **Graph untouched**: no `connections` or
+`prerequisites` change, so the DAG and reachability checks and `tests/pipeline.test.js` are unaffected.
+
+**`data/channels.json`** (B-1 (a)) — Green's record: the amended frame sentence of §1.1, §1.5 as the
+frame paragraph, the two actions' text, and the arm rule; the two behaviours (M, N) are engine, written
+on every Green Region at creation.
+
+### 4.4 What names the changed cards
+
+No rename, so no sweep. Four places carry a fact this pass changes and want the edit in the same PR:
+
+| File | What |
+|---|---|
+| `module-src/scripts/engine/50-green-territory.js:1-30` | the Territory tree-section header (rule 3's ledger): the five riders, the two new behaviours beside the hazard, the native behaviour retired |
+| `module-src/scripts/engine/51-green-restoration.js` header | the Restoration header: four riders, Reknit Form a release, the heal-react sweep's blindness to the frame's tick stated as a property |
+| `module-src/scripts/engine/52-green-instinct.js` header | the Instinct header: the tree is Green's release tree; nothing converts |
+| `.claude/skills/leyline-revision-guide/SKILL.md` Part 4, Green | *"Costs favor: Investiture for healing and terrain"* becomes the Channel, five releases and two Opportunities; the key-mechanic line gains the home ground |
+
+`EDHA_FOUNDRY_TEST_CHECKLIST.md:1737`'s `# BENCH — Green` preamble stays; the new `## Channel — item
+198` block goes under it. Regenerated, never hand-edited: `EDHA_PLAYER_PRIMER.html`,
+`EDHA_LEVELUP_GUIDES.html`, `EDHA_DASHBOARD.html`. **Leave alone**: `EDHA_RULINGS.md`, the changelog
+months, the checklist's retired evidence, and `docs/design/channel-actions.md`'s struck text.
+
+### 4.5 The bench rows
+
+Sixteen **🤖** rows, to be added under `# BENCH — Green (leyline)` (checklist line 1737) as a
+`## Channel — item 198` block when the build lands, on the Route A 3.1.0 copy (B-6 (a)).
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CG-1 open | Draw Mana (a patch), Channel Green at 1 | *Channelling Green* on the mage; the Region carries `edha-content.terrain` and `edha-content.home`; Investiture −1 |
+| CG-2 unslow | an ally walks across the patch; an enemy walks across it | ally: walk × 1; enemy: walk × 2 (the ruler shows both) |
+| CG-3 tick | an ally at −4 health starts their turn on the patch | +1 health, labelled Channel Green; the mage on the patch also +1 at their own turn start |
+| CG-4 flood | at rank 2 channel 2; two hurt allies on the patch | +2 each at their turn starts; an ally at full health regains 0 |
+| CG-5 off the ground | an ally starts their turn adjacent to the patch, not on it | nothing |
+| CG-6 heal-cut | a withered ally on the patch | 0 regained and the card says why (R-83) |
+| CG-7 lapse | let the Channel expire | the Region stays; walk × 2 for everyone again; no tick |
+| CG-8 not a talent's heal | Vital Surge and Natural Recovery owned; an ally below half ticks on the patch | no THP offer, no cleanse offer (FG2-3); then Verdant Mend on them: both offers post |
+| CG-9 Resurgent Growth gated | no Channel: Verdant Mend an ally | no regrowth queued. With the Channel: queued, and it follows the ally off the patch |
+| CG-10 riders off / on | no Channel: Grasping Vines, Verdant Mend, Sudden Growth | refused before cost with the toast. With the Channel: all fire spending nothing (Sudden Growth spends its Opportunity) |
+| CG-11 the vines hold | Grasping Vines succeeds; end the Channel | Restrained on the target with no upkeep note; gone when the Channel ends |
+| CG-12 once per round | two enemies end turns on the patch in one round; two ally attacks into it | one Spreading Roots expansion; one Pack Sense modifier |
+| CG-13 Mender's as Special | an ally drops to half while channelling | the heal fires with no Reaction spent and no cost; a second drop that round: nothing |
+| CG-14 releases | Pack Hunter, Drive the Prey, Reknit Form with **no** Channel | all work and spend |
+| CG-15 two mages | Bench — Green II's patch overlapping Bench — Green's, an ally on both, channelling 2 and 1 | +2 once, not +3 |
+| CG-16 outside combat + tabs | end the combat, ally hurt on the patch; Maintain × 3 | three ticks; the Actions and Talents tabs of a synced Green PC show Channel Green and Maintain Green under the power, riders on the Talents tab |
+
+### 4.6 Gate 4 — the menu
+
+**GB-1. The unslow.** (a) **A custom `edha-content.terrain` behaviour replacing the native
+`modifyMovementCost`, reading the owner's arming status at movement time — recommended** (the
+hazard behaviour is the precedent; one behaviour, live). (b) Swap behaviours on arm and on end —
+native off, a hostile-only variant on, and back — two Region writes per Channel and a window where a
+crash leaves the wrong one.
+
+**GB-2. The tick.** (a) **A second custom behaviour, `edha-content.home`, the hazard's mirror on
+turn start for allied tokens, amount read live from the owner's `channelled` flag — recommended.**
+(b) A `combatTurnChange` sweep over every Green Region per combatant (the `edhaZoneTurnEndCheck`
+shape) — works, but the hazard already proved the behaviour is the cleaner seat.
+
+**GB-3. The minute outside combat.** (a) **Maintain is the minute: each out-of-combat Maintain use
+ticks once for every ally on the ground; filed as a Green-specific line under M11 for Ben —
+recommended** (no world-time tracking; the consume dialog's free entry already asks how many).
+(b) Free ticks per M11 for the scene — one Investiture heals the party to full, which a rest
+already does. (c) Real-time: a tick every 60 s of world time while the Channel stands.
+
+**GB-4. `oncePerRound` on `edha-zone-react`.** (a) **Add the field, the `edha-triggered-effect`
+shape — recommended.** (b) Leave Spreading Roots unlimited and drop §2's "Once per round." from its
+card.
+
+**GB-5. The sixth dispatch site.** (a) **Apply F (i)'s return filter to `edhaActorRuleOf` beside
+`edhaActorRulesOf` — recommended** (same file, same shape, `:524` and `:539`; after this every
+rule-lookup helper the engine has is gated). (b) Gate inside `edha-hp-threshold`'s consumer at
+`03-…js:958` alone.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-17):** *"defaults."* — **GB-1 … GB-5 (a).** §4 committed on
+> that answer.
