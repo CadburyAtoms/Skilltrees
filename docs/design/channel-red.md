@@ -15,7 +15,7 @@ gate log is the record.
 |---|---|---|
 | 0 | The frame re-opened (FR-1) | **✅ answered 2026-09-17** — FR-1 (a) *the heat*, replacing the rising edge |
 | 1 | §1 Red's three trees, and the heat applied | **✅ approved 2026-09-17** — RD-1 … RD-7 all (a) |
-| 2 | §2 The twenty-five cards | — |
+| 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — RD2-1 … RD2-7 all (a) |
 | 3 | §3 The mix, against the bands | — |
 | 4 | §4 The build notes for Red | — |
 | 5 | §5 Close-out | — |
@@ -277,3 +277,210 @@ no edit). (b) Record the amendment only in this file and let the PM edit the par
 > **Answered at gate 1 (Ben, chat, 2026-09-17):** *"defaults on all"* — **RD-1 … RD-7 (a).** §1
 > committed on that answer; RD-7 (a) applied in the same commit (the amendment block under F-R in
 > `docs/design/channel-actions.md` §2.5).
+
+---
+
+## 2. The twenty-five cards
+
+### 2.1 The conversion rules, applied to Red
+
+1. **Conflagration's three costed cards are releases** (RD-5 (a)). Searing Bolt, Flame Surge and Arc
+   Flash spend Investiture on **an attack that exists only because of the Investiture** — outside the
+   domain — so they keep their cost and their action type. Arc Flash and Afterburn also take RD-2's
+   phrase: *"when a Red talent you activate deals energy damage"*. *(RD2-A.)*
+2. **The four inside-domain costed cards become riders** (§1.4): Reckless Advance and Incite keep
+   their 1 Action and lose the Investiture; Volatile Strike and Breaking Point are Specials with no
+   cost. Momentum keeps no Investiture cost at all. *(RD2-B.)*
+3. **Emotional Overload and Reckless Gambit are releases** (RD2-1). Both buy into another
+   character's *test* — confidence and its price, Frenzy's passion half — not the fight's damage.
+   Frenzy keeps two costed plays; the rest of the tree is free once the Channel is up.
+4. **Red's one Reaction becomes a Special** (rule 3; RD2-2). Shatter Focus drains 1 focus without a
+   test — a modifier, not an action — and it becomes a "while channelling" Special with "Once per
+   round." Red's Reaction count goes to zero, for the reason §2.3 gives.
+5. **Three free passives are the frame's clause in another Realm and become riders** (rule 2's
+   W-1 exception; RD2-3, RD2-5): **Kindle** (more damage on your fire — Spiritual), **Battle Fever**
+   and **Feeding Frenzy** (damage in range → +1, capped — Cognitive, as a test bonus). The other seven
+   free passives stay unconditional: Burning Drive, Momentum's Edge, Unstoppable, Flashpoint, Mighty,
+   Chain Detonation, Frenzied Tempo.
+6. **Rules 5, 6 and 7 have no Red consumer.** No Red card costs 3 Investiture, so nothing gates on
+   the flood (its payoff is intrinsic: +3 on every hit). No rider reads the channelled number — the
+   frame *is* the number, as Blue's was (BL2-F). And nothing rides the payment: Incite is the one
+   candidate and RD2-4 keeps it an Action, because a forced Strike is an Action's worth of effect
+   and its test should cost one.
+7. **Fully-free Specials gain "Once per round."** where they did not have a limit (BL2-D): Volatile
+   Strike and Shatter Focus. Breaking Point already carries "Once per round per character."
+
+Convention as before: "*While channelling Red,*" at the head of the card; the Key's rider stays a
+Draw Mana rider; prerequisites and connections are unchanged throughout — this pass changes action
+type, cost and text, not the graph.
+
+### 2.2 The twenty-five cards
+
+Format: **name** — *tree / Realm* · today → proposed · the card sentence as it would ship (word count;
+was).
+
+**Red Leyline Attunement** — *Key* · Passive; — → **unchanged** (M10). *"When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn."* (22)
+
+**Burning Drive** — *Momentum / Physical* · Passive; — → **unchanged.** *"On a fast turn, add half [Die] to your first Physical test."* (12)
+
+**Reckless Advance** — *Momentum / Physical* · 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Red, move [Size] feet toward a character or objective without provoking Reactions."* (14; was 15) The charge that delivers the hit; inside the domain (§1.4). Red's first free self-initiated Action beside the Channel.
+
+**Volatile Strike** — *Momentum / Physical* · Special; 1 Investiture → **Special; — (RD2-6).** *"While channelling Red, when you hit with a melee attack, test Red vs. Physical to add half [Tier][Die] impact damage. Once per round."* (23; was 21)
+
+**Momentum's Edge** — *Momentum / Physical* · Passive; — → **unchanged** (R-95 (a) already retuned it to `[Tier][Die]`, item 104). *"When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to [Tier][Die]."* (24)
+
+**Shockwave Slam** — *Momentum / Physical* · Special; — → **unchanged.** *"When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact."* (23)
+
+**Explosive Leap** — *Momentum / Physical* · Free Action; — → **unchanged.** *"Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone."* (21)
+
+**Reckless Momentum** — *Momentum / Physical* · Special; Opportunity → **unchanged** — the Opportunity is its identity cost (M13) and there is no Investiture to convert. *"When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn."* (20)
+
+**Unstoppable** — *Momentum / Physical* · Passive; — → **unchanged.** *"When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn."* (20)
+
+**Kindle** — *Conflagration / Spiritual* · Passive; — → **Passive; — , now a rider (RD2-3; RD-2).** *"While channelling Red, when a Red talent you activate deals energy damage, add your Red modifier to it. Characters it damages shed light in 5 feet and lose concealment until the end of your next turn."* (36; was 33) Ben's card at gate 0: *"Kindle is a rider that buffs Searing Bolt and Flame Surge."* Unconditional it would be the frame's own clause — more damage on your fire — in another Realm, which is W-1's test.
+
+**Searing Bolt** — *Conflagration / Spiritual* · 1 Action; 1 Investiture → **unchanged — a release (RD-5).** *"Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success."* (26) It is a hit, so it carries the heat (RD-6 (a)): in a loud fight the bolt burns hotter, and it still costs.
+
+**Flame Surge** — *Conflagration / Spiritual* · 2 Actions; 2 Investiture → **unchanged — a release (RD-5).** *"Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success."* (32) Not a hit; carries no heat. Each creature it burns is one event (RD-3), so it is how a pyromancer fills the heat for the bolt that follows.
+
+**Arc Flash** — *Conflagration / Spiritual* · Special; 1 Investiture → **Special; 1 Investiture — a release (RD-5), trigger narrowed (RD-2).** *"When a Red talent you activate deals energy damage to a character, you may spend 1 Investiture. If you do, a bolt arcs to one other character within 10 feet, dealing half [Tier][Die] energy damage. Once per round."* (38; was 34)
+
+**Flashpoint** — *Conflagration / Spiritual* · Passive; — → **unchanged.** *"Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn."* (36) Its trigger already reads *a Red talent you activate*; its second option regains 1 Investiture, which under the Channel is half a maintain.
+
+**Mighty** — *Conflagration / Spiritual* · Passive; — → **unchanged** (shared generic, six trees; R-102). *"When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier."* (22)
+
+**Afterburn** — *Conflagration / Spiritual* · Special; Opportunity → **Special; Opportunity — trigger narrowed (RD-2).** *"When a Red talent you activate deals energy damage, you may spend an Opportunity to inflict Afflicted [half [Tier][Die] energy] on the target."* (23; was 18) No Investiture to convert, so it stays unconditional like Reckless Momentum; only the phrase moves.
+
+**Chain Detonation** — *Conflagration / Spiritual* · Passive; — → **unchanged** — it already reads *with a Red Conflagration talent*, which is RD-2's phrase. *"When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft."* (24)
+
+**Incite** — *Frenzy / Cognitive* · 1 Action; 1 Investiture → **1 Action; — (RD2-4).** *"While channelling Red, test Intimidation vs. the Spiritual defense of a character within Attunement Range. On a success, it must Strike the nearest character or lose its Reaction."* (28; was 27) The forced Strike is damage dealt in range — Frenzy stoking the frame.
+
+**Emotional Overload** — *Frenzy / Cognitive* · Special; 1 Investiture → **unchanged — a release (RD2-1).** *"When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test."* (24)
+
+**Battle Fever** — *Frenzy / Cognitive* · Passive; — → **Passive; — , now a rider (RD2-5).** *"While channelling Red, each time damage is dealt within Attunement Range, you and allies within range gain +1 to your next test (max = your Red rank). Resets at the start of your turn."* (34; was 26) The frame's clause in the Cognitive Realm, paid out as a test bonus to the line; the cap stays rank (a rider, not a frame — M9) and the reset stays R-27's.
+
+**Shatter Focus** — *Frenzy / Cognitive* · Reaction; — → **Special; — , a rider (RD2-2).** *"While channelling Red, when a character within Attunement Range fails a test, it loses 1 focus. Once per round."* (19; was 17) Rule 3: a Reaction that is a modifier becomes a Special. The Reaction cost goes, the channel gate arrives, and Red's Reaction is free for the tax (§2.3).
+
+**Reckless Gambit** — *Frenzy / Cognitive* · Special; Opportunity, 1 Investiture → **unchanged — a release (RD2-1).** *"You may spend Opportunity and 1 Investiture to grant advantage to a character within Attunement Range on its next test. It then becomes Exhausted[-2]."* (24)
+
+**Feeding Frenzy** — *Frenzy / Cognitive* · Passive; — → **Passive; — , now a rider (RD2-5).** *"While channelling Red, when an enemy within Attunement Range attacks another enemy, you and each ally within range gain +1 to your next test this round. Resets at the start of your turn."* (33; was 29) The source prose's stray "(" goes with it (§2.5).
+
+**Frenzied Tempo** — *Frenzy / Cognitive* · Passive; — → **unchanged.** *"When you take a Fast turn, your Influence tests gain an advantage until end of turn."* (16)
+
+**Breaking Point** — *Frenzy / Cognitive* · Special; 1 Investiture → **Special; —.** *"While channelling Red, when a character within Attunement Range takes damage for the second time in a round, it becomes Disoriented. Once per round per character."* (26; was 26) Reads the fight's damage directly; inside the domain.
+
+### 2.3 The identity tax under the Channel
+
+Red's Key costs the Reaction: *"Lose your Reaction until the start of your next turn"* on every Draw
+Mana. Today that bites on the turns a Red mage draws — one in two or three. Under the Channel a mage
+draws **every round or every other round by design** (§1.2 of the parent: one Draw funds one round of
+a full Channel), so the Reaction is gone most rounds of most fights. That is the tax working as
+intended — Red trades defence for offence — and it is why Shatter Focus, Red's only Reaction, cannot
+stay one: a card that needs the Reaction the colour's own economy spends would be dead on exactly the
+turns the tree is at full heat. As a Special it fires once a round on any failure in range regardless.
+Red at 0 % Reactions is not a miss against the band; it is the colour's stated shape (leyline guide
+Part 4: *no Red talent reduces damage or heals*, and the Reaction is what the Draw buys).
+
+Two economies fall out, and both work at level 1 with the starting pool of about 4:
+
+- **The charger** channels and pays nothing else. Round 1: Channel at 1 or 2, Reckless Advance (free)
+  into reach, Strike with the heat. Every round after: maintain as a Free Action, three Actions of
+  Strikes and free Momentum riders, Draw when the pool needs it. A flood costs a Draw a round; a
+  trickle a Draw every other round, with +1 on every hit after the first.
+- **The pyromancer** channels *and* releases. Channel at 1 (1) + Searing Bolt (1) + Draw Mana (+2) is
+  sustainable every round at a trickle, with Kindle live on the bolt; a flood plus a bolt costs 3 a
+  round against 2 of income, so the pyromancer trickles, or floods on the round the bolt matters and
+  lets Flame Surge's three events fill the heat for it. Flashpoint's "regain 1 Investiture" option is
+  worth exactly half a maintain, which is a real choice now.
+
+### 2.4 Before and after
+
+| # | Talent | Tree / Realm | Today | Proposed | Condition |
+|---|---|---|---|---|---|
+| 1 | Red Leyline Attunement | Key | Passive; — | Passive; — | — (Draw Mana rider) |
+| 2 | Burning Drive | Momentum / Phy | Passive; — | Passive; — | — |
+| 3 | Reckless Advance | Momentum / Phy | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 4 | Volatile Strike | Momentum / Phy | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 5 | Momentum's Edge | Momentum / Phy | Passive; — | Passive; — | — |
+| 6 | Shockwave Slam | Momentum / Phy | Special; — | Special; — | — |
+| 7 | Explosive Leap | Momentum / Phy | Free Action; — | Free Action; — | — |
+| 8 | Reckless Momentum | Momentum / Phy | Special; Opp | Special; Opp | — |
+| 9 | Unstoppable | Momentum / Phy | Passive; — | Passive; — | — |
+| 10 | Kindle | Conflagration / Spi | Passive; — | Passive; — | **while channelling**; reads Red-talent energy |
+| 11 | Searing Bolt | Conflagration / Spi | 1 Action; 1 Inv | 1 Action; 1 Inv | — (release; carries the heat) |
+| 12 | Flame Surge | Conflagration / Spi | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+| 13 | Arc Flash | Conflagration / Spi | Special; 1 Inv | Special; 1 Inv | — (release; reads Red-talent energy) |
+| 14 | Flashpoint | Conflagration / Spi | Passive; — | Passive; — | — |
+| 15 | Mighty | Conflagration / Spi | Passive; — | Passive; — | — |
+| 16 | Afterburn | Conflagration / Spi | Special; Opp | Special; Opp | — (reads Red-talent energy) |
+| 17 | Chain Detonation | Conflagration / Spi | Passive; — | Passive; — | — |
+| 18 | Incite | Frenzy / Cog | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 19 | Emotional Overload | Frenzy / Cog | Special; 1 Inv | Special; 1 Inv | — (release) |
+| 20 | Battle Fever | Frenzy / Cog | Passive; — | Passive; — | **while channelling** |
+| 21 | Shatter Focus | Frenzy / Cog | Reaction; — | **Special; —** | while channelling; once per round |
+| 22 | Reckless Gambit | Frenzy / Cog | Special; Opp, 1 Inv | Special; Opp, 1 Inv | — (release) |
+| 23 | Feeding Frenzy | Frenzy / Cog | Passive; — | Passive; — | **while channelling** |
+| 24 | Frenzied Tempo | Frenzy / Cog | Passive; — | Passive; — | — |
+| 25 | Breaking Point | Frenzy / Cog | Special; 1 Inv | **Special; —** | while channelling; once per round per character |
+
+**Ten cards change** (3, 4, 10, 13, 16, 18, 20, 21, 23, 25 — two of them, Arc Flash and Afterburn,
+only in their trigger phrase); **fifteen are untouched** — the Key, seven free passives, three
+free Specials or Free Actions, and **five releases**. Between White's sixteen and Blue's nine, for
+the same reason as Blue: a release tree, and here a cheap tree to begin with.
+
+### 2.5 The phrasing fixes that ride the data pass
+
+Under RD-1 (a) and BL-6's precedent, no "creature" is swept on a card whose sentence does not change.
+
+- **Feeding Frenzy** — `data/leyline.json`'s source prose has a stray *"("* before *"you and each
+  ally"*; the authored card does not. Source follows the card, and the sentence changes anyway.
+- **Incite** — the sentence ends without a full stop in both files; the new sentence has one.
+- **Kindle** — *"Creatures you deal energy damage to"* becomes *"Characters it damages"* on the
+  changed sentence. Momentum's Edge, Explosive Leap and Chain Detonation keep "creature" (unchanged).
+- **Volatile Strike, Reckless Advance, Momentum's Edge** — trailing whitespace on the source prose;
+  Momentum's Edge's `prerequisites` reads *"Red 2+; "* with a trailing semicolon. Data hygiene, `data/leyline.json` only.
+- **Emotional Overload** — the source flavour uses a hyphen *" - "* where the standard is an en dash
+  or a full stop; unchanged card, so it is noted, not swept.
+
+### 2.6 Gate 2 — the menu
+
+Every judgment call in §2, recommended default first.
+
+**RD2-1. Emotional Overload and Reckless Gambit.** (a) **Both releases, unchanged — recommended** (they
+buy into another character's test, not the fight's damage; Frenzy keeps two costed passion plays and
+Red keeps five costed cards, 20 %, inside the band). (b) Both riders: Emotional Overload "Special; —",
+Reckless Gambit "Special; Opportunity" — a free disadvantage on every advantage gained in range is a
+standing counter-buff, and Frenzy would carry no Investiture at all. (c) Emotional Overload a rider,
+Reckless Gambit a release.
+
+**RD2-2. Shatter Focus.** (a) **A "while channelling" Special, "Once per round." — recommended** (rule
+3, and §2.3: the colour's own economy spends the Reaction it would need; the gate is the price of
+losing the Reaction cost). (b) Stays a free, unconditional Reaction, as today. (c) An unconditional
+Special, "Once per round." — a pure buff on a free card.
+
+**RD2-3. Kindle.** (a) **A rider reading energy damage from a Red talent you activate; the light
+clause on the same trigger — recommended** (Ben's line; W-1's test). (b) An unconditional passive
+reading Red-talent energy — works before the Channel opens, but doubles the fire the Channel pays
+for. (c) Unconditional and reading *any* energy damage, as today — RD-2 (a) already refused this.
+
+**RD2-4. Incite.** (a) **A 1 Action rider, no cost — recommended** (a forced Strike is an Action's
+worth of effect; the Intimidation test should cost one). (b) A Special on the payment — *"When you
+channel or maintain Red, test Intimidation vs. …"* — Guiding Signal's shape: the fight gets louder
+every round for free, and Red's self-initiated Actions fall to three. (c) A release, unchanged.
+
+**RD2-5. Battle Fever and Feeding Frenzy.** (a) **Riders per W-1, each keeping its own cap (rank) and
+its own reset (start of your turn, R-27) — recommended** (a rider is not a frame; its cap is the
+tree's and its reset is a ruling that stands). (b) Unconditional, as today — two free counters on the
+frame's own trigger. (c) Riders with the turn-start reset dropped to match the heat — re-opens R-27.
+
+**RD2-6. "Once per round." on Volatile Strike.** (a) **Yes — recommended** (free, it would be a
+test for +half [Tier][Die] on every one of three Strikes a turn; BL2-D's precedent). (b) No — three
+tests a turn, as Mighty is three adds a turn.
+
+**RD2-7. Arc Flash and Afterburn take RD-2's phrase on the card.** (a) **Yes, both — recommended** (the
+card must say what the rule reads, or a heat-carrying Strike looks like it should arc). (b) Leave the
+cards reading "energy damage" and let the build's `whenSource` gate carry it silently — the tab would
+then disagree with the card.
+
+> **Answered at gate 2 (Ben, chat, 2026-09-17):** *"all default"* — **RD2-1 … RD2-7 (a).** §2
+> committed on that answer.
