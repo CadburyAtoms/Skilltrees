@@ -1,0 +1,802 @@
+# Green, worked — the Channel model applied
+
+**Design document for TODO item 211's Green leg** (the Black / Red / Green passes on the Channel model).
+Green is the fifth and last colour worked, in the same session and on the same PR as Red and Black
+(#433). The rule (`docs/design/channel-actions.md` §1) and the build shape (§4) are **decided and
+fixed**; the frame (§2.6, F-G (a) *the ground*) was **re-opened by Ben at the start of this pass and
+replaced** — §1.2 records the three alternatives and why the second was chosen. **DOCS-ONLY: nothing
+here edits data, the engine or the packs.** The build is item 198's Green leg.
+
+**How this document was made.** One section at a time, in full text, with Ben's yes gating each
+section before the next was written and before any commit. Every judgment call is a menu entry with a
+recommended default, answered at its gate; nothing below assumes an answer that was not given. The
+gate log is the record.
+
+| Gate | Section | Status |
+|---|---|---|
+| 0 | The frame re-opened (FG-1) | **✅ answered 2026-09-17** — FG-1 (b) *the home ground*, replacing the ground; Ben's own pick, confirmed against the pack |
+| 1 | §1 Green's three trees, and the home ground applied | **✅ approved 2026-09-17** — FG1-1 … FG1-6 (a) except **FG1-4 (b)**: the regen ticks once a minute outside combat |
+| 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — FG2-1 … FG2-5 all (a); *"looks good"* |
+| 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — FG3-1 (a), with Ben's standing note: the yardstick sessions and the bench may suggest balance changes to the frames |
+| 4 | §4 The build notes for Green | **✅ approved 2026-09-17** — GB-1 … GB-5 all (a); *"defaults."* |
+| 5 | §5 Close-out | **✅ done 2026-09-17** — delta at the top of `docs/handoff-changelog/2026-09.md`; one applied default (the M11 line) for §I; rides PR #433 with Red and Black |
+
+**What this rests on** (read in this order; nothing below re-derives them):
+`docs/design/channel-actions.md` §1.1 (the four definitions), §1.4 (the interactions; M11, M14),
+§1.5 and §2.1 (the Realm map: Restoration Physical, Instinct Cognitive, Territory Spiritual), **§2.6
+(F-G, the frame as approved at gate 2 and amended here; F-G (b), the regrowth line, refused there for
+strength)**, §3.2 (the seven conversion rules), §4.3; `channel-blue.md` §1.2 – §1.3 (the domain rule);
+`channel-red.md` §1.2 (the three tests a frame must pass) and §1.5 (a frame may be a stack);
+`channel-black.md` §1.2 (a frame may be a mark); `EDHA_RULINGS.md` R-83 (the heal-cut gate every
+`hea` writer must pass), R-126 (Draw Mana yields your rank); `.claude/skills/leyline-revision-guide/SKILL.md`
+Part 4 (Green's identity block as corrected 2026-09-13: *Territory — terrain that spreads, bites and
+holds; deep single-target restoration — Green CAN remove Injuries and nothing else can; the pack — the
+PARTY clusters, onto one target*); the engine's terrain (`50-green-territory.js:35-50`: one enforced
+map Region per placement, `modifyMovementCost walk × 2`, owner-tagged) and its sizes
+(`35-…js:24-25`: `[Size]` by rank 2.5 / 5 / 10 ft, Attunement Range 15 / 30 / 60 ft); and
+`data/leyline.json` + `data/authored/leyline-green.json` for every card quoted — **every card below
+was read from both on 2026-09-17 at `main` `ba796d4`, card text and `events`. Nothing is written from
+memory.**
+
+**Today's Green:** 9 Passives, 7 Specials, 3 single Actions, 3 two-Action cards, 0 Free Actions,
+3 Reactions; 14 of 25 cost something — 13 Investiture (one also an Opportunity; Reknit Form variable
+2 / 3) and 1 Opportunity only (Natural Recovery) — for an Investiture tree-sum of **14** with Reknit
+Form's variable cost counted as 0, as `talent-comparison-mistborn-radiant.md` §C.2 counts it (16 at
+its minimum of 2).
+
+---
+
+## 1. Green's three trees, by Realm — and the home ground applied
+
+### 1.1 The frame, as amended
+
+The frame approved at gate 2 of the parent design (§2.6, F-G (a)) was *the ground*: enemies that
+enter or start their turn in your difficult terrain take keen damage equal to the channelled
+Investiture. Ben re-opened it at the start of this pass; §1.2 records why and the three alternatives.
+The replacement is the ground turned toward the party:
+
+> **Channel Green.** Your difficult terrain within Attunement Range does not slow you or your allies,
+> and you and allies that start your turn in it regain health equal to the Investiture you are
+> channelling.
+
+This document calls the frame **the home ground**. The Draw Mana rider is unchanged — every Draw lays
+difficult terrain within [Size] of a point in Attunement Range — so **Draw → Channel** is the opening:
+the Key lays the ground, the Channel makes it home.
+
+| Tree | Realm | What its riders do to the frame |
+|---|---|---|
+| **Territory** | Spiritual | grow and hold the ground — spread it, seed it under a foe, root the one who stands in it, keep the one who tries to leave |
+| **Restoration** | Physical | deepen what the ground gives the body — the burst heal at half, the touch, the condition lifted, the injury closed, the vitality that stays |
+| **Instinct** | Cognitive | hunt from it — the pack's advantage, the weakest known, the prey driven, the illusion refused |
+
+The assignment is §2.1's, unchanged; Green's Physical cell is the legacy guide's own words (*"deep
+single-target healing"*).
+
+### 1.2 Why the ground was replaced
+
+Recorded so that §2.6 of the parent design can carry the amendment (FG1-6). The ground failed the
+three tests `channel-red.md` §1.2 set, and worse than the hunt did:
+
+1. **It was one card promoted.** Thorn Field, a free rank-2 passive, reads *"your difficult terrain
+   deals half [Tier][Die] keen damage to characters that enter or start their turn in it"*; the frame
+   was that sentence with the die swapped for the spend, and the parent design said so (*"the Channel
+   is what makes laying it matter before rank 2, where Thorn Field arrives"*).
+2. **Its domain left two trees outside.** "Your terrain and what stands in it" converted Territory's
+   five costed cards and nothing else — Restoration heals and Instinct hunts, neither in the terrain —
+   leaving 8 of 13 costed cards costed, the weakest conversion of the five colours.
+3. **Two trees rode it by gate only.** No Restoration or Instinct card names the terrain.
+
+**Three alternatives, one per Realm, and the choice.** *The pack* (Instinct: allies gain a bonus to
+attack tests equal to the spend against a character adjacent to another ally — White's line mirrored
+to offence) rode nine of thirteen costed cards and completed a pattern the other four colours make;
+it was tabled first, and set aside because it is generic tactics that Hunter already sells (Pack
+Hunting, Hunter's Edge, Animal Bond) and because it made the ground a side effect of the Key. *The
+hold* (Territory: enemies starting their turn in your terrain lose 10 feet of movement rate per
+Investiture) kept the ground and converted five cards. **The home ground** — the refused regrowth
+line gated to the mage's own terrain — is uniquely Green where the pack is not: deep restoration is
+the one thing no other tree can do and the living ground is the Key's product, and the frame is made
+of both. Ben named it his own pick; asked whether it would be the recommendation absent the gate-2
+refusal, the answer was yes, and the reason the refusal no longer binds is the gate itself:
+
+| Rank | `[Size]` | squares per Draw | who can stand in it | regen per round at a flood |
+|---|---|---|---|---|
+| 1 | 2.5 ft | 1 | one ally | 1 – 2 to one ally |
+| 2 | 5 ft | 9 | the party | up to 8 across four allies |
+| 3 | 10 ft | 25 | the party with room | up to 12 across four |
+
+The line refused at gate 2 healed every ally in Attunement Range for a Draw a round. This one heals
+whoever stands on a patch the mage laid, which at level 1 is one square and one ally, and at rank 2
+is a 15-foot patch that is also where every burst wants to land. Standing together on marked ground
+is a real price; item 210's yardstick prices the rest.
+
+> **Gate 0 (Ben, chat, 2026-09-17):** *"If I hadn't refused the original proposal, would B be your
+> pick? I think it's mine, but I want your take."* → yes, for the reasons above; *"do it"* →
+> **FG-1 (b).**
+
+### 1.3 What the frame does to each tree's identity
+
+**Green's case is White's, turned to the ground.** White's frame was an effect no White card had
+(deflect to the line), and every White card was free to stay what it was and stop costing. Green's
+frame is an effect one card *almost* has — Resurgent Growth's regen — but its subject is new: not "an
+ally you healed" but "an ally on your ground". The frame gives the party a reason to stand where the
+Key puts them, which is the sentence the guide was corrected to on 2026-09-13 (*the PARTY clusters*)
+with the ground as the reason to cluster.
+
+**Territory (Spiritual) grows and holds the ground.** Every Territory card is about the terrain or
+the creature that will not leave it: Spreading Roots and Sudden Growth lay more of it, Grasping Vines
+and Territorial Instinct are the roots that hold, Pack Sense and Apex Predator pay the party for
+fighting on it, Thorn Field makes it bite, Primal Awareness is the land's own senses. Under the frame
+the ground is worth laying at level 1 for the party's sake, and every Territory rider makes more of
+the place the party heals on. Thorn Field stays exactly what it is: the same patch that heals allies
+bites enemies, and the two clauses never meet on one creature.
+
+**Restoration (Physical) deepens what the ground gives the body.** The frame is a trickle; Restoration
+is the surge — Mender's Instinct at half health, Verdant Mend's touch, Vital Surge's temporary HP,
+Natural Recovery's condition lifted, Reknit Form's injury closed. Every one of them buys into an
+ally's body, which is the frame's own subject, so by the domain rule they convert. **One card is the
+frame's clause in this Realm** and takes W-1's treatment (FG1-3): Resurgent Growth — *"when you
+restore health to an ally with a Green talent, that ally regains health at the start of your next
+turn while they remain within Attunement Range"* — is regen on an ally, unconditional, and left free
+it doubles the frame on every healed ally whether or not they stand on the ground. As a rider it is
+the frame's reach *off* the ground: heal an ally once, and they carry the regrowth wherever they go
+that round.
+
+**Instinct (Cognitive) is Green's release tree.** Pack Hunter, Pack Pressure, Drive the Prey and
+Natural Order buy into the *prey's* situation — the surrounded target, the Strike window, the driven
+creature, the scene without illusions — and none of them names the ground or an ally's body. By the
+domain rule they are outside and keep their cost, as Illusion's did for Blue, Conflagration's for Red
+and Subjugation's for Black. That makes **five colours, five release trees, in four different
+Realms** (Physical, Spiritual, Cognitive, Cognitive, Cognitive): Blue's §1.2 prediction — a release
+tree is not a Realm law — measured across the whole atlas. Instinct's free cards (Predator's
+Instinct, Scent the Weak, Coordinated Hunt, Packmate's Warning) run as today. FG1-1 (b) offers the
+other reading — *the ground and the pack that holds it* — under which Instinct converts too and
+Green has no release tree at all.
+
+### 1.4 The domain, and Green's release principle
+
+`channel-blue.md` §1.2 fixed the release test: a card whose Investiture buys an effect **outside the
+frame's domain** is a release. Green's domain is
+
+> **the ground, and the bodies that stand on it** — the terrain you have laid, and your allies'
+> health.
+
+Run over the thirteen Investiture-costed cards:
+
+| Card | Its Investiture buys | Domain | Class |
+|---|---|---|---|
+| Grasping Vines | a character Restrained by your roots, and its upkeep | inside (the ground reaching out) | rider |
+| Territorial Instinct | an enemy's Disengage stopped on your land | inside | rider |
+| Spreading Roots | more ground | inside | rider |
+| Sudden Growth | ground under a foe | inside | rider (keeps its Opportunity, M13) |
+| Pack Sense | an ally's attack against a character in your ground | inside | rider |
+| Mender's Instinct | an ally's health at half | inside | rider |
+| Verdant Mend | a character's health, by touch | inside | rider |
+| Reknit Form | an injury removed | inside — gated on the spend (rule 5; gate 2) | rider |
+| Vital Surge | temporary HP on a healed character | inside | rider |
+| Pack Hunter | advantage for you and an ally against a surrounded enemy | outside | release |
+| Pack Pressure | the pack's free move and Strike window | outside | release |
+| Drive the Prey | a character driven and Slowed | outside | release |
+| Natural Order | a scene without illusions (rule 4 too) | outside | release |
+
+**Nine riders, four releases.** The Investiture tree-sum falls from 14 to **6** (Pack Hunter 1, Pack
+Pressure 1, Drive the Prey 2, Natural Order 2) — the same landing as Red and Black, from the same
+rule. §3 measures it.
+
+**Green's release principle (FG1-1):** a card whose Investiture buys into an *enemy's* situation —
+the prey — is outside the domain. Territory's two cards that act on an enemy (Grasping Vines,
+Territorial Instinct) are inside because the actor is the ground: roots hold, the land refuses to be
+left. Instinct acts on the prey with the pack, not the land.
+
+**Grasping Vines' upkeep.** The card says *"spend 1 Investiture at the start of your turn to
+maintain the vines"*. As a rider the vines are free to cast; the upkeep is the one Investiture line
+the frame has to decide — gate 2 carries it (the Channel is the upkeep, or the upkeep stays).
+
+### 1.5 The home ground, in full
+
+Stated once, so §2's riders and §4's build have one text to point at.
+
+- **Your difficult terrain** is terrain your Green talents laid — the Key's Draw, Sudden Growth,
+  Spreading Roots' expansion — which the engine already tags with its creator (FG1-5 (a)). Natural
+  difficult terrain and another mage's ground are not yours.
+- **It does not slow you or your allies.** Enemies still pay double; Thorn Field still bites them at
+  rank 2; Territorial Instinct still stops their Disengage. Your side walks through it.
+- **It heals whoever starts their turn on it.** You and each ally that begins their turn in your
+  terrain within Attunement Range regain health equal to the Investiture you are channelling — once
+  per turn per creature, at the start of that creature's turn. Every `hea` write passes the heal-cut
+  gate (R-83): a withered ally on the ground regains nothing, and the card says so.
+- **What the spend buys.** 1 per ally per turn for a trickle, 2 at a flood at levels 1 – 5, 3 from
+  level 6 — multiplied by how many allies stand on ground you have laid, which at rank 1 is one
+  square per Draw (§1.2's table). The spend is the depth; the Draws and Spreading Roots are the
+  breadth.
+- **You are an ally to yourself** for the frame (FG1-2 (a)): a Green mage standing on their own
+  ground heals with the party, as White's mage gains deflect beside the line.
+- **Two Green mages.** An ally standing on ground both have laid takes the larger regen once (M14 (a));
+  ground laid by either does not slow the other's allies, since neither slows their own.
+- **Outside combat.** M11: the Channel lasts until the scene ends or you end it; the terrain does not
+  slow allies for as long as it stands, and **the regen ticks once a minute** for each ally on the
+  ground (FG1-4 (b), Ben's pick over the recommended default): the grove is a place the party rests in,
+  at a maintain per minute, which is the Channel's out-of-combat rate under M11.
+- **Adversaries.** R-137: at role rank. A Green minion lays one square and heals one packmate on it;
+  a boss floods at 3 and lays a 25-square grove.
+- **Draw Mana is unchanged.** The Key lays ground on every Draw; the Channel does not lay ground, it
+  makes the ground home. A Green mage who never channels has today's tree exactly.
+
+### 1.6 Gate 1 — the menu
+
+Every judgment call in §1, recommended default first.
+
+**FG1-1. The domain and the release principle.** (a) **The ground and the bodies that stand on it;
+a card that buys into the prey's situation is outside — Instinct's four costed cards are releases,
+Territory's five and Restoration's four convert — recommended** (the rule as the other three colours
+applied it; Green keeps a release tree like every other colour). (b) *The ground and the pack that
+holds it* — Instinct's four convert too; Green is the one colour with no release tree, thirteen
+riders, and a tree-sum of 0 beside the Channel. (c) Card by card at gate 2.
+
+**FG1-2. "You" in the frame.** (a) **"You and your allies" — recommended** (White's precedent; the
+mage stands on their own ground). (b) Allies only — the mage heals through Restoration's own cards.
+
+**FG1-3. Resurgent Growth.** (a) **Becomes a "while channelling" rider (W-1's test: regen on an ally
+is the frame's clause in the Physical Realm; unconditional it doubles the frame off the ground) —
+recommended.** (b) Stays a free, unconditional passive — two regens on every healed ally standing on
+the ground.
+
+**FG1-4. Outside combat.** (a) The regen ticks only on turns; the unslow stands while the terrain
+does — recommended (M11's shape; Ordered Advance's "this round" has the same answer). (b) **A tick
+per minute outside combat — Ben's pick**: the grove is somewhere the party rests, at a maintain a
+minute.
+
+**FG1-5. Whose ground.** (a) **Terrain laid by your own Green talents, read from the Region's owner
+tag the engine already writes — recommended** (`50-green-territory.js:35`; Apex Predator's
+`whenEnemiesInMyZone` reads the same tag). (b) Any difficult terrain within Attunement Range — a
+Green mage on a hillside heals the party for nothing laid.
+
+**FG1-6. Where the amendment lives.** (a) **This PR also edits `docs/design/channel-actions.md`
+§2.6: a dated amendment block under F-G recording FG-1 (b), the replaced card sentence and a pointer
+here, with the original struck through — recommended** (RD-7 / BK-6's shape). (b) Record here only.
+(c) Rewrite §2.6 in place.
+
+> **Answered at gate 1 (Ben, chat, 2026-09-17):** *"default all but 1-4, which should be (b)."* —
+> **FG1-1, 2, 3, 5, 6 (a); FG1-4 (b).** §1.5's outside-combat line rewritten to (b) before the commit;
+> FG1-6 (a) applied in the same commit (the amendment block under F-G in `channel-actions.md` §2.6).
+
+---
+
+## 2. The twenty-five cards
+
+### 2.1 The conversion rules, applied to Green
+
+1. **Territory's five costed cards become riders** (FG1-1 (a)): Grasping Vines keeps its Action and
+   loses its Investiture — *and its upkeep line*, because the Channel is the upkeep (FG2-1);
+   Territorial Instinct keeps its Reaction (it tests, rule 3); Spreading Roots and Pack Sense are
+   Specials with no cost and gain "Once per round." (FG2-5); Sudden Growth keeps its Opportunity
+   (M13). *(FG2-A.)*
+2. **Restoration's three combat heals become riders; the injury card is a release** (FG2-2). Verdant
+   Mend keeps its Action; Vital Surge is a free Special; **Mender's Instinct becomes a Special** — a
+   Reaction that is a modifier (rule 3), already once per round in its rule (FG2-4). Reknit Form keeps
+   its variable cost: an injury removed outlasts the scene (rule 4), and under FG1-4 (b) a free Reknit
+   would close every injury in the party for one out-of-combat maintain. *(FG2-B.)*
+3. **Instinct's four costed cards are releases** (FG1-1 (a)): Pack Hunter, Pack Pressure, Drive the
+   Prey, Natural Order (rule 4 as well). Every card that buys into the prey's situation.
+4. **One free passive is the frame's clause in another Realm and becomes a rider** (rule 2's W-1
+   exception; FG1-3 (a)): Resurgent Growth. The other eight free cards stay unconditional — Thorn
+   Field included: the ground biting enemies is not the ground healing allies.
+5. **The frame's tick is not a Green talent's heal** (FG2-3). Vital Surge, Natural Recovery and
+   Resurgent Growth all read *"when you restore health with a Green talent"*; the frame is the
+   power's, not a talent's, so the regen does not fire them — RD-2's shape for Red (the heat is not
+   energy for Kindle). Without this, every ally on the ground below half health would draw temporary
+   HP, a cleanse offer and a regrowth queue every turn.
+6. **Rules 5, 6 and 7 have no Green consumer** once Reknit Form is a release: nothing gates on the
+   flood, the frame is the number (as for Blue, Red and Black), and nothing rides the payment — the
+   Key's Draw already lays the ground, and the Channel's own arm is what makes it home.
+7. **Two newly-free Specials gain "Once per round."** (BL2-D's precedent): Spreading Roots (free, it
+   would expand on every turn-end in the patch) and Pack Sense (free, it would add the modifier to
+   every ally attack into the ground). Mender's Instinct already carries it.
+
+Convention as before: "*While channelling Green,*" at the head of the card; prerequisites and
+connections unchanged — this pass changes action type, cost and text, not the graph.
+
+### 2.2 The twenty-five cards
+
+Format: **name** — *tree / Realm* · today → proposed · the card sentence as it would ship (word count;
+was).
+
+**Green Leyline Attunement** — *Key* · Passive; — → **unchanged** (M10). *"When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range."* (15) Every Draw lays the ground the Channel makes home.
+
+**Primal Awareness** — *Territory / Spiritual* · Passive; — → **unchanged.** *"You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures."* (16)
+
+**Grasping Vines** — *Territory / Spiritual* · 1 Action; 1 Investiture → **1 Action; — (FG2-1).** *"While channelling Green, test Green vs. the Physical defense of a character within Attunement Range. On a success, the target is Restrained for as long as you channel."* (28; was 35) The Channel is the upkeep: the roots hold while the ground is alive.
+
+**Territorial Instinct** — *Territory / Spiritual* · Reaction; 1 Investiture → **Reaction; —.** *"While channelling Green, when an enemy in your Attunement Range tries to Disengage, test Green vs. Survival to reduce its movement to 0 this turn."* (25; was 26) A Reaction that tests stays a Reaction (rule 3).
+
+**Thorn Field** — *Territory / Spiritual* · Passive; — → **unchanged.** *"Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it."* (18) The same patch heals allies and bites enemies; the two clauses never meet on one creature.
+
+**Spreading Roots** — *Territory / Spiritual* · Special; 1 Investiture → **Special; — (FG2-5).** *"While channelling Green, when a character ends their turn in your difficult terrain, the terrain expands [Size]. Once per round."* (20; was 21)
+
+**Sudden Growth** — *Territory / Spiritual* · Special; Opportunity, 1 Investiture → **Special; Opportunity.** *"While channelling Green, spend an Opportunity to create difficult terrain within [Size] of a character you can sense."* (18; was 18) The Opportunity is its identity cost (M13).
+
+**Pack Sense** — *Territory / Spiritual* · Special; 1 Investiture → **Special; — (FG2-5).** *"While channelling Green, when an ally makes an attack test against a character in your difficult terrain, they add your Green modifier to the result. Once per round."* (28; was 28)
+
+**Apex Predator** — *Territory / Spiritual* · Passive; — → **unchanged.** *"While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests."* (17)
+
+**Mender's Instinct** — *Restoration / Physical* · Reaction; 1 Investiture → **Special; — (FG2-4).** *"While channelling Green, when an ally in Attunement Range drops to half health or below, restore [Tier][Die] health to them. Once per round."* (23; was 21) A Reaction that is a modifier becomes a Special (rule 3); its rule is already once per round.
+
+**Verdant Mend** — *Restoration / Physical* · 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Green, touch a character to restore health equal to [Tier][Die] + your Green modifier."* (16; was 17)
+
+**Resurgent Growth** — *Restoration / Physical* · Passive; — → **Passive; — , now a rider (FG1-3).** *"While channelling Green, when you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range."* (39; was 36) The frame's clause in the Physical Realm — the regrowth that follows a healed ally off the ground.
+
+**Natural Recovery** — *Restoration / Physical* · Special; Opportunity → **unchanged** (FG2-3). *"When you restore health with a Green talent, you may spend an Opportunity to also remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened."* (26) No Investiture to convert; it reads a Green talent's heal, not the frame's tick.
+
+**Hardy** — *Restoration / Physical* · Passive; — → **unchanged** (shared generic; R-102). *"Gain +1 maximum health per level, including previous levels."* (9)
+
+**Collected** — *Restoration / Physical* · Passive; — → **unchanged** (shared generic; R-102). *"Increase your Cognitive and Spiritual defenses by 2."* (8)
+
+**Reknit Form** — *Restoration / Physical* · 2 Actions; Variable Investiture → **unchanged — a release (FG2-2; rule 4).** *"Spend 2 Investiture and touch a creature to remove one temporary injury, or spend 3 Investiture to remove a permanent injury."* (21) An injury removed outlasts the scene; and with FG1-4 (b) a maintained Channel outside combat would otherwise close every injury in the party for one payment.
+
+**Vital Surge** — *Restoration / Physical* · Special; 1 Investiture → **Special; —.** *"While channelling Green, when you restore health with a Green talent to a character below half health, they also gain Temporary HP equal to half [Tier][Die]."* (26; was 23) Reads a Green talent's heal (FG2-3), so the frame's own tick does not fire it.
+
+**Predator's Instinct** — *Instinct / Cognitive* · Passive; — → **unchanged.** *"Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing."* (28)
+
+**Pack Hunter** — *Instinct / Cognitive* · Special; 1 Investiture → **unchanged — a release (FG1-1).** *"When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it."* (28)
+
+**Scent the Weak** — *Instinct / Cognitive* · Special; — → **unchanged.** *"You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage."* (20)
+
+**Pack Pressure** — *Instinct / Cognitive* · 1 Action; 1 Investiture → **unchanged — a release (FG1-1).** *"You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] damage."* (45)
+
+**Coordinated Hunt** — *Instinct / Cognitive* · Passive; — → **unchanged.** *"When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank)."* (39)
+
+**Drive the Prey** — *Instinct / Cognitive* · 2 Actions; 2 Investiture → **unchanged — a release (FG1-1).** *"Choose a character within 30 feet. Test Green vs. Survival. On a success, that character is Slowed and must move away from you on their next turn. Allies may make Reactive Strikes against it if it moves within their reach."* (40)
+
+**Packmate's Warning** — *Instinct / Cognitive* · Reaction; — → **unchanged.** *"When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it."* (22) Free and unconditional; rule 3 converts costed Reactions, and this one never cost.
+
+**Natural Order** — *Instinct / Cognitive* · 2 Actions; 2 Investiture → **unchanged — a release (FG1-1; rule 4).** *"Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception."* (22)
+
+### 2.3 Draw → Channel: the grove, and Green's three economies
+
+The Key lays the ground on the Draw; the Channel makes it home. Round 1 in that order — Draw (a patch
+where the party will stand), Channel at 1 or 2, one Action left — puts a healing floor under whoever
+stands on the patch by the end of the round, with no card spent. Today the Key's terrain is a thing
+the party avoids and the enemy is slowed by; under the frame it is the place the party fights from.
+
+Three economies fall out, one per tree, and all three work at level 1 with the starting pool of about 4:
+
+- **The Territory mage** channels and lays. Draw, Channel, and every Territory rider is free: Sudden
+  Growth on an Opportunity seeds ground under a foe, Spreading Roots grows the patch once a round for
+  nothing, Grasping Vines holds the one who reached the party for as long as the Channel is up, and
+  Pack Sense adds the modifier to one ally's swing into the ground each round. At rank 2 a single Draw
+  is a 15-foot patch; with Spreading Roots it is the field by round 3.
+- **The healer** channels and surges. The frame is the trickle (1 – 3 per ally on the ground per turn);
+  Verdant Mend and Mender's Instinct are the surges, both free, and Resurgent Growth follows every
+  surge off the ground. The Draw is for the pool and the patch. Reknit Form still costs — and, with
+  the Channel running out of combat at a maintain a minute (FG1-4 (b)), the grove is where the party
+  rests: a minute of channelling at 1 is 1 Investiture for 1 health to everyone on the ground, a
+  slow, cheap recovery the heal-cut gate still governs.
+- **The pack** channels for the ground and pays for the hunt. Pack Hunter, Pack Pressure, Drive the
+  Prey and Natural Order keep their costs; the free Instinct cards run as today. This is the
+  Blue-Illusion position again: the ground heals the pack for the Channel's price, and the real
+  decision each round is **ground or prey** — a round spent on Drive the Prey's 2 is a round the
+  Channel was maintained at 1, and the trickle is 1 instead of 2 for everyone on the patch.
+
+### 2.4 Before and after
+
+| # | Talent | Tree / Realm | Today | Proposed | Condition |
+|---|---|---|---|---|---|
+| 1 | Green Leyline Attunement | Key | Passive; — | Passive; — | — (Draw Mana rider) |
+| 2 | Primal Awareness | Territory / Spi | Passive; — | Passive; — | — |
+| 3 | Grasping Vines | Territory / Spi | 1 Action; 1 Inv (+1/turn) | **1 Action; —** | while channelling; held while channelling |
+| 4 | Territorial Instinct | Territory / Spi | Reaction; 1 Inv | **Reaction; —** | while channelling |
+| 5 | Thorn Field | Territory / Spi | Passive; — | Passive; — | — |
+| 6 | Spreading Roots | Territory / Spi | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 7 | Sudden Growth | Territory / Spi | Special; Opp, 1 Inv | **Special; Opp** | while channelling |
+| 8 | Pack Sense | Territory / Spi | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 9 | Apex Predator | Territory / Spi | Passive; — | Passive; — | — |
+| 10 | Mender's Instinct | Restoration / Phy | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
+| 11 | Verdant Mend | Restoration / Phy | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 12 | Resurgent Growth | Restoration / Phy | Passive; — | Passive; — | **while channelling** |
+| 13 | Natural Recovery | Restoration / Phy | Special; Opp | Special; Opp | — |
+| 14 | Hardy | Restoration / Phy | Passive; — | Passive; — | — |
+| 15 | Collected | Restoration / Phy | Passive; — | Passive; — | — |
+| 16 | Reknit Form | Restoration / Phy | 2 Actions; Var Inv | 2 Actions; Var Inv | — (release) |
+| 17 | Vital Surge | Restoration / Phy | Special; 1 Inv | **Special; —** | while channelling |
+| 18 | Predator's Instinct | Instinct / Cog | Passive; — | Passive; — | — |
+| 19 | Pack Hunter | Instinct / Cog | Special; 1 Inv | Special; 1 Inv | — (release) |
+| 20 | Scent the Weak | Instinct / Cog | Special; — | Special; — | — |
+| 21 | Pack Pressure | Instinct / Cog | 1 Action; 1 Inv | 1 Action; 1 Inv | — (release) |
+| 22 | Coordinated Hunt | Instinct / Cog | Passive; — | Passive; — | — |
+| 23 | Drive the Prey | Instinct / Cog | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+| 24 | Packmate's Warning | Instinct / Cog | Reaction; — | Reaction; — | — |
+| 25 | Natural Order | Instinct / Cog | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+
+**Nine cards change** (3, 4, 6, 7, 8, 10, 11, 12, 17); **sixteen are untouched** — the Key, ten free
+cards, and **five releases**. Between Red's ten and Black's four.
+
+### 2.5 The phrasing fixes that ride the data pass
+
+No "creature" is swept on a card whose sentence does not change; none of the nine changed sentences
+carries one (Reknit Form's stays, unchanged).
+
+- **Spreading Roots** — trailing whitespace on the source prose (`data/leyline.json`).
+- **Grasping Vines** — its `edha-def-test` rule's `note` (*"On a success, spend 1 Investiture at the
+  start of each of your turns to maintain the vines."*) and its `edha-triggered-effect`'s
+  `statusExpire: ""` (until removed by hand) both change under FG2-1 (a) — §4 carries the rule; the
+  note is player-facing text asking for a cost that no longer exists.
+- **Mender's Instinct**, **Pack Sense**, **Vital Surge**, **Spreading Roots** — their rules' `cost`
+  fields and prompt strings (*"Spend 1 Investiture …"*) go with the cost; §4 lists them.
+- **Natural Recovery** — `prerequisites` reads *"Green 2+; Medicine 3+"*, a two-gate prerequisite
+  `validate-build.py` already parses; unchanged card, noted only.
+
+### 2.6 Gate 2 — the menu
+
+Every judgment call in §2, recommended default first.
+
+**FG2-1. Grasping Vines' upkeep.** (a) **The Channel is the upkeep: Restrained for as long as you
+channel; the upkeep line goes — recommended** (the roots are the ground's, and the ground is alive
+while the Channel is; a maintain a round is the same price as today's upkeep with every other rider
+thrown in). (b) Keep the *"spend 1 Investiture at the start of your turn to maintain"* line — a rider
+with an Investiture cost on its second sentence, against rule 1. (c) Restrained until the end of your
+next turn, no upkeep — shorter, and the card stops being a hold.
+
+**FG2-2. Reknit Form.** (a) **A release, unchanged — recommended** (rule 4: an injury removed
+outlasts the scene; under FG1-4 (b) a free Reknit in a maintained grove would close every injury in
+the party for one payment a minute). (b) A rider gated on the spend — *"while channelling 2 or more,
+a temporary injury; 3 or more, a permanent one"* — rule 5 scaled to its two costs, and the
+out-of-combat problem above. (c) A plain rider.
+
+**FG2-3. The frame's tick and the heal riders.** (a) **The regen is the power's, not a Green
+talent's heal: Vital Surge, Natural Recovery and Resurgent Growth do not fire on it — recommended**
+(RD-2's shape; otherwise every ally on the ground below half draws temporary HP, a cleanse offer and
+a regrowth queue each turn). (b) It counts as a Green heal — the full fusion, and the Restoration
+tree fires off the frame every turn.
+
+**FG2-4. Mender's Instinct.** (a) **A "while channelling" Special, once per round — recommended**
+(rule 3: it does not test; its rule already carries `oncePerRound: true`). (b) Stays a Reaction —
+the one Green Reaction that would then spend the slot on a heal the Special could give for free.
+
+**FG2-5. "Once per round." on Spreading Roots and Pack Sense.** (a) **Yes, both — recommended**
+(free, Spreading Roots would expand on every turn-end in the patch and Pack Sense would ride every
+ally attack into it; BL2-D's precedent). (b) Pack Sense only — the roots may grow as often as the
+patch is stood in. (c) Neither.
+
+> **Answered at gate 2 (Ben, chat, 2026-09-17):** *"looks good"* — **FG2-1 … FG2-5 (a).** §2 committed
+> on that answer.
+
+---
+
+## 3. The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Green today** | 9 (36 %) | 7 (28 %) | 3 (12 %) | 3 (12 %) | 0 | 3 (12 %) | 64 % | 14 (56 %) | 13 (52 %) | 14 (16 with Reknit at 2) |
+| **Green proposed** | 9 (36 %) | 8 (32 %) | 3 (12 %) | 3 (12 %) | 0 | 2 (8 %) | **68 %** | **7 (28 %)** | **5 (20 %)** | **6** (8 with Reknit at 2; + the Channel, 1 – rank a round) |
+| *Black proposed* | 15 (60 %) | 1 (4 %) | 3 (12 %) | 3 (12 %) | 1 (4 %) | 2 (8 %) | 64 % | 6 (24 %) | 5 (20 %) | 6 |
+| *Red proposed* | 11 (44 %) | 9 (36 %) | 3 (12 %) | 1 (4 %) | 1 (4 %) | 0 | 80 % | 7 (28 %) | 5 (20 %) | 6 |
+| *Blue proposed* | 9 (36 %) | 8 (32 %) | 2 (8 %) | 2 (8 %) | 1 (4 %) | 3 (12 %) | 68 % | 9 (36 %) | 7 (28 %) | 9 |
+| *White proposed* | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | 84 % | 4 (16 %) | 1 (4 %) | 1 |
+| published Invested band | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+*(Counts read from `data/leyline.json` at `ba796d4`: "costed (any)" is the thirteen Investiture cards
+plus Natural Recovery's Opportunity; the proposed row is the five releases plus the two
+Opportunity-only Specials, Sudden Growth and Natural Recovery. Reknit Form's variable cost is counted
+as 0 in the tree-sum, as the comparison counts it, with the minimum-of-2 figure beside it.)*
+
+**Read against the bands.** Green was the second most expensive tree in the atlas — 56 % costed,
+thirteen Investiture-priced cards, a sum of 14 — and the Channel takes it to 28 % costed, five
+Investiture cards and a sum of 6: **the same landing as Red and Black**, from the same domain rule,
+with nine cards changing. Every surviving Investiture point is on a card that buys into the prey
+(Instinct's four) or outlasts the scene (Reknit Form). Reactions fall 12 % → 8 %, inside the guide's
+band and one point over the published one, because Mender's Instinct became a Special and the two
+that stay both act on someone else's turn (Territorial Instinct tests; Packmate's Warning is free).
+
+**Passive + Special lands at 68 %, three points under the published band — Blue's number exactly,
+for Blue's reason.** Three of Green's cards are two-Action plays (Reknit Form, Drive the Prey, Natural
+Order) and three are single Actions (Grasping Vines, Verdant Mend, Pack Pressure), and each is the
+honest type for what it does: a touch, a cast, a drive, a scene. Blue's §3 named three points as
+the price of a release tree; Green pays the same three for the same reason. Nothing here was
+engineered toward a band. Against the guide's own targets the fit is close: Passive 36 % against
+~35 %, Special 32 % a little over 25 – 30 % (one Reaction crossed), single Actions 12 % under ~15 %
+with the Channel now the self-initiated play, and **2 Actions at 12 % against ~8 %** — Green's one
+real overshoot, unchanged by this pass, and the three cards are the three that should cost two.
+**Free Actions at 0 %** against 5 – 8 %: Green has never had one, and the Channel's Maintain is now
+a Free Action every Green mage takes each round (FG3-1).
+
+**Where the remaining cost sits.** Instinct carries all six surviving Investiture points (Pack Hunter
+1, Pack Pressure 1, Drive the Prey 2, Natural Order 2) plus Reknit Form's variable 2 / 3. **Territory
+and Restoration carry no Investiture at all** — the ground and the healing are free once the Channel
+is up, and the only costs left on them are two Opportunities (Sudden Growth, Natural Recovery).
+
+**What a Green player's turn is now.** Round 1: Draw Mana — a patch of ground where the line will
+stand — then Channel Green at 2 out of a pool of 4, and one Action left: Verdant Mend on whoever is
+already hurt, free, with Resurgent Growth following them. Every round after: maintain as a Free
+Action for 1 or 2, three Actions, and the ground working for nothing — everyone on the patch
+regains 1 or 2 at the start of their turn, Mender's Instinct catches the ally who drops to half,
+Spreading Roots grows the patch once a round, Grasping Vines holds the enemy who reached it for as
+long as the Channel lasts, Territorial Instinct stops the one who tries to leave, Pack Sense adds the
+modifier to one packmate's swing into the ground. Thorn Field, at rank 2, bites whoever the roots
+hold. The pack's plays still cost: the real decision each round is **ground or prey** — Drive the
+Prey's 2 is a maintain at 1, and the trickle halves for everyone on the patch. After the fight, with
+FG1-4 (b), the grove is where the party sits: a maintain a minute, 1 health a minute to everyone on
+the ground, the heal-cut gate still standing over a withered ally.
+
+**What it costs, in numbers.** Today a Green round — Verdant Mend and a Spreading Roots — spends
+2 Investiture for two plays and earns 2 from a Draw (R-126). Under the Channel the same 2 buys the
+frame and every Territory and Restoration rider, and at a flood at levels 1 – 5 heals **2 per ally
+on the ground per turn** — up to 8 a round with four allies on a rank-2 patch, which is more than a
+Verdant Mend (≈ 6.5 at tier 1) every round for free, *if* the party stands together on marked ground
+and *if* they are hurt (the tick heals damage taken; it never overheals). White's frame prevents
+about 4 a round on the same party at the same flood (two hits at +2 deflect); Green's heals up to
+twice that and asks the party to cluster where every burst wants them. **This is the frame item
+210's yardstick should price hardest**: the sustain frame, against R-134's per-role damage targets
+and the bestiary's burst damage, with the rank-1 one-square case and the rank-2 nine-square case
+priced separately — the refusal at gate 2 was of the ungated line, and the gate is a geometry, so
+the yardstick has to draw it.
+
+**FG3-1. Passive + Special at 68 %, Free Actions at 0 %.** (a) **Accept both as the tree's shape —
+recommended** (three two-Action cards are honest; the Free Action Green now takes every round is the
+Maintain, which the type columns do not count). (b) Convert Verdant Mend to a Special on the payment
+(*"when you channel or maintain Green, touch a character to restore …"*) — 72 %, inside the band; a
+free touch heal every round beside the trickle is a large power gain and a second thing the payment
+does. (c) Make Sudden Growth a Free Action — 4 % Free, but its trigger is an Opportunity, which is
+not a Free Action's shape.
+
+> **Answered at gate 3 (Ben, chat, 2026-09-17):** *"Yeah that looks good. As long as the yardstick
+> sessions and bench tests are allowed to suggest balance changes to the frames, this is a good start.
+> I have a feeling we'll need to move some things around eventually but we have to start somewhere."*
+> — **FG3-1 (a)**, and a **standing note for every colour**: the five frames are a starting point;
+> item 210's yardstick and the CH / CB / CR / CK / CG bench blocks may propose balance changes to a
+> frame's number, condition or sentence, filed as rulings for Ben rather than treated as re-litigating
+> a gate. §5.3 carries it to the PM. §3 committed on that answer.
+
+---
+
+## 4. The build notes for Green
+
+What item 198's Green leg builds, named from what exists — every handler read from
+`data/authored/leyline-green.json` and every line number re-derived against `main` `ba796d4`. **No code
+and no data change in this pass.** Deploy class: **ENGINE (F5) + DATA — REBUILD leyline + ⟳ Sync
+Talents, at 3.x only**, after item 187's flip (R-144). Green's frame lives on a **map Region** — the
+fourth frame shape after White's number, Blue's entry, Red's stack and Black's mark — and it is built
+from the two Region behaviours Green's terrain already carries.
+
+### 4.1 Green's riders and where §4.3's gate lands
+
+Nine cards become riders. Their handlers and dispatch sites:
+
+| Rider | Handler | On event | Read by | In the eighteen? | Gate lands in |
+|---|---|---|---|---|---|
+| Grasping Vines | `edha-def-test` (+ `edha-triggered-effect` chained) | `use` | the executor | yes | the pre-cost veto, F (ii) |
+| Territorial Instinct | `edha-def-test` (+ chained) | `use` | the executor | yes | the pre-cost veto |
+| Verdant Mend | `edha-single-target` (`53-…js:2900`) | `use` | the executor | **no — new** | the pre-cost veto |
+| Sudden Growth | `edha-burst` | `edha-pre-use` | the executor | yes (White) | the pre-cost veto |
+| Spreading Roots | `edha-zone-react` (`:2341`) | `edha-watch-rule` | `edhaWatchersOfRule` (`50-…js:282`) | **no — new** | the shared sweep, F (i) |
+| Pack Sense | `edha-test-react` | `edha-watch-rule` | `edhaWatchersOfRule` (`12-…js:295`) | yes (White) | the shared sweep |
+| Vital Surge, Resurgent Growth | `edha-heal-react` (`:2762`) | `edha-watch-rule` | **`edhaActorRulesOf`** (`51-…js:25, :55`) | **no — new** | Red's site, F (iv) |
+| Mender's Instinct | `edha-hp-threshold` (`:2918`) | `edha-apply-watch` | **`edhaActorRuleOf`** (`03-…js:958`) | **no — new** | **a sixth site (GB-5)** |
+
+**Four findings for item 198's sizing:**
+
+1. **Green adds four schema declarations** — `edha-single-target`, `edha-zone-react`, `edha-heal-react`,
+   `edha-hp-threshold` — **twenty-two across five colours**, and the set is now closed: every handler
+   a leyline rider uses carries the field.
+2. **Green touches four dispatch sites**, more than any colour: the pre-cost veto, the shared sweep,
+   Red's `edhaActorRulesOf`, and the **singular** `edhaActorRuleOf` (`03-…js:524`), which Red's
+   Widening F (iv) did not name. Both helpers sit in the same file with the same shape; the same
+   return filter gates both (GB-5). After Green, Widening F is **six sites, one field**, and there are
+   no more rule-lookup helpers to gate (`edhaWatchersOfRule`, `edhaRulesForEvent`, `edhaActorRulesOf`,
+   `edhaActorRuleOf` are the four the engine has).
+3. **Widenings G, H and I have no Green consumer** (no ActiveEffect rider — Hardy, Collected and
+   Predator's Instinct are free passives; no flood gate — Reknit Form is a release; no per-die work).
+   **E (`edha-channel`) has none** either: the Key's Draw lays the ground and the arm makes it home.
+4. **Natural Recovery takes no gate.** It keeps its Opportunity and stays unconditional (rule 2's
+   spirit); its `edha-heal-react` rule is the one of the three that gains no `requireSelfStatus`.
+
+### 4.2 The frame's build — the home ground on the Region
+
+The terrain is already a Region with two behaviours (`edhaCreateGreenTerrain`, `50-…js:38-70`): the
+native **`modifyMovementCost {walk: 2}`** for every token, and Edha's own **`edha-content.hazard`**
+(Thorn Field's bite, with `exemptActorUuid` — item 162's exemption of the creator from their own
+briar). The Region carries `flags.edha-content.terrain.ownerUuid` and `color` (FG1-5 (a)'s tag —
+Apex Predator's `whenEnemiesInMyZone` reads it). The frame is **two more behaviours of the same
+shape** on every Green Region, inert until the owner channels:
+
+1. **The arm** — identical to White's §4.2 rule 1 (`edha-self-status {statusId: "channelgreen",
+   timed: true}` with Widenings A, B, C).
+2. **The unslow — Widening M, `edha-content.terrain` replaces the native behaviour.** Foundry's
+   `modifyMovementCost` has no per-token exemption, so a Region cannot slow enemies and spare allies
+   with the core behaviour alone. Edha already registers a custom behaviour type (`edha-content.hazard`);
+   a second, `edha-content.terrain`, carries the walk × 2 cost and **reads the owner's `channelgreen`
+   status at movement time**: while the owner channels, a token allied to the owner pays × 1; everyone
+   else, and everyone when the Channel is down, pays × 2 — today's behaviour exactly. The native
+   behaviour comes off the creation list; existing Regions on a live scene are migrated by the same
+   `deleteCombat`-style sweep that clears them. (GB-1.)
+3. **The tick — Widening N, `edha-content.home`.** The hazard behaviour already fires on a token's
+   entry and turn start (its `moment: "enter-turn-start"`) and damages non-exempt tokens; the home
+   behaviour is its mirror: on **turn start only**, for a token **allied to the owner** (the owner
+   included, FG1-2 (a)), while the owner carries `channelgreen`, heal `@channelled` through
+   **`edhaHealCutGate`** (R-83: every `hea` write outside `applyDamage` passes it — a withered ally
+   regains nothing and the card says so). The amount is **read live** from Widening A's `channelled`
+   flag on the owner's status at tick time, never baked at creation (the hazard bakes its die because
+   its owner's rank does not change mid-scene; the spend does). Once per turn per token by
+   construction. (GB-2.) Two Green mages' overlapping Regions: the sweep dedupes per token per turn
+   and keeps the larger — M14 (a) — exactly as `edhaZoneTurnEndCheck` (`50-…js:276`) already walks
+   every zone per combatant.
+4. **Grasping Vines' hold — Widening O, `statusExpire: "owner-channel"`.** Today the vines' Restrained
+   is `statusExpire: ""` (until removed by hand) and the upkeep is a card note. Under FG2-1 (a) the
+   status ends when the owner's arming status ends: one new choice on `edha-triggered-effect`'s
+   `statusExpire`, cleared by the same end-of-status hook Widening L uses for Black's ledger. A
+   status bound to a Channel is the mark's shape applied to a condition.
+5. **Out of combat — the minute tick (FG1-4 (b); GB-3).** M11 says a Channel opened outside combat
+   lasts until the scene ends with no maintain, which would make the home ground a free full heal for
+   one Investiture. FG1-4 (b)'s intent was *a maintain a minute*, and §4 builds that: outside combat
+   the home behaviour ticks only when the owner **uses Maintain**, and each use is one tick for every
+   ally on the ground — the Maintain button *is* the minute. No world-time tracking, no interval; the
+   GM's *"you rest ten minutes"* is ten clicks or one click with a count prompt (the consume dialog's
+   free-entry amount, §1.3 of the parent, already asks for a number). This is a Green-specific reading
+   of M11 that §5.3 files as a one-line ruling for Ben rather than assumes.
+
+**The heal-react riders and the frame's tick (FG2-3 (a)).** `edhaActorRulesOf(healer, "edha-heal-react")`
+(`51-…js:25`) is swept from the *healing talent's* apply path with `whenColor` read from that talent;
+the home behaviour heals from the Region with the power as source, which is not a talent of any
+colour, so the three heal-react rules never see it. **No engine change is needed for FG2-3 (a)** — it
+falls out of the sweep's existing shape, and CG-9 proves it.
+
+**What the frame does not need.** No new handler type, no new event type, no ledger, no per-die work,
+no ActiveEffect. Two Region behaviours (M, N), one `statusExpire` choice (O), and a Maintain-as-tick
+rule outside combat.
+
+### 4.3 What moves in the data
+
+**`data/authored/leyline-green.json`** — the seven authored keys, unchanged as a set:
+
+- **`activation`** — eight cards. The `{type: "resource", resource: "inv"}` consume row is removed from
+  Grasping Vines, Territorial Instinct, Spreading Roots, Sudden Growth, Pack Sense, Mender's Instinct,
+  Verdant Mend and Vital Surge; Mender's Instinct's `cost.type` `rea` → `spe`. Resurgent Growth has no
+  activation to change.
+- **`description`** — the nine sentences of §2.2.
+- **`events`** — `requireSelfStatus: "channelgreen"` on all nine riders' handlers (Vines' and
+  Territorial Instinct's `edha-def-test`; Verdant Mend's `edha-single-target`; Sudden Growth's
+  `edha-burst`; Spreading Roots' `edha-zone-react`; Pack Sense's `edha-test-react`; Vital Surge's and
+  Resurgent Growth's `edha-heal-react`; Mender's `edha-hp-threshold`). Cost fields cleared: Spreading
+  Roots `costInv: 1` → 0, Pack Sense `costs: "inv:1"` → blank, Mender's `costResource: "inv"` → blank,
+  Vital Surge `costInv: 1` → 0. **`oncePerRound: true`** on Spreading Roots (the field does not exist on
+  `edha-zone-react` — GB-4) and on Pack Sense (`edha-test-react`, White's Shared Conviction shape).
+  Grasping Vines' `edha-triggered-effect` gains `statusExpire: "owner-channel"` and its def-test `note`
+  (*"spend 1 Investiture at the start of each of your turns…"*) goes; Pack Sense's `prompt` and
+  Spreading Roots' offer text drop *"Spend 1 Investiture"*.
+- **`effects`** — **nothing changes.** No Green rider is an ActiveEffect.
+- **`docId`** — **nothing changes.** Green has no rename.
+
+**`data/leyline.json`** — the nine records' `action` (one: Mender's Instinct), `cost` and
+`description`; Spreading Roots' trailing whitespace. **Graph untouched**: no `connections` or
+`prerequisites` change, so the DAG and reachability checks and `tests/pipeline.test.js` are unaffected.
+
+**`data/channels.json`** (B-1 (a)) — Green's record: the amended frame sentence of §1.1, §1.5 as the
+frame paragraph, the two actions' text, and the arm rule; the two behaviours (M, N) are engine, written
+on every Green Region at creation.
+
+### 4.4 What names the changed cards
+
+No rename, so no sweep. Four places carry a fact this pass changes and want the edit in the same PR:
+
+| File | What |
+|---|---|
+| `module-src/scripts/engine/50-green-territory.js:1-30` | the Territory tree-section header (rule 3's ledger): the five riders, the two new behaviours beside the hazard, the native behaviour retired |
+| `module-src/scripts/engine/51-green-restoration.js` header | the Restoration header: four riders, Reknit Form a release, the heal-react sweep's blindness to the frame's tick stated as a property |
+| `module-src/scripts/engine/52-green-instinct.js` header | the Instinct header: the tree is Green's release tree; nothing converts |
+| `.claude/skills/leyline-revision-guide/SKILL.md` Part 4, Green | *"Costs favor: Investiture for healing and terrain"* becomes the Channel, five releases and two Opportunities; the key-mechanic line gains the home ground |
+
+`EDHA_FOUNDRY_TEST_CHECKLIST.md:1737`'s `# BENCH — Green` preamble stays; the new `## Channel — item
+198` block goes under it. Regenerated, never hand-edited: `EDHA_PLAYER_PRIMER.html`,
+`EDHA_LEVELUP_GUIDES.html`, `EDHA_DASHBOARD.html`. **Leave alone**: `EDHA_RULINGS.md`, the changelog
+months, the checklist's retired evidence, and `docs/design/channel-actions.md`'s struck text.
+
+### 4.5 The bench rows
+
+Sixteen **🤖** rows, to be added under `# BENCH — Green (leyline)` (checklist line 1737) as a
+`## Channel — item 198` block when the build lands, on the Route A 3.1.0 copy (B-6 (a)).
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CG-1 open | Draw Mana (a patch), Channel Green at 1 | *Channelling Green* on the mage; the Region carries `edha-content.terrain` and `edha-content.home`; Investiture −1 |
+| CG-2 unslow | an ally walks across the patch; an enemy walks across it | ally: walk × 1; enemy: walk × 2 (the ruler shows both) |
+| CG-3 tick | an ally at −4 health starts their turn on the patch | +1 health, labelled Channel Green; the mage on the patch also +1 at their own turn start |
+| CG-4 flood | at rank 2 channel 2; two hurt allies on the patch | +2 each at their turn starts; an ally at full health regains 0 |
+| CG-5 off the ground | an ally starts their turn adjacent to the patch, not on it | nothing |
+| CG-6 heal-cut | a withered ally on the patch | 0 regained and the card says why (R-83) |
+| CG-7 lapse | let the Channel expire | the Region stays; walk × 2 for everyone again; no tick |
+| CG-8 not a talent's heal | Vital Surge and Natural Recovery owned; an ally below half ticks on the patch | no THP offer, no cleanse offer (FG2-3); then Verdant Mend on them: both offers post |
+| CG-9 Resurgent Growth gated | no Channel: Verdant Mend an ally | no regrowth queued. With the Channel: queued, and it follows the ally off the patch |
+| CG-10 riders off / on | no Channel: Grasping Vines, Verdant Mend, Sudden Growth | refused before cost with the toast. With the Channel: all fire spending nothing (Sudden Growth spends its Opportunity) |
+| CG-11 the vines hold | Grasping Vines succeeds; end the Channel | Restrained on the target with no upkeep note; gone when the Channel ends |
+| CG-12 once per round | two enemies end turns on the patch in one round; two ally attacks into it | one Spreading Roots expansion; one Pack Sense modifier |
+| CG-13 Mender's as Special | an ally drops to half while channelling | the heal fires with no Reaction spent and no cost; a second drop that round: nothing |
+| CG-14 releases | Pack Hunter, Drive the Prey, Reknit Form with **no** Channel | all work and spend |
+| CG-15 two mages | Bench — Green II's patch overlapping Bench — Green's, an ally on both, channelling 2 and 1 | +2 once, not +3 |
+| CG-16 outside combat + tabs | end the combat, ally hurt on the patch; Maintain × 3 | three ticks; the Actions and Talents tabs of a synced Green PC show Channel Green and Maintain Green under the power, riders on the Talents tab |
+
+### 4.6 Gate 4 — the menu
+
+**GB-1. The unslow.** (a) **A custom `edha-content.terrain` behaviour replacing the native
+`modifyMovementCost`, reading the owner's arming status at movement time — recommended** (the
+hazard behaviour is the precedent; one behaviour, live). (b) Swap behaviours on arm and on end —
+native off, a hostile-only variant on, and back — two Region writes per Channel and a window where a
+crash leaves the wrong one.
+
+**GB-2. The tick.** (a) **A second custom behaviour, `edha-content.home`, the hazard's mirror on
+turn start for allied tokens, amount read live from the owner's `channelled` flag — recommended.**
+(b) A `combatTurnChange` sweep over every Green Region per combatant (the `edhaZoneTurnEndCheck`
+shape) — works, but the hazard already proved the behaviour is the cleaner seat.
+
+**GB-3. The minute outside combat.** (a) **Maintain is the minute: each out-of-combat Maintain use
+ticks once for every ally on the ground; filed as a Green-specific line under M11 for Ben —
+recommended** (no world-time tracking; the consume dialog's free entry already asks how many).
+(b) Free ticks per M11 for the scene — one Investiture heals the party to full, which a rest
+already does. (c) Real-time: a tick every 60 s of world time while the Channel stands.
+
+**GB-4. `oncePerRound` on `edha-zone-react`.** (a) **Add the field, the `edha-triggered-effect`
+shape — recommended.** (b) Leave Spreading Roots unlimited and drop §2's "Once per round." from its
+card.
+
+**GB-5. The sixth dispatch site.** (a) **Apply F (i)'s return filter to `edhaActorRuleOf` beside
+`edhaActorRulesOf` — recommended** (same file, same shape, `:524` and `:539`; after this every
+rule-lookup helper the engine has is gated). (b) Gate inside `edha-hp-threshold`'s consumer at
+`03-…js:958` alone.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-17):** *"defaults."* — **GB-1 … GB-5 (a).** §4 committed on
+> that answer.
+
+---
+
+## 5. Close-out
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 0 — the frame re-opened | **FG-1 (b), the home ground**: the ground turned toward the party — the mage's terrain does not slow allies and heals whoever starts their turn on it. Chosen over the pack (generic tactics Hunter already sells) and the hold, on Ben's own pick; the refused regrowth line made safe by the gate's geometry (one square at rank 1, nine at rank 2). §2.6 of the parent design amended (FG1-6 (a)). |
+| 1 — the trees and the home ground | The domain is the ground and the bodies that stand on it; **a card that buys into the prey's situation is a release** — Instinct is Green's release tree, and five colours now have five release trees in four Realms; Resurgent Growth is the one W-1 exception; **the regen ticks once a minute outside combat** (FG1-4 (b), Ben's pick over the default). FG1-1, 2, 3, 5, 6 (a); FG1-4 (b). |
+| 2 — the cards | **Nine change, sixteen untouched**, the graph untouched. Territory's five and Restoration's three combat heals convert; Grasping Vines' upkeep becomes the Channel; Mender's Instinct becomes a Special; Reknit Form stays a release (rule 4, and the out-of-combat minute); the frame's tick is not a Green talent's heal; two newly-free Specials gain "Once per round." FG2-1 … FG2-5 all (a). |
+| 3 — the mix | Costed 56 % → 28 %, Investiture thirteen → five, tree-sum 14 → 6 — the same landing as Red and Black. Passive + Special 68 %, Blue's number for Blue's reason; Free 0 % with the Maintain uncounted. The sustain frame named as the one item 210 should price hardest. FG3-1 (a), with **Ben's standing note that the yardstick and the bench may propose balance changes to any frame**. |
+| 4 — the build | Four new schema declarations (twenty-two across five colours; the set closes); four dispatch sites, the singular helper gated beside the plural (Widening F is six sites, one field, and complete); the frame as **two Region behaviours** beside the hazard (M the unslow, N the tick, reading the spend live through the heal-cut gate); Grasping Vines' Restrained bound to the Channel (O); **Maintain is the minute** outside combat, filed under M11 for Ben; sixteen 🤖 CG rows. GB-1 … GB-5 all (a). |
+
+### 5.2 What waits on Ben
+
+**One line, not blocking:** the Green reading of M11 (GB-3 (a)) — outside combat, each Maintain use is
+one tick for every ally on the ground, so the home ground is *a maintain a minute* rather than a free
+scene-long heal. It is applied as the build's default and wants a veto, not a decision; §5.3 asks the
+PM to file it in `EDHA_RULINGS.md` §I beside R-145. No other ruling was filed.
+
+### 5.3 What the PM should file
+
+1. **Add the Green leg to item 198's brief**, with §2.2 and §2.4 as its data pass and §4 as its build
+   spec: four declarations, four dispatch sites, two Region behaviours, one `statusExpire` choice, the
+   Maintain-as-minute rule.
+2. **Widening F is complete at six sites.** After Green every rule-lookup helper the engine has
+   (`edhaWatchersOfRule`, `edhaRulesForEvent`, `edhaActorRulesOf`, `edhaActorRuleOf`) plus the pre-cost
+   veto and the Draw dispatcher carries the one filter; item 198's builder should gate all six before
+   any colour's riders are authored, and the twenty-two schema declarations can land in one commit.
+3. **File the M11 line as an applied default in §I** (this pass's GB-3 (a)): *a Channel opened outside
+   combat lasts the scene, and a Green mage's home ground ticks once per Maintain use outside combat.*
+4. **Ben's standing note (gate 3) applies to all five colours:** the frames are a starting point;
+   item 210's yardstick and the bench blocks (CH / CB / CR / CK / CG) may propose balance changes to a
+   frame's number, condition or sentence, filed as rulings, not treated as re-litigating a gate. Item
+   210's brief should say so, and should price the sustain frame (Green) and the two damage frames
+   (Red, Black) as its first three rows.
+5. **The five release trees** — Illusion (Physical), Conflagration (Spiritual), Subjugation, Instinct
+   (Cognitive), and White's single release card — are the atlas-wide measurement Blue's §1.2 asked for;
+   item 212's deity pass inherits the rule as measured.
+6. **The four frame shapes** — a number (White), an entry on the next-test list (Blue), a stack (Red),
+   a mark (Black), a Region (Green) — are five, and item 212 has a precedent for whatever shape a deity
+   tree's base action wants.
+7. **The struck text in `channel-actions.md` §2.6** is the record of the first frame; the amendment
+   block is what item 198 builds. All three of §2's amended frames (Red, Black, Green) now sit beside
+   White's and Blue's as approved.
+
+### 5.4 The record
+
+- Branch **`claude/red-channel-work-go0bce`**, the same branch and PR (#433) as Red and Black, by Ben's
+  word. DOCS-ONLY: `docs/design/channel-green.md` (new) and the amendment block in
+  `docs/design/channel-actions.md` §2.6 are the only design files touched; the close-out adds the
+  changelog delta, its two counts, and the regenerated dashboard. One commit per gate, each on Ben's
+  answer; gates green before the push. Ben asked for the PR to be merged after the push; the deity
+  pass (item 212) is a new session's.
+- `docs/PM_BOARD.md` was not touched.

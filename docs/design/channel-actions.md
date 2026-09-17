@@ -421,8 +421,25 @@ visible enemy with no ally within 5 feet, once — the pulse that opens the hunt
 and the other Weakened payoffs read it as today. **Two Black mages:** each adds their own extra
 damage to their own attacks; nothing to stack (M14 does not arise).
 
-> **Channel Black.** Your attacks against Isolated creatures deal extra vital damage equal to the
-> Investiture you are channelling.
+> ~~**Channel Black.** Your attacks against Isolated creatures deal extra vital damage equal to the~~
+> ~~Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Black pass, `docs/design/channel-black.md` §1, FK-1 (d) — Ben re-opened
+> F-K at the start of that pass and chose from four frames).** The payoff stands; the condition moves
+> from *found* to *chosen*:
+>
+> **Channel Black.** When you channel or maintain Black, choose an enemy you can see within Attunement
+> Range. It is forsaken: it counts as Isolated, and your attacks against it deal extra vital damage
+> equal to the Investiture you spent.
+>
+> The chosen creature is *the forsaken* (`channel-black.md` §1.5 has the full rule: chosen at every
+> payment, one at a time, lasts until the next payment, counts as Isolated for every reader in the game
+> through the engine's existing inflictable `isolated` status — Chaos's precedent — so the Key's Draw
+> Weakens it; the vital is the mage's own). Why the hunt was replaced is in `channel-black.md` §1.2:
+> with Red's frame now the mage's own extra damage per hit, the two damage colours' base actions were
+> one shape, and a formation switched the hunt off. The word *quarry* stays Hunter's. M14 reaches Black
+> only when two mages forsake the same creature (Isolated once, the larger vital). Item 198's Black leg
+> builds this text, not the struck one.
 
 **F-K.** (a) **The hunt above — recommended.** (b) The tide: Isolated enemies you can see within
 Attunement Range are Weakened for as long as they stay so, *and* your attacks against Weakened
@@ -452,8 +469,24 @@ into fire. **Draw Mana** still grants advantage on your next Physical test and c
 the identity tax stays. **Two Red mages:** each carries their own edge; nothing to stack (M14 does
 not arise unless a Frenzy rider shares it, and then the larger applies).
 
-> **Channel Red.** Each time damage is dealt within Attunement Range, you gain +1 to your next test,
-> up to the Investiture you are channelling.
+> ~~**Channel Red.** Each time damage is dealt within Attunement Range, you gain +1 to your next test,~~
+> ~~up to the Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Red pass, `docs/design/channel-red.md` §1, FR-1 (a) — Ben re-opened
+> F-R at the start of that pass).** The trigger stands; the currency is damage, not a test:
+>
+> **Channel Red.** Each time damage is dealt within Attunement Range, your next hit deals +1 energy
+> damage, up to the Investiture you are channelling.
+>
+> The accumulated number is *the heat* (`channel-red.md` §1.5 has the full rule: builds once per
+> creature damaged, spends on the next attack-test hit, feeds itself, persists while channelling,
+> and does not make a hit "energy damage" for Kindle, Arc Flash, Afterburn or Chain Detonation,
+> which read energy damage from a Red talent). Three reasons the rising edge was replaced are in
+> `channel-red.md` §1.2: it was Battle Fever promoted, its domain was the narrowest of the five, and
+> two of Red's three trees had no test to ride it with. Battle Fever stays a distinct test-bonus
+> card, so **M14 no longer reaches Red at all** — the "shared only by Frenzy riders" clause below
+> and the sentence in §2's preamble are superseded. Item 198's Red leg builds this text, not the
+> struck one.
 
 **F-R.** (a) **The mage's own rising edge above, shared only by Frenzy riders — recommended.**
 (b) The shared edge (gate 2's first draft): you and every ally in range each build the bonus — Battle
@@ -476,8 +509,24 @@ pack's advantage, the weakest creature known. **Draw Mana** still creates diffic
 [Size] of a point in range; the Channel does not lay ground, it arms it. **Two Green mages:** an enemy
 standing in both fields takes the larger once (M14).
 
-> **Channel Green.** Enemies that enter or start their turn in your difficult terrain within
-> Attunement Range take keen damage equal to the Investiture you are channelling.
+> ~~**Channel Green.** Enemies that enter or start their turn in your difficult terrain within~~
+> ~~Attunement Range take keen damage equal to the Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Green pass, `docs/design/channel-green.md` §1, FG-1 (b) — Ben re-opened
+> F-G at the start of that pass; three alternatives were tabled and he chose the home ground, his own
+> pick, confirmed against the pack).** The ground stays the subject; it turns toward the party:
+>
+> **Channel Green.** Your difficult terrain within Attunement Range does not slow you or your allies,
+> and you and allies that start your turn in it regain health equal to the Investiture you are
+> channelling.
+>
+> Why the ground was replaced is in `channel-green.md` §1.2: it was Thorn Field promoted, it converted
+> five of thirteen costed cards, and two trees rode it by gate only. The home ground is F-G (b), the
+> regrowth line refused at gate 2, **gated to the mage's own terrain** — one square and one ally at
+> rank 1, a 15-foot patch at rank 2 — which is what makes the refused strength safe; `channel-green.md`
+> §1.5 has the full rule (owner-tagged terrain only; once per turn per creature; a tick a minute
+> outside combat by FG1-4 (b); the heal-cut gate applies). M14 (a): an ally on ground both mages laid
+> takes the larger once. Item 198's Green leg builds this text, not the struck one.
 
 **F-G.** (a) **The ground above — recommended.** (b) The regrowth line: allies within Attunement Range
 regain health equal to the channelled Investiture at the start of their turns — Restoration as the
