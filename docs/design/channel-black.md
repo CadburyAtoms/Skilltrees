@@ -20,7 +20,7 @@ gate log is the record.
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — BK2-1 … BK2-5 all (a) |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — BK3-1 (a); *"Looks good."* |
 | 4 | §4 The build notes for Black | **✅ approved 2026-09-17** — BB-1 … BB-4 all (a); *"defaults."* |
-| 5 | §5 Close-out | — |
+| 5 | §5 Close-out | **✅ done 2026-09-17** — delta at the top of `docs/handoff-changelog/2026-09.md`; no new ruling filed; rides PR #433 with the Red pass |
 
 **What this rests on** (read in this order; nothing below re-derives them):
 `docs/design/channel-actions.md` §1.1 (the four definitions), §1.4 (the interactions), §1.5 and §2.1
@@ -713,3 +713,52 @@ the nearest PC — a heuristic the bench would have to defend.
 
 > **Answered at gate 4 (Ben, chat, 2026-09-17):** *"defaults."* — **BB-1 … BB-4 (a).** §4 committed
 > on that answer.
+
+---
+
+## 5. Close-out
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 0 — the frame re-opened | **FK-1 (d), the forsaking**: chosen from four frames (the hunt as approved, the leech, the hollowing, the quarry); the payoff kept, the condition moved from *found* to *chosen*; the Hunter overlap measured as modest, the word *quarry* left with Hunter. §2.4 of the parent design amended (BK-6 (a)). |
+| 1 — the trees and the forsaking | Black's frame is a declaration, and the engine already holds inflicted Isolation (Chaos); the domain is the forsaken and the Weakened; **a card whose target is any character is a release** — Subjugation is Black's release tree, the third colour whose release tree sits in a different Realm; Ritual pays the Channel from Reserve with no new clause. BK-1 … BK-6 all (a). |
+| 2 — the cards | **Four change, twenty-one untouched**, the graph untouched, not one action type changed. Isolation's four costed cards become riders, Sovereign of Solitude gated on channelling 2 or more; five releases; Withering Ray neither; no free passive becomes a rider (the first colour with no W-1 exception). Channel → Draw is the guaranteed opening; three economies. BK2-1 … BK2-5 all (a). |
+| 3 — the mix | Costed 40 % → 24 %, Investiture nine → five, tree-sum 11 → 6, Red's landing exactly. Passive + Special 64 % accepted as the tree's shape, with the Passive-column observation (60 % Passive, 4 % Special) handed to the PM for a future Black revision. BK3-1 (a). |
+| 4 — the build | One new schema declaration (eighteen across four colours), one dispatch site; Widening H's second consumer; the forsaken as the H3 ledger at cap 1 bound to the arming status (Widening L), `forsaken` registered as an isolating status read by the two readers that already agree by contract, the vital as the existing list-member-hits bonus; sixteen 🤖 CK rows. BB-1 … BB-4 all (a). |
+
+### 5.2 What waits on Ben
+
+**Nothing.** Every judgment call was a menu entry answered at its gate. No new ruling was filed;
+`EDHA_RULINGS.md` §L still holds R-145 alone.
+
+### 5.3 What the PM should file
+
+1. **Add the Black leg to item 198's brief**, with §2.2 and §2.4 as its data pass and §4 as its build
+   spec. It is the smallest leg of the four (one declaration, one dispatch site, four cards) plus one
+   new ledger field (Widening L) and one two-string set in the Isolated check.
+2. **The Passive column (§3, BK3-1).** Black runs 60 % Passive and 4 % Special against the guide's
+   ~35 % and 25 – 30 %; four free passives already fire once on a trigger and read as Specials
+   (Sapping Hex, Necrotic Grasp, Coercive Pressure, Extract Thought). A type-only DATA item for a future
+   Black revision, not this design's.
+3. **Item 210's yardstick re-run should price Red's heat and Black's forsaking as a pair** (§3): the
+   same per-hit numbers on two conditions, the same +6 against R-111's ceiling at a flood.
+4. **`42-chaos.js`'s `deleteCombat` clear list** gains the forsaken's three keys with the build; the
+   `ENGINE_INDEX.md:1158` rule is the reason, and the census-style trap (a ledger key missing from its
+   scene clear survives a combat) is the failure it prevents.
+5. **The forsaking is a precedent for item 212 (deity).** A frame may be a *mark* — one chosen
+   creature, a ledger at cap 1, a status that overrides a positional fact — beside White's number,
+   Blue's entry, Red's stack. Deity trees that already own a ledger (Chaos's omens, Order's covenants,
+   Fate's ordained) have a shape to ride.
+6. **The struck text in `channel-actions.md` §2.4** is the record of the first frame; the amendment
+   block is what item 198 builds.
+
+### 5.4 The record
+
+- Branch **`claude/red-channel-work-go0bce`**, the same branch and PR (#433) as the Red pass, by Ben's
+  word (*"433 getting multiple colors is fine"*). DOCS-ONLY: `docs/design/channel-black.md` (new) and
+  the amendment block in `docs/design/channel-actions.md` §2.4 are the only design files touched; the
+  close-out adds the changelog delta, its two counts, and the regenerated dashboard. One commit per
+  gate, each on Ben's answer; gates green before the push.
+- `docs/PM_BOARD.md` was not touched.
