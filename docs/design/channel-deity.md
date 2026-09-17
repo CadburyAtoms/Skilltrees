@@ -14,7 +14,7 @@ log is the record.
 
 | Gate | Section | Status |
 |---|---|---|
-| 1 | §1 The deity path, re-evaluated under the Channel | **proposed 2026-09-17, second draft** — the first draft's D-1 … D-9 were withdrawn on Ben's two corrections and his ask (§1.1); E-1 … E-8 tabled |
+| 1 | §1 The deity path, re-evaluated under the Channel | **proposed 2026-09-17, third draft** — D-1 … D-9 withdrawn on Ben's corrections; E-1 … E-8 withdrawn on his second note (§1.1); F-1 … F-10 tabled |
 | 2 – 4 | The ten trees, in the grouping §1's answer makes natural | not started |
 | 5 | §5 The mix, against the bands | not started |
 | 6 | §6 The build notes | not started |
@@ -53,11 +53,12 @@ leyline colours before their passes and **about 25** after them.
 
 ## 1. The deity path, re-evaluated under the Channel
 
-### 1.1 Why this section was rewritten
+### 1.1 Why this section was rewritten, twice
 
-The first draft of §1 (commit `38bf0f4`, kept in history only) took the deity *tree* as given and
-asked how its nine cards ride the colours' Channels. Ben read it and corrected two facts it stood on,
-then set the pass a different question:
+The first draft (commit `38bf0f4`) took the deity *tree* as given and asked how its nine cards ride the
+colours' Channels. The second (`8f50a79`) gave the deity path a Channel of its own that opened both
+colours' frames at once. Ben corrected both drafts, and the corrections are the ground this one stands
+on. His words, in order:
 
 > *"Characters only get one leyline Key, at character creation. That is what differentiates a Chaos
 > disciple who started as a Blue mage from a Chaos disciple who started as a Black mage. Both
@@ -66,225 +67,227 @@ then set the pass a different question:
 > *"The deity guide must be out of date. That entry / synthesis / once-per-scene, catastrophe shape
 > is not a rule anymore. Some deity paths hold that shape still, but that's residual, not a rule."*
 >
-> *"Honestly I think the whole Deity path idea needs a re-evaluation under the Channel method. Let's
-> do that instead of me answering your gates."*
+> *"The power to channel should be granted by a rank in the colour. Draw Mana's attunement rider
+> needs to be based on something else. Maybe in the character creation wizard we have a step called
+> 'Attunement' that sets the draw mana rider, or we adapt the ancestry field for that purpose.
+> 'Attuned to Blue' gives you the blue attunement draw mana rider."*
+>
+> *"'A mage is one leyline at a time' is a weird sentence. I don't want it in canon."*
+>
+> *"Shape A is closest, but still not quite right. I like your table you made. What if the Deity
+> Action isn't 'Channel Maelith' but 'Place Omen'? Then for each deity, we make their action supply
+> their specific charge (Omen, Snare, Charge, etc)? Or something other than that. We're closer, not
+> there yet."*
 
-So the facts, restated from the data and the docs rather than from the guide:
+So the facts, as this draft holds them:
 
-- **One Key, chosen at creation.** The leyline path grants its Key and Draw Mana
-  (`foundry-build.js:415-420`); nothing grants a second. A disciple of Maelith who began Blue Draws
-  Mana as a Blue mage (advantage on the next Cognitive test) for the rest of their life; one who
-  began Black Draws as a Black mage (the Weakened pulse). **The second colour is bought as ranks
-  alone** — two skill ranks minimum (`build-forge` Phase 2) — and every leyline talent gates on rank,
-  not on the Key (`data/leyline.json`: every Black card reads "Black N+" or a talent name; only
-  Extract Thought reads a skill), so a disciple *may* own talents of both colours within the budget.
-  Under the Channel, both colours' base actions are theirs too, by Ben's word: **both disciples can
-  Channel either colour.** What differs is the Draw.
-- **At 3.x the second Channel is ungranted.** Under R-150 (b) a colour is a `power` item, its skill
-  is unlocked by *owning the power* (`data/actor/common.ts:633-641`, `channel-actions.md` §4.1), and
-  the power is granted by the leyline path. A disciple who began Blue owns no Black power, so at 3.x
-  they could neither rank Black nor Channel it. Something has to grant the second power, and the
-  only thing in the character that knows a second colour is the deity path. This is a design hole,
-  not a build detail; E-4 closes it.
-- **The deity guide's shape is residual.** Two entries, two lanes, synthesis, one three-Action
-  once-per-scene capstone, the 1 / 2 / 3 / 4 cost scale — several trees still wear it, none is bound
-  by it. The first draft's D-5 ("capstones keep 3 Investiture because the guide's scale says so") had
-  no ground. Nothing below treats a tree's size, its capstone or its price as a rule; §5 of the
-  close-out hands the guide's rewrite to the PM.
+- **A colour's Channel comes with a rank in the colour.** Any character with Blue 1+ owns the Blue
+  `power` and can Channel Blue; with Black 2+, Black too. The power is granted by the rank, not by a
+  path (F-5 says how). A disciple of Maelith channels Blue or Black because they hold both ranks, and
+  so does anyone else who does.
+- **Attunement is one choice, made at creation, and it sets what Draw Mana does.** "Attuned to Blue"
+  gives the Blue Draw Mana rider (advantage on the next Cognitive test); "Attuned to Black" the
+  Weakened pulse. That is the whole difference between the two disciples of Maelith, and it never
+  changes. The Key talent's rider becomes the attunement's; the Key as a *tree node* had no work left
+  (every leyline talent gates on rank, `data/leyline.json`). Whether the attunement is a wizard step or
+  the sheet's ancestry slot is F-5.
+- **The deity guide's shape is residual.** Two entries, two lanes, synthesis, a three-Action capstone,
+  the 1 / 2 / 3 / 4 cost scale: several trees still wear it, none is bound by it. Nothing below treats
+  a tree's size, its capstone or its price as a rule.
+- **Canon is left alone.** Ruling 12 (a deity is the convergence of two leylines given personhood by
+  worship) is why a god's path spans two colours; nothing here adds a sentence to canon about mages,
+  and the second draft's line is struck.
 
-### 1.2 What a deity path is — in canon, and in the data today
-
-**In canon** (`EDHA_CAMPAIGN_CANON.md` §1, ruling 12): *"A deity is the convergence of two leylines
-given personhood by sustained mortal worship. Five frequencies make exactly ten pairs, and the ten
-gods claim every one — the pantheon is complete."* And ruling 38: *"the leylines interact with each
-other — a deity is the convergence of two frequencies … With people — attunement: a person who
-concentrates one frequency works talents … faith is the collective form, a network of worship feeding a
-pair-god."* A god **is** two leylines at once. A mage **is** one leyline at a time — which is exactly
-what the Channel rule now says mechanically (M6: one colour at a time; opening a second ends the
-first).
+### 1.2 What a deity path is — and the question
 
 **In the data today** a deity path is nine cards gated on two colours at 2+ / 2+, each priced on its
-own because there was nothing else to price on, built on a signature resource (the spine) and
-delivering "Radiant-tier" effects — the resurrection, the colossus, the mass detonation. It is the
+own because there was nothing else to price on, built on a **charge** — the tree's own resource,
+generated by an entry and spent by the rest: Omens, Remains, Edicts and Covenants, Diagnosis, the
+die-step, Insight, Ordained Ground and Snares, the Construct and Foundations, Compelled, Charges. The
+guide's principle 5 is the one line of it that is not residual: *the resource is the spine.* It is the
 strongest content in the game and it has no base action, which is why it is 80 % costed and its loops
-are sealed (`talent-comparison` §D-1, D-3; the ecosystem review's finding). Under the Channel each of
-its two colours has a base action, and the question the first draft answered — *how do the nine cards
-ride them?* — was the wrong one, because it leaves the deity as **a spine with no verb**: a god
-reduced to a resource, riding a base action that belongs to a colour.
+are sealed (`talent-comparison` §D-1, D-3).
 
-### 1.3 The question, stated
+**The published model** is *the power is the action; the talents change what the action does.* For a
+colour that is the Channel and its frame. For a god, the second draft tried to make it a second
+Channel, and that was wrong in the way Ben named: a god's act is not a colour's act with two frames.
+**A god's act is its charge.** Maelith's disciple *places Omens*; Olvarra's *ordains* the ground and
+lays Snares; Razkael's *sets Charges*; Verdannis's *judges*. That is what each path does that no
+other does, it is what the guide's principle 5 already says, and it is the verb the deity path has been
+missing.
 
-**When each colour already has a base action, what is the deity path *for*?** Four shapes answer it
-and they are not variants of one another. They are laid out in §1.4 with the recommendation first;
-E-1 is the choice.
+### 1.3 Shape S — the supply
 
-### 1.4 The four shapes
+**The deity path grants one base action: the supply.** It supplies the god's charge, it is a rider on
+either of the god's colours' Channels, and it costs no Investiture — the Channel paid. It keeps the
+test the entry has today where the entry tests, it keeps the charge's cap, and it is an Action (or the
+type the entry has). Everything else in the tree rides the supply: spends the charge, reads it, widens
+it, detonates it.
 
-**Shape A — the convergence (recommended).** The deity path is the mortal form of what a god is:
-**two leylines channelled as one.** A leyline mage channels one colour; a disciple may channel the
-god's pair. The deity path gives the disciple one base action of its own, on the Channel's shape —
-*Channel [Deity]* (E-8 names it) — that opens **both** colours' frames at once, as one status, one
-drain, one maintain:
+**The supply has a face per colour.** Every deity tree has *two* entries today, one per lane, and in
+nine of ten trees they are the two lanes' generators — Edict and Covenant, Ordained Ground and Snare,
+Forge Construct and Lay Foundation, Censure and Exalt, Set Charge and Pyre, Kneel and Warlord's
+Advance, Studied Mark and Predatory Strike, Vital Diagnosis and Life Surge, Entropy Strike and
+Isolating Pressure. Under the supply they are **one action with two faces, and the colour you channel
+chooses the face**: a disciple of Tessavain channelling Blue *declares* an Edict on an enemy;
+channelling White, a Covenant with an ally. The second colour buys something on the first turn the
+disciple takes the path, the four pure-gate colours dissolve, and the round-by-round choice of Channel
+is a choice of *what the god does through you this round*. Death is the one tree whose Green entry is
+not an action (Reaper's Harvest is the economy, always on); its gate decides whether the Green face is
+the Bone Garden or the Harvest stays passive beside a one-faced Wither (F-1 (b) is the other reading).
 
-> **Channel Maelith** — Action; 2 or more Investiture
->
-> Spend 2 or more Investiture, up to your higher rank in Blue or Black, dividing it between the two
-> colours with at least 1 to each. While you channel Maelith you are channelling Blue and Black
-> together: each colour's frame is up, and each reads the Investiture you gave it. The Channel lasts
-> until the end of your next turn and is maintained as a Free Action by spending again in the same
-> way. Channelling Maelith ends any other Channel; channelling a colour ends it.
+**The ten supplies, first sketch — read from today's two entries, nothing added.** Names are the tree
+gates'; the verbs here are placeholders.
 
-Read against the rule (§1.1 of the parent design), nothing is widened: the duration, the maintain,
-the ends and the Countercurrent answer are the Channel's own; the one new thing is that the spend is
-*divided* and each frame reads its share. At levels 1 – 5, with both colours at 2, the convergence is
-**1 and 1** — a trickle of each frame — and it costs 2 a round, a Draw every round at the start, which
-is the price of holding two frames. From level 6, with one colour at 3, it is 2 and 1 or 1 and 2: the
-disciple floods one side. A disciple who wants a full flood of one colour opens *that colour's*
-Channel instead, at 1 – rank as any mage does, and the god's frame is not up. The three actions —
-Channel A, Channel B, Channel the god — are the disciple's round-by-round choice, and they are all
-Actions the leyline path's shape already builds (§4 of the parent design; E-4 grants the second).
+| God (A / B) | The supply | Face while channelling A | Face while channelling B |
+|---|---|---|---|
+| Maelith — Chaos (Blue / Black) | **Place Omen** | test Blue vs. Cognitive: an Omen and [Tier][Die] spirit (Entropy Strike) | test Black vs. Physical: Isolated; an Omen shattered for vital, or placed if none (Isolating Pressure) |
+| Tessavain — Order (Blue / White) | **Declare** | an Edict on an enemy: one prohibited act | a Covenant with a willing ally |
+| Olvarra — Fate (Green / White) | **Ordain** | a Snare on a square | Ordained Ground under an ally |
+| Kethane — Civilization (Red / White) | **Build** | the Combat Construct (one; reforged when it falls) | a Foundation |
+| Verdannis — Sovereignty (Black / White) | **Judge** | test Black vs. Cognitive: Censure, the die stepped down | Exalt, the die stepped up |
+| Razkael — Destruction (Blue / Red) | **Set** | a Charge with a declared trigger | Pyre: a ranged hit that leaves burning ground |
+| Tyrith — Power (Black / Red) | **Command** | test Black vs. Cognitive: Kneel, Compelled | Warlord's Advance: the melee hit with the extra die |
+| Gnothis — Knowledge (Green / Red) | **Study** | Studied Mark: 2 Insight and the read | Predatory Strike: the hit per Insight, and 1 more |
+| Anaveth — Life (Blue / Green) | **Tend** | Vital Diagnosis: the mark the party cuts deeper for | Life Surge: the flood heal, overflow to temporary HP |
+| Morrath — Death (Black / Green) | **Wither** | the withering touch: vital, and no healing | *(gate 3: the Bone Garden as the Green face, or Harvest stays the passive economy)* |
 
-*What the convergence does, tree by tree — first sketch, derived from the two frame sentences and
-nothing else; the tree gates write them.* Every frame is one of three things — **on one enemy** (Blue's
-reading, Black's forsaken), **on your hits** (Red's heat), or **on your side** (White's line, Green's
-home ground) — so every pair is coherent on the field, and each god's identity is *how its tree makes
-the two frames meet*:
+**Where the supply meets the frame** is the table Ben kept from the second draft, now read the right
+way round: not two frames converged, but *what the god's act does under each colour's frame*. It is
+the tree gates' first question per god, and where a meeting is worth a card sentence it is a **frame
+amendment** — a talent that says what the supply does to the frame's own creature or ground:
 
-| God (A + B) | The two frames, up together | Where the tree makes them meet (the spine's job) |
+| God | Under A's frame | Under B's frame |
 |---|---|---|
-| Maelith — Chaos (Blue + Black) | the read enemy and the forsaken | one creature: read it, forsake it, and the Omen is the crack where the two meet |
-| Morrath — Death (Black + Green) | the forsaken and the home ground | the forsaken dies on your ground; the Remain is what the ground keeps |
-| Tessavain — Order (Blue + White) | the read enemy and the line | the Edict binds the read enemy; the Covenant is the line sworn |
-| Tyrith — Power (Black + Red) | the forsaken and the heat | the warlord's chosen enemy takes vital *and* fire; Kneel names the forsaken |
-| Verdannis — Sovereignty (Black + White) | the forsaken and the line | the condemned and the crowned: Censure the forsaken, Exalt the line |
-| Anaveth — Life (Blue + Green) | the read enemy and the home ground | the Diagnosed enemy and the healed party on the same field; the wound it takes funds the ground |
-| Razkael — Destruction (Blue + Red) | the read enemy and the heat | the read enemy is the one walking into the Charge; every detonation is noise for the heat |
-| Gnothis — Knowledge (Red + Green) | the heat and the home ground | the pack hunts from the ground; Insight is the heat made cumulative on one quarry |
-| Olvarra — Fate (Green + White) | the home ground and the line | the prepared board: allies on your terrain, beside each other, regen and deflect both |
-| Kethane — Civilization (Red + White) | the heat and the line | the smith in the line, the Construct at an ally's shoulder, the hammer that burns |
+| Chaos | the Omen lands on the enemy you read: its d20 and plot die compromised *before* Shatter Focus takes the lower | the forsaken bears the Omen: Isolated for Isolating Ruin's second die and Unravel Everything's vital branch |
+| Order | the Edict binds the read enemy; Verdict's Blue test, Lawkeeper's advantage and the frame's disadvantage stack on one creature | the Covenant is the line sworn: +1 to all defenses and the frame's deflect on the same shoulder |
+| Fate | the Snare sits in your home ground: the enemy that springs it is on the ground that heals your side | Ordained Ground in the line: the frame's deflect on the square that already refuses advantage |
+| Civilization | the smith's own hammer carries the heat; the Construct's hits are noise that builds it | the Construct at an ally's shoulder is in the line; the Foundation covers the formation |
+| Sovereignty | Censure the forsaken: vital on your attacks and the Draw's Weakened on the creature whose dice you shrank | Exalt an ally in the line: the frame's deflect beside Sovereign's Favor's temporary HP |
+| Destruction | the read enemy is the one walking into the Charge | Pyre's hit carries the heat; every detonation is noise |
+| Power | Kneel names the forsaken: Isolated for the Draw, vital on every warlord's hit | the warlord in the noise builds heat fastest and spends it on Warlord's Advance |
+| Knowledge | Studied Mark on a creature standing in your home ground: the pack hunts from the ground | Predatory Strike carries the heat; the same-creature-every-turn plan keeps it at cap |
+| Life | the Diagnosed enemy is the read enemy: the party cuts deeper *and* its roll is compromised | Life Surge on an ally standing on the home ground: the flood and the trickle |
+| Death | the forsaken is the one you wither; the Draw Weakens it, which is Consuming Decay's gate | the Bone Garden bites whoever ends a turn in it while the home ground heals whoever starts one |
 
-Under Shape A the deity's talents are of three kinds, all riders on the god's Channel, and the tree
-gates sort each card into one: **(i) frame amendments** — a passive that changes what the convergence
-does for a disciple of this god ("*While channelling Maelith, the enemy you read is the forsaken, and
-it bears an Omen*"): this is the Radiant-order shape, the order's talents modifying the surges, and it
-is where the god's identity lives; **(ii) the spine** — the placements, spends and reads the tree has
-today, free while channelling the god (or either colour, E-3 decides); **(iii) rites** — the few cards
-that stand outside the fight or the round and keep a cost: the resurrection, the séance, the ward.
-The guide's "spend X Investiture and …" opening retires for (i) and (ii).
+**The rest of the tree.** With the supply in place the seven remaining cards (or however many the
+gate keeps — F-8) sort by one test, and it is the test the first draft wrote with the spine clause,
+now with the supply as its subject: **a card whose Investiture buys into the charge — spending,
+reading, widening or arming it — or into either colour's domain, is a rider and loses its cost; a
+card that stands outside the fight or the round is a rite and keeps it.** The rites at first pass are
+the same three the first draft found — Raise Dead, Speak with the Fallen, Death Ward — plus whatever a
+gate decides about the capstones (F-8 (b) offers the flood gate). Arms the disciple wears (Crown of
+Thorns, Warlord's Fury, Concord, Necrotic Cascade, Pack Share, The Pack) hold while the disciple
+channels either colour, the Channel as their upkeep (the first draft's D-4 (a), restated as F-4).
 
-Why A: it is what canon says a god is, made mechanical; it is the one thing in the game no leyline
-mage can do (two frames at once), which answers *"what does this path do that no other does"* without
-a spine having to answer it alone; it makes the two-colour gate buy something the moment the path is
-taken instead of being a toll (four trees' pure-gate colour problem dissolves — the second colour is
-half of the god's frame); it makes the disciple's Draw matter exactly as Ben described (one Key, one
-rider, under a two-frame Channel); and it costs, honestly, 2 a round, which is the deity's price where
-the priced atlas used to be. Its risk is the risk item 210 exists to price: two trickle frames for 2
-Investiture against one flooded frame for the same 2.
+### 1.4 The other shapes, argued
 
-**Shape B — the rider atlas** (the first draft). No deity base action; the nine cards ride either
-colour's single Channel ("while channelling A or B"); the god is a spine and nothing more. Honest,
-cheap to build, and it leaves the deity as the one path in the game with no verb of its own — a
-disciple of Maelith channels *Blue*, and Maelith is the name on the Omen.
+**The convergence** (the second draft's Shape A): the deity path's own Channel opens both colours'
+frames at once, with the spend divided. Ben: *closest, but not quite right.* What it got right is kept
+— the second colour matters, the table — and what it got wrong is the verb: a god's act is not two
+frames, it is a charge. It is F-1 (d) for the record.
 
-**Shape C — the amendment atlas.** No deity base action either, but the deity's talents are frame
-amendments to the disciple's *single* Channels ("while channelling Blue, the enemy you read bears an
-Omen; while channelling Black, the forsaken bears one"). The Radiant-order shape without the
-convergence: the god is *how your two Channels behave*, one at a time. Cheaper than A (no new action,
-no split spend) and it keeps M6 whole; what it cannot do is put the god's two colours on the field
-together, which is the one thing canon says a god is.
+**The supply on the payment**: the charge comes with every Channel or Maintain, no Action and no test
+(Guiding Signal's shape, rule 7). An Omen a round for free is a stronger Chaos than a tested one, and it
+loses the thing the guide names as Chaos's identity — *an Omen is placed by landing a Blue test.* Where
+a god's charge has no test today (Ordained Ground, a Foundation, a Charge), the payment shape is
+tempting and F-1 (c) offers it; the recommendation keeps the supply an Action so that the deity's
+turn is still a turn.
 
-**Shape D — the priced atlas kept** (R-159 (c)'s spirit). The deity path stays what it is: nine
-priced cards. Leyline is the thing you channel, faith is the thing you pay for — a coherent identity
-in one sentence, and the ecosystem review's sealed loops stay sealed; it also refuses R-152's premise
-for the half of the game where it bites hardest.
+**The amendment atlas** (the second draft's Shape C): no deity action; the deity's talents only change
+what the disciple's single Channels do. It is the frame-amendment table above with no supply beneath
+it — the god as an adjective on a colour.
 
-### 1.5 What Shape A changes, and what it leaves alone
+**The rider atlas** (the first draft): the nine cards ride either Channel; the god is a spine with no
+verb.
 
-- **The deity path grants two things the leyline path's shape already builds:** the second colour's
-  `power` (so the disciple can rank it and Channel it — E-4) and the god's own `power` with *Channel
-  [Deity]* and *Maintain [Deity]* as its embedded actions (§4.1 of the parent design, one more record
-  in `data/channels.json`'s shape). The path's `grant-items` rule is the mechanism, as it is for the
-  Key and Draw Mana.
-- **The two entries at 2+ / 2+ stay.** They are the gate; nothing about the convergence lowers it.
-  What the entries *are* is the tree gates' question — under A the fantasy on turn one is the god's
-  Channel plus one entry, and an entry may well be the frame amendment itself.
-- **Draw Mana is unchanged (E-5).** One Key, one rider, on whichever colour the disciple began with.
-  A convergence does not change what a Draw does; it changes what the Draw refuels.
-- **The rider gate is one status.** "While channelling Maelith" is `channelmaelith`; and because the
-  convergence *is* channelling Blue and Black (E-3 (a)), the god's status counts as both colour
-  statuses for every `requireSelfStatus` reader in the engine — a disciple who owns Blue leyline
-  riders and Black leyline riders has both live under the god, at the trickle their share bought.
-- **M6 stands.** One Channel per creature; the god's is one Channel. Two gods at once is refused as
-  two colours at once is.
-- **M14 stands.** A Chaos disciple's Blue frame and a Blue mage's Blue frame on the same enemy: the
-  larger reading, once.
-- **Countercurrent (M7 (a)) answers a god's Channel** as it answers a colour's: the opening and every
-  maintain spend Investiture. A refused maintain drops both frames.
-- **Adversaries (R-137)** with a deity tree converge at role rank: a rival at 2 (1 and 1), a boss at
-  3 (2 and 1).
-- **The tree's size and shape are open.** The guide's nine-card residue is not a target; a god whose
-  frame amendments carry its identity may want fewer cards, and a god whose spine is large (Fate's
-  two ledgers, Order's two) may keep nine. Gates 2 – 4 decide per god.
+### 1.5 What Shape S changes, and what it leaves alone
 
-### 1.6 What the disciple's turn looks like, under A
+- **The deity path grants the supply** — one `power`-shaped item per god with the supply as its
+  embedded action, two faces gated on `channel<a>` / `channel<b>` (the `requireSelfStatus` gate,
+  §4.3 of the parent design). The colour powers are not the deity path's to grant (F-5): they come
+  with rank.
+- **The entries at 2+ / 2+ stay as the gate to the path.** What they *are* changes: the two entry
+  cards become the supply's two faces, and the tree's first talents are the ones that ride it.
+- **Draw Mana is the attunement's** (F-5). One rider, chosen at creation, for life. The supply does
+  not change what a Draw does; the Draw refuels the Channel the supply rides.
+- **M6 stands** — one Channel per creature — and the deity adds no Channel. **M7 (a) stands**: a
+  rite that spends Investiture is counterable; the supply and the riders are not (F-10 drops the word
+  *leyline* from Countercurrent's card so a deity rite is in scope).
+- **M14 stands.** Two disciples of one god: two supplies, two ledgers, as today.
+- **Adversaries (R-137)** with a deity tree channel at role rank and supply at role rank's cap.
+- **Tree size and shape are open** (F-8). A god whose supply carries most of its identity may want
+  fewer cards; a god with a large charge may keep nine.
+- **The leyline trees open by rank** (F-6): with the power granted by rank and the Key's rider on the
+  attunement, a colour's tree is reachable by rank as a deity's is — which is what `data/leyline.json`
+  already says, since no leyline talent requires the Key.
 
-A disciple of Tyrith at level 4, Black Key, pool 4. **Round 1:** Channel Tyrith at 1 and 1 (an Action,
-2 Investiture): the enemy she names is forsaken (Isolated; her attacks against it +1 vital) and her
-hits carry heat up to 1; Kneel it (free, a Black test); one Action left, a Strike on the forsaken —
-vital +1, and the fight's first noise is her own hit, so the next carries +1 energy. **Round 2:**
-maintain 1 and 1 (Free), Draw Mana as a Black mage (the forsaken, alone, is Weakened — Absolute
-Authority's gate), Absolute Authority (free, a Black test) takes its turn. **Round 3:** maintain, two
-Actions of Warlord's Advance and a Strike, every hit carrying vital and fire. Investiture spent by
-round three: 6, refunded 2 by the Draw — against today's 1 + 2 + 1 + 1 = 5 for *fewer* effects and no
-frame at all, on a pool that cannot Draw fast enough. The convergence is more expensive per round than
-a colour's Channel and buys more per round; whether the ratio is right is item 210's yardstick, not
-this section's claim.
+### 1.6 What the disciple's turn looks like, under S
 
-### 1.7 Gate 1 — the menu, second draft
+A disciple of Tessavain at level 4, attuned to Blue, pool 4. **Round 1:** Channel Blue at 1 (an
+Action; the reading on the enemy who matters), Declare (an Action, free: an Edict on that enemy, one
+prohibited act — its roll compromised *and* its choices bound), one Action left. **Round 2:** maintain
+1 (Free), Draw Mana as a Blue mage (advantage on the next Cognitive test), Verdict (free, a Blue test
+with that advantage) on the bound enemy — the Edict resolves and the court turns on its neighbours.
+**Round 3:** the enemy line closes on the party; switch — Channel White at 2 (an Action; the line),
+Declare a Covenant with the ally taking the hits (free), Bear Witness and the frame's deflect on the
+same ally, one Action left. Investiture spent by round three: 4, refunded 2. Today the same three
+rounds cost 1 + 2 + 1 = 4 for the Edict, the Verdict and the Covenant with no frame under any of it,
+on a pool that cannot Draw fast enough to do it twice.
 
-Every judgment call in §1, recommended default first. "Defaults on all except …" is enough. The first
-draft's D-1 … D-9 are withdrawn; where one survives it is restated here.
+### 1.7 Gate 1 — the menu, third draft
 
-**E-1. The shape.** (a) **Shape A, the convergence — the deity path's own Channel opens both
-colours' frames at once, with the spend divided; its talents are frame amendments, the spine, and a
-few rites — recommended** (§1.4: canon's definition of a god, made mechanical; the one thing no
-leyline mage can do). (b) Shape C, the amendment atlas — no deity action; the god is how the two
-single Channels behave. (c) Shape B, the rider atlas — the first draft. (d) Shape D, the priced atlas
-kept.
+Every judgment call in §1, recommended default first. "Defaults on all except …" is enough. E-1 … E-8
+are withdrawn; the survivors are restated here.
 
-**E-2. The convergence's cost (if A).** (a) **Divided: 2 or more, at least 1 to each colour, total
-up to the higher of the two ranks; each frame reads its share — recommended** (the flood of one side
-arrives at level 6; two frames always cost at least 2; one Draw at rank 3 still pays one full round).
-(b) One number, 1 or more up to the *lower* rank, and both frames read it (two frames for the price of
-one at levels 1 – 5). (c) A fixed 2, no flood, both frames at 1.
+**F-1. The shape.** (a) **Shape S, the supply with a face per colour — the deity path's one base
+action supplies the god's charge, riding either colour's Channel, and the colour channelled chooses
+which of today's two entries it is — recommended** (§1.3: a god's act is its charge; the second colour
+buys something on turn one). (b) The supply with one face — one charge per god (Ben's list: Omen,
+Snare, Charge …); the other lane's entry becomes an ordinary talent. (c) The supply on the payment —
+the charge arrives with every Channel or Maintain, no Action, no test. (d) The convergence (the
+second draft's Shape A). (e) The amendment atlas (no deity action).
 
-**E-3. Does a god's Channel count as channelling both colours?** (a) **Yes: `channelmaelith` satisfies
-every "while channelling Blue" and "while channelling Black" reader, leyline riders included —
-recommended** (it *is* channelling both; a disciple who owns riders of both colours is who the
-convergence is for). (b) No: only deity riders read the god's status; leyline riders need their
-colour's own Channel.
+**F-2. The supply's cost.** (a) **No Investiture: a rider, free while channelling either colour,
+limited by the charge's cap and its test — recommended** (the Channel is the one thing that costs; a
+supply plus a Channel per round is today's sealed loop again). (b) Variable: "spend 1 or more, up to
+your rank in [colour]", scaling the charge (that many Omens, a wider Foundation) — R-153's convention,
+and the one place a priced deity identity would survive. (c) The entry's flat 1 Investiture kept.
 
-**E-4. The second colour's Channel at 3.x.** (a) **The deity path grants the second colour's `power`
-alongside the god's — recommended** (the only thing in the character that knows a second colour;
-closes the hole §1.1 names; the disciple may then Channel A, B or the god). (b) Rank alone unlocks a
-colour's power (a creation-wizard rule: any skill rank in a colour grants its power) — works for
-two-colour characters with no deity too, and widens item 198.
+**F-3. Does the supply need a Channel?** (a) **Yes — it is a rider, dead without a Channel of either
+colour — recommended** (the published shape: nothing works without the metal; and it is what makes
+the frame-meeting table real). (b) No — the supply stands alone at its face's flat cost; the Channel
+only adds the frame meeting.
 
-**E-5. Draw Mana.** (a) **Unchanged: one Key, one rider, the colour the disciple began with —
-recommended** (Ben's stated fact; the Draw is what distinguishes the two disciples). (b) A deity
-passive that lets a Draw fire both Keys' riders — a real braid card, one per tree, only where a gate
-wants it.
+**F-4. Arms.** (a) **An arm the disciple wears holds while the disciple channels either colour;
+zones, marks and pacts keep their printed duration — recommended** (the first draft's D-4 (a); the
+Channel as upkeep, Grasping Vines' precedent). (b) Every rider keeps its printed duration.
 
-**E-6. The deity guide.** (a) **Parts 1, 2 and the cost scale are marked superseded by this document
-once E-1 is answered, and the PM files the rewrite as its own DOCS item — recommended.** (b) Leave the
-guide; this document stands beside it.
+**F-5. Attunement and the colour powers (Ben's rule, built).** (a) **The wizard's existing "Your
+leyline attunement" step becomes the Attunement step: it grants one attunement item carrying the Key's
+Draw Mana rider and Draw Mana itself; each colour's `power` (the Channel, the tree link, the skill) is
+granted by the first rank in that colour — recommended** (the step already exists; the item is the
+Key's document re-homed; rank-granted powers are one rule in the skill-rank handler). (b) The
+attunement lives in the sheet's ancestry slot ("Attuned to Blue") — visible in the header; the
+ancestry field is then Edha's, not the system's. (c) Both: the wizard step writes the ancestry slot.
 
-**E-7. Tree size and shape.** (a) **No rule: the two entries stay as the gate; each god's gate decides
-its card count and whether it keeps a capstone — recommended** (Ben: the shape is residual). (b) Keep
-nine and the capstone as a target every tree meets.
+**F-6. The leyline trees open by rank.** (a) **Yes — the leyline path as a *pick* retires; a colour's
+tree is reachable by rank, as it already is in the data — recommended.** (b) Keep the path pick as the
+tree's unlock; only the power comes with rank.
 
-**E-8. The name of the god's Channel.** (a) **"Channel [Deity]" — the same verb as the colours, with
-the god in the colour's place — recommended** (canon: a god is two leylines; the card reads *Channel
-Maelith* beside *Channel Blue* and needs no gloss). (b) "Converge" — *Converge on Maelith*; canon's
-own word for what a god is. (c) "Commune" — *Commune with Maelith*; the devotional register, and a
-different verb from the colours' on purpose.
+**F-7. The deity guide.** (a) **Parts 1 – 2 and the cost scale marked superseded by this document once
+F-1 is answered; the PM files the rewrite — recommended.** (b) Leave it.
+
+**F-8. Tree size, capstones, the entries.** (a) **No rule on size; the two entries become the supply's
+faces; each god's gate decides its card count and whether it keeps a capstone and at what price —
+recommended.** (b) Keep nine and a once-per-scene capstone gated on the flood ("while channelling 3 or
+more"). (c) Keep nine and a 3-Investiture capstone.
+
+**F-9. The word for the category.** (a) **"Supply" — *the god's supply*, the action that supplies the
+charge; on the card it is the god's own verb (Place Omen, Declare, Ordain …) — recommended.**
+(b) "Rite" — but §1.3 uses *rite* for the costed cards, and the two should not share a word.
+(c) "Act" — *the god's act*.
+
+**F-10. Countercurrent and deity rites** (BL-7's hand-off). (a) **A rite that spends Investiture is
+counterable: the card reads "spends Investiture on a talent or a Channel", the word *leyline* dropped —
+recommended.** (b) Narrow deliberately.
