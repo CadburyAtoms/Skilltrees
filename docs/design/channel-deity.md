@@ -19,7 +19,7 @@ log is the record.
 | 3 | §3 The ground — Fate, Destruction, Civilization, Death | **✅ approved 2026-09-17** — H-1 … H-10 all (a): two costed faces, Fault Line a release, Death keeps Reaper's Harvest and four priced cards, Hallowed Ground added to Fate |
 | 4 | §4 The word — Order, Power, Sovereignty | **✅ approved 2026-09-17** — I-1 … I-9 all (a): four arms hold while channelling, the Mantle included; no kept cost; item 106 back to the PM |
 | 5 | §5 The mix, against the bands | **✅ approved 2026-09-17** — J-1 … J-5 all (a): the guide's table restated to the measured mix; the Special target ~5 – 10 %; the 7 % costed floor accepted |
-| 6 | §6 The build notes | **proposed 2026-09-17** — K-1 … K-6 tabled |
+| 6 | §6 The build notes | **✅ approved 2026-09-17** — K-1 … K-6 all (a): two face actions per power, the item-level gate for all fifteen trees, rank-granted powers, `endWithChannel`, the Route A bench |
 | 7 | §7 Close-out | not started |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -1841,3 +1841,6 @@ it (Widening G's shape, extended from AEs to statuses).
 
 **K-6. Where the bench runs.** (a) **The thirty-two rows on the Route A 3.1.0 copy, before the flip
 (R-144), after the White pilot's CH rows — recommended.** (b) After the flip, on the live table.
+
+> **Answered at gate 6 (Ben, chat, 2026-09-17):** *"Defaults."* — **K-1 … K-6 (a).** §6 committed on
+> that answer.
