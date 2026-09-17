@@ -509,8 +509,24 @@ pack's advantage, the weakest creature known. **Draw Mana** still creates diffic
 [Size] of a point in range; the Channel does not lay ground, it arms it. **Two Green mages:** an enemy
 standing in both fields takes the larger once (M14).
 
-> **Channel Green.** Enemies that enter or start their turn in your difficult terrain within
-> Attunement Range take keen damage equal to the Investiture you are channelling.
+> ~~**Channel Green.** Enemies that enter or start their turn in your difficult terrain within~~
+> ~~Attunement Range take keen damage equal to the Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Green pass, `docs/design/channel-green.md` §1, FG-1 (b) — Ben re-opened
+> F-G at the start of that pass; three alternatives were tabled and he chose the home ground, his own
+> pick, confirmed against the pack).** The ground stays the subject; it turns toward the party:
+>
+> **Channel Green.** Your difficult terrain within Attunement Range does not slow you or your allies,
+> and you and allies that start your turn in it regain health equal to the Investiture you are
+> channelling.
+>
+> Why the ground was replaced is in `channel-green.md` §1.2: it was Thorn Field promoted, it converted
+> five of thirteen costed cards, and two trees rode it by gate only. The home ground is F-G (b), the
+> regrowth line refused at gate 2, **gated to the mage's own terrain** — one square and one ally at
+> rank 1, a 15-foot patch at rank 2 — which is what makes the refused strength safe; `channel-green.md`
+> §1.5 has the full rule (owner-tagged terrain only; once per turn per creature; a tick a minute
+> outside combat by FG1-4 (b); the heal-cut gate applies). M14 (a): an ally on ground both mages laid
+> takes the larger once. Item 198's Green leg builds this text, not the struck one.
 
 **F-G.** (a) **The ground above — recommended.** (b) The regrowth line: allies within Attunement Range
 regain health equal to the channelled Investiture at the start of their turns — Restoration as the
