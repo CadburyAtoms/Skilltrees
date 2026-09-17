@@ -16,8 +16,8 @@ log is the record.
 |---|---|---|
 | 1 | §1 The deity path, re-evaluated under the Channel | **✅ approved 2026-09-17** (third draft; D-1 … D-9 and E-1 … E-8 withdrawn on Ben's notes, §1.1) — F-1 … F-10 all (a): Shape S, the supply with a face per colour |
 | 2 | §2 The marks — Chaos, Knowledge, Life | **✅ approved 2026-09-17** (second draft) — G-1 … G-8 all (a): entry nodes dropped, seven cards each, no kept cost, capstones on the flood |
-| 3 | §3 The ground — Fate, Destruction, Civilization, Death | **proposed 2026-09-17** — H-1 … H-10 tabled |
-| 4 | §4 The word — Order, Power, Sovereignty | not started |
+| 3 | §3 The ground — Fate, Destruction, Civilization, Death | **✅ approved 2026-09-17** — H-1 … H-10 all (a): two costed faces, Fault Line a release, Death keeps Reaper's Harvest and four priced cards, Hallowed Ground added to Fate |
+| 4 | §4 The word — Order, Power, Sovereignty | **proposed 2026-09-17** — I-1 … I-9 tabled |
 | 5 | §5 The mix, against the bands | not started |
 | 6 | §6 The build notes | not started |
 | 7 | §7 Close-out | not started |
@@ -1131,3 +1131,6 @@ Investiture kept (costed riders). (c) Passives at 1.
 **H-10. The four supplies' names.** (a) **Ordain, Set, Build, Wither — recommended.** (b) Ben's own
 (*Set* is the weakest of the ten; *Demolish* and *Kindle* were considered and set aside — the second
 is a Red talent's name).
+
+> **Answered at gate 3 (Ben, chat, 2026-09-17):** *"That all looks good!"* — **H-1 … H-10 (a).** §3
+> committed on that answer; *Hallowed Ground* keeps its placeholder name until Ben names it.
