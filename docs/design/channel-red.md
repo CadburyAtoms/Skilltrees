@@ -17,7 +17,7 @@ gate log is the record.
 | 1 | §1 Red's three trees, and the heat applied | **✅ approved 2026-09-17** — RD-1 … RD-7 all (a) |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — RD2-1 … RD2-7 all (a) |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — RD3-1 (a); *"This is good. Continue."* |
-| 4 | §4 The build notes for Red | — |
+| 4 | §4 The build notes for Red | **✅ approved 2026-09-17** — RB-1 … RB-5 all (a); *"looks good"* |
 | 5 | §5 Close-out | — |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -567,3 +567,238 @@ column — manufactures a type change with no design behind it.
 
 > **Answered at gate 3 (Ben, chat, 2026-09-17):** *"This is good. Continue."* — **RD3-1 (a).** §3
 > committed on that answer.
+
+---
+
+## 4. The build notes for Red
+
+What item 198's Red leg builds, named from what exists — every handler read from
+`data/authored/leyline-red.json` and every line number re-derived against `main` `ba796d4`. **No code
+and no data change in this pass.** Deploy class: **ENGINE (F5) + DATA — REBUILD leyline + ⟳ Sync
+Talents, at 3.x only**, after item 187's flip (R-144). Red is the first colour whose frame is not a
+number on a sheet or an entry on the next-test list but a **stack that builds and spends**, so §4.2
+is longer than White's or Blue's; everything in it is a widening of the rally stack Red already has.
+
+### 4.1 Red's riders and where §4.3's gate lands
+
+Ten cards change; seven become riders (RD-2's two trigger narrowings and the three releases are
+data edits, not riders). Their handlers, and the dispatch site each one is read from:
+
+| Rider(s) | Handler | On event | Read by | In the twelve? | Gate lands in |
+|---|---|---|---|---|---|
+| Reckless Advance | `edha-move` | `use` | the event executor | **no — new** | the pre-cost veto, Widening F (ii) |
+| Incite | `edha-def-test` | `use` | the event executor | yes | the pre-cost veto |
+| Shatter Focus | `edha-focus` | `use` | the event executor | **no — new** | the pre-cost veto |
+| Breaking Point | `edha-watch {watch: damaged}` | `edha-watch-rule` | `edhaWatchersOfRule` (`05-edha-watch.js:323`) | carries the field today | the shared sweep, F (i) |
+| Volatile Strike | `edha-triggered-effect` | `edha-on-hit` | **`edhaRulesForEvent`** (`04-black-ritual.js:211`, the on-hit sweep at `:102`) | **no — new** | **a new site (below)** |
+| Kindle | `edha-damage-rider` | `edha-pre-deal-damage` | **`edhaActorRulesOf`** (`03-where-an-effect-lives.js:168` the rider parts, `:325` the light spec) | **no — new** | **a new site** |
+| Battle Fever, Feeding Frenzy | `edha-rally-stack` | `edha-deal-damage` / manual | the executor (`53-…js:1563`) → `edhaRallyOnDeal` → **`edhaActorRulesOf`** (`19-…js:333`); `edhaRuleOf` for the manual bump (`:345`) | **no — new** | **a new site** |
+
+**Four findings item 198 should have before it sizes the Red leg:**
+
+1. **Red adds five schema declarations.** White's ten and Blue's two are twelve; Red's set is seven
+   types, of which `edha-def-test` is already declared and `edha-watch` carries the field natively.
+   New: **`edha-move`, `edha-focus`, `edha-triggered-effect`, `edha-damage-rider`, `edha-rally-stack`**.
+   **Seventeen declarations across three colours.** (`edha-triggered-effect` is the engine's most-used
+   payload type; declaring the field on it gates every future on-hit rider in one place.)
+2. **Red answers Blue's open question: yes, a later colour forces more dispatch sites — two.**
+   Blue's riders all fired from `use` (one site). Red's Kindle, Battle Fever and Feeding Frenzy are
+   config-only rules read by **`edhaActorRulesOf`** (`03-…js:539`), and Volatile Strike is an
+   `edha-on-hit` rule read by **`edhaRulesForEvent`**. Neither goes through the executor or the
+   `edhaWatchersOfRule` cache, so Widening F's three sites do not cover them. The cheapest correct
+   shape is the same filter F (i) applies to `edhaWatchersOfRule`'s return, applied to both helpers'
+   returns: drop entries whose `handler.requireSelfStatus` the actor does not carry. Both are single
+   functions with one return each; `edhaActorRulesOf` has 27 retired sweeps behind it (its own
+   comment, `:531`) and gating it gates every config-only handler the engine has. **Widening F
+   becomes five sites, still one field.** (RB-1.)
+3. **The chained rules need no gate.** Breaking Point's `edha-apply-status` payload fires on
+   `edha-test-success` downstream of its gated watch, exactly as Blue's seven chained rules did.
+   Incite's def-test has no payload rule; the forced action stays volition-manual as today.
+4. **Three of §4.3's nine widenings have no Red consumer.** **G** (the channel-rider ActiveEffect):
+   every Red card ships `effects: []`, so nothing numeric rides the status. **H** (`requireChannelled`,
+   the flood gate): no Red card gates on the flood (RD2-B). **I** (per-die disadvantage): Red's one
+   disadvantage card, Emotional Overload, is a release and stays a plain `edha-next-test-mod`.
+   And **E** (`edha-channel`) has no Red consumer either: RD2-4 (a) kept Incite an Action.
+
+### 4.2 The frame's build — the heat on the power document
+
+Three rules on the Red power's Events tab, every one a field or two on a handler that exists.
+The precedent is the rally stack (`19-red-momentum-frenzy.js:318-364`): a capped counter on an actor
+flag, bumped by an event, spent whole on the next X, cleared by a reset. The heat is that machine
+with **four things changed**: what bumps it, what caps it, what spends it, and what clears it.
+
+1. **The arm** — identical to White's §4.2 rule 1: `edha-self-status {statusId: "channelred", timed:
+   true}` with Widenings A (`recordSpend`), B (`spendMax: "@colorRank"`) and C (`exclusiveWith`,
+   `endOnStatus: unconscious`). One Red-specific line: **on a maintain, the heat is clamped to the new
+   `channelled`** (RD-4 (a)) — the re-arm already rewrites the flag; it also writes
+   `min(heat, channelled)`.
+2. **The build trigger** — an **`edha-watch`** on the power, `{watch: "damaged", scope: "scene",
+   disposition: "any", includeSelf: true, rangeColor: "red", payloadTarget: "actor",
+   requireSelfStatus: "channelred", once: "no"}`. Every field exists (`53-…js:590-620`); Breaking
+   Point's watch is the same rule with `disposition: enemy` and a count gate. The `damaged` kind
+   announces **every real damage application** with its victim (`edhaDamagedWatchAnnounce`,
+   `19-…js:386`), which is exactly "damage is dealt within Attunement Range, by anyone, to anyone"
+   — RD-3 (a)'s one-event-per-creature falls out of it for free, because the announce is per victim.
+   - **The payload is a bump.** Today a watch's payload is its sibling `edha-test-success` rule. The
+     sibling here is **`edha-rally-stack`**, which needs **Widening J — four fields**: `stack:
+     "rally" | "heat"` (the flag key; today's rules default to `rally` and change nothing),
+     `cap: "@colorRank" | "@channelled"` (today's `edhaRallyBonus` hard-codes the Red rank; the heat
+     reads Widening A's flag through the same `@channelled` token White's aura reads), `spendOn:
+     "test" | "hit"`, and `resetOn` gaining `"channel"` (cleared when the arming status ends; never by
+     the turn — RD-4 (a)). `trigger` gains `"watch"` so the rule can be a payload as well as a
+     `deal-damage` listener. Battle Fever's and Feeding Frenzy's rules keep every default and are
+     untouched by the widening except for their new `requireSelfStatus`.
+   - **A finding the builder must know: damage applied inside a trigger is invisible to the announce.**
+     `edhaDamagedWatchAnnounce` returns early on `_edhaInTrigger` (`19-…js:389`), so Arc Flash's
+     arc, Afterburn's affliction ticks, Chain Detonation's burst and Volatile Strike's extra impact
+     are **not** events today. §1.5 says every damage instance counts. Either the announce learns to
+     count trigger-applied damage (with `chain` semantics so a payload's own damage does not
+     re-trigger the payload), or the frame counts what the announce sees and the card is read as
+     "damage from attacks and talents you use directly". **RB-2** carries it; the recommended
+     default keeps the engine honest to the card.
+3. **The spend** — the heat leaves on the next hit. Two existing mechanisms meet here:
+   - **"Hit" is what the on-hit sweep already means**: `edha-on-hit` fires for the dealer of an attack
+     that dealt a non-heal type (`04-…js:96-102`, `dealtTypes`), and not for a burst or a triggered
+     instance. That is RD-6 (a)'s definition — Strikes, Searing Bolt, Volatile Strike's hit — with no
+     new vocabulary.
+   - **Where the number lands.** The `edha-damage-rider` sweep (`edhaRiderParts`, `03-…js:168`)
+     joins every matching rider into the damage roll as a labelled term, resolved against the roller's
+     data (`edhaFoldRiderFormula`, `:196`), which is where Kindle's `@skills.red.mod` and Mighty's
+     `(1 + @tier)` already land. A rider on the power, `{appliesTo: "any", bonusFormula: "@heat"}`,
+     puts the heat on the bar as `(2)[Channel Red]` — visible, which Ben asked for on 07-12 ("how can
+     I tell if the Kindle bonus is applied?"). **But a rider term takes the roll's own type**, and
+     the heat is energy on an impact Strike. Two shapes, **RB-3**: (a) a second typed term on the
+     roll, if the 3.1.0 damage roll carries per-term types (it carries `damageType` per roll today,
+     `dice/damage-roll.ts:44`; per-term is the thing to read at the source before building); (b) a
+     separate energy instance applied after the hit lands, through `edhaCrossDamage` with the power
+     as `edhaSource`, the way Shockwave Slam's collision damage is applied (`19-…js:306`). (b) is
+     the recommended default: it needs no roll-shape change, the type is right by construction, and
+     it makes RD-2 (a) true mechanically — the instance's source is the power, not a Red talent, so
+     Kindle's new gate (below) never sees it. Its one cost: the instance must be tagged so the
+     `damaged` announce counts the hit and the heat as **one** event, or the fire feeds itself twice.
+   - **The consume.** `edhaRallyConsume` clears the stack on the d20 roll hooks (`:356-364`) — the
+     wrong moment for a hit, since a miss must not spend the heat. The right moment is the post-damage
+     pass that already runs after a hit lands, `edhaDamageBonusPost` (`03-…js:557`, the placeCounter
+     drain): a `spendOn: "hit"` stack clears there, once per hit, after the heat instance is applied.
+4. **`@heat`** — a second new formula token beside `@channelled`, resolved from the actor's heat flag
+   in `edhaSubstRankTier` (`37-…js:92`); `edhaFoldRiderFormula` hands any unresolved `@` reference on
+   raw (`:196`), so the substitution must happen before the fold, exactly as `@channelled` must.
+5. **Kindle, Arc Flash, Afterburn and Chain Detonation read "a Red talent you activate"** (RD-2 (a),
+   RD2-7 (a)) — **Widening K — `whenDealerColor`** (a colour id; blank = any source) on
+   `edha-damage-rider` and `edha-triggered-effect`, read from the dealing item where the engine
+   already knows it: `dealer.item` in the on-hit sweep (`04-…js:103`), `options.originatingItem` in
+   applyDamage (`03-…js:330`, the light source's own authoritative case), the burst's `edhaSource`.
+   A dealing item whose `system.path` (or the tree it came from) is the colour passes; a weapon, the
+   power's heat instance and another colour's talent do not. The same field on the `edha-on-defeat`
+   consumer carries Chain Detonation — and **fixes a drift this pass found**: its rule is
+   `whenDamageType: "any"` on `edha-on-defeat` with no source gate at all, so today it fires on a kill
+   by a sword, while its card has always said *"with a Red Conflagration talent"*. (RB-4.)
+
+**What the frame does not need.** No `edha-channel` consumer (RD2-4 (a)); no per-die work (Widening
+I); no ActiveEffect (Widening G); no new event type, no new handler type, no new status kind. The
+heat is one flag, four fields on a handler Red already owns, one formula token, one gate field, and
+one post-damage clear.
+
+### 4.3 What moves in the data
+
+**`data/authored/leyline-red.json`** — the seven authored keys, unchanged as a set:
+
+- **`activation`** — five cards. The `{type: "resource", resource: "inv"}` consume row is removed from
+  Reckless Advance, Volatile Strike, Incite and Breaking Point; Shatter Focus's `cost.type` `rea` →
+  `spe`. Volatile Strike's handler also drops its own cost fields (`costResource: "inv"`, `costValue:
+  1`, `costOptional: true` → blank / 0 / false) and gains `oncePerRound: true` — the field exists on
+  `edha-triggered-effect` (`53-…js:1391`). Shatter Focus's `edha-focus` has **no once-per-round field**
+  (`:720-760`); it needs one, the `edha-damage-react` shape at `:813` ("the budget is spent on the
+  CLICK"). (RB-5.)
+- **`description`** — the ten sentences of §2.2.
+- **`events`** — `requireSelfStatus: "channelred"` on Reckless Advance's `edha-move`, Volatile Strike's
+  `edha-triggered-effect`, Incite's `edha-def-test`, Shatter Focus's `edha-focus`, Breaking Point's
+  `edha-watch`, Kindle's `edha-damage-rider`, Battle Fever's and Feeding Frenzy's `edha-rally-stack`;
+  `whenDealerColor: "red"` on Kindle, Arc Flash, Afterburn and Chain Detonation; Breaking Point's
+  payload `note` *"(You may spend 1 Investiture.)"* removed; every rule `description` that says
+  "spend 1 Investiture" (Volatile Strike, Arc Flash keeps its, Breaking Point, Reckless Advance's
+  "paid by activation", Incite's) rewritten, because a rule description is player-facing on the
+  Events tab.
+- **`effects`** — **nothing changes.** No Red card carries an ActiveEffect.
+- **`docId`** — **nothing changes.** Red has no rename.
+
+**`data/leyline.json`** — the ten records' `action`, `cost` and `description`; §2.5's hygiene
+(Feeding Frenzy's stray bracket, Incite's full stop, three trailing-whitespace fields, Momentum's Edge's
+`"Red 2+; "` prerequisite). **Graph untouched**: no `connections` or `prerequisites` change, so
+`validate.js`'s DAG and reachability checks and `tests/pipeline.test.js` are unaffected.
+
+**`data/channels.json`** (B-1 (a)) — Red's record: the amended frame sentence of §1.1, §1.5 as the
+frame paragraph, the two actions' text, and the three rules of §4.2 as the power's `events`.
+
+### 4.4 What names the changed cards
+
+No rename, so no sweep. Three places carry a fact this pass changes and want the edit in the same PR:
+
+| File | What |
+|---|---|
+| `module-src/scripts/engine/19-red-momentum-frenzy.js:1-22` | the Red tree-section header (rule 3's ledger): the rider list, and the rally-stack comment at `:313` gaining the heat's four fields |
+| `EDHA_FOUNDRY_TEST_CHECKLIST.md:1663` | the `# BENCH — Red` preamble's R-27 paragraph stays (dated evidence); the new `## Channel — item 198` block goes under it |
+| `.claude/skills/leyline-revision-guide/SKILL.md` Part 4, Red | *"Costs favor: Investiture for big hits, Opportunity for momentum spikes"* becomes the Channel, the three releases and the Opportunity spikes; the key-mechanic line gains the heat |
+
+Regenerated, never hand-edited: `EDHA_PLAYER_PRIMER.html`, `EDHA_LEVELUP_GUIDES.html`,
+`EDHA_DASHBOARD.html` — all built from the files above. **Leave alone**: `EDHA_RULINGS.md` (R-23, R-24,
+R-27, R-95 quote the cards as they stood), the changelog months, the checklist's retired evidence
+(lines 1673 – 1700, bench runs 1, 26, 40, 45), and `docs/design/channel-actions.md`'s struck text,
+which is the record of the first frame.
+
+### 4.5 The bench rows
+
+Sixteen **🤖** rows, to be added under `# BENCH — Red (leyline)` (checklist line 1663) as a
+`## Channel — item 198` block when the build lands, on the Route A 3.1.0 copy (B-6 (a)).
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CR-1 open | Channel Red at 1 | *Channelling Red* on the token; heat 0 on the flag; Investiture −1 |
+| CR-2 build | an ally Strikes an enemy in range; an enemy Strikes the ally | heat 1, then 1 at cap; the flag never exceeds `channelled` |
+| CR-3 spend | the mage Strikes and hits | the hit's damage plus a separate **1 energy** instance labelled Channel Red; heat 0, then **1** again (the hit fed it) |
+| CR-4 miss | the mage Strikes and misses | heat unchanged |
+| CR-5 flood | at rank 2 channel 2; three damage events; Strike | +2 energy; then heat 1 |
+| CR-6 clamp | opened at 2 with 2 heat; maintain at 1 | heat reads 1 |
+| CR-7 persist | two events on the enemies' turns; the mage's turn begins | heat still 2 (no turn reset); the rally flag, if any, cleared as today |
+| CR-8 lapse | let the Channel expire unmaintained with heat on the flag | heat gone with the status |
+| CR-9 not energy for Kindle | a channelling Kindle owner Strikes with a sword | no Kindle term on the bar, no light on the target; then Searing Bolt: the Kindle term and the light |
+| CR-10 Chain Detonation's gate | kill with a sword while channelling; kill with Searing Bolt | no burst; burst |
+| CR-11 riders off / on | no Channel: Reckless Advance, Incite, Shatter Focus, Volatile Strike's hit | refused before cost with the toast (the first three); no offer (the fourth). With the Channel: all fire spending nothing |
+| CR-12 once per round | Volatile Strike on two hits in one round; Shatter Focus on two failures | the second refuses, both |
+| CR-13 releases | Searing Bolt, Flame Surge, Arc Flash, Emotional Overload, Reckless Gambit with **no** Channel | all five work and spend |
+| CR-14 the bolt carries heat | channel 1, one event, Searing Bolt hits | [Tier][Die] energy + 1 energy from the heat + Kindle's term |
+| CR-15 Flame Surge as three events | channel 3 (a rank-3 PC), Flame Surge on three enemies, then Strike | heat 3 after the surge; +3 on the Strike |
+| CR-16 adversary + tabs | a rival with Red attuned channels; a minion; a synced Red PC's Actions and Talents tabs | rival clamps at 2, minion at 1 (R-137); Channel Red and Maintain Red under the power; riders on the Talents tab; ⟳ Sync refreshes |
+
+### 4.6 Gate 4 — the menu
+
+**RB-1. The two new dispatch sites.** (a) **Gate `edhaActorRulesOf` and `edhaRulesForEvent` at their
+single returns with F (i)'s filter — recommended** (one field, five sites; every config-only and
+event-sweep handler is gated at once, and any fourth colour rides for free). (b) Gate inside the four
+consumers (`edhaRiderParts`, `edhaLightSpecFor`, `edhaRallyOnDeal`, the on-hit sweep) individually.
+
+**RB-2. Trigger-applied damage and the heat.** (a) **The `damaged` announce learns to count damage
+applied inside a trigger, tagged so a payload's own damage does not re-fire its own watch —
+recommended** (the card says *each time damage is dealt*; an arc that does not count is a card that
+lies, and Breaking Point's second-blow count has the same gap today). (b) The frame counts only what
+the announce sees, and §1.5 gains the sentence "damage from a talent's follow-on effect does not
+build heat".
+
+**RB-3. Where the heat lands.** (a) **A separate energy instance applied after the hit through
+`edhaCrossDamage`, sourced to the power, counted with the hit as one event — recommended** (no
+roll-shape change; the type is right by construction; RD-2 (a) is true mechanically). (b) A second
+typed term on the damage roll, if 3.1.0's damage roll carries per-term types — one bar, but the
+Kindle gate must then exclude the term by label.
+
+**RB-4. Chain Detonation's missing source gate.** (a) **Fixed in the same data pass with Widening K
+— recommended** (the card has always said *with a Red Conflagration talent*; today's rule fires on
+any kill and is a drift, not a design). (b) Filed as its own item and left out of the Red leg.
+
+**RB-5. Shatter Focus's "Once per round."** (a) **`oncePerRound` added to `edha-focus` on the
+`edha-damage-react` pattern, spent on the click — recommended.** (b) Model Shatter Focus as an
+`edha-watch {watch: test, whenOutcome: fail, scope: scene, once: round}` with an `edha-focus`
+payload — no new field, and the failed-test trigger stops being table-declared; a larger change to
+a card whose trigger has been manual since 2bY.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-17):** *"looks good"* — **RB-1 … RB-5 (a).** §4 committed
+> on that answer.
