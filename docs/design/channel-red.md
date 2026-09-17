@@ -16,7 +16,7 @@ gate log is the record.
 | 0 | The frame re-opened (FR-1) | **✅ answered 2026-09-17** — FR-1 (a) *the heat*, replacing the rising edge |
 | 1 | §1 Red's three trees, and the heat applied | **✅ approved 2026-09-17** — RD-1 … RD-7 all (a) |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — RD2-1 … RD2-7 all (a) |
-| 3 | §3 The mix, against the bands | — |
+| 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — RD3-1 (a); *"This is good. Continue."* |
 | 4 | §4 The build notes for Red | — |
 | 5 | §5 Close-out | — |
 
@@ -483,4 +483,87 @@ cards reading "energy damage" and let the build's `whenSource` gate carry it sil
 then disagree with the card.
 
 > **Answered at gate 2 (Ben, chat, 2026-09-17):** *"all default"* — **RD2-1 … RD2-7 (a).** §2
+> committed on that answer.
+
+---
+
+## 3. The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Red today** | 11 (44 %) | 8 (32 %) | 3 (12 %) | 1 (4 %) | 1 (4 %) | 1 (4 %) | 76 % | 11 (44 %) | 9 (36 %) | 10 |
+| **Red proposed** | 11 (44 %) | 9 (36 %) | 3 (12 %) | 1 (4 %) | 1 (4 %) | **0** | **80 %** | **7 (28 %)** | **5 (20 %)** | **6** (+ the Channel, 1 – rank a round) |
+| *Blue proposed, for scale* | 9 (36 %) | 8 (32 %) | 2 (8 %) | 2 (8 %) | 1 (4 %) | 3 (12 %) | 68 % | 9 (36 %) | 7 (28 %) | 9 |
+| *White proposed, for scale* | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | 84 % | 4 (16 %) | 1 (4 %) | 1 |
+| published Invested band | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+*(Counts read from `data/leyline.json` at `ba796d4`: "costed (any)" is the nine Investiture cards plus
+the two Opportunity-only Specials, Reckless Momentum and Afterburn; the comparison's Appendix gives
+44 % / 36 % / 10 for today's row, the same numbers.)*
+
+**Read against the bands.** Red is the one colour that was **already inside the costed band before
+the Channel** — 44 % against 8 – 46 %, the cheapest tree in the atlas at a sum of 10 — so the Channel
+moves its pricing less than it moved White's or Blue's: costed 44 % → 28 %, Investiture-priced nine
+cards → five, the sum 10 → 6. **Passive + Special rises to 80 %, inside the published band** (from
+76 %, which was already inside). Red never needed the Channel to fix its pricing; what it needed was
+a base action, and that is what the frame is. The Channel's whole effect on Red is the heat: the
+tree's cards were mostly free already, and now the free cards ride a damage engine that runs every
+round instead of a set of disconnected passives.
+
+**Two numbers sit outside a band, and both are the colour on purpose.**
+
+- **Reactions at 0 %** (band 2 – 7 %, guide 5 – 8 %). §2.3 gave the reason: the Key spends the Reaction
+  on every Draw Mana, and under the Channel a Red mage draws most rounds. A Reaction card on this
+  tree is a card that is dead on the tree's best turns. Red's answer to the enemy's turn is not a
+  Reaction; it is that the enemy's hit fed the heat.
+- **Passives at 44 %** (guide ~35 %). Unchanged by this pass — Red had eleven free passives before it
+  and has eleven after; three of them are now riders, which the Passive column does not show. The
+  published Invested families run 37 – 41 % Special *and* high Passive for the same reason White's
+  Specials overshoot: the power is the action, the talents change what it does.
+
+Against the guide's other targets: single Actions 12 % against ~15 %, with the Channel now the
+self-initiated play beside three real Actions (Reckless Advance free, Incite free, Searing Bolt
+costed) — the review's "Red fields four" holds and two of the four stopped costing; 2 Actions 4 %
+against ~8 % (Flame Surge); Free 4 % against 5 – 8 % (Explosive Leap); Special 36 % a little over
+25 – 30 % (one Reaction crossed). Nothing here was engineered toward a band.
+
+**Where the remaining cost sits.** Four of the six surviving Investiture points are in
+**Conflagration** (Searing Bolt 1, Flame Surge 2, Arc Flash 1); the other two are Frenzy's passion
+pair (Emotional Overload 1, Reckless Gambit 1). **Momentum carries no Investiture at all** — its only
+cost is Reckless Momentum's Opportunity. The charge, the leap, the slam, the run-up strike and the free
+move are all free once the Channel is up, which is the review's "melee charger" made the cheap build
+it always was in practice and now is on paper.
+
+**What a Red player's turn is now.** Round 1: Channel Red at 2 out of a pool of 4, Reckless Advance
+into reach for nothing, Strike — the enemy's arrow into your ally on their turn and your ally's answer
+already put 2 heat on that sword, so the first hit lands at +2 energy, and the hit itself puts 1 back.
+Every round after: maintain as a Free Action for 1 or 2, Draw when the pool needs it (advantage on
+the next Physical test, the Reaction gone, which you were not going to use), three Actions of Strikes
+with Momentum's Edge on the run-up, Volatile Strike's free test once, Shockwave Slam into the wall,
+Unstoppable's free half-Speed move on a Fast turn. Battle Fever hands the line +1 or +2 on their next
+test from the same noise. The pyromancer's version of the same turn is Channel at 1, Searing Bolt with
+Kindle and the heat on it, Draw — and on the round that matters, Flame Surge for 2, whose three
+burning targets fill the heat for the bolt that follows and hand Flashpoint its choice. The real
+decision each round is Blue's in a Red key: **flood or release** — a round you spend 2 on Flame Surge
+is a round you maintained at 1, and the heat's ceiling is 1 until you pay again.
+
+**What it costs, in numbers.** Today a full Red round — Reckless Advance and Volatile Strike, or a
+bolt and its arc — spends 2 Investiture for two plays and earns 2 from a Draw (R-126). Under the
+Channel the same 2 buys the frame and every Momentum and Frenzy rider, and at a flood at levels 1 – 5
+adds **+2 energy to every hit** — about +6 a round on three Strikes, on top of Mighty's +2 each, before
+any rider. From level 6 the flood is 3 and the Draw yields 3: +9 a round on three hits. R-111's
+leyline damage ceiling (three Withering Rays ≈ 33 vital for ~4.5 HP; three Strikes with Mighty ≈ 31
+free) was measured without a frame on either side; Black's hunt adds the same +2 / +3 per hit against
+the Isolated, so the two damage colours move together and the ceiling holds relative to both. Item
+210's yardstick re-run should add Red's row beside White's and Blue's before item 198 builds — the
+turn arithmetic there was priced on 1 Investiture per play, and Red's plays are now mostly free with
+a frame that adds per hit.
+
+**RD3-1. The two off-band numbers.** (a) **Accept Reactions at 0 % and Passives at 44 % as the
+colour's shape, for the reasons above — recommended.** (b) Keep Shatter Focus a Reaction to hold 4 %
+(re-opens RD2-2 (a)). (c) Convert one or two unconditional passives to Specials to move the Passive
+column — manufactures a type change with no design behind it.
+
+> **Answered at gate 3 (Ben, chat, 2026-09-17):** *"This is good. Continue."* — **RD3-1 (a).** §3
 > committed on that answer.
