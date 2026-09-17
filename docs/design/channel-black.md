@@ -19,7 +19,7 @@ gate log is the record.
 | 1 | §1 Black's three trees, and the forsaking applied | **✅ approved 2026-09-17** — BK-1 … BK-6 all (a); *"defaults. looks good."* |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — BK2-1 … BK2-5 all (a) |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — BK3-1 (a); *"Looks good."* |
-| 4 | §4 The build notes for Black | — |
+| 4 | §4 The build notes for Black | **✅ approved 2026-09-17** — BB-1 … BB-4 all (a); *"defaults."* |
 | 5 | §5 Close-out | — |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -536,3 +536,180 @@ gain.
 
 > **Answered at gate 3 (Ben, chat, 2026-09-17):** *"Looks good."* — **BK3-1 (a).** §3 committed on
 > that answer.
+
+---
+
+## 4. The build notes for Black
+
+What item 198's Black leg builds, named from what exists — every handler read from
+`data/authored/leyline-black.json` and every line number re-derived against `main` `ba796d4`. **No code
+and no data change in this pass.** Deploy class: **ENGINE (F5) + DATA — REBUILD leyline + ⟳ Sync
+Talents, at 3.x only**, after item 187's flip (R-144). Black's frame is a **mark on one creature** —
+the third frame shape after White's number-on-a-sheet, Blue's entry-on-the-next-test-list and Red's
+stack — and it is built entirely from the marker-ledger family Black itself helped build (H3).
+
+### 4.1 Black's riders and where §4.3's gate lands
+
+Four cards become riders. Every one fires from `use`:
+
+| Rider | Handler on `use` | Chained rules (no gate needed) | In the seventeen? | Gate lands in |
+|---|---|---|---|---|
+| Spoils of Isolation | `edha-status-sweep` (`53-…js:2002`) | — | **no — new** | the pre-cost veto, Widening F (ii) |
+| Cruel Step | `edha-move` | — | yes (Red) | the pre-cost veto |
+| Unnerving Approach | `edha-prompt-pick` | `edha-push` + `edha-note` on `edha-test-success` | yes (White) | the pre-cost veto |
+| Sovereign of Solitude | `edha-triggered-effect` (kind `status`, `immobilized`) | — | yes (Red) | the pre-cost veto, **plus Widening H** (`requireChannelled: 2`) |
+
+**Three findings for item 198's sizing:**
+
+1. **Black adds one schema declaration** (`edha-status-sweep`) — eighteen across four colours — and
+   **one dispatch site: the pre-cost veto alone**, Blue's position. Nothing in Black's rider set is read
+   by `edhaWatchersOfRule`, `edhaActorRulesOf` or `edhaRulesForEvent`; the two Black rules that *are*
+   (Dread Presence's `edha-move-veto`, read at `08-…js:230`; Severance's `edha-damage-convert`, read at
+   `03-…js:692`) stay free passives and take no gate.
+2. **Widening H gets its second consumer and its second declaration.** White declared
+   `requireChannelled` on `edha-damage-react` (Unbreakable Line); Sovereign of Solitude wants it on
+   `edha-triggered-effect`. Same field, same read of Widening A's `channelled` flag, checked in the same
+   pre-cost veto (BK2-1 (a)).
+3. **Widenings G and I have no Black consumer** (no ActiveEffect rider — Hardy's and Composed's AEs are
+   free passives; no per-die work — Coercive Pressure's disadvantage is a free passive on
+   `edha-next-test-mod` and stays so). **Widening E (`edha-channel`) has one consumer, and it is the
+   frame itself** (§4.2), not a card.
+
+### 4.2 The frame's build — the forsaken on the power document
+
+Four rules on the Black power's Events tab. The precedent is the **H3 sustained ledger**
+(`edha-owner-list`, `53-…js:1104`; `ENGINE_INDEX.md` §"Sustained capped ledgers"): a capped list of
+creatures under `flags.edha-content.lists.<key>`, each bearing a registered marker status, oldest
+fizzling at the cap — the shape Chaos's `omens`, Order's `covenants`, Fate's `ordained` and **Hunter's
+`quarry`** (cap 1) already use. The forsaken is that ledger at cap 1 with two things added: the marker
+counts as Isolated, and the ledger is bound to the arming status.
+
+1. **The arm** — identical to White's §4.2 rule 1 (`edha-self-status {statusId: "channelblack",
+   timed: true}` with Widenings A, B, C).
+2. **The choosing** — on **`edha-channel`** (Widening E, fired on every Channel / Maintain use):
+   **`edha-owner-list {list: "forsaken", mode: "list", op: "place", cap: 1}`** against the mage's
+   current target, with the marker status **`forsaken`** registered in `EDHA_STATUSES`
+   (`01-shared-core.js:184`, beside `quarry` / `tagged`; `condition: false`, tinted black, labelled
+   *Forsaken* — a label that names no talent). H3's cap-1 placement is *mark-first, oldest fizzles*
+   (`ENGINE_INDEX.md:1936`), which is exactly BK-4 (a): choosing another releases the first, choosing
+   the same re-places it. H3's pre-cost refusals (`requireDisposition: enemy`, range via the power's
+   colour) refuse a bad pick before the Investiture is spent. **An adversary channelling picks through
+   the same target prompt** Unnerving Approach's `edha-prompt-pick` uses (BB-4).
+   - **Widening L — `boundToStatus`** on `edha-owner-list`: a ledger that names an arming status is
+     cleared when that status ends. Widening C's end-of-status hook (`exclusiveWith` / `endOnStatus`
+     already clear things on arm and on Unconscious) gains the ledger clear; `42-chaos.js:301`'s
+     `deleteCombat` scene clear gains `lists.forsaken`, `markedBy.forsaken` and the `forsaken` status
+     — the rule `ENGINE_INDEX.md:1158` states (*a tree's ledger key MUST be in its deleteCombat scene
+     clear*).
+3. **Isolated — `forsaken` joins the isolating statuses** (BK-2 (a); BB-1). `edhaIsIsolated`
+   (`03-…js:398`) reads one inflicted status, `isolated`; it becomes a two-entry set
+   (`EDHA_ISOLATING_STATUSES = ["isolated", "forsaken"]`) read in the same line, and
+   `edhaSyncIsolatedMarkers`'s `inflicted` test (`:429`, *"must agree with edhaIsIsolated's scan"*)
+   reads the same set, so the positional marker sync never fights the mark. Every reader inherits it
+   with no further change: the Key's pulse (`edha-pulse`, `33-…js:275`'s Isolated filter), Sapping Hex
+   and Severance (`whenTargetIsolated`), Cruel Step's `requireTargetIsolated` (`19-…js:246`), Green's
+   pack filter (`52-…js:243`), the `edha-test-rider` gate (`01-…js:759`).
+4. **The vital** — **`edha-damage-bonus {require: "list-member-hits", listName: "forsaken",
+   listStatus: "forsaken", amountFormula: "@channelled", damageType: "vital", color: "black",
+   requireSelfStatus: "channelblack"}`** on the power. Every field exists (`53-…js` schema of
+   `edha-damage-bonus`: `require` has `list-member-hits`, the Concord shape that rides `covenants`;
+   `damageType` typed; `requireSelfStatus` carried natively). It reads the **mage's own** ledger for
+   the **mage's own** hits, which is the frame's sentence — and why `edha-apply-status`'s
+   `bonusDamageFormula` (Vital Diagnosis) is the wrong primitive: that one adds to *anyone's* damage on
+   the marked creature. `@channelled` resolves through Widening D's third replacement. Two Black mages
+   forsaking the same creature each carry their own bonus on their own attacks; the creature is
+   Isolated once (M14 (a)).
+
+**What the frame does not need.** No new handler type, no new event type, no new expiry mode, no
+per-die work, no ActiveEffect. One status, one set of two strings, one field on the ledger handler
+(L), and one clear-list line.
+
+### 4.3 What moves in the data
+
+**`data/authored/leyline-black.json`** — the seven authored keys, unchanged as a set:
+
+- **`activation`** — four cards. The `{type: "resource", resource: "inv"}` consume row is removed from
+  Spoils of Isolation, Cruel Step, Unnerving Approach and Sovereign of Solitude. No type changes.
+- **`description`** — the four sentences of §2.2.
+- **`events`** — `requireSelfStatus: "channelblack"` on Spoils' `edha-status-sweep`, Cruel Step's
+  `edha-move`, Unnerving Approach's `edha-prompt-pick` and Sovereign's `edha-triggered-effect`;
+  **`requireChannelled: 2`** on Sovereign's; Sovereign's inert `damageType: "energy"` on a `status`-kind
+  rule cleared while the file is open (§2.5); Unnerving Approach's prompt string *"spend 1 Investiture
+  and choose one character …"* rewritten, because a prompt is player-facing text asking for a cost that
+  no longer exists.
+- **`effects`** — **nothing changes.** No Black rider is an ActiveEffect.
+- **`docId`** — **nothing changes.** Black has no rename.
+
+**`data/leyline.json`** — the four records' `cost` and `description` (no `action` changes); §2.5's
+hygiene (Sovereign's trailing whitespace, Predator's Due's `"Black 3+;"` prerequisite). **Graph
+untouched**: no `connections` or `prerequisites` change in substance (the semicolon is a string fix
+`validate.js` already tolerates), so the DAG and reachability checks and `tests/pipeline.test.js` are
+unaffected.
+
+**`data/channels.json`** (B-1 (a)) — Black's record: the amended frame sentence of §1.1, §1.5 as the
+frame paragraph, the two actions' text, and the four rules of §4.2 as the power's `events`.
+
+### 4.4 What names the changed cards
+
+No rename, so no sweep. Four places carry a fact this pass changes and want the edit in the same PR:
+
+| File | What |
+|---|---|
+| `module-src/scripts/engine/04-black-ritual.js:1-30` | the Black / Ritual tree-section header (rule 3's ledger): the four riders; the "Isolation movement talents" paragraph gains the forsaken |
+| `module-src/scripts/engine/08-black-subjugation.js:1-14` | the Subjugation header: the tree is Black's release tree; nothing converts |
+| `module-src/scripts/engine/42-chaos.js:301` | the `deleteCombat` clear list gains `lists.forsaken`, `markedBy.forsaken`, status `forsaken`; the header line at `:24` gains *forsaken* beside *isolated* |
+| `.claude/skills/leyline-revision-guide/SKILL.md` Part 4, Black | *"Costs favor: … Investiture for the rest"* becomes the Channel, five releases and blood; the key-mechanic line gains the forsaking; the `Puppeteer` sentence stands (the colour still does not produce 0 focus) |
+
+`EDHA_FOUNDRY_TEST_CHECKLIST.md:1514`'s `# BENCH — Black` preamble stays (dated evidence); the new
+`## Channel — item 198` block goes under it. Regenerated, never hand-edited: `EDHA_PLAYER_PRIMER.html`,
+`EDHA_LEVELUP_GUIDES.html`, `EDHA_DASHBOARD.html`. **Leave alone**: `EDHA_RULINGS.md`, the changelog
+months, the checklist's retired evidence, and `docs/design/channel-actions.md`'s struck text.
+
+### 4.5 The bench rows
+
+Sixteen **🤖** rows, to be added under `# BENCH — Black (leyline)` (checklist line 1514) as a
+`## Channel — item 198` block when the build lands, on the Route A 3.1.0 copy (B-6 (a)).
+
+| Row | Drive | Evidence |
+|---|---|---|
+| CK-1 open | target an enemy standing beside two allies; Channel Black at 1 | *Channelling Black* on the mage; *Forsaken* on the target; `lists.forsaken` holds it; Investiture −1 |
+| CK-2 Isolated by fiat | the same target, allies adjacent | `edhaIsIsolated` true; the positional marker sync leaves the *Forsaken* icon alone |
+| CK-3 the pulse | Draw Mana | the forsaken is Weakened though its allies stand beside it; a second, positionally alone enemy is Weakened too |
+| CK-4 the vital | Strike the forsaken | the hit's damage plus **1 vital** labelled Channel Black; a Strike on another enemy carries nothing |
+| CK-5 flood | at rank 2 channel 2; Withering Ray the forsaken | 2d6 vital + 2 vital |
+| CK-6 re-choose | maintain at 1 targeting a different enemy | the first loses *Forsaken* and its bonus; the second gains both; ledger holds one |
+| CK-7 keep | maintain at 2 targeting the same enemy | still one entry; the bonus reads 2 |
+| CK-8 lapse | let the Channel expire unmaintained | *Forsaken* gone, ledger empty, `markedBy.forsaken` gone |
+| CK-9 Severance composes | a channelling Severance owner Strikes the forsaken with a keen sword | the whole hit is vital (converted) and +1 vital (the frame), not doubled |
+| CK-10 riders off / on | no Channel: Spoils, Cruel Step, Unnerving Approach | refused before cost with the toast. With the Channel: all fire spending nothing |
+| CK-11 Sovereign's gate | channelling 1, a Weakened enemy moves; then channelling 2 | no offer at 1; at 2 the immobilise-and-test offer posts, spending nothing |
+| CK-12 releases | Dark Investiture, Double Dip, Hollow Command, Puppeteer with **no** Channel | all work and spend |
+| CK-13 Reserve pays | a Ritualist with 2 Reserve maintains Black | Reserve −1, Investiture unchanged |
+| CK-14 Predatory Patience refund | three hits on the Weakened forsaken while channelling 1 | +3 Investiture back; the Channel ran positive |
+| CK-15 two mages | Bench — Black II forsakes the same creature at 2 beside Bench — Black at 1 | one *Forsaken* icon (two ledger entries, one per mage); Black II's hit +2, Black's +1 |
+| CK-16 combat end + tabs | end the combat; a synced Black PC's Actions and Talents tabs | ledger, mark and status cleared; Channel Black and Maintain Black under the power; riders on the Talents tab |
+
+### 4.6 Gate 4 — the menu
+
+**BB-1. How the mark counts as Isolated.** (a) **`forsaken` is registered as an isolating status:
+`edhaIsIsolated` and the marker sync read a two-entry set — recommended** (one status on the token,
+one line in each of two readers that already agree by contract). (b) The choosing applies the existing
+`isolated` status *and* a `forsaken` marker — no predicate change, two icons per creature, and the
+marker sync's `inflicted` exclusion must then be trusted to leave the second alone.
+
+**BB-2. Where the ledger lives.** (a) **H3 `edha-owner-list` on the power, `lists.forsaken`, cap 1,
+bound to the arming status (Widening L) — recommended** (Hunter's `quarry` is the same ledger at the
+same cap; nothing new but the binding). (b) A bare `forsakenUuid` flag on the mage — the pre-H3 shape
+every marker tree was migrated off (`ENGINE_INDEX.md:1937`).
+
+**BB-3. The clear on Channel end.** (a) **Widening L, `boundToStatus: "channelblack"` — recommended**
+(one field, generic: any future ledger a Channel owns clears the same way). (b) Leave the mark until
+combat end and let the vital rider's `requireSelfStatus` go dark — the *Forsaken* icon then lies on
+the token after the Channel drops.
+
+**BB-4. An adversary's choice.** (a) **The target prompt the engine already shows for a targeted
+`use` (Unnerving Approach's `edha-prompt-pick` shape), so the GM picks — recommended.** (b) Auto-pick
+the nearest PC — a heuristic the bench would have to defend.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-17):** *"defaults."* — **BB-1 … BB-4 (a).** §4 committed
+> on that answer.
