@@ -59,7 +59,7 @@
           "id": "CensureTest00000"
         },
         "CensureHit000000": {
-          "description": "Sovereignty (Verdannis). Success: Diminished — damage die −1 step (all damage) until the start of your next turn.",
+          "description": "Sovereignty (Verdannis). Success: Lessened — damage die −1 step (all damage) until the start of your next turn.",
           "event": "edha-test-success",
           "handler": {
             "type": "edha-die-step",
@@ -78,7 +78,7 @@
       "docId": "mPN0gyya3Wef184e",
       "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>By my decree, you are diminished.</em></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>By my decree, you are lessened.</em></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>"
       },
@@ -317,7 +317,7 @@
       },
       "events": {
         "ExposeReact00000": {
-          "description": "Sovereignty (Verdannis). Always Active (no use event) — the GM roll watch sweeps this rule: a creature Diminished by YOUR censure/decree entries (Ben R3) fails a test → recover 1 Investiture (auto on readable failed attacks, owner-click card otherwise), and a targeted ally in White range is offered the Reactive Strike (player-executed). 07-25 pass 2bT: replaced the edhaOwnsTalent name check inside the roll watch (iron rule 2b) — the Calculated Patience shape.",
+          "description": "Sovereignty (Verdannis). Always Active (no use event) — the GM roll watch sweeps this rule: a creature Lessened by YOUR censure/decree entries (Ben R3) fails a test → recover 1 Investiture (auto on readable failed attacks, owner-click card otherwise), and a targeted ally in White range is offered the Reactive Strike (player-executed). 07-25 pass 2bT: replaced the edhaOwnsTalent name check inside the roll watch (iron rule 2b) — the Calculated Patience shape.",
           "event": "edha-watch-rule",
           "handler": {
             "type": "edha-die-step-react",

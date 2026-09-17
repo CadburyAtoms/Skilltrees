@@ -93,12 +93,12 @@ test("R-56 (item 83): PCs and adversaries read the SAME number at every AWA, and
   }
 });
 
-test("NEGATIVE: a character's OTHER Edha derivations are untouched by the reversal", () => {
+test("NEGATIVE: a character's movement is untouched by the reversal either — R-156 (a), item 203, 2026-09-16 gave it the same treatment as senses", () => {
   const a = actor("character", { awa: 0 });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.senses.range.value, 5);
-  assert.strictEqual(a.system.movement.walk.rate.useOverride, true);   // the PC speed rule still applies
-  assert.strictEqual(a.system.movement.walk.rate.override, 20);
+  assert.strictEqual(a.system.movement.walk.rate.useOverride, false);   // the PC speed override is GONE too (item 203)
+  assert.strictEqual(a.system.movement.walk.rate.derived, 25);          // untouched — the fixture's system-prepared ladder value
 });
 
 test("NEGATIVE: the adversary path still gets no speed override and no HP touch", () => {

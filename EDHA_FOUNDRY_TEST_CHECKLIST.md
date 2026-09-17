@@ -424,6 +424,55 @@ Ben installed `cosmere-rpg-mistborn-handbook` 1.0.0, whose manifest declares `co
 
 - [ ] 🤖 In the bench console: `game.modules.get("cosmere-rpg-mistborn-handbook")?.active`. Record the answer in the run report. If `true` on the 2.1.0 world, tell Ben it should stay disabled until the upgrade and why; an agent does not change world module settings itself. Either way, the Route A copy (item 177 §d) should have it enabled so the smoke bench sees a second module on 3.1.0.
 
+## Enrichers on the MANUAL cards — item 194 / R-149 (a) (2026-09-16; **DATA — REBUILD heroic + ⟳ Sync Talents**; 2.1.0-safe)
+
+Six Heroic-atlas talents gained a `[[test ...]]` / `[[damage ...]]` / `[[/roll ...]]` enricher tag
+right where their card names a roll the engine does not roll (no `events` rule at all): Agent's
+**Get 'Em Talking**, **Close the Case**, **Shadow Step**; Hunter's **Deadly Trap**; Scholar's
+**Ongoing Care**; Warrior's **Vinestance**. The full tree-section-header audit (all 15 trees)
+found the MANUAL-with-an-unrolled-roll set is Heroic-only — every leyline and deity MANUAL bullet
+is consent, hidden information, action-forcing, or a table judgment, never an un-automated test
+or damage roll — so only the `edha-heroic` pack needs a rebuild; `edha-leyline` / `edha-deity`
+are untouched by this item. Any bench actor owning these talents works.
+
+- [ ] 🤖 Open Get 'Em Talking's card (Agent) and confirm the "Deduction Test" button renders and rolls Deduction vs. the target's Spiritual defence when clicked. Repeat for Close the Case (Deduction vs. Cognitive) and Shadow Step (Thievery vs. Cognitive).
+- [ ] 🤖 Open Deadly Trap's card (Hunter) and confirm BOTH variants show a working roll button: Survival Test (Cognitive) + a 2d4 Impact damage button for the Entangling Trap sentence, Survival Test (Physical) + a 2d4 Keen damage button for the Impaling Trap sentence.
+- [ ] 🤖 Open Ongoing Care's card (Scholar) and confirm the Medicine Test button shows "against DC 10" and rolls.
+- [ ] 🤖 Open Vinestance's card (Warrior) and confirm BOTH the Athletics Test (Cognitive) button and the plain `1d4` inline roll link render and roll.
+
+## Opposed skill tie — item 204 (2026-09-16; **ENGINE-ONLY, F5**)
+
+`edhaDefTestOutcome`'s `vs: "skill"` path now uses `>` instead of `>=` (Mistborn Handbook Ch. 3,
+"Opposed Tests": a tie favors the defender, not the initiator). `vs: "defense"` and `vs: "dc"` are
+unchanged (ties still succeed). Any of the three authored consumers works — Redirect Momentum
+(Blue vs Athletics), Drive the Prey or Territorial Instinct (Green vs Survival).
+
+- [ ] 🤖 Tie a Blue contest (or a Green one): engineer the target's rolled skill total to equal the
+  Blue/Green initiator's total exactly. Confirm the card reads FAIL for the initiator and the
+  defender keeps the status quo (no movement reduction / push, no Slowed, no forced move) — then
+  confirm a one-point win still succeeds and a one-point loss still fails, so only the tie flipped.
+
+## An affliction rule's culled target — item 189 (2026-09-16; ENGINE-ONLY, F5; **nothing deploys under the R-144 freeze**)
+
+`edhaRunTriggerEffect`'s `affliction` branch used to post "(target a token) is Afflicted […]" publicly whenever a supplied victim/near-victim/list-members mode resolved to nobody — the same "blame the user for a list it supplied itself" shape items 173/176 fixed in the status/damage branches (`tests/no-candidate-no-card.test.js`). Fixed alongside the `thp` branch's own supplied-target fallback and `edhaPostTriggerCard`'s `needsTargeting` exclusion; pinned in `tests/no-blame-supplied-target.test.js` against the real registered executors. This row waits on Ben's word that the R-144 freeze has lifted before it can be driven live.
+
+- [ ] 🤖 Re-drive an affliction rule whose on-hit victim is culled to nothing — e.g. Dark Investiture (Black, `data/authored/leyline-black.json`, `target: "victim"`) fired with no `ctx.victim`, or any affliction rule carrying `whenTargetIsolated: true` hit against a target that is NOT Isolated. Confirm NO public "(target a token) is Afflicted…" card posts, and that a GM client sees a quiet audit line instead ("…no [Isolated ]target to afflict; no effect."). Control: a hand-fired PROMPT-mode affliction rule (e.g. Red's Conflagration rider) with nothing targeted must still show today's "(target a token) is Afflicted…" wording — that miss is the user's own canvas, unchanged.
+
+## Sovereignty status rename — item 205 (2026-09-16; **REBUILD deity + ⟳ Sync Talents first**; nothing deploys while the R-144 freeze holds)
+
+Sovereignty's damage-die step-down status was renamed off `diminished`/"Diminished" — a
+**published condition** (Mistborn Handbook Ch. 9 → Conditions, attribute −X) — to
+`lessened`/"Lessened Die"; `exalted`'s label became "Exalted Die" for symmetry. Ben may veto
+either name at PR review (the item also names `exalted`/`abased`). `44-sovereignty.js`,
+`01-shared-core.js`, the `edha-die-step` primitive, `data/authored/deity-sovereignty.json` and
+`data/domain.json`'s prose moved together.
+
+- [ ] 🤖 On a Sovereignty caster (any Bench actor), cast **Censure** or **Decree of Ruin** on an
+  enemy in Attunement Range: confirm the target's damage die actually steps down one tier, the
+  target's token gains the new status (not `diminished` — check `target.statuses`), and both the
+  roll-watch chat card and Expose's owner-click recovery card read the new word, not "Diminished".
+  Then cast **Exalt** on an ally and confirm its buff and status are unaffected by the rename.
+
 ## Path descriptions — item 111 (2026-09-13; **REBUILD leyline + deity + heroic packs + ⟳ Sync Talents first**)
 
 The 21 path items carry new description text (PR #349 — R-104 (a), Ben-approved prose from
@@ -1260,6 +1309,22 @@ to attack from.
       it together with at least one other token (or run an area/burst ability that includes it)
       and attack. The roll must NOT gain disadvantage, and the `dodgearmed` icon must still be on
       the token afterward (SR p.34: "Doesn't work on area attacks or multi-target attacks").
+
+## Dodge dials as Foundry settings — item 193 / R-148 (a) (2026-09-16; ENGINE-ONLY — relaunch / F5)
+
+`EDHA_DODGE_PAY_ON_ARM` and the arm's expiry are now `game.settings` entries under the module's
+Configure Settings page — `dodgePayOnArm` and `dodgeArmExpiresOnOwnTurn`, world-scoped and GM-only —
+read live (no cache) by the shared `edhaSetting` reader. Nothing deploys under the R-144 freeze;
+this is engine-only, F5.
+
+- [ ] 🤖 **`dodgePayOnArm` OFF moves the charge from arm to consume** — in Configure Settings →
+      Edha Content, turn `dodgePayOnArm` off. Arm Dodge on a bench PC with 0 Focus in the pool —
+      arming must now SUCCEED for free (no warning, no spend). Then land a single-target attack
+      against it: the Focus must be deducted THEN, at consume. Flip the setting back on afterward.
+- [ ] 🤖 **`dodgeArmExpiresOnOwnTurn` OFF makes an unused arm persist** — turn it off, arm Dodge on
+      a bench PC, and run that PC through its own next turn (and end of round) without anyone
+      attacking it. The `dodgearmed` icon must still be on the token afterward (default ON: it
+      would have cleared at the end of that PC's turn). Flip the setting back on afterward.
 
 ---
 

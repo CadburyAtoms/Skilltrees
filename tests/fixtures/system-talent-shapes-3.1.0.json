@@ -1,0 +1,299 @@
+{
+ "_header": {
+  "purpose": "Two shape-only pins (TODO_REPO_HYGIENE item 192) from the cosmere-rpg system's OWN compendium talents that item 177 named for the Embedded-Actions fixture diff — reduced the same way as tests/fixtures/embedded-actions-shapes.json (key paths and field TYPES only, no names/descriptions/licensed text). The two source JSON files themselves are never copied into the repo (the system's src/packs carries Brotherwise content); this fixture carries only their reduced shapes.",
+  "systemVersion": "3.1.0",
+  "sourceArchive": "cosmere-rpg-release-3.1.0/src/packs",
+  "generatedDate": "2026-09-16",
+  "command": "docs/analysis/talent-comparison/shape-corpus.js's exported reduceObject(), run by hand against the two named source files under C:\\Users\\benhe\\AppData\\Local\\Temp\\edha-cosmere-src\\cosmere-rpg-release-3.1.0\\src\\packs\\ (see tests/embedded-action-shapes.test.js)"
+ },
+ "heroic-paths/agent/spy/talents/subtle-takedown.json": {
+  "sourceFile": "heroic-paths/agent/spy/talents/subtle-takedown.json",
+  "documentType": "talent",
+  "talentShape": {
+   "_key": "string",
+   "effects": [],
+   "system": {
+    "__embedded": {
+     "items": [
+      {
+       "effects": [],
+       "items": [],
+       "system": {
+        "activation": {
+         "consumption": [],
+         "cost": {
+          "type": "string",
+          "value": 0
+         },
+         "flavor": "string",
+         "type": "string"
+        },
+        "damage": {
+         "attribute": "string",
+         "formula": null,
+         "skill": "string",
+         "type": null
+        },
+        "events": {},
+        "id": "string",
+        "modality": null,
+        "primaryResource": "string",
+        "relationships": {},
+        "resources": {
+         "ammo": null,
+         "charges": null,
+         "uses": null
+        },
+        "skillTest": {
+         "attribute": "string",
+         "plotDie": false,
+         "skill": "string"
+        },
+        "type": "string"
+       },
+       "type": "string"
+      }
+     ]
+    },
+    "activation": {
+     "complication": null,
+     "consume": [],
+     "cost": {
+      "type": "string",
+      "value": 0
+     },
+     "flavor": "string",
+     "opportunity": null,
+     "plotDie": false,
+     "type": "string",
+     "uses": null
+    },
+    "ancestry": null,
+    "damage": {
+     "formula": null,
+     "type": null
+    },
+    "events": {},
+    "hasAncestry": false,
+    "hasPath": false,
+    "hasSpecialty": false,
+    "id": "string",
+    "linkedSkills": [],
+    "modality": null,
+    "path": "string",
+    "power": null,
+    "prerequisites": {
+     "*": {
+      "attribute": "string",
+      "mode": "string",
+      "rank": 0,
+      "skill": "string",
+      "talents": [
+       {
+        "id": "string",
+        "label": "string",
+        "uuid": "string"
+       }
+      ],
+      "type": "string",
+      "value": 0
+     }
+    },
+    "prerequisitesMet": false,
+    "primaryResource": "string",
+    "relationships": {},
+    "resources": {
+     "ammo": null,
+     "charges": null,
+     "uses": null
+    },
+    "specialty": "string",
+    "type": "string"
+   },
+   "type": "string"
+  },
+  "embeddedActionShape": {
+   "effects": [],
+   "items": [],
+   "system": {
+    "activation": {
+     "consumption": [],
+     "cost": {
+      "type": "string",
+      "value": 0
+     },
+     "flavor": "string",
+     "type": "string"
+    },
+    "damage": {
+     "attribute": "string",
+     "formula": null,
+     "skill": "string",
+     "type": null
+    },
+    "events": {},
+    "id": "string",
+    "modality": null,
+    "primaryResource": "string",
+    "relationships": {},
+    "resources": {
+     "ammo": null,
+     "charges": null,
+     "uses": null
+    },
+    "skillTest": {
+     "attribute": "string",
+     "plotDie": false,
+     "skill": "string"
+    },
+    "type": "string"
+   },
+   "type": "string"
+  }
+ },
+ "heroic-paths/hunter/assassin/talents/fatal-thrust.json": {
+  "sourceFile": "heroic-paths/hunter/assassin/talents/fatal-thrust.json",
+  "documentType": "talent",
+  "talentShape": {
+   "_key": "string",
+   "effects": [],
+   "system": {
+    "__embedded": {
+     "items": [
+      {
+       "effects": [],
+       "items": [],
+       "system": {
+        "activation": {
+         "consumption": [],
+         "cost": {
+          "type": "string",
+          "value": 0
+         },
+         "flavor": "string",
+         "type": "string"
+        },
+        "damage": {
+         "attribute": "string",
+         "formula": "string",
+         "skill": "string",
+         "type": null
+        },
+        "events": {},
+        "id": "string",
+        "modality": null,
+        "primaryResource": "string",
+        "relationships": {},
+        "resources": {
+         "ammo": null,
+         "charges": null,
+         "uses": null
+        },
+        "skillTest": {
+         "attribute": "string",
+         "plotDie": false,
+         "skill": "string"
+        },
+        "type": "string"
+       },
+       "type": "string"
+      }
+     ]
+    },
+    "activation": {
+     "complication": null,
+     "consume": [],
+     "cost": {
+      "type": "string",
+      "value": 0
+     },
+     "flavor": "string",
+     "opportunity": null,
+     "plotDie": false,
+     "type": "string",
+     "uses": null
+    },
+    "ancestry": null,
+    "damage": {
+     "formula": "string",
+     "type": null
+    },
+    "events": {},
+    "hasAncestry": false,
+    "hasPath": false,
+    "hasSpecialty": false,
+    "id": "string",
+    "linkedSkills": [],
+    "modality": null,
+    "path": "string",
+    "power": null,
+    "prerequisites": {
+     "*": {
+      "attribute": "string",
+      "mode": "string",
+      "rank": 0,
+      "skill": "string",
+      "talents": [
+       {
+        "id": "string",
+        "label": "string",
+        "uuid": "string"
+       }
+      ],
+      "type": "string",
+      "value": 0
+     }
+    },
+    "prerequisitesMet": false,
+    "primaryResource": "string",
+    "relationships": {},
+    "resources": {
+     "ammo": null,
+     "charges": null,
+     "uses": null
+    },
+    "specialty": "string",
+    "type": "string"
+   },
+   "type": "string"
+  },
+  "embeddedActionShape": {
+   "effects": [],
+   "items": [],
+   "system": {
+    "activation": {
+     "consumption": [],
+     "cost": {
+      "type": "string",
+      "value": 0
+     },
+     "flavor": "string",
+     "type": "string"
+    },
+    "damage": {
+     "attribute": "string",
+     "formula": "string",
+     "skill": "string",
+     "type": null
+    },
+    "events": {},
+    "id": "string",
+    "modality": null,
+    "primaryResource": "string",
+    "relationships": {},
+    "resources": {
+     "ammo": null,
+     "charges": null,
+     "uses": null
+    },
+    "skillTest": {
+     "attribute": "string",
+     "plotDie": false,
+     "skill": "string"
+    },
+    "type": "string"
+   },
+   "type": "string"
+  }
+ }
+}
