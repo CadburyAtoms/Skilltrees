@@ -17,8 +17,8 @@ log is the record.
 | 1 | §1 The deity path, re-evaluated under the Channel | **✅ approved 2026-09-17** (third draft; D-1 … D-9 and E-1 … E-8 withdrawn on Ben's notes, §1.1) — F-1 … F-10 all (a): Shape S, the supply with a face per colour |
 | 2 | §2 The marks — Chaos, Knowledge, Life | **✅ approved 2026-09-17** (second draft) — G-1 … G-8 all (a): entry nodes dropped, seven cards each, no kept cost, capstones on the flood |
 | 3 | §3 The ground — Fate, Destruction, Civilization, Death | **✅ approved 2026-09-17** — H-1 … H-10 all (a): two costed faces, Fault Line a release, Death keeps Reaper's Harvest and four priced cards, Hallowed Ground added to Fate |
-| 4 | §4 The word — Order, Power, Sovereignty | **proposed 2026-09-17** — I-1 … I-9 tabled |
-| 5 | §5 The mix, against the bands | not started |
+| 4 | §4 The word — Order, Power, Sovereignty | **✅ approved 2026-09-17** — I-1 … I-9 all (a): four arms hold while channelling, the Mantle included; no kept cost; item 106 back to the PM |
+| 5 | §5 The mix, against the bands | **proposed 2026-09-17** — J-1 … J-5 tabled |
 | 6 | §6 The build notes | not started |
 | 7 | §7 Close-out | not started |
 
@@ -1473,3 +1473,6 @@ duplication R-97's critique warned of — recommended.** (b) Build it as designe
 pass. (c) Drop it: the frames are the Decree.
 
 **I-9. The three supplies' names.** (a) **Declare, Command, Judge — recommended.** (b) Ben's own.
+
+> **Answered at gate 4 (Ben, chat, 2026-09-17):** *"looks good"* — **I-1 … I-9 (a).** §4 committed on
+> that answer.
