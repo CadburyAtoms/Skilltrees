@@ -17,7 +17,7 @@ gate log is the record.
 | 0 | The frame re-opened (FG-1) | **✅ answered 2026-09-17** — FG-1 (b) *the home ground*, replacing the ground; Ben's own pick, confirmed against the pack |
 | 1 | §1 Green's three trees, and the home ground applied | **✅ approved 2026-09-17** — FG1-1 … FG1-6 (a) except **FG1-4 (b)**: the regen ticks once a minute outside combat |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — FG2-1 … FG2-5 all (a); *"looks good"* |
-| 3 | §3 The mix, against the bands | — |
+| 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — FG3-1 (a), with Ben's standing note: the yardstick sessions and the bench may suggest balance changes to the frames |
 | 4 | §4 The build notes for Green | — |
 | 5 | §5 Close-out | — |
 
@@ -458,3 +458,90 @@ patch is stood in. (c) Neither.
 
 > **Answered at gate 2 (Ben, chat, 2026-09-17):** *"looks good"* — **FG2-1 … FG2-5 (a).** §2 committed
 > on that answer.
+
+---
+
+## 3. The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Green today** | 9 (36 %) | 7 (28 %) | 3 (12 %) | 3 (12 %) | 0 | 3 (12 %) | 64 % | 14 (56 %) | 13 (52 %) | 14 (16 with Reknit at 2) |
+| **Green proposed** | 9 (36 %) | 8 (32 %) | 3 (12 %) | 3 (12 %) | 0 | 2 (8 %) | **68 %** | **7 (28 %)** | **5 (20 %)** | **6** (8 with Reknit at 2; + the Channel, 1 – rank a round) |
+| *Black proposed* | 15 (60 %) | 1 (4 %) | 3 (12 %) | 3 (12 %) | 1 (4 %) | 2 (8 %) | 64 % | 6 (24 %) | 5 (20 %) | 6 |
+| *Red proposed* | 11 (44 %) | 9 (36 %) | 3 (12 %) | 1 (4 %) | 1 (4 %) | 0 | 80 % | 7 (28 %) | 5 (20 %) | 6 |
+| *Blue proposed* | 9 (36 %) | 8 (32 %) | 2 (8 %) | 2 (8 %) | 1 (4 %) | 3 (12 %) | 68 % | 9 (36 %) | 7 (28 %) | 9 |
+| *White proposed* | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | 84 % | 4 (16 %) | 1 (4 %) | 1 |
+| published Invested band | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+*(Counts read from `data/leyline.json` at `ba796d4`: "costed (any)" is the thirteen Investiture cards
+plus Natural Recovery's Opportunity; the proposed row is the five releases plus the two
+Opportunity-only Specials, Sudden Growth and Natural Recovery. Reknit Form's variable cost is counted
+as 0 in the tree-sum, as the comparison counts it, with the minimum-of-2 figure beside it.)*
+
+**Read against the bands.** Green was the second most expensive tree in the atlas — 56 % costed,
+thirteen Investiture-priced cards, a sum of 14 — and the Channel takes it to 28 % costed, five
+Investiture cards and a sum of 6: **the same landing as Red and Black**, from the same domain rule,
+with nine cards changing. Every surviving Investiture point is on a card that buys into the prey
+(Instinct's four) or outlasts the scene (Reknit Form). Reactions fall 12 % → 8 %, inside the guide's
+band and one point over the published one, because Mender's Instinct became a Special and the two
+that stay both act on someone else's turn (Territorial Instinct tests; Packmate's Warning is free).
+
+**Passive + Special lands at 68 %, three points under the published band — Blue's number exactly,
+for Blue's reason.** Three of Green's cards are two-Action plays (Reknit Form, Drive the Prey, Natural
+Order) and three are single Actions (Grasping Vines, Verdant Mend, Pack Pressure), and each is the
+honest type for what it does: a touch, a cast, a drive, a scene. Blue's §3 named three points as
+the price of a release tree; Green pays the same three for the same reason. Nothing here was
+engineered toward a band. Against the guide's own targets the fit is close: Passive 36 % against
+~35 %, Special 32 % a little over 25 – 30 % (one Reaction crossed), single Actions 12 % under ~15 %
+with the Channel now the self-initiated play, and **2 Actions at 12 % against ~8 %** — Green's one
+real overshoot, unchanged by this pass, and the three cards are the three that should cost two.
+**Free Actions at 0 %** against 5 – 8 %: Green has never had one, and the Channel's Maintain is now
+a Free Action every Green mage takes each round (FG3-1).
+
+**Where the remaining cost sits.** Instinct carries all six surviving Investiture points (Pack Hunter
+1, Pack Pressure 1, Drive the Prey 2, Natural Order 2) plus Reknit Form's variable 2 / 3. **Territory
+and Restoration carry no Investiture at all** — the ground and the healing are free once the Channel
+is up, and the only costs left on them are two Opportunities (Sudden Growth, Natural Recovery).
+
+**What a Green player's turn is now.** Round 1: Draw Mana — a patch of ground where the line will
+stand — then Channel Green at 2 out of a pool of 4, and one Action left: Verdant Mend on whoever is
+already hurt, free, with Resurgent Growth following them. Every round after: maintain as a Free
+Action for 1 or 2, three Actions, and the ground working for nothing — everyone on the patch
+regains 1 or 2 at the start of their turn, Mender's Instinct catches the ally who drops to half,
+Spreading Roots grows the patch once a round, Grasping Vines holds the enemy who reached it for as
+long as the Channel lasts, Territorial Instinct stops the one who tries to leave, Pack Sense adds the
+modifier to one packmate's swing into the ground. Thorn Field, at rank 2, bites whoever the roots
+hold. The pack's plays still cost: the real decision each round is **ground or prey** — Drive the
+Prey's 2 is a maintain at 1, and the trickle halves for everyone on the patch. After the fight, with
+FG1-4 (b), the grove is where the party sits: a maintain a minute, 1 health a minute to everyone on
+the ground, the heal-cut gate still standing over a withered ally.
+
+**What it costs, in numbers.** Today a Green round — Verdant Mend and a Spreading Roots — spends
+2 Investiture for two plays and earns 2 from a Draw (R-126). Under the Channel the same 2 buys the
+frame and every Territory and Restoration rider, and at a flood at levels 1 – 5 heals **2 per ally
+on the ground per turn** — up to 8 a round with four allies on a rank-2 patch, which is more than a
+Verdant Mend (≈ 6.5 at tier 1) every round for free, *if* the party stands together on marked ground
+and *if* they are hurt (the tick heals damage taken; it never overheals). White's frame prevents
+about 4 a round on the same party at the same flood (two hits at +2 deflect); Green's heals up to
+twice that and asks the party to cluster where every burst wants them. **This is the frame item
+210's yardstick should price hardest**: the sustain frame, against R-134's per-role damage targets
+and the bestiary's burst damage, with the rank-1 one-square case and the rank-2 nine-square case
+priced separately — the refusal at gate 2 was of the ungated line, and the gate is a geometry, so
+the yardstick has to draw it.
+
+**FG3-1. Passive + Special at 68 %, Free Actions at 0 %.** (a) **Accept both as the tree's shape —
+recommended** (three two-Action cards are honest; the Free Action Green now takes every round is the
+Maintain, which the type columns do not count). (b) Convert Verdant Mend to a Special on the payment
+(*"when you channel or maintain Green, touch a character to restore …"*) — 72 %, inside the band; a
+free touch heal every round beside the trickle is a large power gain and a second thing the payment
+does. (c) Make Sudden Growth a Free Action — 4 % Free, but its trigger is an Opportunity, which is
+not a Free Action's shape.
+
+> **Answered at gate 3 (Ben, chat, 2026-09-17):** *"Yeah that looks good. As long as the yardstick
+> sessions and bench tests are allowed to suggest balance changes to the frames, this is a good start.
+> I have a feeling we'll need to move some things around eventually but we have to start somewhere."*
+> — **FG3-1 (a)**, and a **standing note for every colour**: the five frames are a starting point;
+> item 210's yardstick and the CH / CB / CR / CK / CG bench blocks may propose balance changes to a
+> frame's number, condition or sentence, filed as rulings for Ben rather than treated as re-litigating
+> a gate. §5.3 carries it to the PM. §3 committed on that answer.
