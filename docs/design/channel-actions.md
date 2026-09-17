@@ -421,8 +421,25 @@ visible enemy with no ally within 5 feet, once — the pulse that opens the hunt
 and the other Weakened payoffs read it as today. **Two Black mages:** each adds their own extra
 damage to their own attacks; nothing to stack (M14 does not arise).
 
-> **Channel Black.** Your attacks against Isolated creatures deal extra vital damage equal to the
-> Investiture you are channelling.
+> ~~**Channel Black.** Your attacks against Isolated creatures deal extra vital damage equal to the~~
+> ~~Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Black pass, `docs/design/channel-black.md` §1, FK-1 (d) — Ben re-opened
+> F-K at the start of that pass and chose from four frames).** The payoff stands; the condition moves
+> from *found* to *chosen*:
+>
+> **Channel Black.** When you channel or maintain Black, choose an enemy you can see within Attunement
+> Range. It is forsaken: it counts as Isolated, and your attacks against it deal extra vital damage
+> equal to the Investiture you spent.
+>
+> The chosen creature is *the forsaken* (`channel-black.md` §1.5 has the full rule: chosen at every
+> payment, one at a time, lasts until the next payment, counts as Isolated for every reader in the game
+> through the engine's existing inflictable `isolated` status — Chaos's precedent — so the Key's Draw
+> Weakens it; the vital is the mage's own). Why the hunt was replaced is in `channel-black.md` §1.2:
+> with Red's frame now the mage's own extra damage per hit, the two damage colours' base actions were
+> one shape, and a formation switched the hunt off. The word *quarry* stays Hunter's. M14 reaches Black
+> only when two mages forsake the same creature (Isolated once, the larger vital). Item 198's Black leg
+> builds this text, not the struck one.
 
 **F-K.** (a) **The hunt above — recommended.** (b) The tide: Isolated enemies you can see within
 Attunement Range are Weakened for as long as they stay so, *and* your attacks against Weakened
