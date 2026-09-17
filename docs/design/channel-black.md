@@ -17,7 +17,7 @@ gate log is the record.
 |---|---|---|
 | 0 | The frame re-opened (FK-1) | **✅ answered 2026-09-17** — FK-1 (d) *the forsaking*, replacing the hunt, conditional on the Hunter overlap being modest (§1.2 measures it) and the word "quarry" staying Hunter's |
 | 1 | §1 Black's three trees, and the forsaking applied | **✅ approved 2026-09-17** — BK-1 … BK-6 all (a); *"defaults. looks good."* |
-| 2 | §2 The twenty-five cards | — |
+| 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — BK2-1 … BK2-5 all (a) |
 | 3 | §3 The mix, against the bands | — |
 | 4 | §4 The build notes for Black | — |
 | 5 | §5 Close-out | — |
@@ -264,3 +264,193 @@ item 198 builds from). (b) Record here only. (c) Rewrite §2.4 in place.
 > **Answered at gate 1 (Ben, chat, 2026-09-17):** *"defaults. looks good."* — **BK-1 … BK-6 (a).** §1
 > committed on that answer; BK-6 (a) applied in the same commit (the amendment block under F-K in
 > `docs/design/channel-actions.md` §2.4).
+
+---
+
+## 2. The twenty-five cards
+
+### 2.1 The conversion rules, applied to Black
+
+1. **Isolation's four costed cards become riders** (BK-3 (a)): Spoils of Isolation and Cruel Step keep
+   their Actions and lose the Investiture; Unnerving Approach keeps its Free Action and its once per
+   turn; Sovereign of Solitude keeps its Reaction (it tests — rule 3) and **gates on channelling 2 or
+   more** (BK2-1). *(BK2-A.)*
+2. **Five releases, unchanged** (BK-3 (a)): Dark Investiture, Double Dip (also rule 4, scene-long),
+   Hollow Command, Predatory Insight, Puppeteer. Every card whose target is *any character*. *(BK2-B.)*
+3. **Withering Ray is neither.** It costs blood and no Investiture, so rule 1 has nothing to remove and
+   rule 2's spirit applies — the Channel costs, it does not take. Unchanged (BK2-3).
+4. **Every free passive stays free and unconditional** (rule 2). None is the frame's clause in another
+   Realm: Severance *converts* the type where the frame *adds* vital, so the two compose (BK2-2);
+   Sapping Hex applies a condition the frame does not; Dread Presence reads the Draw's mark. Black is
+   the first colour with **no** W-1 exception.
+5. **Rules 6 and 7 have no Black consumer.** The frame is the number (as Blue's and Red's were), and
+   the frame itself is what rides the payment — the forsaken is chosen there — so no card needs
+   `edha-channel`.
+6. **Rule 5 has one, scaled.** White's capstone gated on 3 because it cost 3; Sovereign of Solitude
+   costs 2 and gates on 2 — at Black 3+ (level 6) that is two-thirds of a flood, and one Draw funds it
+   every round with one to spare.
+7. **No "Once per round." is added.** Spoils and Cruel Step cost Actions, Unnerving Approach already
+   says once per turn, and Sovereign is a Reaction.
+
+Convention as before: "*While channelling Black,*" at the head of the card; prerequisites and
+connections unchanged — this pass changes action type, cost and text, not the graph.
+
+### 2.2 The twenty-five cards
+
+Format: **name** — *tree / Realm* · today → proposed · the card sentence as it would ship (word count;
+was).
+
+**Black Leyline Attunement** — *Key* · Passive; — → **unchanged** (M10). *"When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened."* (19) Under the frame the pulse always has at least one creature to mark: the forsaken is Isolated, so the Draw Weakens it (BK-2 (a)).
+
+**Predatory Patience** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture."* (22)
+
+**Sapping Hex** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened."* (16) Reads the forsaken as Isolated; the first hit Weakens it if the Draw has not.
+
+**Spoils of Isolation** — *Isolation / Spiritual* · 2 Actions; 1 Investiture → **2 Actions; —.** *"While channelling Black, each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt."* (27; was 27)
+
+**Severance** — *Isolation / Spiritual* · Passive; — → **unchanged** (BK2-2). *"Your attacks against Isolated characters deal vital damage instead of their normal damage type."* (14) Composes with the frame rather than doubling it: the type converts, the frame adds.
+
+**Cruel Step** — *Isolation / Spiritual* · 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Black, move 10 feet towards an Isolated character within Attunement Range without provoking Reactive Strikes."* (17; was 18)
+
+**Unnerving Approach** — *Isolation / Spiritual* · Free Action; 1 Investiture → **Free Action; — (BK2-4).** *"While channelling Black, once per turn, when you move adjacent to an enemy, choose one character allied to it within 10 feet and push it [Size] feet directly away, potentially leaving the enemy Isolated."* (34; was 35) Its job under the frame is a second Isolated creature beside the forsaken.
+
+**Dread Presence** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"Weakened characters within Attunement Range cannot willingly move closer to any allies."* (12)
+
+**Sovereign of Solitude** — *Isolation / Spiritual* · Reaction; 2 Investiture → **Reaction; — , gated on the spend (BK2-1).** *"While channelling 2 or more Black, when a Weakened character within Attunement Range moves, reduce its movement rate to 0 and test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success."* (32; was 29) A Reaction that tests stays a Reaction (rule 3); a 2-Investiture card gates on channelling 2, rule 5 scaled to the card.
+
+**Blood Price** — *Ritual / Physical* · Passive; — → **unchanged.** *"When you lose health to activate a Ritual talent, gain an advantage on your next Black test."* (17)
+
+**Hardy** — *Ritual / Physical* · Passive; — → **unchanged** (shared generic; R-102). *"Gain +1 maximum HP per level, including previous levels."* (9)
+
+**Withering Ray** — *Ritual / Physical* · 1 Action; Lose HP = half [Die] → **unchanged** (BK2-3). *"Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage."* (25) No Investiture to convert; blood is Ritual's identity cost (M13). Against the forsaken it carries the frame's vital on top of its own.
+
+**Necrotic Grasp** — *Ritual / Physical* · Passive; — → **unchanged.** *"When you hit a character with a Black attack, the healing it receives is halved until the end of your next turn."* (22)
+
+**Dark Investiture** — *Ritual / Physical* · 2 Actions; 1 Investiture + Lose HP = Tier → **unchanged — a release (BK-3).** *"Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital]."* (35) Any character; outside the domain.
+
+**Sanguine Reservoir** — *Ritual / Physical* · Passive; — → **unchanged** (BK-5 (a)). *"When you lose health from a Ritual talent, store the lost amount as Reserve, up to a maximum equal to your ranks in Black. You may spend Reserve as Investiture."* (30) Reserve spends as Investiture, so it pays a Channel or a maintain; the parent design's "maintain it by losing health" rider is already true through this card.
+
+**Double Dip** — *Ritual / Physical* · 1 Action; 2 Investiture → **unchanged — a release (BK-3; rule 4).** *"Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character."* (35)
+
+**Predator's Due** — *Ritual / Physical* · Passive; — → **unchanged.** *"When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture."* (14) Its `prerequisites` field and flavour line are §2.5 hygiene.
+
+**Siphoned Will** — *Subjugation / Cognitive* · Passive; — → **unchanged.** *"When you successfully apply Hollow Command to a creature, regain focus equal to your tier."* (15)
+
+**Coercive Pressure** — *Subjugation / Cognitive* · Passive; — → **unchanged.** *"When an enemy within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per enemy."* (22)
+
+**Predatory Insight** — *Subjugation / Cognitive* · Special; Opportunity, 1 Investiture → **unchanged — a release (BK-3).** *"When you roll an Opportunity, you may spend it and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any character reaches 0 focus."* (32)
+
+**Extract Thought** — *Subjugation / Cognitive* · Passive; — → **unchanged.** *"When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn."* (21)
+
+**Whispered Doubt** — *Subjugation / Cognitive* · Passive; — → **unchanged.** *"When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round per enemy."* (18)
+
+**Composed** — *Subjugation / Cognitive* · Passive; — → **unchanged** (shared generic; R-102). *"Increase your maximum focus by your tier."* (7)
+
+**Hollow Command** — *Subjugation / Cognitive* · 2 Actions; 1 Investiture → **unchanged — a release (BK-3).** *"Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn."* (26)
+
+**Puppeteer** — *Subjugation / Cognitive* · Reaction; 2 Focus, 1 Investiture → **unchanged — a release (BK-3).** *"When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn."* (27)
+
+### 2.3 Channel → Draw: the opening, and Black's three economies
+
+The forsaking is chosen on the payment, and the Key's pulse Weakens whoever stands Isolated on the
+Draw. Under the frame those two Actions in either order guarantee the opening the tree was written
+for: **one creature that is Isolated *and* Weakened by the end of round 1**, before any hit lands. Today
+that opening depends on the enemy's spacing; a formation denied it, and the tree's answer was one push.
+Every Weakened payoff — Predatory Patience's die and refund, Dread Presence's lock, Spoils, Sovereign —
+now fires against a creature the mage picked.
+
+Three economies fall out, one per tree, and all three work at level 1 with the starting pool of about 4:
+
+- **The Isolation mage** channels and pays nothing else. Round 1: Channel at 1 or 2 (name the prey),
+  Draw (it is Weakened), Cruel Step free into reach or a Strike with Severance's vital and the frame's
+  on it. Every round after: maintain as a Free Action, three Actions, Predatory Patience handing back
+  1 Investiture on every hit against the Weakened — at a trickle the tree is **Investiture-positive**
+  while the hunt lasts, and the Draw is for the pulse, not the pool.
+- **The Ritualist** channels from blood. Withering Ray costs about 2 health at rank 1 and Sanguine
+  Reservoir banks it as Reserve up to the Black rank; Reserve pays the maintain. A Ritualist who casts
+  every round keeps the Channel up without a Draw, and Blood Price's advantage rides every cast. Dark
+  Investiture and Double Dip still cost Investiture on top — the two Ritual plays that are not about
+  the prey.
+- **The Subjugator** channels for the frame and pays for the tree. Hollow Command, Predatory Insight
+  and Puppeteer keep their costs; the free passives (Whispered Doubt, Coercive Pressure, Extract
+  Thought) run as today. This is the Blue-Illusion position: the Channel's vital is a bonus on the way
+  to the will-breaking the player actually came for, and the real decision is **prey or puppet** — a
+  round spent on Hollow Command is a round the Channel was maintained at 1.
+
+### 2.4 Before and after
+
+| # | Talent | Tree / Realm | Today | Proposed | Condition |
+|---|---|---|---|---|---|
+| 1 | Black Leyline Attunement | Key | Passive; — | Passive; — | — (Draw Mana rider) |
+| 2 | Predatory Patience | Isolation / Spi | Passive; — | Passive; — | — |
+| 3 | Sapping Hex | Isolation / Spi | Passive; — | Passive; — | — |
+| 4 | Spoils of Isolation | Isolation / Spi | 2 Actions; 1 Inv | **2 Actions; —** | while channelling |
+| 5 | Severance | Isolation / Spi | Passive; — | Passive; — | — |
+| 6 | Cruel Step | Isolation / Spi | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 7 | Unnerving Approach | Isolation / Spi | Free Action; 1 Inv | **Free Action; —** | while channelling; once per turn |
+| 8 | Dread Presence | Isolation / Spi | Passive; — | Passive; — | — |
+| 9 | Sovereign of Solitude | Isolation / Spi | Reaction; 2 Inv | **Reaction; —** | while channelling 2 or more |
+| 10 | Blood Price | Ritual / Phy | Passive; — | Passive; — | — |
+| 11 | Hardy | Ritual / Phy | Passive; — | Passive; — | — |
+| 12 | Withering Ray | Ritual / Phy | 1 Action; HP | 1 Action; HP | — (blood, no Investiture) |
+| 13 | Necrotic Grasp | Ritual / Phy | Passive; — | Passive; — | — |
+| 14 | Dark Investiture | Ritual / Phy | 2 Actions; 1 Inv + HP | 2 Actions; 1 Inv + HP | — (release) |
+| 15 | Sanguine Reservoir | Ritual / Phy | Passive; — | Passive; — | — (Reserve pays the Channel) |
+| 16 | Double Dip | Ritual / Phy | 1 Action; 2 Inv | 1 Action; 2 Inv | — (release) |
+| 17 | Predator's Due | Ritual / Phy | Passive; — | Passive; — | — |
+| 18 | Siphoned Will | Subjugation / Cog | Passive; — | Passive; — | — |
+| 19 | Coercive Pressure | Subjugation / Cog | Passive; — | Passive; — | — |
+| 20 | Predatory Insight | Subjugation / Cog | Special; Opp, 1 Inv | Special; Opp, 1 Inv | — (release) |
+| 21 | Extract Thought | Subjugation / Cog | Passive; — | Passive; — | — |
+| 22 | Whispered Doubt | Subjugation / Cog | Passive; — | Passive; — | — |
+| 23 | Composed | Subjugation / Cog | Passive; — | Passive; — | — |
+| 24 | Hollow Command | Subjugation / Cog | 2 Actions; 1 Inv | 2 Actions; 1 Inv | — (release) |
+| 25 | Puppeteer | Subjugation / Cog | Reaction; 2 Foc, 1 Inv | Reaction; 2 Foc, 1 Inv | — (release) |
+
+**Four cards change** (4, 6, 7, 9); **twenty-one are untouched** — the Key, fourteen free passives,
+Withering Ray, and five releases. The smallest data pass of the four colours, for the reason §1.3 gave:
+the frame declares the fact the tree already reads, so the tree needs almost no rewriting to ride it.
+
+### 2.5 The phrasing fixes that ride the data pass
+
+No "creature" is swept on a card whose sentence does not change; Sovereign of Solitude's changes and
+takes "character".
+
+- **Sovereign of Solitude** — trailing whitespace on the source prose (`data/leyline.json`); the
+  authored card's `damageType: "energy"` on a rule whose kind is `status` is inert but misleading —
+  §4 notes it.
+- **Predator's Due** — `prerequisites` reads *"Black 3+; "* with a trailing semicolon; its flavour
+  line has no full stop and a hyphen for a dash. Unchanged card, so the prerequisite (data hygiene,
+  `validate.js` reads it) is fixed and the flavour is noted, not swept.
+- **Cruel Step** — *"towards"* stays; the standard's *"toward"* is a sweep for another item.
+
+### 2.6 Gate 2 — the menu
+
+Every judgment call in §2, recommended default first.
+
+**BK2-1. Sovereign of Solitude.** (a) **A rider gated on "while channelling 2 or more Black" —
+recommended** (rule 5 scaled to the card's own cost; a free Reaction that immobilises and rolls
+[Tier][Die] vital on every Weakened step should cost the mage something each round, and at Black 3+
+the flood is 3). (b) A plain rider, "while channelling Black", no spend gate. (c) A release, unchanged
+at 2 Investiture.
+
+**BK2-2. Severance.** (a) **Stays a free, unconditional passive — recommended** (it converts, the frame
+adds; they compose, and a level-1 Black mage with a sword against a positionally Isolated creature
+should not need a Channel to make it vital). (b) A "while channelling" rider under W-1's test, as
+Kindle became for Red.
+
+**BK2-3. Withering Ray.** (a) **Unchanged — recommended** (no Investiture; blood is the identity cost).
+(b) Gains "while channelling Black" for uniformity with the riders — the Channel would then *take*,
+against rule 2's spirit.
+
+**BK2-4. Unnerving Approach under a frame that declares Isolation.** (a) **A free rider, kept as the
+second-Isolated tool — recommended** (Sapping Hex and Severance read any Isolated creature; a pushed
+ally is a second prey). (b) A release, unchanged at 1 Investiture — a second declaration of solitude
+should cost what the first did.
+
+**BK2-5. "creature" → "character".** (a) **Only on the changed card (Sovereign) — recommended**
+(BL-6's precedent). (b) Sweep Black's other two ("Weakened creature" on Predatory Patience, "Weakened
+creature" on Sovereign's source) now.
+
+> **Answered at gate 2 (Ben, chat, 2026-09-17):** *"defaults."* — **BK2-1 … BK2-5 (a).** §2 committed
+> on that answer.
