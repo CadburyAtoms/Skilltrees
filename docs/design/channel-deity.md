@@ -1476,3 +1476,151 @@ pass. (c) Drop it: the frames are the Decree.
 
 > **Answered at gate 4 (Ben, chat, 2026-09-17):** *"looks good"* — **I-1 … I-9 (a).** §4 committed on
 > that answer.
+
+---
+
+## 5. The mix, against the bands
+
+Everything below is counted from the approved tables in §2 – §4 (72 talents across ten trees, plus
+ten supplies with twenty faces) against the atlas as read from the ten authored files at `main`
+`919bdf9` (90 talents). The supplies are **reported beside the talents, not inside them** (J-5): a
+supply is the god's `power` action, as the Channel is the colour's, and the published measurement
+(`talent-comparison` §C) counts talents and leaves Burn and the surge out of the mix.
+
+### 5.1 Action type
+
+| | n | Passive | Special | 1 Action | 2 Actions | 3 Actions | Free | Reaction | Passive + Special |
+|---|---|---|---|---|---|---|---|---|---|
+| **Deity today** | 90 | 13 (14 %) | 0 | 34 (38 %) | 21 (23 %) | 10 (11 %) | 7 (8 %) | 5 (6 %) | **14 %** |
+| **Deity proposed** | 72 | 21 (29 %) | 5 (7 %) | 14 (19 %) | 21 (29 %) | 10 (14 %) | 1 (1 %) | 0 | **36 %** |
+| + the supplies' faces | 20 | — | — | 18 | — | — | 2 | — | — |
+| published Invested band (§C.1) | | 29 – 50 | 37 – 41 | 5 – 13 | 0 – 10 | 0 – 1 | 3 – 8 | 0 – 7 | 71 – 87 |
+| deity guide target (superseded, F-7) | | 25 – 30 | 15 – 20 | 25 – 35 | 15 – 25 | capstones | 10 – 15 | ~10 | |
+
+*(The comparison's Appendix counted today's Passives at 16 % from `all-talents.json`; the authored
+files read 13 of 90. The difference is Walking Ruin, a Free-Action toggle the source lists as a
+Passive, and two rounding rows; nothing turns on it.)*
+
+Read against the bands:
+
+- **Passive + Special rises from 14 % to 36 %** and stays far outside the published 71 – 87 %. That is
+  by design and this pass does not chase it: the deity atlas is built of two-Action installs on a
+  charge — 29 % two-Action cards, against Radiant's 10 % as the published high mark — and the supply
+  now carries the atlas's eighteen most-used Actions off the talent list entirely. What the published
+  families do with passives, a deity tree does with the faces of its supply.
+- **Reactions fall from five to none.** Every deity Reaction was a modifier that rolled no test
+  (Shatter Focus, Hexmark, Combustion Chain, Bonds of Community, Shoulder the Oath), and all five are
+  Specials with "Once per round." — the leyline rule 3, and the reason the deity's one-slot Reaction
+  economy stops competing with the leyline colours' answers.
+- **Specials go from 0 to 5 (7 %).** F-7 (a) restated R-108's target to ~10 – 15 %, expecting the
+  armed-strike shape (Withering Touch, Predatory Strike, Warlord's Advance) to add three; under Shape S
+  those three became *faces* of their supplies instead — Actions on the power, not Specials on the
+  list. The measured result is 7 %, all from rule 3. J-2 restates the target to what the rules
+  produced rather than retyping an Action to reach a number.
+- **Free Actions fall from seven to one.** Four were upgrade riders on a placement (Sealed Edict,
+  Inevitable Snare, Pinpoint Charge — now Passives on the supply — and Walking Ruin, already a
+  passive toggle); two were the White faces of Ordain and Build and moved onto the supplies as Free
+  faces; one, Momentum of Victory, stays a Free Action on its Opportunity.
+- **Three-Action cards are exactly the ten capstones** (14 % of a smaller list), as today.
+
+### 5.2 Cost
+
+| | Costed talents | Of which | Investiture sum | Amount-gated ("2 or more") | Flood-gated ("3 or more") |
+|---|---|---|---|---|---|
+| **Deity today** | 72 of 90 (80 %) | 1: 34 · 2: 28 · 3: 9 · 4: 1 | **125** | — | — |
+| **Deity proposed** | 5 of 72 (7 %) + 2 costed faces | Fault Line 2 · Risen Servant 1 (+ a Remain) · Death Ward 2 · Speak with the Fallen 2 · Raise Dead 4 · the Pyre and Forge Construct faces 1 each | **13** | 26 | 9 |
+| published Invested band (§C.2) | 8 – 46 % | | | | |
+| leyline after its passes (White / Blue / Red / Black / Green) | 16 / 28 / 20 / 20 / 16 % | | 1 / 7 / 6 / 6 / 6 | | |
+
+Per tree, today → proposed: Chaos 14 → 0 · Knowledge 10 → 0 · Life 13 → 0 · Fate 11 → 0 ·
+Destruction 10 → 3 · Civilization 11 → 1 · Death 14 → 9 · Order 10 → 0 · Power 15 → 0 ·
+Sovereignty 13 → 0.
+
+Read against the bands:
+
+- **Costed falls from 80 % to 7 %, below the published floor** (Metalborn paths, 8 %). The floor is
+  not a target: what the published families price is a *base action* (Burn, Store, the surge) and
+  the talents ride it, and the deity atlas now has exactly that shape — the Channel is the cost, at 1
+  to 3 a round, and the seven priced cards are the two bolts, the two bodies and the three rites that
+  balance keeps (J-3 asks whether to accept the floor crossing; the recommendation does).
+- **The Investiture sum falls from 125 to 13**, against 25 across the five leyline colours after their
+  passes. What replaces it is not free: **26 cards gate on "channelling 2 or more"** — a Draw a round
+  at levels 1 – 5 — and **nine capstones on "3 or more"**, reachable at rank 3. §2.1's two facts hold
+  across the atlas: on the fourteen scene-long cards the gate is a one-time price equal to today's
+  cost; on the twelve repeatable ones it is a per-round tax.
+- **Where the refund passives sit.** Five trees carry a passive that pays Investiture back on a
+  trigger — Void Sense, Accumulate, Prognosis, Reaper's Harvest, Expose — and each funds a one-point
+  maintain in the tree whose charge it reads. Five do not: Fate, Destruction, Civilization, Order and
+  Power Draw as their attunement demands. That asymmetry is old (it is the same five today) and it is
+  now legible: item 210's yardstick should price the two groups separately.
+
+### 5.3 What a deity player's turn is now
+
+Three turns, one per gate group, each at level 4 (pool 4, both colours at 2, a Draw of 2).
+
+**A disciple of Maelith, attuned to Blue.** Round 1: Channel Blue at 1 (the reading on the enemy who
+matters), Place Omen on it (a Blue test, an Omen, [Tier][Die] spirit; Spreading Omen puts a second on
+its neighbour), one Action spare. Round 2: maintain at 1, Draw Mana as a Blue mage (advantage on the
+next Cognitive test), Place Omen again with it, and Shatter Focus as a Special when the read creature
+rolls. Round 3: the line closes — maintain at 2 (the flood), switch is not needed: Cascade Collapse
+on every bearer. Spent by round three: 4, refunded 2 by the Draw and up to 2 by Void Sense. Today the
+same plays cost 1 + 1 + 1 + 1 + 2 = 6 against a pool of 4 with no refund but Void Sense, which is why
+the ecosystem review found the Chaos loop sealed.
+
+**A disciple of Morrath, attuned to Green.** Round 1: Channel Black at 1 (the forsaken: the enemy she
+means to wither), Wither it (a melee hit, +[Tier][Die] + Willpower vital, no healing), one Action
+spare. Round 2: maintain, Draw Mana as a Green mage (terrain laid; the forsaken is Isolated and takes
+the frame's vital on every hit), Consuming Decay on the forsaken at the flood (maintain at 2 instead:
+2 for the round). Round 3: an ally's kill in range pays Reaper's Harvest 1 Investiture and a Remain;
+Risen Servant for 1 Investiture and the Remain. Spent by round three: 1 + 2 + 1 + 1 = 5, refunded 2 by
+the Draw and 1 by the Harvest. Today: 1 + 2 + 1 = 4 for fewer effects, with no frame and a pool that
+cannot Draw fast enough to Decay *and* raise.
+
+**A disciple of Tyrith, attuned to Black.** Round 1: Channel Red at 1 (the heat), Command under
+Red — Warlord's Advance, +[Tier][Die] impact and +1 energy from the heat — one Action spare.
+Round 2: maintain at 2, Crown of Thorns (the crown stands while the current runs), Draw Mana as a
+Black mage. Round 3: maintain at 1 — the crown holds at any maintain — switch to Black? No: stay in
+the noise; Unstoppable Advance through the line, every trampled enemy paying the crown nothing (it
+tests nothing) and the sword carrying heat. Spent by round three: 1 + 2 + 1 = 4, refunded 2. Today the
+same plays cost 1 + 2 + 1 = 4 with no Channel beneath them and, for Power, no refund anywhere — the
+warlord still gets nothing back, and now that is a choice the tree makes rather than a hole.
+
+### 5.4 What item 210's yardstick should price first
+
+Four rows, the deity atlas's own, before the leyline rows it already carries:
+
+1. **Life's free Green face** — a [Tier][Die] + Awareness heal every Action while channelling Green
+   at 1, stacked with the home ground's tick and Overgrowth's armor, against the party's damage
+   intake; G-3 (b) (1 Investiture on the face) is the lever if it overshoots.
+2. **The flood detonations** — Cascade Collapse and Cascading Failure at "2 or more", repeatable, and
+   the nine flood-gated capstones at rank 3 — priced as a per-round tax against today's per-use 2.
+3. **Knowledge's stacked pack** — Pack Share (+tier) and The Pack (+Insight) on every ally's hit against
+   the quarry at a flood, with the Red face's heat on the disciple's own; the one place the atlas
+   multiplies.
+4. **The arms held for a point a round** — Crown of Thorns, Warlord's Fury and the Mantle on a Power
+   disciple maintaining at 1, against the leyline mage's one frame for the same point; and the
+   counter-case, a refused maintain dropping all three.
+
+### 5.5 Gate 5 — the menu
+
+**J-1. The deity guide's action-type table.** (a) **Restated to the measured proposed mix — Passive
+~30 %, Special ~5 – 10 %, single Action ~20 %, two Actions ~30 %, three Actions one per tree, Free ≤
+5 %, Reaction 0 % (modifiers are Specials) — with the supply reported beside it and the sentence "a
+deity tree's most-used Actions are the faces of its supply, not talents" — recommended** (F-7 (a)
+already supersedes the old table; this is what replaces it). (b) Keep the old targets as an
+aspiration beside the measured row. (c) No table; the guide points here.
+
+**J-2. R-108's Special target, corrected.** (a) **Restated to ~5 – 10 %, reached by rule 3 alone; the
+three armed strikes became faces, not Specials — recommended** (F-7 (a) said 10 – 15 % expecting them;
+the measured 7 % is the honest number). (b) Keep 10 – 15 % and retype one standalone Action per tree at
+the build. (c) Leave the target unstated.
+
+**J-3. The costed floor.** (a) **Accept 7 %, below the published 8 – 46 %: the Channel is the cost, and
+the seven priced cards are the ones balance keeps — recommended.** (b) Restore 1 Investiture on one
+face per tree so every tree prices something. (c) Restore the capstones' 3.
+
+**J-4. Item 210's deity rows.** (a) **The four rows of §5.4, in that order, before the leyline rows —
+recommended.** (b) The PM's own order.
+
+**J-5. The supplies in the mix.** (a) **Reported beside the talents, not inside them (a supply is a
+`power` action, as the Channel is) — recommended.** (b) Counted as twenty Actions on the talent list.
