@@ -19,7 +19,7 @@ gate log is the record.
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — FG2-1 … FG2-5 all (a); *"looks good"* |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — FG3-1 (a), with Ben's standing note: the yardstick sessions and the bench may suggest balance changes to the frames |
 | 4 | §4 The build notes for Green | **✅ approved 2026-09-17** — GB-1 … GB-5 all (a); *"defaults."* |
-| 5 | §5 Close-out | — |
+| 5 | §5 Close-out | **✅ done 2026-09-17** — delta at the top of `docs/handoff-changelog/2026-09.md`; one applied default (the M11 line) for §I; rides PR #433 with Red and Black |
 
 **What this rests on** (read in this order; nothing below re-derives them):
 `docs/design/channel-actions.md` §1.1 (the four definitions), §1.4 (the interactions; M11, M14),
@@ -743,3 +743,60 @@ rule-lookup helper the engine has is gated). (b) Gate inside `edha-hp-threshold`
 
 > **Answered at gate 4 (Ben, chat, 2026-09-17):** *"defaults."* — **GB-1 … GB-5 (a).** §4 committed on
 > that answer.
+
+---
+
+## 5. Close-out
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 0 — the frame re-opened | **FG-1 (b), the home ground**: the ground turned toward the party — the mage's terrain does not slow allies and heals whoever starts their turn on it. Chosen over the pack (generic tactics Hunter already sells) and the hold, on Ben's own pick; the refused regrowth line made safe by the gate's geometry (one square at rank 1, nine at rank 2). §2.6 of the parent design amended (FG1-6 (a)). |
+| 1 — the trees and the home ground | The domain is the ground and the bodies that stand on it; **a card that buys into the prey's situation is a release** — Instinct is Green's release tree, and five colours now have five release trees in four Realms; Resurgent Growth is the one W-1 exception; **the regen ticks once a minute outside combat** (FG1-4 (b), Ben's pick over the default). FG1-1, 2, 3, 5, 6 (a); FG1-4 (b). |
+| 2 — the cards | **Nine change, sixteen untouched**, the graph untouched. Territory's five and Restoration's three combat heals convert; Grasping Vines' upkeep becomes the Channel; Mender's Instinct becomes a Special; Reknit Form stays a release (rule 4, and the out-of-combat minute); the frame's tick is not a Green talent's heal; two newly-free Specials gain "Once per round." FG2-1 … FG2-5 all (a). |
+| 3 — the mix | Costed 56 % → 28 %, Investiture thirteen → five, tree-sum 14 → 6 — the same landing as Red and Black. Passive + Special 68 %, Blue's number for Blue's reason; Free 0 % with the Maintain uncounted. The sustain frame named as the one item 210 should price hardest. FG3-1 (a), with **Ben's standing note that the yardstick and the bench may propose balance changes to any frame**. |
+| 4 — the build | Four new schema declarations (twenty-two across five colours; the set closes); four dispatch sites, the singular helper gated beside the plural (Widening F is six sites, one field, and complete); the frame as **two Region behaviours** beside the hazard (M the unslow, N the tick, reading the spend live through the heal-cut gate); Grasping Vines' Restrained bound to the Channel (O); **Maintain is the minute** outside combat, filed under M11 for Ben; sixteen 🤖 CG rows. GB-1 … GB-5 all (a). |
+
+### 5.2 What waits on Ben
+
+**One line, not blocking:** the Green reading of M11 (GB-3 (a)) — outside combat, each Maintain use is
+one tick for every ally on the ground, so the home ground is *a maintain a minute* rather than a free
+scene-long heal. It is applied as the build's default and wants a veto, not a decision; §5.3 asks the
+PM to file it in `EDHA_RULINGS.md` §I beside R-145. No other ruling was filed.
+
+### 5.3 What the PM should file
+
+1. **Add the Green leg to item 198's brief**, with §2.2 and §2.4 as its data pass and §4 as its build
+   spec: four declarations, four dispatch sites, two Region behaviours, one `statusExpire` choice, the
+   Maintain-as-minute rule.
+2. **Widening F is complete at six sites.** After Green every rule-lookup helper the engine has
+   (`edhaWatchersOfRule`, `edhaRulesForEvent`, `edhaActorRulesOf`, `edhaActorRuleOf`) plus the pre-cost
+   veto and the Draw dispatcher carries the one filter; item 198's builder should gate all six before
+   any colour's riders are authored, and the twenty-two schema declarations can land in one commit.
+3. **File the M11 line as an applied default in §I** (this pass's GB-3 (a)): *a Channel opened outside
+   combat lasts the scene, and a Green mage's home ground ticks once per Maintain use outside combat.*
+4. **Ben's standing note (gate 3) applies to all five colours:** the frames are a starting point;
+   item 210's yardstick and the bench blocks (CH / CB / CR / CK / CG) may propose balance changes to a
+   frame's number, condition or sentence, filed as rulings, not treated as re-litigating a gate. Item
+   210's brief should say so, and should price the sustain frame (Green) and the two damage frames
+   (Red, Black) as its first three rows.
+5. **The five release trees** — Illusion (Physical), Conflagration (Spiritual), Subjugation, Instinct
+   (Cognitive), and White's single release card — are the atlas-wide measurement Blue's §1.2 asked for;
+   item 212's deity pass inherits the rule as measured.
+6. **The four frame shapes** — a number (White), an entry on the next-test list (Blue), a stack (Red),
+   a mark (Black), a Region (Green) — are five, and item 212 has a precedent for whatever shape a deity
+   tree's base action wants.
+7. **The struck text in `channel-actions.md` §2.6** is the record of the first frame; the amendment
+   block is what item 198 builds. All three of §2's amended frames (Red, Black, Green) now sit beside
+   White's and Blue's as approved.
+
+### 5.4 The record
+
+- Branch **`claude/red-channel-work-go0bce`**, the same branch and PR (#433) as Red and Black, by Ben's
+  word. DOCS-ONLY: `docs/design/channel-green.md` (new) and the amendment block in
+  `docs/design/channel-actions.md` §2.6 are the only design files touched; the close-out adds the
+  changelog delta, its two counts, and the regenerated dashboard. One commit per gate, each on Ben's
+  answer; gates green before the push. Ben asked for the PR to be merged after the push; the deity
+  pass (item 212) is a new session's.
+- `docs/PM_BOARD.md` was not touched.
