@@ -452,8 +452,24 @@ into fire. **Draw Mana** still grants advantage on your next Physical test and c
 the identity tax stays. **Two Red mages:** each carries their own edge; nothing to stack (M14 does
 not arise unless a Frenzy rider shares it, and then the larger applies).
 
-> **Channel Red.** Each time damage is dealt within Attunement Range, you gain +1 to your next test,
-> up to the Investiture you are channelling.
+> ~~**Channel Red.** Each time damage is dealt within Attunement Range, you gain +1 to your next test,~~
+> ~~up to the Investiture you are channelling.~~
+
+> **AMENDED 2026-09-17 (the Red pass, `docs/design/channel-red.md` §1, FR-1 (a) — Ben re-opened
+> F-R at the start of that pass).** The trigger stands; the currency is damage, not a test:
+>
+> **Channel Red.** Each time damage is dealt within Attunement Range, your next hit deals +1 energy
+> damage, up to the Investiture you are channelling.
+>
+> The accumulated number is *the heat* (`channel-red.md` §1.5 has the full rule: builds once per
+> creature damaged, spends on the next attack-test hit, feeds itself, persists while channelling,
+> and does not make a hit "energy damage" for Kindle, Arc Flash, Afterburn or Chain Detonation,
+> which read energy damage from a Red talent). Three reasons the rising edge was replaced are in
+> `channel-red.md` §1.2: it was Battle Fever promoted, its domain was the narrowest of the five, and
+> two of Red's three trees had no test to ride it with. Battle Fever stays a distinct test-bonus
+> card, so **M14 no longer reaches Red at all** — the "shared only by Frenzy riders" clause below
+> and the sentence in §2's preamble are superseded. Item 198's Red leg builds this text, not the
+> struck one.
 
 **F-R.** (a) **The mage's own rising edge above, shared only by Frenzy riders — recommended.**
 (b) The shared edge (gate 2's first draft): you and every ally in range each build the bonus — Battle
