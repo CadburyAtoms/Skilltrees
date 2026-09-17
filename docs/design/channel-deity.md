@@ -1134,3 +1134,342 @@ is a Red talent's name).
 
 > **Answered at gate 3 (Ben, chat, 2026-09-17):** *"That all looks good!"* — **H-1 … H-10 (a).** §3
 > committed on that answer; *Hallowed Ground* keeps its placeholder name until Ben names it.
+
+---
+
+## 4. The word — Order, Power, Sovereignty
+
+Three gods whose charge is a declaration on a creature: an Edict or a Covenant, a command (Compelled),
+a judgment (the die-step). None raises a body or throws a bolt, so the cost question here is about
+**arms** — scene-long installs the disciple wears — and this is the gate where F-4 (a) has its
+consumers: Crown of Thorns, Warlord's Fury, Concord, and the Mantle of the Aspirant. Every card was
+read from `data/domain.json` and its `data/authored/deity-*.json` record at `main` `919bdf9`; §2.1's
+four questions apply.
+
+### 4.1 Order — Declare (Blue / White)
+
+**Today:** 9 cards; 2 Passives, 1 Free Action, 1 Reaction, 2 single Actions, 2 two-Action, 1
+three-Action; 6 of 9 cost Investiture, tree-sum 10. The tightest spine in the atlas (guide Part 4):
+every card reads an Edict or a Covenant. Every test rolls Blue; White carries magnitude.
+
+**Shape.** Both entries are their faces — Edict the law, Covenant the oath — so **the entry nodes go**:
+the Blue lane roots at Lawkeeper's Eye and Sealed Edict, the White lane at Bear Witness and Shoulder
+the Oath. Seven cards.
+
+**The supply**, on Tessavain's power:
+
+> **Declare** — Action · *the god's supply*
+> *While channelling Blue* — place an Edict on a character within Attunement Range, declaring one
+> prohibited action (move from its space, attack a chosen ally, activate Investiture, and so on). The
+> first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit
+> damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may
+> sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.
+> *While channelling White* — touch a willing ally; you and that ally enter a Covenant for the scene.
+> While it holds, you each gain +1 to all defenses when within Attunement Range of each other, and may
+> use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if
+> either party deliberately attacks the other. You may sustain up to your tier Covenants.
+
+Events: Edict's `edha-owner-list {list: edicts, prohibition: true}` and Covenant's `edha-owner-list
+{list: covenants, requireAdjacent: true}` with its +1 AE become the faces', gated `channelblue` /
+`channelwhite`; the violation watchers, the resolver and the shared `edict` / `covenant` icons are
+untouched.
+
+**Cost.** No body, no bolt; both charges cap at tier. Nothing keeps a cost. Sealed Edict, a Free-Action
+upgrade rider on the placement, becomes a Passive on the supply behind the amount gate (Inevitable
+Snare's shape, H-9); Verdict takes the gate as a repeatable two-Action play; Concord is an arm and
+holds while the disciple channels.
+
+**Lawkeeper's Eye** — Passive; — → **unchanged** (the bound character's intended action revealed on
+placement — MANUAL as declared; advantage for you and your allies on attack tests against a bound
+character you can see).
+
+**Sealed Edict** — Free Action; 1 Investiture · Blue 3+ → **Passive; — , on the supply, gated on 2 or
+more; Blue 3+ kept.** *"While channelling 2 or more Blue or White, when you place an Edict you may
+declare it Sealed. When a Sealed Edict is violated, the violator tests Discipline vs. your Blue; on a
+failure it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next
+turn."*
+
+**Bear Witness** — Passive; — → **unchanged** (temporary health equal to your White rank each round to
+every Covenant ally in range).
+
+**Shoulder the Oath** — Reaction; — → **Special; — , unconditional** (a redirect, no test). *"When an
+ally in a Covenant with you would take damage and you are within Attunement Range, you may take half
+of it instead and reduce the remaining damage to that ally by your ranks in White. You and that ally
+each gain temporary health equal to your ranks in White. Once per round."*
+
+**Verdict** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While channelling 2
+or more Blue or White, choose a character bound by one of your Edicts within Attunement Range and test
+Blue vs. Cognitive. On a success the Edict is immediately considered violated, and each other enemy
+within 10 feet of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die]
+spirit damage and is Disoriented until the start of your next turn."*
+
+**Concord** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more; an arm the disciple wears
+(F-4).** *"While channelling 2 or more Blue or White, your active Covenants form a Concord. While you
+channel Blue or White, an ally in a Covenant with you may, as a Free Action on its turn, grant any
+other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round
+deals additional damage equal to your Presence."* Cast at the flood; holds at any maintain; the
+`concord` status ends with the Channel.
+
+**Final Decree** — the capstone: one law spoken over every enemy in range, the sworn named Witnesses,
+every Edict triggered on the first violation. The charge detonated; **a rider gated on "channelling 3
+or more", once per scene, no Investiture.** *"While channelling 3 or more Blue or White, name one
+prohibited action that applies to every enemy within Attunement Range as if bound by your Edict; each
+ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited
+action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary
+health and an advantage on its next attack test, and each enemy within 10 feet of the violator takes
+[Tier][Die] + Intellect spirit damage. Once per scene."*
+
+**The frame meeting.** Under Blue the Edict binds the read enemy — Verdict's Blue test, Lawkeeper's
+advantage and the frame's disadvantage on one creature; under White the Covenant is the line sworn —
++1 to all defenses and the frame's deflect on the same shoulder. Positional; no card.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Edict | 1 Action; 1 Inv · entry | **the Blue face of Declare; node dropped** | while channelling Blue |
+| — | Covenant | 1 Action; 1 Inv · entry | **the White face of Declare; node dropped** | while channelling White |
+| 1 | Lawkeeper's Eye | Passive; — | Passive; — | — |
+| 2 | Sealed Edict | Free; 1 Inv | **Passive; —** | channelling 2 or more; on the supply |
+| 3 | Bear Witness | Passive; — | Passive; — | — |
+| 4 | Shoulder the Oath | Reaction; — | **Special; —** | once per round |
+| 5 | Verdict | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 6 | Concord | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more; holds while channelling |
+| 7 | Final Decree | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 10 → **0**; Passives 2 → 3, Specials 0 → 1.
+
+### 4.2 Power — Command (Black / Red)
+
+**Today:** 9 cards; 0 Passives, 1 Free Action, 3 single Actions, 4 two-Action, 1 three-Action; 9 of 9
+cost Investiture — the only fully priced tree — tree-sum 15, the atlas's highest. No Reaction, no
+resource generation: Tyrith spends and does not get it back (TREE-INTENT).
+
+**Shape.** Warlord's Advance is exactly its face. Kneel is its face *plus* a standing clause — *"you
+have an advantage on attack tests against any Compelled, Disoriented or Weakened character in
+Attunement Range"* — which is a passive rider that comes with the entry today and comes with the
+path under the supply: it moves onto the Black face's text on the power, unconditional, as it is now.
+So **both entry nodes go**: the Black lane roots at Crown of Thorns and Absolute Authority, the Red lane
+at Momentum of Victory and Unstoppable Advance. Seven cards. (I-1 (b) keeps Kneel as a node for the
+clause's sake.)
+
+**The supply**, on Tyrith's power:
+
+> **Command** — Action · *the god's supply*
+> *While channelling Black* — choose a character within Attunement Range and test Black vs. Cognitive.
+> On a success the target is Compelled until the start of your next turn; while Compelled it must
+> spend its next action moving toward you or doing nothing.
+> *While channelling Red* — make a melee weapon attack. On a hit, deal an additional [Tier][Die]
+> impact damage. If the attack reduces the target to 0 health, you gain temporary health equal to
+> your tier and may move up to 10 feet as a Free Action; if the target survives, you have an advantage
+> on Presence tests to intimidate, command or lead against it until the start of your next turn.
+> You have an advantage on attack tests against any Compelled, Disoriented or Weakened character
+> within Attunement Range.
+
+Events: Kneel's `edha-def-test` → `edha-apply-status {compelled, mark: true}` and its `edha-test-rider`
+(the standing advantage, `edha-pre-test`) become the Black face's and the power's; Warlord's Advance's
+arm-and-consume pair (`warlord`, with the on-kill and on-survive riders) the Red face's.
+
+**Cost — the arms.** Power is the tree F-4 was written for: three of its nine cards install something
+on the disciple for the scene, and the capstone is a fourth. Under the Channel they cost nothing to
+cast and *hold while the disciple channels*: the crown stands while the current runs. Nothing keeps an
+Investiture cost — no body, no bolt — but the tree's self-tithe stays where it is written (Investiture
+of Command's spirit damage), Momentum of Victory keeps its Opportunity (M13), and the four scene
+installs take the amount gate at cast.
+
+**Crown of Thorns** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more; an arm.** *"While
+channelling 2 or more Black or Red, wear the crown. While you channel Black or Red, when one of your
+Black or Red talents tests against a character's Cognitive defense, that character takes spirit
+damage equal to your Presence. This damage cannot be reduced."* The `crowned` status ends with the
+Channel; the watch rule and the manual ping button are unchanged.
+
+**Absolute Authority** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Black or Red, choose a Compelled, Disoriented or Weakened character within
+Attunement Range and test Black vs. Cognitive. On a success you choose the target's action on its next
+turn (it cannot be forced to directly harm itself). On a failure the target is Weakened until the end
+of its next turn."* Forced volition stays table-run, as declared.
+
+**Momentum of Victory** — Free Action; 1 Investiture and an Opportunity → **Free Action; an
+Opportunity.** *"While channelling Black or Red, spend an Opportunity to immediately move up to 15 feet
+and make a free melee Strike against a character within reach. The Strike deals additional damage
+equal to your tier."*
+
+**Unstoppable Advance** — 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Black or Red:
+until the end of your next turn you cannot be Slowed, Immobilized or knocked Prone, and you may move
+through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage."*
+
+**Investiture of Command** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more; the
+spirit tithe kept (I-3).** *"While channelling 2 or more Black or Red, choose up to three allies within
+Attunement Range. Each gains [Tier][Die] temporary health and an advantage on its next attack test. You
+take spirit damage equal to your tier, which cannot be reduced."* The first draft made this a release
+(it buys into no charge); under the supply it is the crown shared, the flood is its price per use, and
+the tithe is the card's own.
+
+**Warlord's Fury** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more; an arm.** *"While
+channelling 2 or more Black or Red, arm the fury. While you channel Black or Red, your melee attacks
+deal additional damage equal to the number of characters you have reduced below half their maximum
+health this scene, to a maximum equal to twice your tier; when you reduce a character to 0 health the
+bonus immediately increases by 1, still capped."* The tally persists across a dropped Channel? No —
+the `fury` status ends with the Channel and its tally with it (the arm is re-armed at cost of two
+Actions, as today it is at 2 Investiture); I-2 (c) offers keeping the tally.
+
+**Mantle of the Aspirant** — the capstone, and the fourth arm. *"He wears the crown not yet given"*:
+under F-4 the Mantle holds **while the disciple channels**, not for the scene — the one capstone in
+the atlas whose duration is the Channel, and the reason Countercurrent matters to a warlord. **A rider
+gated on "channelling 3 or more", once per scene, no Investiture.** *"While channelling 3 or more
+Black or Red, take up the Mantle. While you channel Black or Red: you gain +2 to all defenses; your
+melee attacks deal additional spirit damage equal to your tier; allies within Attunement Range gain +1
+to all tests; and when you take damage you may redirect up to your tier of it to one or more willing
+allies within Attunement Range. Once per scene."* (I-2 (b) keeps "for the scene".)
+
+**The frame meeting.** Under Black, Kneel names the forsaken — Isolated for the Draw's Weakened,
+which is Absolute Authority's gate, and vital on every warlord's hit; under Red the warlord in the noise
+builds heat fastest and spends it on the Red face. Positional; no card.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Kneel | 1 Action; 1 Inv · entry | **the Black face of Command (with the standing advantage); node dropped** | while channelling Black |
+| — | Warlord's Advance | 1 Action; 1 Inv · entry | **the Red face of Command; node dropped** | while channelling Red |
+| 1 | Crown of Thorns | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more; holds while channelling |
+| 2 | Absolute Authority | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 3 | Momentum of Victory | Free; 1 Inv + Opp | **Free; Opportunity** | while channelling |
+| 4 | Unstoppable Advance | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 5 | Investiture of Command | 2 Actions; 2 Inv | **2 Actions; —** (tithe kept) | channelling 2 or more |
+| 6 | Warlord's Fury | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more; holds while channelling |
+| 7 | Mantle of the Aspirant | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene; holds while channelling |
+
+Tree-sum 15 → **0**. The most expensive tree in the atlas becomes a tree that pays only the Channel —
+and Tyrith still gets nothing back: no refund passive, so a warlord Draws as the Key demands, which
+is the identity TREE-INTENT names.
+
+### 4.3 Sovereignty — Judge (Black / White)
+
+**Today:** 9 cards; 2 Passives, 5 single Actions, 1 two-Action, 1 three-Action; 7 of 9 cost
+Investiture, tree-sum 13. White is a pure gate (guide Part 4; items 106 and 108). **Item 106 — the
+Decree zone, R-97 (a), a radius that moves with the arbiter — is still open**, and this design changes
+what it would be for: under the Channel, Black's forsaken and White's line already give the arbiter a
+radius on each side. I-8 hands the item back to the PM to re-scope after this design rather than
+building the zone this pass designed around.
+
+**Shape.** Both entries are their faces — Exalt the raising, Censure the lowering — so **the entry nodes
+go**: the White lane roots at Sovereign's Favor and Investiture of Authority, the Black lane at Expose
+and Decree of Ruin. Seven cards. White stops being a pure gate: it is the face that exalts.
+
+**The supply**, on Verdannis's power:
+
+> **Judge** — Action · *the god's supply*
+> *While channelling White* — choose a willing ally within Attunement Range. Until the start of your
+> next turn its damage die size increases by one step (maximum d12).
+> *While channelling Black* — test Black vs. Cognitive against a character within Attunement Range. On
+> a success, until the start of your next turn its damage die size decreases by one step (minimum d4).
+
+Events: Exalt's `edha-die-step {key: exalt}` and Censure's `edha-def-test` → `edha-die-step {key:
+censure}` become the faces'; Sovereign's Favor's watch on the `exalt` key and Expose's on `censure,
+decree` are unchanged.
+
+**Cost.** No body, no bolt; one creature at a time per judgment. Nothing keeps a cost. The two scene
+versions and the two pairs take the amount gate; Sovereign's Balance is repeatable at 2 or more (a
+per-round tax, as its 2 was per use).
+
+**Sovereign's Favor** — Passive; — → **unchanged** (an Exalted ally also gains [Tier][Die] temporary
+health; does not stack).
+
+**Investiture of Authority** — 1 Action; 2 Investiture · White 3+ → **1 Action; — , gated on 2 or
+more; White 3+ kept.** *"While channelling 2 or more Black or White, choose a willing ally within
+Attunement Range. For the scene its damage die size increases by one step (maximum d12), replacing any
+Exalt of yours on it. Once per ally per scene."*
+
+**Expose** — Passive; — → **unchanged** (a Censured character that fails a test refunds 1 Investiture;
+one that fails an attack test gives its target a Reactive Strike). Sovereignty's refund passive, the
+maintain's funding.
+
+**Decree of Ruin** — 1 Action; 2 Investiture · Black 3+ → **1 Action; — , gated on 2 or more; Black 3+
+kept.** *"While channelling 2 or more Black or White, test Black vs. Cognitive against a character
+within Attunement Range. On a success, for the scene its damage die size decreases by one step
+(minimum d4); on a failure the decrease lasts until the start of your next turn. Once per character per
+scene."*
+
+**Sovereign's Balance** — 1 Action; 2 Investiture → **1 Action; — , gated on 2 or more.** *"While
+channelling 2 or more Black or White, choose one willing ally and one enemy within Attunement Range.
+Until the start of your next turn the ally's damage die size increases by one step (maximum d12) and
+the enemy's decreases by one step (minimum d4). If the ally hits the enemy this round, both effects
+extend by one additional round."*
+
+**Edict of the Fallen** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Black or White, test Black vs. Spiritual against a character within Attunement
+Range. On a success, for the scene its damage die size for attacks decreases by two steps (minimum
+d4), and each time it fails an attack test each ally within Attunement Range gains temporary health
+equal to your tier. On a failure, decrease its damage die size by one step until the start of your
+next turn."*
+
+**Sovereignty** — the capstone: the pair judged for the scene, two steps each way, the enemy's
+Reactions denied on every hit. The judgment at its largest; **a rider gated on "channelling 3 or
+more", once per scene, no Investiture.** *"While channelling 3 or more Black or White, choose one
+willing ally and one enemy within Attunement Range. For the scene the ally's damage die size increases
+by two steps (maximum d12) and the enemy's decreases by two steps (minimum d4). Whenever the ally hits
+the enemy, the enemy cannot take Reactions until the start of its next turn. Once per scene."*
+
+**The frame meeting.** Under Black, Censure the forsaken — vital on your attacks and the Draw's
+Weakened on the creature whose dice you shrank; under White, Exalt an ally in the line — the frame's
+deflect beside Sovereign's Favor's temporary health. Positional; no card.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Exalt | 1 Action; 1 Inv · entry | **the White face of Judge; node dropped** | while channelling White |
+| — | Censure | 1 Action; 1 Inv · entry | **the Black face of Judge; node dropped** | while channelling Black |
+| 1 | Sovereign's Favor | Passive; — | Passive; — | — |
+| 2 | Investiture of Authority | 1 Action; 2 Inv | **1 Action; —** | channelling 2 or more |
+| 3 | Expose | Passive; — | Passive; — | — |
+| 4 | Decree of Ruin | 1 Action; 2 Inv | **1 Action; —** | channelling 2 or more |
+| 5 | Sovereign's Balance | 1 Action; 2 Inv | **1 Action; —** | channelling 2 or more |
+| 6 | Edict of the Fallen | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 7 | Sovereignty | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 13 → **0**.
+
+### 4.4 The three trees, together
+
+| | Cards | Costed today → proposed | Tree-sum today → proposed | Arms (hold while channelling) | Faces | Flood |
+|---|---|---|---|---|---|---|
+| Order | 9 → 7 + supply | 6 → 0 | 10 → 0 | Concord | 2 | 1 |
+| Power | 9 → 7 + supply | 9 → 0 | 15 → 0 | Crown of Thorns, Warlord's Fury, the Mantle | 2 | 1 |
+| Sovereignty | 9 → 7 + supply | 7 → 0 | 13 → 0 | — | 2 | 1 |
+
+The word keeps no Investiture cost; what it keeps is **duration tied to the Channel** — four arms that
+fall when the current does. Power, the fully priced tree, is the one that changes most: from 15
+Investiture of pricing and no way to earn it back, to a warlord whose whole kit is the Channel and
+whose crown stands exactly as long as he holds it.
+
+### 4.5 Gate 4 — the menu
+
+**I-1. The entry nodes, per tree.** (a) **All three drop both; Kneel's standing advantage moves onto
+the Black face's text on Tyrith's power, unconditional as today — recommended.** (b) Power keeps Kneel
+as a node for the standing clause; Order and Sovereignty drop both. (c) All keep both.
+
+**I-2. The arms (F-4 (a) applied).** (a) **Crown of Thorns, Warlord's Fury, Concord and the Mantle
+hold while the disciple channels either colour; cast at their amount gate, held at any maintain;
+their statuses end with the Channel — recommended.** (b) The Mantle keeps "for the scene" (a capstone
+that outlasts the Channel); the other three as (a). (c) As (a), but Warlord's Fury's tally survives a
+dropped Channel and resumes on the next arm.
+
+**I-3. Investiture of Command.** (a) **A rider gated on 2 or more, the spirit tithe kept —
+recommended** (the crown shared; the flood is its price per use). (b) A rite at 2 Investiture, tithe
+kept (the first draft's reading: it buys into no charge).
+
+**I-4. Momentum of Victory.** (a) **Opportunity only, the Investiture dropped — recommended** (M13:
+the Opportunity is the card's identity). (b) Opportunity and 1 Investiture kept.
+
+**I-5. Sealed Edict.** (a) **A Passive on the supply, gated on 2 or more, Blue 3+ kept —
+recommended** (H-9's shape). (b) Free Action and 1 Investiture kept.
+
+**I-6. The capstones, per tree.** (a) **Final Decree, the Mantle and Sovereignty on the flood, once
+per scene — recommended** (a law spoken, a crown taken up, a judgment made; each is the charge at
+its largest). (b) All three rites at 3. (c) The Mantle a rite; the other two on the flood.
+
+**I-7. Sovereign's Balance.** (a) **Gated on 2 or more — recommended** (a per-round tax on the pair,
+as its 2 was per use). (b) Gated on 1.
+
+**I-8. Item 106, the Decree zone.** (a) **Handed back to the PM to re-scope after this design — the
+Channel's two frames already give the arbiter a radius on each side, and a third square would be the
+duplication R-97's critique warned of — recommended.** (b) Build it as designed, unchanged by this
+pass. (c) Drop it: the frames are the Decree.
+
+**I-9. The three supplies' names.** (a) **Declare, Command, Judge — recommended.** (b) Ben's own.
