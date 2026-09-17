@@ -4846,7 +4846,7 @@ Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warr
 
 **PM:** lane H · model — (Ben's own sessions) · size L ×3 · deps item 198's White pilot benched · Filed 2026-09-16 by the PM from the design pass.
 
-## 212. [ ] R-159 (a): the deity design pass on the Channel model — every deity talent classed rider or release with its new cost and card sentence, one braid considered per tree, R-108's Special target revisited, the two-colour test rule kept; Ben's own gated session from a brief the PM writes when asked (DESIGN, DOCS-ONLY; the build rides item 198's deity leg) (2026-09-16)
+## 212. [x] (2026-09-17, PR #434, Ben's own session — all seven gates approved; `docs/design/channel-deity.md`; item 198's deity leg and the guide rewrite are the PM's to file from §7.3) R-159 (a): the deity design pass on the Channel model — every deity talent classed rider or release with its new cost and card sentence, one braid considered per tree, R-108's Special target revisited, the two-colour test rule kept; Ben's own gated session from a brief the PM writes when asked (DESIGN, DOCS-ONLY; the build rides item 198's deity leg) (2026-09-16)
 
 **Why:** R-159 answered (a) by Ben on 2026-09-16 — the deity re-pricing R-151 (a) held for, now against `docs/design/channel-actions.md` §1.1's rider / release split and §1.6's braid. The deity atlas is 80 % Investiture-priced and 0 % Special against 8 – 46 % and 30 – 41 % in every published Invested family (`docs/analysis/talent-comparison-mistborn-radiant.md` §D-1), because a deity tree had no base action to have paid on; under the Channel it rides the colour's.
 
