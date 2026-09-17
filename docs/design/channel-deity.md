@@ -18,8 +18,8 @@ log is the record.
 | 2 | §2 The marks — Chaos, Knowledge, Life | **✅ approved 2026-09-17** (second draft) — G-1 … G-8 all (a): entry nodes dropped, seven cards each, no kept cost, capstones on the flood |
 | 3 | §3 The ground — Fate, Destruction, Civilization, Death | **✅ approved 2026-09-17** — H-1 … H-10 all (a): two costed faces, Fault Line a release, Death keeps Reaper's Harvest and four priced cards, Hallowed Ground added to Fate |
 | 4 | §4 The word — Order, Power, Sovereignty | **✅ approved 2026-09-17** — I-1 … I-9 all (a): four arms hold while channelling, the Mantle included; no kept cost; item 106 back to the PM |
-| 5 | §5 The mix, against the bands | **proposed 2026-09-17** — J-1 … J-5 tabled |
-| 6 | §6 The build notes | not started |
+| 5 | §5 The mix, against the bands | **✅ approved 2026-09-17** — J-1 … J-5 all (a): the guide's table restated to the measured mix; the Special target ~5 – 10 %; the 7 % costed floor accepted |
+| 6 | §6 The build notes | **proposed 2026-09-17** — K-1 … K-6 tabled |
 | 7 | §7 Close-out | not started |
 
 **What this rests on** (read in this order; nothing below re-derives them):
@@ -1624,3 +1624,6 @@ recommended.** (b) The PM's own order.
 
 **J-5. The supplies in the mix.** (a) **Reported beside the talents, not inside them (a supply is a
 `power` action, as the Channel is) — recommended.** (b) Counted as twenty Actions on the talent list.
+
+> **Answered at gate 5 (Ben, chat, 2026-09-17):** *"defaults"* — **J-1 … J-5 (a).** §5 committed on that
+> answer.
