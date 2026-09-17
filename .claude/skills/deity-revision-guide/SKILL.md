@@ -12,6 +12,8 @@ This skill contains the canonical design standards for the Deity system. Consult
 
 ## PART 1: WHAT MAKES A DEITY TREE DIFFERENT FROM A LEYLINE TREE
 
+> ⚠️ **SUPERSEDED 2026-09-17 by `docs/design/channel-deity.md` (item 212, R-159 (a), all seven gates approved by Ben).** Under the Channel model a deity path grants **the supply** — one base action per god that supplies its charge, free while channelling either of the god's colours, with today's two entries as its two faces. There is no Key, no rule on tree size, no entry / synthesis / capstone shape and no 1 / 2 / 3 / 4 cost scale (Ben: *"residual, not a rule"*); the spend-phrasing rule below retires for riders. Read this Part as history until the PM's rewrite lands (design §7.3 item 2).
+
 The deity system shares the leyline system's resources (focus, Investiture, Opportunity, HP, plot die) and action economy. It diverges in five structural ways.
 
 ### 1. No Key talent
@@ -37,6 +39,8 @@ Every non-Passive deity talent opens its description with the spend phrasing: `S
 ---
 
 ## PART 2: DESIGN BENCHMARKS
+
+> ⚠️ **SUPERSEDED 2026-09-17 by `docs/design/channel-deity.md` (item 212, R-159 (a), all seven gates approved by Ben).** Under the Channel model a deity path grants **the supply** — one base action per god that supplies its charge, free while channelling either of the god's colours, with today's two entries as its two faces. There is no Key, no rule on tree size, no entry / synthesis / capstone shape and no 1 / 2 / 3 / 4 cost scale (Ben: *"residual, not a rule"*); the spend-phrasing rule below retires for riders. Read this Part as history until the PM's rewrite lands (design §7.3 item 2).
 
 ### Tree size
 

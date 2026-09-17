@@ -1844,3 +1844,70 @@ it (Widening G's shape, extended from AEs to statuses).
 
 > **Answered at gate 6 (Ben, chat, 2026-09-17):** *"Defaults."* — **K-1 … K-6 (a).** §6 committed on
 > that answer.
+
+---
+
+## 7. Close-out
+
+**All seven gates passed on 2026-09-17, in one session, in order — gate 1 on its third draft and
+gate 2 on its second, both rewritten on Ben's notes rather than argued.** Nothing in this document
+assumes an answer Ben did not give; the gate log at the top is the record, and each section's menu
+carries his answer verbatim under it.
+
+### 7.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 1 — the path | **Shape S, the supply**: the deity path grants one base action that supplies the god's charge, free while channelling either colour, with today's two entries as its two faces — the colour channelled chooses the face. Attunement is chosen once at creation and sets the Draw Mana rider (the Key's rule); each colour's Channel comes with a rank; the leyline path pick retires; the deity guide's Parts 1 – 2 and cost scale are superseded; no rule on tree size; the word is *supply*; Countercurrent covers deity rites. Two drafts withdrawn on Ben's corrections (one Key at creation; the guide's shape is residual; "a mage is one leyline at a time" struck; the deity action is *Place Omen*, not *Channel Maelith*). |
+| 2 — the marks | Chaos, Knowledge, Life: both entry nodes dropped, seven cards each; no kept cost (the charges are capped, no bodies); widening cards become Passives on the supply; Shatter Focus a Special; the synthesis tier on "2 or more"; the three capstones on the flood. §2.1 rewritten as questions with presumptions after Ben struck three rules. |
+| 3 — the ground | Fate, Destruction, Civilization drop both nodes; Death keeps Reaper's Harvest and a one-faced Wither. **Costed faces:** Pyre and Forge Construct at 1. **Releases and rites:** Fault Line 2, Death Ward 2, Speak with the Fallen 2, Raise Dead 4; Risen Servant 1 + a Remain. *Hallowed Ground* added to Fate (name Ben's). The Bone Garden is not home ground. |
+| 4 — the word | Order, Power, Sovereignty drop both nodes; no kept cost; Kneel's standing advantage on the face; four arms hold while channelling — Crown of Thorns, Warlord's Fury, Concord and **the Mantle of the Aspirant**, the one capstone whose duration is the Channel; Investiture of Command a rider at 2 with its tithe; item 106 back to the PM. |
+| 5 — the mix | Passive + Special 14 % → 36 %; costed 80 % → 7 % (+ two costed faces), below the published floor and accepted (the Channel is the cost); Investiture sum 125 → 13; Reactions 5 → 0; Specials 0 → 5 (~7 %, R-108's target restated to ~5 – 10 %); the guide's table restated to the measured mix; item 210's four deity rows named. |
+| 6 — the build | Ten `power` items with two face actions each (the faces authored in place, flagged `face`); the item-level rider gate (Widening Q) for all fifteen trees; rank-granted colour powers (P) with the leyline paths as attunements; `endWithChannel` (S); the supply's own test watch (R); the Ordained-square tick (T); powers on adversary blocks (U); thirty-two 🤖 rows on the Route A copy. |
+
+### 7.2 What waits on Ben
+
+- **One name:** *Hallowed Ground* (§3.1) is a placeholder; the card ships under Ben's name for it.
+- **No new ruling was filed.** Every judgment call was a menu entry answered at its gate; R-145
+  stays the only open ruling in `EDHA_RULINGS.md` §L. R-108 and R-151 carry their dated post-design
+  lines in §K as item 212's done-when asks.
+
+### 7.3 What the PM should file from this pass
+
+1. **Item 198's deity leg**, from §6 as written: the ten powers and twenty faces, Widenings P – U,
+   the item-level gate (K-2 (a)) — **which the builder should adopt for the five leyline legs too,
+   letting the twenty-two per-rule declarations lapse**; the data moves in §6.4; the thirty-two DS
+   rows; the docs in §6.4. Size: larger than any single colour leg (ten powers, a new power type,
+   the rank watcher, the attunement re-home), smaller than the five leyline legs together.
+2. **The deity guide rewrite** (F-7 (a), J-1 (a)): Parts 1 – 2 and the cost scale replaced by §1's
+   model and §5.1's measured table; Part 4's ten identities updated for the faces; the "spend X
+   Investiture" opening rule retired. DOCS-ONLY; the superseded banners are in the guide now.
+3. **The player-facing texts** — the one-pager's deity block ("2 ranks in each colour" stays;
+   "devotion unlocks in play" now grants the supply), the primer's deity pane, TREE-INTENT's ten
+   lanes. DOCS-ONLY, with the build or before it.
+4. **The wizard's Attunement step** (F-5 (a)): the leyline step retitled, its intro rewritten, and
+   the rank watcher (P) — an ENGINE item at 3.x, part of item 198 or beside it.
+5. **Item 106 re-scoped** (I-8 (a)): the Decree zone against a Sovereignty whose two frames already
+   give the arbiter a radius each side.
+6. **Item 210's deity rows** (J-4 (a)): Life's free Green face; the flood detonations; Knowledge's
+   stacked pack; Power's arms at a point a round — before the leyline rows.
+7. **Adaptive Mutation's prose drift** (§2.4): the guide and TREE-INTENT say Green 3+ / level 6; the
+   data says Green 2+. Reconcile the prose to the data.
+8. **`deity-gate-audit.js`** learns that a face pays its colour (§6.4) — with the build.
+9. **The bestiary** (item 121): deity-treed blocks embed the god's power and supply at role rank
+   (Widening U); the census learns the supply.
+
+### 7.4 The record
+
+- Branch `design/channel-deity`, a fresh remote clone from `main` at `919bdf9`. DOCS-ONLY:
+  `docs/design/channel-deity.md` (new) is the design; the close-out adds the changelog delta and its
+  two counts, the two post-design lines in `EDHA_RULINGS.md`, the superseded banners in the deity
+  guide, the TODO tick, and the regenerated dashboard. One commit per gate — a proposal commit
+  first (the session container is ephemeral) and an approval commit on Ben's answer; gates green
+  before every push. PR #434, opened as a draft with the first proposal and taken out of draft at
+  this close-out.
+- **Iron-rule-6 debt, this session's:** the first fifteen commits carry a `Co-Authored-By` model-
+  identifier trailer, added from the harness default before the work-item contract's correction
+  was read; Blue's pass recorded the same debt. Rewriting pushed history is a worse outcome than
+  the trailer (item 182's lesson), so they stand; the close-out commits carry none.
+- `docs/PM_BOARD.md` was not touched, per the brief.
