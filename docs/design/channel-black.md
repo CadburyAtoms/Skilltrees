@@ -18,7 +18,7 @@ gate log is the record.
 | 0 | The frame re-opened (FK-1) | **✅ answered 2026-09-17** — FK-1 (d) *the forsaking*, replacing the hunt, conditional on the Hunter overlap being modest (§1.2 measures it) and the word "quarry" staying Hunter's |
 | 1 | §1 Black's three trees, and the forsaking applied | **✅ approved 2026-09-17** — BK-1 … BK-6 all (a); *"defaults. looks good."* |
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — BK2-1 … BK2-5 all (a) |
-| 3 | §3 The mix, against the bands | — |
+| 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — BK3-1 (a); *"Looks good."* |
 | 4 | §4 The build notes for Black | — |
 | 5 | §5 Close-out | — |
 
@@ -454,3 +454,85 @@ creature" on Sovereign's source) now.
 
 > **Answered at gate 2 (Ben, chat, 2026-09-17):** *"defaults."* — **BK2-1 … BK2-5 (a).** §2 committed
 > on that answer.
+
+---
+
+## 3. The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Black today** | 15 (60 %) | 1 (4 %) | 3 (12 %) | 3 (12 %) | 1 (4 %) | 2 (8 %) | 64 % | 10 (40 %) | 9 (36 %) | 11 |
+| **Black proposed** | 15 (60 %) | 1 (4 %) | 3 (12 %) | 3 (12 %) | 1 (4 %) | 2 (8 %) | 64 % | **6 (24 %)** | **5 (20 %)** | **6** (+ the Channel, 1 – rank a round) |
+| *Red proposed, for scale* | 11 (44 %) | 9 (36 %) | 3 (12 %) | 1 (4 %) | 1 (4 %) | 0 | 80 % | 7 (28 %) | 5 (20 %) | 6 |
+| *Blue proposed, for scale* | 9 (36 %) | 8 (32 %) | 2 (8 %) | 2 (8 %) | 1 (4 %) | 3 (12 %) | 68 % | 9 (36 %) | 7 (28 %) | 9 |
+| *White proposed, for scale* | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | 84 % | 4 (16 %) | 1 (4 %) | 1 |
+| published Invested band | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+*(Counts read from `data/leyline.json` at `ba796d4`: "costed (any)" is the nine Investiture cards plus
+Withering Ray's health cost; the proposed row counts Withering Ray and the five releases. Not one
+action type changes under this pass, so the six type columns are identical today and proposed.)*
+
+**Read against the bands.** Black was, like Red, **already inside the costed band** — 40 % against
+8 – 46 % — and the Channel takes it to 24 %, the Investiture-priced cards from nine to five and the
+tree-sum from 11 to 6: the same landing as Red, from the same domain rule, with one fewer card
+changing. Every surviving Investiture point is on a card that names *any character* as its target
+(Dark Investiture, Double Dip, Hollow Command, Predatory Insight, Puppeteer). **Reactions at 8 %** sit
+just over the published 2 – 7 % and inside the guide's 5 – 8 %: both survive on their merits, one
+because it tests (Sovereign), one because it is a release (Puppeteer).
+
+**Passive + Special stays at 64 %, seven points under the published band, and this pass does not
+move it — on purpose.** Blue missed the same band by three points because six of its cards make
+things and a card that builds a thing is an Action. Black misses it for the opposite reason, and the
+number to look at is not Passive + Special but its two halves: **Passives at 60 % against the guide's
+~35 %, Specials at 4 % against 25 – 30 %.** Black is the most passive-heavy tree in the atlas and the
+most Special-poor, and it was both before the Channel. The published Invested families reach 71 – 87 %
+by running 37 – 41 % *Special* — riders that fire on a trigger — where Black's fourteen free passives
+fire on triggers too but are typed Passive. The Channel converts costs and Reactions; it does not
+re-type a Passive into a Special, and manufacturing that conversion here would be a type change with
+no design behind it (BK3-1). What the pass hands on instead is the observation: **a future Black
+revision that wants the band should look at its Passive column, not its costs** — several of the
+fourteen already read like Specials (Sapping Hex, Necrotic Grasp, Coercive Pressure, Extract Thought
+all fire *once, on a hit or a test*), and the leyline guide's own targets would call them so.
+
+**Where the remaining cost sits.** Subjugation carries three of the six surviving Investiture points
+(Hollow Command 1, Predatory Insight 1, Puppeteer 1, plus Puppeteer's 2 focus), Ritual the other three
+(Dark Investiture 1, Double Dip 2, plus both Ritual attacks' blood). **Isolation carries no Investiture
+at all** — the hunt is free once the prey is named, and Predatory Patience pays the mage back on every
+hit against it.
+
+**What a Black player's turn is now.** Round 1: Channel Black at 2 out of a pool of 4 — name the
+creature that matters, and it is alone whatever stands beside it — then Draw Mana: it is Weakened,
+and so is anything else standing alone in range. One Action left: Cruel Step free into reach, or
+Withering Ray at it with the frame's +2 vital on top of 2d6. Every round after: maintain as a Free
+Action for 1 or 2 (keep the prey or move the mark), three Actions of Strikes that Severance makes
+vital and the frame makes heavier, Predatory Patience's die on each and its Investiture back on each
+hit, Sapping Hex and Dread Presence and Sovereign of Solitude running for nothing. A trickle pays for
+itself; a flood costs a Draw, and the Draw is another pulse. The Ritualist's version pays the maintain
+from Reserve and never draws. The real decision each round is **prey or puppet** for the Subjugator —
+Hollow Command's 2 Actions and 1 Investiture against a maintained flood — and, for everyone, **keep
+or move**: the mark is re-chosen at every payment, and the one creature you have Weakened, locked and
+softened is usually the one to keep.
+
+**What it costs, in numbers.** Today a Black round — Cruel Step and Spoils, or Withering Ray and a
+Sovereign Reaction — spends 2 Investiture for two plays and earns 2 from a Draw (R-126). Under the
+Channel the same 2 buys the frame and every Isolation rider, and at a flood at levels 1 – 5 adds
+**+2 vital to every hit on the forsaken** — about +6 a round on three Strikes, or +6 on three
+Withering Rays, before Predatory Patience's refunds; from level 6, +3 a hit. Red's heat carries the
+same numbers on the other condition: Red's needs the fight to be loud and lands on any hit, Black's
+needs nothing but the payment and lands on one creature. R-111's ceiling (three Withering Rays ≈ 33
+vital for ~4.5 health) becomes ≈ 39 at a flood against the forsaken — the same +6 the ceiling gains for
+Red — so the two damage colours move together and the ceiling holds relative to both. Item 210's
+yardstick re-run should carry Black's row beside Red's: the two frames are the pair to price together.
+
+**BK3-1. Passive + Special at 64 %.** (a) **Accept it as the tree's shape and hand the Passive-column
+observation to the PM for a future Black revision — recommended** (no type changes with design
+behind them exist in this pass). (b) Re-type four trigger-shaped free passives as Specials now
+(Sapping Hex, Necrotic Grasp, Coercive Pressure, Extract Thought — 64 % → 64 %, since Passive + Special
+is the sum; only the guide's two columns move). (c) Convert Spoils of Isolation to a Special on the
+payment ("when you channel or maintain Black, each Weakened character in range takes vital equal to
+your tier") — 68 %, the Guiding Signal shape; a 2-Action sweep for free every round is a large power
+gain.
+
+> **Answered at gate 3 (Ben, chat, 2026-09-17):** *"Looks good."* — **BK3-1 (a).** §3 committed on
+> that answer.
