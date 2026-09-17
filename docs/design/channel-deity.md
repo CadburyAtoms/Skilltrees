@@ -684,3 +684,450 @@ The Pack gates on 2 or more (the strongest sharing) — recommended.** (b) Both 
 
 > **Answered at gate 2 (Ben, chat, 2026-09-17):** *"Much better. let's keep going."* — **G-1 … G-8 (a).**
 > §2 committed on that answer.
+
+---
+
+## 3. The ground — Fate, Destruction, Civilization, Death
+
+Four gods whose charge sits on the field: Ordained Ground and Snares, Charges and burning ground, the
+Construct and Foundations, Remains and the Bone Garden. Two of them raise **bodies** (the Construct,
+the Risen Servant) and one of them throws **fire built of Investiture** (Pyre, Fault Line) — the three
+collisions §1.4 named and the two balance cases Ben named at gate 2 — so this is the gate where cards
+keep costs. Every card was read from `data/domain.json` and its `data/authored/deity-*.json` record at
+`main` `919bdf9`. §2.1's four questions apply; two facts specific to this gate:
+
+- **A face keeps its own action type.** Ordained Ground and Lay Foundation are Free Actions today,
+  Snare and Forge Construct are Actions; the supply's two faces need not share a type, and none is
+  re-typed to match its twin.
+- **A costed face.** Where balance keeps a price on a face (Ben, gate 2: *the Construct should stay
+  costed at a minimum*), the face still requires the Channel — it is the god's act — and also spends.
+  Two faces in this gate are costed: Pyre and Forge Construct. Everywhere else the supply is free.
+
+### 3.1 Fate — Ordain (Green / White)
+
+**Today:** 9 cards; 1 Passive, 2 Free Actions, 1 Reaction, 2 single Actions, 2 two-Action, 1
+three-Action; 7 of 9 cost Investiture, tree-sum 11. White is the pure gate item 108 gave one number
+(Bulwark Ground's temporary health).
+
+**Shape.** Both entries are their faces — Ordained Ground the square, Snare the trap — so **the entry
+nodes go**: the White lane roots at Read the Threads and Bulwark Ground, the Green lane at Inevitable
+Snare and Hexmark. Seven cards, or eight with H-2.
+
+**The supply**, on Olvarra's power:
+
+> **Ordain** — · *the god's supply*
+> *While channelling White* — **Free Action.** Designate a 5-foot square within Attunement Range as
+> Ordained Ground for the scene. An ally that begins its turn on Ordained Ground gains +1 to all
+> defenses until the start of its next turn and may use the Aid action at up to 30 feet from that
+> square. You may sustain up to your tier Ordained Ground squares.
+> *While channelling Green* — **Action.** Place a Snare on a 5-foot square within Attunement Range.
+> The first enemy to enter it takes [Tier][Die] + Awareness keen damage and is Restrained until the
+> start of your next turn; the Snare is then consumed. You may sustain up to your tier unsprung
+> Snares; unsprung Snares fade at the end of the scene.
+
+Events: Ordained Ground's `edha-zone {kind: ordained}` and Snare's `edha-zone {kind: snare}` become the
+faces', gated `channelwhite` / `channelgreen`; the ledgers (`ordained`, `snares`), the picker, the
+trigger Region and the spring resolver are untouched.
+
+**Cost.** Fate raises no body and throws no bolt; its charges are capped at tier each. Nothing keeps a
+cost. The two scene-long links take the amount gate (a one-time 2, as today); the two Free-Action
+upgrade riders become Passives on the supply behind the same gate (H-9).
+
+**Read the Threads** — 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Green or White,
+choose a character within Attunement Range. You learn the action it intends to take on its next turn
+and any movement it plans to make. Then, as a Free Action, you may move one of your Ordained Ground
+squares or unsprung Snares up to 10 feet to any space the target will pass through."* The foresight
+half stays MANUAL as declared (an NPC's intent is not data).
+
+**Bulwark Ground** — Passive; — → **unchanged** (temporary health equal to your White rank each round
+for an ally on your square; no advantage against an ally standing on one). Free cards stay free and
+unconditional.
+
+**Inevitable Snare** — Free Action; 1 Investiture → **Passive; — , on the supply, gated on 2 or more.**
+*"While channelling 2 or more Green or White, when you place a Snare you may declare it Inevitable.
+When an Inevitable Snare triggers it deals an additional [Tier][Die] keen damage, and the triggering
+character tests Speed vs. your Green; on a failure it is also Disoriented until the end of its next
+turn."* At a flood every Snare is Inevitable — a per-round tax while placing, which is what the +1
+per Snare was.
+
+**Hexmark** — Reaction; — → **Special; — , unconditional** (question 3: an offered mark, no test).
+*"When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene the
+Hexmarked character takes an additional [Tier] keen damage whenever it takes damage from any source
+while within 10 feet of any of your Ordained Ground squares or unsprung Snares. Once per round."*
+
+**Weave the Thread** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Green or White, choose two of your active Ordained Ground squares within
+Attunement Range. For the scene they are linked: an ally standing on either may use the Aid action as
+a Free Action once per round, and when an enemy triggers any Snare within 30 feet of either, an ally
+standing on either may make a free Reactive Strike against it."*
+
+**Foreknown Strike** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Green or White: for the scene, an ally standing on one of your Ordained Ground
+squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 feet,
+treating the centre of the Snare's space as the triggering character. A Snare triggered this way deals
+an additional [Tier][Die] damage."*
+
+**Thread of Inevitability** — the capstone. A declared event that springs every Snare and rallies
+every square: the charge detonated, so the flood fits. **A rider gated on "channelling 3 or more",
+once per scene, no Investiture.** *"While channelling 3 or more Green or White, declare a specific
+event that will happen during this scene — a character drops to 0 health, a particular enemy crosses a
+threshold, an ally reaches a designated location, or the GM raises the stakes. The first time it
+occurs, every Ordained Ground square you have active grants its standing ally a free Strike or Aid
+against the nearest enemy within 30 feet, and every unsprung Snare you have active triggers in its
+space, treating its centre as the triggering character. Once per scene."*
+
+**The frame meeting — and the one card it wants.** Under White the square is in the line: an ally on
+Ordained Ground already has +1 to all defenses and refuses advantage, and the frame's deflect stacks
+on it — positional, no card. Under Green the home ground *does not reach the squares*: Ordained
+Ground is not difficult terrain, so Green's frame heals only allies standing on the disciple's Draw
+terrain, and the Green Channel gives the tree nothing but the Snare face. That is the one meeting in
+the ten trees worth a card sentence, and the tree has a slot for it (H-2):
+
+> **Hallowed Ground** *(name Ben's)* — Passive; — · Bulwark Ground
+> *"While channelling Green, an ally that begins its turn on one of your Ordained Ground squares
+> regains health equal to the Investiture you are channelling, as if standing in your difficult
+> terrain."*
+
+It reads the frame's own number, lands on the tree's own charge, and gives the Green Channel a reason
+the tree can name; the heal-cut gate (R-83) applies as it does to the frame.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Ordained Ground | Free; 1 Inv · entry | **the White face of Ordain; node dropped** | while channelling White |
+| — | Snare | 1 Action; 1 Inv · entry | **the Green face of Ordain; node dropped** | while channelling Green |
+| 1 | Read the Threads | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 2 | Bulwark Ground | Passive; — | Passive; — | — |
+| 3 | Inevitable Snare | Free; 1 Inv | **Passive; —** | channelling 2 or more; on the supply |
+| 4 | Hexmark | Reaction; — | **Special; —** | once per round |
+| 5 | Weave the Thread | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 6 | Foreknown Strike | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 7 | Thread of Inevitability | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+| 8 | *Hallowed Ground* (H-2) | — | **Passive; —** | while channelling Green |
+
+Tree-sum 11 → **0**; Passives 1 → 2 (3 with H-2), Specials 0 → 1.
+
+### 3.2 Destruction — Set (Blue / Red)
+
+**Today:** 9 cards; 2 Passives, 1 Free Action, 1 Reaction, 2 single Actions, 2 two-Action, 1
+three-Action; 6 of 9 cost Investiture, tree-sum 10. Blue is a gate that item 108 gave one number
+(Cascading Failure's overlap die).
+
+**Shape.** Both entries are their faces — Set Charge the timed charge, Pyre the fire — so **the entry
+nodes go**: the Blue lane roots at Pinpoint Charge and Concussive Yield, the Red lane at Walking Ruin
+and Combustion Chain. Seven cards.
+
+**The supply**, on Razkael's power:
+
+> **Set** — Action · *the god's supply*
+> *While channelling Blue* — place a Charge on an object, character or 5-foot square within Attunement
+> Range and declare its trigger (the start of your next turn by default; or when the target moves,
+> when it takes damage, or when a character enters the square). You may detonate any of your Charges
+> as a Free Action on your turn. When a Charge detonates, each character within 10 feet takes
+> [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may
+> sustain up to your tier Charges; unused Charges fizzle at the end of the scene.
+> *While channelling Red* — **spend 1 Investiture** and make a ranged attack (range 60 feet). On a
+> hit, deal [Tier][Die] energy damage; the target's space and each adjacent square become dangerous
+> terrain for the scene, spreading to one adjacent flammable square at the end of each of your turns.
+
+**Cost — the collisions.** Pyre is the first: it is the Red face *and* an attack that exists only
+because of the Investiture, which is the corollary Ben set for Red (*Searing Bolt is a release*). A
+free Pyre is a free ranged Strike that also lays burning ground, three times a turn. **It is a costed
+face (H-3):** 1 Investiture per shot, the Channel still required, and under Red's frame the hit
+carries the heat as any attack-test hit does (RD-6 (a)). Set Charge is not a bolt — a Charge is placed,
+declared and waited on, its cap is tier, and its damage arrives on a trigger — so the Blue face is free.
+**Fault Line** is the second: a sixty-foot trench of energy and Prone that also lays terrain, built of
+nothing but Investiture. **It keeps its 2 and stands alone — a release (H-4)**; the amount gate would
+make it free on any round the disciple floods, and a repeatable free line is the bolt problem at
+twelve squares. Cascading Failure detonates *Charges* the disciple already placed; it is the charge
+spent, and rides at 2 or more.
+
+**Pinpoint Charge** — Free Action; 1 Investiture → **Passive; — , on the supply, gated on 2 or more.**
+*"While channelling 2 or more Blue or Red, when you place a Charge on a character or an object you may
+declare it a Pinpoint Charge. When it detonates it ignores the primary target's deflect, deals an
+additional [Tier][Die] + Intellect keen damage to it, and the dangerous terrain it leaves is centred on
+the primary target and moves with it for the scene."*
+
+**Concussive Yield** — Passive; — → **unchanged** (every detonation: Speed vs. your Red or Prone).
+
+**Cascading Failure** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Blue or Red, detonate any number of your active Charges at once. When two or more
+detonate this way their dangerous terrain merges into one zone, and a character caught in two or more
+detonations takes an additional [Tier][Die] energy damage."*
+
+**Walking Ruin** — Passive (a Free-Action toggle); — → **unchanged** (the trail and +10 feet of
+Speed; free today, free and unconditional under the model).
+
+**Combustion Chain** — Reaction; — → **Special; — , unconditional** (automatic, no test). *"When a
+character drops to 0 health in a dangerous terrain square you created, each of your dangerous terrain
+zones spreads 5 feet outward and a 10-foot radius around the dropped character becomes dangerous
+terrain. Once per round."*
+
+**Fault Line** — 2 Actions; 2 Investiture → **unchanged — a release.** *"Spend 2 Investiture. A
+60-foot long, 5-foot wide line extends from you. Each character in the line takes [Tier][Die] +
+Strength energy damage and tests Speed vs. your Red; on a failure it is knocked Prone. The line becomes
+dangerous terrain for the scene, and structures and Constructs along the line take triple damage."*
+Counterable (F-10).
+
+**The Unmooring** — the capstone: every Charge and every flame at once. The charge detonated; **a rider
+gated on "channelling 3 or more", once per scene, no Investiture.** *"While channelling 3 or more Blue
+or Red, all your active Charges detonate at once. Each detonation's radius increases to 15 feet and
+ignores deflect, and each deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have
+placed this scene merges into one zone for the rest of the scene, and that zone's damage increases to
+[Tier][Die] energy damage. Once per scene."*
+
+**The frame meeting.** Under Blue the read enemy is the one walking into the Charge; under Red every
+detonation is noise for the heat and Pyre's hit spends it. Positional; no card.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Set Charge | 1 Action; 1 Inv · entry | **the Blue face of Set; node dropped** | while channelling Blue |
+| — | Pyre | 1 Action; 1 Inv · entry | **the Red face of Set; 1 Inv kept; node dropped** | while channelling Red |
+| 1 | Pinpoint Charge | Free; 1 Inv | **Passive; —** | channelling 2 or more; on the supply |
+| 2 | Concussive Yield | Passive; — | Passive; — | — |
+| 3 | Cascading Failure | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 4 | Walking Ruin | Passive; — | Passive; — | — |
+| 5 | Combustion Chain | Reaction; — | **Special; —** | once per round |
+| 6 | Fault Line | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+| 7 | The Unmooring | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 10 → **3** (the costed face 1, Fault Line 2); Passives 2 → 3, Specials 0 → 1.
+
+### 3.3 Civilization — Build (Red / White)
+
+**Today:** 9 cards; 1 Passive, 1 Free Action, 1 Reaction, 2 single Actions, 3 two-Action, 1
+three-Action; 7 of 9 cost Investiture, tree-sum 11.
+
+**Shape.** Both entries are their faces — Forge Construct the machine, Lay Foundation the square — so
+**the entry nodes go**: the Red lane roots at Tempered Edge and Siege Form, the White lane at Trade
+Routes and Bonds of Community. Seven cards.
+
+**The supply**, on Kethane's power:
+
+> **Build** — · *the god's supply*
+> *While channelling Red* — **Action; spend 1 Investiture.** Forge a Combat Construct in an adjacent
+> space for the scene. The Construct has health equal to [Tier][Die] + twice your tier, deflect 1,
+> Speed 25 feet, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die]
+> impact damage. It acts on your initiative immediately after your turn. If it is destroyed you may
+> forge it again with this action. You may sustain one Construct.
+> *While channelling White* — **Free Action.** Designate a 10-foot square within Attunement Range as a
+> Foundation for the scene. Allies that begin their turn in a Foundation gain +1 to all defenses until
+> the start of their next turn. You may sustain up to your tier Foundations.
+
+**Cost — the body.** The Construct is Ben's named case: a creature built of Investiture, reforged
+when it falls, with a six-card ladder that makes it the tree. **The Red face is costed (H-3):** 1
+Investiture per forge and per reforge, the Channel required. The White face is free: a Foundation is
+a square with a cap of tier. The ladder that arms the body: Siege Form (1 today) and Trade Routes (1)
+ride at 1; Arsenal and Bastion (2 each, scene-long) take the amount gate — a one-time 2 as today.
+
+**Tempered Edge** — Passive; — → **unchanged** (+[Tier][Die] energy on the Construct's melee hits).
+
+**Siege Form** — 2 Actions; 1 Investiture → **2 Actions; —.** *"While channelling Red or White,
+command your Combat Construct to enter Siege Form for the scene: its Speed becomes 0, it gains +2
+deflect, and its melee attack is replaced by a ranged attack (60 feet) dealing [Tier][Die] + Strength
+energy damage. You may end Siege Form as a Free Action on your turn."*
+
+**Trade Routes** — 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Red or White,
+choose two of your active Foundations. For the scene they are linked: an ally standing in either may
+teleport to the other as a Free Action once per turn."*
+
+**Bonds of Community** — Reaction; — → **Special; — , unconditional** (a rally on a drop; no test).
+*"When a character drops to 0 health within one of your Foundations, each ally in any of your
+Foundations gains temporary health equal to your White and an advantage on its next attack test. Once
+per round."*
+
+**Arsenal** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While channelling
+2 or more Red or White: for the scene your Combat Construct gains an additional attack per turn, and
+when it reduces a character to 0 health you may immediately command it to move up to 15 feet and make
+a free Strike against a character within reach."* The arm is on the Construct, not the disciple, so it
+keeps its printed duration (F-4).
+
+**Bastion** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While channelling
+2 or more Red or White: for the scene each of your Foundations is fortified. Enemies treat fortified
+Foundations as difficult terrain, and an enemy that enters one takes [Tier][Die] impact damage and
+tests Agility vs. your Red; on a failure it is Slowed until the start of its next turn. Your Combat
+Construct standing in a fortified Foundation gains +2 to all defenses."*
+
+**Magnum Opus** — the capstone: the body made a Colossus for the scene, once. It is a scene
+transformation, not a detonation, so the flood and the rite cost the same 3 (§2.1 question 2); the
+flood adds rank 3, which is where a Colossus belongs. **A rider gated on "channelling 3 or more",
+once per scene, no Investiture** (H-7 offers the rite: the body's whole line is costed, and the
+capstone could follow it). *"While channelling 3 or more Red or White, your Combat Construct
+transforms into a Colossus for the scene: it gains [Tier][Die] × 2 additional health, +2 to all
+defenses and reach 10 feet, and its attacks deal an additional [Tier][Die] energy damage to each
+enemy within 10 feet of the target; each affected enemy tests Agility vs. your Red and is knocked
+Prone on a failure. Each ally in one of your Foundations gains +2 to all defenses. Once per scene."*
+
+**The frame meeting.** Under White the Construct is an ally at an ally's shoulder — the line's deflect
+covers the machine, the Foundation covers the formation — positional. Under Red the smith's own hits
+carry the heat and the Construct's Slams are noise that builds it; the heat is the mage's own by the
+Red rule, so the Construct's hits do not spend it. A card that extended the heat to the Construct is
+possible and is not recommended (H-3's note): the body is already the tree, and Tempered Edge is its
+fire.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Forge Construct | 1 Action; 1 Inv · entry | **the Red face of Build; 1 Inv kept; node dropped** | while channelling Red |
+| — | Lay Foundation | Free; 1 Inv · entry | **the White face of Build; node dropped** | while channelling White |
+| 1 | Tempered Edge | Passive; — | Passive; — | — |
+| 2 | Siege Form | 2 Actions; 1 Inv | **2 Actions; —** | while channelling |
+| 3 | Trade Routes | 1 Action; 1 Inv | **1 Action; —** | while channelling |
+| 4 | Bonds of Community | Reaction; — | **Special; —** | once per round |
+| 5 | Arsenal | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 6 | Bastion | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 7 | Magnum Opus | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
+
+Tree-sum 11 → **1** (the costed face); Specials 0 → 1.
+
+### 3.4 Death — Wither (Black / Green)
+
+**Today:** 9 cards; 1 Passive, 4 single Actions, 3 two-Action, 1 three-Action; 8 of 9 cost
+Investiture, tree-sum 14 — the atlas's most expensive tree with Chaos. Its Green entry, Reaper's
+Harvest, is not an action: it is the economy, always on.
+
+**Shape — the tree that keeps a node.** Withering Touch is exactly its face and its node goes.
+Reaper's Harvest is *more* than a face — a passive that pays Investiture and marks a Remain on every
+death in range, seeds a Remain each scene, and senses them — and it keeps its node as the Green lane's
+root (§2.1 question 1). So **Death's supply has one face**, and the Green Channel's work in this tree
+is spending, not supplying: the Bone Garden, the servant, the séance. Eight cards. H-1 (c) offers the
+other reading — the Bone Garden as the Green face — and H-1 (d) the harder one — the Harvest itself
+moved onto the power as a Green *passive face* that pays only while channelling Green.
+
+**The supply**, on Morrath's power:
+
+> **Wither** — Action · *the god's supply*
+> *While channelling Black* — make a melee weapon attack. On a hit, deal an additional [Tier][Die] +
+> Willpower vital damage, and the target cannot regain health until the end of your next turn.
+
+Events: Withering Touch's arm (`withernext`) and armed damage bonus (melee weapon only, `healCutFraction
+0`) become the face's, gated `channelblack`. Under Black's frame the forsaken is the one you wither,
+and the Draw Weakens it — Consuming Decay's gate.
+
+**Cost — the body and the rites.** Death is where the priced identity survives, on four cards, each
+for its own reason. **Risen Servant** raises a body: Ben's case in words. It keeps **1 Investiture and
+a Harvested Remain** as a costed rider (H-6). **Death Ward** protects anyone, is cast as often out of
+combat as in, and a free "first drop to 0 becomes 1" on the whole party is the kind of scene-long gift
+question 2 looks at hard: it keeps its 2 as a rite, no Channel needed (H-5). **Speak with the Fallen**
+and **Raise Dead** are rites in the plain sense — a séance and a resurrection, outside the round —
+and keep 2 and 4. The Bone Garden costs a Remain, which is the price; Consuming Decay and Necrotic
+Cascade ride.
+
+**Reaper's Harvest** — Passive; — · *node kept* → **unchanged.** *"When a character drops to 0 health
+within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You
+begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier;
+unused Remains fade at the end of the scene. You sense each of your active Remains through any
+obstruction."* The refund funds the maintain, as the marks' refunds do.
+
+**Consuming Decay** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
+channelling 2 or more Black or Green, choose a Weakened character or a character below half health
+within Attunement Range. For the scene, at the start of each of its turns it takes [Tier][Die] vital
+damage and you regain health equal to half the damage dealt. One instance per character."*
+
+**Bone Garden** — 1 Action; 1 Investiture and a Remain → **1 Action; a Harvested Remain.** *"While
+channelling Black or Green, spend a Harvested Remain on a 10-foot square within Attunement Range. For
+the scene the square is difficult terrain, and a character that ends its turn in it takes [Tier][Die]
+keen damage from grasping bone."*
+
+**Death Ward** — 2 Actions; 2 Investiture → **unchanged — a rite.** *"Spend 2 Investiture and choose a
+character within Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success,
+or freely on a willing target, the effect applies. For the scene, the first time the target would drop
+to 0 health it instead drops to 1 and gains [Tier][Die] + Presence temporary health. The effect then
+ends."* Counterable (F-10).
+
+**Necrotic Cascade** — 1 Action; 1 Investiture → **1 Action; — , an arm the disciple wears (F-4).**
+*"While channelling Black or Green, arm the cascade. While you channel, when a character drops to 0
+health within Attunement Range, each enemy within 10 feet of it takes [Tier][Die] spirit damage."* The
+`cascadearmed` status ends with the Channel.
+
+**Risen Servant** — 1 Action; 1 Investiture and a Remain → **1 Action; 1 Investiture and a Harvested
+Remain — a costed rider.** *"While channelling Black or Green, spend 1 Investiture and a Harvested
+Remain to raise a Risen Servant in an adjacent space for the scene. The servant has health equal to
+[Tier][Die], Speed 25 feet, defenses equal to yours minus 3, and one melee attack per turn dealing
+[Tier][Die] keen damage. It is immune to Frightened, Compelled and Disoriented, and acts on your
+initiative immediately after your turn. You may sustain up to your tier Risen Servants."*
+
+**Speak with the Fallen** — 2 Actions; 2 Investiture → **unchanged — a rite** (2 Investiture and a
+Remain, or the touch of remains dead within a day; three questions; +2 per repeat).
+
+**Raise Dead** — 3 Actions; 4 Investiture → **unchanged — a rite.** The resurrection stands outside
+the round and the Channel; it keeps its 4 and its once per scene. Not flood-gated: a rite is not a
+detonation, and the tree's price belongs here if it belongs anywhere (H-7).
+
+**The frame meeting — and the Bone Garden.** Under Black, positional: the forsaken is withered,
+decayed, cascaded. Under Green the question §1.4 named: is the Bone Garden "your difficult terrain"
+for the home ground? It is laid by a Death talent as a Green-coloured zone, and it bites *anyone* who
+ends a turn in it, allies included (Ben R5); an ally on it would regain the channelled number at the
+start of their turn and take [Tier][Die] keen at the end. **The recommendation is that it does not
+count (H-8):** the Garden is bone, not home ground, and the Green frame reaches Death's disciple only
+through the terrain their own Draw lays. No card.
+
+| # | Talent | Today | Proposed | Condition |
+|---|---|---|---|---|
+| — | Withering Touch | 1 Action; 1 Inv · entry | **the Black face of Wither; node dropped** | while channelling Black |
+| 1 | Reaper's Harvest | Passive; — · entry | Passive; — · *node kept* | — |
+| 2 | Consuming Decay | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
+| 3 | Bone Garden | 1 Action; 1 Inv + Remain | **1 Action; a Remain** | while channelling |
+| 4 | Death Ward | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (rite) |
+| 5 | Necrotic Cascade | 1 Action; 1 Inv | **1 Action; —** | while channelling; holds while channelling |
+| 6 | Risen Servant | 1 Action; 1 Inv + Remain | **1 Action; 1 Inv + a Remain** | while channelling (costed) |
+| 7 | Speak with the Fallen | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (rite) |
+| 8 | Raise Dead | 3 Actions; 4 Inv | 3 Actions; 4 Inv | — (rite; once per scene) |
+
+Tree-sum 14 → **9**; costed 8 of 9 → 4 of 8. Death keeps the most price in the atlas, on its bodies and
+its rites — where the god's identity says it should.
+
+### 3.5 The four trees, together
+
+| | Cards | Costed today → proposed | Tree-sum today → proposed | Kept costs | Faces | Flood |
+|---|---|---|---|---|---|---|
+| Fate | 9 → 7 (+1) + supply | 7 → 0 | 11 → 0 | — | 2 (Free / Action) | 1 |
+| Destruction | 9 → 7 + supply | 6 → 2 | 10 → 3 | Pyre (costed face), Fault Line (release) | 2 (one costed) | 1 |
+| Civilization | 9 → 7 + supply | 7 → 1 | 11 → 1 | Forge Construct (costed face) | 2 (one costed, Free / Action) | 1 |
+| Death | 9 → 8 + supply | 8 → 4 | 14 → 9 | Risen Servant (costed rider), Death Ward, Speak with the Fallen, Raise Dead (rites) | 1 | 0 |
+
+The ground is where the cost stays: two bolts, two bodies, three rites. Seven cards keep a price
+across the four trees, against none in the marks — the shape Ben predicted at gate 2, and the reason
+the trees are decided one at a time.
+
+### 3.6 Gate 3 — the menu
+
+**H-1. The entry nodes, per tree.** (a) **Fate, Destruction and Civilization drop both; Death drops
+Withering Touch and keeps Reaper's Harvest as the Green lane's root, its supply one-faced —
+recommended** (§2.1 question 1: an entry that is more than a face keeps its node). (b) All four keep
+both nodes. (c) Death's Green face is the Bone Garden, and both Death nodes drop (seven cards; the
+Garden then costs a Remain on the face). (d) Reaper's Harvest moves onto Morrath's power as a Green
+passive face that pays only *while channelling Green* — the two-face choice made to bite (wither or
+reap, not both in a round); a real nerf to the economy that the scene-start Remain softens.
+
+**H-2. Fate's amendment card.** (a) **Add *Hallowed Ground* (name Ben's) as Fate's eighth card behind
+Bulwark Ground — recommended** (the one meeting in the atlas the frames do not reach on their own;
+Green's Channel otherwise gives Fate only the Snare face). (b) No new card; the Green Channel reaches
+Fate through the disciple's Draw terrain only.
+
+**H-3. The costed faces.** (a) **Pyre and Forge Construct keep 1 Investiture as faces, the Channel
+still required — recommended** (the bolt and the body; Ben's Red ruling and his gate-2 note).
+(b) Both free, gated on 2 or more. (c) Forge Construct free to forge, 1 Investiture to reforge; Pyre
+as (a).
+
+**H-4. Fault Line.** (a) **A release at 2 Investiture, no Channel needed, counterable — recommended**
+(an attack built of Investiture alone). (b) A rider gated on 2 or more.
+
+**H-5. Death Ward.** (a) **A rite at 2 Investiture, no Channel needed — recommended** (protection for
+anyone, as often out of combat as in). (b) A rider gated on 2 or more.
+
+**H-6. Risen Servant.** (a) **1 Investiture and a Remain, while channelling — recommended** (Ben's
+case). (b) A Remain only. (c) 1 Investiture and a Remain, and no Channel needed (a rite).
+
+**H-7. The capstones, per tree.** (a) **Thread of Inevitability, The Unmooring and Magnum Opus on the
+flood, once per scene; Raise Dead a rite at 4 — recommended** (three detonations or transformations;
+one resurrection). (b) Magnum Opus a rite at 3, following its body's costed line. (c) All four rites.
+
+**H-8. The Bone Garden and the home ground.** (a) **Does not count as the disciple's difficult
+terrain — recommended** (bone, not home ground; it bites allies). (b) Counts.
+
+**H-9. Inevitable Snare and Pinpoint Charge.** (a) **Passives on the supply, gated on 2 or more —
+recommended** (a per-round tax while placing, which the +1 per placement was). (b) Free Action, 1
+Investiture kept (costed riders). (c) Passives at 1.
+
+**H-10. The four supplies' names.** (a) **Ordain, Set, Build, Wither — recommended.** (b) Ben's own
+(*Set* is the weakest of the ten; *Demolish* and *Kindle* were considered and set aside — the second
+is a Red talent's name).
