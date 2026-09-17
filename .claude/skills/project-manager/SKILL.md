@@ -274,6 +274,16 @@ Never commit a page with a filled snapshot slot (the tracked file keeps `{}` in 
 **The phone inbox** is read in step 0 (above). A note's `status` is `new` until you mark it
 `seen`; Ben can delete his own notes from the page.
 
+## Landing a worker PR against a moved `main` — the script (added 2026-09-17)
+
+Every parallel worker PR conflicts with `main` on the same files: the month changelog (two deltas at the top), its README row, the checklist, sometimes a shared skill file or the audit ledger, and the generated files (dashboard, assembled engine, primer, codex, census). Resolving them by hand cost the 2026-09-16 session a mistake per PR until it became a script. **Use it:**
+
+```
+bash .claude/skills/project-manager/landing/land.sh <pr-number> <branch>
+```
+
+It adds a detached `$TEMP` worktree at the branch tip, merges `origin/main`, runs `landing/resolve.py` on the conflicts — main's changelog plus the branch's own new deltas re-inserted and recounted; the README row recounted; the checklist, TODO file, rulings, ledger, `ENGINE_INDEX.md`, `CLAUDE.md`, `scripts/README.md` and the shared skill files with the branch's line edits **replayed** onto main's copy by exact match (it exits 2 and names the file when an edit's context is gone — resolve that one by hand in the kept worktree, then rerun the tail); the generated files taken from main and regenerated — then reassembles the engine if a source changed, rebuilds the primer, codex and dashboard, commits the merge (no trailer — iron rule 6), runs every gate, pushes `HEAD:<branch>` by refspec (the worker's own worktree may still hold the branch; remove it first with `git worktree remove --force`), waits for CI and merges with `--match-head-commit`. Read the two files' headers before the first run of a session; the repo path is fixed to `C:\dev\Skilltrees`.
+
 ## Operating windows and session rotation (Ben, 2026-09-05 — replaces the 09-04 daily rotation)
 
 Ben's instruction, verbatim: *"I want you to run on nights and weekends, and save compute during

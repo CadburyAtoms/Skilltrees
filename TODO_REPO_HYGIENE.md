@@ -4814,7 +4814,7 @@ Close the Case / Shadow Step, Hunter's Deadly Trap, Scholar's Ongoing Care, Warr
 
 **PM:** lane R · model sonnet · size XS · deps none · Filed 2026-09-16 by the PM from R-157 (a).
 
-## 209. [ ] The Blue pass on the Channel model — Countercurrent (the Counterspell rename, M17), Blue's frame as the per-die disadvantage injector's second consumer, and Blue's twenty-five cards worked as §3 worked White's; Ben's own gated session from a brief like item 200's (DESIGN, DOCS-ONLY; the build rides item 198) (2026-09-16)
+## 209. [x] DONE 2026-09-17 (PR #431, Ben's own session) — The Blue pass on the Channel model — Countercurrent (the Counterspell rename, M17), Blue's frame as the per-die disadvantage injector's second consumer, and Blue's twenty-five cards worked as §3 worked White's; Ben's own gated session from a brief like item 200's (DESIGN, DOCS-ONLY; the build rides item 198) (2026-09-16)
 
 **Brief written 2026-09-16 18:40 ET:** `docs/briefs/channel-blue-pass.md` — the prompt Ben pastes into a session of his own (worktree `%TEMP%\edha-channel-blue`, branch `design/channel-blue`, deliverable `docs/design/channel-blue.md`, five gated sections).
 
