@@ -14,8 +14,8 @@ gate log is the record.
 | Gate | Section | Status |
 |---|---|---|
 | 1 | §1 Blue's three trees, and the reading applied | **✅ approved 2026-09-16** — BL-1 … BL-7 all (a) |
-| 2 | §2 The twenty-five cards | pending |
-| 3 | §3 The mix, against the bands | pending |
+| 2 | §2 The twenty-five cards | **✅ approved 2026-09-16** — BL2-1 … BL2-6 all (a) |
+| 3 | §3 The mix, against the bands | **✅ approved 2026-09-16** — the two flagged numbers accepted in the same line |
 | 4 | §4 The build notes for Blue | pending |
 | 5 | §5 Close-out | pending |
 
@@ -239,3 +239,318 @@ one word). (b) Widen now to *"an Investiture-costing talent or a Channel"*, rest
 > gate 3 made one, and confirmed by his own prediction that Conflagration is almost all releases);
 > the second produced **§1.3**, and with it the Overwhelming Authority finding that §5 hands to the PM.
 > §1 committed on that answer.
+
+---
+
+## 2. The twenty-five cards
+
+Every card below was read from `data/leyline.json` (structure and source prose) and
+`data/authored/leyline-blue.json` (the authored card and its `events`) on 2026-09-16 at `main`
+`7d27e6a`. Nothing is written from memory.
+
+### 2.1 The conversion rules, applied to Blue
+
+1. **Illusion's six costed cards are releases** (BL-3 (a)). The barricade, the double, the static
+   image, the living one, the walls and the shove all spend Investiture on **making or moving a
+   thing** — outside the frame's domain — so they keep their cost *and* their action type. Six of
+   Blue's seven surviving Investiture costs sit in one tree. *(BL2-A.)*
+2. **Two of five Reactions become Specials; three stay** (rule 3). Modifiers — Intercept (a
+   disadvantage) and Anticipate (an advantage) — become Specials with "Once per round."; the three
+   that *test* — False Premise, Countercurrent and Redirect Momentum — stay Reactions. 20 % → 12 %,
+   which answers the ecosystem review's "five Reactions for one slot". *(BL2-B.)*
+3. **Read Intent rides the payment** — rule 7's Blue consumer, the Guiding Signal shape. The reading
+   names an enemy at every payment; Read Intent is what tells you what that enemy will do with the
+   roll you just compromised. *(BL2-C.)*
+4. **Four Specials that go fully free gain "Once per round."** — Intercept, Reactive Analysis,
+   Pattern Recognition, Anticipate (White's precedent: Interposing Shield, Pillar of Order). Cards
+   keeping a cost (Probability Cascade's Opportunity) or firing on a once-a-turn trigger do not need
+   it. *(BL2-D.)*
+5. **Rule 5's flood gate has no Blue consumer.** White's capstone gated on the flood because it cost
+   3 Investiture; **Blue has no 3-Investiture card at all** — its dearest are two 2s. The flood's
+   payoff in Blue is intrinsic: three instances is the whole roll. *(BL2-E.)*
+6. **Rule 6 does not apply either — Blue's frame *is* the number.** White needed Voice of Authority
+   to show what a flood buys the Cognitive tree, because White's frame was deflect. A Blue rider
+   reading the channelled Investiture would double-dip on the reading it already paid for. *(BL2-F.)*
+7. **Free passives stay free and unconditional** (rule 2). No Blue passive is the frame's clause in
+   another Realm the way Shield Wall was; the one arguable case is Absolute Stillness (BL2-3).
+
+**The domain, as gate 2 restates it** (BL2-2 (a)). §1.2 stated Blue's domain as *"an enemy you have
+read, and the roll it is about to make"*. Two cards sit on that boundary — Reactive Analysis grants
+*you* an advantage against a character, Anticipate grants an *ally* one when resisting influence —
+and the narrow wording puts both outside it. Gate 3 of the parent design read White's domain broadly
+(Mending Aura heals, Pillar of Order blanks a Complication, and neither is deflect), so Blue's domain
+is read the same way: **the contested roll and the plan behind it — advantage, disadvantage,
+prediction, denial.** Advantage and disadvantage are one currency under R-155 (a). Illusion's business
+is making and moving things, which is outside it either way.
+
+### 2.2 The twenty-five cards
+
+Format: **name** — *tree / Realm* · today → proposed · the card sentence as it would ship (word count;
+was). Prerequisites and connections are unchanged throughout — this pass changes action type, cost and
+text, not the graph.
+
+**Blue Leyline Attunement** — *Key* · Passive; — → **unchanged** (M10). *"When you Draw Mana, gain an
+advantage on your next Cognitive test."* (12)
+
+**Forewarned** — *Foresight / Spiritual* · Passive; — → **unchanged.** *"At the start of each round,
+silently declare one character and one action type. If that character takes the declared action before
+your next turn, you gain 1 Reaction."* (29)
+
+**Intercept** — *Foresight / Spiritual* · Reaction; 1 Investiture → **Special; — (BL2-B, BL2-D).**
+*"While channelling Blue, when a character you designated with Forewarned takes the declared action,
+that action gains a disadvantage. Once per round."* (22; was 20) — not redundant with the frame: the
+declared action need not be the enemy's *next* test, and under BL-5 (a) it is a second instance on a
+second die.
+
+**Telepathic Network** — *Foresight / Spiritual* · 2 Actions; 2 Investiture → **unchanged — a
+release** (rule 4; scene-long). *"You communicate telepathically with characters within Attunement
+Range for the scene. Allies in the network share your expertise."* (18) — castable alongside the
+Channel on the opening turn (1 Action + 2), and Anticipate now depends on it being up.
+
+**Calculated Patience** — *Foresight / Spiritual* · Passive; — → **unchanged.** *"When you take a slow
+turn, your first test that turn gains an advantage."* (14; the missing article is §2.5's fix)
+
+**Reactive Analysis** — *Foresight / Spiritual* · Special; 1 Investiture → **Special; — (BL2-2 (a)).**
+*"While channelling Blue, when a character within Attunement Range fails a test, gain an advantage on
+your next test against them. Once per round."* (24; was 22)
+
+**Probable Outcome** — *Foresight / Spiritual* · Passive; — → **unchanged.** *"After all creatures
+choose fast or slow turn, you may change your choice."* (13)
+
+**Read Intent** — *Foresight / Spiritual* · 1 Action; 1 Investiture → **Special; — , on the payment
+(BL2-C).** *"When you channel or maintain Blue, test Blue vs. the read enemy's Cognitive defense. On a
+success, the GM reveals the action it intends next round."* (26; was 25)
+
+**Collected** — *Foresight / Spiritual* · Passive; — → **unchanged.** *"Increase your Cognitive and
+Spiritual defenses by 2."* (8)
+
+**Redirect Momentum** — *Illusion / Physical* · Reaction; 1 Investiture → **unchanged — a release**
+(BL2-A; a contest, so rule 3 keeps it a Reaction). *"When a character within Attunement Range moves,
+spend 1 Investiture to test Blue vs. Athletics. On a success, reduce its remaining movement by [Size]
+or push it [Size] feet in any direction."* (32)
+
+**Phantom Step** — *Illusion / Physical* · Passive; — → **unchanged.** *"When an ally within Attunement
+Range moves, they may move an additional [Size] feet without provoking Reactions."* (17)
+
+**Holographic Illusion** — *Illusion / Physical* · Free Action; 1 Investiture → **unchanged — a
+release.** (30)
+
+**Phantom Barricade** — *Illusion / Physical* · 1 Action; 1 Investiture → **unchanged — a release.**
+(35) — §1.1's own named example of the shape.
+
+**Ghostly Walls** — *Illusion / Physical* · 1 Action; 2 Investiture → **unchanged — a release.** (32)
+
+**Living Image** — *Illusion / Physical* · Special; Variable Investiture → **unchanged — a release**
+(the per-round upkeep is the cost). (39)
+
+**Absolute Stillness** — *Illusion / Physical* · Passive; — → **unchanged (BL2-3 (a)).** *"Creatures
+you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions."* (17)
+— gated behind Ghostly Walls (a 2-Investiture release) and Blue 3+, a harder gate than any "while
+channelling" condition; a lock should hold whether or not you keep paying.
+
+**Phantom Double** — *Illusion / Physical* · 2 Actions; 2 Investiture → **unchanged — a release.**
+(102; R-136's sentence stays exactly as ruled)
+
+**Subtle Suggestion** — *Calculation / Cognitive* · Special; 1 Investiture → **Special; —.** *"While
+channelling Blue, when you successfully influence a character, it also becomes Disoriented until the
+end of your next turn."* (20; was 23) — now word for word White's Overwhelming Authority, which the two
+cards already were before this pass (README §"Eleven percent of the system is copy-paste"); flagged
+here, not created here.
+
+**Pattern Recognition** — *Calculation / Cognitive* · Special; 1 Investiture → **Special; — (BL2-D).**
+*"While channelling Blue, when you succeed on a Cognitive test against a character, its next test this
+round gains a disadvantage. Once per round."* (24; was 26)
+
+**Composed** — *Calculation / Cognitive* · Passive; — → **unchanged.** *"Increase your maximum focus by
+your tier."* (7)
+
+**Countercurrent** — *Calculation / Cognitive* · Reaction; 2 Focus, 1 Investiture → **Reaction;
+2 Focus** (gate 1, BL-1 (a); the rename is M17 (a)). *"While channelling Blue, when a character within
+Attunement Range spends Investiture on a leyline talent or a Channel, spend 2 focus to test Blue vs.
+their Cognitive defense. On a success, the effect fails."* (34; was 31)
+
+**Anticipate** — *Calculation / Cognitive* · Reaction; 1 Investiture → **Special; — (BL2-B, BL2-2 (a),
+BL2-D).** *"While channelling Blue, when you or an ally in your Telepathic Network would be targeted by
+an influence effect, that character gains an advantage on their resistance test. Once per round."*
+(31; was 29)
+
+**False Premise** — *Calculation / Cognitive* · Reaction; 1 Investiture → **Reaction; —** (a test, so
+rule 3 keeps it). *"While channelling Blue, when a character within Attunement Range succeeds on a
+Cognitive test, test Blue vs. its Cognitive defense. On a success, it cannot take Reactions until the
+end of its next turn."* (34; was 36)
+
+**Probability Cascade** — *Calculation / Cognitive* · Special; Opportunity, 1 Investiture → **Special;
+Opportunity (BL2-4 (a)).** *"While channelling Blue, spend an Opportunity to give a character within
+Attunement Range a disadvantage on each of its next two tests."* (22; was 21) — "each of its next two"
+states what the authored `count: 2` already means, which matters once instances are countable.
+
+**Baleful** — *Calculation / Cognitive* · Passive; — → **unchanged.** *"To resist your influence, a
+character must spend additional focus equal to your tier."* (14)
+
+### 2.3 R-98 — the two colliding disadvantage talents, resolved
+
+**R-98 is closed twice over, and this design closes it a third time.**
+
+1. **The data already moved.** R-98 (a) shipped as item 107 on 2026-09-14 (PR #374): False Premise's
+   payload was re-aimed off "their next test" onto the `noreactions` timed status. Today's authored
+   rule is `edha-triggered-effect {kind: status, statusId: noreactions, statusExpire: target}` and the
+   card reads *"cannot take Reactions until the end of its next turn"* (R-141 settled end-vs-start in
+   fix pass 13). **In current data the two cards no longer write the same payload at all.**
+2. **The rule dissolves the whole class.** R-98's premise — *"disadvantage is one binary scalar, so a
+   second source on the same roll is worth nothing"* — was never the game's rule. It described the
+   Edha engine's fold (`edhaNextModFoldMode`, `15-blue-calculation.js:239`). Under R-155 (a) each
+   disadvantage is counted, cancelled one for one, then **placed on its own die**, so two sources on
+   one roll are two instances on two dice. Item 202 builds it; §4 says what the frame needs from it.
+3. **The frame makes the point unavoidable.** Under the Channel a Blue mage is a standing disadvantage
+   source every round. A mage channelling 2 who also fires Pattern Recognition holds **three**
+   instances and places them, capped only by the dice actually in the roll (BL-4 (a), BL-5 (a)). The
+   design does not merely avoid the collision — it assumes stacking and prices the cap into the rule.
+
+So even if both cards still read "its next test", they would no longer collide. The engine artefact is
+gone at the rule level; item 107 removed the duplication at the data level.
+
+### 2.4 Before and after
+
+| # | Talent | Tree / Realm | Today | Proposed | Condition |
+|---|---|---|---|---|---|
+| 1 | Blue Leyline Attunement | Key | Passive; — | Passive; — | — (Draw Mana rider) |
+| 2 | Forewarned | Foresight / Spi | Passive; — | Passive; — | — |
+| 3 | Intercept | Foresight / Spi | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
+| 4 | Telepathic Network | Foresight / Spi | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+| 5 | Calculated Patience | Foresight / Spi | Passive; — | Passive; — | — |
+| 6 | Reactive Analysis | Foresight / Spi | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 7 | Probable Outcome | Foresight / Spi | Passive; — | Passive; — | — |
+| 8 | Read Intent | Foresight / Spi | 1 Action; 1 Inv | **Special; —** | on the payment |
+| 9 | Collected | Foresight / Spi | Passive; — | Passive; — | — |
+| 10 | Redirect Momentum | Illusion / Phy | Reaction; 1 Inv | Reaction; 1 Inv | — (release) |
+| 11 | Phantom Step | Illusion / Phy | Passive; — | Passive; — | — |
+| 12 | Holographic Illusion | Illusion / Phy | Free Action; 1 Inv | Free Action; 1 Inv | — (release) |
+| 13 | Phantom Barricade | Illusion / Phy | 1 Action; 1 Inv | 1 Action; 1 Inv | — (release) |
+| 14 | Ghostly Walls | Illusion / Phy | 1 Action; 2 Inv | 1 Action; 2 Inv | — (release) |
+| 15 | Living Image | Illusion / Phy | Special; Var Inv | Special; Var Inv | — (release) |
+| 16 | Absolute Stillness | Illusion / Phy | Passive; — | Passive; — | — |
+| 17 | Phantom Double | Illusion / Phy | 2 Actions; 2 Inv | 2 Actions; 2 Inv | — (release) |
+| 18 | Subtle Suggestion | Calculation / Cog | Special; 1 Inv | **Special; —** | while channelling |
+| 19 | Pattern Recognition | Calculation / Cog | Special; 1 Inv | **Special; —** | while channelling; once per round |
+| 20 | Composed | Calculation / Cog | Passive; — | Passive; — | — |
+| 21 | **Countercurrent** *(renamed)* | Calculation / Cog | Reaction; 2 Foc, 1 Inv | **Reaction; 2 Foc** | while channelling |
+| 22 | Anticipate | Calculation / Cog | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
+| 23 | False Premise | Calculation / Cog | Reaction; 1 Inv | **Reaction; —** | while channelling |
+| 24 | Probability Cascade | Calculation / Cog | Special; Opp, 1 Inv | **Special; Opp** | while channelling |
+| 25 | Baleful | Calculation / Cog | Passive; — | Passive; — | — |
+
+**Nine cards change** (3, 6, 8, 18, 19, 21, 22, 23, 24); **sixteen are untouched** — nine free passives
+and **seven releases**, six of them Illusion's. White changed sixteen and left nine; Blue is the mirror,
+and the release tree is the reason.
+
+### 2.5 The phrasing fixes that ride the data pass
+
+Not card changes — drift the data pass corrects while it is in the file, the way §3.3 fixed White's
+"gran". Under BL-6 (a) no "creature" is swept on a card whose sentence does not change.
+
+- **Absolute Stillness** — `data/leyline.json`'s source prose reads *"also **has** disadvantage"*; the
+  authored card already reads "have". Source follows the card.
+- **Calculated Patience** — *"gains advantage"* is missing its article; the standard is *"gains an
+  advantage"*. Both files.
+- **Anticipate** — its `tags` read `action; disadvantage; scene; control`. It is a Reaction (a Special
+  under this design) that grants an *advantage*, and is neither scene-long nor a disadvantage. Tags sit
+  outside the seven authored keys, so this is `data/leyline.json` only.
+
+### 2.6 Gate 2 — the menu
+
+**BL2-1. Read Intent.** (a) **A Special on the payment — recommended** (rule 7's Blue consumer; the
+reading names an enemy every round and this is what tells you what it will do — and it takes Blue from
+six self-initiated Action cards to five). (b) A 1-Action rider, free. (c) A release: 1 Action,
+1 Investiture, unchanged.
+
+**BL2-2. The domain boundary — Reactive Analysis and Anticipate.** Both grant an *advantage* rather
+than imposing disadvantage. §1.2's narrow wording puts both outside the domain. (a) **The broad
+reading — both are riders, and §2.1 restates the domain as *the contested roll and the plan behind it*
+— recommended** (the reading gate 3 actually applied to White; and advantage and disadvantage are one
+currency under R-155 (a)). (b) The narrow reading — both are releases keeping 1 Investiture each;
+Blue's costed share lands at 44 % rather than 36 %, and Investiture-priced cards at 9 rather than 7.
+
+**BL2-3. Absolute Stillness.** (a) **Stays a free unconditional passive — recommended** (gated behind
+a 2-Investiture release plus Blue 3+, a harder gate than "while channelling"; a lock should hold
+whether or not you keep paying). (b) Becomes a rider, W-1's exception.
+
+**BL2-4. Probability Cascade's Opportunity.** Rule 1 keeps an Opportunity or focus *only where it is
+the card's identity*, and the guide gives **focus** as Blue's identity cost. (a) **Keep the
+Opportunity — recommended** (White kept it on Mending Aura and Collective Resolve under the same rule;
+an Opportunity is a rare natural gate, and it does not stack on the focus pool Countercurrent already
+taxes at 2). (b) Convert it to 1 focus. (c) Drop it — a free rider with "Once per round."
+
+**BL2-5. Rule 5's flood gate.** Blue has no 3-Investiture card for the capstone rule to convert.
+(a) **No Blue card gates on the flood — recommended** (the payoff is intrinsic: three instances is the
+whole roll). (b) Gate Absolute Stillness on channelling 3 or more. (c) Gate Living Image on channelling
+3 or more.
+
+**BL2-6. The four "Once per round" caps** (Intercept, Reactive Analysis, Pattern Recognition,
+Anticipate). (a) **All four — recommended** (each goes fully free with a trigger that can repeat
+several times a round; White capped Interposing Shield and Pillar of Order for exactly this).
+(b) Only the two that were Reactions, leaving the two Specials uncapped as today.
+
+> **Answered at gate 2 (Ben, chat, 2026-09-16):** *"Gate 2 is good."* — **BL2-1 … BL2-6 (a)**, with the
+> two numbers flagged for gate 3 (Passive + Special landing below the published band, and Blue's
+> releases competing with its own Channel for the pool) accepted in the same line. §2 committed on that
+> answer.
+
+---
+
+## 3. The mix, against the bands
+
+| | Passive | Special | 1 Action | 2 Actions | Free | Reaction | Passive + Special | costed (any) | costed (Investiture) | Investiture tree-sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Blue today** | 9 (36 %) | 5 (20 %) | 3 (12 %) | 2 (8 %) | 1 (4 %) | 5 (20 %) | 56 % | 16 (64 %) | 16 (64 %) | 18 |
+| **Blue proposed** | 9 (36 %) | 8 (32 %) | 2 (8 %) | 2 (8 %) | 1 (4 %) | 3 (12 %) | **68 %** | **9 (36 %)** | **7 (28 %)** | **9** (+ the Channel, 1 – rank a round) |
+| *White proposed, for scale* | 10 (40 %) | 11 (44 %) | 1 (4 %) | 0 | 0 | 3 (12 %) | 84 % | 4 (16 %) | 1 (4 %) | 1 |
+| published Invested band | | | | | | 2 – 7 % | 71 – 87 % | 8 – 46 % | | |
+| leyline guide target | ~35 % | 25 – 30 % | ~15 % | ~8 % | 5 – 8 % | 5 – 8 % | | | | |
+
+*(The Appendix of `talent-comparison-mistborn-radiant.md` gives Blue as 60 % costed and 15
+Investiture-priced cards because its parser does not read Living Image's "Variable Investiture"; by
+card text it is 16 of 25, and the tree-sum of 18 is identical either way. The proposed row counts
+Living Image the same way — as a costed card whose numeric contribution is 0.)*
+
+**Read against the bands.** **Costed falls from 64 % to 36 %, inside 8 – 46 % for the first time**, and
+the Investiture tree-sum halves, 18 → 9 — Blue stops being the most expensive tree in the atlas.
+Reactions halve, 20 % → 12 %, matching White exactly and answering the review's "five Reactions for one
+slot". **Passive + Special lands at 68 %, just under the published 71 – 87 %**, and that is the one band
+Blue misses. It misses it for a structural reason worth naming rather than engineering around: six of
+Blue's cards are **self-initiated creations** — the barricade, the double, the image, the living one,
+the walls, the network — and a card that builds a thing is an Action. White had one costed Action left
+after conversion; Blue has five plus a Free Action, because Blue is the colour that makes things. Three
+points of a band is the price of having a release tree, and manufacturing Specials to close it would
+mean converting cards whose action type is the honest description of what they do.
+
+Against the guide's own targets the fit is better than the published band suggests: Passive 36 % against
+~35 %, 2 Actions 8 % against ~8 %, Special 32 % a little over 25 – 30 % (four cards changed type), single
+Actions 8 % under ~15 % because the Channel is now the self-initiated play, and Reactions 12 % over
+5 – 8 % — above the band on purpose, exactly as White's are, because three Blue Reactions genuinely *act*
+on someone else's turn (a contest, a denial, a counter).
+
+**Where the remaining cost sits.** Seven of the nine surviving Investiture points are in **Illusion**
+(Redirect Momentum 1, Holographic Illusion 1, Phantom Barricade 1, Ghostly Walls 2, Phantom Double 2);
+the other two are Telepathic Network. **Calculation carries no Investiture at all** — its only costs are
+Countercurrent's 2 focus and Probability Cascade's Opportunity. The colour's whole disadvantage engine
+is now free once the Channel is up, and everything that costs is something you build.
+
+**What a Blue player's turn is now.** Round 1: Channel Blue at 2 out of a pool of 4 — name the archer,
+and its d20 and its damage die both go wrong — and Read Intent fires free on that payment, so the GM
+tells you what the archer means to do. Two Actions left: Draw Mana (refill 2, and the Key hands you an
+advantage on your next Cognitive test) and one more. Every round after: maintain as a Free Action for
+1 or 2, three Actions, and every rider live for nothing — Pattern Recognition on a Cognitive success,
+Intercept on the action Forewarned called, Reactive Analysis on any failure in range, Subtle Suggestion
+on your own influence, Probability Cascade for an Opportunity, Anticipate over the network, and the
+Reaction held for False Premise or Countercurrent. The real decision each round is not *which talent* —
+they are all free — but **read or build**: a round you spend 2 on Ghostly Walls or Phantom Barricade is a
+round you did not pay the Channel, and the reading lapses. White never had that choice, because White
+had one release. It is the sharpest thing the Channel does to Blue, and it is the colour working as
+intended: the mage who sees what is coming decides whether to spoil the roll or to put a wall in front
+of it.
+
+**What it costs, in numbers.** Today a Blue round — Pattern Recognition plus a Reaction — spends
+2 Investiture for two plays and earns 2 back from a Draw (R-126). Under the Channel the same 2 buys the
+frame and every rider in the colour. Sixteen Investiture-priced cards become seven, and the seven are
+the things Blue makes. The balance yardsticks (item 210) should be re-run against this row as well as
+White's before item 198 builds.
