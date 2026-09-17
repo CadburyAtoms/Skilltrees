@@ -18,7 +18,7 @@ gate log is the record.
 | 2 | §2 The twenty-five cards | **✅ approved 2026-09-17** — RD2-1 … RD2-7 all (a) |
 | 3 | §3 The mix, against the bands | **✅ approved 2026-09-17** — RD3-1 (a); *"This is good. Continue."* |
 | 4 | §4 The build notes for Red | **✅ approved 2026-09-17** — RB-1 … RB-5 all (a); *"looks good"* |
-| 5 | §5 Close-out | — |
+| 5 | §5 Close-out | **✅ done 2026-09-17** — delta at the top of `docs/handoff-changelog/2026-09.md`; no new ruling filed; DOCS-ONLY PR from `claude/red-channel-work-go0bce` |
 
 **What this rests on** (read in this order; nothing below re-derives them):
 `docs/design/channel-actions.md` §1.1 (the four definitions — frame, channelled Investiture, rider,
@@ -802,3 +802,58 @@ a card whose trigger has been manual since 2bY.
 
 > **Answered at gate 4 (Ben, chat, 2026-09-17):** *"looks good"* — **RB-1 … RB-5 (a).** §4 committed
 > on that answer.
+
+---
+
+## 5. Close-out
+
+### 5.1 What was decided, gate by gate
+
+| Gate | Decided |
+|---|---|
+| 0 — the frame re-opened | **FR-1 (a), the heat**: the rising edge's trigger kept (damage dealt within Attunement Range, by anyone) and its currency changed from a test bonus to energy damage on the mage's next hit, capped by the spend. Three reasons recorded in §1.2; §2.5 of the parent design amended in the same commit (RD-7 (a)), the original struck through. |
+| 1 — the trees and the heat | Red's three trees on the F-0 (b) Realm map; Red's case is Black's (a damage frame conditioned on the field), not White's or Blue's; **the domain is the fight's damage** — what is dealt around you and the hits of yours that spend it; **an attack built of Investiture is a release** (Searing Bolt, Flame Surge, Arc Flash); the heat in full (§1.5: per creature damaged, spent on the next attack-test hit, feeds itself, persists while channelling, clamped on a smaller maintain, never "energy damage" for Kindle and its siblings). RD-1 … RD-7 all (a). |
+| 2 — the cards | All twenty-five (§2.2): **ten change, fifteen are untouched**, the graph untouched. Four inside-domain costs become riders; Kindle, Battle Fever and Feeding Frenzy become riders under W-1's test; Shatter Focus becomes a Special; Arc Flash and Afterburn take the "Red talent you activate" phrase; Emotional Overload and Reckless Gambit are releases; rules 5, 6 and 7 have no Red consumer. The identity tax under the Channel (§2.3) and Red's two economies. Five phrasing fixes verified against the source. RD2-1 … RD2-7 all (a). |
+| 3 — the mix | Red was **already inside the costed band**; costed 44 % → 28 %, Investiture nine cards → five, tree-sum 10 → 6, Passive + Special 76 % → 80 %. Reactions 0 % and Passives 44 % accepted as the colour's shape (RD3-1 (a)). The Channel's whole effect on Red is the heat; the flood-or-release decision. |
+| 4 — the build | Seven riders; **five new schema declarations** (seventeen across three colours); **two new dispatch sites**, `edhaActorRulesOf` and `edhaRulesForEvent`, gated at their returns (RB-1 (a)); the heat as the rally stack with four fields widened (J), a `@heat` token, a `whenDealerColor` gate (K), and the on-hit sweep as the definition of a hit; the heat lands as a separate energy instance after the hit (RB-3 (a)); trigger-applied damage learns to count (RB-2 (a)); **Chain Detonation's missing source gate is a drift fixed in the data pass** (RB-4 (a)); `oncePerRound` on `edha-focus` (RB-5 (a)); sixteen 🤖 CR rows. |
+
+### 5.2 What waits on Ben
+
+**Nothing.** Every judgment call in this pass was a menu entry answered at its gate, including the
+build's five. No new ruling was filed; `EDHA_RULINGS.md` §L still holds R-145 alone.
+
+### 5.3 What the PM should file
+
+1. **Add the Red leg to item 198's brief**, with §2.2 and §2.4 as its data pass and §4 as its build
+   spec. The leg is **larger than Blue's and different in kind from White's**: the frame is a stack,
+   not a number, and it is the first colour whose riders sit on the two config-only sweeps — say so in
+   the brief so it is sized right (Widening J's four fields, K's gate, `@heat`, the two new sites, RB-2's
+   announce change).
+2. **Widening F is now five sites, one field** (§4.1 finding 2). Item 198's builder should gate
+   `edhaActorRulesOf` and `edhaRulesForEvent` once, at their returns, before any colour's riders are
+   authored, so White's and Blue's legs do not have to be revisited when Red's lands.
+3. **Chain Detonation's source gate (RB-4)** is a live drift on `main` — its rule fires on any kill.
+   It rides the Red data pass under this design; if item 198 is far off, it is a one-field DATA fix
+   (REBUILD leyline) worth filing on its own.
+4. **RB-2's announce change also fixes Breaking Point's count** (§4.2 finding): damage applied inside a
+   trigger is invisible to the `damaged` watch today, so an arc that lands as a creature's second blow
+   does not Disorient it. Same fix, two consumers.
+5. **Item 210's yardstick re-run should cover Red's proposed row** (§3): +2 / +3 energy per hit on top
+   of Mighty, against R-111's ceiling, beside Black's identical frame numbers.
+6. **The struck text in `channel-actions.md` §2.5** is the record of the first frame; the amendment
+   block is what item 198 builds. `channel-blue.md`'s line predicting Conflagration's three costed
+   cards stay costed still holds and needs no edit.
+7. **Items 211 (Black, Green) and 212 (deity) inherit two things from this pass**: the domain rule now
+   sorted a third colour without a coin-toss, and a frame can be a **stack** (build, cap, spend, clear)
+   on the rally-stack pattern — Green's ground is a number and Black's hunt is a number, but a deity
+   tree that wants a building resource has a precedent.
+
+### 5.4 The record
+
+- Branch **`claude/red-channel-work-go0bce`**, a fresh remote clone from `main` at `ba796d4` (the same
+  isolation from the PM's checkout the Blue pass used). DOCS-ONLY: `docs/design/channel-red.md` (new)
+  and the amendment block in `docs/design/channel-actions.md` §2.5 are the only design files touched;
+  the close-out adds the changelog delta, its two counts, and the regenerated dashboard. One commit per
+  gate, each on Ben's answer; gates green before the PR.
+- `docs/PM_BOARD.md` was not touched, per the Blue brief's discipline (there was no Red brief; item
+  211's "one colour per session" was the scope, and this session was Ben's own).
