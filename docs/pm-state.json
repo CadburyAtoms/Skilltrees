@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-16T23:32:52.787Z",
+  "generatedAt": "2026-09-17T11:28:08.210Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "6b37dcc0d9",
-    "commit": "123911e",
+    "hash": "771f26303e",
+    "commit": "477e261",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -39,14 +39,14 @@
   "windowStatus": {
     "open": false,
     "changeAt": null,
-    "nextOpenAt": "2026-09-17T01:00:00.000Z"
+    "nextOpenAt": "2026-09-18T01:00:00.000Z"
   },
   "pm": {
-    "status": "idle",
-    "note": "All seven Sonnet workers landed (#423 – #429): the movement ladder, the opposed-test tie, the Diminished rename (now Lessened Die — say the word if you prefer abased), the Dodge dials as Foundry settings, enrichers on six heroic cards, the guides' tables, the scripts gate, the dirty-tree test, the shape corpus. Two REBUILDs are owed under the freeze (deity for the rename, heroic for the enrichers). The 2026-09-16 12:30 ET session (hand-started by Ben) did the work itself on Ben's word — no workers. Delivered: the branch and worktree sweep (origin has only main; 13 merged branches and 4 worktrees gone), the Metalworks codebase comparison with the 3.1.0 break list re-verified at the source (it holds — three updates, none changing the plan), and the Allomancy / Feruchemy / Radiant talent comparison against the three Edha atlases (the deity atlas is the outlier on every column). The Channel design pass landed (PR #419, your own session, all five gates): item 198 re-scoped to build it White-first, items 209 – 211 filed, R-159 filed. Item 201, the rules audit, merged at 17:31 ET (PR #417): Chapter 3 checked line by line — the movement ladder, the opposed-test tie, Grapple/Shove at 2 actions, the Diminished name, the Minion/Boss features and the level-3 attribute point are its finds; three rulings and four items filed. You answered the nine-ruling menu at 14:40 ET (defaults except R-150 b and R-152 b): items 191, 193, 194 unblocked, items 197 – 200 filed, the Channel design-pass brief is docs/briefs/channel-design-pass.md. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened.",
-    "waitingOn": "Ben: the Blue pass when you have time (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); veto a R-145 Dodge dial if you disagree; a word to dispatch item 183 (Opus) or items 188 – 190 and 192 (Sonnet)",
+    "status": "stopped",
+    "note": "This session stopped at Ben's word on the morning of 2026-09-17 so a fresh PM session of record can take over. Nothing is running: no workers, no open PRs, main is clean. Your table is still on cosmere-rpg 2.1.0 and untouched — the deploy freeze holds until you say session one has happened; two rebuilds (deity for the Lessened rename, heroic for the enrichers) are owed when it lifts. Yesterday: nineteen PRs — the Metalworks comparisons, the handbook as rules source, the rules audit and its seven fixes, the Channel design pass, rulings R-146 … R-159 all answered.",
+    "waitingOn": "Ben: the Blue pass in your own session (docs/briefs/channel-blue-pass.md); confirm when session one has happened (releases the swap to 3.1.0); a word on the name lessened only if you want abased; a word to the next PM to dispatch items 202 / 206 / 210 / 183 (Opus) or 213 (Sonnet)",
     "nextWakeAt": null,
-    "session": "2026-09-16 12:30 ET hand-started session (Ben, desktop chat) — analysis done in-session; awaiting Ben's answers"
+    "session": "STOPPED 2026-09-17 07:27 ET (the 2026-09-16 12:30 ET hand-started session; Ben starts the next PM of record himself)"
   },
   "workers": [],
   "usage": null,
@@ -2725,25 +2725,16 @@
     }
   ],
   "benOnly": [
-    "the session-one confirmation (R-144)",
-    "an R-145 veto if he disagrees",
-    "the Blue pass when he has time. Ben's Channel design session is live — a worktree .claude/worktrees/channel-actions-design-* on design/channel-actions appeared at 16:50 ET",
-    "nobody else touches it. the session-one confirmation (R-144)",
-    "an R-145 veto if he disagrees",
-    "the Channel design pass when he has time. Standing instruction from Ben (2026-09-16): the Mistborn Handbook is the rules source — anywhere the engine, the docs, the skills or memory contradict its Chapter 3 we correct ourselves",
-    "item 201 is the audit. What the next PM can dispatch, on Ben's word: item 183 (opus, L)",
-    "item 201 (opus, L — the rules audit, Chapter 3 first)",
-    "item 202 (opus, L — R-155 (a), dual-mode, 2.1.0-safe, phase 1 first)",
-    "items 203, 204, 205 and 208 (sonnet, XS – S — the movement ladder, the opposed-test tie, the Diminished rename, the advancement-table note; no deps)",
-    "item 206 (opus, L — the Minion and Boss features, R-158 (a))",
-    "item 210 (opus, M — the yardstick re-run on White's proposed cards, before 198)",
-    "item 207 behind 202",
-    "items 209 and 211 are Ben's own design sessions",
-    "items 188, 189, 190, 192, 196, 199 (sonnet, XS – S)",
-    "items 193 and 194 (sonnet, S — both 2.1.0-safe, F5 / REBUILD, nothing deploys until the freeze lifts)",
-    "item 191 behind 183",
-    "items 195, 197 behind 187",
-    "198 behind 187 and 200."
+    "the Blue pass in his own session (docs/briefs/channel-blue-pass.md, item 209)",
+    "the session-one confirmation",
+    "a word on lessened only if he wants abased. What the next PM can dispatch, on Ben's word: item 202 (opus, L — the advantage counter, R-155 (a), dual-mode, 2.1.0-safe, phase 1 first), item 206 (opus, L — the Minion and Boss features, R-158 (a)), item 210 (opus, M — the yardstick re-run before 198), item 183 (opus, L — the resolver behind items 178 – 180), item 213 (sonnet, XS)",
+    "items 197 and 195 wait on 187",
+    "198 waits on 187 and 200's Blue leg",
+    "207 waits on 202",
+    "209, 211 and 212 are Ben's own design sessions. Two practice notes for the next PM: (1) iron rule 6 forbids model identifiers in commit text — the harness's attribution reminder yields to it",
+    "do not add a Co-Authored-By trailer, and do not ask workers to",
+    "landing a worker PR against a moved main is a script now — .claude/skills/project-manager/landing/land.sh <pr> <branch> merges main in, resolves the changelog / README / checklist / shared skill files / generated files, gates, pushes and merges on green CI",
+    "read its header first."
   ],
   "inbox": [],
   "foundry": {
@@ -2753,20 +2744,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-14",
-      "time": "19:49",
-      "at": "2026-09-14T23:49:00.000Z",
-      "item": "#387 merged — the bestiary rulings close-out (interactive): R-128 … R-135 answered (a) from the phone; items 157, 159 and 160 done; an adversaries REBUILD owed",
-      "itemNo": "387",
-      "model": "—",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "merged",
-      "pr": 387
-    },
     {
       "date": "2026-09-14",
       "time": "19:58",
@@ -3592,9 +3569,23 @@
       "weightedM": null,
       "outcome": "filed",
       "pr": null
+    },
+    {
+      "date": "2026-09-17",
+      "time": "07:27",
+      "at": "2026-09-17T11:27:00.000Z",
+      "item": "PM handoff — this session STOPPED on Ben's word (*\"Close this session down. I'm starting a new pm session\"*). Handed over clean: main = 477e261 + this PR, tree clean, no workers, no open PRs, no worker worktrees. Nineteen PRs yesterday (#412 – #430). The next PM inherits the R-144 freeze, the two owed REBUILDs (deity, heroic), the dispatch list in the session line, and the landing script under .claude/skills/project-manager/landing/",
+      "itemNo": "412",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "handoff",
+      "pr": null
     }
   ],
-  "runLogTotal": 380,
+  "runLogTotal": 381,
   "runLogFrom": "2026-09-14",
   "dispatches": [
     {
