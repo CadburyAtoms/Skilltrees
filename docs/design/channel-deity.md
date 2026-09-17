@@ -1627,3 +1627,217 @@ recommended.** (b) The PM's own order.
 
 > **Answered at gate 5 (Ben, chat, 2026-09-17):** *"defaults"* — **J-1 … J-5 (a).** §5 committed on that
 > answer.
+
+---
+
+## 6. The build notes
+
+What item 198's deity leg builds, named from what exists — `ENGINE_INDEX.md`, the authored `events`
+read at `919bdf9`, and the parent design's §4 (the five powers, the `channel<colour>` statuses, the
+`edha-channel` event, Widenings A – I) plus the four colour legs' J – O. Every widening below is a
+field or a watcher on an existing primitive, lettered on from **P** so the PM can size the leg beside
+the others; nothing is a bespoke subsystem (iron rule 2a) and **no code or data changes in this pass**.
+Deploy class of the whole leg: **ENGINE + DATA — REBUILD deity (and one word in the leyline pack, the
+Countercurrent card) + ⟳ Sync Talents, at 3.x only**, after item 187's flip; at 2.1.0 nothing here
+exists and nothing here breaks.
+
+### 6.1 The data shape — ten powers, twenty faces
+
+**Ten `power` items in the deity pack**, one per god, built beside the five colour powers
+(`channelPowerDoc`'s shape, B-1): `system.type: "deity"` (a second registered power type beside
+`leyline`), `system.talentTree` the god's tree UUID (the Talents tab lists the seven or eight
+riders), `system.description` the supply's paragraph from §2 – §4, and **two embedded actions, one
+per face** — not one action with a picker (K-1). Two actions is what makes the approved tables
+buildable without a widening: a face keeps its own action type (Ordain's White face is `fre`, its
+Green face `act`) and its own consumption row (Pyre's and Forge Construct's faces carry `{resource:
+"inv", value: {min: 1, max: 1}}`; the other eighteen carry none), and each is gated on its colour by
+the field the leyline riders already use — `requireSelfStatus: "channelblue"` on the face's rules,
+refused before cost by the pre-cost veto (Widening F (ii)) with the toast naming the colour. On the
+Actions tab the disciple sees *Place Omen (Blue)* and *Place Omen (Black)* under Maelith's name; the
+card is one card. Kneel's standing advantage is a third rule on Tyrith's power, ungated
+(`edha-test-rider`, as on the talent today). Death's power carries one action.
+
+**The faces are authored where the entries are today (K-3).** The twenty entry records stay in
+`data/domain.json` and the ten `deity-*.json` overlays — same seven keys, same `events`, same
+Foundry round-trip through extract — with one new record field, `face: "<colour>"`, that
+`foundry-build.js` reads to emit the record as an embedded action on the god's power instead of a
+talent (the way `drawManaItemDoc` builds an action). Lint pass 1 keeps seeing seven keys; the
+Events tab in Foundry shows the face's rules on the power. The deity **`path`** item's `pathEvents`
+gains a `grant-items` rule for the god's power (today it grants nothing: `pathEvents` grants a Key
+only where `tree.keyUuid` exists, `foundry-build.js:408-423`), so taking the path in play delivers the
+supply the way a leyline path delivers Draw Mana.
+
+**The graph.** With the entry nodes gone, every `connections` entry naming an entry is removed and
+the card's `prerequisites` string becomes the path's gate (`Blue 2+; Black 2+`), which the build
+already renders as a rank requirement; Death's Green-lane cards keep `["Reaper's Harvest"]`.
+`validate.js`'s DAG and reachability sweeps pass on prereq-free roots; `tests/pipeline.test.js`'s
+regression case for the historic Death cycle is re-read at the build (it names Death cards that
+survive). **Hallowed Ground** is one new record in `data/domain.json` and `deity-fate.json`
+(`connections: ["Bulwark Ground"]`), with the placeholder name until Ben names it.
+
+**Attunement and the colour powers (F-5, F-6 — K-4).** The five leyline `path` items stay and become
+the attunements: they keep their two grants (the Key talent — whose `edha-draw-mana` rule *is* the
+rider — and Draw Mana) and drop nothing; the wizard's leyline step is retitled *Attunement* and its
+intro says what it grants. The colour **`power`** is granted by rank: one actor-update watcher on
+`system.skills.<colour>.rank` crossing 0 → 1 grants the colour's power (`edhaCleanPackCopy`, the
+mandatory pack→actor path) and 1 → 0 removes it (**Widening P**); the wizard's skill stepper writes
+ranks, so the grant fires at creation without the wizard knowing. The leyline path's tree link moves
+to the power (`system.talentTree`), which is where 3.1.0 lists the tree anyway; the Key talent stays a
+talent so `edha-draw-mana` keeps its document. The player-facing consequence — a colour's tree opens
+at rank 1 without a path pick — is already true of the data and becomes true of the sheet.
+
+### 6.2 The rider gate — one field, or one flag
+
+Every rider in §2 – §4 needs "while channelling A or B", and twenty-six of them "2 or more". The
+leyline legs gate **per rule**: `requireSelfStatus` (and `requireChannelled`, Widening H) declared on
+each handler type a rider uses — twenty-two declarations across the five colours, read at six
+dispatch sites (Widening F). The deity riders use **seventeen handler types outside that set**
+(`edha-reroll-react`, `edha-owner-list`, `edha-reveal`, `edha-overflow-thp`, `edha-mutation`,
+`edha-regen-grant`, `edha-marker-command`, `edha-zone`, `edha-snare-react`, `edha-detonate-list`,
+`edha-summon-effect`, `edha-summon`, `edha-turn-dot`, `edha-self-status`, `edha-decree`,
+`edha-adv-attack`, `edha-die-step`), which per-rule would mean seventeen more declarations and a
+schema test row each.
+
+**The recommendation (K-2 (a)) is an item-level gate instead:** `flags.edha-content.requireChannel:
+"blue,black"` and `requireChannelled: 2` on the *talent* (or the face action), read by the same six
+sites through the rule's parent item — one declaration, no per-type schema work, and a card's rules
+gate together, which is what every card in this document assumes. It is a **Widening Q** on
+Widening F: the six return filters and the pre-cost veto check the item's flag before the rule's
+field. Item 198 has not built the leyline legs yet, so the builder can adopt the flag for all fifteen
+trees and let the twenty-two per-rule declarations lapse — or keep both, the rule's field winning
+where set. That is the builder's call and the PM should carry it into item 198's brief; nothing in
+the card text depends on which. The "A or B" reading is the comma-list: any listed status satisfies.
+
+### 6.3 The widenings, lettered on
+
+| # | Widening | On | For | Consumers |
+|---|---|---|---|---|
+| P | rank-granted powers: an actor-update watcher grants / removes a colour's `power` at rank 1 / 0 | a new watcher beside the talent-budget hooks (`22-talent-budget.js`) | F-5, F-6 | every colour, every character |
+| Q | `requireChannel` / `requireChannelled` as item flags, read by the six Widening-F sites through the parent item | `edhaWatchersOfRule`, `edhaRulesForEvent`, `edhaActorRulesOf`, `edhaActorRuleOf`, the pre-cost veto, the Draw dispatcher | every rider in §2 – §4 | 72 riders + 20 faces |
+| R | `whenItemFlag: "face"` on H8 `edha-watch {watch: test}` — a test rolled by the owner's supply | `edha-watch` (`53-…js:590`) | Spreading Omen (a second placement on Place Omen's success; the Crown of Thorns shape, narrowed to the supply) | Chaos |
+| S | `endWithChannel: true` on `edha-self-status` — the status ends when neither of the owner's named channel statuses remains (checked after Widening C's arm-then-clear order, so a colour switch holds it) | `edha-self-status` (`53-…js:2241`) | F-4 (a): Necrotic Cascade, Crown of Thorns, Warlord's Fury, Concord, the Mantle | Death, Power, Order |
+| T | `lists: ["ordained"]` on the home-ground tick (Widening N, `edha-content.home`) — the turn-start regen also reads the owner's Ordained Ground squares while `channelgreen` | Green's Region tick (`50-green-territory.js`) | Hallowed Ground | Fate |
+| U | `power` as a source for `edhaColorRank`'s adversary fallback — a block that embeds a god's power supplies at role rank | `35-…js` `edhaColorRank` | R-137: deity-treed adversaries | the bestiary (item 121) |
+
+Widenings the deity leg **reuses without change**: A (`recordSpend` — the amount gate reads it), C
+(`exclusiveWith` — one Channel), E (`edha-channel` — no deity consumer; the supply is an Action, F-1
+(a)), H (`requireChannelled`, now on the item under Q), L (`boundToStatus` — the forsaken's ledger;
+Chaos's Omens are *not* bound to the Channel, they are the charge), M / N (the home ground, which T
+extends). **G (the channel-rider ActiveEffect) has one deity consumer:** Covenant's +1 defenses AE
+stays on the face's rules as today (it is the charge's, not the Channel's) — no G.
+
+### 6.4 What moves in the data, per file
+
+- **`data/domain.json`** — 20 records gain `face`; 70 records lose the "Spend N Investiture and"
+  opening and gain the "While channelling …" head per §2 – §4; `cost` → `—` on 65 of them, `1
+  Investiture` stays on Risen Servant (with the Remain), `2` on Fault Line, Death Ward and Speak with
+  the Fallen, `4` on Raise Dead; `action` moves on nine cards (five Reactions → Special, Spreading
+  Omen / Pack Share / The Pack / Sealed Edict / Inevitable Snare / Pinpoint Charge → Passive);
+  `connections` and `prerequisites` per §6.1; one new record (Hallowed Ground). "Vital" → "vital" on
+  seven cards.
+- **`data/authored/deity-*.json`** — the same sentences in `description`; `activation.cost.type` per
+  the type moves; the Investiture `consume` row removed on 65 cards and on 18 faces; the
+  `requireChannel` flag (Q) on 72 riders, `requireChannelled: 2` on 26, `: 3` on 9; `endWithChannel`
+  on five arms; Spreading Omen's second placement re-hung on R; Pack Share's and The Pack's
+  `packsight` / `packmind` arms and their `use` cards retired (the damage bonus and the public reveal
+  gate on the Channel); Necrotic Cascade's arm keeps its status (S ends it).
+- **`data/authored/leyline-blue.json`** — Countercurrent's trigger loses the word *leyline* (F-10; one
+  sentence, in item 198's Blue leg).
+- **`scripts/foundry-build.js`** — `face` → embedded action on the god's power; the deity `path`
+  grants the power; the ten powers from a `data/supplies.json`-shaped source or from the records
+  themselves (K-3 (a): the records).
+- **Validators and tests** — `validate-packs.js` already learns `power` in the White leg;
+  `docs/analysis/talent-ecosystem/deity-gate-audit.js` learns that a face pays its colour (a Green
+  face is a Green test or die for the audit's three channels); `validate-build.py` reads the path gate
+  where an entry prereq stood; `tests/handler-schemas.test.js` gains Q's flag rule or the seventeen
+  declarations; `tests/pipeline.test.js`'s Death-cycle case re-read; a `tests/supply.test.js` pinning
+  the two-face veto, the rank grant and removal (P), the arm's end with the Channel (S), and the
+  item-level gate (Q) — mutation-verified.
+- **Docs the build carries** (iron rule 5): the deity guide — Parts 1 – 2 and the cost scale replaced
+  by §1's model and §5's measured table (F-7, J-1); `ENGINE_INDEX.md` (P – U, the second power type);
+  `TREE-INTENT.md`'s ten deity lanes (the entries are faces); the player primer and one-pager ("2
+  ranks in each colour" stays; "devotion unlocks in play" now grants the supply); `EDHA_TALENT_HANDBOOK.md`;
+  the ten deity section headers in the engine (rule 3's ledger); `EDHA_RULINGS.md` R-108 and R-151
+  post-design lines (item 212's done-when).
+
+### 6.5 The bench rows
+
+All **🤖** — an agent drives every one on the Route A 3.1.0 copy (K-6); nothing here is Ben's
+judgment. Written to be added as a `## Supply — item 198` block under each god's existing `# BENCH —
+<god> (deity)` section when the leg lands, after the shared rows.
+
+**Shared (under `# BENCH — Engine-wide`):**
+
+| Row | Drive | Evidence |
+|---|---|---|
+| DS-1 rank grant | a PC at Blue 0 gains Blue 1 in the skill stepper | the Blue power appears with Channel Blue on the Actions tab; at Blue 0 again it is gone |
+| DS-2 attunement | the wizard's Attunement step, Blue | the Blue Key and Draw Mana granted; no Blue power until a rank |
+| DS-3 the path | drag a deity path onto a PC at 2+ / 2+ | the god's power with both face actions; the tree on its Talents tab |
+| DS-4 the face gate | Channel Black; use the Blue face | refused before cost with a toast naming Blue; the Black face fires |
+| DS-5 no Channel | no Channel; use either face | both refused before cost |
+| DS-6 the item gate | a rider flagged `2` while channelling 1, then 2 | refused, then fires; nothing spent either way |
+| DS-7 the arm | Crown of Thorns at 2; maintain at 1; skip a maintain | the crown holds at 1; ends at the end of the mage's next turn when unpaid |
+| DS-8 the switch | crowned under Red; Channel Black | the crown holds (Widening S after C's order) |
+| DS-9 Countercurrent | a Blue rival refuses a maintain of a crowned warlord | the Channel fails; the crown and the fury fall |
+| DS-10 adversary | a rival block embedding a god's power | supplies at role rank 2; a minion must open a Channel first |
+
+**Per god (one block each; the rows name the tree's own checks):**
+
+| Row | Drive | Evidence |
+|---|---|---|
+| DS-C1 Chaos | Place Omen under Blue on the read enemy; Spreading Omen owned | an Omen on it and one within 10 ft (R); Shatter Focus offers as a Special on its next test |
+| DS-C2 Chaos | Unravel at 3 with a forsaken bearer | the forsaken takes the vital branch, the rest spirit + Disoriented; once per scene refused after |
+| DS-K1 Knowledge | Study under Green then Red on one creature | 2 Insight, then the hit at +[Tier][Die] + tier and 1 more; Pack Share's ally bonus on an ally's hit with no arm card |
+| DS-K2 Knowledge | The Pack at 1, then at 2 | refused, then the ally's hit carries +Insight |
+| DS-L1 Life | Tend under Green with no Investiture; Prognosis owned; the Diagnosed is hit | the heal lands at no cost; 1 Investiture refunded |
+| DS-L2 Life | Apex Form at 2, then 3 | refused, then the scene grant; the Injury at scene end |
+| DS-F1 Fate | Ordain under White (Free) and under Green (Action) | an Ordained square, then a Snare; Inevitable Snare only at 2 |
+| DS-F2 Fate | Hallowed Ground; an ally starts its turn on an Ordained square while channelling Green 2 | +2 health (T); none while channelling White |
+| DS-D1 Destruction | Set under Red | 1 Investiture spent; the Pyre hit carries the heat |
+| DS-D2 Destruction | Fault Line with no Channel | fires at 2 Investiture (a release) |
+| DS-V1 Civilization | Build under Red twice (forge, reforge after a kill) | 1 Investiture each; one Construct at a time |
+| DS-V2 Civilization | Build under White | a Foundation, no cost, cap tier |
+| DS-M1 Death | Wither under Black on the forsaken; Draw as a Green attunement | +vital and no healing on the hit; the forsaken Weakened by the Draw? **no** — a Green Draw lays terrain; the Weakened pulse is Black's attunement only |
+| DS-M2 Death | Risen Servant with a Remain; Death Ward with no Channel | 1 Investiture + the Remain; the Ward at 2, no Channel needed |
+| DS-M3 Death | Necrotic Cascade armed; drop the Channel | the `cascadearmed` status ends (S) |
+| DS-O1 Order | Declare under Blue then White | an Edict, then a Covenant with its +1 AE; Sealed Edict only at 2 |
+| DS-O2 Order | Concord at 2; maintain at 1; an ally's first hit | +Presence on the hit; the Concord holds at 1 |
+| DS-P1 Power | Command under Black (Kneel) and under Red (the melee hit) | Compelled; then +[Tier][Die] impact with the heat; the standing advantage against the Compelled |
+| DS-P2 Power | the Mantle at 3; maintain at 1; become Unconscious | the Mantle holds at 1; ends with the Channel |
+| DS-S1 Sovereignty | Judge under White then Black | the ally's die up; the enemy's down on a success; Sovereign's Favor's temporary health on the Exalt |
+| DS-S2 Sovereignty | Sovereign's Balance at 1, then 2 | refused, then the pair |
+
+Thirty-two rows; the two DS-M1 clauses are one row because the Draw's rider is the attunement's, not
+the tree's, and the row exists to prove it.
+
+### 6.6 Gate 6 — the menu
+
+**K-1. The supply's data shape.** (a) **Two embedded actions per power, one per face, each with its
+own type and consumption row, gated on its colour by `requireSelfStatus` — recommended** (buildable
+from the approved tables with no widening; Ordain's and Build's faces differ in type; Pyre's and
+Forge Construct's in cost). (b) One action per power with a face-picker dialog — a new dialog, and a
+consumption row that cannot differ by face.
+
+**K-2. The rider gate.** (a) **Item-level `requireChannel` / `requireChannelled` flags read by the
+six Widening-F sites through the parent item (Widening Q), adopted for all fifteen trees at item 198
+so the twenty-two per-rule declarations lapse — recommended** (one declaration; a card's rules gate
+together). (b) Per-rule declarations as the leyline legs specified — seventeen more types for deity.
+(c) Item-level for deity only; the leyline legs keep per-rule.
+
+**K-3. Where the faces are authored.** (a) **The entry records stay in `domain.json` and the
+overlays with a `face` field; the build emits them onto the power — recommended** (the seven-key
+overlay, extract and lint pass 1 all keep working). (b) A `data/supplies.json` beside
+`channels.json`, the faces authored there and not extractable.
+
+**K-4. Rank-granted powers and the attunements.** (a) **An actor-update watcher grants a colour's
+power at rank 1 and removes it at 0 (Widening P); the leyline path items become the attunements and
+keep their Key + Draw Mana grants; the tree link moves to the power — recommended.** (b) The wizard
+grants the powers at creation from the skill step, and a GM drags one on later for a rank bought in
+play.
+
+**K-5. The arms.** (a) **`endWithChannel` on `edha-self-status` (Widening S) — recommended** (five
+consumers, one field). (b) The arms' statuses copied onto the channel status effect and cleared with
+it (Widening G's shape, extended from AEs to statuses).
+
+**K-6. Where the bench runs.** (a) **The thirty-two rows on the Route A 3.1.0 copy, before the flip
+(R-144), after the White pilot's CH rows — recommended.** (b) After the flip, on the live table.
