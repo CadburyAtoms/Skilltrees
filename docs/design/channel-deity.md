@@ -14,8 +14,10 @@ log is the record.
 
 | Gate | Section | Status |
 |---|---|---|
-| 1 | §1 The deity path, re-evaluated under the Channel | **proposed 2026-09-17, third draft** — D-1 … D-9 withdrawn on Ben's corrections; E-1 … E-8 withdrawn on his second note (§1.1); F-1 … F-10 tabled |
-| 2 – 4 | The ten trees, in the grouping §1's answer makes natural | not started |
+| 1 | §1 The deity path, re-evaluated under the Channel | **✅ approved 2026-09-17** (third draft; D-1 … D-9 and E-1 … E-8 withdrawn on Ben's notes, §1.1) — F-1 … F-10 all (a): Shape S, the supply with a face per colour |
+| 2 | §2 The marks — Chaos, Knowledge, Life | **proposed 2026-09-17** — G-1 … G-7 tabled |
+| 3 | §3 The ground — Fate, Destruction, Civilization, Death | not started |
+| 4 | §4 The word — Order, Power, Sovereignty | not started |
 | 5 | §5 The mix, against the bands | not started |
 | 6 | §6 The build notes | not started |
 | 7 | §7 Close-out | not started |
@@ -291,3 +293,12 @@ charge; on the card it is the god's own verb (Place Omen, Declare, Ordain …) �
 **F-10. Countercurrent and deity rites** (BL-7's hand-off). (a) **A rite that spends Investiture is
 counterable: the card reads "spends Investiture on a talent or a Channel", the word *leyline* dropped —
 recommended.** (b) Narrow deliberately.
+
+> **Answered at gate 1 (Ben, chat, 2026-09-17):** *"That's much better. approved."* — **F-1 … F-10 (a).**
+> Shape S, the supply with a face per colour; free while channelling; a rider; arms hold while
+> channelling; the wizard's attunement step grants the Draw rider and rank grants the colour power; the
+> leyline path pick retires; the guide's Parts 1 – 2 superseded; no rule on size; *supply*; Countercurrent
+> covers deity rites. §1 committed on that answer. **The grouping for gates 2 – 4** follows the charge:
+> the marks (Chaos, Knowledge, Life — a charge on one creature), the ground (Fate, Destruction,
+> Civilization, Death — a charge on the field), the word (Order, Power, Sovereignty — a charge declared
+> on a creature).
