@@ -399,8 +399,9 @@ Black 2+). Seven cards.
 > cap are lost" leaves the face still dealing [Tier][Die] spirit on every Action once the cap is full,
 > so a disciple at the cap has a free repeatable damage Action three times a round. §5.2 has the line
 > that sorts every face — *a face costs 1 Investiture when its payload is repeatable and bounded
-> neither by a charge cap nor by replacing a weapon Strike* — and it catches four faces, not two: this
-> one, Tend's Green face (§2.4), and Pyre and Forge Construct, which the pass already costed one at a
+> neither by a charge cap nor by replacing a weapon Strike* — and it catches five faces, not two: this
+> one, **both** of Tend's faces (§2.4 — the Green one under R-160 (a), the Blue one under R-160 (d),
+> which Ben took the same day), and Pyre and Forge Construct, which the pass already costed one at a
 > time. The Black face is bounded by the Omen it shatters and stays free. **The §2.2 Cost paragraph's
 > "Nothing here is a balance case for a kept cost" and §7.1's gate-2 row "no kept cost" are superseded
 > for this face** and left unedited, as the gate log is the record of the day. Item 198's Chaos leg
@@ -624,9 +625,10 @@ Precision and Prognosis, the Green lane at Overgrowth and Adaptive Mutation. Sev
 > describes as the road not taken:
 >
 > **Tend** — Action; — · *the god's supply*
-> *While channelling Blue* — choose a character within Attunement Range. For the scene you know its
-> exact health, maximum health, conditions, and Physical and Spiritual defenses, and you and allies
-> dealing damage to it deal additional vital damage equal to your Blue rank.
+> *While channelling Blue* — **spend 1 Investiture.** Choose a character within Attunement Range. For
+> the scene you know its exact health, maximum health, conditions, and Physical and Spiritual
+> defenses, and you and allies dealing damage to it deal additional vital damage equal to your Blue
+> rank.
 > *While channelling Green* — **spend 1 Investiture.** Choose a character within Attunement Range. It
 > regains [Tier][Die] + Awareness health; healing beyond its maximum becomes temporary health. May
 > self-target.
@@ -638,10 +640,14 @@ Precision and Prognosis, the Green lane at Overgrowth and Adaptive Mutation. Sev
 > indefinitely (maintain 1 + heal 1 = 2 out, Draw 2 in) and pays only for burst. **The Cost paragraph
 > below and §7.1's gate-2 row "no kept cost" are superseded for this face** and left unedited; the
 > table row at the end of this section already carried "(G-3 (b): 1 Inv kept)" against this face.
-> **The Blue face is NOT costed here and is open as R-160 (d)** — it is scene-long, party-wide,
-> repeatable and carries no stated cap on how many characters may bear it, so it meets the same line;
-> Ben approved two faces in chat, not three, and the widening waits on his word. Item 198's Life leg
-> builds this text, not the struck one.
+> **The Blue face is costed too, under R-160 (d)** — answered by Ben in chat on 2026-09-19, after the
+> widening was put to him rather than taken. It is scene-long, party-wide, repeatable and carries no
+> stated cap on how many characters may bear it, so it meets the same line as the Green face, and
+> 1 Investiture is the cost today's Vital Diagnosis already carries. **Tend is the only supply in the
+> atlas with both faces costed**, which is what it means for a tree to have two unbounded payloads:
+> Life buys a scene-long party-wide vital rider on one face and uncapped healing on the other, and
+> neither was bounded by a charge cap or an attack roll. Five faces are costed atlas-wide. Item 198's
+> Life leg builds this text, not the struck one.
 
 Events: Vital Diagnosis's (`edha-apply-status` diagnosed with the Blue-rank vital rider; `edha-reveal`)
 become the Blue face's; Life Surge's `edha-overflow-thp` the Green face's. The frame's own regen is not
@@ -711,7 +717,7 @@ adaptations are doubled. When the effect ends, it takes an Injury. Once per scen
 
 | # | Talent | Today | Proposed | Condition |
 |---|---|---|---|---|
-| — | Vital Diagnosis | 1 Action; 1 Inv · entry | **the Blue face of Tend; node dropped** | while channelling Blue |
+| — | Vital Diagnosis | 1 Action; 1 Inv · entry | **the Blue face of Tend; 1 Inv kept; node dropped** | while channelling Blue (R-160 (d)) |
 | — | Life Surge | 1 Action; 1 Inv · entry | **the Green face of Tend; node dropped** | while channelling Green; 1 Inv kept (G-3 re-answered (b), 2026-09-19) |
 | 1 | Surgical Precision | 1 Action; 1 Inv | **1 Action; —** | while channelling |
 | 2 | Prognosis | Passive; — | Passive; — | — |
@@ -721,7 +727,7 @@ adaptations are doubled. When the effect ends, it takes an Injury. Once per scen
 | 6 | Primal Regeneration | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
 | 7 | Apex Form | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
 
-Seven cards plus the supply; tree-sum 13 → **1** (the costed face; G-3 re-answered (b) on 2026-09-19). Life's types do not move — it
+Seven cards plus the supply; tree-sum 13 → **2** (both costed faces; G-3 re-answered (b) and R-160 (d) taken, 2026-09-19). Life's types do not move — it
 is a tree of Actions by design, the healer's turn is spent healing. **The frame meeting:** the Blue
 face on the read enemy, the Green face on an ally on the home ground. Positional; no card.
 
@@ -731,12 +737,13 @@ face on the read enemy, the Green face on an ally on the home ground. Positional
 |---|---|---|---|---|---|---|---|
 | Chaos | 9 → 7 + supply | 8 → 1 | 14 → 1 | 1 → 2 | 0 → 1 | 3 | 1 |
 | Knowledge | 9 → 7 + supply | 6 → 0 | 10 → 0 | 3 → 5 | 0 | 1 | 1 |
-| Life | 9 → 7 + supply | 8 → 1 | 13 → 1 | 1 → 1 | 0 | 3 | 1 |
+| Life | 9 → 7 + supply | 8 → 2 | 13 → 2 | 1 → 1 | 0 | 3 | 1 |
 
 The marks keep **no Investiture cost on a talent**: their charge is capped (tier + 1 Omens, 5 Insight,
-one Diagnosis), they raise no bodies, and every card buys into the charge. **Two of their faces are
-costed** — Place Omen's Blue and Tend's Green, at 1 each (R-160 (a), 2026-09-19), the two payloads in
-the marks bounded by neither a charge cap nor a weapon Strike. What they pay otherwise is the Channel
+one Diagnosis), they raise no bodies, and every card buys into the charge. **Three of their faces are
+costed** — Place Omen's Blue, Tend's Green and Tend's Blue, at 1 each (R-160 (a) and (d), 2026-09-19),
+every payload in the marks bounded by neither a charge cap nor a weapon Strike. Tend carries a cost on
+both faces, the only supply in the atlas that does. What they pay otherwise is the Channel
 — 1 a round for the free faces and the one-Action riders, a flood for the synthesis tier and the
 capstone — funded in all three trees by a refund passive (Void Sense, Accumulate, Prognosis) that,
 under R-161 (a), pays back **once per round while you are channelling and never more than the
@@ -1656,31 +1663,31 @@ Read against the bands:
 | | Costed talents | Of which | Investiture sum | Amount-gated ("2 or more") | Flood-gated ("3 or more") |
 |---|---|---|---|---|---|
 | **Deity today** | 72 of 90 (80 %) | 1: 34 · 2: 28 · 3: 9 · 4: 1 | **121** | — | — |
-| **Deity proposed** | 5 of 72 (7 %) + 4 costed faces | Fault Line 2 · Risen Servant 1 (+ a Remain) · Death Ward 2 · Speak with the Fallen 2 · Raise Dead 4 · the four costed faces — Place Omen (Blue), Tend (Green), Pyre, Forge Construct — 1 each | **15** | 26 | 9 |
+| **Deity proposed** | 5 of 72 (7 %) + 5 costed faces | Fault Line 2 · Risen Servant 1 (+ a Remain) · Death Ward 2 · Speak with the Fallen 2 · Raise Dead 4 · the five costed faces — Place Omen (Blue), Tend (Blue), Tend (Green), Pyre, Forge Construct — 1 each | **16** | 26 | 9 |
 | published Invested band (§C.2) | 8 – 46 % | | | | |
 | leyline after its passes (White / Blue / Red / Black / Green) | 16 / 28 / 20 / 20 / 16 % | | 1 / 7 / 6 / 6 / 6 | | |
 
-Per tree, today → proposed: Chaos 14 → 1 · Knowledge 10 → 0 · Life 13 → 1 · Fate 11 → 0 ·
+Per tree, today → proposed: Chaos 14 → 1 · Knowledge 10 → 0 · Life 13 → 2 · Fate 11 → 0 ·
 Destruction 10 → 3 · Civilization 11 → 1 · Death 14 → 9 · Order 10 → 0 · Power 15 → 0 ·
 Sovereignty 13 → 0. *(The tree-sums fold in each tree's costed faces, as §2.5, §3.5 and each tree's
 close already do — which is why Civilization prints 1 with no costed talent at all; the costed-**card**
 count beside them is talents only, per J-5. The two amendments of 2026-09-19 move Chaos 0 → 1 and
-Life 0 → 1, and the sum 13 → 15.)*
+Life 0 → 2 (both Tend faces, R-160 (a) and (d)), and the sum 13 → 16.)*
 
 Read against the bands:
 
 - **Costed falls from 80 % to 7 %, below the published floor** (Metalborn paths, 8 %). The floor is
   not a target: what the published families price is a *base action* (Burn, Store, the surge) and
   the talents ride it, and the deity atlas now has exactly that shape — the Channel is the cost, at 1
-  to 3 a round, and the **nine** priced cards are the two bolts, the two bodies, the three rites and
-  the two unbounded repeatables that balance keeps — four of the nine are faces, five are talents
+  to 3 a round, and the **ten** priced cards are the two bolts, the two bodies, the three rites and
+  the three unbounded repeatables that balance keeps — five of the ten are faces, five are talents
   (J-3 asks whether to accept the floor crossing; the recommendation does). **The 7 % is talents
-  only**, which is the denominator J-3's floor argument uses; counted with the faces it is 9 of 91,
-  or 9.9 %, which is *above* the published 8 % floor — worth saying, because R-160 states the
+  only**, which is the denominator J-3's floor argument uses; counted with the faces it is 10 of 91,
+  or 11.0 %, which is *above* the published 8 % floor — worth saying, because R-160 states the
   faces-included figure and the two are easy to read as contradicting each other. **§7.1's gate-3 row
   ("Costed faces: Pyre and Forge Construct at 1") and gate-5 row ("+ two costed faces … 125 → 13") are
   superseded** by R-160 (a) and left unedited, as the gate log is the record of the day.
-- **The Investiture sum falls from 121 to 15**, against 26 across the five leyline colours after their
+- **The Investiture sum falls from 121 to 16**, against 26 across the five leyline colours after their
   passes. What replaces it is not free: **26 cards gate on "channelling 2 or more"** — a Draw a round
   at levels 1 – 5 — and **nine capstones on "3 or more"**, reachable at rank 3. §2.1's two facts hold
   across the atlas: on the fourteen scene-long cards the gate is a one-time price equal to today's
@@ -1720,8 +1727,11 @@ Read against the bands:
   **The scope of this rule, stated rather than inferred.** It binds the five deity passives above.
   The live data carries three more Investiture-granting cards, all leyline: `Predatory Patience` and
   `Predator's Due` (Black) have neither a gate nor a cap and are a **larger** hole than the one
-  closed here — they are **R-163**, open, because capping them invalidates `channel-black.md`'s
-  approved CK-14 row and its stated Isolation economy. `Flashpoint` (Red) is **exempt**: capped once
+  closed here — **R-163 (a)**, answered by Ben in chat the same day: both take this rule, and
+  `channel-black.md` §1.5 and its bench row CK-14 are amended to match (CK-14's expected result becomes
+  +1, the Channel ran level). Predatory Patience was the largest free-pool source in the game, because
+  the Black Key's Draw rider Weakens the field ungated (M10), so a mage with no Channel open could
+  bank +4 in a round. `Flashpoint` (Red) is **exempt**: capped once
   a round, one of two options, and reachable only through costed releases, so it is a discount rather
   than income. The heroic atlas grants no Investiture at all.
   Five trees have no refund at all: Fate, Destruction, Civilization, Order and Power Draw as their
@@ -1786,8 +1796,10 @@ unchanged and the new row is appended.
    armor, against the party's damage intake. G-3 (b) was taken on 2026-09-19 (R-160 (a)), so the
    question is no longer whether to price it but whether **1 is enough of a brake**: at level 4 the
    healer runs one heal a round at net zero (maintain 1 + heal 1 out, Draw 2 in) and pays only for
-   burst, and the binding constraint moves from Investiture to Actions. **R-160 (d)** — 1 Investiture
-   on Tend's Blue face as well — is the remaining lever if the stack still overshoots.
+   burst, and the binding constraint moves from Investiture to Actions. **R-160 (d) was taken the same
+   day**, so Tend's Blue face costs 1 as well and Life is the only tree paying on both faces of its
+   supply — which makes this row a two-sided measurement: whether 1 is brake enough on the heal, and
+   whether a healer paying on the diagnosis *and* the heal can still open a fight on a pool of 4.
 2. **The flood detonations** — Cascade Collapse and Cascading Failure at "2 or more", repeatable, and
    the nine flood-gated capstones at rank 3 — priced as a per-round tax against today's per-use 2.
 3. **Knowledge's stacked pack** — Pack Share (+tier) and The Pack (+Insight) on every ally's hit against
@@ -1800,9 +1812,11 @@ unchanged and the new row is appended.
    Prognosis at 1 a round against a one-point maintain, and Reaper's Harvest and Expose in a bloody
    round or against a Censured creature failing repeatedly, both now capped to the round's channel
    spend. The measurement nobody has made is whether a capped refund still funds the maintain it is
-   named for, and how the five refund trees then sit against the five that Draw instead. **R-162** —
-   whether a scene-long install should outlive the Channel that bought it — is the open question this
-   row is most likely to inform.
+   named for, and how the five refund trees then sit against the five that Draw instead. It now also
+   covers the two leyline Black cards (**R-163 (a)**), whose refunds were the larger hole. **R-162**
+   was answered **(b), unchanged** — arms end with the Channel, buildings persist — so this row should
+   still price a flooded scene-long install against a maintained one, since that measurement is what
+   would re-open it.
 
 ### 5.5 Gate 5 — the menu
 
@@ -1859,10 +1873,10 @@ exists and nothing here breaks.
 riders), `system.description` the supply's paragraph from §2 – §4, and **two embedded actions, one
 per face** — not one action with a picker (K-1). Two actions is what makes the approved tables
 buildable without a widening: a face keeps its own action type (Ordain's White face is `fre`, its
-Green face `act`) and its own consumption row (**four** faces carry `{resource: "inv", value: {min: 1,
-max: 1}}` — Place Omen's Blue, Tend's Green, Pyre and Forge Construct, the last two from the pass and
-the first two from R-160 (a) on 2026-09-19 — **and the other fifteen carry none**), and each is gated
-on its colour by
+Green face `act`) and its own consumption row (**five** faces carry `{resource: "inv", value: {min: 1,
+max: 1}}` — Place Omen's Blue, **both** of Tend's, Pyre and Forge Construct; the last two from the
+pass, Place Omen's Blue and Tend's Green from R-160 (a) and Tend's Blue from R-160 (d), both answered
+2026-09-19 — **and the other fourteen carry none**), and each is gated on its colour by
 the field the leyline riders already use — `requireSelfStatus: "channelblue"` on the face's rules,
 refused before cost by the pre-cost veto (Widening F (ii)) with the toast naming the colour. On the
 Actions tab the disciple sees *Place Omen (Blue)* and *Place Omen (Black)* under Maelith's name; the
@@ -1950,8 +1964,8 @@ stays on the face's rules as today (it is the charge's, not the Channel's) — n
   `connections` and `prerequisites` per §6.1; one new record (Hallowed Ground). "Vital" → "vital" on
   seven cards.
 - **`data/authored/deity-*.json`** — the same sentences in `description`; `activation.cost.type` per
-  the type moves; the Investiture `consume` row removed on 65 cards and on 15 faces (four faces keep
-  theirs, R-160 (a)); the
+  the type moves; the Investiture `consume` row removed on 65 cards and on 14 faces (five faces keep
+  theirs, R-160 (a) and (d)); the
   `requireChannel` flag (Q) on 72 riders, `requireChannelled: 2` on 26, `: 3` on 9; `capToChannelled`
   (V) on the five refund passives' resource-gain rules; `endWithChannel`
   on five arms; Spreading Omen's second placement re-hung on R; Pack Share's and The Pack's
@@ -2005,7 +2019,7 @@ judgment. Written to be added as a `## Supply — item 198` block under each god
 | DS-C2 Chaos | Unravel at 3 with a forsaken bearer | the forsaken takes the vital branch, the rest spirit + Disoriented; once per scene refused after |
 | DS-K1 Knowledge | Study under Green then Red on one creature | 2 Insight, then the hit at +[Tier][Die] + tier and 1 more; Pack Share's ally bonus on an ally's hit with no arm card |
 | DS-K2 Knowledge | The Pack at 1, then at 2 | refused, then the ally's hit carries +Insight |
-| DS-L1 Life | Tend under Green with an empty pool, then with 1 Investiture | refused before cost with the toast naming the cost (the pre-cost veto, §6.1); at 1 the heal lands and the point is spent |
+| DS-L1 Life | Tend under Green with an empty pool, then with 1 Investiture; then Tend under **Blue** with an empty pool | each refused before cost with the toast naming the cost (the pre-cost veto, §6.1); at 1 the heal lands and the point is spent. Life is the only supply paying on both faces (R-160 (a) + (d)) |
 | DS-L3 Life | Prognosis owned, channelling Green at 1, the Diagnosed hit twice in one round; then again with no Channel up | 1 Investiture refunded, not 2; nothing refunded at all with no Channel (V) |
 | DS-L2 Life | Apex Form at 2, then 3 | refused, then the scene grant; the Injury at scene end |
 | DS-F1 Fate | Ordain under White (Free) and under Green (Action) | an Ordained square, then a Snare; Inevitable Snare only at 2 |
@@ -2024,7 +2038,8 @@ judgment. Written to be added as a `## Supply — item 198` block under each god
 | DS-S1 Sovereignty | Judge under White then Black | the ally's die up; the enemy's down on a success; Sovereign's Favor's temporary health on the Exalt |
 | DS-S2 Sovereignty | Sovereign's Balance at 1, then 2 | refused, then the pair |
 
-Thirty-three rows since 2026-09-19 (DS-L1 split in two by R-160 (a) and R-161 (a); §7.1's gate-6 row
+Thirty-three rows since 2026-09-19 (DS-L1 split in two by R-160 (a) and R-161 (a), and widened again
+by R-160 (d); §7.1's gate-6 row
 and K-6 keep "thirty-two" as the record of the day); the two DS-M1 clauses are one row because the
 Draw's rider is the attunement's, not
 the tree's, and the row exists to prove it.
@@ -2096,12 +2111,15 @@ carries his answer verbatim under it.
   Ben in chat the same day and is applied throughout this document (§2.2, §2.3, §2.4, §3.4, §4.3, and
   the rule in §5.2). **R-160** — what a supply face costs when its payload is bounded by neither a
   charge cap nor a weapon Strike — is **open**: Ben refused a blanket 2-Action supply in chat, and
-  (a), 1 Investiture on Place Omen's Blue face and Tend's Green face, is recorded here as its
-  recommended default, so it wants a veto rather than a decision. Its option **(d)**, pricing Tend's
-  Blue face as well, is an open widening nobody has answered. **R-162** — whether a scene-long install
-  should outlive the Channel that bought it — is **open and untaken**: it is the one finding of that
-  review this document has not acted on anywhere, and acting on it would reopen gates 2, 3 and 4.
-  `EDHA_RULINGS.md` §L now lists R-145, R-160 and R-162 open; R-161 is filed in §K.25.
+  (a), 1 Investiture on Place Omen's Blue face and Tend's Green face, **was confirmed by Ben in chat
+  on 2026-09-19 together with its option (d)** — so Tend's Blue face is costed too and **five** faces
+  carry a consume row. **R-162** — whether a scene-long install should outlive the Channel that bought
+  it — was answered **(b), unchanged**: the pass's wear/build split stands, arms end with the Channel
+  and buildings persist, and item 210's yardstick prices a flooded install against a maintained one
+  before anything reopens. **R-163** — the refund surface is eight cards, not five — was answered
+  **(a)**: `Predatory Patience` and `Predator's Due` take R-161's rule too, and
+  `docs/design/channel-black.md` §1.5 and bench row CK-14 are amended to match. Red's `Flashpoint` is
+  exempt. All four are filed in `EDHA_RULINGS.md` §K.25; **R-145 is again the only open ruling.**
 
 ### 7.3 What the PM should file from this pass
 
@@ -2127,8 +2145,9 @@ carries his answer verbatim under it.
    **priced** Green face and whether 1 is brake enough; the flood detonations; Knowledge's stacked
    pack; Power's arms at a point a round; and **the refund passives as upkeep** (R-161 (a)) — whether
    a capped refund still funds the maintain it is named for. Before the leyline rows.
-10. **R-163 — the two leyline Black refund cards** (filed 2026-09-19): the refund surface is eight
-   cards, not five. `Predatory Patience` and `Predator's Due` (both `leyline-black.json`) put
+10. **R-163 (a), ANSWERED 2026-09-19 — the two leyline Black refund cards take R-161's rule**, and
+   `docs/design/channel-black.md` carries the amendment at both cards, at §1.5's stated economy, at its
+   turn walks and at bench row CK-14. The refund surface is eight cards, not five. `Predatory Patience` and `Predator's Due` (both `leyline-black.json`) put
    Investiture back on a trigger with **neither a channelling gate nor a per-round cap**, which is a
    larger hole than the one R-161 just closed — Predatory Patience is fed by the Black Key's Draw
    Mana rider, which M10 keeps ungated, so a Black mage with **no Channel open** can Draw (+2, and
@@ -2137,7 +2156,7 @@ carries his answer verbatim under it.
    both and collect 2 a kill with one half now capped and the other not. Extending R-161's rule
    invalidates approved content in `docs/design/channel-black.md` — bench row CK-14 expects "+3
    Investiture back; the Channel ran positive", and §1.5 states the uncapped loop as Isolation's
-   intended economy — which is why it is a ruling and not a sweep. **Red's `Flashpoint` is exempt
+   intended economy, which is why it was put to Ben rather than swept in; he took it. **Red's `Flashpoint` is exempt
    and needs no change:** it is capped once per round, it is one of two options, and both its
    prerequisite feeders (Flame Surge 2, Arc Flash 1) are costed releases, so earning 1 always costs
    at least 1 first. It is a discount on a release, never net income.

@@ -490,7 +490,13 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // prompted — the refund surface is eight cards, not five. The length assertion moves 1 → 4.
   // Same commit: the eleven option bullets orphaned in §L when R-156 … R-158 moved to §K.23 were restored to their
   // entries there. They had been parsing as part of R-145's body, so R-145's phone card carried foreign text.
-  const ECOSYSTEM_RULINGS = ["R-145", "R-160", "R-162", "R-163"];
+  // 2026-09-19, same evening: Ben answered all three in one line ("160 d defaults rest") — R-160 (d) five
+  // costed supply faces, R-162 (b) unchanged, R-163 (a) the two leyline Black refunds take the upkeep rule.
+  // All three moved to §K.26 with §L stubs and join the closed list. The length assertion moves 4 → 1.
+  // 2026-09-19, later the same evening: Ben accepted R-145's applied default unchanged ("Continue with
+  // the default for R145"), so it moves to §K.27 with a §L stub and joins the closed list. §L is EMPTY
+  // for the first time since it was created — nothing is waiting on Ben. The length assertion moves 1 → 0.
+  const ECOSYSTEM_RULINGS = [];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -500,7 +506,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
       "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
       "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155",
-      "R-156", "R-157", "R-158", "R-159", "R-161"]) {
+      "R-156", "R-157", "R-158", "R-145", "R-159", "R-160", "R-161", "R-162", "R-163"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),

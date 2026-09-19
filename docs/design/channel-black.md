@@ -126,8 +126,8 @@ already hold.
 or Weakened, and the forsaken is the first and, after the Draw, the second. Sapping Hex Weakens it on
 the first hit if the Draw has not; Severance makes the sword vital against it; Cruel Step closes on it
 without provoking; Dread Presence holds it away from its allies once Weakened; Sovereign of Solitude
-punishes the step it takes anyway; Predatory Patience adds the die and refunds the Investiture on every
-hit; Spoils of Isolation pays the whole Weakened set off at once. Unnerving Approach is the one card the
+punishes the step it takes anyway; Predatory Patience adds the die on every hit and refunds the
+Investiture once a round while channelling (R-163 (a)); Spoils of Isolation pays the whole Weakened set off at once. Unnerving Approach is the one card the
 frame partly supersedes — it *makes* Isolated by pushing an ally away — and it keeps a job: a **second**
 Isolated creature for Sapping Hex and Severance, beside the forsaken. All four of Isolation's costed
 cards sit inside the domain (§1.4) and become riders.
@@ -302,7 +302,23 @@ was).
 
 **Black Leyline Attunement** — *Key* · Passive; — → **unchanged** (M10). *"When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened."* (19) Under the frame the pulse always has at least one creature to mark: the forsaken is Isolated, so the Draw Weakens it (BK-2 (a)).
 
-**Predatory Patience** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture."* (22)
+~~**Predatory Patience** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture."* (22)~~
+
+> **AMENDED 2026-09-19 (R-163 (a), answered by Ben in chat — the refund surface is eight cards,
+> not five, and the two leyline Black ones had neither a gate nor a cap).** The die stands unconditionally; the refund
+> becomes upkeep, the rule R-161 (a) gave the five deity refund passives the same day:
+>
+> **Predatory Patience** — *Isolation / Spiritual* · Passive; —. *"When you attack a Weakened creature,
+> add [Die] to the test. While you are channelling, on a successful attack against a Weakened creature,
+> you recover 1 Investiture. You cannot recover more than the Investiture you are channelling this way
+> in a round."*
+>
+> **Why this card and not the rule's original five.** Its trigger is free: the Black Key's Draw Mana
+> rider Weakens every isolated enemy in range and M10 keeps the Key ungated, so a Black mage with **no
+> Channel open at all** could Draw (+2, and Weaken the field) and then Strike twice into a Weakened
+> target for +2 more — +4 pool in a round for no spend, further than any deity refund could reach. The
+> gate closes that; the cap holds a channelled round to what the Channel cost. `channel-deity.md` §5.2
+> carries the rule and the shared card tail. Item 198's Black leg builds this text, not the struck one.
 
 **Sapping Hex** — *Isolation / Spiritual* · Passive; — → **unchanged.** *"When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened."* (16) Reads the forsaken as Isolated; the first hit Weakens it if the Draw has not.
 
@@ -332,7 +348,21 @@ was).
 
 **Double Dip** — *Ritual / Physical* · 1 Action; 2 Investiture → **unchanged — a release (BK-3; rule 4).** *"Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character."* (35)
 
-**Predator's Due** — *Ritual / Physical* · Passive; — → **unchanged.** *"When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture."* (14) Its `prerequisites` field and flavour line are §2.5 hygiene.
+~~**Predator's Due** — *Ritual / Physical* · Passive; — → **unchanged.** *"When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture."* (14)~~ Its `prerequisites` field and flavour line are §2.5 hygiene.
+
+> **AMENDED 2026-09-19 (R-163 (a), answered by Ben in chat — the refund surface is eight cards,
+> not five, and the two leyline Black ones had neither a gate nor a cap).** The health stands unconditionally; the
+> Investiture becomes upkeep:
+>
+> **Predator's Due** — *Ritual / Physical* · Passive; —. *"When you reduce a character to 0 health, you
+> regain [Tier][Die] health, and, while you are channelling, you recover 1 Investiture. You cannot
+> recover more than the Investiture you are channelling this way in a round."*
+>
+> It is Reaper's Harvest's twin on the same trigger, and R-161 (a) capped that one the same day. Left
+> alone, a Morrath disciple at Black 3+ — who already holds Black 2+ for the path — would own both from
+> level 6 and collect 2 a kill with one half gated and capped and the other neither. The health half is
+> the card's Ritual identity and stays ungated, exactly as Reaper's Harvest keeps marking its Remain.
+> Item 198's Black leg builds this text, not the struck one.
 
 **Siphoned Will** — *Subjugation / Cognitive* · Passive; — → **unchanged.** *"When you successfully apply Hollow Command to a creature, regain focus equal to your tier."* (15)
 
@@ -364,8 +394,10 @@ Three economies fall out, one per tree, and all three work at level 1 with the s
 - **The Isolation mage** channels and pays nothing else. Round 1: Channel at 1 or 2 (name the prey),
   Draw (it is Weakened), Cruel Step free into reach or a Strike with Severance's vital and the frame's
   on it. Every round after: maintain as a Free Action, three Actions, Predatory Patience handing back
-  1 Investiture on every hit against the Weakened — at a trickle the tree is **Investiture-positive**
-  while the hunt lasts, and the Draw is for the pulse, not the pool.
+  1 Investiture on a hit against the Weakened — **once a round, and only while channelling**
+  (R-163 (a), 2026-09-19). At a trickle the tree runs **Investiture-level** while the hunt lasts: the
+  refund pays the maintain exactly and no further, and the Draw is for the pulse, not the pool. The
+  struck reading — Investiture-positive on every hit — was the largest free-pool source in the game.
 - **The Ritualist** channels from blood. Withering Ray costs about 2 health at rank 1 and Sanguine
   Reservoir banks it as Reserve up to the Black rank; Reserve pays the maintain. A Ritualist who casts
   every round keeps the Channel up without a Draw, and Blood Price's advantage rides every cast. Dark
@@ -497,17 +529,24 @@ all fire *once, on a hit or a test*), and the leyline guide's own targets would 
 
 **Where the remaining cost sits.** Subjugation carries three of the six surviving Investiture points
 (Hollow Command 1, Predatory Insight 1, Puppeteer 1, plus Puppeteer's 2 focus), Ritual the other three
-(Dark Investiture 1, Double Dip 2, plus both Ritual attacks' blood). **Isolation carries no Investiture
-at all** — the hunt is free once the prey is named, and Predatory Patience pays the mage back on every
-hit against it.
+(Dark Investiture 1, Double Dip 2, plus both Ritual attacks' blood). ~~**Isolation carries no Investiture~~
+~~at all** — the hunt is free once the prey is named, and Predatory Patience pays the mage back on every~~
+~~hit against it.~~
+
+> **AMENDED 2026-09-19 (R-163 (a), answered by Ben in chat — the refund surface is eight cards,
+> not five, and the two leyline Black ones had neither a gate nor a cap).** **Isolation still carries no Investiture cost** —
+> the hunt is free once the prey is named — but Predatory Patience no longer pays the mage back on
+> *every* hit. It pays while a Channel is up, and never more in a round than the Channel cost, so at a
+> trickle it refunds the maintain and at a flood it refunds half of it. The hunt is free; it is no
+> longer profitable. Row CK-14 below is amended to match.
 
 **What a Black player's turn is now.** Round 1: Channel Black at 2 out of a pool of 4 — name the
 creature that matters, and it is alone whatever stands beside it — then Draw Mana: it is Weakened,
 and so is anything else standing alone in range. One Action left: Cruel Step free into reach, or
 Withering Ray at it with the frame's +2 vital on top of 2d6. Every round after: maintain as a Free
 Action for 1 or 2 (keep the prey or move the mark), three Actions of Strikes that Severance makes
-vital and the frame makes heavier, Predatory Patience's die on each and its Investiture back on each
-hit, Sapping Hex and Dread Presence and Sovereign of Solitude running for nothing. A trickle pays for
+vital and the frame makes heavier, Predatory Patience's die on each and its Investiture back **once a
+round while channelling** (R-163 (a)), Sapping Hex and Dread Presence and Sovereign of Solitude running for nothing. A trickle pays for
 itself; a flood costs a Draw, and the Draw is another pulse. The Ritualist's version pays the maintain
 from Reserve and never draws. The real decision each round is **prey or puppet** for the Subjugator —
 Hollow Command's 2 Actions and 1 Investiture against a maintained flood — and, for everyone, **keep
@@ -685,9 +724,10 @@ Sixteen **🤖** rows, to be added under `# BENCH — Black (leyline)` (checklis
 | CK-11 Sovereign's gate | channelling 1, a Weakened enemy moves; then channelling 2 | no offer at 1; at 2 the immobilise-and-test offer posts, spending nothing |
 | CK-12 releases | Dark Investiture, Double Dip, Hollow Command, Puppeteer with **no** Channel | all work and spend |
 | CK-13 Reserve pays | a Ritualist with 2 Reserve maintains Black | Reserve −1, Investiture unchanged |
-| CK-14 Predatory Patience refund | three hits on the Weakened forsaken while channelling 1 | +3 Investiture back; the Channel ran positive |
+| CK-14 Predatory Patience refund | three hits on the Weakened forsaken while channelling 1; then three more with **no Channel up** | **+1** Investiture back, not +3 — the Channel ran level (R-163 (a), 2026-09-19); nothing at all with no Channel |
 | CK-15 two mages | Bench — Black II forsakes the same creature at 2 beside Bench — Black at 1 | one *Forsaken* icon (two ledger entries, one per mage); Black II's hit +2, Black's +1 |
 | CK-16 combat end + tabs | end the combat; a synced Black PC's Actions and Talents tabs | ledger, mark and status cleared; Channel Black and Maintain Black under the power; riders on the Talents tab |
+| **CK-17 Predator's Due cap** (R-163 (a), 2026-09-19) | channelling Black at 1, drop two creatures in one round; then drop one with no Channel up | health both times; **1** Investiture, not 2; nothing at all with no Channel — the health half is never gated (Widening V) |
 
 ### 4.6 Gate 4 — the menu
 
