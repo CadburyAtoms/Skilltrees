@@ -48,7 +48,8 @@ read from both on 2026-09-17 at `main` `919bdf9`, card text, activation, consume
 21 two-Action cards, 10 three-Action capstones, 7 Free Actions, 5 Reactions; **72 of 90 cost
 Investiture** (1: 34, 2: 28, 3: 9, 4: 1), none of them variable, one also an Opportunity; the
 Investiture tree-sums are Power 15, Chaos 14, Death 14, Life 13, Sovereignty 13, Civilization 11,
-Fate 11, Destruction 10, Knowledge 10, Order 10 — **125 across the atlas**, against 70 across the five
+Fate 11, Destruction 10, Knowledge 10, Order 10 — **121 across the atlas** (the pass printed 125; the
+data says 121, §5.2), against 70 across the five
 leyline colours before their passes and **about 25** after them.
 
 ---
@@ -121,7 +122,8 @@ missing.
 ### 1.3 Shape S — the supply
 
 **The deity path grants one base action: the supply.** It supplies the god's charge, it is a rider on
-either of the god's colours' Channels, and it costs no Investiture — the Channel paid. It keeps the
+either of the god's colours' Channels, and it costs no Investiture — the Channel paid — except on the
+four faces balance prices at 1 (§2.2, §2.4, §3.2, §3.3; R-160 (a), 2026-09-19). It keeps the
 test the entry has today where the entry tests, it keeps the charge's cap, and it is an Action (or the
 type the entry has). Everything else in the tree rides the supply: spends the charge, reads it, widens
 it, detonates it.
@@ -372,13 +374,37 @@ Black 2+). Seven cards.
 
 **The supply**, on Maelith's power:
 
+> ~~**Place Omen** — Action; — · *the god's supply*~~
+> ~~*While channelling Blue* — test Blue vs. Cognitive. On a success, place an Omen on the target and~~
+> ~~deal [Tier][Die] spirit damage.~~
+> ~~*While channelling Black* — test Black vs. Physical. On a success, the target is Isolated until the~~
+> ~~start of your next turn; if it bears an Omen, remove it and deal [Tier][Die] + Awareness vital~~
+> ~~damage; if not, place one.~~
+> ~~You may have up to tier + 1 Omens active; placements beyond the cap are lost.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families,
+> `docs/analysis/talent-comparison-mistborn-radiant.md`; R-160 (a) — Ben refused a blanket 2-Action
+> supply in chat and the narrow fix was taken as its recommended default).** The Black face and the
+> cap stand; the Blue face takes a cost:
+>
 > **Place Omen** — Action; — · *the god's supply*
-> *While channelling Blue* — test Blue vs. Cognitive. On a success, place an Omen on the target and
-> deal [Tier][Die] spirit damage.
+> *While channelling Blue* — **spend 1 Investiture.** Test Blue vs. Cognitive. On a success, place an
+> Omen on the target and deal [Tier][Die] spirit damage.
 > *While channelling Black* — test Black vs. Physical. On a success, the target is Isolated until the
 > start of your next turn; if it bears an Omen, remove it and deal [Tier][Die] + Awareness vital
 > damage; if not, place one.
 > You may have up to tier + 1 Omens active; placements beyond the cap are lost.
+>
+> Why the Blue face alone: the Omen cap bounds the **charge**, not the payload. "Placements beyond the
+> cap are lost" leaves the face still dealing [Tier][Die] spirit on every Action once the cap is full,
+> so a disciple at the cap has a free repeatable damage Action three times a round. §5.2 has the line
+> that sorts every face — *a face costs 1 Investiture when its payload is repeatable and bounded
+> neither by a charge cap nor by replacing a weapon Strike* — and it catches four faces, not two: this
+> one, Tend's Green face (§2.4), and Pyre and Forge Construct, which the pass already costed one at a
+> time. The Black face is bounded by the Omen it shatters and stays free. **The §2.2 Cost paragraph's
+> "Nothing here is a balance case for a kept cost" and §7.1's gate-2 row "no kept cost" are superseded
+> for this face** and left unedited, as the gate log is the record of the day. Item 198's Chaos leg
+> builds this text, not the struck one.
 
 Events: Entropy Strike's three rules (`edha-def-test` blue vs cog → `edha-owner-list` place →
 `edha-triggered-effect` spirit) become the Blue face's, gated `channelblue`; Isolating Pressure's five
@@ -403,10 +429,30 @@ other enemy within 10 feet of the target, subject to your Omen cap."* Events: th
 `edha-owner-list` place (`target: near-victim, nearFt: 10`) moves off its own `use` onto a watch of the
 supply's success — the build names the hook (§6).
 
-**Void Sense** — Passive; — → **unchanged.** *"You sense the location of every enemy bearing your Omen
-through any obstruction. Once per round, when an enemy bearing one of your Omens within Attunement
-Range takes damage from any source, you recover 1 Investiture."* The refund keeps a one-point maintain
-running without a Draw.
+~~**Void Sense** — Passive; — → **unchanged.** *"You sense the location of every enemy bearing your Omen~~
+~~through any obstruction. Once per round, when an enemy bearing one of your Omens within Attunement~~
+~~Range takes damage from any source, you recover 1 Investiture."* The refund keeps a one-point maintain~~
+~~running without a Draw.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families, R-161
+> (a) — answered by Ben in chat the same day: the refunds become upkeep).** The refund is upkeep,
+> not income:
+>
+> **Void Sense** — Passive; —. *"You sense the location of every enemy bearing your Omen through any
+> obstruction. Once per round, while you are channelling, when an enemy bearing one of your Omens
+> within Attunement Range takes damage from any source, you recover 1 Investiture. You cannot recover
+> more than the Investiture you are channelling this way in a round."*
+>
+> It still keeps a one-point maintain running without a Draw — that was always the stated job — but it
+> pays only while a Channel is up and never more than the Channel cost, so it can no longer bank pool
+> between Channels. **Where the cap actually binds, recorded so nobody reads more into it than it
+> does:** Void Sense, Accumulate and Prognosis already say "once per round", so their refund is 1 and
+> the spend is at least 1 whenever a Channel is up — on those three the cap is inert today and only
+> the "while you are channelling" clause changes anything. Reaper's Harvest (§3.4) and Expose (§4.3)
+> carry no per-round limit, and they are where the leak lives. The uniform sentence is carried on all
+> five anyway, as one principle and one engine field, so a later card cannot reopen it.
+> §5.2's "Where the refund passives sit" carries the full rule. Item 198's Chaos leg builds this text,
+> not the struck one.
 
 **Unweaving** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While channelling
 2 or more Blue or Black, test Black vs. Spiritual. On a success, end one magical buff, stance or
@@ -439,7 +485,7 @@ Isolated by definition, so the disciple chooses which bearer takes the vital.
 
 | # | Talent | Today | Proposed | Condition |
 |---|---|---|---|---|
-| — | Entropy Strike | 1 Action; 1 Inv · entry | **the Blue face of Place Omen; node dropped** | while channelling Blue |
+| — | Entropy Strike | 1 Action; 1 Inv · entry | **the Blue face of Place Omen; 1 Inv kept; node dropped** | while channelling Blue |
 | — | Isolating Pressure | 1 Action; 2 Inv · entry | **the Black face of Place Omen; node dropped** | while channelling Black |
 | 1 | Shatter Focus | Reaction; 1 Inv | **Special; —** | while channelling; once per round |
 | 2 | Spreading Omen | 1 Action; 1 Inv | **Passive; —** | while channelling; on the supply's success |
@@ -449,7 +495,7 @@ Isolated by definition, so the disciple chooses which bearer takes the vital.
 | 6 | Isolating Ruin | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
 | 7 | Unravel Everything | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
 
-Seven cards plus the supply; tree-sum 14 → **0**; Passives 1 → 2, Specials 0 → 1. **The frame
+Seven cards plus the supply; tree-sum 14 → **1** (the costed face); Passives 1 → 2, Specials 0 → 1. **The frame
 meeting:** under Blue the disciple reads the enemy and Places the Omen on it — its d20 and plot die
 compromised before Shatter Focus takes the lower; under Black the disciple forsakes the Omen-bearer,
 and Isolating Ruin's second die and Unravel's vital branch light up on the creature chosen. Positional;
@@ -486,10 +532,21 @@ the pack's share: Pack Share (+tier) and The Pack (+Insight count) stack (Ben R1
 ally's hit on the quarry carries +tier + Insight vital. That is the tree's whole identity spent on the
 one creature it is about, and it is why The Pack takes the amount gate and Pack Share does not.
 
-**Accumulate** — Passive; — → **unchanged.** *"At the start of each of your turns, if the character
-bearing your Insight is within Attunement Range, place 1 Insight on it (up to the cap). When that
-character takes damage from any source, you recover 1 Investiture once per round."* The refund funds
-the maintain.
+~~**Accumulate** — Passive; — → **unchanged.** *"At the start of each of your turns, if the character~~
+~~bearing your Insight is within Attunement Range, place 1 Insight on it (up to the cap). When that~~
+~~character takes damage from any source, you recover 1 Investiture once per round."* The refund funds~~
+~~the maintain.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families, R-161
+> (a) — answered by Ben in chat the same day: the refunds become upkeep).** The Insight half stands;
+> the refund becomes upkeep:
+>
+> **Accumulate** — Passive; —. *"At the start of each of your turns, if the character bearing your
+> Insight is within Attunement Range, place 1 Insight on it (up to the cap). Once per round, while you
+> are channelling, when that character takes damage from any source, you recover 1 Investiture. You
+> cannot recover more than the Investiture you are channelling this way in a round."*
+>
+> §5.2's "Where the refund passives sit" carries the full rule and the one card tail all five now share. Item 198's Knowledge leg builds this text, not the struck one.
 
 **Pack Share** — 1 Action; 1 Investiture · Green 3+ → **Passive; — , on the supply** (question 3).
 *"While channelling Red or Green, allies within Attunement Range know the current health, conditions
@@ -553,12 +610,38 @@ Precision and Prognosis, the Green lane at Overgrowth and Adaptive Mutation. Sev
 
 **The supply**, on Anaveth's power:
 
+> ~~**Tend** — Action; — · *the god's supply*~~
+> ~~*While channelling Blue* — choose a character within Attunement Range. For the scene you know its~~
+> ~~exact health, maximum health, conditions, and Physical and Spiritual defenses, and you and allies~~
+> ~~dealing damage to it deal additional vital damage equal to your Blue rank.~~
+> ~~*While channelling Green* — choose a character within Attunement Range. It regains [Tier][Die] +~~
+> ~~Awareness health; healing beyond its maximum becomes temporary health. May self-target.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families,
+> `docs/analysis/talent-comparison-mistborn-radiant.md`; R-160 (a) — Ben refused a blanket 2-Action
+> supply in chat and the narrow fix was taken as its recommended default).** **G-3 is re-answered
+> (b)** — the alternative this section itself tabled, and the one the Cost paragraph below still
+> describes as the road not taken:
+>
 > **Tend** — Action; — · *the god's supply*
 > *While channelling Blue* — choose a character within Attunement Range. For the scene you know its
 > exact health, maximum health, conditions, and Physical and Spiritual defenses, and you and allies
 > dealing damage to it deal additional vital damage equal to your Blue rank.
-> *While channelling Green* — choose a character within Attunement Range. It regains [Tier][Die] +
-> Awareness health; healing beyond its maximum becomes temporary health. May self-target.
+> *While channelling Green* — **spend 1 Investiture.** Choose a character within Attunement Range. It
+> regains [Tier][Die] + Awareness health; healing beyond its maximum becomes temporary health. May
+> self-target.
+>
+> The Green face was the pass's own named balance case and item 210's yardstick row 1, and the review
+> priced it rather than waiting: the heal is bounded by nothing — no charge cap, no attack roll — and
+> 1 Investiture is the cost today's Life Surge already carries, so this restores a price rather than
+> inventing one. At level 4 with a pool of 4 and a Draw of 2 the healer still runs one heal a round
+> indefinitely (maintain 1 + heal 1 = 2 out, Draw 2 in) and pays only for burst. **The Cost paragraph
+> below and §7.1's gate-2 row "no kept cost" are superseded for this face** and left unedited; the
+> table row at the end of this section already carried "(G-3 (b): 1 Inv kept)" against this face.
+> **The Blue face is NOT costed here and is open as R-160 (d)** — it is scene-long, party-wide,
+> repeatable and carries no stated cap on how many characters may bear it, so it meets the same line;
+> Ben approved two faces in chat, not three, and the widening waits on his word. Item 198's Life leg
+> builds this text, not the struck one.
 
 Events: Vital Diagnosis's (`edha-apply-status` diagnosed with the Blue-rank vital rider; `edha-reveal`)
 become the Blue face's; Life Surge's `edha-overflow-thp` the Green face's. The frame's own regen is not
@@ -580,9 +663,20 @@ or Green, touch a willing character and test Blue vs. Physical. On a success, it
 × 2 health and loses one condition (Weakened, Disoriented or Slowed). On a failure, it regains
 [Tier][Die] health. May self-target."*
 
-**Prognosis** — Passive; — → **unchanged.** *"When a Diagnosed character takes damage from any source,
-you recover 1 Investiture once per round. When you use a Life talent to heal a character that has a
-condition, that talent heals an additional [Tier][Die]."* The Diagnosed enemy funds the maintain.
+~~**Prognosis** — Passive; — → **unchanged.** *"When a Diagnosed character takes damage from any source,~~
+~~you recover 1 Investiture once per round. When you use a Life talent to heal a character that has a~~
+~~condition, that talent heals an additional [Tier][Die]."* The Diagnosed enemy funds the maintain.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families, R-161
+> (a) — answered by Ben in chat the same day: the refunds become upkeep).** The heal rider stands;
+> the refund becomes upkeep:
+>
+> **Prognosis** — Passive; —. *"Once per round, while you are channelling, when a Diagnosed character
+> takes damage from any source, you recover 1 Investiture. You cannot recover more than the Investiture
+> you are channelling this way in a round. When you use a Life talent to heal a character that has a
+> condition, that talent heals an additional [Tier][Die]."*
+>
+> §5.2's "Where the refund passives sit" carries the full rule and the one card tail all five now share. Item 198's Life leg builds this text, not the struck one.
 
 **Overgrowth** — 1 Action; 1 Investiture → **1 Action; —.** *"While channelling Blue or Green, choose
 a character within Attunement Range. It regains [Tier][Die] health and grows natural armor: +1 deflect
@@ -618,7 +712,7 @@ adaptations are doubled. When the effect ends, it takes an Injury. Once per scen
 | # | Talent | Today | Proposed | Condition |
 |---|---|---|---|---|
 | — | Vital Diagnosis | 1 Action; 1 Inv · entry | **the Blue face of Tend; node dropped** | while channelling Blue |
-| — | Life Surge | 1 Action; 1 Inv · entry | **the Green face of Tend; node dropped** | while channelling Green (G-3 (b): 1 Inv kept) |
+| — | Life Surge | 1 Action; 1 Inv · entry | **the Green face of Tend; node dropped** | while channelling Green; 1 Inv kept (G-3 re-answered (b), 2026-09-19) |
 | 1 | Surgical Precision | 1 Action; 1 Inv | **1 Action; —** | while channelling |
 | 2 | Prognosis | Passive; — | Passive; — | — |
 | 3 | Overgrowth | 1 Action; 1 Inv | **1 Action; —** | while channelling |
@@ -627,7 +721,7 @@ adaptations are doubled. When the effect ends, it takes an Injury. Once per scen
 | 6 | Primal Regeneration | 2 Actions; 2 Inv | **2 Actions; —** | channelling 2 or more |
 | 7 | Apex Form | 3 Actions; 3 Inv | **3 Actions; —** | channelling 3 or more; once per scene |
 
-Seven cards plus the supply; tree-sum 13 → **0** (or 1, under G-3 (b)). Life's types do not move — it
+Seven cards plus the supply; tree-sum 13 → **1** (the costed face; G-3 re-answered (b) on 2026-09-19). Life's types do not move — it
 is a tree of Actions by design, the healer's turn is spent healing. **The frame meeting:** the Blue
 face on the read enemy, the Green face on an ally on the home ground. Positional; no card.
 
@@ -635,15 +729,18 @@ face on the read enemy, the Green face on an ally on the home ground. Positional
 
 | | Cards | Costed today → proposed | Tree-sum today → proposed | Passive | Special | 2-or-more | Flood |
 |---|---|---|---|---|---|---|---|
-| Chaos | 9 → 7 + supply | 8 → 0 | 14 → 0 | 1 → 2 | 0 → 1 | 3 | 1 |
+| Chaos | 9 → 7 + supply | 8 → 1 | 14 → 1 | 1 → 2 | 0 → 1 | 3 | 1 |
 | Knowledge | 9 → 7 + supply | 6 → 0 | 10 → 0 | 3 → 5 | 0 | 1 | 1 |
-| Life | 9 → 7 + supply | 8 → 0 (1) | 13 → 0 (1) | 1 → 1 | 0 | 3 | 1 |
+| Life | 9 → 7 + supply | 8 → 1 | 13 → 1 | 1 → 1 | 0 | 3 | 1 |
 
-The marks keep **no Investiture cost** (Life's Green face the one open question): their charge is capped
-(tier + 1 Omens, 5 Insight, one Diagnosis), they raise no bodies, and every card buys into the charge.
-What they pay instead is the Channel — 1 a round for the faces and the one-Action riders, a flood for
-the synthesis tier and the capstone — funded in all three trees by a refund passive (Void Sense,
-Accumulate, Prognosis) that pays the maintain back whenever the marked creature is hurt. The three
+The marks keep **no Investiture cost on a talent**: their charge is capped (tier + 1 Omens, 5 Insight,
+one Diagnosis), they raise no bodies, and every card buys into the charge. **Two of their faces are
+costed** — Place Omen's Blue and Tend's Green, at 1 each (R-160 (a), 2026-09-19), the two payloads in
+the marks bounded by neither a charge cap nor a weapon Strike. What they pay otherwise is the Channel
+— 1 a round for the free faces and the one-Action riders, a flood for the synthesis tier and the
+capstone — funded in all three trees by a refund passive (Void Sense, Accumulate, Prognosis) that,
+under R-161 (a), pays back **once per round while you are channelling and never more than the
+Investiture you are channelling** rather than whenever the marked creature is hurt. The three
 trees are the same shape because their charges are; gates 3 and 4 will not be.
 
 ### 2.6 Gate 2 — the menu, second draft
@@ -701,7 +798,9 @@ keep costs. Every card was read from `data/domain.json` and its `data/authored/d
   re-typed to match its twin.
 - **A costed face.** Where balance keeps a price on a face (Ben, gate 2: *the Construct should stay
   costed at a minimum*), the face still requires the Channel — it is the god's act — and also spends.
-  Two faces in this gate are costed: Pyre and Forge Construct. Everywhere else the supply is free.
+  Two faces in this gate are costed: Pyre and Forge Construct. Everywhere else **in this gate** the
+  supply is free; §2's Place Omen (Blue) and Tend (Green) were costed on 2026-09-19 under the same
+  line (R-160 (a)).
 
 ### 3.1 Fate — Ordain (Green / White)
 
@@ -1011,11 +1110,27 @@ and **Raise Dead** are rites in the plain sense — a séance and a resurrection
 and keep 2 and 4. The Bone Garden costs a Remain, which is the price; Consuming Decay and Necrotic
 Cascade ride.
 
-**Reaper's Harvest** — Passive; — · *node kept* → **unchanged.** *"When a character drops to 0 health
-within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You
-begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier;
-unused Remains fade at the end of the scene. You sense each of your active Remains through any
-obstruction."* The refund funds the maintain, as the marks' refunds do.
+~~**Reaper's Harvest** — Passive; — · *node kept* → **unchanged.** *"When a character drops to 0 health~~
+~~within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You~~
+~~begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier;~~
+~~unused Remains fade at the end of the scene. You sense each of your active Remains through any~~
+~~obstruction."* The refund funds the maintain, as the marks' refunds do.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families, R-161
+> (a) — answered by Ben in chat the same day: the refunds become upkeep).** One of the two cards
+> where the cap actually binds — a bloody round pays several times today:
+>
+> **Reaper's Harvest** — Passive; — · *node kept*. *"When a character drops to 0 health within your
+> Attunement Range, you mark the corpse as a Harvested Remain, and, while you are channelling, you
+> recover 1 Investiture. You cannot recover more than the Investiture you are channelling this way in
+> a round. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to
+> your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through
+> any obstruction."*
+>
+> **The Remain is not gated on channelling — only the Investiture is.** The corpse economy that is
+> Death's identity (the Remain itself, the Bone Garden, Risen Servant, the séance) is untouched, so
+> what the cap takes is the pool income and what it leaves is the body. §5.2's "Where the refund
+> passives sit" carries the full rule. Item 198's Death leg builds this text, not the struck one.
 
 **Consuming Decay** — 2 Actions; 2 Investiture → **2 Actions; — , gated on 2 or more.** *"While
 channelling 2 or more Black or Green, choose a Weakened character or a character below half health
@@ -1377,9 +1492,22 @@ more; White 3+ kept.** *"While channelling 2 or more Black or White, choose a wi
 Attunement Range. For the scene its damage die size increases by one step (maximum d12), replacing any
 Exalt of yours on it. Once per ally per scene."*
 
-**Expose** — Passive; — → **unchanged** (a Censured character that fails a test refunds 1 Investiture;
-one that fails an attack test gives its target a Reactive Strike). Sovereignty's refund passive, the
-maintain's funding.
+~~**Expose** — Passive; — → **unchanged** (a Censured character that fails a test refunds 1 Investiture;~~
+~~one that fails an attack test gives its target a Reactive Strike). Sovereignty's refund passive, the~~
+~~maintain's funding.~~
+
+> **AMENDED 2026-09-19 (the review of the deity atlas against the published Invested families, R-161
+> (a) — answered by Ben in chat the same day: the refunds become upkeep).** The second card where
+> the cap binds, and the only one of the five whose text this document had paraphrased rather than
+> quoted — the amendment states it in full:
+>
+> **Expose** — Passive; —. *"While you are channelling, when a Censured character fails a test, you
+> recover 1 Investiture. You cannot recover more than the Investiture you are channelling this way in
+> a round. When a Censured character fails an attack test, its target may make a Reactive Strike
+> against it."*
+>
+> The Reactive Strike half is not gated on channelling. §5.2's "Where the refund passives sit" carries
+> the full rule. Item 198's Sovereignty leg builds this text, not the struck one.
 
 **Decree of Ruin** — 1 Action; 2 Investiture · Black 3+ → **1 Action; — , gated on 2 or more; Black 3+
 kept.** *"While channelling 2 or more Black or White, test Black vs. Cognitive against a character
@@ -1527,32 +1655,84 @@ Read against the bands:
 
 | | Costed talents | Of which | Investiture sum | Amount-gated ("2 or more") | Flood-gated ("3 or more") |
 |---|---|---|---|---|---|
-| **Deity today** | 72 of 90 (80 %) | 1: 34 · 2: 28 · 3: 9 · 4: 1 | **125** | — | — |
-| **Deity proposed** | 5 of 72 (7 %) + 2 costed faces | Fault Line 2 · Risen Servant 1 (+ a Remain) · Death Ward 2 · Speak with the Fallen 2 · Raise Dead 4 · the Pyre and Forge Construct faces 1 each | **13** | 26 | 9 |
+| **Deity today** | 72 of 90 (80 %) | 1: 34 · 2: 28 · 3: 9 · 4: 1 | **121** | — | — |
+| **Deity proposed** | 5 of 72 (7 %) + 4 costed faces | Fault Line 2 · Risen Servant 1 (+ a Remain) · Death Ward 2 · Speak with the Fallen 2 · Raise Dead 4 · the four costed faces — Place Omen (Blue), Tend (Green), Pyre, Forge Construct — 1 each | **15** | 26 | 9 |
 | published Invested band (§C.2) | 8 – 46 % | | | | |
 | leyline after its passes (White / Blue / Red / Black / Green) | 16 / 28 / 20 / 20 / 16 % | | 1 / 7 / 6 / 6 / 6 | | |
 
-Per tree, today → proposed: Chaos 14 → 0 · Knowledge 10 → 0 · Life 13 → 0 · Fate 11 → 0 ·
+Per tree, today → proposed: Chaos 14 → 1 · Knowledge 10 → 0 · Life 13 → 1 · Fate 11 → 0 ·
 Destruction 10 → 3 · Civilization 11 → 1 · Death 14 → 9 · Order 10 → 0 · Power 15 → 0 ·
-Sovereignty 13 → 0.
+Sovereignty 13 → 0. *(The tree-sums fold in each tree's costed faces, as §2.5, §3.5 and each tree's
+close already do — which is why Civilization prints 1 with no costed talent at all; the costed-**card**
+count beside them is talents only, per J-5. The two amendments of 2026-09-19 move Chaos 0 → 1 and
+Life 0 → 1, and the sum 13 → 15.)*
 
 Read against the bands:
 
 - **Costed falls from 80 % to 7 %, below the published floor** (Metalborn paths, 8 %). The floor is
   not a target: what the published families price is a *base action* (Burn, Store, the surge) and
   the talents ride it, and the deity atlas now has exactly that shape — the Channel is the cost, at 1
-  to 3 a round, and the seven priced cards are the two bolts, the two bodies and the three rites that
-  balance keeps (J-3 asks whether to accept the floor crossing; the recommendation does).
-- **The Investiture sum falls from 125 to 13**, against 25 across the five leyline colours after their
+  to 3 a round, and the **nine** priced cards are the two bolts, the two bodies, the three rites and
+  the two unbounded repeatables that balance keeps — four of the nine are faces, five are talents
+  (J-3 asks whether to accept the floor crossing; the recommendation does). **The 7 % is talents
+  only**, which is the denominator J-3's floor argument uses; counted with the faces it is 9 of 91,
+  or 9.9 %, which is *above* the published 8 % floor — worth saying, because R-160 states the
+  faces-included figure and the two are easy to read as contradicting each other. **§7.1's gate-3 row
+  ("Costed faces: Pyre and Forge Construct at 1") and gate-5 row ("+ two costed faces … 125 → 13") are
+  superseded** by R-160 (a) and left unedited, as the gate log is the record of the day.
+- **The Investiture sum falls from 121 to 15**, against 26 across the five leyline colours after their
   passes. What replaces it is not free: **26 cards gate on "channelling 2 or more"** — a Draw a round
   at levels 1 – 5 — and **nine capstones on "3 or more"**, reachable at rank 3. §2.1's two facts hold
   across the atlas: on the fourteen scene-long cards the gate is a one-time price equal to today's
   cost; on the twelve repeatable ones it is a per-round tax.
-- **Where the refund passives sit.** Five trees carry a passive that pays Investiture back on a
-  trigger — Void Sense, Accumulate, Prognosis, Reaper's Harvest, Expose — and each funds a one-point
-  maintain in the tree whose charge it reads. Five do not: Fate, Destruction, Civilization, Order and
-  Power Draw as their attunement demands. That asymmetry is old (it is the same five today) and it is
-  now legible: item 210's yardstick should price the two groups separately.
+- **Where the refund passives sit — and what they now are.** Five trees carry a passive that pays
+  Investiture back on a trigger: Void Sense (Chaos), Accumulate (Knowledge), Prognosis (Life),
+  Reaper's Harvest (Death), Expose (Sovereignty). **Under R-161 (a) (2026-09-19) all five are upkeep,
+  not income.** This is the rule the five amendment blocks in §2 – §4 point at, and the one card tail
+  they share:
+
+  > *"While you are channelling, [trigger], you recover 1 Investiture. You cannot recover more than
+  > the Investiture you are channelling this way in a round."*
+
+  It uses the term `channel-actions.md` §1.1 already defines — *the Investiture you are channelling*
+  is what you spent to open or maintain this round — so it needs no new vocabulary, and one engine
+  field reads a number the Channel status already stores. A refund can fund the maintain it is named
+  for and nothing past it, and no disciple banks pool between Channels. **Why the pass's reading had
+  to change:** every published Invested pool refills once — the Allomantic and Radiant pools at scene
+  start, a metalmind from downtime storing (`talent-comparison-mistborn-radiant.md` §C.2) — while an
+  Edha disciple has in-combat Draw Mana *and* a trigger refund *and*, under the Channel, riders that
+  cost nothing.
+  **Where the cap actually binds.** Void Sense, Accumulate and Prognosis already read "once per
+  round", so their refund is 1 and the round's channel spend is at least 1 whenever a Channel is up:
+  on those three the cap is inert and only the channelling clause changes anything. **Reaper's Harvest
+  and Expose carry no per-round limit**, and they are where the leak lived — a bloody round, or a
+  Censured creature failing three tests, paid three times before and pays once now. The uniform
+  sentence is carried on all five anyway, as one principle and one field, so a later card cannot
+  reopen it. Both keep their non-Investiture halves ungated: the Remain is marked whether or not
+  Morrath channels, and Expose's Reactive Strike stands.
+  **One edge for item 198 to state rather than discover.** The gate and the cap can disagree. A
+  Channel opened at 2 on round 1 is still up on round 2 even if that round's maintain is skipped, so
+  "while you are channelling" is satisfied while the round's channelled Investiture is 0 and the cap
+  pays nothing. That is defensible — no upkeep paid, no upkeep refunded — but it is bench-visible, and
+  the engine's stored `channelled` number holds the last payment rather than this round's, so the
+  build must decide which the card means. None of §5.3's three walks hits it; all three maintain
+  every round.
+  **The scope of this rule, stated rather than inferred.** It binds the five deity passives above.
+  The live data carries three more Investiture-granting cards, all leyline: `Predatory Patience` and
+  `Predator's Due` (Black) have neither a gate nor a cap and are a **larger** hole than the one
+  closed here — they are **R-163**, open, because capping them invalidates `channel-black.md`'s
+  approved CK-14 row and its stated Isolation economy. `Flashpoint` (Red) is **exempt**: capped once
+  a round, one of two options, and reachable only through costed releases, so it is a discount rather
+  than income. The heroic atlas grants no Investiture at all.
+  Five trees have no refund at all: Fate, Destruction, Civilization, Order and Power Draw as their
+  attunement demands. That asymmetry is old (it is the same five today), and the cap narrows it rather
+  than closing it: item 210's yardstick should still price the two groups separately, and its question
+  is now whether a capped refund still funds the maintain it is named for.
+- **A measurement the pass printed wrong, corrected here.** The headline "Investiture sum 125" was
+  **121** in the data all along: `data/domain.json` at 90 records gives 72 costed and a sum of 121,
+  and all three of the pass's own component lists agree with it — the cost-tier breakdown in the table
+  above (34 + 56 + 27 + 4), the per-tree list, and §1's tree-sum list. Only the headline disagreed.
+  The reference sections now read 121; §7.1's gate-5 row keeps 125 as the record of the day.
 
 ### 5.3 What a deity player's turn is now
 
@@ -1563,9 +1743,14 @@ matters), Place Omen on it (a Blue test, an Omen, [Tier][Die] spirit; Spreading 
 its neighbour), one Action spare. Round 2: maintain at 1, Draw Mana as a Blue mage (advantage on the
 next Cognitive test), Place Omen again with it, and Shatter Focus as a Special when the read creature
 rolls. Round 3: the line closes — maintain at 2 (the flood), switch is not needed: Cascade Collapse
-on every bearer. Spent by round three: 4, refunded 2 by the Draw and up to 2 by Void Sense. Today the
-same plays cost 1 + 1 + 1 + 1 + 2 = 6 against a pool of 4 with no refund but Void Sense, which is why
-the ecosystem review found the Chaos loop sealed.
+on every bearer. Spent by round three: **6** — 1 + 1 to open and place, 1 + 1 to maintain and place
+again, 2 to flood — of which 2 are the two Place Omens under R-160 (a); refunded 2 by the Draw and up
+to 2 by Void Sense, **for a net 2**. Today the same plays cost 1 + 1 + 1 + 1 + 2 = 6 against a pool of
+4 with no refund but Void Sense, which is why the ecosystem review found the Chaos loop sealed.
+**Pricing the Blue face takes the gross saving away** — six against six — so the comparison is no
+longer "fewer points" but what the six buys: a frame under every play, a Draw that covers the
+maintain, and a refund that now pays only while the Channel is up. Chaos is the one walk where
+amendment A bites this hard, because its supply is the play it makes every round.
 
 **A disciple of Morrath, attuned to Green.** Round 1: Channel Black at 1 (the forsaken: the enemy she
 means to wither), Wither it (a melee hit, +[Tier][Die] + Willpower vital, no healing), one Action
@@ -1573,7 +1758,9 @@ spare. Round 2: maintain, Draw Mana as a Green mage (terrain laid; the forsaken 
 the frame's vital on every hit), Consuming Decay on the forsaken at the flood (maintain at 2 instead:
 2 for the round). Round 3: an ally's kill in range pays Reaper's Harvest 1 Investiture and a Remain;
 Risen Servant for 1 Investiture and the Remain. Spent by round three: 1 + 2 + 1 + 1 = 5, refunded 2 by
-the Draw and 1 by the Harvest. Today: 1 + 2 + 1 = 4 for fewer effects, with no frame and a pool that
+the Draw and 1 by the Harvest — **and under R-161 (a) that Harvest point lands only because she is
+still channelling when the ally's kill happens**, capped at the 1 she is channelling; the Remain is
+marked either way. Wither's face is free, so amendment A does not touch this walk. Today: 1 + 2 + 1 = 4 for fewer effects, with no frame and a pool that
 cannot Draw fast enough to Decay *and* raise.
 
 **A disciple of Tyrith, attuned to Black.** Round 1: Channel Red at 1 (the heat), Command under
@@ -1583,15 +1770,24 @@ Black mage. Round 3: maintain at 1 — the crown holds at any maintain — switc
 the noise; Unstoppable Advance through the line, every trampled enemy paying the crown nothing (it
 tests nothing) and the sword carrying heat. Spent by round three: 1 + 2 + 1 = 4, refunded 2. Today the
 same plays cost 1 + 2 + 1 = 4 with no Channel beneath them and, for Power, no refund anywhere — the
-warlord still gets nothing back, and now that is a choice the tree makes rather than a hole.
+warlord still gets nothing back, and now that is a choice the tree makes rather than a hole. Neither
+amendment of 2026-09-19 touches this walk: Command's two faces are free (one is a weapon Strike, the
+other places a condition on one creature), and Power has no refund passive to cap.
 
 ### 5.4 What item 210's yardstick should price first
 
-Four rows, the deity atlas's own, before the leyline rows it already carries:
+Four rows, the deity atlas's own, before the leyline rows it already carries — **five since
+2026-09-19**; row 1 is rewritten and row 5 is new, both from R-160 (a) and R-161 (a). J-4 (a)'s "the
+four rows of §5.4, in that order" is the record of the day and is left unedited; the order below is
+unchanged and the new row is appended.
 
-1. **Life's free Green face** — a [Tier][Die] + Awareness heal every Action while channelling Green
-   at 1, stacked with the home ground's tick and Overgrowth's armor, against the party's damage
-   intake; G-3 (b) (1 Investiture on the face) is the lever if it overshoots.
+1. **Life's priced Green face** — a [Tier][Die] + Awareness heal at 1 Investiture a cast while
+   channelling Green, stacked with the home ground's tick, Prognosis's extra die and Overgrowth's
+   armor, against the party's damage intake. G-3 (b) was taken on 2026-09-19 (R-160 (a)), so the
+   question is no longer whether to price it but whether **1 is enough of a brake**: at level 4 the
+   healer runs one heal a round at net zero (maintain 1 + heal 1 out, Draw 2 in) and pays only for
+   burst, and the binding constraint moves from Investiture to Actions. **R-160 (d)** — 1 Investiture
+   on Tend's Blue face as well — is the remaining lever if the stack still overshoots.
 2. **The flood detonations** — Cascade Collapse and Cascading Failure at "2 or more", repeatable, and
    the nine flood-gated capstones at rank 3 — priced as a per-round tax against today's per-use 2.
 3. **Knowledge's stacked pack** — Pack Share (+tier) and The Pack (+Insight) on every ally's hit against
@@ -1600,6 +1796,13 @@ Four rows, the deity atlas's own, before the leyline rows it already carries:
 4. **The arms held for a point a round** — Crown of Thorns, Warlord's Fury and the Mantle on a Power
    disciple maintaining at 1, against the leyline mage's one frame for the same point; and the
    counter-case, a refused maintain dropping all three.
+5. **The refund passives as upkeep** (R-161 (a), added 2026-09-19) — Void Sense, Accumulate and
+   Prognosis at 1 a round against a one-point maintain, and Reaper's Harvest and Expose in a bloody
+   round or against a Censured creature failing repeatedly, both now capped to the round's channel
+   spend. The measurement nobody has made is whether a capped refund still funds the maintain it is
+   named for, and how the five refund trees then sit against the five that Draw instead. **R-162** —
+   whether a scene-long install should outlive the Channel that bought it — is the open question this
+   row is most likely to inform.
 
 ### 5.5 Gate 5 — the menu
 
@@ -1641,7 +1844,14 @@ Deploy class of the whole leg: **ENGINE + DATA — REBUILD deity (and one word i
 Countercurrent card) + ⟳ Sync Talents, at 3.x only**, after item 187's flip; at 2.1.0 nothing here
 exists and nothing here breaks.
 
-### 6.1 The data shape — ten powers, twenty faces
+### 6.1 The data shape — ten powers, nineteen faces
+
+> **Count corrected 2026-09-19.** This document prints "twenty faces" here, in §5's preamble and in
+> §7.3. The atlas has **nineteen**: nine gods carry two faces and Death carries one, because H-1 (a)
+> kept Reaper's Harvest as a node rather than making it the Green face (§3.4). Counting the entry rows
+> in §2 – §4 gives 19 — seventeen Actions and two Free (Ordained Ground and Lay Foundation) — against
+> the 20 / 18 / 2 printed in §5.1. The numbers in this section are stated on 19; the gate log keeps
+> what it recorded on the day. Item 198 should build nineteen.
 
 **Ten `power` items in the deity pack**, one per god, built beside the five colour powers
 (`channelPowerDoc`'s shape, B-1): `system.type: "deity"` (a second registered power type beside
@@ -1649,8 +1859,10 @@ exists and nothing here breaks.
 riders), `system.description` the supply's paragraph from §2 – §4, and **two embedded actions, one
 per face** — not one action with a picker (K-1). Two actions is what makes the approved tables
 buildable without a widening: a face keeps its own action type (Ordain's White face is `fre`, its
-Green face `act`) and its own consumption row (Pyre's and Forge Construct's faces carry `{resource:
-"inv", value: {min: 1, max: 1}}`; the other eighteen carry none), and each is gated on its colour by
+Green face `act`) and its own consumption row (**four** faces carry `{resource: "inv", value: {min: 1,
+max: 1}}` — Place Omen's Blue, Tend's Green, Pyre and Forge Construct, the last two from the pass and
+the first two from R-160 (a) on 2026-09-19 — **and the other fifteen carry none**), and each is gated
+on its colour by
 the field the leyline riders already use — `requireSelfStatus: "channelblue"` on the face's rules,
 refused before cost by the pre-cost veto (Widening F (ii)) with the toast naming the colour. On the
 Actions tab the disciple sees *Place Omen (Blue)* and *Place Omen (Black)* under Maelith's name; the
@@ -1718,10 +1930,12 @@ the card text depends on which. The "A or B" reading is the comma-list: any list
 | S | `endWithChannel: true` on `edha-self-status` — the status ends when neither of the owner's named channel statuses remains (checked after Widening C's arm-then-clear order, so a colour switch holds it) | `edha-self-status` (`53-…js:2241`) | F-4 (a): Necrotic Cascade, Crown of Thorns, Warlord's Fury, Concord, the Mantle | Death, Power, Order |
 | T | `lists: ["ordained"]` on the home-ground tick (Widening N, `edha-content.home`) — the turn-start regen also reads the owner's Ordained Ground squares while `channelgreen` | Green's Region tick (`50-green-territory.js`) | Hallowed Ground | Fate |
 | U | `power` as a source for `edhaColorRank`'s adversary fallback — a block that embeds a god's power supplies at role rank | `35-…js` `edhaColorRank` | R-137: deity-treed adversaries | the bestiary (item 121) |
+| **V** | **`capToChannelled: true` on the resource-gain branch of `edha-triggered-effect`** — a refund pays only while the owner carries a channel status, and a **per-round accumulator** keyed to the owner caps the round's total refunds at the channelled number. New because Widening H's `requireChannelled` is a *minimum* on a use, not a running budget on gains; built once as a shared budget with a round reset beside the existing per-round resets, never per handler (iron rule 2a) | `33-triggered-effect-resolution.js` (the resource half, ~line 163–200) | **R-161 (a)**: Void Sense, Accumulate, Prognosis, Reaper's Harvest, Expose | Chaos, Knowledge, Life, Death, Sovereignty |
 
 Widenings the deity leg **reuses without change**: A (`recordSpend` — the amount gate reads it), C
 (`exclusiveWith` — one Channel), E (`edha-channel` — no deity consumer; the supply is an Action, F-1
-(a)), H (`requireChannelled`, now on the item under Q), L (`boundToStatus` — the forsaken's ledger;
+(a)), H (`requireChannelled` — a minimum on a *use*, which is why the refund cap needs V rather than
+H), L (`boundToStatus` — the forsaken's ledger;
 Chaos's Omens are *not* bound to the Channel, they are the charge), M / N (the home ground, which T
 extends). **G (the channel-rider ActiveEffect) has one deity consumer:** Covenant's +1 defenses AE
 stays on the face's rules as today (it is the charge's, not the Channel's) — no G.
@@ -1736,8 +1950,10 @@ stays on the face's rules as today (it is the charge's, not the Channel's) — n
   `connections` and `prerequisites` per §6.1; one new record (Hallowed Ground). "Vital" → "vital" on
   seven cards.
 - **`data/authored/deity-*.json`** — the same sentences in `description`; `activation.cost.type` per
-  the type moves; the Investiture `consume` row removed on 65 cards and on 18 faces; the
-  `requireChannel` flag (Q) on 72 riders, `requireChannelled: 2` on 26, `: 3` on 9; `endWithChannel`
+  the type moves; the Investiture `consume` row removed on 65 cards and on 15 faces (four faces keep
+  theirs, R-160 (a)); the
+  `requireChannel` flag (Q) on 72 riders, `requireChannelled: 2` on 26, `: 3` on 9; `capToChannelled`
+  (V) on the five refund passives' resource-gain rules; `endWithChannel`
   on five arms; Spreading Omen's second placement re-hung on R; Pack Share's and The Pack's
   `packsight` / `packmind` arms and their `use` cards retired (the damage bonus and the public reveal
   gate on the Channel); Necrotic Cascade's arm keeps its status (S ends it).
@@ -1785,11 +2001,12 @@ judgment. Written to be added as a `## Supply — item 198` block under each god
 
 | Row | Drive | Evidence |
 |---|---|---|
-| DS-C1 Chaos | Place Omen under Blue on the read enemy; Spreading Omen owned | an Omen on it and one within 10 ft (R); Shatter Focus offers as a Special on its next test |
+| DS-C1 Chaos | Place Omen under Blue on the read enemy; Spreading Omen owned | **1 Investiture spent**; an Omen on it and one within 10 ft (R); Shatter Focus offers as a Special on its next test |
 | DS-C2 Chaos | Unravel at 3 with a forsaken bearer | the forsaken takes the vital branch, the rest spirit + Disoriented; once per scene refused after |
 | DS-K1 Knowledge | Study under Green then Red on one creature | 2 Insight, then the hit at +[Tier][Die] + tier and 1 more; Pack Share's ally bonus on an ally's hit with no arm card |
 | DS-K2 Knowledge | The Pack at 1, then at 2 | refused, then the ally's hit carries +Insight |
-| DS-L1 Life | Tend under Green with no Investiture; Prognosis owned; the Diagnosed is hit | the heal lands at no cost; 1 Investiture refunded |
+| DS-L1 Life | Tend under Green with an empty pool, then with 1 Investiture | refused before cost with the toast naming the cost (the pre-cost veto, §6.1); at 1 the heal lands and the point is spent |
+| DS-L3 Life | Prognosis owned, channelling Green at 1, the Diagnosed hit twice in one round; then again with no Channel up | 1 Investiture refunded, not 2; nothing refunded at all with no Channel (V) |
 | DS-L2 Life | Apex Form at 2, then 3 | refused, then the scene grant; the Injury at scene end |
 | DS-F1 Fate | Ordain under White (Free) and under Green (Action) | an Ordained square, then a Snare; Inevitable Snare only at 2 |
 | DS-F2 Fate | Hallowed Ground; an ally starts its turn on an Ordained square while channelling Green 2 | +2 health (T); none while channelling White |
@@ -1807,7 +2024,9 @@ judgment. Written to be added as a `## Supply — item 198` block under each god
 | DS-S1 Sovereignty | Judge under White then Black | the ally's die up; the enemy's down on a success; Sovereign's Favor's temporary health on the Exalt |
 | DS-S2 Sovereignty | Sovereign's Balance at 1, then 2 | refused, then the pair |
 
-Thirty-two rows; the two DS-M1 clauses are one row because the Draw's rider is the attunement's, not
+Thirty-three rows since 2026-09-19 (DS-L1 split in two by R-160 (a) and R-161 (a); §7.1's gate-6 row
+and K-6 keep "thirty-two" as the record of the day); the two DS-M1 clauses are one row because the
+Draw's rider is the attunement's, not
 the tree's, and the row exists to prove it.
 
 ### 6.6 Gate 6 — the menu
@@ -1868,16 +2087,31 @@ carries his answer verbatim under it.
 ### 7.2 What waits on Ben
 
 - **One name:** *Hallowed Ground* (§3.1) is a placeholder; the card ships under Ben's name for it.
-- **No new ruling was filed.** Every judgment call was a menu entry answered at its gate; R-145
-  stays the only open ruling in `EDHA_RULINGS.md` §L. R-108 and R-151 carry their dated post-design
-  lines in §K as item 212's done-when asks.
+- ~~**No new ruling was filed.** Every judgment call was a menu entry answered at its gate; R-145~~
+  ~~stays the only open ruling in `EDHA_RULINGS.md` §L.~~ R-108 and R-151 carry their dated
+  post-design lines in §K as item 212's done-when asks.
+- **AMENDED 2026-09-19.** The review of this atlas against the published Invested families
+  (`docs/analysis/talent-comparison-mistborn-radiant.md`) filed three rulings, so the struck sentence
+  above is no longer true. **R-161 (a)** — the five refund passives become upkeep — was answered by
+  Ben in chat the same day and is applied throughout this document (§2.2, §2.3, §2.4, §3.4, §4.3, and
+  the rule in §5.2). **R-160** — what a supply face costs when its payload is bounded by neither a
+  charge cap nor a weapon Strike — is **open**: Ben refused a blanket 2-Action supply in chat, and
+  (a), 1 Investiture on Place Omen's Blue face and Tend's Green face, is recorded here as its
+  recommended default, so it wants a veto rather than a decision. Its option **(d)**, pricing Tend's
+  Blue face as well, is an open widening nobody has answered. **R-162** — whether a scene-long install
+  should outlive the Channel that bought it — is **open and untaken**: it is the one finding of that
+  review this document has not acted on anywhere, and acting on it would reopen gates 2, 3 and 4.
+  `EDHA_RULINGS.md` §L now lists R-145, R-160 and R-162 open; R-161 is filed in §K.25.
 
 ### 7.3 What the PM should file from this pass
 
-1. **Item 198's deity leg**, from §6 as written: the ten powers and twenty faces, Widenings P – U,
-   the item-level gate (K-2 (a)) — **which the builder should adopt for the five leyline legs too,
-   letting the twenty-two per-rule declarations lapse**; the data moves in §6.4; the thirty-two DS
-   rows; the docs in §6.4. Size: larger than any single colour leg (ten powers, a new power type,
+1. **Item 198's deity leg**, from §6 as written: the ten powers and **nineteen** faces (§6.1's
+   corrected count — Death is one-faced), Widenings P – **V**, the item-level gate (K-2 (a)) —
+   **which the builder should adopt for the five leyline legs too, letting the twenty-two per-rule
+   declarations lapse**; the data moves in §6.4; the **thirty-three** DS rows; the docs in §6.4.
+   **Four faces keep a 1-Investiture consume row** (Place Omen's Blue, Tend's Green, Pyre, Forge
+   Construct — R-160 (a)), and **Widening V is the refund cap** R-161 (a) needs, which is the one
+   genuinely new mechanic in the leg: a per-round budget on resource gains, built once and shared. Size: larger than any single colour leg (ten powers, a new power type,
    the rank watcher, the attunement re-home), smaller than the five leyline legs together.
 2. **The deity guide rewrite** (F-7 (a), J-1 (a)): Parts 1 – 2 and the cost scale replaced by §1's
    model and §5.1's measured table; Part 4's ten identities updated for the faces; the "spend X
@@ -1889,8 +2123,28 @@ carries his answer verbatim under it.
    the rank watcher (P) — an ENGINE item at 3.x, part of item 198 or beside it.
 5. **Item 106 re-scoped** (I-8 (a)): the Decree zone against a Sovereignty whose two frames already
    give the arbiter a radius each side.
-6. **Item 210's deity rows** (J-4 (a)): Life's free Green face; the flood detonations; Knowledge's
-   stacked pack; Power's arms at a point a round — before the leyline rows.
+6. **Item 210's deity rows** (J-4 (a), widened 2026-09-19 — §5.4 is the current list): Life's
+   **priced** Green face and whether 1 is brake enough; the flood detonations; Knowledge's stacked
+   pack; Power's arms at a point a round; and **the refund passives as upkeep** (R-161 (a)) — whether
+   a capped refund still funds the maintain it is named for. Before the leyline rows.
+10. **R-163 — the two leyline Black refund cards** (filed 2026-09-19): the refund surface is eight
+   cards, not five. `Predatory Patience` and `Predator's Due` (both `leyline-black.json`) put
+   Investiture back on a trigger with **neither a channelling gate nor a per-round cap**, which is a
+   larger hole than the one R-161 just closed — Predatory Patience is fed by the Black Key's Draw
+   Mana rider, which M10 keeps ungated, so a Black mage with **no Channel open** can Draw (+2, and
+   Weaken every isolated enemy) and then Strike twice into a Weakened target for +2 more: +4 a round
+   for no spend. Predator's Due is Reaper's Harvest's twin, and at Black 3+ one character can own
+   both and collect 2 a kill with one half now capped and the other not. Extending R-161's rule
+   invalidates approved content in `docs/design/channel-black.md` — bench row CK-14 expects "+3
+   Investiture back; the Channel ran positive", and §1.5 states the uncapped loop as Isolation's
+   intended economy — which is why it is a ruling and not a sweep. **Red's `Flashpoint` is exempt
+   and needs no change:** it is capped once per round, it is one of two options, and both its
+   prerequisite feeders (Flame Surge 2, Arc Flash 1) are costed releases, so earning 1 always costs
+   at least 1 first. It is a discount on a release, never net income.
+11. **Two rule splits the cap needs before it can be wired** (found 2026-09-19): `Void Sense`
+   (`VoidSenseRvl0000`) fuses its refund with the sense-through-walls half, and `Expose`
+   (`ExposeReact00000`) fuses its refund with the Reactive Strike. Both non-refund halves must stay
+   ungated, so each rule splits in two before Widening V can gate one of them.
 7. **Adaptive Mutation's prose drift** (§2.4): the guide and TREE-INTENT say Green 3+ / level 6; the
    data says Green 2+. Reconcile the prose to the data.
 8. **`deity-gate-audit.js`** learns that a face pays its colour (§6.4) — with the build.
