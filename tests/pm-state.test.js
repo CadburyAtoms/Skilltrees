@@ -481,7 +481,16 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
   // R-151 (a) held for, re-opened against the rider / release split. The length assertion moves 1 → 2.
   // 2026-09-16, 18:40 ET: Ben answered R-159 (a) in chat ("Default for 159"); moved to §K.24 with a §L stub and joins
   // the closed list. The length assertion moves 2 → 1.
-  const ECOSYSTEM_RULINGS = ["R-145"];
+  // 2026-09-19: the review of the deity atlas against the published Invested families (PRs #433 / #434) files three.
+  // R-161 (the five deity refund passives become upkeep) was answered in chat the same day — "I agree with making the
+  // refunds sustains" — and went straight to §K.25 with a §L stub, so it joins the closed list below. R-160 (what a
+  // supply face costs when its payload is bounded by neither a charge cap nor a weapon Strike) and R-162 (whether a
+  // scene-long install should outlive its Channel) are OPEN in §L, and R-163 (do the two leyline Black refunds
+  // take R-161's rule, when capping them contradicts the approved Black pass) was filed by the wider audit R-161
+  // prompted — the refund surface is eight cards, not five. The length assertion moves 1 → 4.
+  // Same commit: the eleven option bullets orphaned in §L when R-156 … R-158 moved to §K.23 were restored to their
+  // entries there. They had been parsing as part of R-145's body, so R-145's phone card carried foreign text.
+  const ECOSYSTEM_RULINGS = ["R-145", "R-160", "R-162", "R-163"];
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
@@ -491,7 +500,7 @@ test("build-dashboard: parseOpenRulings finds exactly the pinned open set in the
       "R-128", "R-129", "R-130", "R-131", "R-132", "R-133", "R-134", "R-135", "R-136",
       "R-137", "R-138", "R-139", "R-140", "R-141", "R-142", "R-143", "R-144",
       "R-146", "R-147", "R-148", "R-149", "R-150", "R-151", "R-152", "R-153", "R-154", "R-155",
-      "R-156", "R-157", "R-158", "R-159"]) {
+      "R-156", "R-157", "R-158", "R-159", "R-161"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
   assert.deepStrictEqual(ids.slice().sort(), ECOSYSTEM_RULINGS.slice().sort(),
